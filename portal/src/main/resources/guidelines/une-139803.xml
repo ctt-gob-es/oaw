@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--
+Copyright 2004, University of Toronto. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a 
+copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the 
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included 
+in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Adaptive Technology Resource Centre, University of Toronto
+130 St. George St., Toronto, Ontario, Canada
+Telephone: (416) 978-4360
+-->
+
+<guideline>
+    <type>normal</type>
+    <title abbr="WCAG1-AAA" long-name="Web Content Accessibility Guidelines (WCAG), Version 1.0, Level AAA">WCAG 1.0 (Level AAA)</title>
+    <date>2004-03-17</date>
+    <status>Las comprobaciones de accesibilidad requeridas para esta directiva han sido asignados por el ATRC. El WAI no
+        ha verificado estas comprobaciones así que la conformidad con ellas tiene una validez limitada.
+    </status>
+    <earlid>http://www.w3.org/TR/WCAG10/#aaa</earlid>
+
+    <preamble>La Iniciativa de Acceso Web (WAI, por sus siglas en inglés) ha creado un conjunto de directivas que
+        los autores de documentos web deben utilizar para que su contenido pueda ser accesible a personas con
+        discapacidad.
+        Estas directivas, llamadas Directivas de Accesibilidad para Contenidos Web (WCAG por sus siglas en inglés),
+        fueron
+        emitidas en 1999 y la versión 2 se encuentra actualmente en desarrollo.
+    </preamble>
+
+    <group>
+        <name>first.level.incidents</name>
+        <subgroup>
+            <name>une.guideline.4.2</name>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.2.1</name>
+                <checks>
+                    <check id="97"/>
+                    <check id="294"/>
+                    <check id="292"/>
+                    <check id="293"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.2.2</name>
+                <checks>
+                    <check id="14"/>
+                    <check id="21"/>
+                    <check id="73"/>
+                    <check id="315"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.2.3</name>
+                <checks>
+                    <check id="10"/>
+                    <check id="30"/>
+                    <check id="87"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.3</name>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.3.1</name>
+                <checks>
+                    <check id="31"/>
+                    <check id="295"/>
+                    <check id="296"/>
+                    <check id="297"/>
+                    <check id="298"/>
+                    <check id="32"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.3.2</name>
+                <checks>
+                    <check id="7"/>
+                    <check id="86"/>
+                    <check id="116"/>
+                    <check id="159"/>
+                    <check id="187"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.3.3</name>
+                <checks>
+                    <check id="7"/>
+                    <check id="245"/>
+                    <check id="308"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.4</name>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.4.1</name>
+                <checks>
+                    <check id="24"/>
+                    <check id="74"/>
+                    <check id="127"/>
+                    <check id="290"/>
+                    <check id="291"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.4.2</name>
+                <checks>
+                    <check id="9"/>
+                    <check id="22"/>
+                    <check id="84"/>
+                    <check id="302"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.4.3</name>
+                <checks>
+                    <check id="1"/>
+                    <check id="4"/>
+                    <check id="8"/>
+                    <check id="11"/>
+                    <check id="17"/>
+                    <check id="20"/>
+                    <check id="23"/>
+                    <check id="34"/>
+                    <check id="58"/>
+                    <check id="59"/>
+                    <check id="64"/>
+                    <check id="65"/>
+                    <check id="66"/>
+                    <check id="69"/>
+                    <check id="74"/>
+                    <check id="75"/>
+                    <check id="77"/>
+                    <check id="100"/>
+                    <check id="127"/>
+                    <check id="157"/>
+                    <check id="277"/>
+                    <check id="278"/>
+                    <check id="281"/>
+                    <check id="282"/>
+                    <check id="283"/>
+                    <check id="284"/>
+                    <check id="285"/>
+                    <check id="286"/>
+                    <check id="287"/>
+                    <check id="303"/>
+                    <check id="304"/>
+                    <check id="306"/>
+                    <check id="307"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.4.4</name>
+                <checks>
+                    <check id="48"/>
+                    <check id="49"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.4.5</name>
+                <checks>
+                    <check id="93"/>
+                    <check id="110"/>
+                    <check id="161"/>
+                    <check id="164"/>
+                    <check id="182"/>
+                    <check id="288"/>
+                    <check id="289"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.5</name>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.5.1</name>
+                <checks>
+                    <check id="19"/>
+                    <check id="61"/>
+                    <check id="79"/>
+                    <check id="142"/>
+                    <check id="180"/>
+                    <check id="412"/>
+                    <check id="191"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.5.2</name>
+                <checks>
+                    <check id="196"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.5.3</name>
+                <checks>
+                    <check id="132"/>
+                    <check id="136"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.6</name>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.6.1</name>
+                <checks>
+                    <check id="75"/>
+                    <check id="90"/>
+                    <check id="128"/>
+                    <check id="80"/>
+                    <check id="188"/>
+                    <check id="190"/>
+                    <check id="201"/>
+                    <check id="279"/>
+                    <check id="280"/>
+                    <check id="394"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.6.2</name>
+                <checks>
+                    <check id="26"/>
+                    <check id="76"/>
+                    <check id="89"/>
+                    <check id="129"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.6.3</name>
+                <checks>
+                    <check id="300"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.6.4</name>
+                <checks>
+                    <check id="145"/>
+                    <check id="146"/>
+                    <check id="301"/>
+                </checks>
+            </subgroup>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.6.5</name>
+                <checks>
+                    <check id="26"/>
+                    <check id="76"/>
+                    <check id="89"/>
+                    <check id="129"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.7</name>
+            <subgroup level="A">
+                <name>une.guideline.subgroup.4.7.1</name>
+                <checks>
+                    <check id="186"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+    </group>
+
+    <group>
+        <name>second.level.incidents</name>
+        <subgroup>
+            <name>une.guideline.4.1</name>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.1.1</name>
+                <checks>
+                    <check id="349"/>
+                    <check id="118"/>
+                    <check id="402"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.1.2</name>
+                <checks>
+                    <check id="78"/>
+                    <check id="232"/>
+                    <check id="323"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.1.3</name>
+                <checks>
+                    <check id="345"/>
+                    <check id="346"/>
+                    <check id="347"/>
+                    <check id="348"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.1.4</name>
+                <checks>
+                    <check id="50"/>
+                    <check id="51"/>
+                    <check id="52"/>
+                    <check id="53"/>
+                    <check id="54"/>
+                    <check id="143"/>
+                    <check id="144"/>
+                    <check id="170"/>
+                    <check id="171"/>
+                    <check id="172"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.2</name>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.4</name>
+                <checks>
+                    <check id="85"/>
+                    <check id="386"/>
+                    <check id="387"/>
+                    <check id="388"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.5</name>
+                <checks>
+                    <check id="16"/>
+                    <check id="33"/>
+                    <check id="25"/>
+                    <check id="183"/>
+                    <check id="109"/>
+                    <check id="165"/>
+                    <check id="167"/>
+                    <check id="310"/>
+                    <check id="335"/>
+                    <check id="336"/>
+                    <check id="337"/>
+                    <check id="338"/>
+                    <check id="339"/>
+                    <check id="341"/>
+                    <check id="342"/>
+                    <check id="384"/>
+                    <check id="385"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.6</name>
+                <checks>
+                    <check id="322"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.7</name>
+                <checks>
+                    <check id="316"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.8</name>
+                <checks>
+                    <check id="7"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.9</name>
+                <checks>
+                    <check id="137"/>
+                    <check id="45"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.10</name>
+                <checks>
+                    <check id="215"/>
+                    <check id="234"/>
+                    <check id="380"/>
+                    <check id="381"/>
+                    <check id="382"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.11</name>
+                <checks>
+                    <check id="233"/>
+                    <check id="368"/>
+                    <check id="369"/>
+                    <check id="370"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.2.13</name>
+                <checks>
+                    <check id="316"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.3</name>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.3.4</name>
+                <checks>
+                    <check id="34"/>
+                    <check id="357"/>
+                    <check id="358"/>
+                    <check id="359"/>
+                    <check id="360"/>
+                    <check id="361"/>
+                    <check id="296"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.3.5</name>
+                <checks>
+                    <check id="37"/>
+                    <check id="42"/>
+                    <check id="38"/>
+                    <check id="141"/>
+                    <check id="236"/>
+                    <check id="395"/>
+                    <check id="403"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.3.6</name>
+                <checks>
+                    <check id="27"/>
+                    <check id="62"/>
+                    <check id="169"/>
+                    <check id="299"/>
+                    <check id="305"/>
+                    <check id="350"/>
+                    <check id="351"/>
+                    <check id="352"/>
+                    <check id="353"/>
+                    <check id="389"/>
+                    <check id="390"/>
+                    <check id="391"/>
+                    <check id="405"/>
+                    <check id="406"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.3.7</name>
+                <checks>
+                    <check id="39"/>
+                    <check id="40"/>
+                    <check id="41"/>
+                    <check id="311"/>
+                    <check id="312"/>
+                    <check id="313"/>
+                    <check id="314"/>
+                    <check id="317"/>
+                    <check id="318"/>
+                    <check id="319"/>
+                    <check id="320"/>
+                    <check id="321"/>
+                    <check id="324"/>
+                    <check id="325"/>
+                    <check id="326"/>
+                    <check id="327"/>
+                    <check id="328"/>
+                    <check id="329"/>
+                    <check id="332"/>
+                    <check id="408"/>
+                    <check id="409"/>
+                    <check id="410"/>
+                    <check id="411"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.3.8</name>
+                <checks>
+                    <check id="331"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.3.9</name>
+                <checks>
+                    <check id="111"/>
+                    <check id="113"/>
+                    <check id="114"/>
+                    <check id="151"/>
+                    <check id="156"/>
+                    <check id="203"/>
+                    <check id="242"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.4</name>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.4.6</name>
+                <checks>
+                    <check id="35"/>
+                    <check id="36"/>
+                    <check id="397"/>
+                    <check id="393"/>
+                    <check id="399"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.4.7</name>
+                <checks>
+                    <check id="91"/>
+                    <check id="95"/>
+                    <check id="47"/>
+                    <check id="67"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.4.8</name>
+                <checks>
+                    <check id="46"/>
+                    <check id="56"/>
+                    <check id="57"/>
+                    <check id="398"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.5</name>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.5.4</name>
+                <checks>
+                    <check id="72"/>
+                    <check id="383"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.5.5</name>
+                <checks>
+                    <check id="71"/>
+                    <check id="340"/>
+                    <check id="400"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.5.6</name>
+                <checks>
+                    <check id="117"/>
+                    <check id="68"/>
+                    <check id="344"/>
+                    <check id="401"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.5.7</name>
+                <checks>
+                    <check id="135"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.5.8</name>
+                <checks>
+                    <check id="355"/>
+                    <check id="356"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.5.9</name>
+                <checks>
+                    <check id="138"/>
+                    <check id="139"/>
+                    <check id="140"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.6</name>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.6.6</name>
+                <checks>
+                    <check id="102"/>
+                    <check id="103"/>
+                    <check id="104"/>
+                    <check id="105"/>
+                    <check id="106"/>
+                    <check id="107"/>
+                    <check id="108"/>
+                    <check id="160"/>
+                    <check id="362"/>
+                    <check id="363"/>
+                    <check id="364"/>
+                    <check id="365"/>
+                    <check id="366"/>
+                    <check id="367"/>
+                    <check id="372"/>
+                    <check id="373"/>
+                    <check id="374"/>
+                    <check id="375"/>
+                    <check id="376"/>
+                    <check id="377"/>
+                    <check id="378"/>
+                    <check id="379"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AA">
+                <name>une.guideline.subgroup.4.6.7</name>
+                <checks>
+                    <check id="371"/>
+                    <check id="404"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+    </group>
+
+    <group>
+        <name>third.level.incidents</name>
+        <subgroup>
+            <name>une.guideline.4.2</name>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.2.12</name>
+                <checks>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.4</name>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.9</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.10</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.11</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.12</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.13</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.14</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.4.15</name>
+                <checks>
+                </checks>
+            </subgroup>
+        </subgroup>
+        <subgroup>
+            <name>une.guideline.4.5</name>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.5.10</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.5.11</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.5.12</name>
+                <checks>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.5.13</name>
+                <checks>
+                    <check id="28"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.5.14</name>
+                <checks>
+                    <check id="134"/>
+                </checks>
+            </subgroup>
+            <subgroup level="AAA">
+                <name>une.guideline.subgroup.4.5.16</name>
+                <checks>
+                    <check id="13"/>
+                </checks>
+            </subgroup>
+        </subgroup>
+    </group>
+</guideline>

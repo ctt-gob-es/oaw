@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guideline>
+    <type>observatory</type>
+    <title abbr="OBSERVATORIO-INTECO" long-name="Pautas de verificación del Observatorio de INTECO">Observatorio INTECO
+        1.0
+    </title>
+    <date>2009-06-18</date>
+    <status>Estado del Observatorio</status>
+    <earlid>URL donde están definidas las pautas</earlid>
+    <preamble>Comentario sobre el Observatorio</preamble>
+
+    <group>
+        <name>Priority 1</name>
+        <suitability>
+            <name>A</name>
+            <subgroup aspect="observatory.aspect.alternatives">
+                <name>inteco.observatory.subgroup.1.1.1</name>
+                <checks>
+                    <check id="1"/>
+                    <!-- <check id="29" noExecutedMark="true"/> -->
+                    <check id="64"/>
+                    <check id="100"/>
+                    <check id="157"/>
+                    <check id="306"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.alternatives">
+                <name>inteco.observatory.subgroup.1.1.2</name>
+                <checks>
+                    <check id="160"/>
+                    <check id="393"/>
+                    <check id="394"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.alternatives" type="badpractice">
+                <name>inteco.observatory.subgroup.1.1.3</name>
+                <checks>
+                    <check id="31"/>
+                    <check id="284"/>
+                    <check id="285"/>
+                    <check id="295"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.navigation">
+                <name>inteco.observatory.subgroup.1.1.4</name>
+                <checks>
+                    <check id="69"/>
+                    <check id="181"/>
+                    <check id="79"/>
+                    <check id="142"/>
+                </checks>
+            </subgroup>
+        </suitability>
+        <suitability>
+            <name>AA</name>
+            <subgroup aspect="observatory.aspect.general">
+                <name>inteco.observatory.subgroup.1.2.1</name>
+                <checks>
+                    <check id="94" onlyWarning="true"/>
+                    <check id="119" onlyWarning="true"/>
+                    <check id="131" relatedWith="119"/>
+                    <check id="152" relatedWith="94"/>
+                    <check id="323"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.presentation">
+                <name>inteco.observatory.subgroup.1.2.2</name>
+                <checks>
+                    <check id="386"/>
+                    <check id="387"/>
+                    <check id="396"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.structure">
+                <name>inteco.observatory.subgroup.1.2.3</name>
+                <checks>
+                    <check id="37"/>
+                    <check id="38"/>
+                    <check id="62" onlyWarning="true"/>
+                    <check id="395"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.general">
+                <name>inteco.observatory.subgroup.1.2.4</name>
+                <checks>
+                    <check id="347"/>
+                    <check id="348"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.structure">
+                <name>inteco.observatory.subgroup.1.2.5</name>
+                <checks>
+                    <!-- <check id="47"/> -->
+                    <check id="57"/>
+                    <check id="67"/>
+                    <check id="91"/>
+                    <check id="95"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.navigation" type="goodpractice">
+                <name>inteco.observatory.subgroup.1.2.6</name>
+                <checks>
+                    <check id="126"/>
+                    <check id="148" onlyWarning="true"/>
+                    <check id="149" onlyWarning="true"/>
+                </checks>
+            </subgroup>
+        </suitability>
+    </group>
+
+    <group>
+        <name>Priority 2</name>
+        <suitability>
+            <name>A</name>
+            <subgroup aspect="observatory.aspect.structure">
+                <name>inteco.observatory.subgroup.2.1.1</name>
+                <checks>
+                    <check id="7" noExecutedMark="true"/>
+                    <check id="86"/>
+                    <check id="116"/>
+                    <check id="151"/>
+                    <check id="156"/>
+                    <check id="159"/>
+                    <check id="245"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.general">
+                <name>inteco.observatory.subgroup.2.1.2</name>
+                <checks>
+                    <!-- <check id="48"/> -->
+                    <!-- <check id="49"/> -->
+                    <check id="93"/>
+                    <check id="161"/>
+                    <!-- <check id="162"/> -->
+                    <!-- <check id="163" onlyWarning="true"/> -->
+                    <check id="164"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.navigation">
+                <name>inteco.observatory.subgroup.2.1.3</name>
+                <checks>
+                    <check id="71"/>
+                    <check id="72"/>
+                    <check id="130"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.general">
+                <name>inteco.observatory.subgroup.2.1.4</name>
+                <checks>
+                    <check id="9" noExecutedMark="true"/>
+                    <check id="22" noExecutedMark="true"/>
+                    <check id="84" relatedWith="153"/>
+                    <check id="153" onlyWarning="true"/>
+                </checks>
+            </subgroup>
+        </suitability>
+        <suitability>
+            <name>AA</name>
+            <subgroup aspect="observatory.aspect.structure">
+                <name>inteco.observatory.subgroup.2.2.1</name>
+                <checks>
+                    <check id="101" noExecutedMark="true"/>
+                    <check id="120" noExecutedMark="true"/>
+                    <check id="121" noExecutedMark="true"/>
+                    <check id="150" noExecutedMark="true"/>
+                    <check id="311"/>
+                    <check id="312"/>
+                    <check id="313"/>
+                    <check id="314"/>
+                    <check id="317"/>
+                    <check id="318"/>
+                    <check id="319"/>
+                    <check id="320"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.presentation">
+                <name>inteco.observatory.subgroup.2.2.2</name>
+                <checks>
+                    <check id="15" onlyWarning="true"/>
+                    <check id="55" relatedWith="15"/>
+                    <check id="63" onlyWarning="true"/>
+                    <check id="92" relatedWith="63"/>
+                    <check id="81" noExecutedMark="true"/>
+                    <check id="88"/>
+                    <check id="165"/>
+                    <check id="166" onlyWarning="true"/>
+                    <check id="167" relatedWith="166"/>
+                    <check id="309" onlyWarning="true"/>
+                    <check id="310" relatedWith="309"/>
+                    <check id="342"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.general">
+                <name>inteco.observatory.subgroup.2.2.3</name>
+                <checks>
+                    <check id="50"/>
+                    <check id="51"/>
+                    <check id="53"/>
+                    <!-- <check id="143" onlyWarning="true"/> -->
+                    <!-- <check id="144" onlyWarning="true"/> -->
+                    <check id="172"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.navigation">
+                <name>inteco.observatory.subgroup.2.2.4</name>
+                <checks>
+                    <!--  <check id="61" /> -->
+                    <check id="135"/>
+                    <check id="176" onlyWarning="true"/>
+                    <check id="177" relatedWith="176"/>
+                    <check id="180"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.navigation">
+                <name>inteco.observatory.subgroup.2.2.5</name>
+                <checks>
+                    <check id="83" onlyWarning="true"/>
+                    <check id="117"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.structure">
+                <name>inteco.observatory.subgroup.2.2.6</name>
+                <checks>
+                    <check id="16"/>
+                    <check id="27"/>
+                    <check id="33"/>
+                </checks>
+            </subgroup>
+        </suitability>
+    </group>
+</guideline>

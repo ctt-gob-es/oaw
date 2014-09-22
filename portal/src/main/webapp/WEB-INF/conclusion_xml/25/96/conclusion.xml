@@ -1,0 +1,403 @@
+<sectionSet>
+    <chapter>
+        <title>Resultados Globales</title>
+        <paragraph>
+            <p>
+                A la vista de los resultados obtenidos en este estudio de observatorio se pueden obtener algunas
+                conclusiones acerca del nivel de accesibilidad actual de algunos de los sitios web de la Administración
+                Local Española.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Así pues, a partir de los datos relativos a los porcentajes globales de
+                <strong>Adecuación de Accesibilidad</strong>
+                (ver<anchor destination="anchor.4.1">Punto 4.1</anchor>) se observa como el porcentaje de portales que
+                alcanzan el nivel óptimo de accesibilidad (Prioridad 1 y 2) es muy reducido, solo el 7,21%, lo que
+                representa a 15 portales de los 208 analizados. La mitad de los portales están en el nivel No Válido,
+                mientras que el 44% restante alcanzan el nivel básico (Prioridad 1). Los resultados obtenidos no son
+                demasiado satisfactorios y claramente inferiores a los obtenidos en los otros ámbitos del estudio (AGE y
+                CCAA). Esto pone de manifiesto que es fundamental promover el uso y adaptación de los portales de la
+                Administración Local a los estándares web y la accesibilidad.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Analizando estos resultados a nivel de segmento se observa como existe gran similitud entre los
+                resultados de dos de ellos (diputaciones provinciales y municipios más poblados), con un porcentaje de
+                portales No Válidos del 51%, y solo el 7% (de media) de portales situados en el nivel óptimo (Prioridad
+                1 y 2) de accesibilidad.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El segmento de los portales de ayuntamientos de municipios pequeños es el que peores resultados obtiene,
+                lo que resulta comprensible al tratarse de organismos con menor presupuesto, y por lo tanto menos
+                recursos para trabajar en sus sitios web. No obstante, la diferencia con los demás segmentos es bastante
+                pequeña.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El segmento más diferenciado es el de Ayuntamientos de la capital que es el que obtiene mejores
+                resultados, sólo un 34% de portales en el nivel No Válido, y un 14% en el nivel óptimo (Prioridad 1 y
+                2). Sin embargo, aunque son los mejores resultados obtenidos, todavía se requiere un gran esfuerzo para
+                alcanzar unos niveles de accesibilidad adecuados.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto a la otra medida del observatorio, la
+                <strong>puntuación</strong>
+                (ver<anchor destination="anchor.4.3">Punto 4.3</anchor>), se aprecia en los resultados como los valores
+                están dentro de los márgenes esperables: por debajo del 5 para los portales No Válidos, entre el 6 y 7
+                para los portales con nivel Prioridad 1, y por encima de 8 para los portales con nivel Prioridad 1 y 2.
+                Sin embargo, también se pone de manifiesto que estas puntuaciones son inferiores a las obtenidas en los
+                otros ámbitos del estudio (AGE y CCAA), especialmente en los portales No Válidos, que aquí están muy
+                cerca del 4 mientras que en los otros ámbitos la puntuación ronda el 5.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En base a los resultados del nivel No Válido se concluye que los portales incluidos en este grupo
+                contienen fallos en más de la mitad de los puntos evaluables, no solo en el nivel de adecuación 1, sino
+                también en el 2. No obstante, los portales con nivel de adecuación “No Válido” deben centrar los
+                esfuerzos en solventar primeramente aquellos problemas pertenecientes al nivel de adecuación 1, los
+                cuales son imprescindibles para asegurar que un sitio web pueda ser utilizado por todos los usuarios.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Atendiendo al
+                <strong>análisis pormenorizado de las verificaciones</strong>
+                realizadas en el observatorio se pueden extraer algunas conclusiones que ayuden a centrar los esfuerzos
+                en la corrección de aquellos aspectos que obtienen los resultados más bajos. Para ello se deben observar
+                los datos relativos a las Puntuaciones Medias y los Porcentajes por Modalidad de las distintas
+                verificaciones.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Respecto a las verificaciones pertenecientes al
+                <strong>Nivel de Análisis I</strong>
+                se aprecia como tres de ellas no llegan al 5, y otras apenas lo superan. Las verificaciones con los
+                resultados más bajos se encuentran en las verificaciones pertenecientes al nivel Prioridad 2, lo cual
+                afecta de forma relevante al bajo porcentaje de portales con nivel de accesibilidad Prioridad 1 y 2.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Como es habitual en los distintos observatorios realizados en AGE y CCAA, el punto peor valorado de este
+                nivel es la existencia y adecuación de la Sección de Accesibilidad, seguida de la validación del código
+                fuente HTML y CSS.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto a la validación del código fuente, se trata de un aspecto que en ocasiones no resulta fácil de
+                cumplir, ya que es habitual que los gestores de contenido utilizados en la mayoría de los portales no
+                tengan en cuenta de forma estricta la sintaxis del código que generan. No obstante es importante
+                trabajar en este aspecto a nivel de CMS ya que un código erróneo (tanto HTML como CSS) puede provocar
+                diferencias o problemas en la presentación de la información para determinados agentes de usuario o
+                navegadores.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El otro aspecto que requiere ser mejorado a corto plazo es el relativo a la existencia de la Sección de
+                Accesibilidad, ya que según el Real Decreto 1494/2007 los sitios web de la Administración deben disponer
+                de una sección en la que se indiquen las medidas de accesibilidad tomadas, un medio de contacto para que
+                el usuario pueda remitir dudas, problemas, sugerencias, etc. sobre la accesibilidad del portal, así como
+                la fecha de la última revisión completa de accesibilidad realizada. Menos de la mitad de las páginas
+                analizadas tienen un enlace a la sección de Accesibilidad, y muy pocas son las que contienen la
+                información sobre la fecha de revisión o la dirección de contacto, como refleja la baja puntuación
+                obtenida en esta verificación, apenas un 1,5. Se debe trabajar en este aspecto para conseguir unos
+                resultados más positivos, ya que se trata además de una verificación cuyo cumplimiento requiere un
+                esfuerzo pequeño.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Entre los puntos mejor valorados está la existencia de textos alternativos y la redimensión de texto,
+                aunque los resultados obtenidos están bastante por debajo de lo deseable (y comparado con el
+                observatorio en otros ámbitos), al tratarse de dos de los aspectos más importantes para asegurar la
+                accesibilidad de una página web.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En lo relativo a las verificaciones del
+                <strong>Nivel de Análisis II</strong>
+                se observa como en general las puntuaciones y porcentajes de adecuación son mayores que en el Nivel I,
+                de lo que se concluye que sorprendentemente los portales de las Administraciones Locales implementan de
+                forma más adecuada los aspectos más específicos de accesibilidad y estándares, teniendo más problemas en
+                las cuestiones básicas.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En este nivel existen también tres verificaciones por debajo del 5, aunque mientras que en el Nivel I
+                las puntuaciones estaban muy próximas al 5,5 ó 6, en este caso la varianza es mayor, con alguna
+                puntuación muy alta y otras que apenas superan el 5,5.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En la parte negativa se encuentra el marcado de tablas de datos con la puntuación más baja de toda la
+                metodología, sólo un 1,3. Éste es uno de los aspectos que habitualmente se suele realizar de forma
+                inadecuada, especialmente en el caso de tablas complejas, en el que es necesario realizar una tarea
+                manual importante para relacionar adecuadamente cada encabezado de tabla con sus datos correspondientes.
+                Así mismo, el resultado de este requisito puede generar dudas, ya que tiene un porcentaje de adecuación
+                bastante alto y una puntuación muy baja. Esta relación indica que se han detectado pocas tablas de datos
+                en las páginas analizadas, pero que en la gran mayoría de los casos estas tablas contienen problemas de
+                accesibilidad. Resulta fundamental trabajar en mejorar la adecuación de las tablas de datos ya que es
+                uno de los tipos de contenido más complicados de comprender para usuarios que no tienen una
+                representación visual de la página, como usuarios invidentes que utilizan un lector de pantalla.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Se debe trabajar también en la Separación de contenido y presentación que tiene también una puntuación
+                muy baja, y el porcentaje de adecuación más bajo de toda la metodología. Esta verificación está por
+                debajo de los resultados obtenidos en otros ámbitos (Administración General y Autonómica), lo cual es
+                ciertamente comprensible ya que se trata de problemas derivados en la mayoría de los casos de gestores
+                de contenido que no han sido adaptados convenientemente al uso de estándares web, lo cual requiere en
+                general de personal con conocimientos avanzados en desarrollo web y disponibilidad de recursos y
+                presupuesto para adaptar el gestor de contenidos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                No obstante, se debe incidir en la adaptación de los portales al uso de estándares, especialmente en las
+                plantillas utilizadas en las distintas páginas ya que un error de plantilla supone que éste se
+                reproduzca en un gran número de páginas. Así mismo, en los portales pequeños es habitual encontrar aún
+                maquetación realizada mediante tablas y uso intensivo de elementos y atributos HTML de presentación y
+                desaconsejados, los cuales se deben migrar al uso de hojas de estilo CSS, lo que en ocasiones puede
+                suponer la creación de un nuevo portal.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Resulta importante también mencionar la verificación de Identificación de Idiomas, ya que obtiene una
+                puntuación y porcentaje de adecuación bastante por debajo de lo deseable, a pesar de que se trata de un
+                aspecto relativamente sencillo de implementar en la mayoría de los casos a nivel de plantilla en el
+                gestor de contenidos. Los problemas más habituales en este punto se deben a que no se especifica el
+                idioma principal en la página; aunque también se produce un número significativo de errores debido al
+                uso de una sintaxis en la composición de los códigos de idioma incorrecta (uso del carácter '_' en lugar
+                de '-' al indicar el idioma), o el uso del código "va" para identificar el valenciano cuando el código
+                adecuado según la ISO 639-1 es "ca-valencia".
+            </p>
+        </paragraph>
+    </chapter>
+    <chapter>
+        <title>Resultados por Segmento</title>
+        <paragraph>
+            <p>
+                A continuación se muestran las conclusiones obtenidas del análisis de los resultados por segmentos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En lo relativo a los resultados de la puntuación media y porcentaje de modalidad de las distintas
+                verificaciones del observatorio, salvo algunas excepciones, en general son muy similares a las obtenidas
+                a nivel global en todo el observatorio, por lo que en las secciones siguientes se comentan sólo aquellos
+                aspectos reseñables particulares de cada segmento.
+            </p>
+        </paragraph>
+        <section>
+            <title>Segmento I: Diputaciones Provinciales</title>
+            <paragraph>
+                <p>
+                    Este segmento es el segundo mejor valorado del observatorio con un 9% de portales en el nivel
+                    Prioridad 1 y 2, aunque a su vez el número de portales No Válidos es muy elevado, el 50%. Éste no es
+                    un resultado demasiado satisfactorio, ya que las diputaciones suelen ser las que prestan servicio a
+                    los ayuntamientos más pequeños. Por lo tanto, existirán bastantes municipios con dificultades
+                    relevantes para el acceso a la información de sus ciudadanos.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En cuanto a las puntuaciones alcanzadas por los portales del segmento, se observa como existe una
+                    gran diferencia entre el portal mejor valorado con un 9 y el de puntuación más baja por debajo del
+                    2, produciéndose además un salto en la progresión de las puntuaciones de 6 al 5, el cual coincide en
+                    gran parte con el cambio de adecuación de portales de Prioridad 1 a No Válido.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Respecto a las valoraciones de las distintas verificaciones, son muy similares a las globales,
+                    destacando únicamente en el Nivel de Análisis I la Asociación en formularios, con casi un punto por
+                    encima del valor global.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el Nivel de Análisis II la situación es muy similar también, destacando en la parte positiva la
+                    verificación de Separación de contenido y presentación con una puntuación algo mayor a la media,
+                    aunque por el contrario el uso de metadatos y la apertura de nuevas ventanas están un punto por
+                    debajo del valor medio del observatorio.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento II: Ayuntamiento de la capital</title>
+            <paragraph>
+                <p>
+                    Respecto a los portales de los ayuntamientos de la capital de provincia, son los que mejores
+                    resultados obtienen, con un 14% de portales en el nivel Prioridad 1 y 2, y un 34% de No Válidos. No
+                    obstante, este resultado sigue estando por debajo de los valores esperables especialmente comparado
+                    con los otros ámbitos del estudio.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Fijándose en la distribución de puntuaciones se ve como éstas en general se pueden considerar buenas
+                    de acuerdo a los niveles de adecuación, con más del 75% de los portales por encima del 5. Se aprecia
+                    también como hay varios portales con nivel de adecuación No Válido y puntuación por encima de 6, por
+                    lo que con pequeños cambios en las verificaciones de Prioridad 1 pueden alcanzar el nivel mínimo de
+                    accesibilidad.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Atendiendo a las verificaciones del Nivel de Análisis I se observa que sus puntuaciones medias y
+                    porcentajes de adecuación están por encima de los valores globales del observatorio con una
+                    diferencia destacable en algunos casos, como el requisito de Alternativas textuales, el cual pasa de
+                    un 6 en el valor global a 8,2 en este segmento.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el Nivel de Análisis II la situación también es similar, en general con resultados superiores a
+                    los globales, destacando especialmente el requisito de Identificación de idiomas con casi 2 puntos
+                    más que la media del observatorio, y el de Navegación consistente que en este caso supera el 5.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento III: Municipios más poblados</title>
+            <paragraph>
+                <p>
+                    En la situación opuesta a los ayuntamientos de la capital de provincia se encuentran los sitios web
+                    de los municipios más poblados de la provincia (excluyendo la capital), al ser casi el segmento con
+                    los peores resultados, con un 52% de portales No Válidos, y sólo un 4% (dos portales) de aquellos
+                    que alcanzan el nivel óptimo de accesibilidad Prioridad 1 y 2. Es sorprendente que este segmento
+                    obtenga tales resultados puesto que en muchos casos, su población es muy parecida a la de la capital
+                    de provincia (incluso a veces superior) y por lo tanto suelen tener presupuestos y recursos
+                    semejantes.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Respecto a la progresión de las puntuaciones, ésta crea una pendiente mayor que en los segmentos
+                    anteriores, ya que los portales peor valorados están en torno a 3, y la mitad de los portales están
+                    por debajo del 5. Además este segmento tiene el portal con la puntuación más baja del observatorio,
+                    apenas superando el 1.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En lo relativo a los resultados por verificaciones, las puntuaciones medias están algo por debajo
+                    del global, con nueve de las diez comprobaciones del Nivel de Análisis I por debajo del 6 y cinco de
+                    ellas que no alcanzan el 5. Destaca especialmente el punto de Existencia de la sección de
+                    Accesibilidad con la puntuación más baja de todo el observatorio, sólo un 0,8.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el Nivel de Análisis II la situación se repite, aunque en este caso con menos diferencia en las
+                    puntuaciones, incluso con alguna verificación con unas décimas más que el valor global, pero sin ser
+                    destacable ninguna de ellas.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento IV: Municipios de 2000-5000 habitantes</title>
+            <paragraph>
+                <p>
+                    Por último, aquellos sitios web de municipios pequeños de cada provincia son los peor valorados en
+                    general, con el 58% de los portales con nivel No Válido y solo el 2% de los que alcanzan el nivel
+                    Prioridad 1 y 2 (1 portal de los 50 analizados).
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En cuanto a la distribución de puntuaciones, la curva de progresión es similar al segmento anterior,
+                    aunque con puntuaciones más bajas en este caso, y algo más de la mitad de los portales por debajo de
+                    5. Se aprecia como existe un salto importante en la puntuación del portal con nivel Prioridad 1 y 2
+                    y el siguiente, más de un punto.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Respecto a las verificaciones del Nivel de Análisis I los resultados están bastante por debajo de
+                    los globales, ya que en este caso 7 de los 10 puntos no alcanzan el cinco. Las diferencias de
+                    puntuación media son especialmente destacables en las verificaciones de Prioridad 2, ya que de media
+                    están entre 1,5 y 2 puntos por debajo de las globales.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el Nivel de Análisis II también hay grandes diferencias en algunas verificaciones, tanto
+                    mejorando los valores globales como empeorándolos. Así pues, el punto de Apertura de nuevas ventanas
+                    tiene una puntuación de un punto por encima de la obtenida a nivel global. En la parte negativa,
+                    destaca la comprobación de Navegación consistente que pasa de un 3,9 en el global a 1,7 en este
+                    segmento. Otras verificaciones como la Identificación de idiomas y la Separación de contenido y
+                    presentación también alcanzan una puntuación menor, pero sin ser estos cambios demasiado
+                    significativos.
+                </p>
+            </paragraph>
+        </section>
+    </chapter>
+    <chapter>
+        <title>Evolución de resultados</title>
+        <paragraph>
+            <p>
+                Ésta es la segunda ejecución del Observatorio de Accesibilidad realizado en el ámbito de las Entidades
+                Locales, por lo que se puede realizar una comparación de los resultados obtenidos entre ésta y la
+                primera ejecución, y obtener conclusiones sobre la tendencia que están tomando los sitios web de la
+                Administración Local en lo que a Accesibilidad Web se refiere.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Así pues, como se aprecia en las gráficas de evolución de los Niveles de Adecuación, vemos como el nivel
+                de accesibilidad de los portales analizados se puede considerar que es prácticamente igual al existente
+                en la primera iteración, ya que en te caso ha aumentado el porcentaje de portales con Prioridad 1,
+                disminuyendo los No Válidos y los de Prioridad 1 y 2.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Sí que se aprecia una pequeña mejoría en la puntuación media del observatorio, la cuál es unas décimas
+                más elevada. Esta mejoría refleja que los portales han mejorado algo en algunos puntos de verificación,
+                aunque no lo suficiente como para afectar al nivel de adecuación de accesibilidad alcanzado.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto a la evolución de la Puntuación Media por Verificación, en la mayoría de los casos ha
+                aumentado algo respecto al anterior observatorio, y en las que el valor ha bajado la diferencia es muy
+                pequeña.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Destaca únicamente la verificación de Lenguaje claro y sencillo, la cual ha aumentado su valor en más de
+                2 puntos y medio debido al cambio realizado en el algoritmo de análisis en los últimos observatorios de
+                la AGE y CCAA.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                RComo se ha comentado, la mayoría de las métricas analizadas obtienen mejores resultados que en el
+                observatorio anterior, algunas unas pocas décimas y otras incrementos más significativos, pero esto
+                supone un paso importante en la consecución de una web accesible, y demuestra que el primer Observatorio
+                de Accesibilidad ha tenido repercusión entre las entidades de la Administración, y éstas han trabajado
+                durante estos meses en la mejora de la accesibilidad de sus sitios web. Incluso, teniendo en cuenta que
+                muchos portales no habrán podido acometer grandes cambios en tan corto periodo de tiempo. Se espera que
+                en la siguiente ejecución aún sea mayor la mejoría.
+            </p>
+        </paragraph>
+    </chapter>
+</sectionSet>
