@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+        <property name="connection.datasource">java:comp/env/jdbc/observatory</property>
+        <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
+        <property name="current_session_context_class">thread</property>
+        <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
+        <property name="show_sql">false</property>
+        <property name="hbm2ddl.auto">update</property>
+
+        <mapping class="es.inteco.rastreador2.dao.export.database.Observatory"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.VerificationModality"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.VerificationScore"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.AspectScore"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.Category"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.Site"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.Page"/>
+        <mapping class="es.inteco.rastreador2.dao.export.database.VerificationPage"/>
+    </session-factory>
+</hibernate-configuration>

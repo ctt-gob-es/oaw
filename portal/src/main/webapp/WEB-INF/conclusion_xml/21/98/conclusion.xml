@@ -1,0 +1,515 @@
+<sectionSet>
+    <chapter>
+        <title>Resultados Globales</title>
+        <paragraph>
+            <p>
+                A la vista de los resultados obtenidos en el presente estudio de observatorio se pueden obtener algunas
+                conclusiones acerca del nivel de accesibilidad de un grupo representativo de portales de las
+                Administraciones Autonómicas.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                De los datos relativos a los porcentajes globales de
+                <strong>Adecuación de Accesibilidad</strong>
+                (ver<anchor destination="anchor.4.1">Punto 4.1</anchor>) se obtiene que un 71% de los portales
+                analizados alcanzan al menos el nivel básico de accesibilidad (Prioridad 1), aunque de éstos, solo el
+                16% están en el nivel óptimo Prioridad 1 y 2. Por lo tanto, aunque los resultados concluyen que las
+                principales barreras de accesibilidad se han eliminado en la mayoría de los casos, es muy importante
+                trabajar en la mejora progresiva de los portales para adaptarlos al cumplimiento del nivel de
+                accesibilidad Prioridad 1 y 2.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Fijándose más en detalle, en los resultados comparativos por segmentos, se aprecia como existen varios
+                segmentos con unos resultados muy similares, como los de Educación, Empleo y Salud cuyos porcentajes de
+                adecuación son prácticamente iguales, con un porcentaje alto de portales Prioridad 1 y 2 en comparación
+                con el resto de segmentos, pero a su vez también con un gran número de portales No Válidos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                De forma similar, los segmentos Boletines y Sedes también tiene resultados parecidos con unos
+                porcentajes de adecuación bastante buenos, especialmente en el caso de los boletines con el 21% de los
+                portales en el nivel Prioridad 1 y 2, y sólo el 16% en el nivel No Válido. Esto demuestra que tener
+                menor variedad de contenidos, lo que sucede en los portales de los boletines oficiales, facilita el
+                mantenimiento de la accesibilidad. Por otro lado, también pone de manifiesto el buen trabajo realizado
+                por las comunidades autónomas a la hora de crear sus sedes electrónicas y permitir al mayor número
+                posible de personas realizar trámites a través de Internet.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto a la otra medida del observatorio, la<strong>puntuación</strong>, se observa en los resultados
+                globales (ver<anchor destination="anchor.4.3">Punto 4.3</anchor>) que las medias de portales son
+                similares para todos los segmentos salvo algunas excepciones. Así pues, los portales con nivel No Válido
+                no alcanzan el 5, los portales con nivel Prioridad 1 tiene una puntuación media entre el 6.5 y el 7.5, y
+                los portales con nivel Prioridad 1 y 2 mantienen una puntuación superior al 8. Resulta destacable el
+                segmento Principales, en el que los portales Prioridad 1 y 2 tienen una puntuación casi igual a los de
+                Prioridad 1, apenas llegando al 7.5.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                De la interpretación de la puntuación de los portales No Válidos se observa que en general no consiguen
+                superar más de la mitad de las verificaciones, por lo tanto la situación de partida es muy mejorable.
+                Primeramente deben centrar sus esfuerzos en solventar las inadecuaciones correspondientes al nivel
+                básico (Prioridad 1), las cuales son imprescindibles para asegurar que un sitio web pueda ser utilizado
+                por todos los usuarios, y después proseguir con las de Prioridad 2.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Para el caso de los portales con nivel Prioridad 1 la puntuación obtenida se puede considerar alta para
+                este nivel de adecuación ya que se sitúa en torno al 7 con varios segmentos por encima de este valor.
+                Esto demuestra que muchos portales podrán llegar al nivel Prioridad 1 y 2 realizando pocas correcciones
+                en determinados puntos de verificación. En este sentido destaca especialmente el segmento Empleo en el
+                que muchos portales podrían pasar de Prioridad 1 a Prioridad 1 y 2 sin necesidad de grandes cambios.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Atendiendo al análisis pormenorizado de las verificaciones realizadas en el observatorio se pueden
+                extraer algunas conclusiones que ayuden a centrar los esfuerzos en la corrección de aquellos aspectos
+                que obtienen los resultados más bajos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Para ello se deben observar los datos relativos a las Puntuaciones Medias y los Porcentajes por
+                Modalidad de las distintas verificaciones.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Respecto a las verificaciones pertenecientes al
+                <strong>Nivel de Análisis I</strong>
+                se aprecia como sólo dos de ellas no superan el cinco, las relativas a validación de código y sección de
+                accesibilidad como ocurre en los demás ámbitos del observatorio (AGE y EE.LL.). En el resto de
+                verificaciones se sitúan en puntuaciones próximas al 7.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Respecto a la existencia de una sección de Accesibilidad, se debe recordar que según el Real Decreto
+                1494/2007 los sitios web de la administración deben disponer de una sección en la que se indiquen las
+                medidas de accesibilidad tomadas, así como un medio de contacto para que el usuario pueda remitir dudas,
+                problemas, sugerencias, etc. sobre la accesibilidad del portal y la fecha en la cual se ha realizado la
+                última revisión de accesibilidad. El porcentaje de adecuación en este punto es del 65%, lo que demuestra
+                que muchos de los portales analizados disponen de esta página de accesibilidad, aunque no así de un
+                método de contacto, o la información sobre la fecha en la que realizó la última revisión de
+                accesibilidad del mismo. Por lo tanto se debe trabajar en este aspecto para mejorar sus resultados,
+                considerando además que el esfuerzo necesario es mínimo.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto al punto de verificación de validación del código, aunque la puntuación es muy baja, el
+                porcentaje de adecuación está por encima del 50%, lo que significa que la mitad de los portales tienen
+                un máximo de seis errores en la sintaxis de su código fuente (tanto HTML como CSS). En ocasiones no es
+                fácil conseguir un código perfectamente válido debido a los gestores de contenido, por lo que éste se
+                puede considerar un buen resultado. Para la revisión del código fuente se recomienda utilizar los
+                validadores de código oficiales del W3C.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Debemos mencionar también las verificaciones de Redimensión de texto y Asociación en formulario, ya que
+                si bien están en la puntuación media del resto de verificaciones, ésta está por debajo de la deseable ya
+                que se trata de dos aspectos muy importantes a la hora de permitir o facilitar el uso de una página web
+                para determinados tipos de usuarios, que encontrarán dificultades importantes en caso de que estos
+                aspectos no estén bien implementados.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En lo relativo a las verificaciones del
+                <strong>Nivel de Análisis II</strong>
+                se observa que existe más variación en las puntuaciones de éstas que de las Nivel I. Así pues, hay
+                varias verificaciones con puntuación por encima de 8 y otras por debajo de 5.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Entre los aspectos positivos cabe destacar especialmente el Marcado de listas con una puntuación
+                bastante alta, lo cual es un resultado muy bueno ya que un marcado incorrecto de las listas puede
+                producir importantes dificultades para, por ejemplo, usuarios de lector de pantalla.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En este nivel de análisis nos encontramos con varias verificaciones por debajo del cinco, destacando la
+                de marcado de Tablas de datos, con la puntuación más baja de toda la metodología, aunque con un gran
+                porcentaje de modalidad Pasa, lo cual puede parecer contradictorio. Para comprender este resultado
+                debemos recordar las tablas de la metodología, y más concretamente la definición de los campos Valor y
+                Modalidad y la relación que existe entre ellos en el caso de que una verificación no pueda ser
+                comprobada en una página, en cuyo caso se obtiene un valor No Puntúa (por lo tanto no se tiene en cuenta
+                en los cálculos de puntuaciones) y modalidad Pasa.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Dicho esto, el alto porcentaje de modalidad Pasa y la baja puntuación significan que se han encontrado
+                pocas páginas que tengan tablas de datos, pero que en la gran mayoría de los casos esas tablas no están
+                correctamente construidas de acuerdo a los requisitos de accesibilidad.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En este nivel de análisis se encuentra también la verificación con el porcentaje de adecuación más bajo
+                de toda la metodología, la Separación de contenido y presentación. Es por lo tanto muy importante
+                trabajar en la adaptación de los portales al uso de hojas de estilo CSS para controlar todos los
+                aspectos relativos a la presentación y maquetación de las páginas web, algo que cada vez está más
+                extendido entre los sitios web de la administración. Aunque un portal sí utilice en general hojas de
+                estilo para controlar la maquetación, se pueden producir muchos problemas en esta verificación ya que en
+                muchos portales generados a través de un gestor de contenidos (la gran mayoría actualmente) el trabajo
+                de edición se delega en usuarios no técnicos. Estos usuarios no técnicos, en bastantes casos, pueden
+                introducir modificaciones de estilo como fuentes, tamaños, colores, saltos de línea &lt;br&gt;, etc.
+                Este es un aspecto que deberían controlar los gestores de contenidos limitando por completo su uso pero
+                hoy en día existen muchos gestores en el mercado que no realizan estos controles exhaustivos. Y, en
+                otros casos, la implantación concreta en ese portal no ha tenido en consideración estas limitaciones.
+                Para avanzar en este punto de accesibilidad, además de concienciar al sector productivo de gestores de
+                contenidos y revisar las implantaciones de los portales, será necesario formar concienzudamente a los
+                editores de contenidos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto a la Identificación de idiomas, se aprecia como es un aspecto en el que aún se debe mejorar
+                bastante, ya que un porcentaje alto de los portales no identifican correctamente el idioma principal de
+                las páginas.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Por último, en lo relativo a la Apertura de nuevas ventanas, observamos como el porcentaje de adecuación
+                es alto, aunque aún existe un número significativo de páginas que abren enlaces en una ventana nueva sin
+                informar al usuario, en concreto la quinta parte de las páginas analizadas. Es importante trabajar en
+                este aspecto a nivel del gestor de contenidos, ya que en la mayoría de los casos se puede automatizar la
+                introducción del aviso de nueva ventana en este tipo de enlaces por parte del CMS; y para aquellos casos
+                en los que el gestor de contenidos no permita esta automatización, será necesaria la correspondiente
+                formación a los usuarios editores de contenidos para que incluyan dicho aviso a la hora de editar el
+                contenido de la página.
+            </p>
+        </paragraph>
+    </chapter>
+    <chapter>
+        <title>Resultados por Segmento</title>
+        <paragraph>
+            <p>
+                A continuación se muestran las conclusiones obtenidas del análisis de los resultados por segmentos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Los resultados de la puntuación media y el porcentaje de modalidad de algunas verificaciones son muy
+                similares a los obtenidos a nivel global, por lo que en las secciones siguientes se comentarán sólo
+                aquellos aspectos destacables de cada segmento.
+            </p>
+        </paragraph>
+        <section>
+            <title>Segmento I: Principales</title>
+            <paragraph>
+                <p>
+                    El segmento correspondiente a los portales principales de la Administración Autonómica obtiene unos
+                    resultados que están bastante por debajo de los esperados para estos portales tan relevantes dentro
+                    de la Administración Autonómica, ya que sólo un portal alcanza el nivel óptimo Prioridad 1 y 2.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En la distribución de puntuaciones se observa que éstas son bastante altas, con el 60% de los
+                    portales con al menos un 7 de puntuación, por lo que realizando algunas mejoras en los puntos más
+                    conflictivos de Prioridad 2, se podrán obtener varios portales que lleguen al nivel de adecuación
+                    Prioridad 1 y 2.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Estos puntos críticos, como ocurre en el global del observatorio son la Validación del código fuente
+                    y la Sección de Accesibilidad en el Nivel de Análisis I, y el Marcado de tablas de datos, Separación
+                    de contenido y presentación, y Navegación consistente en el Nivel de Análisis II.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento II: Boletines</title>
+            <paragraph>
+                <p>
+                    Éste segmento, junto con el de Sedes, es el que alcanza los mejores resultados del observatorio con
+                    un 21% de portales con nivel Prioridad 1 y 2, y sólo un 16% de aquellos que no llegan al nivel
+                    mínimo.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En cuanto a la distribución de puntuaciones, la media se encuentra en torno al 7, lo que justifica
+                    los buenos resultados obtenidos. Incluso los portales No Válidos tienen una puntuación relativamente
+                    alta con sólo tres de ellos por debajo del 5, por lo que sin demasiados esfuerzos se pueden mejorar
+                    aún más los resultados del segmento.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En los resultados por verificación se observa como existe más variación entre ellas que en los
+                    valores globales, siendo en este caso algo mejores en general. No obstante resulta destacable que
+                    algunas de las verificaciones más relevantes de accesibilidad tienen peores resultados.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Así pues, en el Nivel de Análisis I el Uso de Javascript y la Asociación en formularios están varias
+                    décimas por debajo del global por lo que es importante trabajar en la mejora de estos aspectos.
+                    Especialmente en el caso de los formularios puesto que constituyen una herramienta básica para los
+                    portales de los boletines al utilizarse para poder localizar los diferentes boletines.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Por el contrario, en el Nivel de Análisis II resultan destacables algunas verificaciones por tener
+                    una puntuación bastante más alta que en el global. De este modo, la Identificación de idiomas, la
+                    Separación de contenido y presentación, y la Apertura de nuevas ventanas están entre uno y dos
+                    puntos por encima del global.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento III: Parlamentos</title>
+            <paragraph>
+                <p>
+                    Este segmento es el peor valorado del observatorio, con sólo un 5% de portales en el nivel óptimo
+                    (Prioridad 1 y 2) y el 42% de No Válidos.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Observando la distribución de puntuaciones se ve como hay bastantes portales con una puntuación
+                    mejor que 5, y apenas uno que alcanza el 8.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En cuanto a los resultados por verificación, como era de esperar en general son peores a los
+                    globales en ambos niveles de análisis.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis I destacar únicamente las verificaciones de Uso de Javascript y Utilización
+                    de tecnologías actuales, las cuales tienen una puntuación inferior en casi dos puntos al valor
+                    global.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis II los valores son más similares a los globales, teniendo como verificación
+                    especialmente destacable la Identificación de idiomas con un 4.2 de puntuación media en este
+                    segmento frente al 6.6 del valor global.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento IV: Sedes</title>
+            <paragraph>
+                <p>
+                    Las sedes electrónicas son también unos de los portales que se encuentran en mejor situación en
+                    cuanto a su nivel de accesibilidad con un 16% de portales de Prioridad 1 y 2, y un 11% de No
+                    Válidos.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    La distribución de puntuaciones de este segmento es bastante similar a la del segmento Principales,
+                    con sólo dos portales por debajo de 5 en este caso, y la mayoría de ellos entre el 7 y el 8.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Entre los puntos de verificación destaca especialmente el relativo a la Existencia de textos
+                    alternativos, que alcanza una puntuación de 9.5, dos puntos por encima del valor global. El resto de
+                    verificaciones del nivel de análisis I tiene una puntuación media superior al global.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis II los resultados son muy similares a los globales, destacando positivamente
+                    el punto de identificación de idiomas y especialmente el de marcado de tablas de datos, con un 75%
+                    más de puntuación media que en los resultados globales, pasando de un 1.5 a 2.4, aunque está claro
+                    que aún se debe trabajar en la mejora de este aspecto.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento V: Educación</title>
+            <paragraph>
+                <p>
+                    El segmento de Educación está en el punto medio en cuanto a adecuación de accesibilidad de todo el
+                    observatorio, con un 63% de portales al alcanzan al menos el nivel básico de accesibilidad
+                    (Prioridad 1), de los cuales el 16% llegan al nivel óptimo.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Observando la distribución de puntuaciones del segmento se observa como tiene cambios bastante
+                    pronunciados, pasando del 9 al 5.5 en la mitad de los portales mejor valorados.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Las puntuaciones medias y porcentajes de adecuación del nivel de análisis I están en torno a 0.5 o
+                    un punto por debajo de los globales. Destaca el punto de Existencia de la sección de accesibilidad
+                    que tiene una puntuación media de sólo 1.1, el valor más bajo de todo el observatorio para esta
+                    verificación. También la verificación de Existencia de textos alternativos resulta destacable al
+                    alcanzar una puntuación de casi un punto y medio por debajo del global.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis II la situación es similar, con puntuaciones medias por debajo de los
+                    globales, destacando especialmente la Separación de contenido y presentación, y sobre todo el
+                    Marcado de tablas de datos, con una puntuación de 0.9.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento VI: Empleo</title>
+            <paragraph>
+                <p>
+                    Los resultados de adecuación de accesibilidad de este segmento son idénticos a los del segmento
+                    Educación.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    La distribución de puntuaciones de este segmento también contiene un descenso bastante pronunciado
+                    en los valores, pero en este caso en la segunda mitad de los portales, es decir, los peor valorados,
+                    al contrario de lo que ocurre en el segmento Educación. Así pues, el 50% de los portales están por
+                    encima de 7, por lo que con pequeños cambios podrán mejorar la puntuación y alcanzar el nivel de
+                    accesibilidad Prioridad 1 y 2.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En cuanto a los resultados por verificación, en el nivel de análisis I, aunque hay más variación en
+                    la puntuación de las distintas comprobaciones, no hay grandes cambios con respecto a los resultados
+                    globales, pudiéndose destacar únicamente la Existencia de textos alternativos que baja un punto
+                    respecto al global, o el Uso de Javascript y Redimensión de texto que mejoran en un punto el
+                    resultado global.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis II la situación es similar, con algún punto a destacar, como son el Marcado
+                    de tablas de datos con más del doble de puntuación que a nivel global en el observatorio, y la
+                    Separación de contenido y presentación, y División de la información que mejoran en unas décimas
+                    respecto al global.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento VII: Salud</title>
+            <paragraph>
+                <p>
+                    El segmento de los portales de salud de la comunidad es otro de los que se encuentra en el punto
+                    medio en el observatorio en cuanto a porcentajes de adecuación se refiere, con un 21% de portales de
+                    Prioridad 1 y 2, y el 32% No Válidos.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En lo relativo a la distribución de puntuaciones, en este caso la progresión es más lineal en el 75%
+                    de los portales, produciéndose un descenso importante de 5.5 a menos de 4 en los cuatro portales con
+                    puntuación más baja del segmento.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Acerca de los resultados por verificación, en el nivel de análisis I, las puntuaciones están de
+                    media un punto por debajo de las globales excepto en el caso de la Validación de código que supera
+                    en unas décimas el valor global.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis II la situación es muy similar al global, destacando únicamente en la parte
+                    negativa la verificación de Tablas de datos con una puntuación un 50% más baja que el global.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Segmento VIII: Tributos</title>
+            <paragraph>
+                <p>
+                    Por último, el segmento de Tributos tiene uno de los porcentajes más altos de portales en el nivel
+                    Prioridad 1 y 2, aunque a su vez el número de aquellos que no llegan al nivel mínimo también es
+                    alto, un 32%.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En este caso la distribución de puntuaciones sí que sigue una progresión más o menos lineal desde el
+                    portal mejor puntuado con un 9 hasta el peor con poco más de 3, apreciando claramente como aquellos
+                    portales por debajo o cercanos al 5 tienen un nivel No Válido y los que están por encima de 7.5
+                    Prioridad 1 y 2.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Respecto a los resultados por verificación en el nivel de análisis I, al igual que ocurría en el
+                    segmento anterior, son prácticamente iguales a las globales.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    En el nivel de análisis II los resultados en general también son muy similares a los globales,
+                    destacando dos verificaciones por tener un resultado bastante inferior al global. Se trata del punto
+                    de Tablas de datos con sólo un 0.6 de puntuación, la más baja de todos los puntos de verificación y
+                    segmentos del observatorio, y la Separación de contenido y presentación un punto por debajo del
+                    global.
+                </p>
+            </paragraph>
+        </section>
+    </chapter>
+    <chapter>
+        <title>Evolución de resultados</title>
+        <paragraph>
+            <p>
+                Como se aprecia en las gráficas de evolución de los Niveles de Adecuación, vemos como ha aumentado el
+                nivel de accesibilidad de los portales analizados, pasando de un 9% de portales en el nivel óptimo
+                (Prioridad 1 y 2) en la primera iteración del observatorio a un 16% en ésta, y disminuyendo el número de
+                portales en el nivel No Válido, del 34% al 28%.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Esta mejora se aprecia también en la puntuación media del observatorio, la cuál es unas décimas más
+                elevada. Aunque la variación sea pequeña, es un cambio significativo ya que se debe tener en cuenta que
+                este valor se obtiene a partir de la puntuación de un gran número de portales, por lo que una gran
+                mejora en algunos de ellos puede traducirse en apenas unas décimas o centésimas en el valor global.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                En cuanto a la evolución de la Puntuación Media por Verificación, en general las puntuaciones son
+                prácticamente iguales al observatorio anterior, produciéndose los mayores cambios entre la primera y
+                segunda iteración del observatorio.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Cabría destacar únicamente la verificación de Tablas de datos, que experimentó una bajada significativa
+                en la puntuación entre el primer y segundo observatorio, y en este tercero se ha recuperado algo, aunque
+                sigue estando por debajo del valor inicial.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Como se ha comentado, la mayoría de las métricas analizadas son muy similares a las del observatorio
+                anterior, con pequeñas mejoras. Es importante animar de nuevo a la Administración Autonómica a trabajar
+                en la mejora de la accesibilidad de sus sitios web, al igual que hicieron entre las dos primeras
+                ejecuciones del observatorio.
+            </p>
+        </paragraph>
+    </chapter>
+</sectionSet>

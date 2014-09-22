@@ -1,0 +1,20 @@
+<Context path="/oaw" reloadable="true" source="org.eclipse.jst.j2ee.server:rastreador">
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
+              name="jdbc/crawler_sistema" password="root" type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/OAW" username="root"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
+              name="jdbc/multilanguage" password="root" type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/OAW" username="root"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
+              name="jdbc/lenox2" password="root" type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/OAW" username="root"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
+              name="jdbc/intav" password="root" type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/OAW" username="root"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
+              name="jdbc/malware" password="root" type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/OAW" username="root"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
+              name="jdbc/observatory" password="root" type="javax.sql.DataSource"
+              url="jdbc:mysql://localhost:3306/OAW" username="root"/>
+</Context>

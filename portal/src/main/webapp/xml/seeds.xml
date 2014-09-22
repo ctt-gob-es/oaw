@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<lista>
+    <semilla>
+        <nombre>semilla1</nombre>
+        <url>http://www.semilla1.com</url>
+        <activa>true</activa>
+        <acronimo>S1</acronimo>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>semilla2</nombre>
+        <url>http://www.semilla2.com/directory/</url>
+        <activa>false</activa>
+        <depende_de>Órgano 2</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>semilla3</nombre>
+        <activa>true</activa>
+        <url>http://www.semilla3-1.com</url>
+        <url>http://www.semilla3-2.com</url>
+        <url>http://www.semilla3-3.com/index.html&amp;param=value</url>
+        <en_directorio>false</en_directorio>
+    </semilla>
+</lista>
+	

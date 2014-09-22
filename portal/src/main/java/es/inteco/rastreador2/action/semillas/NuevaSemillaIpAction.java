@@ -1,0 +1,140 @@
+package es.inteco.rastreador2.action.semillas;
+
+import es.inteco.common.Constants;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.semillas.NuevaSemillaIpForm;
+import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.utils.GeneraRango;
+import org.apache.struts.action.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+public class NuevaSemillaIpAction extends Action {
+
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+        // Marcamos el menú
+        request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_IP);
+        Connection c = null;
+
+        try {
+            PropertiesManager pmgr = new PropertiesManager();
+            c = DataBaseManager.getConnection();
+
+            if (CrawlerUtils.hasAccess(request, "ip.range.seed")) {
+                NuevaSemillaIpForm nuevaSemillaIpForm = (NuevaSemillaIpForm) form;
+
+                if (isCancelled(request)) {
+                    if (request.getParameter(Constants.BOTON_SEMILLA_IP) != null) {
+                        return (mapping.findForward(Constants.VOLVER_CARGA_MENU));
+                    } else {
+                        return (mapping.findForward(Constants.VOLVER));
+                    }
+                }
+
+                request.setAttribute(Constants.SEED_CATEGORIES, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
+
+                //comprobamos de donde viene
+                String accionForm = request.getParameter(Constants.ACCION);
+                if (accionForm == null || accionForm.trim().equals("")) {
+                    return mapping.findForward(Constants.VOLVER);
+                }
+
+                ActionErrors errors = nuevaSemillaIpForm.validate(mapping, request);
+
+                c = DataBaseManager.getConnection();
+
+                if (SemillaDAO.existSeed(c, nuevaSemillaIpForm.getNombreSemilla(), Constants.ID_LISTA_ALL)) {
+                    errors.add("nombreDuplicado", new ActionMessage("mensaje.error.nombre.semilla.duplicado"));
+                    saveErrors(request, errors);
+
+                    return mapping.findForward(Constants.VOLVER);
+                }
+
+                if (nuevaSemillaIpForm.getPuerto2().equals("")) {
+                    nuevaSemillaIpForm.setPuerto2("-1");
+                }
+                if (nuevaSemillaIpForm.getPuerto3().equals("")) {
+                    nuevaSemillaIpForm.setPuerto3("-1");
+                }
+
+                if (errors.isEmpty()) {
+
+                    List<Integer> puertos = new ArrayList<Integer>();
+                    if (!nuevaSemillaIpForm.getPuerto1().equals("-1")) {
+                        puertos.add(Integer.parseInt(nuevaSemillaIpForm.getPuerto1()));
+                    }
+                    if (!nuevaSemillaIpForm.getPuerto2().equals("-1")) {
+                        puertos.add(Integer.parseInt(nuevaSemillaIpForm.getPuerto2()));
+                    }
+                    if (!nuevaSemillaIpForm.getPuerto3().equals("-1")) {
+                        puertos.add(Integer.parseInt(nuevaSemillaIpForm.getPuerto3()));
+                    }
+
+                    int dimension = puertos.size();
+                    int[] arrayPuertos = new int[dimension];
+                    int conta = 0;
+                    for (Integer puerto : puertos) {
+                        arrayPuertos[conta] = puerto;
+                        conta++;
+                    }
+
+                    boolean ipValida = comprobarIp(nuevaSemillaIpForm.getIpInicial1(), nuevaSemillaIpForm.getIpFinal1());
+                    if (ipValida) {
+                        ipValida = comprobarIp(nuevaSemillaIpForm.getIpInicial2(), nuevaSemillaIpForm.getIpFinal2());
+                    }
+                    if (ipValida) {
+                        ipValida = comprobarIp(nuevaSemillaIpForm.getIpInicial3(), nuevaSemillaIpForm.getIpFinal3());
+                    }
+                    if (ipValida) {
+                        ipValida = comprobarIp(nuevaSemillaIpForm.getIpInicial4(), nuevaSemillaIpForm.getIpFinal4());
+                    }
+
+
+                    if (!ipValida) {
+                        errors.add("errorObligatorios", new ActionMessage("ip.mayor"));
+                        saveErrors(request, errors);
+                        return mapping.findForward(Constants.VOLVER);
+                    }
+
+                    String ip1 = nuevaSemillaIpForm.getIpInicial1() + "." + nuevaSemillaIpForm.getIpInicial2() + "." + nuevaSemillaIpForm.getIpInicial3() + "." + nuevaSemillaIpForm.getIpInicial4();
+                    String ip2 = nuevaSemillaIpForm.getIpFinal1() + "." + nuevaSemillaIpForm.getIpFinal2() + "." + nuevaSemillaIpForm.getIpFinal3() + "." + nuevaSemillaIpForm.getIpFinal4();
+
+                    String listaUrls = "";
+                    listaUrls = GeneraRango.getRango(arrayPuertos, ip1, ip2, listaUrls);
+
+                    SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaIpForm.getNombreSemilla(), listaUrls, nuevaSemillaIpForm.getCategoria().getId(), null, null);
+
+                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.generada");
+                    String volver = pmgr.getValue("returnPaths.properties", "volver.nueva.semilla.ip");
+                    request.setAttribute("mensajeExito", mensaje);
+                    request.setAttribute("accionVolver", volver);
+                    return mapping.findForward(Constants.EXITO);
+
+                } else {
+                    ActionForward forward = new ActionForward();
+                    forward.setPath(mapping.getInput());
+                    forward.setRedirect(true);
+                    saveErrors(request.getSession(), errors);
+                    return (forward);
+                }
+            } else {
+                return mapping.findForward(Constants.NO_PERMISSION);
+            }
+        } catch (Exception e) {
+            CrawlerUtils.warnAdministrators(e, this.getClass());
+            return mapping.findForward(Constants.ERROR_PAGE);
+        } finally {
+            DataBaseManager.closeConnection(c);
+        }
+    }
+
+    public static boolean comprobarIp(String ipIni, String ipFin) {
+        return Integer.parseInt(ipIni) <= Integer.parseInt(ipFin);
+    }
+}

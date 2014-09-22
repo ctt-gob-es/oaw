@@ -1,0 +1,1831 @@
+<sectionSet>
+    <chapter>
+        <title>INTRODUCCIÓN</title>
+        <paragraph>
+            <p>
+                Mediante un
+                <strong>Observatorio de Accesibilidad Web</strong>
+                se pretende realizar una revisión del grado de cumplimiento en materia de accesibilidad de un conjunto
+                de sitios web.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Tiene por objetivo conocer la
+                <strong>evolución y tendencias</strong>
+                en materia de accesibilidad. Asimismo se evalúa el empleo de estándares, y se trata de identificar los
+                problemas más comunes. De esta forma se consigue extraer las conclusiones y planes de acción adecuados
+                para apoyar a las organizaciones a alcanzar el siguiente objetivo:
+                <span class="underline">Conseguir afianzar un nivel óptimo de cumplimiento de forma sostenible en el
+                    tiempo.
+                </span>
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Las diferentes iteraciones del Estudio de Observatorio se realizarán según una metodología propia que
+                supone una abstracción de los principios de accesibilidad en función de un conjunto de evaluaciones
+                significativas. El objetivo, en este caso, consiste en disponer de un conjunto de verificaciones
+                relevantes que permitan
+                <strong>mostrar de forma resumida el estado de accesibilidad</strong>
+                de una página web.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                La realización de un Observatorio de Accesibilidad Web periódico permite conocer el grado de
+                cumplimiento de los principios de Accesibilidad Web, y cómo éste va evolucionando a lo largo del tiempo.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El presente Estudio de Observatorio, realizado por el Ministerio de Política Territorial y
+                Administración Pública en el marco de una encomienda de gestión con INTECO, analizará el estado en que
+                se encuentran los sitios web de las Administraciones Públicas de España en cuanto al cumplimiento de los
+                requisitos de accesibilidad exigidos legalmente. El estudio se realizará sobre los portales
+                pertenecientes a la Administración General del Estado y una selección de sitios web de las Comunidades
+                Autónomas y Entidades Locales.
+            </p>
+        </paragraph>
+        <section>
+            <title>Antecedentes</title>
+            <paragraph>
+                <p>
+                    La Dirección General para el Impulso de la Administración Electrónica, adscrita al
+                    <strong>Ministerio de Política Territorial y Administración Pública</strong>
+                    tiene entre sus funciones la promoción de la Administración Electrónica mediante la realización de
+                    estudios y programas de actuación, la divulgación de buenas prácticas, la cooperación con otras
+                    Administraciones públicas y el desarrollo y difusión de las herramientas necesarias para ello.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Asimismo le corresponde la evaluación de las actuaciones realizadas y la elaboración de las
+                    recomendaciones necesarias, todo ello en el marco de las directrices que se establezcan por el
+                    Consejo Superior de Administración Electrónica y por el Comité Sectorial de Administración
+                    Electrónica, a los cuales prestará apoyo técnico.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    El<strong>Instituto Nacional de Tecnologías de la Comunicación, S.A. (INTECO)</strong>, es una
+                    Sociedad Estatal adscrita al Ministerio de Industria, Turismo y Comercio a través de la Secretaría
+                    de Estado de Telecomunicaciones y para la Sociedad de la Información, cuyo objeto social es la
+                    gestión, asesoramiento, promoción y difusión de proyectos tecnológicos en el marco de la Sociedad de
+                    la Información. Asimismo INTECO gestiona el Centro de Referencia en Accesibilidad y Estándares Web.
+                </p>
+            </paragraph>
+        </section>
+    </chapter>
+    <chapter>
+        <title>OBJETIVOS DEL ESTUDIO</title>
+        <paragraph>
+            <p>
+                El
+                <strong>Observatorio de Accesibilidad</strong>
+                realiza un análisis del grado de cumplimiento en materia de accesibilidad de los portales de la
+                Administración General del Estado, de las Comunidades Autónomas y de las Entidades Locales, con el
+                objetivo de ofrecer un informe de situación que ayude a mejorar la accesibilidad de estos portales y
+                centrar los esfuerzos futuros.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El presente Estudio de Observatorio tiene también por objetivo conocer la evolución y tendencias en
+                materia de accesibilidad. Por esta razón, se procederá a comparar los resultados obtenidos entre los
+                diferentes observatorios. Asimismo se evalúa el empleo de estándares, y se trata de identificar los
+                problemas más comunes. De esta forma se consigue extraer las conclusiones y planes de acción adecuados
+                para apoyar a las organizaciones a alcanzar el siguiente objetivo: "Conseguir afianzar un nivel óptimo
+                de cumplimiento de forma sostenible en el tiempo".
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El estudio se ha realizado según una metodología desarrollada por el Ministerio de Política Territorial
+                y Administración Pública junto con INTECO que supone una abstracción de los principios de accesibilidad
+                en función de un conjunto de evaluaciones significativas. El objetivo en este caso consiste en disponer
+                de un conjunto de verificaciones relevantes que permitan mostrar de forma resumida el estado de
+                accesibilidad de una página web. No se pretende realizar una auditoría exhaustiva de accesibilidad, sino
+                obtener unos indicadores que aproximen en un alto grado el nivel de accesibilidad real de un portal.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                El alcance de este estudio de observatorio comprende algunos de los portales más relevantes dentro de
+                las administraciones autonómicas.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Con estas medidas se busca alcanzar el objetivo principal del Observatorio que es conocer de forma
+                fidedigna el estado de Accesibilidad de los portales de la Administración Pública Autonómica para
+                ayudarlos a mejorar su accesibilidad.
+            </p>
+        </paragraph>
+    </chapter>
+    <chapter>
+        <title>METODOLOGÍA DEL OBSERVATORIO</title>
+        <paragraph>
+            <p>
+                La metodología del
+                <strong>Observatorio de Accesibilidad</strong>
+                se basa en una metodología de Observatorio desarrollada por INTECO que se ha consolidado en base a la
+                experiencia de los expertos en accesibilidad y la realización de distintos observatorios. Esta
+                metodología se ha modificado para adaptarse a las especificaciones y pautas fijadas por el Ministerio de
+                Política Territorial y Administración Pública y su ejecución automática.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Como se ha comentado, los análisis de las páginas se efectúan de forma automática por lo que se ha hecho
+                un esfuerzo importante en que las verificaciones realizadas sobre cada página no solo consistan en
+                aquellas puramente automáticas, sino que a través de distintos algoritmos y métricas se han automatizado
+                un buen número de comprobaciones cuya revisión es tradicionalmente manual.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                De esta forma, el rango de verificaciones analizadas se amplía permitiendo un análisis de la mayoría de
+                los requisitos más representativos de la accesibilidad de un sitio web, en base a la norma UNE
+                139803:2004.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                Algunas de las comprobaciones unitarias de esta metodología de observatorio se asemejan a otras
+                incluidas en la metodología europea de revisión de la accesibilidad UWEM, lo cual aporta más si cabe un
+                plus de confiabilidad en los resultados obtenidos.
+            </p>
+        </paragraph>
+        <paragraph>
+            <p>
+                A continuación se detallarán y explicarán convenientemente los aspectos más importantes de esta
+                metodología.
+            </p>
+        </paragraph>
+        <section>
+            <title>Muestra de Portales</title>
+            <paragraph>
+                <p>
+                    El estudio abarca un gran número de portales de la Administración Autonómica, desde los sitios web
+                    principales de la Comunidad hasta los portales de Oficinas Virtuales, pasando por los portales de
+                    Salud, Empleo y otros. Con el fin de obtener resultados comparables entre portales del mismo tipo en
+                    cada una de las Comunidades, se ha llevado a cabo una categorización de los mismos en función de su
+                    objetivo y a finalidad para la que fueron creados. De esta forma se obtienen ocho grupos de
+                    portales, cada uno de los cuales contiene el mismo tipo de portal de cada Comunidad:
+                </p>
+            </paragraph>
+            <paragraph>
+                <div class="listInline">
+                    <dl>
+                        <dt>Segmento Principales.</dt>
+                        <dd>Portales principales de cada Comunidad Autónoma.</dd>
+                        <dt>Segmento Boletines.</dt>
+                        <dd>Boletines Oficinales de cada Comunidad Autónoma.</dd>
+                        <dt>Segmento Parlamentos.</dt>
+                        <dd>Parlamento de cada Comunidad Autónoma.</dd>
+                        <dt>Segmento Sedes.</dt>
+                        <dd>Oficinas Virtuales (una por cada Comunidad).</dd>
+                        <dt>Segmento Educación.</dt>
+                        <dd>Portales de Educación.</dd>
+                        <dt>Segmento Empleo.</dt>
+                        <dd>Portales de Empleo.</dd>
+                        <dt>Segmento Salud.</dt>
+                        <dd>Portales de Salud.</dd>
+                        <dt>Segmento Tributos.</dt>
+                        <dd>Portales de Tributos.</dd>
+                    </dl>
+                </div>
+            </paragraph>
+        </section>
+        <section>
+            <title>Muestra de Páginas</title>
+            <paragraph>
+                <p>
+                    La muestra consiste en el
+                    <strong>conjunto de páginas</strong>
+                    que se revisarán en el análisis de cada portal. La elección de la muestra se realiza de forma
+                    automática mediante un proceso aleatorio en el que se seleccionan un total de 16 páginas
+                    correspondientes a distintos niveles en la estructura de navegación del portal. Además la muestra
+                    siempre contiene la página principal del portal, lo que hace un total de 17 páginas analizadas. De
+                    forma excepcional puede que el rastreador no consiga obtener las 17 páginas que debería, ya sea
+                    porque no puede seguir suficientes enlaces, o porque el portal no alcance ese número de páginas, por
+                    lo que en ese caso la muestra de páginas analizadas en el portal sería menor.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Para el rastreo automático de páginas se parte de una URL inicial tomada como semilla, la cual se
+                    corresponde con la página principal del portal. A partir de dicha semilla, se realiza un rastreo de
+                    profundidad 4 y amplitud 4.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Para comprender adecuadamente este rastreo, se introducen a continuación los conceptos de
+                    profundidad y amplitud:
+                </p>
+            </paragraph>
+            <paragraph>
+                <div class="listInline">
+                    <dl>
+                        <dt>Profundidad.</dt>
+                        <dd>Mediante este valor se define el nivel de profundidad que alcanza el rastreo dentro de la
+                            estructura de navegación del portal. La profundidad alcanzada no se corresponde
+                            necesariamente con la profundidad dentro de la jerarquía de contenido del portal, sino que
+                            se refiere a la profundidad de navegación, es decir, el número de clics necesarios para
+                            llegar hasta la página. De esta forma, una página de profundidad 4 será aquella para la que
+                            ha sido necesario seguir cuatro enlaces desde la página principal para llegar a ella.
+                        </dd>
+                        <dt>Amplitud.</dt>
+                        <dd>Este parámetro hace referencia al número de páginas analizadas en cada nivel de profundidad,
+                            es decir, por cada nivel que el rastreador se adentre en el portal, se seleccionarán tantas
+                            páginas como vengan definidas en la amplitud.
+                        </dd>
+                    </dl>
+                </div>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Se muestra a continuación un gráfico representativo del rastreo realizado por el observatorio según
+                    los valores de profundidad y amplitud definidos.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p class="imagen">
+                    <img src="./img/grafico_rastreo.png" alt=""/>
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Respecto al Segmento de Sedes es importante comentar un aspecto muy relevante relativo a la muestra
+                    de páginas de estos portales.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    El acceso a los servicios proporcionados por las sedes electrónicas requiere de una autentificación
+                    previa del usuario, ya sea mediante un certificado digital, o mediante otros métodos como usuario y
+                    contraseña, DNI-e, etc. Debido a este prerrequisito para el acceso a determinadas secciones, el
+                    método de rastreo utilizado para la realización del observatorio no es capaz de alcanzar estás
+                    páginas interiores, en las cuales se encuentran los servicios finales. Por lo tanto, se analizarán
+                    únicamente las páginas públicas de las sedes.
+                </p>
+            </paragraph>
+        </section>
+        <section>
+            <title>Lista de Verificaciones</title>
+            <paragraph>
+                <p>
+                    En la realización del análisis de accesibilidad de cada página de un portal se comprueba la
+                    adecuación de un conjunto finito de verificaciones definidas en función de un nivel de análisis y un
+                    nivel de adecuación:
+                </p>
+            </paragraph>
+            <paragraph>
+                <ul>
+                    <li>
+                        <strong>Nivel de análisis:</strong>se refiere al tipo de características a observar dentro de
+                        una determinada página Web. Se definen dos niveles de análisis, cada nivel de análisis contiene
+                        un conjunto de verificaciones.
+                        <ul>
+                            <li><strong>Nivel de Análisis I:</strong>se encarga de características genéricas de
+                                accesibilidad y estándares acerca de una página.
+                            </li>
+                            <li><strong>Nivel de Análisis II:</strong>se encarga de características concretas de
+                                accesibilidad acerca de una página.
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Nivel de adecuación:</strong>se definen dos niveles de adecuación en función de la
+                        prioridad de las características analizadas.
+                        <ul>
+                            <li><strong>Prioridad 1:</strong>se encarga de características básicas que una página Web
+                                tiene que cumplir para ser accesible. Las verificaciones de este nivel están enmarcadas
+                                en los requisitos de Prioridad 1 de la norma UNE 139803:2004.
+                            </li>
+                            <li><strong>Prioridad 2:</strong>se encarga de características más complejas que una página
+                                Web debe cumplir para ser accesible. Las verificaciones de este nivel están enmarcadas
+                                en los requisitos de Prioridad 2 de la norma UNE 139803:2004.
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </paragraph>
+            <paragraph>
+                <div class="listInline">
+                    <dl>
+                        <dt>Identificador de la verificación:</dt>
+                        <dd>Se trata del identificador único de cada verificación. Está formado por tres dígitos
+                            separados por puntos que indican el nivel de análisis, el nivel de adecuación y el número de
+                            secuencia de la verificación. Se utiliza para hacer referencia a una verificación de forma
+                            unívoca.
+                        </dd>
+                        <dt>Nombre de la verificación:</dt>
+                        <dd>Indica el elemento o característica a ser evaluado.</dd>
+                        <dt>Pregunta:</dt>
+                        <dd>Se trata de una pregunta concreta que especifica cómo se debe evaluar la verificación.</dd>
+                        <dt>Respuestas:</dt>
+                        <dd>Posibles respuestas a la pregunta formulada para cada verificación.</dd>
+                        <dt>Valor:</dt>
+                        <dd>Indica el grado de cumplimiento de una respuesta respecto a la verificación, y representa la
+                            medida cuantitativa de la comprobación. Se trata de un valor numérico que indica si se ha
+                            superado el grado mínimo de calidad exigido para la verificación. Los posibles valores son
+                            0, 1 ó No Puntúa. Cuando una página no contiene los elementos evaluados en la verificación
+                            (por ejemplo una verificación relativa a tablas de datos en una página que no tiene tablas
+                            de datos) se asignará el valor No Puntúa; cuando en una página se superan los niveles
+                            mínimos exigidos en la comprobación se asignará el valor 1; en caso contrario se asignará el
+                            valor 0.
+                        </dd>
+                        <dt>Modalidad:</dt>
+                        <dd>Indica la adecuación a accesibilidad de una respuesta concreta. Este elemento representa la
+                            medida cualitativa de la comprobación, la cual indicará si una verificación cumple con la
+                            accesibilidad o no. Los posibles valores son Pasa (representado con un tic verde, indica que
+                            la comprobación se cumple) y Falla (representado con un aspa roja, indica que la
+                            comprobación no se cumple). En una verificación, un valor No Puntúa siempre se corresponde
+                            con la modalidad Pasa, ya que al no existir elementos de ese tipo en la página, no
+                            representan un problema de accesibilidad.
+                        </dd>
+                    </dl>
+                </div>
+            </paragraph>
+            <paragraph>
+                <p>
+                    El observatorio consiste en un total de
+                    <strong>20 verificaciones</strong>
+                    distribuidas en los grupos de análisis y adecuación explicados anteriormente. Estas verificaciones
+                    contemplan los principales aspectos de accesibilidad que una página web debe cumplir.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Para cada una de estas verificaciones se realiza un número variable de comprobaciones unitarias cuya
+                    combinación de resultados genera la respuesta a la verificación, junto con su valor y modalidad.
+                    Todas estas comprobaciones se realizan de forma automática, incluyendo el análisis de varios
+                    requisitos de revisión manual, los cuales se han automatizado mediante diversos algoritmos con un
+                    grado de fiabilidad bastante alto.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    La elección de una muestra representativa de los aspectos de accesibilidad a analizar, en lugar del
+                    análisis de todos los requisitos de la norma UNE 139803:2004, permite no solo
+                    <strong>reducir el tiempo</strong>
+                    de obtención de los resultados, sino
+                    <strong>centrar la atención y los esfuerzos en aquellos aspectos más importantes</strong>
+                    y relevantes de la accesibilidad de un sitio web.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Mientras que un análisis exhaustivo de accesibilidad pretende obtener unos resultados detallados de
+                    la accesibilidad de un sitio web, incluyendo todas las posibles inadecuaciones que presente éste
+                    respecto a los requisitos de accesibilidad de la norma UNE 139803:2004; el objetivo de un
+                    Observatorio de Accesibilidad es obtener una
+                    <strong>visión global</strong>
+                    del grado de accesibilidad presente en un conjunto de sitios web. Por ello, un análisis en
+                    profundidad puede ser contraproducente.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    A continuación se muestran las tablas que indican las verificaciones tomadas en cuenta en el
+                    presente Observatorio de Accesibilidad Web:
+                </p>
+            </paragraph>
+            <section>
+                <title>Tabla 1. Definición de puntos de verificación. Nivel de Análisis I</title>
+                <paragraph>
+                    <div class="tabla">
+                        <table class="metodologia"
+                               summary="Tabla de verificaciones de la metodología correspondiente al Nivel de Adecuación A, del Nivel de Análisis I">
+                            <caption>NIVEL DE ADECUACIÓN A</caption>
+                            <thead>
+                                <tr>
+                                    <th>Identificador</th>
+                                    <th>Nombre</th>
+                                    <th>Pregunta</th>
+                                    <th>Respuesta</th>
+                                    <th>Valor</th>
+                                    <th>Modalidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="identificador">1.1.1</td>
+                                    <td class="nombre">Existencia de textos alternativos</td>
+                                    <td class="pregunta">¿Los elementos no textuales tienen texto alternativo
+                                        adecuado?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay elementos no textuales</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.1.2</td>
+                                    <td class="nombre">Uso adecuado de JavaScript</td>
+                                    <td class="pregunta">¿Se pueden seguir utilizando los elementos de navegación al
+                                        desactivar JavaScript, y mediante distintos dispositivos de entrada?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay elementos de navegación</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.1.3</td>
+                                    <td class="nombre">Identificación y alternativas para marcos</td>
+                                    <td class="pregunta">¿Todos los marcos tienen un título y una alternativa?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No se usan</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.1.4</td>
+                                    <td class="nombre">Enlaces descriptivos</td>
+                                    <td class="pregunta">¿Los enlaces tienen un texto adecuado?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay enlaces</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tabla">
+                        <table class="metodologia"
+                               summary="Tabla de verificaciones de la metodología correspondiente al Nivel de Adecuación AA, del Nivel de Análisis I">
+                            <caption>NIVEL DE ADECUACIÓN AA</caption>
+                            <thead>
+                                <tr>
+                                    <th>Identificador</th>
+                                    <th>Nombre</th>
+                                    <th>Pregunta</th>
+                                    <th>Respuesta</th>
+                                    <th>Valor</th>
+                                    <th>Modalidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="identificador">1.2.1</td>
+                                    <td class="nombre">Código Válido (HTML y CSS)</td>
+                                    <td class="pregunta">¿Son las gramáticas HTML y CSS válidas?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No, con pequeños fallos</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.2.2</td>
+                                    <td class="nombre">Redimensión de texto</td>
+                                    <td class="pregunta">¿Se utilizan unidades relativas para definir el tamaño del
+                                        texto?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.2.3</td>
+                                    <td class="nombre">Uso de encabezados</td>
+                                    <td class="pregunta">¿Se usan encabezados para reflejar la estructura del documento
+                                        de forma aceptable?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>Sí, pero no los suficientes</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.2.4</td>
+                                    <td class="nombre">Utilización de tecnologías actuales</td>
+                                    <td class="pregunta">¿Se utilizan hojas de estilo en lugar de elementos o atributos
+                                        desaconsejados u obsoletos?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.2.5</td>
+                                    <td class="nombre">Asociación en formularios</td>
+                                    <td class="pregunta">¿Todos los controles tienen etiquetas y están asociadas
+                                        explícitamente?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay formularios</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">1.2.6</td>
+                                    <td class="nombre">Sección Accesibilidad</td>
+                                    <td class="pregunta">¿La página tiene un enlace a la sección Accesibilidad y ésta
+                                        tiene dirección de contacto y fecha de revisión?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>Sí, sin contacto o fecha</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </paragraph>
+            </section>
+            <section>
+                <title>Tabla 2. Definición de puntos de verificación. Nivel de Análisis II</title>
+                <paragraph>
+                    <div class="tabla">
+                        <table class="metodologia"
+                               summary="Tabla de verificaciones de la metodología correspondiente al Nivel de Adecuación A, del Nivel de Análisis II">
+                            <caption>NIVEL DE ADECUACIÓN A</caption>
+                            <thead>
+                                <tr>
+                                    <th>Identificador</th>
+                                    <th>Nombre</th>
+                                    <th>Pregunta</th>
+                                    <th>Respuesta</th>
+                                    <th>Valor</th>
+                                    <th>Modalidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="identificador">2.1.1</td>
+                                    <td class="nombre">Tablas de datos con encabezados</td>
+                                    <td class="pregunta">Las tablas de datos, ¿tienen encabezados, resumen, y asociación
+                                        de celdas en caso de ser complejas?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No se usan tablas de datos</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.1.2</td>
+                                    <td class="nombre">Identificación de idiomas</td>
+                                    <td class="pregunta">¿Se identifica el idioma principal y los cambios de idioma
+                                        correctamente?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">1
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.1.3</td>
+                                    <td class="nombre">Control del usuario</td>
+                                    <td class="pregunta">¿Puede el usuario controlar las redirecciones y actualizaciones
+                                        automáticas?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">1
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.1.4</td>
+                                    <td class="nombre">Lenguaje claro y sencillo</td>
+                                    <td class="pregunta">¿El lenguaje utilizado es claro y sencillo?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay texto</li>
+                                            <li>Sí</li>
+                                            <li>Dificultad media</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tabla">
+                        <table class="metodologia"
+                               summary="Tabla de verificaciones de la metodología correspondiente al Nivel de Adecuación AA, del Nivel de Análisis II">
+                            <caption>NIVEL DE ADECUACIÓN AA</caption>
+                            <thead>
+                                <tr>
+                                    <th class="identificador">Identificador</th>
+                                    <th class="nombre">Nombre</th>
+                                    <th class="pregunta">Pregunta</th>
+                                    <th class="respuesta">Respuesta</th>
+                                    <th class="valor">Valor</th>
+                                    <th class="modalidad">Modalidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="identificador">2.2.1</td>
+                                    <td class="nombre">Uso de listas</td>
+                                    <td class="pregunta">¿Las listas están correctamente marcadas?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay listas</li>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.2.2</td>
+                                    <td class="nombre">Separación de contenido y presentación</td>
+                                    <td class="pregunta">¿Se utilizan únicamente hojas de estilo para la maquetación y
+                                        presentación de los contenidos?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>En general sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.2.3</td>
+                                    <td class="nombre">Metadatos</td>
+                                    <td class="pregunta">¿Se usan metadatos de forma adecuada?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">1
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.2.4</td>
+                                    <td class="nombre">Navegación consistente</td>
+                                    <td class="pregunta">¿Se proporcionan mecanismos que ayuden al usuario a navegar por
+                                        el portal?
+                                    </td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay enlaces</li>
+                                            <li>Sí</li>
+                                            <li>Sí, con algunos enlaces rotos</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.2.5</td>
+                                    <td class="nombre">Apertura de nuevas ventanas</td>
+                                    <td class="pregunta">¿Se informa al usuario de la apertura de nuevas ventanas?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>No hay enlaces</li>
+                                            <li>Si, en enlaces externos</li>
+                                            <li>Sí, en enlaces internos</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">
+                                        <ol>
+                                            <li>No Puntúa</li>
+                                            <li>1</li>
+                                            <li>0</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="identificador">2.2.6</td>
+                                    <td class="nombre">División de la información</td>
+                                    <td class="pregunta">¿Se realiza un marcado adecuado de los párrafos de texto?</td>
+                                    <td class="respuesta">
+                                        <ol>
+                                            <li>Sí</li>
+                                            <li>No</li>
+                                        </ol>
+                                    </td>
+                                    <td class="valor">1
+                                        <ol>
+                                            <li>1</li>
+                                            <li>0</li>
+                                        </ol>
+                                    </td>
+                                    <td class="modalidad">
+                                        <ol>
+                                            <li>
+                                                <img src="./img/pasa.png" alt="Pasa"/>
+                                            </li>
+                                            <li>
+                                                <img src="./img/falla.png" alt="Falla"/>
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </paragraph>
+            </section>
+            <section>
+                <title>Correspondencia UNE 139803:2004 y WCAG 1.0</title>
+                <paragraph>
+                    <p>
+                        Como se ha comentado anteriormente, las verificaciones realizadas en el observatorio son un
+                        extracto representativo de los aspectos más relevantes de la accesibilidad que debe cumplir un
+                        sitio web, por lo que están directamente relacionadas con los requisitos de la Norma UNE
+                        139803:2004 y por lo tanto de las WCAG 1.0 del W3C.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Se muestra a continuación de forma esquemática la relación existente entre las verificaciones
+                        del observatorio y los requisitos de accesibilidad de dichas normas o directrices.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <table summary="Tabla que relaciona entre las verificaciones del Observatorio y la Norma UNE 139803:2004 y WCAG 1.0">
+                        <caption>
+                            <span>Relación entre las verificaciones del Observatorio y la Norma UNE 139803:2004 y WCAG
+                                1.0
+                            </span>
+                        </caption>
+                        <thead>
+                            <tr>
+                                <th>Verificación del Observatorio</th>
+                                <th>Requisitos UNE 139803:2004</th>
+                                <th>Puntos de Verificación WCAG 1.0</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="requisito331 izda">1.1.1 Existencia de textos alternativos</td>
+                                <td class="UNE331">UNE 4.4.3</td>
+                                <td class="WCAG331">WCAG 1.1</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.1.2 Navegación sin JavaScript</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.4.3</li>
+                                        <li>UNE 4.4.6</li>
+                                        <li>UNE 4.6.1</li>
+                                        <li>UNE 4.6.6</li>
+                                        <li>UNE 4.6.7</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 1.1</li>
+                                        <li>WCAG 6.5</li>
+                                        <li>WCAG 6.3</li>
+                                        <li>WCAG 6.4</li>
+                                        <li>WCAG 9.3</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.1.3 Identificación y alternativas para marcos</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.4.3</li>
+                                        <li>UNE 4.4.6</li>
+                                        <li>UNE 4.3.1</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 1.1</li>
+                                        <li>WCAG 6.5</li>
+                                        <li>WCAG 12.1</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.1.4 Enlaces descriptivos</td>
+                                <td class="UNE331">UNE 4.5.1</td>
+                                <td class="WCAG331">WCAG 13.1</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.2.1 Código Válido (HTML y CSS)</td>
+                                <td class="UNE331">UNE 4.1.2</td>
+                                <td class="WCAG331">WCAG 3.2</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.2.2 Redimensión de texto</td>
+                                <td class="UNE331">UNE 4.2.4</td>
+                                <td class="WCAG331">WCAG 3.4</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.2.3 Uso de encabezados</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.3.5</li>
+                                        <li>UNE 4.3.6</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 3.5</li>
+                                        <li>WCAG 12.3</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.2.4 Utilización de tecnologías actuales</td>
+                                <td class="UNE331">UNE 4.1.3</td>
+                                <td class="WCAG331">WCAG 11.2</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.2.5 Asociación en formularios</td>
+                                <td class="UNE331">UNE 4.4.7</td>
+                                <td class="WCAG331">WCAG 12.4</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">1.2.6 Sección Accesibilidad</td>
+                                <td class="UNE331">-</td>
+                                <td class="WCAG331">-</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.1.1 Tablas de datos con encabezados</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.3.2</li>
+                                        <li>UNE 4.3.3</li>
+                                        <li>UNE 4.3.9</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 5.1</li>
+                                        <li>WCAG 5.2</li>
+                                        <li>WCAG 5.5</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.1.2 Identificación de idiomas</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.4.5</li>
+                                        <li>UNE 4.4.4</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 4.1</li>
+                                        <li>WCAG 4.3</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.1.3 Control del usuario</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.2.3</li>
+                                        <li>UNE 4.5.4</li>
+                                        <li>UNE 4.5.5</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 7.1</li>
+                                        <li>WCAG 7.4</li>
+                                        <li>WCAG 7.5</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.1.4 Lenguaje claro y sencillo</td>
+                                <td class="UNE331">UNE4.4.2</td>
+                                <td class="WCAG331">WCAG 14.1</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.2.1 Uso de listas</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.3.7</li>
+                                        <li>UNE 4.3.6</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 3.6</li>
+                                        <li>WCAG 12.3</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.2.2 Separación de contenido y presentación</td>
+                                <td class="UNE331">UNE 4.2.5</td>
+                                <td class="WCAG331">WCAG 3.3</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.2.3 Metadatos</td>
+                                <td class="UNE331">UNE 4.1.4</td>
+                                <td class="WCAG331">WCAG 13.2</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.2.4 Navegación consistente</td>
+                                <td class="UNE331">
+                                    <ul class="withoutTopo">
+                                        <li>UNE 4.5.7</li>
+                                        <li>UNE 4.5.8</li>
+                                    </ul>
+                                </td>
+                                <td class="WCAG331">
+                                    <ul class="withoutTopo">
+                                        <li>WCAG 13.3</li>
+                                        <li>WCAG 13.4</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.2.5 Apertura de nuevas ventanas</td>
+                                <td class="UNE331">UNE 4.5.6</td>
+                                <td class="WCAG331">WCAG 10.1</td>
+                            </tr>
+                            <tr>
+                                <td class="requisito331 izda">2.2.6 División de la información</td>
+                                <td class="UNE331">UNE 4.3.6</td>
+                                <td class="WCAG331">WCAG 12.3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </paragraph>
+            </section>
+        </section>
+        <section>
+            <title>Resultados Obtenidos</title>
+            <paragraph>
+                <p>
+                    La realización del Observatorio da lugar a una gran cantidad de cifras y valoraciones, por lo que se
+                    han generado una serie de
+                    <strong>gráficas y valores estadísticos</strong>
+                    que reflejan de forma esquemática los resultados obtenidos.
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Con el objetivo de disponer de indicadores agregados que muestren el estado de los distintos
+                    portales en función de las verificaciones planteadas se han creado cuatro tipos de puntuaciones
+                    medias: Puntuación Media de Página (PMP), Puntuación Media de Portal (PMPO), Puntuación Media de
+                    Verificación (PMV) y Puntuación Media de Nivel de Análisis (PMNA).
+                </p>
+            </paragraph>
+            <paragraph>
+                <p>
+                    Así mismo, también se obtienen indicadores de adecuación para cada verificación, nivel de análisis,
+                    página y portal.
+                </p>
+            </paragraph>
+            <section>
+                <title>Puntuaciones Medias</title>
+                <paragraph>
+                    <p>
+                        La
+                        <strong>Puntuación Media de Página</strong>
+                        se obtiene sumando la puntuación obtenida en las 20 verificaciones de la metodología y
+                        dividiendo este resultado entre el número de verificaciones puntuables en la página, con lo que
+                        se obtendrá un valor entre 0 y 1 que finalmente se multiplicará por 10.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/PMP.png" alt="PMP = SRV/VP*10"/>
+                        <dl>
+                            <dt>PMP:</dt>
+                            <dd>Puntuación Media de Página</dd>
+                            <dt>SRV:</dt>
+                            <dd>Suma de Resultados de todas las Verificaciones en la página</dd>
+                            <dt>VP:</dt>
+                            <dd>Nº de Verificaciones Puntuables en la página</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Agregando las puntuaciones de las páginas se obtiene la
+                        <strong>Puntuación Media del Portal</strong>
+                        mediante la media aritmética de las puntuaciones medias de todas las páginas del portal:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/PMPO.png" alt="PMPO = SPMP/NP"/>
+                        <dl>
+                            <dt>PMPO:</dt>
+                            <dd>Puntuación Media del Portal</dd>
+                            <dt>SPMP:</dt>
+                            <dd>Suma de las Puntuaciones Medias de Páginas</dd>
+                            <dt>NP:</dt>
+                            <dd>Nº de Páginas</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        La
+                        <strong>Puntuación Media de Verificación</strong>
+                        muestra la valoración global de una determinada verificación en un portal. Para calcular este
+                        valor se tiene en cuenta la suma de todos los puntos obtenidos en la verificación dada para cada
+                        página del portal, y el recuento de páginas en las que la verificación ha obtenido un valor
+                        distinto de "No puntúa". De esta forma la puntuación media de una verificación se obtiene según
+                        la siguiente fórmula:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/PMV.png" alt="PMV = SR/PP*10"/>
+                        <dl>
+                            <dt>PMV:</dt>
+                            <dd>Puntuación Media de Verificación</dd>
+                            <dt>SR:</dt>
+                            <dd>Suma de Resultados de la verificación en cada página</dd>
+                            <dt>PP:</dt>
+                            <dd>Nº de Páginas Puntuables</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        De forma más global se agrupan las puntuaciones medias de las distintas verificaciones a través
+                        de los niveles de análisis. Para obtener la
+                        <strong>Puntuación Media de un Nivel de Análisis</strong>
+                        se calcula la media aritmética de las puntuaciones medias obtenidas para cada verificación
+                        perteneciente al nivel de análisis:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/PMNA.png" alt="PMNA= SPMVN/VN"/>
+                        <dl>
+                            <dt>PMNA:</dt>
+                            <dd>Puntuación Media del Nivel de Análisis</dd>
+                            <dt>SPMVN:</dt>
+                            <dd>Suma de las Puntuaciones Medias de Verificación del Nivel</dd>
+                            <dt>VN:</dt>
+                            <dd>Nº de Verificaciones del Nivel (10)</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Todos estos valores de puntuación media<strong>oscilarán entre 0 y 10</strong>, permitiendo
+                        comparar fácilmente los resultados entre los distintos portales.
+                    </p>
+                </paragraph>
+            </section>
+            <section>
+                <title>Nivel de adecuación</title>
+                <paragraph>
+                    <p>
+                        Para obtener de forma clara una visión general del grado de accesibilidad, se obtiene el nivel
+                        de adecuación NV (No Válido), Prioridad 1 o Prioridad 1 y 2 para las distintas métricas del
+                        observatorio: verificación, nivel de análisis, página y portal.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Para facilitar la comprensión de esta valoración, se dividen las 20 verificaciones en cuatro
+                        grupos de 4 ó 6 verificaciones cada uno:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <ul>
+                        <li>Nivel I, Prioridad 1 (4 verificaciones)</li>
+                        <li>Nivel I, Prioridad 2 (6 verificaciones)</li>
+                        <li>Nivel II, Prioridad 1 (4 verificaciones)</li>
+                        <li>Nivel II, Prioridad 2 (6 verificaciones)</li>
+                    </ul>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        En primer lugar se obtiene el nivel de<strong>adecuación de una verificación
+                        (modalidad)</strong>, de acuerdo a las tablas de la metodología expuestas en el punto anterior.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        El grado de
+                        <strong>adecuación del nivel de análisis</strong>
+                        (Nivel I y Nivel II) se obtiene a partir de la conformidad de las verificaciones de dicho nivel,
+                        obedeciendo a las siguientes reglas:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="listInline">
+                        <dl>
+                            <dt>Prioridad 1 y 2.</dt>
+                            <dd>Se obtiene cuando los grupos de adecuación Prioridad 1 y Prioridad 2 tienen un máximo de
+                                una verificación por grupo con modalidad "Rojo" (Falla).
+                            </dd>
+                            <dt>Prioridad 1.</dt>
+                            <dd>Se obtiene cuando el grupo de adecuación Prioridad 1 tiene un máximo de una verificación
+                                con modalidad "Rojo" (Falla), y el grupo de adecuación Prioridad 2 tiene al menos dos
+                                verificaciones con modalidad "Rojo" (Falla).
+                            </dd>
+                            <dt>No Válido.</dt>
+                            <dd>Se obtiene cuando el grupo de adecuación Prioridad 1 tiene al menos dos verificaciones
+                                con modalidad "Rojo" (Falla).
+                            </dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        A partir de la adecuación de los niveles de análisis se obtiene la
+                        <strong>adecuación de la página</strong>
+                        de la siguiente forma:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="listInline">
+                        <dl>
+                            <dt>Prioridad 1 y 2.</dt>
+                            <dd>Se obtiene un nivel Prioridad 1 y 2 cuando los Niveles de Análisis I y II tienen una
+                                adecuación Prioridad 1 y 2.
+                            </dd>
+                            <dt>Prioridad 1.</dt>
+                            <dd>Se obtiene un nivel Prioridad 1 cuando al menos uno de los Niveles de Análisis tiene una
+                                adecuación Prioridad 1.
+                            </dd>
+                            <dt>No Válido.</dt>
+                            <dd>Se obtiene un nivel No Válido cuando al menos uno de los Niveles de Análisis tiene una
+                                adecuación NV.
+                            </dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Finalmente, el nivel de
+                        <strong>adecuación de un portal</strong>
+                        se obtendrá a partir de la adecuación de cada página, y una fórmula matemática.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Una vez obtenida la conformidad de cada página, se asigna un valor numérico a cada una según la
+                        siguiente regla:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <ul>
+                        <li>Si tiene nivel No Válido, se asignarán 0 puntos.</li>
+                        <li>Si tiene nivel Prioridad 1, se asignarán 5 puntos.</li>
+                        <li>Si tiene nivel Prioridad 1 y 2, se asignarán 10 puntos.</li>
+                    </ul>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        A continuación se suman las puntuaciones asignadas a cada página y se divide entre el número de
+                        páginas, obteniendo un valor numérico para el portal entre 0 y 10.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/VNP.png" alt="VNP = SP/NP"/>
+                        <dl>
+                            <dt>VNP:</dt>
+                            <dd>Valor Numérico del Portal</dd>
+                            <dt>SP:</dt>
+                            <dd>Suma de las Puntuaciones de las páginas</dd>
+                            <dt>NP:</dt>
+                            <dd>Nº de Páginas</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        De acuerdo al valor numérico del portal, se asignará el nivel de conformidad de la siguiente
+                        manera:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <ul>
+                        <li>Si el valor es menor a<strong>3.5</strong>, el nivel será<strong>No Válido</strong>.
+                        </li>
+                        <li>Si el valor es mayor o igual a
+                            <strong>3.5</strong>
+                            y menor que<strong>8</strong>, el nivel será<strong>Prioridad 1</strong>.
+                        </li>
+                        <li>Si el valor es mayor o igual a<strong>8</strong>, el nivel será<strong>Prioridad 1 y
+                            2</strong>.
+                        </li>
+                    </ul>
+                </paragraph>
+            </section>
+            <section>
+                <title>Analítica orientada a aspectos</title>
+                <paragraph>
+                </paragraph>
+                <paragraph>
+                    <div class="listInline">
+                        <dl>
+                            <dt>General:</dt>
+                            <dd>este aspecto abarca aquellos elementos genéricos de una página Web como el lenguaje
+                                utilizado o los metadatos aportados.
+                            </dd>
+                            <dt>Presentación:</dt>
+                            <dd>se trata de aquellos elementos relativos a la disposición y aspecto de una página Web
+                                tales como la utilización de CSS o el uso de unidades relativas en el texto.
+                            </dd>
+                            <dt>Estructura:</dt>
+                            <dd>este aspecto incluye elementos relativos a la técnica aplicada a la construcción de los
+                                diversos elementos que forman una página Web como son las tablas o las listas.
+                            </dd>
+                            <dt>Navegación:</dt>
+                            <dd>se trata de aquellos elementos que proporcionan los métodos adecuados para facilitar la
+                                transición del usuario a lo largo de las distintas páginas de un portal Web. En este
+                                grupo se encuentran los enlaces, las redirecciones o la apertura de nuevas ventanas.
+                            </dd>
+                            <dt>Alternativas:</dt>
+                            <dd>son aquellos elementos que proporcionan distintos métodos de acceso a la información, de
+                                forma que pueda ser comprendida por el mayor número de personas. En este grupo destacan
+                                las alternativas textuales a todo elemento no textual o las alternativas a los scripts.
+                            </dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Desde el punto de vista técnico se ha orientado el Observatorio como una revisión de elementos
+                        relativos a la accesibilidad organizados en aspectos. Los aspectos que se han revisado son:
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <table summary="Tabla resumen de aspectos.">
+                        <thead>
+                            <tr>
+                                <th>CÓDIGO</th>
+                                <th>NOMBRE</th>
+                                <th>ASPECTO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th colspan="3" class="gray">Nivel de Análisis I</th>
+                            </tr>
+                            <tr>
+                                <td>1.1.1</td>
+                                <td class="izda">Existencia de textos alternativos</td>
+                                <td>Alternativas</td>
+                            </tr>
+                            <tr>
+                                <td>1.1.2</td>
+                                <td class="izda">Navegación sin JavaScript</td>
+                                <td>Alternativas</td>
+                            </tr>
+                            <tr>
+                                <td>1.1.3</td>
+                                <td class="izda">Identificación y alternativas para marcos</td>
+                                <td>Alternativas</td>
+                            </tr>
+                            <tr>
+                                <td>1.1.4</td>
+                                <td class="izda">Enlaces descriptivos</td>
+                                <td>Navegación</td>
+                            </tr>
+                            <tr>
+                                <td>1.2.1</td>
+                                <td class="izda">Código Válido (HTML y CSS)</td>
+                                <td>General</td>
+                            </tr>
+                            <tr>
+                                <td>1.2.2</td>
+                                <td class="izda">Redimensión de texto</td>
+                                <td>Presentación</td>
+                            </tr>
+                            <tr>
+                                <td>1.2.3</td>
+                                <td class="izda">Uso de encabezados</td>
+                                <td>Estructura</td>
+                            </tr>
+                            <tr>
+                                <td>1.2.4</td>
+                                <td class="izda">Utilización de tecnologías actuales</td>
+                                <td>General</td>
+                            </tr>
+                            <tr>
+                                <td>1.2.5</td>
+                                <td class="izda">Asociación en formularios</td>
+                                <td>Estructura</td>
+                            </tr>
+                            <tr>
+                                <td>1.2.6</td>
+                                <td class="izda">Sección Accesibilidad</td>
+                                <td>Navegación</td>
+                            </tr>
+                            <tr>
+                                <th colspan="3" class="gray">Nivel de Análisis II</th>
+                            </tr>
+                            <tr>
+                                <td>2.1.1</td>
+                                <td class="izda">Tablas de datos con encabezados</td>
+                                <td>Estructura</td>
+                            </tr>
+                            <tr>
+                                <td>2.1.2</td>
+                                <td class="izda">Identificación de idiomas</td>
+                                <td>General</td>
+                            </tr>
+                            <tr>
+                                <td>2.1.3</td>
+                                <td class="izda">Control del usuario</td>
+                                <td>Navegación</td>
+                            </tr>
+                            <tr>
+                                <td>2.1.4</td>
+                                <td class="izda">Lenguaje claro y sencillo</td>
+                                <td>General</td>
+                            </tr>
+                            <tr>
+                                <td>2.2.1</td>
+                                <td class="izda">Uso de listas</td>
+                                <td>Estructura</td>
+                            </tr>
+                            <tr>
+                                <td>2.2.2</td>
+                                <td class="izda">Separación de contenido y presentación</td>
+                                <td>Presentación</td>
+                            </tr>
+                            <tr>
+                                <td>2.2.3</td>
+                                <td class="izda">Metadatos</td>
+                                <td>General</td>
+                            </tr>
+                            <tr>
+                                <td>2.2.4</td>
+                                <td class="izda">Navegación consistente</td>
+                                <td>Navegación</td>
+                            </tr>
+                            <tr>
+                                <td>2.2.5</td>
+                                <td class="izda">Apertura de nuevas ventanas</td>
+                                <td>Navegación</td>
+                            </tr>
+                            <tr>
+                                <td>2.2.6</td>
+                                <td class="izda">División de la información</td>
+                                <td>Estructura</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Mediante la agregación de los resultados obtenidos en las distintas verificaciones para todos
+                        los portales del observatorio se obtienen las puntuaciones medias de los aspectos de
+                        accesibilidad definidos.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Para comprender adecuadamente cómo se obtiene esta puntuación es necesario introducir el
+                        concepto de Puntuación Media de Aspecto del Portal.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        La
+                        <strong>Puntuación Media de Aspecto del Portal</strong>
+                        representa el valor medio obtenido por las verificaciones pertenecientes a ese aspecto para un
+                        portal en particular, y se obtiene a partir de la media aritmética de las Puntuaciones Medias de
+                        dichas verificaciones.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/PMAP.png" alt="PMAP = SPMVA/VA"/>
+                        <dl>
+                            <dt>PMAP:</dt>
+                            <dd>Puntuación Media de Aspecto del Portal</dd>
+                            <dt>SPMVA:</dt>
+                            <dd>Suma de Puntuaciones Medias de las Verificaciones del Aspecto</dd>
+                            <dt>VA:</dt>
+                            <dd>Nº de Verificaciones del Aspecto</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+                <paragraph>
+                    <p>
+                        Por último, para obtener la<strong>Puntuación Media de Aspecto</strong>, se realiza la media
+                        aritmética de la puntuación de todos los portales.
+                    </p>
+                </paragraph>
+                <paragraph>
+                    <div class="formula">
+                        <img src="./img/PMA.png" alt="PMA = SPMA/NP"/>
+                        <dl>
+                            <dt>PMA:</dt>
+                            <dd>Puntuación Media de Aspecto</dd>
+                            <dt>SPMA:</dt>
+                            <dd>Suma de Puntuaciones Medias de Aspecto de los portales</dd>
+                            <dt>NP:</dt>
+                            <dd>Nº de Portales</dd>
+                        </dl>
+                    </div>
+                </paragraph>
+            </section>
+        </section>
+    </chapter>
+</sectionSet>
