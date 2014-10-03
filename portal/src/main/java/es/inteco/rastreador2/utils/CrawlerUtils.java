@@ -71,7 +71,7 @@ public final class CrawlerUtils {
         crawlerData.setDomains(dcrForm.getDomains());
         crawlerData.setExceptions(dcrForm.getExceptions());
         crawlerData.setCrawlingList(dcrForm.getCrawlingList());
-        crawlerData.setId_guideline(dcrForm.getId_guideline());
+        crawlerData.setIdGuideline(dcrForm.getId_guideline());
         crawlerData.setFicheroNorma(dcrForm.getFicheroNorma());
         crawlerData.setExhaustive(dcrForm.isExhaustive());
         crawlerData.setInDirectory(dcrForm.isInDirectory());

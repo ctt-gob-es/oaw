@@ -245,8 +245,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD;
             } else if (stringCall.equals("duplicate-following-headers")) {
                 functionId = CheckFunctionConstants.FUNCTION_DUPLICATE_FOLLOWING_HEADERS;
-            } else if (stringCall.equals("correct-document-structure")) {
-                functionId = CheckFunctionConstants.FUNCTION_CORRECT_DOCUMENT_STRUCTURE;
+            } else if (stringCall.equals("incorrect-heading-structure")) {
+                functionId = CheckFunctionConstants.FUNCTION_INCORRECT_HEADING_STRUCTURE;
             } else if (stringCall.equals("no-correct-document-structure")) {
                 functionId = CheckFunctionConstants.FUNCTION_NO_CORRECT_DOCUMENT_STRUCTURE;
             } else if (stringCall.equals("headers-missing")) {
@@ -263,10 +263,10 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_IFRAME_HAS_ALTERNATIVE;
             } else if (stringCall.equals("noembed-missing")) {
                 functionId = CheckFunctionConstants.FUNCTION_NOEMBED_MISSING;
-            } else if (stringCall.equals("row-count-not-equals")) {
-                functionId = CheckFunctionConstants.FUNCTION_ROW_COUNT_NOT_EQUALS;
-            } else if (stringCall.equals("column-count-not-equals")) {
-                functionId = CheckFunctionConstants.FUNCTION_COL_COUNT_NOT_EQUALS;
+            } else if (stringCall.equals("row-count")) {
+                functionId = CheckFunctionConstants.FUNCTION_ROW_COUNT;
+            } else if (stringCall.equals("column-count")) {
+                functionId = CheckFunctionConstants.FUNCTION_COL_COUNT;
             } else if (stringCall.equals("element-previous")) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_PREVIOUS;
             } else if (stringCall.equals("targets-same")) {
@@ -282,7 +282,7 @@ public class CheckCode {
             } else if (stringCall.equals("multi-checkbox-no-fieldset")) {
                 functionId = CheckFunctionConstants.FUNCTION_MULTICHECKBOX_NOFIELDSET;
             } else if (stringCall.equals("luminosity-contrast-ratio")) {
-                functionId = CheckFunctionConstants.FUNCTION_LUMONISOTY_CONTRAST_RATIO;
+                functionId = CheckFunctionConstants.FUNCTION_LUMINOSITY_CONTRAST_RATIO;
             } else if (stringCall.equals("wai-ert-color-algorithm")) {
                 functionId = CheckFunctionConstants.FUNCTION_ERT_COLOR_ALGORITHM;
             } else if (stringCall.equals("doctype-attribute-not-equal")) {
@@ -403,6 +403,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_CORRECT_LINKS;
             } else if (stringCall.equals("child-element-characters-greater-than")) {
                 functionId = CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_GREATER;
+            } else if (stringCall.equals("child-element-characters-lesser-than")) {
+                functionId = CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_LESSER;
             } else if (stringCall.equals("layout-table")) {
                 functionId = CheckFunctionConstants.FUNCTION_LAYOUT_TABLE;
             } else if (stringCall.equals("layout-table-number")) {
@@ -429,6 +431,16 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_EMPTY_SECTION;
             } else if (stringCall.equals("is-animated-gif")) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_ANIMATED_GIF;
+            } else if (stringCall.equals("following-headers-without-content")) {
+                functionId = CheckFunctionConstants.FUNCTION_FOLLOWING_HEADERS_WITHOUT_CONTENT;
+            } else if (stringCall.equals("img-dimensions-less-than")) {
+                functionId = CheckFunctionConstants.FUNCTION_IMG_DIMENSIONS_LESS_THAN;
+            } else if (stringCall.equals("redundant-img-alt")) {
+                functionId = CheckFunctionConstants.FUNCTION_REDUNDANT_IMG_ALT;
+            } else if (stringCall.equals("table-columns")) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_COLUMNS;
+            } else if (stringCall.equals("table-rows")) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_ROWS;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;
@@ -452,7 +464,7 @@ public class CheckCode {
             for (int x = 0; x < listFunctions.getLength(); x++) {
                 if (listFunctions.item(x).getNodeType() == Node.ELEMENT_NODE) {
                     CheckCode checkCode = new CheckCode();
-                    if (checkCode.create((Element) listFunctions.item(x)) == true) {
+                    if (checkCode.create((Element) listFunctions.item(x))) {
                         vectorCode.add(checkCode);
                     }
                 }
@@ -467,7 +479,7 @@ public class CheckCode {
             for (int x = 0; x < listFunctions.getLength(); x++) {
                 if (listFunctions.item(x).getNodeType() == Node.ELEMENT_NODE) {
                     CheckCode checkCode = new CheckCode();
-                    if (checkCode.create((Element) listFunctions.item(x)) == true) {
+                    if (checkCode.create((Element) listFunctions.item(x))) {
                         vectorCode.add(checkCode);
                     }
                 }

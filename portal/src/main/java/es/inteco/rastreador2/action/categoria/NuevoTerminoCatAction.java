@@ -58,8 +58,7 @@ public class NuevoTerminoCatAction extends Action {
 
                     //Comprobamos que el término usa caracteres correctos
                     ComprobadorCaracteres cc = new ComprobadorCaracteres(nuevoTerminoCatForm.getTermino());
-                    boolean result = cc.comprueba();
-                    if (!result) {
+                    if (!cc.isNombreValido()) {
                         errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                         saveErrors(request, errors);
                         return mapping.findForward(Constants.VOLVER);

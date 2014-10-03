@@ -31,12 +31,12 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.ValidationError;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.flesch.FleschAdapter;
 import es.inteco.flesch.FleschAnalyzer;
 import es.inteco.flesch.FleschUtils;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.intav.utils.StringUtils;
 import org.apache.xerces.util.DOMUtil;
 import org.w3c.dom.*;
 
@@ -118,7 +118,7 @@ public class Check {
         } else if (confidence == CheckFunctionConstants.CONFIDENCE_HIGH) {
             return IntavConstants.HIGH;
         } else {
-            return IntavConstants.CANNOOTTELL;
+            return IntavConstants.CAN_NOT_TELL;
         }
     }
 
@@ -487,8 +487,8 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_DUPLICATE_FOLLOWING_HEADERS:
                 return functionDuplicateFollowingHeaders(checkCode, nodeNode, elementGiven);
 
-            case CheckFunctionConstants.FUNCTION_CORRECT_DOCUMENT_STRUCTURE:
-                return functionCorrectDocumentStructure(checkCode, nodeNode, elementGiven);
+            case CheckFunctionConstants.FUNCTION_INCORRECT_HEADING_STRUCTURE:
+                return functionIncorrectHeaderStructure(checkCode, nodeNode, elementGiven);
 
             case CheckFunctionConstants.FUNCTION_NO_CORRECT_DOCUMENT_STRUCTURE:
                 return functionNoCorrectDocumentStructure(checkCode, nodeNode, elementGiven);
@@ -514,11 +514,11 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_NOEMBED_MISSING:
                 return functionNoembedMissing(checkCode, nodeNode, elementGiven);
 
-            case CheckFunctionConstants.FUNCTION_ROW_COUNT_NOT_EQUALS:
-                return CheckTables.functionRowCountNotEquals(checkCode, nodeNode, elementGiven);
+            case CheckFunctionConstants.FUNCTION_ROW_COUNT:
+                return CheckTables.functionRowCount(checkCode, nodeNode, elementGiven);
 
-            case CheckFunctionConstants.FUNCTION_COL_COUNT_NOT_EQUALS:
-                return CheckTables.functionColumnCountNotEquals(checkCode, nodeNode, elementGiven);
+            case CheckFunctionConstants.FUNCTION_COL_COUNT:
+                return CheckTables.functionColumnCount(checkCode, nodeNode, elementGiven);
 
             case CheckFunctionConstants.FUNCTION_ELEMENT_PREVIOUS:
                 return functionElementPrevious(checkCode, nodeNode, elementGiven);
@@ -541,7 +541,7 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_MULTICHECKBOX_NOFIELDSET:
                 return functionMultiCheckboxNoFieldset(checkCode, nodeNode, elementGiven);
 
-            case CheckFunctionConstants.FUNCTION_LUMONISOTY_CONTRAST_RATIO:
+            case CheckFunctionConstants.FUNCTION_LUMINOSITY_CONTRAST_RATIO:
                 return functionLuminosityContrastRatio(checkCode, nodeNode, elementGiven);
 
             case CheckFunctionConstants.FUNCTION_ERT_COLOR_ALGORITHM:
@@ -710,7 +710,7 @@ public class Check {
                 return functionEmptyElements(checkCode, nodeNode, elementGiven);
 
             case CheckFunctionConstants.FUNCTION_ELEMENTS_EXCESSIVE_USAGE:
-                return functionElementsExcessiveUsage(checkCode, nodeNode, elementGiven);
+                return functionElementsUsage(checkCode, nodeNode, elementGiven);
 
             case CheckFunctionConstants.FUNCTION_ATTRIBUTES_EXCESSIVE_USAGE:
                 return functionAttributesExcessiveUsage(checkCode, nodeNode, elementGiven);
@@ -723,6 +723,9 @@ public class Check {
 
             case CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_GREATER:
                 return functionChildElementCharactersGreaterThan(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_LESSER:
+                return !functionChildElementCharactersGreaterThan(checkCode, nodeNode, elementGiven);
 
             case CheckFunctionConstants.FUNCTION_LAYOUT_TABLE:
                 return functionLayoutTable(checkCode, nodeNode, elementGiven);
@@ -760,12 +763,61 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_IS_ANIMATED_GIF:
                 return functionIsAnimatedGif(checkCode, nodeNode, elementGiven);
 
+            case CheckFunctionConstants.FUNCTION_FOLLOWING_HEADERS_WITHOUT_CONTENT:
+                return functionFollowingHeadersWithoutContent(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_IMG_DIMENSIONS_LESS_THAN:
+                return functionImgDimensionsLessThan(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_REDUNDANT_IMG_ALT:
+                return functionRedundantImgAlt(checkCode, nodeNode, elementGiven);
+
             default:
                 Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
                 break;
         }
 
         return false;
+    }
+
+    private boolean functionRedundantImgAlt(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final NodeList nodeList = elementGiven.getElementsByTagName("img");
+        final String linkText = StringUtils.normalizeWhiteSpaces(EvaluatorUtility.getElementText(elementGiven)).trim();
+        if (nodeList.getLength() != 0 && !linkText.trim().isEmpty()) {
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                final String altText = ((Element) nodeList.item(i)).getAttribute("alt").trim();
+                if (!altText.isEmpty()) {
+                    if (altText.equalsIgnoreCase(linkText)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean functionImgDimensionsLessThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final Dimension dimension = (Dimension) nodeNode.getUserData("dimension");
+        if (dimension != null) {
+            final String width = checkCode.getFunctionAttribute1();
+            final String height = checkCode.getFunctionAttribute2();
+            if (!width.isEmpty() || !height.isEmpty()) {
+                boolean dimensionsLess = true;
+                if (!width.isEmpty() && dimension.getWidth() != -1) {
+                    dimensionsLess = dimension.getWidth() < Integer.valueOf(width);
+                }
+                if (!height.isEmpty() && dimension.getHeight() != -1) {
+                    dimensionsLess &= dimension.getHeight() < Integer.valueOf(height);
+                }
+                return dimensionsLess;
+            } else {
+                // Error no se ha proporcionado el límite de ancho o alto
+                return false;
+            }
+        } else {
+            // ¿Que hacemos si no tenemos las dimensiones de la imagen?
+            return false;
+        }
     }
 
     private boolean functionOnlyOneChild(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -829,8 +881,12 @@ public class Check {
     //Comprueba si una tabla es o no de maquetacion
     protected boolean functionLayoutTable(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         checkCode.setFunctionElement("table");
+        final String maxLength = checkCode.getFunctionAttribute1().isEmpty() ? "400" : checkCode.getFunctionAttribute1();
         if (functionContains(checkCode, nodeNode, elementGiven)) {
             //Una tabla que contiene otra tabla
+            return true;
+        } else if ("presentation".equalsIgnoreCase(elementGiven.getAttribute("role"))) {
+            /* Añadido sobre la comprobacion original de inteco ¿duplicar la comprobacion? */
             return true;
         } else {
             checkCode.setFunctionAttribute1("tr");
@@ -853,13 +909,13 @@ public class Check {
                         return true;
                     } else {
                         checkCode.setFunctionElement("td");
-                        checkCode.setFunctionValue("400");
+                        checkCode.setFunctionValue(maxLength);
                         if (functionChildElementCharactersGreaterThan(checkCode, nodeNode, elementGiven)) {
                             //Tabla con tds que contienen mas de 400 caracteres
                             return true;
                         } else {
                             checkCode.setFunctionElement("th");
-                            checkCode.setFunctionValue("400");
+                            checkCode.setFunctionValue(maxLength);
                             if (functionChildElementCharactersGreaterThan(checkCode, nodeNode, elementGiven)) {
                                 //Tabla con ths que contienen mas de 400 caracteres
                                 return true;
@@ -926,16 +982,21 @@ public class Check {
         return counter > maxNumber;
     }
 
-    private boolean functionElementsExcessiveUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        List<String> elementsList = Arrays.asList(checkCode.getFunctionElement().split(";"));
-        int maxNumber = Integer.parseInt(checkCode.getFunctionNumber());
+    private boolean functionElementsUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final List<String> elementsList = Arrays.asList(checkCode.getFunctionElement().split(";"));
+        final int limit = Integer.parseInt(checkCode.getFunctionNumber());
+        final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : "less";
 
         int counter = 0;
         for (String element : elementsList) {
             counter += elementGiven.getElementsByTagName(element).getLength();
         }
 
-        return counter > maxNumber;
+        if ("greater".equalsIgnoreCase(compare)) {
+            return counter > limit;
+        } else {
+            return limit < counter;
+        }
     }
 
     private boolean functionAttributesExcessiveUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -1185,34 +1246,59 @@ public class Check {
 
     //Comprueba si hay dos o mas encabezados del mismo nivel con el mismo texto seguidos
     private boolean functionDuplicateFollowingHeaders(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
         NodeList nodeList = elementGiven.getOwnerDocument().getElementsByTagName(elementGiven.getNodeName());
 
         for (int j = 0; j < nodeList.getLength(); j++) {
             Element node1 = (Element) nodeList.item(j);
             if (node1 != elementGiven) {
-                if (elementGiven.getTextContent() != null && node1.getTextContent() != null) {
-                    if (elementGiven.getTextContent().equals(node1.getTextContent())) {
-                        if (!elementGiven.getNodeName().equalsIgnoreCase("h1")) {
-                            String previousHeaderLevel = getPreviousLevelHeaderNode(elementGiven.getNodeName());
-                            //buscamos el "padre" de cada elemento a comparar
-                            Node previousElementGivenNode = getPreviousLevelNode(elementGiven, previousHeaderLevel);
-                            Node previousNode1Node = getPreviousLevelNode(node1, previousHeaderLevel);
-                            //Miramos si es el mismo
-                            if ((previousElementGivenNode != null) && (previousNode1Node != null) &&
-                                    (previousElementGivenNode == previousNode1Node)) {
-                                return true;
-                            }
-                        } else {
-                            return true;
-                        }
+                /*if (elementGiven.getTextContent() != null && node1.getTextContent() != null) {
+                    if (elementGiven.getTextContent().equals(node1.getTextContent())) {*/
+                if (elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL) != null) {
+                    String previousHeaderLevel = getPreviousLevelHeaderNode(elementGiven.getNodeName());
+                    //buscamos el "padre" de cada elemento a comparar
+                    Node previousElementGivenNode = getPreviousLevelNode(elementGiven, previousHeaderLevel);
+                    Node previousNode1Node = getPreviousLevelNode(node1, previousHeaderLevel);
+                    //Miramos si es el mismo
+                    if ((previousElementGivenNode != null) && (previousNode1Node != null) &&
+                            (previousElementGivenNode == previousNode1Node)) {
+                        return true;
                     }
+                } else {
+                    return true;
+                }
+            }
+                /*}
+            }*/
+        }
+
+        return false;
+    }
+
+    private boolean functionFollowingHeadersWithoutContent(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        NodeList nodeList = elementGiven.getOwnerDocument().getElementsByTagName(elementGiven.getNodeName());
+
+        for (int j = 0; j < nodeList.getLength(); j++) {
+            Element node1 = (Element) nodeList.item(j);
+            if (node1 != elementGiven) {
+                if (elementGiven.getUserData("headerHasContents") == null) {
+                    // Si headerHasContents entonces es true fijo
+                    if (elementGiven.getUserData(IntavConstants.NEXT_LEVEL) != null) {
+                        final int nextLevel = (Integer) elementGiven.getUserData(IntavConstants.NEXT_LEVEL);
+                        final int thisLevel = Integer.parseInt(elementGiven.getNodeName().substring(1));
+                        return thisLevel >= nextLevel;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    // Hay contenido
+                    return false;
                 }
             }
         }
 
         return false;
     }
+
 
     private Node getPreviousLevelSiblingNode(Node nodeGiven, String previousHeaderLevel) {
         //Buscamos el header de nivel anterior en los hermanos
@@ -1288,37 +1374,21 @@ public class Check {
     }
 
     //Comprueba que la estructura de encabezados del documento sea correcta
-    private boolean functionCorrectDocumentStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        try {
-            for (int i = 1; i < 7; i++) {
-                if (elementGiven.getElementsByTagName("h" + i) != null && elementGiven.getElementsByTagName("h" + i).getLength() > 0) {
-                    NodeList headers = elementGiven.getElementsByTagName("h" + i);
-                    for (int j = 0; j < headers.getLength(); j++) {
-                        Node node = headers.item(j);
-                        String stringHeading = node.getNodeName().trim();
-                        int thisHeading = Integer.parseInt(stringHeading.substring(1));
-                        int nextHeading = ((Integer) node.getUserData(IntavConstants.NEXT_LEVEL)).intValue();
-                        if (nextHeading > (thisHeading + 1)) {
-                            return false;
-                        }
-                        if (thisHeading != 1) {
-                            if (node.getUserData(IntavConstants.PREVIOUS_LEVEL) != null) {
-                                int previousHeading = ((Integer) node.getUserData(IntavConstants.PREVIOUS_LEVEL)).intValue();
-                                if ((previousHeading < (thisHeading - 1))) {
-                                    return false;
-                                }
-                            } else {
-                                // Un encabezado posterior a h1 que es el primer encabezado
-                                return false;
-                            }
-                        }
-                    }
+    private boolean functionIncorrectHeaderStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        boolean headerNestingIncorrect = false;
+        // Para todos los niveles de encabezados y mientras la estructura no sea incorrecta
+        for (int i = 1; i < 7 && !headerNestingIncorrect; i++) {
+            // Obtenemos los encabezados
+            final NodeList headers = elementGiven.getElementsByTagName("h" + i);
+            if (headers != null && headers.getLength() > 0) {
+                for (int j = 0; j < headers.getLength() && !headerNestingIncorrect; j++) {
+                    // Comprobamos si mantiene orden respecto al anterior
+                    headerNestingIncorrect |= functionPreviousHeadingWrong(checkCode, nodeNode, (Element) headers.item(j));
                 }
             }
-        } catch (Exception e) {
-            return true;
         }
-        return true;
+
+        return headerNestingIncorrect;
     }
 
     private String getPreviousLevelHeaderNode(String header) {
@@ -1328,7 +1398,7 @@ public class Check {
 
     //Comprueba que la estructura de encabezados del documento no sea correcta
     private boolean functionNoCorrectDocumentStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        return !functionCorrectDocumentStructure(checkCode, nodeNode, elementGiven);
+        return functionIncorrectHeaderStructure(checkCode, nodeNode, elementGiven);
     }
 
     //Comprueba si el documento tiene o no encabezados
@@ -1343,7 +1413,14 @@ public class Check {
 
     //Comprueba si el documento tiene o no encabezados
     private boolean functionHeadersExist(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        return !functionHeadersMissing(checkCode, nodeNode, elementGiven);
+        for (int i = 1; i < 7; i++) {
+            final NodeList headers = elementGiven.getElementsByTagName("h" + i);
+            if (headers != null && headers.getLength() > 0) {
+                //if (EvaluatorUtils.getElementsByTagName(elementGiven, "h" + i).size() != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // Note: The actual check for missing d-link happens in the parser so that it can be
@@ -1542,7 +1619,7 @@ public class Check {
 
     private boolean functionDefinitionListConstruction(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         NodeList nodeList = elementGiven.getChildNodes();
-        List<String> exceptions = null;
+        List<String> exceptions = Collections.emptyList();
         if (checkCode.getFunctionValue() != null && !checkCode.getFunctionValue().equals("")) {
             exceptions = Arrays.asList(checkCode.getFunctionValue().split(";"));
         }
@@ -1564,8 +1641,9 @@ public class Check {
                         if (!isDt) {  //Si isDt es false es que el anterior es un dd
                             isDt = true;
                             dtHasDd = false;
-                        } else { // dos dt seguidos, Error
-                            return true;
+                        } else {
+                            // dos dt seguidos se permiten
+                            //return true;
                         }
                     } else if (!exceptions.contains(nodeList.item(i).getNodeName().toLowerCase())) {
                         return true;
@@ -2093,7 +2171,6 @@ public class Check {
     }
 
     private boolean functionInternalElementCountGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven, int compType) {
-
         NodeList nodeList = elementGiven.getChildNodes();
         boolean found = false;
         int numBr = 0;
@@ -2212,7 +2289,6 @@ public class Check {
     }
 
     private boolean functionTextEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
         if (nodeNode == null) {
             return false;
         }
@@ -2239,10 +2315,7 @@ public class Check {
         if (stringPosition.length() == 0) {
             return string1.equalsIgnoreCase(string2);
         } else if (stringPosition.equalsIgnoreCase("anywhere")) {
-            if (!string2.contains(string1)) {
-                return false;
-            }
-            return true;
+            return string2.contains(string1);
         } else if (stringPosition.equalsIgnoreCase("end")) {
             return string2.endsWith(string1);
         } else if (stringPosition.equalsIgnoreCase("start")) {
@@ -2605,6 +2678,7 @@ public class Check {
             // check if there are SCOPE attributes on all of the TH elements
             for (int c = 0; c < listTh.getLength(); c++) {
                 Element elementTh = (Element) listTh.item(c);
+                // FIXME: Check for valid values of scope attribute
                 if (elementTh.hasAttribute("scope")) {
                     bUsesScope = true;
                     break;
@@ -2641,7 +2715,8 @@ public class Check {
         if (stringSummary.length() == 0) {
             return false; // no problem if both are empty
         }
-        String stringCaption = DOMUtil.getChildText(listCaption.item(0)).trim();
+        //String stringCaption = DOMUtil.getChildText(listCaption.item(0)).trim();
+        String stringCaption = EvaluatorUtility.getElementText(listCaption.item(0), true);
 
         return stringSummary.equalsIgnoreCase(stringCaption);
     }
@@ -2823,7 +2898,7 @@ public class Check {
     }
 
     private boolean hasNRepetitions(String text, int numRepetitions) {
-        String regexp = "(" + new String(IntavConstants.NBSP_BYTE) + "){" + numRepetitions + ",}";
+        String regexp = "(" + new String(StringUtils.NBSP_BYTE) + "){" + numRepetitions + ",}";
         Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
         return matcher.find();
@@ -3104,33 +3179,41 @@ public class Check {
     }
 
     private boolean functionFalseParagraphList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
-        int number = Integer.parseInt(checkCode.getFunctionNumber());
+        final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+        final int number = Integer.parseInt(checkCode.getFunctionNumber());
+        final String elementName = checkCode.getFunctionElement().isEmpty() ? "p" : checkCode.getFunctionElement();
 
-        int order = 0;
-        int oldOrder = 0;
+        String previousMatch = null;
         boolean first = true;
-
         Element checkedElement = elementGiven;
         for (int i = 0; i < number; i++) {
-            if (checkedElement != null && checkedElement.getNodeName().equalsIgnoreCase("p")) {
-                String text = EvaluatorUtility.getElementText(checkedElement);
-                Matcher matcher = pattern.matcher(text);
+            if (checkedElement != null && checkedElement.getNodeName().equalsIgnoreCase(elementName)) {
+                final String text = EvaluatorUtility.getElementText(checkedElement);
+                final Matcher matcher = pattern.matcher(text);
                 if (!matcher.find()) {
                     return false;
                 } else if (checkCode.getFunctionAttribute1().equals("sorted")) {
-                    // Para verificar si la lista es ordenada, se comprueba que, a partir del
-                    // segundo elemento, cada elemento sea igual al anterior más uno. En caso contrario
-                    // se devuelve falso.
-                    order = Integer.parseInt(matcher.group(1));
+                    final String match = matcher.group(1);
                     if (!first) {
-                        if (order != oldOrder + 1) {
-                            return false;
+                        // Para verificar si la lista es ordenada, se comprueba que, a partir del
+                        // segundo elemento, cada elemento sea igual al anterior más uno. En caso contrario
+                        // se devuelve falso.
+                        if ("char".equals(checkCode.getFunctionAttribute2())) {
+                            if (match.charAt(0) - previousMatch.charAt(0) != 1) {
+                                return false;
+                            }
+                            // TODO: ¿Hacer un caso especial para números romanos?
+                        } else {
+                            int order = Integer.parseInt(match);
+                            int oldOrder = Integer.parseInt(previousMatch);
+                            if (order != oldOrder + 1) {
+                                return false;
+                            }
                         }
                     } else {
                         first = false;
                     }
-                    oldOrder = order;
+                    previousMatch = match;
                 }
             } else {
                 return false;

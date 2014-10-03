@@ -2,10 +2,10 @@ package es.inteco.crawler.job;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.ignored.links.IgnoredLink;
 import es.inteco.crawler.ignored.links.Utils;
-import es.inteco.intav.utils.StringUtils;
 import es.inteco.plugin.WebAnalayzer;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;

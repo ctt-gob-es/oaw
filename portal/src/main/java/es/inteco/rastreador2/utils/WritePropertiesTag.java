@@ -45,7 +45,7 @@ public class WritePropertiesTag extends TagSupport {
         } catch (IOException e) {
             Logger.putLog("Tag Exception", WritePropertiesTag.class, Logger.LOG_LEVEL_ERROR, e);
         }
-        return (SKIP_BODY);
+        return SKIP_BODY;
     }
 
     public int doEndTag() throws JspException {
@@ -57,7 +57,7 @@ public class WritePropertiesTag extends TagSupport {
             throw new JspException(e);
         }
 
-        return (EVAL_PAGE);
+        return EVAL_PAGE;
     }
 
 }

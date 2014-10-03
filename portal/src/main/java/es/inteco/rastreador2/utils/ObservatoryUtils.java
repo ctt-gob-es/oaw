@@ -117,16 +117,16 @@ public final class ObservatoryUtils {
     //Calcula el nivel de adecuacion de la pagina de un portal
     public static String pageSuitabilityLevel(ObservatoryEvaluationForm observatoryEvaluationForm) {
         PropertiesManager pmgr = new PropertiesManager();
-        int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+        final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
         boolean isA = true;
         boolean isAA = true;
         //Se recorren los niveles de análisis
         for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
-            //Se recorren los niveles de acecuación
+            //Se recorren los niveles de adecuación
             for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
                 int numZeroRed = 0;
                 if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
-                    if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isA)) {
+                    if (observatoryLevel.getName().equals(Constants.OBS_N1) || isA) {
                         for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
                             if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
                                 numZeroRed = numZeroRed + 1;
@@ -137,7 +137,7 @@ public final class ObservatoryUtils {
                         }
                     }
                 } else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
-                    if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isAA)) {
+                    if (observatoryLevel.getName().equals(Constants.OBS_N1) || isAA) {
                         for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
                             if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
                                 numZeroRed = numZeroRed + 1;

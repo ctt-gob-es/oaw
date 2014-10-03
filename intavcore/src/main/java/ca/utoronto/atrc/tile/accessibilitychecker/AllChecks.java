@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AllChecks {
-    List<Check> checks;
+    private final List<Check> checks;
 
     public AllChecks() {
         checks = new ArrayList<Check>();
@@ -61,4 +61,5 @@ public class AllChecks {
         }
         return null;
     }
+
 }

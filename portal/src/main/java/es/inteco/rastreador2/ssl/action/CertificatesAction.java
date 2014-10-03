@@ -215,9 +215,19 @@ public class CertificatesAction extends Action {
         File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.path"));
         char[] passphrase = pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.storepass").toCharArray();
         Logger.putLog("Cargando KeyStore " + file + "...", CertificatesAction.class, Logger.LOG_LEVEL_INFO);
-        InputStream in = new FileInputStream(file);
-        keyStore.load(in, passphrase);
-        in.close();
+        InputStream in = null;
+        try {
+            in = new FileInputStream(file);
+            keyStore.load(in, passphrase);
+        } catch (Exception e) {
+            Logger.putLog("Error Cargando KeyStore " + file, CertificatesAction.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        } finally {
+            if (in != null) {
+                in.close();
+            }
+        }
+
     }
 
     private SSLSocket createSSLSocket(SavingTrustManager tm, CertificateForm certificateForm) throws Exception {
@@ -248,11 +258,19 @@ public class CertificatesAction extends Action {
             String alias = certificateForm.getHost() + "-" + (k + 1);
             keyStore.setCertificateEntry(alias, cert);
 
-            OutputStream out = new FileOutputStream(file);
-            keyStore.store(out, passphrase);
-            out.close();
-
-            Logger.putLog("Añadido certificado al almacén de claves", CertificatesAction.class, Logger.LOG_LEVEL_INFO);
+            OutputStream out = null;
+            try {
+                out = new FileOutputStream(file);
+                keyStore.store(out, passphrase);
+                Logger.putLog("Añadido al almacén de claves el certificado de " + alias, CertificatesAction.class, Logger.LOG_LEVEL_INFO);
+            } catch (Exception e) {
+                Logger.putLog("Error al añadidir el certificado de " + alias, CertificatesAction.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
+            } finally {
+                if (out != null) {
+                    out.close();
+                }
+            }
         }
     }
 

@@ -37,19 +37,19 @@ import java.util.List;
 import java.util.Map;
 
 public class GuidelineGroup {
-    String name;
-    String principle;
-    String nameId;
-    String url;
-    String number;
-    List<Integer> checks;
-    List<Integer> noExecutedMarkChecks;
-    List<Integer> onlyWarningChecks;
-    Map<Integer, Integer> relatedChecks;
-    List<GuidelineGroup> groups;
-    String type;
-    String aspect;
-    String level;
+    private String name;
+    private String principle;
+    private String nameId;
+    private String url;
+    private String number;
+    private List<Integer> checks;
+    private List<Integer> noExecutedMarkChecks;
+    private List<Integer> onlyWarningChecks;
+    private Map<Integer, Integer> relatedChecks;
+    private List<GuidelineGroup> groups;
+    private String type;
+    private String aspect;
+    private String level;
 
     public GuidelineGroup() {
         name = "";
@@ -139,10 +139,8 @@ public class GuidelineGroup {
         int count = 0;
 
         AllChecks allChecks = EvaluatorUtility.getAllChecks();
-        for (int x = 0; x < checks.size(); x++) {
-            Integer checkId = (Integer) checks.get(x);
-
-            Check check = allChecks.getCheck(checkId.intValue());
+        for (Integer checkId : checks) {
+            Check check = allChecks.getCheck(checkId);
             if (check != null) {
                 if (check.getConfidence() == confidenceGiven) {
                     count++;
@@ -150,8 +148,7 @@ public class GuidelineGroup {
             }
         }
 
-        for (int y = 0; y < groups.size(); y++) {
-            GuidelineGroup group = (GuidelineGroup) groups.get(y);
+        for (GuidelineGroup group : groups) {
             count += group.getCount(confidenceGiven);
         }
 
@@ -170,7 +167,7 @@ public class GuidelineGroup {
         NodeList childNodes = node.getChildNodes();
         for (int x = 0; x < childNodes.getLength(); x++) {
             if (childNodes.item(x).getNodeName().compareToIgnoreCase("name") == 0) {
-                if (foundName == true) {
+                if (foundName) {
                     Logger.putLog("Warning: group has more than one name!", GuidelineGroup.class, Logger.LOG_LEVEL_WARNING);
                     return false;
                 } else {
@@ -190,13 +187,13 @@ public class GuidelineGroup {
             } else if (childNodes.item(x).getNodeName().equalsIgnoreCase("subgroup")
                     || childNodes.item(x).getNodeName().equalsIgnoreCase("suitability")) {
                 GuidelineGroup group = new GuidelineGroup();
-                if (group.initialize(childNodes.item(x), guideline) == true) {
+                if (group.initialize(childNodes.item(x), guideline)) {
                     groups.add(group);
                 }
             }
 
         }
-        if (foundName == false) {
+        if (!foundName) {
             Logger.putLog("Warning: group has no name!", GuidelineGroup.class, Logger.LOG_LEVEL_WARNING);
             return false;
         }
@@ -204,31 +201,29 @@ public class GuidelineGroup {
         return true;
     }
 
-    public void getChecks(List inChecks) {
+    public void getChecks(List<Integer> inChecks) {
         // add the checks from this guideline
-        for (int x = 0; x < checks.size(); x++) {
-            inChecks.add((Integer) checks.get(x));
+        for (Integer check : checks) {
+            inChecks.add(check);
         }
 
         // add checks from all guideline groups
-        for (int x = 0; x < groups.size(); x++) {
-            GuidelineGroup group = (GuidelineGroup) groups.get(x);
+        for (GuidelineGroup group : groups) {
             group.getChecks(inChecks);
         }
     }
 
     // Returns true if this group contains the given check.
     public boolean containsCheck(int checkId) {
-        for (int x = 0; x < checks.size(); x++) {
-            if (((Integer) checks.get(x)).intValue() == checkId) {
+        for (Integer check : checks) {
+            if (check == checkId) {
                 return true;
             }
         }
 
         // try the subgroups
-        for (int x = 0; x < groups.size(); x++) {
-            GuidelineGroup group = (GuidelineGroup) groups.get(x);
-            if (group.containsCheck(checkId) == true) {
+        for (GuidelineGroup group : groups) {
+            if (group.containsCheck(checkId)) {
                 return true;
             }
         }
@@ -237,9 +232,8 @@ public class GuidelineGroup {
 
     // Returns the subgroup of a given check
     public String getSubgroupFromCheck(int checkId) {
-        for (int x = 0; x < groups.size(); x++) {
-            GuidelineGroup group = (GuidelineGroup) groups.get(x);
-            if (group.containsCheck(checkId) == true) {
+        for (GuidelineGroup group : groups) {
+            if (group.containsCheck(checkId)) {
                 return group.name;
             }
         }

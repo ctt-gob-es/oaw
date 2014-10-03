@@ -1,6 +1,6 @@
 package es.inteco.rastreador2.utils;
 
-public class Url_Sospecha {
+public class UrlSospecha {
     private String url;
     private float sospecha;
 

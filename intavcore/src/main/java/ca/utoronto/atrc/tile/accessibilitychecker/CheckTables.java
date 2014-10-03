@@ -1,7 +1,7 @@
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import es.inteco.common.logging.Logger;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -14,30 +14,51 @@ public final class CheckTables {
     private CheckTables() {
     }
 
-    protected static boolean functionRowCountNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        int numLimit;
+    protected static boolean functionRowCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        int number;
         int rows;
         try {
-            numLimit = Integer.parseInt(checkCode.getFunctionNumber());
+            number = Integer.parseInt(checkCode.getFunctionNumber());
             rows = (Integer) elementGiven.getUserData("rows");
         } catch (Exception e) { // number could not be parsed
             return false;
         }
+        final String position = checkCode.getFunctionPosition().isEmpty()?"not-equals":checkCode.getFunctionPosition();
 
-        return rows != numLimit;
+        if ("equals".equalsIgnoreCase(position)) {
+            return rows == number;
+        } else if ( "greater".equalsIgnoreCase(position)) {
+            return rows>number;
+        } else if ("lesser".equalsIgnoreCase(position)) {
+            return rows<number;
+        } else {
+            // Incluye tanto not-equals como cualquier otro valor
+            return rows != number;
+        }
     }
 
-    protected static boolean functionColumnCountNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        int numLimit = 0;
+    protected static boolean functionColumnCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        int number = 0;
         int cols = 0;
         try {
-            numLimit = Integer.parseInt(checkCode.getFunctionNumber());
+            number = Integer.parseInt(checkCode.getFunctionNumber());
             cols = (Integer) elementGiven.getUserData("cols");
         } catch (Exception e) { // number could not be parsed
             return false;
         }
 
-        return cols != numLimit;
+        final String position = checkCode.getFunctionPosition().isEmpty()?"not-equals":checkCode.getFunctionPosition();
+
+        if ("equals".equalsIgnoreCase(position)) {
+            return cols == number;
+        } else if ( "greater".equalsIgnoreCase(position)) {
+            return cols>number;
+        } else if ("lesser".equalsIgnoreCase(position)) {
+            return cols<number;
+        } else {
+            // Incluye tanto not-equals como cualquier otro valor
+            return cols != number;
+        }
     }
 
     // Checks if the given table is the given type.
@@ -186,7 +207,7 @@ public final class CheckTables {
                     if (isCorrectHorizontalHeading(table, 0, x, false)) {
                         return (isCorrectHorizontalTable(table, x, y));
                     } else if (isCorrectVerticalHeading(table, y, 0, false)) {
-                        return (isCorrectVerticalTable(table, x, y));
+                        return isCorrectVerticalTable(table, x, y);
                     } else {
                         //Si no es bidireccional ni horizontal ni vertical... ¿que es? --> ERROR
                         return false;

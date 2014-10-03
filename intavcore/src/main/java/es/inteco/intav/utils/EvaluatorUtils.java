@@ -8,6 +8,7 @@ import es.inteco.common.CheckAccessibility;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.*;
 import es.inteco.intav.persistence.Analysis;
@@ -35,11 +36,14 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EvaluatorUtils {
+public final class EvaluatorUtils {
+
+    private EvaluatorUtils() {
+    }
 
     public static EvaluationForm generateEvaluationForm(Evaluation evaluation, String language) {
         EvaluationForm evaluationForm = new EvaluationForm();
-        Guideline guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0).toString());
+        Guideline guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
 
         evaluationForm.setEntity(evaluation.getEntidad());
         evaluationForm.setUrl(evaluation.getFilename());
@@ -512,10 +516,9 @@ public class EvaluatorUtils {
     }
 
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult) {
-
         int currentPage = 1;
         if (request.getParameter(IntavConstants.PAG_PARAM) != null) {
-            currentPage = Integer.parseInt((String) request.getParameter(IntavConstants.PAG_PARAM));
+            currentPage = Integer.parseInt(request.getParameter(IntavConstants.PAG_PARAM));
         }
 
         PropertiesManager properties = new PropertiesManager();
@@ -536,7 +539,6 @@ public class EvaluatorUtils {
     }
 
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult, int pagSize, int currentPage) {
-
         List<PageForm> pageFormList = new ArrayList<PageForm>();
         String path = request.getRequestURL() + "?" + request.getQueryString();
         path = removeParameterP(path);
@@ -729,7 +731,7 @@ public class EvaluatorUtils {
     public static ObservatoryEvaluationForm generateObservatoryEvaluationForm(Evaluation evaluation, String methodology, boolean isDebugMode) {
         Guideline guideline;
         if (StringUtils.isEmpty(methodology)) {
-            guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0).toString());
+            guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
         } else {
             guideline = new Guideline();
             guideline = guideline.initialize(methodology);
@@ -744,7 +746,7 @@ public class EvaluatorUtils {
         Map<String, List<Integer>> aspects = initializeAspects();
 
         for (int i = 0; i < guideline.getGroups().size(); i++) {
-            GuidelineGroup levelGroup = (GuidelineGroup) guideline.getGroups().get(i);
+            GuidelineGroup levelGroup = guideline.getGroups().get(i);
             ObservatoryLevelForm observatoryLevelForm = new ObservatoryLevelForm();
             observatoryLevelForm.setName(levelGroup.getName());
             for (int j = 0; j < levelGroup.getGroupsVector().size(); j++) {
@@ -1202,7 +1204,7 @@ public class EvaluatorUtils {
             hd.endElement("", "", "type");
 
             for (int i = 0; i < guideline.getGroups().size(); i++) {
-                GuidelineGroup levelGroup = (GuidelineGroup) guideline.getGroups().get(i);
+                GuidelineGroup levelGroup = guideline.getGroups().get(i);
                 hd.startElement("", "", "group", null);
                 hd.startElement("", "", "name", null);
                 hd.characters(levelGroup.getName().toCharArray(), 0, levelGroup.getName().length());
@@ -1231,7 +1233,7 @@ public class EvaluatorUtils {
 
                         hd.startElement("", "", "checks", null);
                         for (int l = 0; l < subgroup.getChecksVector().size(); l++) {
-                            Integer check = (Integer) subgroup.getChecksVector().get(l);
+                            Integer check = subgroup.getChecksVector().get(l);
 
                             AttributesImpl checkAttributes = new AttributesImpl();
                             checkAttributes.addAttribute("", "", "id", "", check.toString());
@@ -1266,7 +1268,7 @@ public class EvaluatorUtils {
     }
 
     public static List<Element> getElementsByTagName(Document document, String tag) {
-        List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<Element>();
 
         NodeList allElements = document.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -1280,7 +1282,7 @@ public class EvaluatorUtils {
     }
 
     public static List<Element> getElementsByTagName(Element element, String tag) {
-        List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<Element>();
 
         NodeList allElements = element.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {

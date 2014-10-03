@@ -4,8 +4,8 @@ import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.ignored.links.IgnoredLink;
-import es.inteco.crawler.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
+import es.inteco.common.utils.StringUtils;
 import org.w3c.dom.*;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
@@ -89,7 +89,7 @@ public class CrawlerDOMUtils {
     private static String getFrameContent(String url) throws Exception {
         HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
         InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-        String textContent = FileUtils.getContentAsString(markableInputStream, CrawlerUtils.getCharset(connection, markableInputStream));
+        String textContent = StringUtils.getContentAsString(markableInputStream, CrawlerUtils.getCharset(connection, markableInputStream));
 
         textContent = CrawlerUtils.removeHtmlComments(textContent);
 

@@ -107,7 +107,7 @@ public class NuevoUsuarioSistemaAction extends Action {
             }
             //Comprobamos que el password usa caracteres correctos
             ComprobadorCaracteres cc = new ComprobadorCaracteres(nuevoUsuarioSistemaForm.getPassword());
-            boolean result = cc.comprueba();
+            boolean result = cc.isNombreValido();
             if (!result) {
                 errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                 saveErrors(request, errors);
@@ -116,7 +116,7 @@ public class NuevoUsuarioSistemaAction extends Action {
 
             //Comprobamos que el nombre de usuario usa caracteres correctos
             cc = new ComprobadorCaracteres(nuevoUsuarioSistemaForm.getNombre());
-            result = cc.comprueba();
+            result = cc.isNombreValido();
             if (!result) {
                 errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                 saveErrors(request, errors);

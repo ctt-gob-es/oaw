@@ -98,21 +98,21 @@ public final class RastreoDao {
         } catch (SQLException e) {
             Logger.putLog("Exception al buscar Rastreo", RastreoDao.class, Logger.LOG_LEVEL_ERROR, e);
             throw new BusinessException(e);
-
         } finally {
-            try {
-                if (rs != null) {
+            if (rs != null) {
+                try {
                     rs.close();
-                } // end if
-
-                if (ps != null) {
+                } catch (SQLException e) {
+                    Logger.putLog("Exception al cerrar búsqueda de  Rastreo", RastreoDao.class, Logger.LOG_LEVEL_ERROR, e);
+                }
+            } // end if
+            if (ps != null) {
+                try {
                     ps.close();
-                } // end if
-
-            } catch (SQLException e) {
-                Logger.putLog("Exception al buscar Rastreo", RastreoDao.class, Logger.LOG_LEVEL_ERROR, e);
-                throw new BusinessException(e);
-            }
+                } catch (SQLException e) {
+                    Logger.putLog("Exception al cerrar búsqueda de  Rastreo", RastreoDao.class, Logger.LOG_LEVEL_ERROR, e);
+                }
+            } // end if
         }// end finally
 
         return listado;

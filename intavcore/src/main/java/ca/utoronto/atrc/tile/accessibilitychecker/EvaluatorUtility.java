@@ -33,11 +33,11 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.ValidationError;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.intav.iana.IanaLanguages;
 import es.inteco.intav.iana.IanaUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.intav.utils.StringUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -56,7 +56,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EvaluatorUtility {
+public final class EvaluatorUtility {
     // the evaluator
     private static Evaluator evaluator = null;
 
@@ -71,11 +71,14 @@ public class EvaluatorUtility {
 
     private static IanaLanguages ianaLanguages = new IanaLanguages();
 
+    private static int concurrentUsers = 0;
+
+    private EvaluatorUtility() {
+    }
+
     public static boolean isInitialized() {
         return initialized;
     }
-
-    private static int concurrentUsers = 0;
 
     public static int getConcurrentUsers() {
         return concurrentUsers;
@@ -216,7 +219,7 @@ public class EvaluatorUtility {
                 if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                     buffer.append(nodeChild.getNodeValue());
                     if (inlineTags == null) {
-                        buffer.append(" ");
+                        //buffer.append(" ");
                     }
                 }
                 buffer.append(getElementTextLoop(nodeChild, inlineTags));
@@ -342,7 +345,6 @@ public class EvaluatorUtility {
     }
 
     // load a file that contains accessibility checks
-
     private static boolean loadChecksFile(InputStream inputStream) {
         try {
             if (inputStream == null) {
@@ -509,7 +511,7 @@ public class EvaluatorUtility {
                 long inicio = System.currentTimeMillis();
                 // connect to the server
                 connection.connect();
-                InputStream content = (InputStream) connection.getInputStream();
+                InputStream content = connection.getInputStream();
 
                 BufferedInputStream stream = new BufferedInputStream(content);
 
