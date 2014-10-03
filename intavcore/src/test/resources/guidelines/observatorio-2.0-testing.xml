@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guideline>
+    <type>observatory</type>
+    <title abbr="OBSERVATORIO-2.0" long-name="Pautas de verificación del Observatorio v2.0">Observatorio MINHAP 2.0 - Testing</title>
+    <date>2014-09-15</date>
+    <status>Fichero para realizar tests sobre las comprobaciones incorporadas al Observatorio MinHAP</status>
+    <earlid>URL donde están definidas las pautas</earlid>
+    <preamble>Comentario sobre el Observatorio</preamble>
+
+    <group>
+        <name>Priority</name>
+        <suitability>
+            <name>A</name>
+            <subgroup aspect="observatory.aspect.testing">
+                <name>testing</name>
+                <checks>
+                    <check id="1"/>
+                    <check id="42"/>
+                    <check id="64"/>
+                    <check id="100"/>
+                    <check id="157"/>
+                    <check id="278"/>
+                    <check id="306"/>
+                    <check id="413"/>
+                    <check id="414"/>
+                    <check id="415"/>
+                    <check id="406"/>
+                    <check id="407"/>
+                    <check id="416"/>
+                    <check id="417"/>
+                    <check id="395"/>
+                    <check id="243"/>
+                    <check id="418"/>
+                    <check id="419"/>
+                    <check id="420"/>
+                </checks>
+            </subgroup>
+        </suitability>
+    </group>
+
+</guideline>
