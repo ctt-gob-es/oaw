@@ -6,8 +6,11 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
 
-public class CrawlerJobManager {
+public final class CrawlerJobManager {
     private static Scheduler scheduler;
+
+    private CrawlerJobManager() {
+    }
 
     private static void init() throws Exception {
         if (scheduler == null) {

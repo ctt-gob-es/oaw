@@ -3,10 +3,10 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.intav.utils.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +27,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CheckUtils {
+public final class CheckUtils {
+
+    private CheckUtils() {
+    }
+
     public static List<Element> getSectionLink(NodeList links, String sectionRegExp) {
         List<Element> linksFound = new ArrayList<Element>();
         for (int i = 0; i < links.getLength(); i++) {

@@ -25,8 +25,7 @@ Adaptive Technology Resource Centre, University of Toronto
 Telephone: (416) 978-4360
 -->
 <checks xml:lang="en" xmlns="http://checker.atrc.utoronto.ca/2004/12/Checks"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        >
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <header>
         <title>Lista completa de comprobaciones de accesibilidad</title>
         <date>2006-06-19</date>
@@ -34,12 +33,7 @@ Telephone: (416) 978-4360
     </header>
 
     <check id="1" key="img" confidence="high" status="5">
-        <name>Todos los elementos
-            <code>img</code>
-            tienen un atributo
-            <code>alt</code>
-            alternativo.
-        </name>
+        <name>Todos los elementos <code>img</code> tienen un atributo <code>alt</code> alternativo.</name>
         <error>check.1.error</error>
         <rationale>check.1.rationale</rationale>
         <machine>
@@ -4493,8 +4487,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="410" key="ol" confidence="medium" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos
-            <code>br</code>
+        <name>Listas ordenadas mal creadas con elementos <code>br</code>
         </name>
         <error>check.410.error</error>
         <rationale>check.410.rationale</rationale>
@@ -4505,8 +4498,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="411" key="ol" confidence="medium" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos
-            <code>p</code>
+        <name>Listas ordenadas mal creadas con elementos <code>p</code>
         </name>
         <error>check.411.error</error>
         <rationale>check.411.rationale</rationale>
@@ -4525,4 +4517,16 @@ Telephone: (416) 978-4360
             <function call="characters-greater-than" node="." value="250"/>
         </machine>
     </check>
+
+    <!-- Añadidos para el observatorio 2.0 -->
+    <check id="413" key="img" confidence="high">
+        <name>Todos los elementos <code>img</code> con texto alternativo <code>alt</code> vacío no tienen atributo <code>title</code> o bien éste está vacío y que no tienen atributo <code>role</code> o bien su valor es <code>presentation</code>.</name>
+        <error>check.413.error</error>
+        <rationale>check.413.rationale</rationale>
+        <machine>
+            <trigger element="img"/>
+            <function call="attribute-missing" node="." value="alt"/>
+        </machine>
+    </check>
+
 </checks>

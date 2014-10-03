@@ -3,7 +3,7 @@ package es.inteco.rastreador2.action.semillas;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.action.observatorio.SemillasObservatorioAction;

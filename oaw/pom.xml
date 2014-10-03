@@ -67,7 +67,7 @@
             <properties>
                 <profile.name>integracion</profile.name>
                 <deploy.path>/opt/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
-                <files.path>/root/oaw/files</files.path>
+                <files.path>/home/tomcat/oaw/files</files.path>
             </properties>
         </profile>
     </profiles>

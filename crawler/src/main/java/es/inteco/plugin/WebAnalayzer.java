@@ -1,9 +1,9 @@
 package es.inteco.plugin;
 
 import es.inteco.common.logging.Logger;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
-import es.inteco.intav.utils.StringUtils;
 
 import java.util.Hashtable;
 import java.util.Map;

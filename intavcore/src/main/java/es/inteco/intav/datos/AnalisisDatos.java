@@ -9,7 +9,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.EvaluationForm;
 import es.inteco.intav.persistence.Analysis;
-import es.inteco.intav.persistence.SearchAnalysis;
 import es.inteco.intav.utils.EvaluatorUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class AnalisisDatos {
@@ -75,7 +70,7 @@ public class AnalisisDatos {
             pstmt = conn.prepareStatement(query);
             pstmt.setString(1, eval.getChecksExecutedStr());
             pstmt.setInt(2, IntavConstants.STATUS_SUCCESS);
-            pstmt.setLong(3, eval.getId_analisis());
+            pstmt.setLong(3, eval.getIdAnalisis());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("SQLException: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
@@ -125,7 +120,7 @@ public class AnalisisDatos {
         }
     }
 
-    public static int countAnalysis(SearchAnalysis searchAnalysis) {
+    /*public static int countAnalysis(SearchAnalysis searchAnalysis) {
         PropertiesManager pmgr = new PropertiesManager();
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -157,9 +152,9 @@ public class AnalisisDatos {
             close(conn, rs, pstmt);
         }
         return 0;
-    }
+    } //*/
 
-    private static Date getFinalDate(Date initialDate) {
+    /*private static Date getFinalDate(Date initialDate) {
         Calendar cl1 = Calendar.getInstance();
 
         cl1.setTime(initialDate);
@@ -167,7 +162,7 @@ public class AnalisisDatos {
         cl1.add(Calendar.SECOND, -1);
 
         return cl1.getTime();
-    }
+    }//*/
 
     public static Analysis getAnalisisFromId(Connection conn, long id) {
         PreparedStatement pstmt = null;
@@ -350,7 +345,7 @@ public class AnalisisDatos {
         return evaluationIds;
     }
 
-    public static List<Long> getEvaluationIds(String entity) {
+    /*public static List<Long> getEvaluationIds(String entity) {
         List<Long> evaluationIds = new ArrayList<Long>();
 
         Connection conn = null;
@@ -373,6 +368,6 @@ public class AnalisisDatos {
         }
 
         return evaluationIds;
-    }
+    }//*/
 
 }

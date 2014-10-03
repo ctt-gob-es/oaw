@@ -1,6 +1,6 @@
 package es.inteco.rastreador2.actionform.basic.service;
 
-import es.inteco.crawler.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import org.apache.struts.validator.ValidatorForm;
 
 import java.util.Date;

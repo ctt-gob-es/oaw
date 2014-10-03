@@ -4,7 +4,7 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import org.apache.commons.digester.Digester;
 import org.xml.sax.ContentHandler;

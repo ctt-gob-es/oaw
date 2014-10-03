@@ -136,7 +136,7 @@ public class Evaluator {
         // Si se ha invocado desde el rastreador, llevará asociado un ID de rastreo
         boolean fromCrawler = checkAccessibility.getIdRastreo() != 0;
 
-        InputStream inputStream = null;
+        InputStream inputStream;
         if (!fromCrawler) {
             inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes(IntavConstants.DEFAULT_ENCODING));
         } else {
@@ -193,10 +193,11 @@ public class Evaluator {
 
 
     private List<Integer> createCheckList(CheckAccessibility checkAccessibility, AllChecks allChecks, Guideline guideline) {
-        List<Integer> checksSelected = new ArrayList<Integer>();
-        PropertiesManager pmgr = new PropertiesManager();
+        final List<Integer> checksSelected = new ArrayList<Integer>();
 
-        if (guideline.getFilename().equalsIgnoreCase(pmgr.getValue("intav.properties", "observatory.guideline.file"))) {
+        //PropertiesManager pmgr = new PropertiesManager();
+        //if (guideline.getFilename().equalsIgnoreCase(pmgr.getValue("intav.properties", "observatory.guideline.file"))) {
+        if (guideline.getFilename().startsWith("observatorio") ) {
             guideline.getAllObservatoryChecks(checksSelected, checkAccessibility.getLevel());
         } else {
             guideline.getAllChecks(checksSelected, checkAccessibility.getLevel());
@@ -205,8 +206,8 @@ public class Evaluator {
         if (checksSelected.isEmpty()) {
             for (int x = 0; x < checksSelected.size(); x++) {
                 for (int y = x + 1; y < checksSelected.size(); y++) {
-                    Integer ix = (Integer) checksSelected.get(x);
-                    Integer iy = (Integer) checksSelected.get(y);
+                    Integer ix = checksSelected.get(x);
+                    Integer iy = checksSelected.get(y);
                     if (ix.intValue() == iy.intValue()) {
                         checksSelected.remove(y);
                         y--;
@@ -241,7 +242,7 @@ public class Evaluator {
                         // insert it in front of that check otherwise add it at the end of the list
                         boolean checkAdded = false;
                         for (int y = 0; y < listOfChecks.size(); y++) {
-                            Check tempCheck = (Check) listOfChecks.get(y);
+                            Check tempCheck = listOfChecks.get(y);
                             if (tempCheck.isPrerequisite(check.getId())) {
                                 listOfChecks.add(y, check);
                                 checkAdded = true;
@@ -280,7 +281,7 @@ public class Evaluator {
             int idAnalisis = setAnalisisDB(evaluation, checkAccesibility);
 
             // register DB analysis id in evaluation object
-            evaluation.setId_analisis(idAnalisis);
+            evaluation.setIdAnalisis(idAnalisis);
         }
 
         evaluation.addGuideline(checkAccesibility.getGuidelineFile());
@@ -334,28 +335,28 @@ public class Evaluator {
     }
 
     private void addIncidence(Evaluation eval, Problem prob, List<Incidencia> incidenceList) {
-        Incidencia incidencia1 = new Incidencia();
+        Incidencia incidencia = new Incidencia();
 
-        incidencia1.setCodigoAnalisis(eval.getId_analisis());
-        incidencia1.setCodigoComprobacion(prob.getCheck().getId());
-        incidencia1.setCodigoLineaFuente(prob.getLineNumber());
-        incidencia1.setCodigoColumnaFuente(prob.getColumnNumber());
-        incidencia1.setCodigoFuente(es.inteco.intav.negocio.SourceManager.getSourceInfo(prob));
+        incidencia.setCodigoAnalisis(eval.getIdAnalisis());
+        incidencia.setCodigoComprobacion(prob.getCheck().getId());
+        incidencia.setCodigoLineaFuente(prob.getLineNumber());
+        incidencia.setCodigoColumnaFuente(prob.getColumnNumber());
+        incidencia.setCodigoFuente(es.inteco.intav.negocio.SourceManager.getSourceInfo(prob));
 
-        incidenceList.add(incidencia1);
+        incidenceList.add(incidencia);
     }
 
 
     private void addIncidence(Evaluation eval, Problem prob, List<Incidencia> incidenceList, String text) {
-        Incidencia incidencia1 = new Incidencia();
+        Incidencia incidencia = new Incidencia();
 
-        incidencia1.setCodigoAnalisis(eval.getId_analisis());
-        incidencia1.setCodigoComprobacion(prob.getCheck().getId());
-        incidencia1.setCodigoLineaFuente(prob.getLineNumber());
-        incidencia1.setCodigoColumnaFuente(prob.getColumnNumber());
-        incidencia1.setCodigoFuente(text);
+        incidencia.setCodigoAnalisis(eval.getIdAnalisis());
+        incidencia.setCodigoComprobacion(prob.getCheck().getId());
+        incidencia.setCodigoLineaFuente(prob.getLineNumber());
+        incidencia.setCodigoColumnaFuente(prob.getColumnNumber());
+        incidencia.setCodigoFuente(text);
 
-        incidenceList.add(incidencia1);
+        incidenceList.add(incidencia);
     }
 
     // Realiza la evaluación de un conjunto de checks sobre un nodo
@@ -364,9 +365,7 @@ public class Evaluator {
         // keep track of the checks that have run (needed for prerequisites)
         List<Integer> vectorChecksRun = new ArrayList<Integer>();
 
-        for (int iCheck = 0; iCheck < vectorChecks.size(); iCheck++) {
-            Check check = (Check) vectorChecks.get(iCheck);
-
+        for (Check check : vectorChecks) {
             // Comprobamos que el check está activo
             if (check.getCheckOkCode() != CheckFunctionConstants.CHECK_STATUS_OK) {
                 continue;
@@ -492,22 +491,19 @@ public class Evaluator {
     }
 
     // Añade los checks especificos de un elemento
-
     private void addSpecificChecks(List<Check> vectorChecks, Map<String, List<Check>> elementsMap, String nameElement) {
-        List<Check> vectorTemp = elementsMap.get(nameElement);
-
+        final List<Check> vectorTemp = elementsMap.get(nameElement);
         if (vectorTemp != null) {
-            for (int x = 0; x < vectorTemp.size(); x++) {
-                vectorChecks.add(vectorTemp.get(x));
+            for (Check check: vectorTemp) {
+                vectorChecks.add(check);
             }
         }
     }
 
     // Añade los checks generales de todos los elementos
-
     private void addGeneralChecks(List<Check> checks, Map<String, List<Check>> elementsMap) {
         // add the checks that apply to all elements
-        List<Check> allElementsChecks = elementsMap.get("*");
+        final List<Check> allElementsChecks = elementsMap.get("*");
         if (allElementsChecks != null) {
             for (Check check : allElementsChecks) {
                 checks.add(check);
@@ -576,9 +572,8 @@ public class Evaluator {
     }
 
     // sets the 'appropriate' flag for all data used in the given checks
-
     private void setAppropriateData(List<Integer> checksIds, String language) {
-        AllChecks allChecks = EvaluatorUtility.getAllChecks();
+        final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
         for (Integer checkId : checksIds) {
             Check check = allChecks.getCheck(checkId);
@@ -589,7 +584,6 @@ public class Evaluator {
     }
 
     // Returns the Xpath expression that identifies the given node.
-
     public static String getXpath(Node node) {
         String expression;
         String attribute = "";
@@ -613,7 +607,6 @@ public class Evaluator {
     }
 
     // Recursive function that creates the Xpath expression
-
     private static String getXpathLoop(Node node, String expression) {
         Node nodeParent = node.getParentNode();
         if ((nodeParent == null) ||
@@ -689,7 +682,6 @@ public class Evaluator {
     }
 
     // Gets the global information about the analysis from DataBase and returns it
-
     public Evaluation getAnalisisDB(Connection conn, long id, Document doc, boolean getOnlyChecks) {
         Evaluation eval = new Evaluation();
 
@@ -699,7 +691,7 @@ public class Evaluator {
             return null;
         }
 
-        eval.setId_analisis(id);
+        eval.setIdAnalisis(id);
         eval.setHtmlDoc(doc);
         eval.setFilename(analysis.getUrl());
         eval.setEntidad(analysis.getEntity());
@@ -723,7 +715,7 @@ public class Evaluator {
             return null;
         }
 
-        eval.setId_analisis(id);
+        eval.setIdAnalisis(id);
         eval.setHtmlDoc(doc);
         eval.setFilename(analysis.getUrl());
         eval.setEntidad(analysis.getEntity());
@@ -752,9 +744,8 @@ public class Evaluator {
     }
 
     // Gets the list of problems related with an analysis from DataBase
-
     private Evaluation getIncidenciasFromAnalisisDB(Connection conn, Evaluation eval, boolean getOnlyCheck) {
-        List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getId_analisis(), getOnlyCheck);
+        List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck);
 
         AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
@@ -776,7 +767,7 @@ public class Evaluator {
     }
 
     private Evaluation getObservatoryIncidenciasFromAnalisisDB(Connection conn, Evaluation eval) {
-        List<Incidencia> arrlist = IncidenciaDatos.getObservatoryIncidenciasFromAnalisisId(conn, eval.getId_analisis());
+        List<Incidencia> arrlist = IncidenciaDatos.getObservatoryIncidenciasFromAnalisisId(conn, eval.getIdAnalisis());
 
         AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
@@ -790,5 +781,5 @@ public class Evaluator {
 
         return eval;
     }
-}
 
+}

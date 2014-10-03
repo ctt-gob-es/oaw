@@ -1750,7 +1750,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                         for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
                             //Se comprueba si puntúa o no puntúa
                             if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
-                                //Si puntúa, se comprueba si se le da un 0 o un 1
+                                //Si puntúa, se isNombreValido si se le da un 0 o un 1
                                 if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
                                     //Si le damos un 1, lo añadimos a la puntuación e incrementamos el número
                                     //de puntos que han puntuado
@@ -1851,13 +1851,13 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, List<ObservatoryEvaluationForm>> getPagesByType(List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<String, List<ObservatoryEvaluationForm>>();
+        final Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<String, List<ObservatoryEvaluationForm>>();
         globalResult.put(Constants.OBS_NV, new ArrayList<ObservatoryEvaluationForm>());
         globalResult.put(Constants.OBS_A, new ArrayList<ObservatoryEvaluationForm>());
         globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
 
-        PropertiesManager pmgr = new PropertiesManager();
-        int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 
         //Se recorren las páginas de cada observatorio
         for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
@@ -1896,6 +1896,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                 }
             }
 
+            // TODO: Simplificar
             if (isA && isAA) {
                 List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_AA);
                 globalResult2.add(observatoryEvaluationForm);
@@ -1915,8 +1916,8 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     private static Map<Long, Map<String, Integer>> getSitesByType(List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);
-        Map<Long, Map<String, Integer>> sitesByType = new HashMap<Long, Map<String, Integer>>();
+        final Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);
+        final Map<Long, Map<String, Integer>> sitesByType = new HashMap<Long, Map<String, Integer>>();
 
         for (String key : pagesByType.keySet()) {
             for (ObservatoryEvaluationForm observatoryEvaluationForm : pagesByType.get(key)) {
@@ -1925,7 +1926,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                     value.put(key, value.get(key) + 1);
                     sitesByType.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
                 } else {
-                    Map<String, Integer> initialValues = new HashMap<String, Integer>();
+                    final Map<String, Integer> initialValues = new HashMap<String, Integer>();
                     if (key.equals(Constants.OBS_NV)) {
                         initialValues.put(Constants.OBS_NV, 1);
                     } else {

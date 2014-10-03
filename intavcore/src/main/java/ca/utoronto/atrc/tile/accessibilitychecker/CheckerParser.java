@@ -27,25 +27,28 @@ Telephone: (416) 978-4360
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import es.inteco.common.logging.Logger;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.cyberneko.html.parsers.DOMParser;
-import es.inteco.intav.utils.StringUtils;
 import org.apache.xerces.xni.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
 public class CheckerParser extends DOMParser {
 
     private XMLLocator locator;
-    boolean flagDoctype = false;
-    String stringHtmlXhtml = "";
-    String stringHtmlVersion = "";
-    String doctypePublicId = "";
-    String doctypeSystemId = "";
+    private boolean flagDoctype = false;
+    private String stringHtmlXhtml = "";
+    private String stringHtmlVersion = "";
+    private String doctypePublicId = "";
+    private String doctypeSystemId = "";
     private int lineDoctype = 0;
     private Node nodeImgWithLongdesc = null;
     private String longdescValue = "";
@@ -60,7 +63,13 @@ public class CheckerParser extends DOMParser {
     private Node nodeScript = null;
     private Node nodeEmbed = null;
     private Node nodePreviousHeader = null;
-    private Map hashtableImages = new Hashtable();
+    /**
+     * Map que guarda para cada imagen (atributo src de <img>) sus dimensiones (ancho y alto)
+     */
+    private Map<String, Dimension> hashtableImages = new Hashtable<String, Dimension>();
+    /**
+     * Map que guarda el número de veces que aparece un elemento (una etiqueta)
+     */
     private Map<String, Integer> hashtableElements = new Hashtable<String, Integer>();
     private String filename = "";
     private String base = "";
@@ -68,6 +77,7 @@ public class CheckerParser extends DOMParser {
     private List<String> vectorIDs = new ArrayList<String>();
     private List<String> vectorFors = new ArrayList<String>();
     private int position = 1;
+    private boolean inHeading = false;
 
     public boolean hasDoctype() {
         return flagDoctype;
@@ -297,6 +307,7 @@ public class CheckerParser extends DOMParser {
         else if (node.getNodeName().equalsIgnoreCase("h1")) {
             node.setUserData("previouslevel", headingLevel, null);
             headingLevel = 1;
+            inHeading = true;
             if (nodePreviousHeader != null) {
                 nodePreviousHeader.setUserData("nextlevel", 1, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
@@ -305,6 +316,7 @@ public class CheckerParser extends DOMParser {
         } else if (node.getNodeName().equalsIgnoreCase("h2")) {
             node.setUserData("previouslevel", headingLevel, null);
             headingLevel = 2;
+            inHeading = true;
             if (nodePreviousHeader != null) {
                 nodePreviousHeader.setUserData("nextlevel", 2, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
@@ -313,6 +325,7 @@ public class CheckerParser extends DOMParser {
         } else if (node.getNodeName().equalsIgnoreCase("h3")) {
             node.setUserData("previouslevel", headingLevel, null);
             headingLevel = 3;
+            inHeading = true;
             if (nodePreviousHeader != null) {
                 nodePreviousHeader.setUserData("nextlevel", 3, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
@@ -321,6 +334,7 @@ public class CheckerParser extends DOMParser {
         } else if (node.getNodeName().equalsIgnoreCase("h4")) {
             node.setUserData("previouslevel", headingLevel, null);
             headingLevel = 4;
+            inHeading = true;
             if (nodePreviousHeader != null) {
                 nodePreviousHeader.setUserData("nextlevel", 4, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
@@ -329,6 +343,7 @@ public class CheckerParser extends DOMParser {
         } else if (node.getNodeName().equalsIgnoreCase("h5")) {
             node.setUserData("previouslevel", headingLevel, null);
             headingLevel = 5;
+            inHeading = true;
             if (nodePreviousHeader != null) {
                 nodePreviousHeader.setUserData("nextlevel", 5, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
@@ -337,6 +352,7 @@ public class CheckerParser extends DOMParser {
         } else if (node.getNodeName().equalsIgnoreCase("h6")) {
             node.setUserData("previouslevel", headingLevel, null);
             headingLevel = 6;
+            inHeading = true;
             if (nodePreviousHeader != null) {
                 nodePreviousHeader.setUserData("nextlevel", 6, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
@@ -404,57 +420,57 @@ public class CheckerParser extends DOMParser {
         }
 
         // was width and height specified by attributes?
-        if ((width == -1) || (height == -1)) {
+        if ((width == -1) && (height == -1)) {
             // no, have we already loaded this image?
             String stringSrc = ((Element) node).getAttribute("src");
             if (stringSrc.length() > 0) {
-                Dimension dimension = (Dimension) hashtableImages.get(stringSrc);
+                Dimension dimension = hashtableImages.get(stringSrc);
                 if (dimension != null) {
                     node.setUserData("dimension", dimension, null);
-                } else {
+                }
+                // Inicialmente estaba anulada solamente la carga de la imagen y se calculaba la var stringUrl
+                // se comenta completamente hasta decidir para que sirve este bloque de código
+                else {
                     // don't try to load relative images for local files
                     if (StringUtils.isNotEmpty(filename) && filename.equals("temporary") &&
-                            !stringSrc.substring(0, 4).equalsIgnoreCase("http")) {
-                    }
-                    // Inicialmente estaba anulada solamente la carga de la imagen y se calculaba la var stringUrl
-                    // se comenta completamente hasta decidir para que sirve este bloque de código
-                    /*else { // image not loaded already so load it
+                            !stringSrc.startsWith("http")) {
+                        // IMAGEN LOCAL
+                    } else {
+                        // image not loaded already so load it
                         try {
                             // is there a 'base' URL for the file?
-                            String stringUrl = "";
+                            final String stringUrl;
                             if (base.length() > 0) { // yes, image is relative to base
                                 stringUrl = EvaluatorUtility.getAbsolute(stringSrc, base);
                             } else { // no, image is relative to filename
                                 stringUrl = EvaluatorUtility.getAbsolute(stringSrc, filename);
                             }
-                            /*URL url = EvaluatorUtility.openUrl (stringUrl);
-                            if (url == null){
-								// System.out.println ("Can't get URL for image: " + stringUrl + ", source: " + stringSrc);
-							} else {
-								BufferedImage image = ImageIO.read (url);
-								if (image != null){
-									dimension = new Dimension (image.getWidth(), image.getHeight());
-									hashtableImages.put (stringSrc, dimension);
-									node.setUserData ("dimension", dimension, null);
-								}
-								else {
-									Logger.putLog("Can't get image, buffered image null: " + stringUrl, CheckerParser.class, Logger.LOG_LEVEL_INFO);
-									throw new Exception();
-								}
-							}
+                            //URL url = EvaluatorUtility.openUrl(stringUrl);
+                            /*if (url == null){
+                                // System.out.println ("Can't get URL for image: " + stringUrl + ", source: " + stringSrc);
+							} else {*/
+                            final BufferedImage image = ImageIO.read(new URL(stringUrl));
+                            if (image != null) {
+                                dimension = new Dimension(image.getWidth(), image.getHeight());
+                                hashtableImages.put(stringSrc, dimension);
+                                node.setUserData("dimension", dimension, null);
+                            } else {
+                                Logger.putLog("Can't get image, buffered image null: " + stringUrl, CheckerParser.class, Logger.LOG_LEVEL_INFO);
+                                throw new Exception();
+                            }
+//							}
                         } catch (Exception e) {
                             // exception will be generated if image size can't be found
                             // System.out.println ("Exception in open URL: " + stringSrc);
-                            Dimension dimensionDefault = new Dimension(200, 200); // default size
-                            node.setUserData("dimension", dimensionDefault, null);
+                            //Dimension dimensionDefault = new Dimension(200, 200); // default size
+                            //node.setUserData("dimension", dimensionDefault, null);
                         }
-                    } //*/
+                    }
                 }
             }
-        } else { // width and height were specified by attributes
-            // store width and height on node
-            Dimension dimension = new Dimension(width, height);
-            node.setUserData("dimension", dimension, null);
+        } else {
+            // width and height were specified by attributes store width and height on node
+            node.setUserData("dimension", new Dimension(width, height), null);
         }
     }
 
@@ -522,5 +538,23 @@ public class CheckerParser extends DOMParser {
 
         // and line number
         lineDoctype = locator.getLineNumber();
+    }
+
+    @Override
+    public void endElement(QName qName, Augmentations augmentations) throws XNIException {
+        super.endElement(qName, augmentations);
+        if (qName.rawname.equals("h1") || qName.rawname.equals("h2")
+                || qName.rawname.equals("h3") || qName.rawname.equals("h4")
+                || qName.rawname.equals("h5") || qName.rawname.equals("h6")) {
+            inHeading = false;
+        }
+    }
+
+    @Override
+    public void characters(XMLString xmlString, Augmentations augmentations) throws XNIException {
+        super.characters(xmlString, augmentations);
+        if (nodePreviousHeader != null && !inHeading && !xmlString.toString().trim().isEmpty()) {
+            nodePreviousHeader.setUserData("headerHasContents", true, null);
+        }
     }
 }

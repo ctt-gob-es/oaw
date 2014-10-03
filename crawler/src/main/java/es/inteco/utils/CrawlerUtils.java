@@ -2,9 +2,9 @@ package es.inteco.utils;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.ignored.links.IgnoredLink;
-import es.inteco.crawler.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 import org.mozilla.universalchardet.UniversalDetector;
@@ -271,7 +271,7 @@ public final class CrawlerUtils {
     }
 
     public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws Exception {
-        String textContent = FileUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
+        String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 
         textContent = removeHtmlComments(textContent);
 

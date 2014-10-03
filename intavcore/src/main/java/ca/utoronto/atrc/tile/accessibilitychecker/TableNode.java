@@ -110,6 +110,5 @@ public class TableNode {
         this.isHeaderCell = isHeaderCell;
     }
 
-
 }
 

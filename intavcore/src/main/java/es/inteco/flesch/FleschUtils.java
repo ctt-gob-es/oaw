@@ -4,7 +4,7 @@ import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.Document;
@@ -18,7 +18,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class FleschUtils {
+public final class FleschUtils {
+
+    private FleschUtils() {
+    }
 
     public static String getContentFromHtml(String htmlSource) {
         String initContent;

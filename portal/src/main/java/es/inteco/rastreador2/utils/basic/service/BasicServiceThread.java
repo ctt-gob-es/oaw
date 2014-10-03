@@ -3,7 +3,7 @@ package es.inteco.rastreador2.utils.basic.service;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.utils.CrawlerUtils;
 import org.apache.commons.codec.net.URLCodec;

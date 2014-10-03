@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -102,7 +103,7 @@ public class AnonymousResultExportPdfAction extends Action {
 
     private void exportToPdf(Long idObservatory, Long idExecution, HttpServletRequest request, String generalExpPath, String graphicPath, long observatoryType) {
         Connection conn = null;
-
+        FileOutputStream fileOut = null;
         try {
             conn = DataBaseManager.getConnection();
             String entidad = ObservatorioDAO.getObservatoryForm(conn, idObservatory).getNombre();
@@ -112,7 +113,7 @@ public class AnonymousResultExportPdfAction extends Action {
                 Logger.putLog("No se ha podido crear los directorios en exportToPdf " + generalExpPath, AnonymousResultExportPdfAction.class, Logger.LOG_LEVEL_ERROR);
             }
 
-            FileOutputStream fileOut = new FileOutputStream(file);
+            fileOut = new FileOutputStream(file);
             Document document = new Document(PageSize.A4, 50, 50, 120, 72);
 
             PropertiesManager pmgr = new PropertiesManager();
@@ -177,6 +178,13 @@ public class AnonymousResultExportPdfAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Error al crear la seccion de resultados.", AnonymousResultExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
+            if (fileOut!=null) {
+                try {
+                    fileOut.close();
+                } catch (IOException e) {
+                    Logger.putLog("Error al cerrar el fichero pdf.", AnonymousResultExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
+                }
+            }
             DataBaseManager.closeConnection(conn);
         }
     }

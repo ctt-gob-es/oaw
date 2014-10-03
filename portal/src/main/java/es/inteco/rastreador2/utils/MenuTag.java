@@ -45,11 +45,11 @@ public class MenuTag extends TagSupport {
     public int doStartTag() throws JspException {
         if (this.noRoles != null) {
             if (this.roles != null && containsUserRol(this.roles) && !containsUserRol(this.noRoles)) {
-                return (EVAL_BODY_INCLUDE);
+                return EVAL_BODY_INCLUDE;
             }
         } else {
             if (this.roles != null && containsUserRol(this.roles)) {
-                return (EVAL_BODY_INCLUDE);
+                return EVAL_BODY_INCLUDE;
             }
         }
         return SKIP_BODY;

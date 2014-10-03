@@ -4,7 +4,7 @@ import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;

@@ -11,7 +11,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSectionEv;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSections;

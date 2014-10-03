@@ -37,7 +37,7 @@ public class IntavConstants {
     public static final String LOW = "low";
     public static final String MEDIUM = "medium";
     public static final String HIGH = "high";
-    public static final String CANNOOTTELL = "cannottell";
+    public static final String CAN_NOT_TELL = "cannottell";
     public static final String NEXT_LEVEL = "nextlevel";
     public static final String PREVIOUS_LEVEL = "previouslevel";
     public static final String POSITION = "pos";
@@ -183,9 +183,6 @@ public class IntavConstants {
     public static final String MESSAGE_DELIMITER = "<|>";
     public static final String REGEXP_MESSAGE_FILTER_INCLUDE = "<\\|>(.*)<\\|>";
     public static final String REGEXP_MESSAGE_FILTER_EXCLUDE = "(<\\|>.*<\\|>)";
-
-    public static final byte[] NBSP_BYTE = {-62, -96};
-    public static final byte[] WHITE_CHARS_BYTE = {-62, -96, 10, 9};
 
     public static final String GUIDELINE_TYPE_NORMAL = "normal";
     public static final String GUIDELINE_TYPE_OBSERVATORY = "observatory";
