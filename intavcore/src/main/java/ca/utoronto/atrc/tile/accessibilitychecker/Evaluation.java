@@ -45,19 +45,18 @@ public class Evaluation {
     private long rastreo;
     private String filename;
     private String filenameEncoded;
-    private String acheckid;
     private String entidad;
     private String base;
     private String source;
 
     private List<Problem> vectorProblemsAll;
     private List<Problem> vectorProblemsUnresolved;
-    private List<Object> vectorProblemsUser; // unresolved problems for the user's guidelines
+    private List<Problem> vectorProblemsUser; // unresolved problems for the user's guidelines
     private List<Object> vectorGroupsHtml; // problems sorted into HTML groups
     private List<Object> vectorGroupsGuide; // problems sorted into guideline groups
     private Map<String, List<Problem>> hashCheckProblem; // problems sorted into individual checks groups
     private List<String> vectorGuidelines;
-    private List<Object> vectorChecksRun;
+    private List<Integer> vectorChecksRun;
     private List<Problem> vectorProblemsSorted;
     private List<Integer> checksExecuted;
     private String checksExecutedStr;
@@ -69,19 +68,18 @@ public class Evaluation {
         entidad = "";
         filename = "";
         filenameEncoded = "";
-        acheckid = "";
         base = "";
         source = "";
         checksExecuted = new ArrayList<Integer>();
         checksExecutedStr = "";
         vectorProblemsAll = new ArrayList<Problem>();
         vectorProblemsUnresolved = new ArrayList<Problem>();
-        vectorProblemsUser = new ArrayList<Object>();
+        vectorProblemsUser = new ArrayList<Problem>();
         vectorGroupsHtml = new ArrayList<Object>();
         vectorGroupsGuide = new ArrayList<Object>();
         hashCheckProblem = new Hashtable<String, List<Problem>>();
         vectorGuidelines = new ArrayList<String>();
-        vectorChecksRun = new ArrayList<Object>();
+        vectorChecksRun = new ArrayList<Integer>();
         vectorProblemsSorted = new ArrayList<Problem>();
         docHtml = null;
     }
@@ -153,15 +151,11 @@ public class Evaluation {
         }
     }
 
-    public String getAcheckId() {
-        return acheckid;
-    }
-
     public List<Problem> getProblems() { // all unresolved problems
         return vectorProblemsUnresolved;
     }
 
-    public List<Object> getProblemsUser() { // all unresolved problems for the user's guideline
+    public List<Problem> getProblemsUser() { // all unresolved problems for the user's guideline
         return vectorProblemsUser;
     }
 
@@ -178,8 +172,7 @@ public class Evaluation {
     }
 
     public boolean hasRun(int idCheck) {
-        for (int x = 0; x < vectorChecksRun.size(); x++) {
-            Integer intRun = (Integer) vectorChecksRun.get(x);
+        for (Integer intRun : vectorChecksRun) {
             if (idCheck == intRun) {
                 return true;
             }
@@ -194,14 +187,6 @@ public class Evaluation {
     public int getSortOrder() {
         return sortOrderSummary;
     }
-
-/*    public List<Object> getVectorGroupsHtml() {
-        return vectorGroupsHtml;
-    }
-
-    public List<Object> getVectorGroupsGuide() {
-        return vectorGroupsGuide;
-    }*/
 
     public Map<String, List<Problem>> getHashCheckProblem() {
         return hashCheckProblem;
@@ -332,8 +317,7 @@ public class Evaluation {
     // Returns the number of known problems in the target guidelines.
     public int getCountKnownProblems() {
         int known = 0;
-        for (int x = 0; x < vectorProblemsUser.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUser.get(x);
+        for (Problem problem : vectorProblemsUser) {
             Check check = problem.getCheck();
             if (check.getConfidence() == CheckFunctionConstants.CONFIDENCE_HIGH) {
                 known++;
@@ -345,8 +329,7 @@ public class Evaluation {
     // Returns the number of likely problems in the target guidelines.
     public int getCountLikelyProblems() {
         int likely = 0;
-        for (int x = 0; x < vectorProblemsUser.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUser.get(x);
+        for (Problem problem : vectorProblemsUser) {
             Check check = problem.getCheck();
             if (check.getConfidence() == CheckFunctionConstants.CONFIDENCE_MEDIUM) {
                 likely++;
@@ -358,8 +341,7 @@ public class Evaluation {
     // Returns the number of potential problems in the target guidelines.
     public int getCountPotentialProblems() {
         int potential = 0;
-        for (int x = 0; x < vectorProblemsUser.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUser.get(x);
+        for (Problem problem : vectorProblemsUser) {
             Check check = problem.getCheck();
             if (check.getConfidence() == CheckFunctionConstants.CONFIDENCE_CANNOTTELL) {
                 potential++;
@@ -370,8 +352,7 @@ public class Evaluation {
 
     // Calling app will tell us the offset line number of the chunk of HTML code.
     public void applyLineOffset(int lineOffset) {
-        for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+        for (Problem problem : vectorProblemsAll) {
             problem.setLineOffset(lineOffset);
         }
     }

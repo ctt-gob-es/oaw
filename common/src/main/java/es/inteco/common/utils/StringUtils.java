@@ -144,7 +144,7 @@ public final class StringUtils {
         String text = StringUtils.getContentAsString(content);
 
         text = text.replaceAll("&", "&amp;");
-
+        System.out.println(text);
         return new ByteArrayInputStream(text.getBytes());
     }
 

@@ -3,7 +3,7 @@
     <type>observatory</type>
     <title abbr="OBSERVATORIO-2.0" long-name="Pautas de verificación del Observatorio v2.0">Observatorio MINHAP 2.0</title>
     <date>2014-09-18</date>
-    <status>Fichero para realizar tests sobre las comprobaciones incorporadas al Observatorio MinHAP</status>
+    <status>Observatorio MinHAP v0.2</status>
     <earlid>URL donde están definidas las pautas</earlid>
     <preamble>Comentario sobre el Observatorio</preamble>
 
@@ -72,8 +72,12 @@
 
                     <!-- Encabezados mismo nivel seguidos sin contenido-->
                     <check id="422"/>
+
+                    <!-- Más de un encabezado si hay más de 15 párrafos -->
+                    <check id="433"/>
                 </checks>
             </subgroup>
+
             <subgroup aspect="observatory.aspect.structure">
                 <!-- Uso de listas -->
                 <name>inteco.observatory.2_0.subgroup.1.1.3</name>
@@ -127,6 +131,7 @@
                     <check id="416"/>
 
                     <!-- 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
+                    <check id="445"/>
                     <!-- 3 o más líneas separadas por BR que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
 
                     <!-- Tablas formadas por una única columna y 3 o más filas y que las celdas no superen los X caracteres (Heurístico X=150) -->
@@ -158,6 +163,12 @@
 
                     <!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar las celdas. -->
                     <check id="245"/>
+
+                    <!--Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.-->
+                    <check id="418"/>
+
+                    <!-- Summary y Caption diferentes. -->
+                    <check id="243"/>
                 </checks>
             </subgroup>
 
@@ -166,10 +177,12 @@
                 <name>inteco.observatory.2_0.subgroup.1.1.5</name>
                 <checks>
                     <!-- Utilizar br para simular párrafos -->
-                    <!-- TODO: Comprobar que se buscan dos o más  br SEGUIDOS-->
+                    <!-- TODO: Comprobar que se buscan dos o más br SEGUIDOS-->
                     <check id="16"/>
                     <!-- Utilizar div para simular un párrafo -->
                     <check id="33"/>
+                    <!-- No se utilizan más de 10 brs en la página -->
+                    <check id="436"/>
                 </checks>
             </subgroup>
 
@@ -182,7 +195,7 @@
                     <check id="45"/>
 
                     <!-- Uso de elementos HTML de presentación desaconsejados (basefont, font, center, s, strike, u) -->
-                    <check id="345"/>
+                    <check id="345" noExecutedMark="true"/>
 
                     <!-- Contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres alfanuméricos (Heurístico X=2).-->
                 </checks>
@@ -192,13 +205,11 @@
                 <!-- Identificación del idioma principal -->
                 <name>inteco.observatory.2_0.subgroup.1.1.7</name>
                 <checks>
-                    <!-- Elementos (*cualquiera*) con código de idioma no válido -->
-                    <check id="161"/>
-
                     <!-- Documento con atributos lang/xml:lang adecuados al tipo de documento (html/xhtml) -->
-                    <!--<check id="164"/>-->
-
-                    <!-- TODO: Comprobar el idioma de la página -->
+                    <check id="48"/>
+                    <check id="49" relatedWith="48"/>
+                    <!-- Comprobar que el idioma de la página coincide con el declarado -->
+                    <check id="442"/>
                 </checks>
             </subgroup>
         </suitability>
@@ -211,6 +222,8 @@
                 <!-- Identificación de cambios de idioma -->
                 <name>inteco.observatory.2_0.subgroup.1.2.1</name>
                 <checks>
+                    <!-- Elementos (*todos*) con código de idioma no válido -->
+                    <check id="161"/>
                     <!-- Cambios de idioma más comunes (enlaces de cambio de idioma) -->
                     <check id="93"/>
                 </checks>
@@ -250,7 +263,7 @@
                     <!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
                     <check id="160"/>
 
-                    <!--Elementos con “onclick” u “onkeypress” son de interacción de forma nativa (enlaces o botones estándar) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
+                    <!--Elementos con “onclick” u “onkeypress” son nativos de interacción (enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
                     <check id="432"/>
                 </checks>
             </subgroup>
@@ -286,19 +299,22 @@
                     <!-- Elementos textarea tienen una etiqueta explícitamente asociada -->
                     <check id="95"/>
 <!-- NUEVA: Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS.-->
-<!-- NUEVA: Se verifica que si hay dos o más grupos de botones de radio y/o casillas de verificación (con el mismo “name”), o una combinación de ambos (salvo casillas individuales), en el mismo formulario (“form”) cada uno de ellos se agrupan bajo su correspondiente <fieldset>.-->
+                    <!-- Tres o más de botones de radio y/o casillas de verificación agrupadas (mismo name) se agrupan bajo un fieldset.-->
+                    <check id="443"/>
                     <!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
                     <check id="429"/>
                     <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
-                    <check id="430" />
+                    <check id="430"/>
                     <!-- Se verifica que todo “fieldset” tenga un único elemento “legend” con contenido (primer elemento semántico hijo).-->
+                    <check id="444"/>
                     <!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->
                     <check id="406"/>
                     <!-- Elementos select con opciones que comiencen por sucesiones de 3 o más caracteres repetidos no alfanuméricos (P. ej: “___”, “***”, “......”, etc.).-->
                     <check id="417"/>
                     <!-- Elementos optgroup tienen un atributo “label” con contenido -->
                     <check id="407"/>
-<!-- NUEVA: Se verifica que se identifican los campos obligatorios en los formularios con más de N campos de introducción de texto (se busca la presencia de los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes dentro del formulario <form>). (Heurístico N = 4)-->
+                    <!-- Se identifican los campos obligatorios en los formularios con más de N campos de introducción de texto (se busca la presencia de los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes dentro del formulario <form>). (N = 4) -->
+                    <check id="446"/>
                 </checks>
             </subgroup>
 
@@ -312,6 +328,11 @@
                     <check id="51"/>
                     <!-- Title sospechoso (no title, sin título...) -->
                     <check id="53"/>
+
+                    <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
+                    <check id="32" onlyWarning="true"/>
+                    <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
+                    <check id="437" onlyWarning="true"/>
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
                     <check id="31"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
@@ -352,12 +373,21 @@
                 <!-- Compatibilidad -->
                 <name>minhap.observatory.2.0.subgroup.2.1.7</name>
                 <checks>
+                    <!--<check id="232"/>-->
                     <!-- Documento tenga un DTD válido (TODO: incluir HTML5) -->
+                    <!--<check id="323"/>-->
                     <!-- Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) -->
+                    <!--<check id="440"/>-->
                     <!-- Se verifica que no se repite el mismo atributo con diferente valor en el mismo elemento -->
+                    <!--<check id="441"/>-->
                     <!-- Se verifica que los valores de los atributos están entrecomillados -->
+                    <!--<check id="439"/>-->
                     <!-- Se verifica que el valor de los atributos que deben tener un valor único por página (“id”, “accesskey”) efectivamente tienen un valor único -->
-                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis) -->
+                    <!--<check id="438"/>-->
+
+                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis)
+                    La comprobación 78 realiza la validación estricta de CSS (servicio W3C) ¿Cambiar por un parseo? -->
+                    <!--<check id="78"/>-->
                 </checks>
             </subgroup>
         </suitability>
@@ -369,6 +399,7 @@
                 <!-- Multiples Ways -->
                 <name>minhap.observatory.2.0.subgroup.2.2.1</name>
                 <checks>
+                    <!-- Se proporciona un mapa del sitio o una función de búsqueda dentro del sitio web. -->
                     <check id="419"/>
                 </checks>
             </subgroup>
@@ -377,7 +408,12 @@
                 <!-- Foco Visible -->
                 <name>minhap.observatory.2.0.subgroup.2.2.2</name>
                 <checks>
-                    <!--Se verifica que en las hojas de estilo no se emplee la propiedad “outline” con valor “0” o “none” en elementos de interacción.-->
+                    <!-- Se verifica que en las hojas de estilo no se emplee la propiedad “outline” con valor “0” o “none” en elementos de interacción.-->
+
+                    <!-- Se verifica que no se estén empleando más de 3 atributos “tabindex” en la página (0 - PASA) -->
+                    <check id="434" onlyWarning="true"/>
+                    <!-- Se verifica que no se estén empleando más de 10 atributos “tabindex” en la página (0- FALLA)-->
+                    <check id="435" relatedWith="434"/>
                 </checks>
             </subgroup>
 
@@ -385,10 +421,11 @@
                 <!-- Navegación Consistente -->
                 <name>minhap.observatory.2.0.subgroup.2.2.3</name>
                 <checks>
-                    <!-- Comprobamos que no haya NINGUN enlace roto -->
+                    <!-- Si solo hay un enlace roto se controla mediante el check 176 con valor GREEN-ZERO
+                    si hay más de un enlace entonces falla también por la comprobación 177 y el valor es RED-ZERO -->
+                    <!-- Comprobamos que si hay enlaces rotos -->
                     <check id="176" onlyWarning="true"/>
-
-                    <!-- Comprobamos que haya como MÁXIMO un enlace roto -->
+                    <!-- Comprobamos que haya MÁS de 1 enlace roto -->
                     <check id="177" relatedWith="176"/>
 
                     <!-- Enlaces adyacentes al mismo recurso deben estar combinados -->

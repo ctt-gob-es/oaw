@@ -143,6 +143,11 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_REDUNDANT_IMG_ALT = 133;
     public static final int FUNCTION_TABLE_COLUMNS = 134;
     public static final int FUNCTION_TABLE_ROWS = 135;
+    public static final int FUNCTION_HAS_VALIDATION_ERRORS = 137;
+    public static final int FUNCTION_GUESS_LANGUAGE = 138;
+    public static final int FUNCTION_GROUPED_SELECTION_BUTTONS = 139;
+    public static final int FUNCTION_NOT_FIRST_CHILD = 140;
+    public static final int FUNCTION_REQUIRED_CONTROLS = 141;
 
     // check codes
     public static final int CHECK_STATUS_OK = 1;

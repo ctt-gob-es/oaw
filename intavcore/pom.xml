@@ -64,6 +64,18 @@
             <version>2.4.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
         <!-- Dependencia que no se encuentra en los repositorios habituales, instalar local o subir a repositorio local -->
         <dependency>
             <groupId>com.tecnick.htmlutils</groupId>
@@ -78,6 +90,7 @@
             <version>2.3</version>
             <scope>provided</scope>
         </dependency>
+
     </dependencies>
 
 </project>

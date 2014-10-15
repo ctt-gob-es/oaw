@@ -26,6 +26,8 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import es.ctic.language.ExtractTextHandler;
+import es.ctic.language.LanguageChecker;
 import es.inteco.common.CheckFunctionConstants;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.ValidationError;
@@ -41,6 +43,10 @@ import org.apache.xerces.util.DOMUtil;
 import org.w3c.dom.*;
 
 import javax.imageio.ImageReader;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -274,6 +280,19 @@ public class Check {
             if (listItems.getLength() > 0) {
                 nodeNode = listItems.item(0);
             }
+        /*} else if (stringNodeAttribute.equals("./img[1]")) {
+            // first img child
+            NodeList childItems = elementGiven.getChildNodes();
+            if (childItems.getLength() > 0) {
+                for(int i=0; i<childItems.getLength(); i++) {
+                    if ( "img".equalsIgnoreCase(childItems.item(i).getLocalName()) ) {
+                        nodeNode = childItems.item(0);
+                        break;
+                    }
+                }
+            } else {
+                return CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
+            } //*/
         } else if (stringNodeAttribute.equals(".//link/@rel")) {
             // all link elements that have a 'rel' attribute
             NodeList listNodes = elementGiven.getElementsByTagName("link");
@@ -772,12 +791,152 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_REDUNDANT_IMG_ALT:
                 return functionRedundantImgAlt(checkCode, nodeNode, elementGiven);
 
+            case CheckFunctionConstants.FUNCTION_HAS_VALIDATION_ERRORS:
+                return functionHasValidationErrors(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_GUESS_LANGUAGE:
+                return functionGuessLanguage(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_GROUPED_SELECTION_BUTTONS:
+                return functionGroupedRadioButtons(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_NOT_FIRST_CHILD:
+                return functionNotFirstChild(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_REQUIRED_CONTROLS:
+                return functionRequiredControls(checkCode, nodeNode, elementGiven);
+
             default:
                 Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
                 break;
         }
 
         return false;
+    }
+
+    private boolean functionRequiredControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final NodeList inputs = elementGiven.getElementsByTagName("input");
+        final int minInputs = Integer.parseInt(checkCode.getFunctionNumber());
+        if ( inputs.getLength()>minInputs ) {
+            final String formText = EvaluatorUtility.getLabelText(elementGiven);
+            final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(),Pattern.CASE_INSENSITIVE|Pattern.MULTILINE);
+            final Matcher matcher = pattern.matcher(formText);
+            return !matcher.find();
+        }
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private boolean functionNotFirstChild(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final Node firstChild = elementGiven.getFirstChild();
+        if (firstChild == null) {
+            return true;
+        } else {
+            if (checkCode.getFunctionValue().equalsIgnoreCase(firstChild.getNodeName())) {
+                return false;
+            } else if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+                final List allowedTags = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
+                if (allowedTags.contains(firstChild.getNodeName().toLowerCase())) {
+                    return functionNotFirstChild(checkCode, nodeNode, (Element) firstChild);
+                } else {
+                    return true;
+                }
+            } else if (firstChild.getNodeType() == Node.TEXT_NODE) {
+                Node currentNode = firstChild;
+                while (currentNode.getNodeType() == Node.TEXT_NODE && currentNode.getTextContent().trim().isEmpty()) {
+                    currentNode = currentNode.getNextSibling();
+                }
+                return functionNotFirstChild(checkCode, nodeNode, (Element) currentNode);
+            } else {
+                return true;
+            }
+        }
+    }
+
+    private boolean functionGroupedRadioButtons(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final Map<String, List<Node>> radioGroups = new HashMap<String, List<Node>>();
+        final NodeList listInputs = elementGiven.getElementsByTagName("input");
+        // Extraemos todos los input tipo radio y los guardamos agrupados en el map radioGroups (key es el name de los controles)
+        for (int i = 0; i < listInputs.getLength(); i++) {
+            Element elementInput = (Element) listInputs.item(i);
+            if (elementInput.getAttribute("type").equalsIgnoreCase(checkCode.getFunctionValue())) {
+                String stringName = elementInput.getAttribute("name");
+                if (!radioGroups.containsKey(stringName)) {
+                    final List<Node> lista = new ArrayList<Node>();
+                    radioGroups.put(stringName, lista);
+                }
+                radioGroups.get(stringName).add(elementInput);
+            }
+        }
+        final int allowedUngrouped = Integer.parseInt(checkCode.getFunctionNumber());
+        for (Map.Entry<String, List<Node>> radioGroupEntry : radioGroups.entrySet()) {
+            if (radioGroupEntry.getValue().size() > allowedUngrouped) {
+                // Comprobar si están agrupados
+                for (Node node : radioGroupEntry.getValue()) {
+                    final Node ancestor = getAncestor(node, Arrays.asList("FIELDSET", "FORM"));
+                    if (ancestor == null || !"FIELDSET".equalsIgnoreCase(ancestor.getNodeName())) {
+                        // Si el ancestor no es un fieldset es fallo
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+    private Node getAncestor(Node node, List<String> stopTags) {
+        final Node parent = node.getParentNode();
+        if (parent == null) {
+            return null;
+        } else if (stopTags.contains(parent.getNodeName())) {
+            return parent;
+        } else {
+            return getAncestor(parent, stopTags);
+        }
+    }
+
+
+    private boolean functionGuessLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final String expectedLanguage = getLanguage(elementGiven, false);
+        final Document document = elementGiven.getOwnerDocument();
+        if (expectedLanguage != null && !expectedLanguage.isEmpty()) {
+            final ExtractTextHandler extractTextHandler = new ExtractTextHandler(expectedLanguage);
+            try {
+                TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
+                final String extractedText = extractTextHandler.getExtractedText();
+                // Caracteres mínimos para comprobar el idioma (menos caracteres da resultados poco fiables)
+                if (extractedText.length() < 50) {
+                    return false;
+                }
+                final LanguageChecker languageChecker = new LanguageChecker(expectedLanguage);
+                // Si son distintos hay que devolver true para indicar que es fallo
+                return !languageChecker.isExpectedLanguage(extractedText);
+            } catch (TransformerException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean functionHasValidationErrors(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+        final List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementRoot.getUserData("validationErrors");
+        // Si indicamos un número en el parámetro number indica el número de errores permitidos, si no se indica se considera 0 (no se permite ningún error)
+        final int maxErrors = checkCode.getFunctionNumber().isEmpty() ? 0 : Integer.parseInt(checkCode.getFunctionNumber());
+        final String messageId = checkCode.getFunctionValue();
+        if (messageId.isEmpty()) {
+            return vectorValidationErrors == null || vectorValidationErrors.size() <= maxErrors;
+        } else {
+            int count = 0;
+            for (ValidationError validationError : vectorValidationErrors) {
+                if (messageId.equals(validationError.getMessageId())) {
+                    count++;
+                }
+            }
+            // Si el número de errores es mayor que el número de errores permitidos entonces es fallo (true)
+            return count > maxErrors;
+        }
     }
 
     private boolean functionRedundantImgAlt(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -985,7 +1144,7 @@ public class Check {
     private boolean functionElementsUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final List<String> elementsList = Arrays.asList(checkCode.getFunctionElement().split(";"));
         final int limit = Integer.parseInt(checkCode.getFunctionNumber());
-        final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : "less";
+        final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : checkCode.getFunctionPosition();
 
         int counter = 0;
         for (String element : elementsList) {
@@ -993,9 +1152,11 @@ public class Check {
         }
 
         if ("greater".equalsIgnoreCase(compare)) {
+            // Si la comparación es mayor damos un error si el número de elementos es mayor que el valor indicado
             return counter > limit;
         } else {
-            return limit < counter;
+            // Si la comparación es menor damos un error si el número de elementos es menor que el valor indicado
+            return limit > counter;
         }
     }
 
@@ -1281,7 +1442,7 @@ public class Check {
             Element node1 = (Element) nodeList.item(j);
             if (node1 != elementGiven) {
                 if (elementGiven.getUserData("headerHasContents") == null) {
-                    // Si headerHasContents entonces es true fijo
+                    // Si existe headerHasContents entonces es true fijo
                     if (elementGiven.getUserData(IntavConstants.NEXT_LEVEL) != null) {
                         final int nextLevel = (Integer) elementGiven.getUserData(IntavConstants.NEXT_LEVEL);
                         final int thisLevel = Integer.parseInt(elementGiven.getNodeName().substring(1));
@@ -2312,7 +2473,7 @@ public class Check {
 
         // position of compare string
         String stringPosition = checkCode.getFunctionPosition();
-        if (stringPosition.length() == 0) {
+        if (stringPosition.isEmpty()) {
             return string1.equalsIgnoreCase(string2);
         } else if (stringPosition.equalsIgnoreCase("anywhere")) {
             return string2.contains(string1);
@@ -2777,7 +2938,6 @@ public class Check {
                     }
                 }
             }
-
             // machine code section
             else if (childNodes.item(x).getNodeName().equalsIgnoreCase("machine")) {
                 createCode((Element) childNodes.item(x));
@@ -2819,42 +2979,37 @@ public class Check {
     public boolean setCheckText(Node nodeXml) {
         // these must be present on each check
         String language = "en";
-        boolean foundName = false;
-        boolean foundError = false;
+        boolean foundCheckName = false;
+        boolean foundCheckError = false;
 
         NodeList childNodes = nodeXml.getChildNodes();
         for (int x = 0; x < childNodes.getLength(); x++) {
-
             // name
             if (childNodes.item(x).getNodeName().equalsIgnoreCase("name")) {
-                foundName = true;
+                foundCheckName = true;
                 nameMap.put(language, childNodes.item(x));
             }
-
             // error
             else if (childNodes.item(x).getNodeName().equalsIgnoreCase("error")) {
-                foundError = true;
+                foundCheckError = true;
                 errorHashtable.put(language, childNodes.item(x));
             }
-
             // description
             else if (childNodes.item(x).getNodeName().equalsIgnoreCase("rationale")) {
                 rationaleHashtable.put(language, childNodes.item(x));
             }
         }
 
-        if (!foundName) {
+        if (!foundCheckName) {
             Logger.putLog("Error: check #" + id + " language: " + language + " has no 'name'!", Check.class, Logger.LOG_LEVEL_INFO);
         }
 
-        if (!foundError) {
+        if (!foundCheckError) {
             Logger.putLog("Error: check #" + id + " language: " + language + " has no 'error'!", Check.class, Logger.LOG_LEVEL_INFO);
         }
 
-        return !(!foundName || !foundError);
-
+        return foundCheckName && foundCheckError;
     }
-
 
     public void setAppropriateData(String languageCode) {
         languageAppropriate = languageCode;
@@ -2873,11 +3028,11 @@ public class Check {
     }
 
     private boolean functionCheckValidDoctype(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-        String doctypeSource = (String) elementRoot.getUserData("doctypeSource");
+        final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+        final String doctypeSource = (String) elementRoot.getUserData("doctypeSource");
 
         PropertiesManager pmgr = new PropertiesManager();
-        List<String> validDoctypes = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "valid.doctypes").split(";"));
+        final List<String> validDoctypes = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "valid.doctypes").split(";"));
 
         return validDoctypes.contains(doctypeSource);
     }
@@ -3225,14 +3380,14 @@ public class Check {
     }
 
     private boolean functionHasComplexStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        NodeList paragraphs = elementGiven.getElementsByTagName("p");
+        final NodeList paragraphs = elementGiven.getElementsByTagName("p");
 
         //PropertiesManager pmgr = new PropertiesManager();
         //List<String> inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
 
         int cont = 0;
         for (int i = 0; i < paragraphs.getLength(); i++) {
-            if (((Element) paragraphs.item(i)).getTextContent().length() >= 80) {
+            if (paragraphs.item(i).getTextContent().length() >= 80) {
                 cont++;
             }
         }

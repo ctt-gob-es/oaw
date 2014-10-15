@@ -175,8 +175,7 @@ public final class EvaluatorUtility {
         StringBuilder buffer2 = new StringBuilder(text.length());
         boolean space = false;
         for (int x = 0; x < text.length(); x++) {
-            if ((text.charAt(x) != '\t') &&
-                    (text.charAt(x) != '\n')) {
+            if (text.charAt(x) != '\t' && text.charAt(x) != '\n') {
                 if (text.charAt(x) == ' ') {
                     if (space) {
                         continue;
@@ -274,6 +273,11 @@ public final class EvaluatorUtility {
             if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
                     (nodeChild.getNodeName().equalsIgnoreCase("select"))) {
                 continue;
+            }
+            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
+                    (nodeChild.getNodeName().equalsIgnoreCase("abbr") || nodeChild.getNodeName().equalsIgnoreCase("input"))) {
+                buffer.append(((Element) nodeChild).getAttribute("title"));
+                buffer.append(" ");
             }
             if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                 buffer.append(nodeChild.getNodeValue());
@@ -978,10 +982,10 @@ public final class EvaluatorUtility {
                 for (int i = 0; i < errorNodes.getLength(); i++) {
                     NodeList detailNodes = errorNodes.item(i).getChildNodes();
                     for (int j = 0; j < detailNodes.getLength(); j++) {
-                        if (detailNodes.item(j).getNodeName().equalsIgnoreCase(IntavConstants.TAG_URI)) {
+                        if (IntavConstants.TAG_URI.equalsIgnoreCase(detailNodes.item(j).getNodeName())) {
                             lastUri = detailNodes.item(j).getTextContent();
                         }
-                        if (detailNodes.item(j).getNodeName().equalsIgnoreCase(IntavConstants.TAG_ERROR)) {
+                        if (IntavConstants.TAG_ERROR.equalsIgnoreCase(detailNodes.item(j).getNodeName())) {
                             cssValidationErrors.add(getCssValidationError(detailNodes.item(j), lastUri));
                         }
                     }
@@ -1000,13 +1004,13 @@ public final class EvaluatorUtility {
 
         NodeList detailNodeChilds = detailNode.getChildNodes();
         for (int i = 0; i < detailNodeChilds.getLength(); i++) {
-            if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_LINE)) {
+            if (IntavConstants.TAG_LINE.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setLine(Integer.parseInt(detailNodeChilds.item(i).getTextContent().trim()));
-            } else if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_CONTEXT)) {
+            } else if (IntavConstants.TAG_CONTEXT.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setContext(detailNodeChilds.item(i).getTextContent().trim());
-            } else if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_SKIPPED_STRING)) {
+            } else if (IntavConstants.TAG_SKIPPED_STRING.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setSkippedString(detailNodeChilds.item(i).getTextContent().trim());
-            } else if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_MESSAGE)) {
+            } else if (IntavConstants.TAG_MESSAGE.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setMessage(detailNodeChilds.item(i).getTextContent().trim());
             }
         }
