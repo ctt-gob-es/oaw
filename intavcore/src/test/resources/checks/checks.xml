@@ -525,7 +525,7 @@ Telephone: (416) 978-4360
             <condition type="and">
                 <function call="layout-table" node="." element="table"/>
                 <condition type="or">
-                    <function call="element-count-greater-than" node="." value="th" number="1" attribute2="table"/>
+                    <function call="element-count-greater-than" node="." value="th" number="0" attribute2="table"/>
                     <function call="element-count-equals" node="." value="thead" number="1" attribute2="table"/>
                     <function call="element-count-equals" node="." value="tbody" number="1" attribute2="table"/>
                     <function call="element-count-equals" node="." value="tfoot" number="1" attribute2="table"/>
@@ -878,8 +878,8 @@ Telephone: (416) 978-4360
             <trigger element="meta"/>
             <condition type="and">
                 <function call="text-equals" node="@http-equiv" value="refresh"/>
-                <function call="text-equals" node="@content" value="url=" position="anywhere"/>
-                <function call="text-match" node="@content" value="^1-9\\d*;url="/>
+                <!--<function call="text-equals" node="@content" value="url=" position="anywhere"/>-->
+                <function call="text-match" node="@content" value="^[1-9]\d*;.+"/>
             </condition>
         </machine>
     </check>
@@ -892,7 +892,8 @@ Telephone: (416) 978-4360
             <trigger element="meta"/>
             <condition type="and">
                 <function call="text-equals" node="@http-equiv" value="refresh"/>
-                <function call="number-greater-than" node="@content" value="0"/>
+                <function call="text-match" node="@content" value="^[0-9]+;?$"/>
+                <!--<function call="number-greater-than" node="@content" value="0"/>-->
             </condition>
         </machine>
     </check>
@@ -994,10 +995,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="80" key="object" confidence="high" status="1">
-        <name>Todos los
-            <code>objects</code>
-            contienen texto equivalente del<code>object</code>.
-        </name>
+        <name>Todos los <code>objects</code> contienen texto equivalente del<code>object</code>.</name>
         <error>check.80.error</error>
         <rationale>check.80.rationale</rationale>
         <machine>
@@ -2267,7 +2265,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="177" key="html" confidence="high" status="5">
-        <name>La página contiene algunos enlaces rotos</name>
+        <name>La página contiene más de 1 enlace roto</name>
         <error>check.177.error</error>
         <rationale>check.177.rationale</rationale>
         <machine>
@@ -2631,12 +2629,14 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="img"/>
             <condition type="and">
+                <!-- TODO: Rodeada potencialmente por espacios -->
                 <function call="attribute-exists" node="." value="longdesc"/>
                 <condition type="or">
                     <function call="characters-less-than" node="@longdesc" value="1"/>
                     <function call="is-only-blanks" node="@longdesc"/>
-                    <function call="text-not-match" node="@longdesc" value="^\s*http|^\s*[#\\./].*"/>
-                    <!--<function call="not-valid-url" node="@longdesc"/>-->
+                    <!--<function call="text-not-match" node="@longdesc" value="^\s*http|^\s*[#\\./].*"/>-->
+                    <!--TODO: Comprobar si se valida contra 404 o 200 -->
+                    <function call="not-valid-url" node="@longdesc"/>
                 </condition>
             </condition>
         </machine>
@@ -4547,7 +4547,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="414" key="applet" confidence="high">
-        <name>El elemento <code>applet</code>no debe proporcionar alternativas textuales.</name>
+        <name>El elemento <code>applet</code> debe proporcionar alternativas textuales.</name>
         <error>check.414.error</error>
         <machine>
             <trigger element="applet"/>
@@ -4605,7 +4605,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="418" key="table" confidence="high">
-        <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presenta summary.</name>
+        <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.</name>
         <error>check.418.error</error>
         <rationale>check.418.rationale</rationale>
         <machine>
@@ -4814,32 +4814,187 @@ Telephone: (416) 978-4360
                         <function call="is-not-only-blanks" node="@onclick"/>
                     </condition>
                 </condition>
-                <condition type="or">
-                    <function call="same-element" node="." element="a"/>
-                    <function call="same-element" node="." element="input"/>
-                    <function call="same-element" node="." element="button"/>
-                    <function call="same-element" node="." element="select"/>
-                    <function call="same-element" node="." element="textarea"/>
-                </condition>
-                <condition type="or">
-                    <function call="attribute-exists" node="." value="tabindex"/>
-                    <!-- TODO: Comprobar el valor del atributo role -->
-                    <function call="attribute-exists" node="." value="role"/>
+                <condition type="and">
+                    <condition type="and">
+                        <function call="same-element-not" node="." element="a"/>
+                        <function call="same-element-not" node="." element="input"/>
+                        <function call="same-element-not" node="." element="button"/>
+                        <function call="same-element-not" node="." element="select"/>
+                        <function call="same-element-not" node="." element="textarea"/>
+                        <condition type="or">
+                            <function call="attribute-missing" node="." value="tabindex"/>
+                            <!-- TODO: Comprobar el valor del atributo role -->
+                            <function call="attribute-missing" node="." value="role"/>
+                        </condition>
+                    </condition>
                 </condition>
             </condition>
         </machine>
     </check>
 
-    <check id="433" key="html" confidence="medium" status="1">
+    <check id="433" key="html" confidence="medium">
         <name>Un único encabezado y más de x párrafos</name>
         <error>check.433.error</error>
         <rationale>check.433.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <condition type="and">
-                <function call="elements-excessive-usage" node="." value="h1;h2;h3;h4;h5;h6" number="2" position="less"/>
+                <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="2" position="less"/>
                 <function call="has-complex-structure" node="." number="15"/>
             </condition>
         </machine>
     </check>
+
+
+    <check id="434" key="html" confidence="medium">
+        <name>Más de 3 elementos con atributo tabindex</name>
+        <error>check.434.error</error>
+        <rationale>check.434.rationale</rationale>
+        <machine>
+            <!-- Como esta función se referencia sobre la etiqueta html no funciona para fragmentos de código (no se ejecuta) -->
+            <!-- Una solución es usar element="*" y añadir ocurrence="first" al nodo <check> -->
+            <trigger element="html"/>
+            <function call="attributes-excessive-usage" node="." element="tabindex" number="3"/>
+        </machine>
+    </check>
+
+    <!-- FIXME: Modificar para contabilizar únicamente valores positivos de tabindex (1,2,3...) valores 0 y -1 no cuentan -->
+    <check id="435" key="html" confidence="medium">
+        <name>Más de 10 elementos con atributo tabindex</name>
+        <error>check.435.error</error>
+        <rationale>check.435.rationale</rationale>
+        <machine>
+            <!-- Como esta función se referencia sobre la etiqueta html no funciona para fragmentos de código (no se ejecuta) -->
+            <!-- Una solución es usar element="*" y añadir ocurrence="first" al nodo <check> -->
+            <trigger element="html"/>
+            <function call="attributes-excessive-usage" node="." element="tabindex" number="10"/>
+        </machine>
+    </check>
+
+    <!-- FIXME: Modificar para contabilizar únicamente valores positivos de tabindex (1,2,3...) valores 0 y -1 no cuentan -->
+    <check id="436" key="html" confidence="medium">
+        <name>Más de 10 elementos br en la página</name>
+        <error>check.436.error</error>
+        <rationale>check.436.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="elements-excessive-usage" node="." element="br" number="10" position="greater"/>
+        </machine>
+    </check>
+
+    <check id="437" key="iframe">
+        <name>Existen iframes en la página.</name>
+        <error>check.437.error</error>
+        <machine>
+            <trigger element="iframe"/>
+        </machine>
+    </check>
+
+    <check id="438" key="html">
+        <name>Valores de únicos para id</name>
+        <error>check.438.error</error>
+        <rationale>check.438.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="has-validation-errors" node="." value="141" />
+        </machine>
+    </check>
+
+    <check id="439" key="html">
+        <name>Atributos entrecomillados si usa caracteres distintos de letras.</name>
+        <error>check.439.error</error>
+        <rationale>check.439.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <condition type="or">
+                <function call="has-validation-errors" node="." value="82" />
+                <!-- Si son varias palabras sin entrecomillar notifica este otro error (atributo simple inexistente)
+                puede dar falsos positivos con atributos simples -->
+                <function call="has-validation-errors" node="." value="106" />
+            </condition>
+        </machine>
+    </check>
+
+    <check id="440" key="html">
+        <name>Etiquetas mal cerradas.</name>
+        <error>check.440.error</error>
+        <rationale>check.440.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <condition type="or">
+                <function call="has-validation-errors" node="." value="70" />
+                <function call="has-validation-errors" node="." value="79" />
+            </condition>
+        </machine>
+    </check>
+
+    <check id="441" key="html">
+        <name>Atributos duplicados en la misma etiqueta</name>
+        <error>check.441.error</error>
+        <rationale>check.441.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="has-validation-errors" node="." value="112" />
+        </machine>
+    </check>
+
+    <check id="442" key="html">
+        <name>Detección automática del idioma de la página</name>
+        <error>check.442.error</error>
+        <rationale>check.442.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="guess-language" node="." />
+        </machine>
+    </check>
+
+    <check id="443" key="form">
+        <name>Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) se agrupan bajo su correspondiente fieldset.</name>
+        <error>check.443.error</error>
+        <rationale>check.443.rationale</rationale>
+        <machine>
+            <trigger element="form"/>
+            <condition type="or">
+                <!-- value el tipo de boton a buscar y number el número de botones que permitimos antes de requirir fieldset -->
+                <function call="grouped-selection-buttons" node="." value="radio" number="2"/>
+                <function call="grouped-selection-buttons" node="." value="checkbox" number="2"/>
+            </condition>
+        </machine>
+    </check>
+
+    <check id="444" key="form">
+        <name>Todo fieldset debe tener un único elemento legend con contenido (como primer elemento semántico hijo)</name>
+        <error>check.444.error</error>
+        <rationale>check.444.rationale</rationale>
+        <machine>
+            <trigger element="fieldset"/>
+            <!-- value - etiqueta que debe ser el primer hijo, attribute1 - etiquetas hijas que ignoramos -->
+            <function call="not-first-child" node="." value="legend" attribute1="div" />
+        </machine>
+    </check>
+
+    <check id="445" key="p" confidence="high" occurrence="first">
+        <name>Listas mal creadas con 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).</name>
+        <error>check.444.error</error>
+        <rationale>check.444.rationale</rationale>
+        <machine>
+            <trigger element="p"/>
+            <condition type="and">
+                <function call="img-dimensions-less-than" node="./img[1]" attribute1="11" attribute2="11"/>
+                <function call="false-paragraph-list" node="." number="3" value="\w+" />
+            </condition>
+        </machine>
+    </check>
+
+    <check id="446" key="form" confidence="high" occurrence="first">
+        <name>Se identifican los campos obligatorios en formularios con más de N campos de introducción de texto (N = 4)</name>
+        <error>check.446.error</error>
+        <rationale>check.446.rationale</rationale>
+        <machine>
+            <trigger element="form" />
+            <!-- TODO: Buscar versiones idiomáticas -->
+            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bopcional(es)?\b"/>
+        </machine>
+    </check>
+
 </checks>

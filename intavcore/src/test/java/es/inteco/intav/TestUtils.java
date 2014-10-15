@@ -32,7 +32,7 @@ public final class TestUtils {
         checkAccessibility.setGuideline(guideline);
         checkAccessibility.setGuidelineFile(guideline + ".xml");
         checkAccessibility.setLevel("aa");
-        checkAccessibility.setUrl("http://www.example.org");
+        //checkAccessibility.setUrl("http://www.example.org");
         checkAccessibility.setIdRastreo(0); // 0 - Indica análisis suelto (sin crawling y sin guardar datos en la BD de observatorio)
         checkAccessibility.setWebService(false);
 
@@ -91,5 +91,10 @@ public final class TestUtils {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
         checkVerificacion(oef, idSubgroup, expectedValue);
+    }
+
+    public static void checkVerificacion(final Evaluation evaluation, final String idSubgroup, int expectedValue) {
+        final ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        checkVerificacion(oef,idSubgroup,expectedValue);
     }
 }

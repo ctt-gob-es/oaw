@@ -441,6 +441,16 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_TABLE_COLUMNS;
             } else if (stringCall.equals("table-rows")) {
                 functionId = CheckFunctionConstants.FUNCTION_TABLE_ROWS;
+            } else if (stringCall.equals("has-validation-errors")) {
+                functionId = CheckFunctionConstants.FUNCTION_HAS_VALIDATION_ERRORS;
+            } else if (stringCall.equals("guess-language")) {
+                functionId = CheckFunctionConstants.FUNCTION_GUESS_LANGUAGE;
+            } else if (stringCall.equals("grouped-selection-buttons")) {
+                functionId = CheckFunctionConstants.FUNCTION_GROUPED_SELECTION_BUTTONS;
+            } else if (stringCall.equals("not-first-child")) {
+                functionId = CheckFunctionConstants.FUNCTION_NOT_FIRST_CHILD;
+            } else if (stringCall.equals("required-controls")) {
+                functionId = CheckFunctionConstants.FUNCTION_REQUIRED_CONTROLS;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;

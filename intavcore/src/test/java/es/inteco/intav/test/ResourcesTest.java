@@ -6,6 +6,9 @@ import ca.utoronto.atrc.tile.accessibilitychecker.Guideline;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  *
  */
@@ -29,6 +32,14 @@ public class ResourcesTest {
         Assert.assertEquals("observatory", guideline.getType());
 
         Assert.assertEquals(2, guideline.getGroups().size());
+    }
+
+    @Test
+    public void testLoadResources() throws IOException {
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream is = classloader.getResourceAsStream("guidelines/observatorio-2.0.xml");
+        Assert.assertNotNull(is);
+        is.close();
     }
 
 }
