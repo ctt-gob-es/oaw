@@ -76,6 +76,12 @@
             <version>1.6.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.helger</groupId>
+            <artifactId>ph-css</artifactId>
+            <version>3.8.1</version>
+        </dependency>
+
         <!-- Dependencia que no se encuentra en los repositorios habituales, instalar local o subir a repositorio local -->
         <dependency>
             <groupId>com.tecnick.htmlutils</groupId>
