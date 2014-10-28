@@ -15,12 +15,6 @@
         <suitability>
             <name>A</name>
             <subgroup aspect="observatory.aspect.alternatives">
-                <name>minhap.observatory.2_0.subgroup.0.0.0</name>
-                <checks>
-                    <check id="415"/>
-                </checks>
-            </subgroup>
-            <subgroup aspect="observatory.aspect.alternatives">
                 <name>minhap.observatory.2_0.subgroup.1.1.1</name>
                 <checks>
                     <!-- Imágenes con atributo alt -->
@@ -132,7 +126,9 @@
 
                     <!-- 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
                     <check id="445"/>
+
                     <!-- 3 o más líneas separadas por BR que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
+                    <check id="459"/>
 
                     <!-- Tablas formadas por una única columna y 3 o más filas y que las celdas no superen los X caracteres (Heurístico X=150) -->
                     <check id="431"/>
@@ -169,6 +165,9 @@
 
                     <!-- Summary y Caption diferentes. -->
                     <check id="243"/>
+
+                    <!-- Uso del atributo scope (validando valores) -->
+                    <check id="415"/>
                 </checks>
             </subgroup>
 
@@ -198,6 +197,7 @@
                     <check id="345" noExecutedMark="true"/>
 
                     <!-- Contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres alfanuméricos (Heurístico X=2).-->
+                    <check id="447"/>
                 </checks>
             </subgroup>
 
@@ -226,6 +226,8 @@
                     <check id="161"/>
                     <!-- Cambios de idioma más comunes (enlaces de cambio de idioma) -->
                     <check id="93"/>
+                    <!-- Términos en otros idiomas -->
+                    <check id="460"/>
                 </checks>
             </subgroup>
 
@@ -234,6 +236,7 @@
                 <name>inteco.observatory.2_0.subgroup.1.2.2</name>
                 <checks>
                     <!-- Se verifica que las combinaciones de color de primer plano y de color de fondo en una misma regla de las hojas de estilo tiene el contraste suficiente. -->
+                    <check id="448" />
                 </checks>
             </subgroup>
 
@@ -263,7 +266,7 @@
                     <!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
                     <check id="160"/>
 
-                    <!--Elementos con “onclick” u “onkeypress” son nativos de interacción (enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
+                    <!-- Elementos con “onclick” u “onkeypress” son nativos de interacción (enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
                     <check id="432"/>
                 </checks>
             </subgroup>
@@ -282,6 +285,7 @@
                     <check id="72"/>
 
                     <!-- No se emplea la propiedad de CSS 'text-decoration: blink' -->
+                    <check id="449"/>
                 </checks>
             </subgroup>
 
@@ -305,7 +309,7 @@
                     <check id="429"/>
                     <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
                     <check id="430"/>
-                    <!-- Se verifica que todo “fieldset” tenga un único elemento “legend” con contenido (primer elemento semántico hijo).-->
+                    <!-- Se verifica que  los “fieldsets” tengan un único elemento “legend” con contenido (primer elemento semántico hijo).-->
                     <check id="444"/>
                     <!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->
                     <check id="406"/>
@@ -338,6 +342,7 @@
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
                     <check id="295"/>
                     <!-- TODO: Comprobar titulos distintos entre la muestra -->
+
                 </checks>
             </subgroup>
 
@@ -364,8 +369,11 @@
                 <name>minhap.observatory.2.0.subgroup.2.1.6</name>
                 <checks>
                     <!-- No se produce ningún cambio de contexto en los eventos “onfocus” u “onblur” -->
+                    <check id="452" />
                     <!-- No se produce ningún cambio de contexto nada más cargarse la página (onload) -->
+                    <check id="453" />
                     <!-- No se produce ningún cambio de contexto en el evento “onchange” de los elementos “select” -->
+                    <check id="454" />
                 </checks>
             </subgroup>
 
@@ -373,21 +381,22 @@
                 <!-- Compatibilidad -->
                 <name>minhap.observatory.2.0.subgroup.2.1.7</name>
                 <checks>
-                    <!--<check id="232"/>-->
+                    <check id="232"/>
                     <!-- Documento tenga un DTD válido (TODO: incluir HTML5) -->
-                    <!--<check id="323"/>-->
+                    <check id="323"/>
                     <!-- Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) -->
-                    <!--<check id="440"/>-->
+                    <check id="440"/>
                     <!-- Se verifica que no se repite el mismo atributo con diferente valor en el mismo elemento -->
-                    <!--<check id="441"/>-->
+                    <check id="441"/>
                     <!-- Se verifica que los valores de los atributos están entrecomillados -->
-                    <!--<check id="439"/>-->
+                    <check id="439"/>
                     <!-- Se verifica que el valor de los atributos que deben tener un valor único por página (“id”, “accesskey”) efectivamente tienen un valor único -->
-                    <!--<check id="438"/>-->
+                    <check id="438"/>
 
                     <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis)
                     La comprobación 78 realiza la validación estricta de CSS (servicio W3C) ¿Cambiar por un parseo? -->
                     <!--<check id="78"/>-->
+                    <check id="450"/>
                 </checks>
             </subgroup>
         </suitability>
@@ -409,7 +418,7 @@
                 <name>minhap.observatory.2.0.subgroup.2.2.2</name>
                 <checks>
                     <!-- Se verifica que en las hojas de estilo no se emplee la propiedad “outline” con valor “0” o “none” en elementos de interacción.-->
-
+                    <check id="451"/>
                     <!-- Se verifica que no se estén empleando más de 3 atributos “tabindex” en la página (0 - PASA) -->
                     <check id="434" onlyWarning="true"/>
                     <!-- Se verifica que no se estén empleando más de 10 atributos “tabindex” en la página (0- FALLA)-->
@@ -421,12 +430,17 @@
                 <!-- Navegación Consistente -->
                 <name>minhap.observatory.2.0.subgroup.2.2.3</name>
                 <checks>
-                    <!-- Si solo hay un enlace roto se controla mediante el check 176 con valor GREEN-ZERO
-                    si hay más de un enlace entonces falla también por la comprobación 177 y el valor es RED-ZERO -->
+                    <!-- Si solo hay un enlace interno roto se controla mediante el check 455 con valor GREEN-ZERO
+                    si hay más de un enlace interno entonces falla también por la comprobación 456 y el valor es RED-ZERO -->
                     <!-- Comprobamos que si hay enlaces rotos -->
-                    <check id="176" onlyWarning="true"/>
+                    <check id="455" onlyWarning="true"/>
                     <!-- Comprobamos que haya MÁS de 1 enlace roto -->
-                    <check id="177" relatedWith="176"/>
+                    <check id="456" relatedWith="455"/>
+                    <!-- Idem para enlaces externos  -->
+                    <!-- Comprobamos que si hay enlaces externos rotos -->
+                    <check id="457" onlyWarning="true"/>
+                    <!-- Comprobamos que haya MÁS de 2 enlaces rotos -->
+                    <check id="458" relatedWith="457"/>
 
                     <!-- Enlaces adyacentes al mismo recurso deben estar combinados -->
                     <check id="180"/>

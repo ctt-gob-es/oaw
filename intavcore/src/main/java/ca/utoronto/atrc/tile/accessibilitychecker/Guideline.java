@@ -203,9 +203,9 @@ public class Guideline {
     }
 
     // Returns the name of the group that the given check belongs to.
-    public String getGroupIdString(int CheckId) {
+    public String getGroupIdString(int checkId) {
         for (GuidelineGroup group : groups) {
-            if (group.containsCheck(CheckId)) {
+            if (group.containsCheck(checkId)) {
                 return group.getName();
             }
         }
@@ -213,9 +213,9 @@ public class Guideline {
     }
 
     // Returns true if the given check ID is part of this guideline.
-    public boolean containsCheck(int CheckId) {
+    public boolean containsCheck(int checkId) {
         for (GuidelineGroup group : groups) {
-            if (group.containsCheck(CheckId)) {
+            if (group.containsCheck(checkId)) {
                 return true;
             }
         }
@@ -233,11 +233,11 @@ public class Guideline {
     }
 
     // Returns the subgroup of a given check
-    public String getSubgroupFromCheck(int CheckId) {
+    public String getSubgroupFromCheck(int checkId) {
         for (GuidelineGroup group : groups) {
             for (int y = 0; y < group.getGroupsVector().size(); y++) {
                 GuidelineGroup group2 = group.getGroupsVector().get(y);
-                String subgroup = group2.getSubgroupFromCheck(CheckId);
+                String subgroup = group2.getSubgroupFromCheck(checkId);
                 if (!subgroup.equalsIgnoreCase("")) {
                     return subgroup;
                 }

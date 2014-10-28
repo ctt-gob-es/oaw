@@ -1,6 +1,6 @@
 package es.inteco.common;
 
-public class CheckFunctionConstants {
+public interface CheckFunctionConstants {
 
     public static final int CODE_TYPE_NOTSET = 0;
     public static final int CODE_TYPE_CONDITION = 1;
@@ -148,6 +148,13 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_GROUPED_SELECTION_BUTTONS = 139;
     public static final int FUNCTION_NOT_FIRST_CHILD = 140;
     public static final int FUNCTION_REQUIRED_CONTROLS = 141;
+    public static final int FUNCTION_CSS_GENERATED_CONTENT = 142;
+    public static final int FUNCTION_CSS_COLOR_CONTRAST = 143;
+    public static final int FUNCTION_CSS_BLINK = 144;
+    public static final int FUNCTION_CSS_PARSEABLE = 145;
+    public static final int FUNCTION_CSS_OUTLINE = 146;
+    public static final int FUNCTION_FALSE_BR_IMAGE_LIST = 147;
+    public static final int FUNCTION_OTHER_LANGUAGE = 148;
 
     // check codes
     public static final int CHECK_STATUS_OK = 1;

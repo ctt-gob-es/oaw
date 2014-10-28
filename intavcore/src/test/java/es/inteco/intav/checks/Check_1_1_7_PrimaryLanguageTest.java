@@ -2,10 +2,12 @@ package es.inteco.intav.checks;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.ctic.language.LanguageChecker;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.utils.EvaluatorUtils;
+import org.apache.tika.language.LanguageIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -175,7 +177,9 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         checkAccessibility.setContent("<html lang=\"ast\"><body><p>L'asturianu ye una llingua romancep ropia d'Asturies, perteneciente al subgrupu asturllionés.</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
+        Assert.assertTrue("Asturiano no reconocido", LanguageIdentifier.getSupportedLanguages().contains("ast"));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
 }

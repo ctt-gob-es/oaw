@@ -77,9 +77,25 @@
         </dependency>
 
         <dependency>
+            <groupId>net.sourceforge.cssparser</groupId>
+            <artifactId>cssparser</artifactId>
+            <version>0.9.14</version>
+        </dependency>
+
+        <!-- Aunque el parseador de CSS va a ser mediante SAC y la implementacion de cssparser
+             mantenemos las dependencias del resto de librerías como test para posteriores pruebas puntuales -->
+        <dependency>
+            <groupId>net.sf.cssbox</groupId>
+            <artifactId>jstyleparser</artifactId>
+            <version>1.18</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.helger</groupId>
             <artifactId>ph-css</artifactId>
             <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Dependencia que no se encuentra en los repositorios habituales, instalar local o subir a repositorio local -->

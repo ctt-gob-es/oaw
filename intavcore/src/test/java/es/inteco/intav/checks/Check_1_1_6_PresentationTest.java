@@ -21,7 +21,7 @@ public final class Check_1_1_6_PresentationTest {
     private static final int DATA_ELEMENTS_ON_LAYOUT_TABLES = 45;
     private static final int PRESENTATION_ELEMENTS =345;
     // Comprobar que no se genera contenido desde CSS mediante :before o :after
-    // private static final int CONTENT_FORM_CSS =;
+    private static final int CSS_GENERATED_CONTENT= 447;
 
     private CheckAccessibility checkAccessibility;
 
@@ -88,6 +88,14 @@ public final class Check_1_1_6_PresentationTest {
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), PRESENTATION_ELEMENTS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateCSSGeneratedContent() throws Exception {
+        checkAccessibility.setContent("<html><head><style>.main:before { content: \"Lorem: \";}</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
     }
 
 }

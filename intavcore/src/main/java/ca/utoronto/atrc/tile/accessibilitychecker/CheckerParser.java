@@ -64,7 +64,7 @@ public class CheckerParser extends DOMParser {
     private Node nodeEmbed = null;
     private Node nodePreviousHeader = null;
     /**
-     * Map que guarda para cada imagen (atributo src de <img>) sus dimensiones (ancho y alto)
+     * Map que guarda para cada imagen (atributo src del tag img) sus dimensiones (ancho y alto)
      */
     private Map<String, Dimension> hashtableImages = new Hashtable<String, Dimension>();
     /**

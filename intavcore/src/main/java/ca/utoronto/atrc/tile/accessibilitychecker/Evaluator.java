@@ -27,6 +27,10 @@ Telephone: (416) 978-4360
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import com.opensymphony.oscache.base.NeedsRefreshException;
+import es.ctic.css.CSSProblem;
+import es.ctic.css.CSSResource;
+import es.ctic.css.CSSStyleSheetResource;
+import es.ctic.css.utils.CSSUtils;
 import es.inteco.common.*;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -197,7 +201,7 @@ public class Evaluator {
 
         //PropertiesManager pmgr = new PropertiesManager();
         //if (guideline.getFilename().equalsIgnoreCase(pmgr.getValue("intav.properties", "observatory.guideline.file"))) {
-        if (guideline.getFilename().startsWith("observatorio") ) {
+        if (guideline.getFilename().startsWith("observatorio")) {
             guideline.getAllObservatoryChecks(checksSelected, checkAccessibility.getLevel());
         } else {
             guideline.getAllChecks(checksSelected, checkAccessibility.getLevel());
@@ -381,6 +385,11 @@ public class Evaluator {
                 continue;
             }
 
+            if ("css".equalsIgnoreCase(check.getTriggerElement())) {
+                // Si es una comprobación de CSS se salta porque se comprueban posteriormente
+                continue;
+            }
+
             // Añadimos el check a la lista de checks ejecutados (si no es un check prerrequisito que no se imprima)
             if ((!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT)))
                     && (!evaluation.getChecksExecuted().contains(check.getId()))) {
@@ -409,11 +418,48 @@ public class Evaluator {
             } catch (Exception e) {
                 Logger.putLog("Exception: ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             }
+        } // end for (Check check : vectorChecks)
+
+        // Una vez acabadas las comprobaciones sobre HTML, ejecutamos las comprobaciones de CSS (que tienen estructura distinta)
+        // TODO: Extraer únicamente una vez los estilos (y cachear los linked)
+        final NodeList embeddedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("style");
+        final List<CSSResource> cssResources = new ArrayList<CSSResource>();
+        if (embeddedStyleSheets != null && embeddedStyleSheets.getLength() > 0) {
+            for (int i = 0; i < embeddedStyleSheets.getLength(); i++) {
+                cssResources.add(new CSSStyleSheetResource((Element) embeddedStyleSheets.item(i)));
+            }
+        }
+        for (Check check : vectorChecks) {
+            if ("html".equalsIgnoreCase(node.getNodeName()) && "css".equalsIgnoreCase(check.getTriggerElement())) {
+                for (CheckCode checkCode : check.getVectorCode()) {
+                    if (checkCode.getType() == CheckFunctionConstants.CODE_TYPE_FUNCTION) {
+                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(checkCode, cssResources);
+                        // Ha pasado el check, lo metemos en la lista de checks pasados con éxito
+                        if (cssProblems.isEmpty()) {
+                            vectorChecksRun.add(check.getId());
+                        } else {
+                            // TODO: Hay que añadir los problemas de CSS
+                            // Se ha encontrado un error y se va a registrar en la base de datos
+                            if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
+                                addCssIncidences(evaluation, check, incidenceList, cssProblems);
+                            }
+                        }
+                        if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
+                            // Añadimos el check a la lista de checks ejecutados (si no es un check prerrequisito que no se imprima)
+                            if ( !evaluation.getChecksExecuted().contains(check.getId())) {
+                                evaluation.getChecksExecuted().add(check.getId());
+                                evaluation.setChecksExecutedStr(evaluation.getChecksExecutedStr().concat("," + check.getId()));
+                            }
+                        }
+                    } else {
+                        Logger.putLog("Error un checkcode de CSS que no es una única función", Evaluator.class, Logger.LOG_LEVEL_ERROR);
+                    }
+                }
+            }
         }
     }
 
     // Añade los problemas de validación HTML
-
     private List<Incidencia> addValidationIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
         List<Incidencia> validationProblems = new ArrayList<Incidencia>();
 
@@ -451,8 +497,7 @@ public class Evaluator {
         return validationProblems;
     }
 
-    // Añade los problemas de validación HTML
-
+    // Añade los problemas de validación de CSS
     private List<Incidencia> addCssValidationIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
         List<Incidencia> validationProblems = new ArrayList<Incidencia>();
 
@@ -490,11 +535,26 @@ public class Evaluator {
         return validationProblems;
     }
 
+    private void addCssIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList, List<CSSProblem> cssProblems) {
+        if (cssProblems != null) {
+            for (CSSProblem cssProblem : cssProblems) {
+                final Problem problem = CSSUtils.getProblemFromCSS(cssProblem, check, evaluation);
+
+                addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+
+                // should this check be run only on first occurrence?
+                if (check.isFirstOccuranceOnly()) {
+                    evaluation.addCheckRun(check.getId());
+                }
+            }
+        }
+    }
+
     // Añade los checks especificos de un elemento
     private void addSpecificChecks(List<Check> vectorChecks, Map<String, List<Check>> elementsMap, String nameElement) {
         final List<Check> vectorTemp = elementsMap.get(nameElement);
         if (vectorTemp != null) {
-            for (Check check: vectorTemp) {
+            for (Check check : vectorTemp) {
                 vectorChecks.add(check);
             }
         }
@@ -506,6 +566,17 @@ public class Evaluator {
         final List<Check> allElementsChecks = elementsMap.get("*");
         if (allElementsChecks != null) {
             for (Check check : allElementsChecks) {
+                checks.add(check);
+            }
+        }
+    }
+
+    // Añade los checks específicos de CSS
+    private void addCssChecks(List<Check> checks, Map<String, List<Check>> elementsMap) {
+        // add the checks that apply to css
+        final List<Check> cssChecks = elementsMap.get("css");
+        if (cssChecks != null) {
+            for (Check check : cssChecks) {
                 checks.add(check);
             }
         }
@@ -530,6 +601,7 @@ public class Evaluator {
                     List<Check> vectorChecks = new ArrayList<Check>();
                     addSpecificChecks(vectorChecks, elementsMap, nameElement);
                     addGeneralChecks(vectorChecks, elementsMap);
+                    addCssChecks(vectorChecks, elementsMap);
                     if (vectorChecks.size() > 0) {
                         performEvaluation(node, vectorChecks, evaluation, incidenceList, isCrawling);
                     }
@@ -545,7 +617,6 @@ public class Evaluator {
     }
 
     // Evaluates any special tests (doctype etc.)
-
     private void evaluateSpecial(Node nodeGiven, Evaluation evaluation, Map<String, List<Check>> elementsMap) {
         // get a list of checks for this element
         PropertiesManager properties = new PropertiesManager();

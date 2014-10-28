@@ -109,8 +109,8 @@ public class Problem {
         return identifier.getDisplayStringWithElement();
     }
 
-    public void setLineOffset(int Offset) {
-        lineOffset = Offset;
+    public void setLineOffset(int offset) {
+        lineOffset = offset;
     }
 
     public int getLineNumber() {

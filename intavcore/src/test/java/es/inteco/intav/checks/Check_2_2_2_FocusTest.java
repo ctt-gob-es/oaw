@@ -20,6 +20,7 @@ public final class Check_2_2_2_FocusTest {
 
     private static final int TABINDEX_USSAGE_LOW = 434;
     private static final int TABINDEX_USSAGE_EXCESSIVE = 435;
+    private static final int CSS_OUTLINE = 451;
 
     private CheckAccessibility checkAccessibility;
 
@@ -101,5 +102,13 @@ public final class Check_2_2_2_FocusTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
+    @Test
+    public void evaluateCSSOutline() throws Exception {
+        checkAccessibility.setContent("<html><style>.main:focus { outline: 10px solid none }</style><p>Lorem</p></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_RED_ZERO);
+    }
 }
 

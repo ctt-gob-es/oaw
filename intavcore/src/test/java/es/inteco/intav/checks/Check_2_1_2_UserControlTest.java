@@ -20,7 +20,8 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     private static final int BLINK_MARQUEE = 130;
     private static final int META_REDIRECT = 71;
     private static final int META_REFRESH = 72;
-    /*TODO: No se emplea la propiedad de CSS 'text-decoration: blink'*/
+    /* Propiedad de CSS 'text-decoration: blink' */
+    private static final int CSS_BLINK = 449;
 
     private CheckAccessibility checkAccessibility;
 
@@ -31,11 +32,14 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateNoBlinkMarquee() throws Exception {
+    public void evaluateNoBlinkMarqueeRedirect() throws Exception {
         checkAccessibility.setContent("<html><p>Lorem ipsum</p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BLINK_MARQUEE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
@@ -96,6 +100,33 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateCSSTextDecorationBlink() throws Exception {
+        checkAccessibility.setContent("<html><style>p { text-decoration: blink; }</style><p>Lorem ipsum</p></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateCSSTextDecorationLineBlink() throws Exception {
+        checkAccessibility.setContent("<html><style>p { text-decoration-line: blink; }</style><p>Lorem ipsum</p></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateCSSTextDecorationBlinkDotted() throws Exception {
+        checkAccessibility.setContent("<html><style>p { text-decoration: blink dotted; }</style><p>Lorem ipsum</p></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
 }

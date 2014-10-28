@@ -754,15 +754,15 @@ public final class EvaluatorUtils {
                 ObservatorySuitabilityForm observatorySuitabilityForm = new ObservatorySuitabilityForm();
                 observatorySuitabilityForm.setName(suitabilityGroup.getName());
                 for (int k = 0; k < suitabilityGroup.getGroupsVector().size(); k++) {
-                    GuidelineGroup subgroup = suitabilityGroup.getGroupsVector().get(k);
-                    ObservatorySubgroupForm observatorySubgroupForm = new ObservatorySubgroupForm();
+                    final GuidelineGroup subgroup = suitabilityGroup.getGroupsVector().get(k);
+                    final ObservatorySubgroupForm observatorySubgroupForm = new ObservatorySubgroupForm();
                     observatorySubgroupForm.setDescription(subgroup.getName());
                     observatorySubgroupForm.setAspect(subgroup.getAspect());
                     boolean hasProblem = false;
                     boolean hasWarning = false;
                     boolean executedSubgroup = false;
                     for (int l = 0; l < subgroup.getChecksVector().size(); l++) {
-                        Integer check = (Integer) subgroup.getChecksVector().get(l);
+                        final Integer check = subgroup.getChecksVector().get(l);
                         if (evaluation.getChecksExecuted().contains(check)) {
                             if (!subgroup.getNoExecutedMarkChecks().contains(check)) {
                                 executedSubgroup = true;
@@ -1326,6 +1326,30 @@ public final class EvaluatorUtils {
         return false;
     }
 
+    public static Element getFirstElement(Element elementGiven, boolean filterInlineElements) {
+        List<String> inlineTags = new ArrayList<String>();
+        if (filterInlineElements) {
+            PropertiesManager pmgr = new PropertiesManager();
+            inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
+        }
+
+        Node nodeNext = elementGiven.getFirstChild();
+        boolean found = false;
+        while (nodeNext != null && !found) {
+            if (nodeNext.getNodeType() == Node.ELEMENT_NODE &&
+                    (!filterInlineElements || !inlineTags.contains(nodeNext.getNodeName().toUpperCase()))) {
+                found = true;
+            } else {
+                nodeNext = nodeNext.getFirstChild();
+            }
+        }
+
+        if (nodeNext != null) {
+            return (Element) nodeNext;
+        } else {
+            return null;
+        }
+    }
 }
 
 

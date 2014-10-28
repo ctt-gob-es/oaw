@@ -1,6 +1,9 @@
 package es.inteco.flesch;
 
-public class FleschAnalyzerFactory {
+public final class FleschAnalyzerFactory {
+
+    private FleschAnalyzerFactory() {
+    }
 
     /**
      * Devuelve un analizador para el lenguaje pedido
