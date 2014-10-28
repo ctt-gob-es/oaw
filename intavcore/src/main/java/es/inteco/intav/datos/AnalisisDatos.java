@@ -19,7 +19,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnalisisDatos {
+public final class AnalisisDatos {
+
+    private AnalisisDatos(){
+    }
 
     public static int setAnalisis(Connection conn, Analysis analisis) {
         PreparedStatement pstmt = null;

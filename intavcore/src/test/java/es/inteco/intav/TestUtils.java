@@ -32,7 +32,7 @@ public final class TestUtils {
         checkAccessibility.setGuideline(guideline);
         checkAccessibility.setGuidelineFile(guideline + ".xml");
         checkAccessibility.setLevel("aa");
-        //checkAccessibility.setUrl("http://www.example.org");
+        checkAccessibility.setUrl("http://localhost");
         checkAccessibility.setIdRastreo(0); // 0 - Indica análisis suelto (sin crawling y sin guardar datos en la BD de observatorio)
         checkAccessibility.setWebService(false);
 

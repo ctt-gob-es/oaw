@@ -32,7 +32,8 @@ public final class Check_1_1_3_ListTest {
     private static final int EMPTY_DEFINITION_LIST = 425;
     private static final int DL_INCORRECT = 427;
     private static final int TABLE_SIMULATING_UL = 431;
-    private static final int P_IMAGE_SIMULATING_LIST = 431;
+    private static final int P_IMAGE_SIMULATING_LIST = 445;
+    private static final int BR_IMAGE_SIMULATING_LIST = 459;
 
     private CheckAccessibility checkAccessibility;
 
@@ -170,17 +171,6 @@ public final class Check_1_1_3_ListTest {
                 "<li>2) Opción 2</li>" +
                 "</ul>" +
                 "<li>Opción sin padre</li>");
-        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), LI_PARENT_UL_OL));
-    }
-
-    @Test
-    public void evaluateLiBlank() throws Exception {
-        checkAccessibility.setContent("<ul>" +
-                "<li></li>" +
-                "<li>Item 1</li>" +
-                "<li>Item 2</li>" +
-                "</ul>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), LI_PARENT_UL_OL));
     }
@@ -585,12 +575,57 @@ public final class Check_1_1_3_ListTest {
 
     @Test
     public void evaluateSimulatedListParagraphImage() throws Exception {
-        checkAccessibility.setContent("<p><img width=\"8\" height=\"8\">Opción 1 - Lorem ipsum</p>" +
-                "<p<img width=\"8\" height=\"8\">Opción 2</p>" +
-                "<p<img width=\"8\" height=\"8\">Opción 3</p>" +
-                "<p<img width=\"8\" height=\"8\">Opción 4</p>");
+        checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum</p>" +
+                "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2</p>" +
+                "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 3</p>" +
+                "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 4</p>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), P_IMAGE_SIMULATING_LIST));
+    }
+
+    @Test
+    public void evaluateNonSimulatedListParagraphImage() throws Exception {
+        checkAccessibility.setContent("<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 1 - Lorem ipsum</p>" +
+                "<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 2</p>" +
+                "<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 3</p>" +
+                "<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 4</p>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), P_IMAGE_SIMULATING_LIST));
+    }
+
+    @Test
+    public void evaluateSimulatedListTwoParagraphImage() throws Exception {
+        checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum</p>" +
+                "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2</p>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), P_IMAGE_SIMULATING_LIST));
+    }
+
+    @Test
+    public void evaluateSimulatedListBrImage() throws Exception {
+        checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum" +
+                "<br/><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2" +
+                "<br/><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 3</p>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_IMAGE_SIMULATING_LIST));
+    }
+
+    @Test
+    public void evaluateNonSimulatedListBrImage() throws Exception {
+        checkAccessibility.setContent("<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 1 - Lorem ipsum" +
+                "<br/><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 2" +
+                "<br/><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 3" +
+                "<br/><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 4</p>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BR_IMAGE_SIMULATING_LIST));
+    }
+
+    @Test
+    public void evaluateSimulatedListTwoBrImage() throws Exception {
+        checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum" +
+                "<br/><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2</p>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BR_IMAGE_SIMULATING_LIST));
     }
 
 }

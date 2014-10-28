@@ -7,7 +7,10 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-public class DBConnect {
+public final class DBConnect {
+
+    private DBConnect() {
+    }
 
     public static Connection connect() {
         Connection conn = null;

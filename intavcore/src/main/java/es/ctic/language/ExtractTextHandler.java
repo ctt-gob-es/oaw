@@ -26,16 +26,24 @@ public class ExtractTextHandler extends DefaultHandler {
      */
     private final StringBuilder extractedText;
 
+    private final boolean extractSameLanguage;
+
     public ExtractTextHandler(final String language) {
+        this(language, true);
+    }
+
+    public ExtractTextHandler(final String language, final boolean extractSameLanguage) {
         this.webpageLanguage = language;
+        this.extractSameLanguage = extractSameLanguage;
         languages = new Stack<String>();
+        languages.push(language);
         extractedText = new StringBuilder(200);
     }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         final String lang = attributes.getValue("lang");
-        languages.push(lang != null && !lang.isEmpty()? lang : webpageLanguage);
+        languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek() ); //webpageLanguage);
     }
 
     @Override
@@ -45,8 +53,14 @@ public class ExtractTextHandler extends DefaultHandler {
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        if (webpageLanguage.equals(languages.peek())) {
-            extractedText.append(ch, start, length);
+        if (extractSameLanguage) {
+            if (webpageLanguage.equals(languages.peek())) {
+                extractedText.append(ch, start, length);
+            }
+        } else {
+            if (!webpageLanguage.equals(languages.peek())) {
+                extractedText.append(ch, start, length);
+            }
         }
     }
 

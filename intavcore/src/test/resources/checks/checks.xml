@@ -4986,15 +4986,170 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="446" key="form" confidence="high" occurrence="first">
+    <check id="446" key="form" confidence="high">
         <name>Se identifican los campos obligatorios en formularios con más de N campos de introducción de texto (N = 4)</name>
         <error>check.446.error</error>
         <rationale>check.446.rationale</rationale>
         <machine>
             <trigger element="form" />
             <!-- TODO: Buscar versiones idiomáticas -->
-            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bopcional(es)?\b"/>
+            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bopcional(es)?\b|\brequired\b|\boptional\b"/>
         </machine>
     </check>
 
+    <check id="447" key="css" confidence="high">
+        <name>Generación de contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres alfanuméricos (X=2)</name>
+        <error>check.447.error</error>
+        <rationale>check.447.rationale</rationale>
+        <machine>
+            <trigger element="css" />
+            <!-- number es el número de chars permitidos (number = X-1)-->
+            <function call="css-generated-content" node="." number="1" />
+        </machine>
+    </check>
+
+    <check id="448" key="css" confidence="high">
+        <name>Combinación de color entre primer plano y fondo</name>
+        <error>check.448.error</error>
+        <rationale>check.448.rationale</rationale>
+        <machine>
+            <trigger element="css" />
+            <function call="css-color-contrast" node="." />
+        </machine>
+    </check>
+
+    <check id="449" key="css" confidence="high">
+        <name>Utilización de text-decoration: blink</name>
+        <error>check.449.error</error>
+        <rationale>check.449.rationale</rationale>
+        <machine>
+            <trigger element="css" />
+            <function call="css-blink" node="." />
+        </machine>
+    </check>
+
+    <check id="450" key="css" confidence="high" occurrence="first">
+        <name>Código CSS parseable</name>
+        <error>check.450.error</error>
+        <rationale>check.450.rationale</rationale>
+        <machine>
+            <trigger element="css" />
+            <function call="css-parseable" node="." />
+        </machine>
+    </check>
+
+    <check id="451" key="css" confidence="high" occurrence="first">
+        <name>Uso de outline para ocultar el foco</name>
+        <error>check.451.error</error>
+        <rationale>check.451.rationale</rationale>
+        <machine>
+            <trigger element="css" />
+            <function call="css-outline" node="." />
+        </machine>
+    </check>
+
+    <check id="452" key="html" confidence="high">
+        <name>No se produce ningún cambio de contexto en los eventos “onfocus” u “onblur” (window.location, window.history, window.open, window.focus)</name>
+        <error>check.452.error</error>
+        <rationale>check.452.rationale</rationale>
+        <machine>
+            <trigger element="*" />
+            <condition type="or">
+                <condition type="and">
+                    <function call="attribute-exists" node="." value="onfocus"/>
+                    <function call="text-match" node="@onfocus" value="window\.(location|history|open|focus)"/>
+                </condition>
+                <condition type="and">
+                    <function call="attribute-exists" node="." value="onblur"/>
+                    <function call="text-match" node="@onblur" value="window\.(location|history|open|focus)"/>
+                </condition>
+            </condition>
+        </machine>
+    </check>
+
+    <check id="453" key="html" confidence="high">
+        <name>No se produce ningún cambio de contexto nada más cargarse la página (onload) (window.location, window.history, window.open, window.focus)</name>
+        <error>check.453.error</error>
+        <rationale>check.453.rationale</rationale>
+        <machine>
+            <trigger element="body" />
+            <condition type="and">
+                <function call="attribute-exists" node="." value="onload"/>
+                <function call="text-match" node="@onload" value="window\.(location|history|open|focus)"/>
+            </condition>
+        </machine>
+    </check>
+
+    <check id="454" key="html" confidence="high">
+        <name>No se produce ningún cambio de contexto en el evento “onchange” de los elementos “select” (window.location, window.history, window.open, window.focus)</name>
+        <error>check.454.error</error>
+        <rationale>check.454.rationale</rationale>
+        <machine>
+            <trigger element="select" />
+            <condition type="and">
+                <function call="attribute-exists" node="." value="onchange"/>
+                <function call="text-match" node="@onchange" value="window\.(location|history|open|focus)"/>
+            </condition>
+        </machine>
+    </check>
+
+    <check id="455" key="html" confidence="high" status="5">
+        <name>La página contiene algunos enlaces internos rotos</name>
+        <error>check.176.error</error>
+        <rationale>check.176.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="too-many-broken-links" node="." number="0" attribute1="domain"/>
+        </machine>
+    </check>
+
+    <check id="456" key="html" confidence="high" status="5">
+        <name>La página contiene más de 1 enlace interno roto</name>
+        <error>check.177.error</error>
+        <rationale>check.177.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="too-many-broken-links" node="." number="1" attribute1="domain"/>
+        </machine>
+    </check>
+
+    <check id="457" key="html" confidence="high" status="5">
+        <name>La página contiene algunos enlaces externos rotos</name>
+        <error>check.176.error</error>
+        <rationale>check.176.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="too-many-broken-links" node="." number="0" attribute1="external"/>
+        </machine>
+    </check>
+
+    <check id="458" key="html" confidence="high" status="5">
+        <name>La página contiene más de 2 enlaces externos rotos</name>
+        <error>check.177.error</error>
+        <rationale>check.177.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="too-many-broken-links" node="." number="2" attribute1="external"/>
+        </machine>
+    </check>
+
+    <check id="459" key="ul" confidence="high" occurrence="first">
+        <name>Listas mal creadas con elementos <code>br</code></name>
+        <error>check.459.error</error>
+        <rationale>check.459.rationale</rationale>
+        <machine>
+            <trigger element="br"/>
+            <function call="false-br-image-list" node="." number="3" value="^\w+" attribute1="11" attribute2="11" />
+        </machine>
+    </check>
+
+    <check id="460" key="html">
+        <name>Detección de términos en otros idiomas</name>
+        <error>check.460.error</error>
+        <rationale>check.460.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <function call="other-language" node="." />
+        </machine>
+    </check>
 </checks>

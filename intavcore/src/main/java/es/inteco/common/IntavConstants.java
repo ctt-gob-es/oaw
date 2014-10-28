@@ -1,6 +1,6 @@
 package es.inteco.common;
 
-public class IntavConstants {
+public interface IntavConstants {
 
     // ARCHIVOS DE PROPIEDADES
     public static final String INTAV_PROPERTIES = "intav.properties";

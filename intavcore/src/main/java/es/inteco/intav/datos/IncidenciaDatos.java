@@ -10,7 +10,10 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IncidenciaDatos {
+public final class IncidenciaDatos {
+
+    private IncidenciaDatos() {
+    }
 
     public static void saveIncidenceList(Connection conn, List<Incidencia> incidenceList) {
         /*Thread savingThread = new SavingThread(incidenceList);

@@ -26,6 +26,7 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import es.ctic.language.Diccionario;
 import es.ctic.language.ExtractTextHandler;
 import es.ctic.language.LanguageChecker;
 import es.inteco.common.CheckFunctionConstants;
@@ -49,6 +50,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import java.awt.*;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -70,6 +72,7 @@ public class Check {
     private String triggerElement;
     private String languageAppropriate;
     private List<Integer> prerequisites;
+
     private List<CheckCode> vectorCode;
 
     public Check() {
@@ -197,13 +200,10 @@ public class Check {
 
     // return true if required prerequisites for this check have been run
     public boolean prerequisitesOK(List<Integer> vectorChecksRun) {
-        for (int x = 0; x < prerequisites.size(); x++) {
-            Integer prereqId = (Integer) prerequisites.get(x);
-
+        for (Integer prerequisite : prerequisites) {
             boolean prerun = false;
-            for (int y = 0; y < vectorChecksRun.size(); y++) {
-                Integer runId = (Integer) vectorChecksRun.get(y);
-                if (prereqId.equals(runId)) {
+            for (Integer runId : vectorChecksRun) {
+                if (prerequisite.equals(runId)) {
                     prerun = true;
                     break;
                 }
@@ -244,8 +244,12 @@ public class Check {
         // Ejecuta las funciones
         try {
             for (CheckCode checkCode : vectorFunctions) {
-                if (evaluateCode(checkCode, elementGiven) != CheckFunctionConstants.CODE_RESULT_PROBLEM) {
-                    return true;
+                // Se ejecutan todas las comprobaciones que no sean de CSS
+                // Las comprobaciones de CSS se ejecutan posteriormente en el método Evaluator.performEvaluation
+                if (!"css".equalsIgnoreCase(triggerElement)) {
+                    if (evaluateCode(checkCode, elementGiven) != CheckFunctionConstants.CODE_RESULT_PROBLEM) {
+                        return true;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -280,19 +284,19 @@ public class Check {
             if (listItems.getLength() > 0) {
                 nodeNode = listItems.item(0);
             }
-        /*} else if (stringNodeAttribute.equals("./img[1]")) {
+        } else if (stringNodeAttribute.equals("./img[1]")) {
             // first img child
             NodeList childItems = elementGiven.getChildNodes();
             if (childItems.getLength() > 0) {
-                for(int i=0; i<childItems.getLength(); i++) {
-                    if ( "img".equalsIgnoreCase(childItems.item(i).getLocalName()) ) {
-                        nodeNode = childItems.item(0);
+                for (int i = 0; i < childItems.getLength(); i++) {
+                    if ("img".equalsIgnoreCase(childItems.item(i).getNodeName())) {
+                        nodeNode = childItems.item(i);
                         break;
                     }
                 }
             } else {
                 return CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
-            } //*/
+            }
         } else if (stringNodeAttribute.equals(".//link/@rel")) {
             // all link elements that have a 'rel' attribute
             NodeList listNodes = elementGiven.getElementsByTagName("link");
@@ -806,6 +810,12 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_REQUIRED_CONTROLS:
                 return functionRequiredControls(checkCode, nodeNode, elementGiven);
 
+            case CheckFunctionConstants.FUNCTION_FALSE_BR_IMAGE_LIST:
+                return functionFalseBrImageList(checkCode, nodeNode, elementGiven);
+
+            case CheckFunctionConstants.FUNCTION_OTHER_LANGUAGE:
+                return functionOtherLanguage(checkCode, nodeNode, elementGiven);
+
             default:
                 Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
                 break;
@@ -817,9 +827,9 @@ public class Check {
     private boolean functionRequiredControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList inputs = elementGiven.getElementsByTagName("input");
         final int minInputs = Integer.parseInt(checkCode.getFunctionNumber());
-        if ( inputs.getLength()>minInputs ) {
+        if (inputs.getLength() > minInputs) {
             final String formText = EvaluatorUtility.getLabelText(elementGiven);
-            final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(),Pattern.CASE_INSENSITIVE|Pattern.MULTILINE);
+            final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(formText);
             return !matcher.find();
         }
@@ -894,7 +904,6 @@ public class Check {
         }
     }
 
-
     private boolean functionGuessLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final String expectedLanguage = getLanguage(elementGiven, false);
         final Document document = elementGiven.getOwnerDocument();
@@ -910,6 +919,29 @@ public class Check {
                 final LanguageChecker languageChecker = new LanguageChecker(expectedLanguage);
                 // Si son distintos hay que devolver true para indicar que es fallo
                 return !languageChecker.isExpectedLanguage(extractedText);
+            } catch (TransformerException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+            return false;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean functionOtherLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final String expectedLanguage = getLanguage(elementGiven, false);
+        final Document document = elementGiven.getOwnerDocument();
+        if (expectedLanguage != null && !expectedLanguage.isEmpty()) {
+            final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false);
+            try {
+                TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
+                final String extractedText = extractTextHandler.getExtractedText();
+                final String[] words = extractedText.toLowerCase().split("\\s+");
+                for (String word : words) {
+                    if (Diccionario.containsWord("en", word)) {
+                        return true;
+                    }
+                }
             } catch (TransformerException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
@@ -2213,13 +2245,32 @@ public class Check {
         int maxNumBrokenLinks = Integer.parseInt(checkCode.getFunctionNumber());
 
         ((CheckedLinks) elementRoot.getUserData("checkedLinks")).setCheckedLinks(new ArrayList<String>());
-
+        final String scope = checkCode.getFunctionAttribute1();
+        final String url = (String) elementRoot.getUserData("url");
         int cont = 0;
         for (int i = 0; i < links.getLength(); i++) {
-            Element link = (Element) links.item(i);
+            final Element link = (Element) links.item(i);
             if (StringUtils.isNotEmpty(link.getAttribute("href"))) {
                 if (!CheckUtils.isValidUrl(elementRoot, link.getAttributeNode("href"))) {
-                    cont++;
+                    if (scope.isEmpty()) {
+                        cont++;
+                    } else if ("domain".equals(scope)) {
+                        try {
+                            if (CheckUtils.checkLinkInDomain(url, link.getAttribute("href"))) {
+                                cont++;
+                            }
+                        } catch (MalformedURLException e) {
+                            cont++;
+                        }
+                    } else if ("external".equals(scope)) {
+                        try {
+                            if (!CheckUtils.checkLinkInDomain(url, link.getAttribute("href"))) {
+                                cont++;
+                            }
+                        } catch (MalformedURLException e) {
+                            cont++;
+                        }
+                    }
                 }
             }
             if (cont > maxNumBrokenLinks) {
@@ -3462,10 +3513,59 @@ public class Check {
         return true;
     }
 
-    private int getCurrentOrder(String text, String patternStr) {
-        Pattern pattern = Pattern.compile(patternStr, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+    /**
+     * Buscamos listas falsas de la forma "<img /> uno<br/><img /> dos<br/><img /> tres" o "<br/><img /> uno<br/><img /> dos<br/><img /> tres".
+     * Para ello, buscamos los elementos <br/> hacia atrás y comprobamos que el texto que les sucede
+     * coincida con la expresión regular para ver si tienen  formato artificial de lista. En el caso
+     * del último elemento, buscaremos el texto que precede al último elemento <br/> analizado, ya que
+     * el primer elemento de la lista falsa no tiene por qué tener un <br/> previo.
+     *
+     * @param checkCode
+     * @param nodeNode
+     * @param elementGiven
+     * @return true si se detecta un uso incorrecto de br e imágenes (problema de accesibilidad), false en caso contrario
+     */
+    private boolean functionFalseBrImageList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+        final int number = Integer.parseInt(checkCode.getFunctionNumber());
 
-        Matcher matcher = pattern.matcher(text);
+        PropertiesManager pmgr = new PropertiesManager();
+        List<String> inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
+
+        Element checkedElement = elementGiven;
+        if (checkedElement != null) {
+            for (int i = 0; i < number; i++) {
+                // TODO: Comprobar que además de la imagen hay un texto
+                if (!checkBrImage(checkCode, checkedElement)) {
+                    return false;
+                } else {
+                    checkedElement = EvaluatorUtils.getPreviousElement(checkedElement, false);
+                    while (checkedElement != null && !"br".equalsIgnoreCase(checkedElement.getNodeName())) {
+                        checkedElement = EvaluatorUtils.getPreviousElement(checkedElement, false);
+                    }
+                    if (checkedElement == null) {
+                        checkedElement = (Element) elementGiven.getParentNode();
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private boolean checkBrImage(final CheckCode checkCode, final Element checkedElement) {
+        if (checkedElement != null) {
+            final Element nextElement = "br".equalsIgnoreCase(checkedElement.getNodeName()) ? EvaluatorUtils.getNextElement(checkedElement, false) : EvaluatorUtils.getFirstElement(checkedElement, false);
+            return "img".equalsIgnoreCase(nextElement.getNodeName()) && functionImgDimensionsLessThan(checkCode, nextElement, nextElement);
+        } else {
+            return false;
+        }
+    }
+
+    private int getCurrentOrder(String text, String patternStr) {
+        final Pattern pattern = Pattern.compile(patternStr, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = pattern.matcher(text);
+
         if (matcher.find()) {
             return Integer.parseInt(matcher.group(1));
         } else {
@@ -3474,8 +3574,7 @@ public class Check {
     }
 
     private boolean functionHasIncorrectTabindex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
-        List<Element> elementList = new ArrayList<Element>();
+        final List<Element> elementList = new ArrayList<Element>();
 
         elementList.addAll(createElementList(elementGiven.getElementsByTagName("a")));
         elementList.addAll(createElementList(elementGiven.getElementsByTagName("area")));
@@ -3506,8 +3605,7 @@ public class Check {
     }
 
     private boolean areTabindexOrder(List<Element> elementList) {
-
-        List<Element> ordererList = orderElementsByPosition(elementList);
+        final List<Element> ordererList = orderElementsByPosition(elementList);
         int previousTabindex = 0;
         for (Element element : ordererList) {
             if (!(previousTabindex == ((Integer.parseInt(element.getAttribute("tabindex"))) - 1))) {
@@ -3700,5 +3798,9 @@ public class Check {
         }
 
         return false;
+    }
+
+    public List<CheckCode> getVectorCode() {
+        return vectorCode;
     }
 }

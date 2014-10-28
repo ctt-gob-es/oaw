@@ -20,11 +20,20 @@ public class LanguageChecker {
     }
 
     /**
+     * Método que comprueba si un determinado texto está escrito en el idioma esperado (indicado en el constructor) por este comprobador
+     * @param content cadena con el contenido en formato texto plano a comprobar el idioma
+     * @return true si el idioma detectado es el esperado (indicado en el constructor)
+     */
+    public boolean isExpectedLanguage(final String content) {
+        return getLanguage(content).equals(expectedLanguage);
+    }
+
+    /**
      * Obtiene el código de idioma, si está entre los admitidos por este comprobador, de un texto
      * @param content cadena con el contenido en texto plano
      * @return una cadena con el código del idioma detectado para el contenido o la cadena "unknown" si no puede ser detectado
      */
-    public String getLanguage(final String content) {
+    protected String getLanguage(final String content) {
         if (LanguageIdentifier.getSupportedLanguages().contains(expectedLanguage)) {
             final LanguageIdentifier languageIdentifier = new LanguageIdentifier(content);
             return languageIdentifier.getLanguage();
@@ -33,15 +42,6 @@ public class LanguageChecker {
             return guessLanguage.guessLanguage(content);
         }
         return "unknown";
-    }
-
-    /**
-     * Método que comprueba si un determinado texto está escrito en el idioma esperado (indicado en el constructor) por este comprobador
-     * @param content cadena con el contenido en formato texto plano a comprobar el idioma
-     * @return true si el idioma detectado es el esperado (indicado en el constructor)
-     */
-    public boolean isExpectedLanguage(final String content) {
-        return getLanguage(content).equals(expectedLanguage);
     }
 
 }

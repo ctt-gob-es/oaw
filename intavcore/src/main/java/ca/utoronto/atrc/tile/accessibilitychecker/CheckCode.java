@@ -451,6 +451,20 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_FIRST_CHILD;
             } else if (stringCall.equals("required-controls")) {
                 functionId = CheckFunctionConstants.FUNCTION_REQUIRED_CONTROLS;
+            } else if (stringCall.equals("css-generated-content")) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_GENERATED_CONTENT;
+            } else if (stringCall.equals("css-color-contrast")) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_COLOR_CONTRAST;
+            } else if (stringCall.equals("css-blink")) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_BLINK;
+            } else if (stringCall.equals("css-parseable")) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_PARSEABLE;
+            } else if (stringCall.equals("css-outline")) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_OUTLINE;
+            } else if (stringCall.equals("false-br-image-list")) {
+                functionId = CheckFunctionConstants.FUNCTION_FALSE_BR_IMAGE_LIST;
+            } else if (stringCall.equals("other-language")) {
+                functionId = CheckFunctionConstants.FUNCTION_OTHER_LANGUAGE;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;

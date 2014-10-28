@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 /**
  * Port del codigo utilizado por KDE para identificar el idioma
  * 
- * @see http://code.google.com/p/guess-language/
+ * @see  http://code.google.com/p/guess-language/
  */
 public class GuessLanguage {
 	// Valor utilizado para idiomas que no se pueden detectar
@@ -80,7 +80,7 @@ public class GuessLanguage {
 
 		models = new HashMap<String, HashMap<String, Integer>>();
 		if (models.isEmpty()) {
-			load_models();
+			loadModels();
 		}
 	}
 
@@ -89,7 +89,7 @@ public class GuessLanguage {
 			return UNKNOWN_LANGUAGE;
 		}
 
-		return identify(text, find_runs(text));
+		return identify(text, findRuns(text));
 	}
 
 	public static boolean isSupportedLanguage(final String language) {
@@ -105,8 +105,8 @@ public class GuessLanguage {
 		return false;
 	}
 
-	private List<UnicodeBlock> find_runs(final String text) {
-		final Map<UnicodeBlock, Integer> run_types = new HashMap<UnicodeBlock, Integer>();
+	private List<UnicodeBlock> findRuns(final String text) {
+		final Map<UnicodeBlock, Integer> runTypes = new HashMap<UnicodeBlock, Integer>();
 		int count = 0;
 		int totalCount = 0;
 		UnicodeBlock previousBlock = null;
@@ -123,28 +123,28 @@ public class GuessLanguage {
 						block = UnicodeBlock.LATIN_EXTENDED_A;
 					}
 					previousBlock = block;
-					Integer aux = run_types.get(block);
+					Integer aux = runTypes.get(block);
 					if (aux != null) {
-						run_types.put(block, aux + count);
+						runTypes.put(block, aux + count);
 					} else {
-						run_types.put(block, count);
+						runTypes.put(block, count);
 					}
 					count = 0;
 				}
 			}
 		}
 		// add last count
-		Integer aux = run_types.get(previousBlock);
+		Integer aux = runTypes.get(previousBlock);
 		if (aux != null) {
-			run_types.put(previousBlock, aux + count);
+			runTypes.put(previousBlock, aux + count);
 		} else {
-			run_types.put(previousBlock, count);
+			runTypes.put(previousBlock, count);
 		}
 		// relevant return types
 		final List<UnicodeBlock> relevant_runs = new LinkedList<UnicodeBlock>();
 		// return run types that used for 40% or more of the string
 		// always return basic latin if found more than 15%.
-		for (Entry<UnicodeBlock, Integer> entry : run_types.entrySet()) {
+		for (Entry<UnicodeBlock, Integer> entry : runTypes.entrySet()) {
 			if ((entry.getValue() * 100 / totalCount) >= 40) {
 				relevant_runs.add(entry.getKey());
 			} else {
@@ -323,7 +323,7 @@ public class GuessLanguage {
 		return dist;
 	}
 
-	private void load_models() {
+	private void loadModels() {
 		final ClassLoader loader = this.getClass().getClassLoader();
 		for (String trigram : ACTIVE_MODELS) {
 			try {

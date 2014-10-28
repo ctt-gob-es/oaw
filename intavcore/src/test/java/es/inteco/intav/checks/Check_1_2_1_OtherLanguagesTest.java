@@ -20,6 +20,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 
     private static final int VALID_LANGUAGE_ELEMENT = 161;
     private static final int LANGUAGE_CHANGE_LINKS = 93;
+    private static final int OTHER_LANGUAGES = 460;
 
     private CheckAccessibility checkAccessibility;
 
@@ -89,8 +90,25 @@ public final class Check_1_2_1_OtherLanguagesTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
-        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
-        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
+    @Test
+    public void evaluateOtherLang() throws Exception {
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong>You are welcome</strong></p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateOtherLangMarked() throws Exception {
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong lang=\"en\">You are welcome</strong></p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 }

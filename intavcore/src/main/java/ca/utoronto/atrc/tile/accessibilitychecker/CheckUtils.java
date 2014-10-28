@@ -18,9 +18,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -226,6 +224,9 @@ public final class CheckUtils {
                     }
                 }
             }
+        } catch (UnknownHostException e) {
+            // Si no se puede conectar porque no se reconoce el Host la url no es válida
+            return false;
         } catch (Exception e) {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
         } finally {
@@ -233,7 +234,6 @@ public final class CheckUtils {
                 checkedLinks.getCheckedLinks().add(remoteUrl.toString());
             }
         }
-
         return true;
     }
 
@@ -356,5 +356,42 @@ public final class CheckUtils {
         } else {
             return (ImageReader) img.getUserData(IntavConstants.GIF_READER);
         }
+    }
+
+    /**
+     * Método para determinar si un enlace pertenece al mismo dominio o no que la página.
+     * Se realiza una comprobación básica sobre la sintaxis de la url. No se comprueba si mediante redirección se sale o no del dominio
+     *
+     * @param url  la url de la página
+     * @param link atributo href no vacío de un enlace (etiqueta a)
+     * @return true si el enlace link pertenece al mismo dominio que el enlace url false en caso contrario
+     */
+    public static boolean checkLinkInDomain(final String url, final String link) throws MalformedURLException {
+        String domain = new URL(url).getHost();
+        int index = domain.lastIndexOf('.');
+        if (index != -1) {
+            // Comprobamos si la url tiene dominios superiores a nivel 2
+            // (ej http://www.algo.es o sólo http://algo.es)
+            if ((index = domain.lastIndexOf('.', index - 1)) != -1) {
+                domain = domain.substring(index);
+            } else {
+                // Si la url comenzó directamente con el dominio de 2º nivel
+                // http://algo.es
+                // le anteponemos el caracter '.' para indicar comienzo de
+                // dominio
+                domain = "." + domain;
+            }
+        }
+
+        String newHost = new URL(link).getHost();
+        index = newHost.lastIndexOf('.');
+        if (index != -1) {
+            if ((index = newHost.lastIndexOf('.', index - 1)) != -1) {
+                newHost = newHost.substring(index);
+            } else {
+                newHost = "." + newHost;
+            }
+        }
+        return newHost.equalsIgnoreCase(domain);
     }
 }

@@ -294,4 +294,13 @@ public class ColorValues {
         }
         return false;
     }
+
+    public static String getHexColorFromName(String colorName) {
+        for (String[] colorInfo : COLOR_NAME_ARRAY) {
+            if (colorInfo[0].equalsIgnoreCase(colorName)) {
+                return "#"+ colorInfo[1];
+            }
+        }
+        return "";
+    }
 }
