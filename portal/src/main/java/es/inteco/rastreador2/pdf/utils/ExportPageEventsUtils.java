@@ -24,10 +24,9 @@ public final class ExportPageEventsUtils {
         return rec;
     }
 
-    public static Image createImage(String pathLogo, int scaleX, int scaleY, String alt) {
+    public static Image createImage(final String pathLogo, int scaleX, int scaleY, final String alt) {
         try {
-            Image logo;
-            logo = Image.getInstance(pathLogo);
+            final Image logo = Image.getInstance(pathLogo);
             logo.scaleAbsolute(scaleX, scaleY);
             logo.setAlt(alt);
             return logo;
@@ -36,7 +35,7 @@ public final class ExportPageEventsUtils {
         }
     }
 
-    public static void addText(PdfContentByte cb, float posX, float posY, String text, Color colorText, BaseFont font, int size) {
+    public static void addText(final PdfContentByte cb, float posX, float posY, String text, Color colorText, BaseFont font, int size) {
         cb.beginText();
         cb.setFontAndSize(font, size);
         cb.setColorFill(colorText);
@@ -47,7 +46,7 @@ public final class ExportPageEventsUtils {
         cb.endMarkedContentSequence();
     }
 
-    public static Rectangle addFooterLine(Color color) {
+    public static Rectangle addFooterLine(final Color color) {
         PropertiesManager pmgr = new PropertiesManager();
         Rectangle line = new Rectangle(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.recWidthFooter")), Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.recHeightFooter")));
         line.setTop(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.lineFooterTop")));
