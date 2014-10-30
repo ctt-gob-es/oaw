@@ -74,7 +74,7 @@ public class ManagementThread extends Thread {
             numWarningsCpu++;
 
             if (numWarningsCpu >= Integer.parseInt(pmgr.getValue("management.properties", "management.cpu.num.intervals"))) {
-                Logger.putLog("El porcentaje de CPU utilizado es del " + cpuUsage.toPlainString() + "% . Se va a proceder a avisar a los administradores.", ManagementThread.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("El porcentaje de CPU utilizado es del " + cpuUsage.toPlainString() + "% . Se va a proceder a avisar a los administradores.", ManagementThread.class, Logger.LOG_LEVEL_ERROR);
 
                 try {
                     sendCpuMail(cpuUsage);
@@ -118,7 +118,7 @@ public class ManagementThread extends Thread {
 
             if (numWarningsMemory >= Integer.parseInt(pmgr.getValue("management.properties", "management.memory.num.intervals"))) {
                 Logger.putLog("La memoria utilizada es del " + usedPercentage + "%(" + heapMemoryUsed.divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_HALF_UP) + " MB de " +
-                        heapMemoryMax.divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_HALF_UP) + " MB). Se va a proceder a avisar a los administradores.", ManagementThread.class, Logger.LOG_LEVEL_INFO);
+                        heapMemoryMax.divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_HALF_UP) + " MB). Se va a proceder a avisar a los administradores.", ManagementThread.class, Logger.LOG_LEVEL_ERROR);
 
                 try {
                     sendMemoryMail(usedPercentage, heapMemoryMax, heapMemoryUsed);
