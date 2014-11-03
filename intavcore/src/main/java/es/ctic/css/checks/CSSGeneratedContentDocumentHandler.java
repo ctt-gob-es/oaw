@@ -8,6 +8,7 @@ import es.ctic.css.CSSResource;
 import es.ctic.css.utils.CSSSACUtils;
 import es.inteco.common.logging.Logger;
 import org.w3c.css.sac.*;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,12 +20,12 @@ public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
 
     private static final String CONTENT_PROPERTY = "content";
 
-    public CSSGeneratedContentDocumentHandler(final Parser parser, final CheckCode checkCode) {
-        super(parser,checkCode);
+    public CSSGeneratedContentDocumentHandler(final CheckCode checkCode) {
+        super(checkCode);
     }
 
     @Override
-    public List<CSSProblem> evaluate(final CSSResource cssResource) {
+    public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
         final InputSource is = new InputSource();
         is.setCharacterStream(new java.io.StringReader(cssResource.getContent()));
         try {

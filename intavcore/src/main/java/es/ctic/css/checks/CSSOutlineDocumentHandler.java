@@ -12,8 +12,8 @@ import org.w3c.css.sac.Parser;
  */
 public class CSSOutlineDocumentHandler extends CSSDocumentHandler {
 
-    public CSSOutlineDocumentHandler(final Parser parser, final CheckCode checkCode) {
-        super(parser, checkCode);
+    public CSSOutlineDocumentHandler(final CheckCode checkCode) {
+        super(checkCode);
     }
 
     @Override

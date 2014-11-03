@@ -1,5 +1,7 @@
 package es.ctic.css;
 
+import org.w3c.dom.Element;
+
 import java.util.Date;
 
 /**
@@ -11,44 +13,53 @@ public class CSSProblem {
     private int columnNumber;
     private String textContent;
     private String selector;
+    private Element element;
 
-    public void setDate(Date date) {
-        this.date = date;
+    public Element getElement() {
+        return element;
+    }
+
+    public void setElement(Element element) {
+        this.element = element;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public int getLineNumber() {
         return lineNumber;
     }
 
-    public void setColumnNumber(int columnNumber) {
-        this.columnNumber = columnNumber;
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 
     public int getColumnNumber() {
         return columnNumber;
     }
 
-    public void setTextContent(String textContent) {
-        this.textContent = textContent;
+    public void setColumnNumber(int columnNumber) {
+        this.columnNumber = columnNumber;
     }
 
     public String getTextContent() {
         return textContent;
     }
 
-    public void setSelector(String selector) {
-        this.selector = selector;
+    public void setTextContent(String textContent) {
+        this.textContent = textContent;
     }
 
     public String getSelector() {
         return selector;
+    }
+
+    public void setSelector(String selector) {
+        this.selector = selector;
     }
 }

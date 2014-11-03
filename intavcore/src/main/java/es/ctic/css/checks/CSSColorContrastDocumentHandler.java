@@ -19,8 +19,8 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
     private LexicalUnit backgroundProperty;
     private LexicalUnit foregroundProperty;
 
-    public CSSColorContrastDocumentHandler(final Parser parser, final CheckCode checkCode) {
-        super(parser, checkCode);
+    public CSSColorContrastDocumentHandler(final CheckCode checkCode) {
+        super(checkCode);
     }
 
     @Override

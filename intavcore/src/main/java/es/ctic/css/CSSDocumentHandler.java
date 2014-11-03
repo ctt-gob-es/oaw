@@ -1,15 +1,14 @@
 package es.ctic.css;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
-import ca.utoronto.atrc.tile.accessibilitychecker.Problem;
 import com.steadystate.css.parser.SACParserCSS3;
 import es.ctic.css.utils.CSSSACUtils;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import org.w3c.css.sac.*;
+import org.w3c.css.sac.helpers.ParserFactory;
+import org.w3c.dom.Node;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,34 +16,56 @@ import java.util.List;
 /**
  *
  */
-public abstract class CSSDocumentHandler implements DocumentHandler {
+public abstract class CSSDocumentHandler implements DocumentHandler, CSSAnalyzer {
+
+    static {
+        System.setProperty("org.w3c.css.sac.parser", "com.steadystate.css.parser.SACParserCSS3");
+    }
 
     private final List<CSSProblem> problems = new ArrayList<CSSProblem>();
-    protected final Parser parser;
+    protected Parser parser;
     protected final CheckCode checkCode;
     protected String selector;
 
-    public CSSDocumentHandler(final Parser parser, final CheckCode checkCode) {
-        this.parser = parser;
+    public CSSDocumentHandler(final CheckCode checkCode) {
         this.checkCode = checkCode;
-        this.parser.setDocumentHandler(this);
-        // Inicializamos a un ErrorHandler vacío porque por defecto imprime los errores por System.err
-        this.parser.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void warning(CSSParseException exception) throws CSSException {
-            }
+        final ParserFactory parserFactory = new ParserFactory();
+        try {
+            parser = parserFactory.makeParser();
+            parser.setDocumentHandler(this);
+            // Inicializamos a un ErrorHandler vacío porque por defecto imprime los errores por System.err
+            parser.setErrorHandler(new ErrorHandler() {
+                @Override
+                public void warning(CSSParseException exception) throws CSSException {
+                }
 
-            @Override
-            public void error(CSSParseException exception) throws CSSException {
-            }
+                @Override
+                public void error(CSSParseException exception) throws CSSException {
+                }
 
-            @Override
-            public void fatalError(CSSParseException exception) throws CSSException {
-            }
-        });
+                @Override
+                public void fatalError(CSSParseException exception) throws CSSException {
+                }
+            });
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
-    public List<CSSProblem> evaluate(final CSSResource cssResource) {
+    public List<CSSProblem> evaluate(final Node node, final List<CSSResource> cssResources) {
+        final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
+        for (CSSResource cssResource: cssResources) {
+           cssProblems.addAll(evaluate(node, cssResource));
+        }
+
+        return cssProblems;
+    }
+
+    public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
         final InputSource is = new InputSource();
         is.setCharacterStream(new java.io.StringReader(cssResource.getContent()));
         // Si en vez un String es el enlace a la hoja de estilo usar
@@ -135,19 +156,15 @@ public abstract class CSSDocumentHandler implements DocumentHandler {
     protected CSSProblem createCSSProblem(final String textContent) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());
-        cssProblem.setLineNumber(getLineNumber(parser));
-        cssProblem.setColumnNumber(getColumnNumber(parser));
+        cssProblem.setLineNumber(getLineNumber());
+        cssProblem.setColumnNumber(getColumnNumber());
         cssProblem.setSelector(selector);
         cssProblem.setTextContent(textContent);
 
-
-        //Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-        //problem.setNode(problemTextNode);
-        //problem.setSummary(cssValidationError.isSummary());
         return cssProblem;
     }
 
-    private int getLineNumber(Parser parser) {
+    private int getLineNumber() {
         if (parser instanceof SACParserCSS3) {
             final SACParserCSS3 sacParserCSS3 = (SACParserCSS3) parser;
             return sacParserCSS3.token.beginLine;
@@ -156,7 +173,7 @@ public abstract class CSSDocumentHandler implements DocumentHandler {
         }
     }
 
-    private int getColumnNumber(final Parser parser) {
+    private int getColumnNumber() {
         if (parser instanceof SACParserCSS3) {
             final SACParserCSS3 sacParserCSS3 = (SACParserCSS3) parser;
             return sacParserCSS3.token.beginColumn;

@@ -75,7 +75,7 @@ public final class CSSSACUtils {
             case LexicalUnit.SAC_RECT_FUNCTION:
             case LexicalUnit.SAC_FUNCTION:
                 sb.append(lexicalUnit.getFunctionName());
-                // FIXME: HACK para tratar la función rgba añadida en CSS3 (Color Model) que no es reconocida por SAC
+                // HACK para tratar la función rgba añadida en CSS3 (Color Model) que no es reconocida por SAC
                 // Si es rgba gestionamos aquí la función
                 if ("rgba".equalsIgnoreCase(lexicalUnit.getFunctionName())) {
                     sb.append('(');

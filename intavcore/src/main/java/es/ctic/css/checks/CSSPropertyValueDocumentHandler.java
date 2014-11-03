@@ -14,8 +14,8 @@ public class CSSPropertyValueDocumentHandler extends CSSDocumentHandler {
 
     private final String propertyName;
 
-    public CSSPropertyValueDocumentHandler(final Parser parser, final CheckCode checkCode) {
-        super(parser, checkCode);
+    public CSSPropertyValueDocumentHandler(final CheckCode checkCode) {
+        super(checkCode);
         this.propertyName = checkCode.getFunctionValue().toLowerCase();
     }
 
