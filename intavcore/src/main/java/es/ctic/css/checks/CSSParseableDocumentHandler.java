@@ -7,7 +7,7 @@ import es.ctic.css.CSSResource;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.CSSParseException;
 import org.w3c.css.sac.ErrorHandler;
-import org.w3c.css.sac.Parser;
+import org.w3c.dom.Node;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ import java.util.List;
  */
 public class CSSParseableDocumentHandler extends CSSDocumentHandler implements ErrorHandler {
 
-    public CSSParseableDocumentHandler(Parser parser, CheckCode checkCode) {
-        super(parser, checkCode);
+    public CSSParseableDocumentHandler(CheckCode checkCode) {
+        super(checkCode);
     }
 
     @Override
-    public List<CSSProblem> evaluate(CSSResource cssResource) {
+    public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
         parser.setErrorHandler(this);
-        return super.evaluate(cssResource);
+        return super.evaluate(node, cssResource);
     }
 
     @Override

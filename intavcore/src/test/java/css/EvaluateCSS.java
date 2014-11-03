@@ -9,6 +9,7 @@ import com.helger.css.reader.CSSReaderDeclarationList;
 import com.helger.css.writer.CSSWriterSettings;
 import cz.vutbr.web.css.*;
 import cz.vutbr.web.domassign.Analyzer;
+import cz.vutbr.web.domassign.MultiMap;
 import cz.vutbr.web.domassign.StyleMap;
 import es.ctic.css.CSSProblem;
 import es.ctic.css.checks.CSSPropertyValueDocumentHandler;
@@ -30,7 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -87,7 +87,7 @@ public class EvaluateCSS {
         Assert.assertNotNull(parser);
         CheckCode checkCode = new CheckCode();
         checkCode.setFunctionValue("content");
-        parser.setDocumentHandler(new CSSPropertyValueDocumentHandler(parser, checkCode));
+        parser.setDocumentHandler(new CSSPropertyValueDocumentHandler(checkCode));
         final InputSource is = new InputSource();
         //is.setURI("http://www.fundacionctic.org/sites/all/themes/ctic/css/html-reset.css");
         is.setCharacterStream(new java.io.StringReader(css));
@@ -108,21 +108,85 @@ public class EvaluateCSS {
         //get the element style
         Document doc = EvaluatorUtility.loadHtmlFile(checkAccessibility, false, false, "es", false);
         StyleMap map = CSSFactory.assignDOM(doc, "UTF-8", new URL("http://www.fundacionctic.org"), new MediaSpecAll(), true);
-        final NodeList paragraphs = doc.getElementsByTagName("body");
+        final NodeList paragraphs = doc.getElementsByTagName("h2");
         for (int i = 0; i < paragraphs.getLength(); i++) {
             NodeData style = map.get((Element) paragraphs.item(i));
             //get the type of the assigned value
-            CSSProperty.Color color = style.getProperty("color");
-            System.out.print("color= ");
+            CSSProperty.Color color = style.getProperty("color",true);
             if (CSSProperty.Color.INHERIT == color) {
-                System.out.println("inherit");
+                System.out.println("color=inherit");
             } else if (CSSProperty.Color.TRANSPARENT == color) {
-                System.out.println("transparent");
+                System.out.println("color=transparent");
             } else if (CSSProperty.Color.color == color) {
-                System.out.println(color.toString());
+                System.out.println("color= " + style.getValue(TermColor.class, "color").toString());
             } else {
                 System.out.println("## unknown ##");
             }
+
+            CSSProperty.FontSize font = style.getProperty("font-size",true);
+            if (CSSProperty.FontSize.length == font) {
+                System.out.println("font-size= " + style.getValue(TermLength.class, "font-size").toString());
+            }
+
+            CSSProperty.BackgroundColor backgroundColor = style.getProperty("background-color",true);
+            if (CSSProperty.BackgroundColor.color == backgroundColor) {
+                System.out.println("background-color= " + style.getValue(TermColor.class, "background-color").toString());
+            }
+
+//            CSSProperty backgroundColor = style.getProperty("font-size",true);
+//            if (CSSProperty.Color.INHERIT == backgroundColor) {
+//                System.out.println("background-color=inherit");
+//            }  else if (CSSProperty.Color.TRANSPARENT == backgroundColor) {
+//                System.out.println("background-color=transparent");
+//            } else if (CSSProperty.Color.color == backgroundColor) {
+//                System.out.println("background-color= " + style.getValue(TermColor.class, "background-color").toString());
+//            }  else {
+//                System.out.println("## unknown ##"+ backgroundColor.toString());
+//            }
+//            System.out.println(style);
+        }
+    }
+
+    @Test
+    public void testjStyleParserLabel() throws MalformedURLException {
+        final CheckAccessibility checkAccessibility = new CheckAccessibility();
+        checkAccessibility.setEntity("Tests unitarios");
+        checkAccessibility.setGuideline("observatorio-2.0");
+        checkAccessibility.setGuidelineFile("observatorio-2.0.xml");
+        checkAccessibility.setLevel("aa");
+        checkAccessibility.setUrl("http://www.fundacionctic.org/contacto");
+        checkAccessibility.setIdRastreo(0); // 0 - Indica análisis suelto (sin crawling y sin guardar datos en la BD de observatorio)
+        checkAccessibility.setWebService(false);
+        //get the element style
+        Document doc = EvaluatorUtility.loadHtmlFile(checkAccessibility, false, false, "es", false);
+        StyleMap map = CSSFactory.assignDOM(doc, "UTF-8", new URL("http://www.fundacionctic.org"), new MediaSpecAll(), true);
+
+        final NodeList paragraphs = doc.getElementsByTagName("label");
+        for (int i = 0; i < paragraphs.getLength(); i++) {
+            NodeData style = map.get((Element) paragraphs.item(i));
+            System.out.println(style.getSourceDeclaration("left").getSource().toString());
+            //get the type of the assigned value
+            CSSProperty.Color color = style.getProperty("color",true);
+            if (CSSProperty.Color.INHERIT == color) {
+                System.out.println("color=inherit");
+            } else if (CSSProperty.Color.TRANSPARENT == color) {
+                System.out.println("color=transparent");
+            } else if (CSSProperty.Color.color == color) {
+                System.out.println("color= " + style.getValue(TermColor.class, "color").toString());
+            } else {
+                System.out.println("## unknown ##");
+            }
+
+            CSSProperty.FontSize font = style.getProperty("font-size",true);
+            if (CSSProperty.FontSize.length == font) {
+                System.out.println("font-size= " + style.getValue(TermLength.class, "font-size").toString());
+            }
+
+            CSSProperty.BackgroundColor backgroundColor = style.getProperty("background-color",true);
+            if (CSSProperty.BackgroundColor.color == backgroundColor) {
+                System.out.println("background-color= " + style.getValue(TermColor.class, "background-color").toString());
+            }
+            System.out.println(style);
         }
     }
 
@@ -249,27 +313,27 @@ public class EvaluateCSS {
         }*/
 
         final NodeList h3Elements = doc.getElementsByTagName("h3");
-        for( int i=0 ; i<h3Elements.getLength(); i++) {
+        for (int i = 0; i < h3Elements.getLength(); i++) {
             System.out.println("////////////////////");
             Element h3Element = (Element) h3Elements.item(i);
             final NodeData nodeData = styleMap.get(h3Element);
-            for(String propertyName: nodeData.getPropertyNames()) {
+            for (String propertyName : nodeData.getPropertyNames()) {
                 CSSProperty cssProperty = nodeData.getProperty(propertyName);
-                if ( cssProperty==CSSProperty.FontSize.length) {
+                if (cssProperty == CSSProperty.FontSize.length) {
                     Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
 
                     TermLength mtop = nodeData.getValue(TermLength.class, propertyName, true);
                     System.out.println("FONT-SIZE: " + mtop);
-                } else if (cssProperty==CSSProperty.Color.color) {
-                    Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
-                    TermColor mtop = nodeData.getValue(TermColor.class, propertyName,true);
-                    System.out.println("Color: " + mtop);
-                }else if (cssProperty==CSSProperty.BackgroundColor.color) {
+                } else if (cssProperty == CSSProperty.Color.color) {
                     Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
 
                     TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
-                    System.out.println(propertyName+ ": " + mtop);
+                    System.out.println("Color: " + mtop);
+                } else if (cssProperty == CSSProperty.BackgroundColor.color) {
+                    Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
+
+                    TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
+                    System.out.println(propertyName + ": " + mtop);
                 }
             }
         }
@@ -278,23 +342,23 @@ public class EvaluateCSS {
         final Element portalesDiv = doc.getElementById("block-views-portales-home-subdestacados-es");
         final Element portalesH3 = (Element) portalesDiv.getElementsByTagName("h3").item(0);
         final NodeData nodeData = styleMap.get(portalesH3);
-        for(String propertyName: nodeData.getPropertyNames()) {
+        for (String propertyName : nodeData.getPropertyNames()) {
             CSSProperty cssProperty = nodeData.getProperty(propertyName);
-            if ( cssProperty==CSSProperty.FontSize.length) {
+            if (cssProperty == CSSProperty.FontSize.length) {
                 Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
 
                 TermLength mtop = nodeData.getValue(TermLength.class, propertyName, true);
                 System.out.println("FONT-SIZE: " + mtop);
-            } else if (cssProperty==CSSProperty.Color.color) {
-                Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
-                TermColor mtop = nodeData.getValue(TermColor.class, propertyName,true);
-                System.out.println("Color: " + mtop);
-            }else if (cssProperty==CSSProperty.BackgroundColor.color) {
+            } else if (cssProperty == CSSProperty.Color.color) {
                 Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
 
                 TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
-                System.out.println(propertyName+ ": " + mtop);
+                System.out.println("Color: " + mtop);
+            } else if (cssProperty == CSSProperty.BackgroundColor.color) {
+                Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
+
+                TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
+                System.out.println(propertyName + ": " + mtop);
             }
         }
     }

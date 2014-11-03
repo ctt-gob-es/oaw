@@ -12,8 +12,8 @@ import org.w3c.css.sac.Parser;
  */
 public class CSSBlinkDocumentHandler extends CSSDocumentHandler {
 
-    public CSSBlinkDocumentHandler(final Parser parser, final CheckCode checkCode) {
-        super(parser, checkCode);
+    public CSSBlinkDocumentHandler(final CheckCode checkCode) {
+        super(checkCode);
     }
 
     @Override

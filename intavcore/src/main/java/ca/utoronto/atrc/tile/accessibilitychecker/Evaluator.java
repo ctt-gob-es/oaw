@@ -433,7 +433,7 @@ public class Evaluator {
             if ("html".equalsIgnoreCase(node.getNodeName()) && "css".equalsIgnoreCase(check.getTriggerElement())) {
                 for (CheckCode checkCode : check.getVectorCode()) {
                     if (checkCode.getType() == CheckFunctionConstants.CODE_TYPE_FUNCTION) {
-                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(checkCode, cssResources);
+                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(node, checkCode, cssResources);
                         // Ha pasado el check, lo metemos en la lista de checks pasados con éxito
                         if (cssProblems.isEmpty()) {
                             vectorChecksRun.add(check.getId());
