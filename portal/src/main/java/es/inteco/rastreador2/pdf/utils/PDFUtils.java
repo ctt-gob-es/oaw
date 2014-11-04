@@ -349,9 +349,9 @@ public final class PDFUtils {
         list.add(item);
     }*/
 
-    public static Image createImage(String path, String alt) {
+    public static Image createImage(final String path, final String alt) {
         try {
-            Image image = Image.getInstance(path);
+            final Image image = Image.getInstance(path);
             image.setAlt(alt);
             image.setAlignment(Element.ALIGN_CENTER);
             return image;

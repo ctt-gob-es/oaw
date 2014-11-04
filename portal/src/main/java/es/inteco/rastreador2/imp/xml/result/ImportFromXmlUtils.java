@@ -45,8 +45,7 @@ public final class ImportFromXmlUtils {
     }
 
     public static NodeList getDocumentElements(String path, String element, String defaultPath) throws SAXException, IOException {
-        File configFile = null;
-        configFile = new File(path);
+        File configFile = new File(path);
         if (!configFile.exists() && defaultPath != null) {
             configFile = new File(defaultPath);
         } else if (!configFile.exists()) {

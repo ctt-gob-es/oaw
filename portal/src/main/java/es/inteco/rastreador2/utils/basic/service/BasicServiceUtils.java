@@ -8,7 +8,6 @@ import es.inteco.crawler.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.ws.CrawlerWS;
 import es.inteco.rastreador2.ws.CrawlerWSJob;
 import es.inteco.utils.FileUtils;
@@ -16,6 +15,7 @@ import es.inteco.utils.MailUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
+import org.apache.struts.util.MessageResources;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -60,9 +60,9 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static void somethingWasWrongMessage(HttpServletRequest request, BasicServiceForm basicServiceForm, String message) throws Exception {
+    public static void somethingWasWrongMessage(MessageResources messageResources, BasicServiceForm basicServiceForm, String message) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
-        String subject = CrawlerUtils.getResources(request).getMessage("basic.service.mail.error.subject");
+        String subject = messageResources.getMessage("basic.service.mail.error.subject");
         ArrayList<String> mailTo = new ArrayList<String>();
         mailTo.add(basicServiceForm.getEmail());
         MailUtils.sendMail(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.address"), pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.name"),

@@ -27,14 +27,14 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CrawlerJob implements InterruptableJob {
-    boolean interrupt = false;
+    private boolean interrupt = false;
 
     public static final Log LOG = LogFactory.getLog(CrawlerJob.class);
 
-    List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
-    List<String> auxDomains = new ArrayList<String>();
-    List<String> md5Content = new ArrayList<String>();
-    List<String> rejectedDomains = new ArrayList<String>();
+    private final List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
+    private final List<String> auxDomains = new ArrayList<String>();
+    private final List<String> md5Content = new ArrayList<String>();
+    private final List<String> rejectedDomains = new ArrayList<String>();
 
     @Override
     public void execute(JobExecutionContext jobContext) throws JobExecutionException {

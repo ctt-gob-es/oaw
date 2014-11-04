@@ -1,12 +1,11 @@
 package es.inteco.rastreador2.actionform.observatorio;
 
 public class ModalityComparisonForm {
-    String verification;
-    String redPercentage;
-    String greenPercentage;
+    private String verification;
+    private String redPercentage;
+    private String greenPercentage;
 
     public ModalityComparisonForm() {
-
     }
 
     public ModalityComparisonForm(String verification) {
@@ -42,11 +41,7 @@ public class ModalityComparisonForm {
         if (this == obj) {
             return true;
         } else {
-            if (!(obj instanceof ModalityComparisonForm)) {
-                return false;
-            } else {
-                return ((ModalityComparisonForm) obj).getVerification().equals(this.verification);
-            }
+            return obj instanceof ModalityComparisonForm && ((ModalityComparisonForm) obj).getVerification().equals(this.verification);
         }
     }
 

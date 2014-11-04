@@ -3,9 +3,7 @@
 <%@page import="es.inteco.common.Constants"%>
 
 <div id="cabeza">
-	<a href="http://www.inteco.es">
-		<img src="../images/inteco.jpg" alt="<bean:message key="logo.inteco.alt" />" />
-	</a>
+	 <img src="../images/escudo.png" alt="<bean:message key="logo.inteco.alt" />" />
 </div> <!-- fin cabecera -->
 <div class="language">
 	<logic:notEmpty name="<%= Constants.LANGUAGE_LIST %>">

@@ -174,7 +174,7 @@ public class BasicServiceAction extends Action {
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_FINISHED);
             } else {
                 // Avisamos de que ha sido imposible acceder a la página a rastrear
-                BasicServiceUtils.somethingWasWrongMessage(request, basicServiceForm, getResources(request).getMessage("basic.service.mail.not.crawled.text", basicServiceForm.getUser(), basicServiceForm.getDomain()));
+                BasicServiceUtils.somethingWasWrongMessage(getResources(request), basicServiceForm, getResources(request).getMessage("basic.service.mail.not.crawled.text", basicServiceForm.getUser(), basicServiceForm.getDomain()));
 
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_NOT_CRAWLED);
             }
@@ -185,7 +185,7 @@ public class BasicServiceAction extends Action {
             BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_ERROR_SENDING_EMAIL);
         } catch (Exception e) {
             // Avisamos del error al usuario
-            BasicServiceUtils.somethingWasWrongMessage(request, basicServiceForm, getResources(request).getMessage("basic.service.mail.error.text", basicServiceForm.getUser()));
+            BasicServiceUtils.somethingWasWrongMessage(getResources(request), basicServiceForm, getResources(request).getMessage("basic.service.mail.error.text", basicServiceForm.getUser()));
 
             // Informamos de la excepción a los administradores
             CrawlerUtils.warnAdministrators(e, BasicServiceAction.class);
