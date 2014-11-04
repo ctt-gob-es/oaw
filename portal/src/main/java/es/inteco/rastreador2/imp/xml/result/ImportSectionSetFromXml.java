@@ -16,9 +16,9 @@ public final class ImportSectionSetFromXml {
     public static SectionSetForm createSectionSetForm(HttpServletRequest request, String path, String defaultPath, boolean isHtml) throws Exception {
         SectionSetForm introduction = new SectionSetForm();
 
-        NodeList sectionSetList = ImportFromXmlUtils.getDocumentElements(path, "sectionSet", defaultPath);
+        final NodeList sectionSetList = ImportFromXmlUtils.getDocumentElements(path, "sectionSet", defaultPath);
         if (sectionSetList != null && sectionSetList.getLength() != 0) {
-            NodeList chapterList = ((Element) sectionSetList.item(0)).getElementsByTagName("chapter");
+            final NodeList chapterList = ((Element) sectionSetList.item(0)).getElementsByTagName("chapter");
             if (chapterList != null && chapterList.getLength() != 0) {
                 for (int i = 0; i < chapterList.getLength(); i++) {
                     SectionForm chapter = new SectionForm();

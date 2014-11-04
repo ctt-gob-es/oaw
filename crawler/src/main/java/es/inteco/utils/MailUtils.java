@@ -114,6 +114,17 @@ public final class MailUtils {
             throw new Exception("No se configurado el servidor de correo");
         }
         email.setHostName(pmgr.getValue("crawler.core.properties", "mail.smtp.host"));
+        if (pmgr.getValue("crawler.core.properties", "mail.smtp.user") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.user").trim().isEmpty()) {
+            email.setSSL(true);
+            email.setAuthentication(pmgr.getValue("crawler.core.properties", "mail.smtp.user").trim(),pmgr.getValue("crawler.core.properties", "mail.smtp.pass").trim());
+        }
+        if (pmgr.getValue("crawler.core.properties", "mail.smtp.port") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.port").trim().isEmpty()) {
+            email.setSmtpPort(Integer.parseInt(pmgr.getValue("crawler.core.properties", "mail.smtp.port").trim()));
+        }
+        if (pmgr.getValue("crawler.core.properties", "mail.smtp.sslport") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.sslport").trim().isEmpty()) {
+            email.setSSL(true);
+            email.setSslSmtpPort(pmgr.getValue("crawler.core.properties", "mail.smtp.sslport").trim());
+        }
 
         return email;
     }

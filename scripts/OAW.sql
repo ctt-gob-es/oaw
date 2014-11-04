@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `cartucho` (
 INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`) VALUES
 (1, 'es.inteco.cartuchoUrlMaliciosa.CartuchoWebMaliciosas', 1, 'Malware', 6, 10),
 (2, 'es.inteco.crawler.sexista.modules.analisis.service.CartuchoSexista', 1, 'Lenox', 6, 10),
-(3, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'Intav', 30, 100),
+(3, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2004', 30, 100),
 (4, 'es.inteco.plugin.MultilanguagePlugin', 1, 'Multilingüismo', 30, 100);
 
 -- --------------------------------------------------------
@@ -754,7 +754,8 @@ CREATE TABLE IF NOT EXISTS `usuario` (
 --
 
 INSERT INTO `usuario` (`id_usuario`, `usuario`, `password`, `nombre`, `apellidos`, `departamento`, `email`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Miguel', 'García Nicieza', 'CTIC', 'miguel.garcia@fundacionctic.org');
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Miguel', 'García Nicieza', 'CTIC', 'miguel.garcia@fundacionctic.org'),
+(2, 'Programado','21232f297a57a5a743894a0e4a801fc3','','','','');
 
 -- --------------------------------------------------------
 
@@ -768,6 +769,20 @@ CREATE TABLE IF NOT EXISTS `usuario_cartucho` (
   PRIMARY KEY (`id_usuario`,`id_cartucho`),
   KEY `id_cartucho` (`id_cartucho`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `usuario_cartucho`
+--
+
+INSERT INTO `usuario_cartucho` (`id_usuario`, `id_cartucho`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(2, 1),
+(2, 2),
+(2, 3),
+(2, 4);
 
 -- --------------------------------------------------------
 

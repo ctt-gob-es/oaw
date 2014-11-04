@@ -161,7 +161,7 @@
 															<td>
 																<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_SUCCESS) %>">
-																	<html:link forward="showAnalysisFromCrawler" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.rastreo.ver.puntuación" />"/></html:link>
+																	<html:link forward="showAnalysisFromCrawler" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.rastreo.ver.puntuaciï¿½n" />"/></html:link>
 																</logic:equal>
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_ERROR) %>">
 																	<html:img src="../images/error.png" altKey="search.results.analysis.error"/>

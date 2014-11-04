@@ -561,7 +561,7 @@ public class EvaluatorUtility {
                 setFeature(parser, "http://xml.org/sax/features/namespaces", false);
 
                 inStr = addFinalTags(inStr);
-                InputStream newInputStream = new ByteArrayInputStream(inStr.getBytes(charset));
+                final InputStream newInputStream = new ByteArrayInputStream(inStr.getBytes(charset));
                 if (newInputStream.markSupported()) {
                     newInputStream.mark(Integer.MAX_VALUE);
                 }
@@ -569,18 +569,14 @@ public class EvaluatorUtility {
                 try {
                     // Reseteamos el stream para volver a analizarlo
                     newInputStream.reset();
-                    InputSource inputSource = new InputSource(newInputStream);
+                    final InputSource inputSource = new InputSource(newInputStream);
 
                     parser.parse(inputSource);
                     doc = parser.getDocument();
                     // store the doctype status on the root element
                     elementRoot = doc.getDocumentElement();
-                } catch (IOException e) {
-
-                    if (doc == null || elementRoot == null) {
-                        parser = new CheckerParser(new HTMLConfiguration(true));
-                    }
-
+                } catch (Exception e) {
+                    parser = new CheckerParser(new HTMLConfiguration(true));
                     Logger.putLog("Error al parsear al documento. Se intentará de nuevo con el balanceo de etiquetas", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                 }
 
