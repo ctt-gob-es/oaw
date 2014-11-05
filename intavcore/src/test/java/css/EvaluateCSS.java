@@ -321,23 +321,23 @@ public class EvaluateCSS {
                 CSSProperty cssProperty = nodeData.getProperty(propertyName);
                 if (cssProperty == CSSProperty.FontSize.length) {
                     Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
+                    System.out.println(declaration.getSource());
                     TermLength mtop = nodeData.getValue(TermLength.class, propertyName, true);
                     System.out.println("FONT-SIZE: " + mtop);
                 } else if (cssProperty == CSSProperty.Color.color) {
                     Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
+                    System.out.println(declaration.getSource());
                     TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
                     System.out.println("Color: " + mtop);
                 } else if (cssProperty == CSSProperty.BackgroundColor.color) {
                     Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
+                    System.out.println(declaration.getSource());
                     TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
                     System.out.println(propertyName + ": " + mtop);
                 }
             }
         }
-
+        System.out.println();
         System.out.println("PORTALES H3");
         final Element portalesDiv = doc.getElementById("block-views-portales-home-subdestacados-es");
         final Element portalesH3 = (Element) portalesDiv.getElementsByTagName("h3").item(0);
@@ -346,17 +346,17 @@ public class EvaluateCSS {
             CSSProperty cssProperty = nodeData.getProperty(propertyName);
             if (cssProperty == CSSProperty.FontSize.length) {
                 Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
+                System.out.println(declaration.getSource());
                 TermLength mtop = nodeData.getValue(TermLength.class, propertyName, true);
                 System.out.println("FONT-SIZE: " + mtop);
             } else if (cssProperty == CSSProperty.Color.color) {
                 Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
+                System.out.println(declaration.getSource());
                 TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
                 System.out.println("Color: " + mtop);
             } else if (cssProperty == CSSProperty.BackgroundColor.color) {
                 Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-
+                System.out.println(declaration.getSource());
                 TermColor mtop = nodeData.getValue(TermColor.class, propertyName, true);
                 System.out.println(propertyName + ": " + mtop);
             }

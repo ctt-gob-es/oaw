@@ -461,6 +461,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_CSS_PARSEABLE;
             } else if (stringCall.equals("css-outline")) {
                 functionId = CheckFunctionConstants.FUNCTION_CSS_OUTLINE;
+            } else if (stringCall.equals("css-label-hidden")) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_LABEL_HIDDEN;
             } else if (stringCall.equals("false-br-image-list")) {
                 functionId = CheckFunctionConstants.FUNCTION_FALSE_BR_IMAGE_LIST;
             } else if (stringCall.equals("other-language")) {

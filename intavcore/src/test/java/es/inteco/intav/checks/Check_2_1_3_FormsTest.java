@@ -24,7 +24,8 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     private static final int SELECT_LABEL = 91;
     /*<!-- Elementos textarea tienen una etiqueta explícitamente asociada -->*/
     private static final int TEXTAREA_LABEL = 95;
-    /*<!-- NUEVA: Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS.-->
+    /* Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS. */
+    private static final int LABEL_HIDDEN = 461;
     /* Tres o más de botones de radio y/o casillas de verificación agrupados (con el mismo “name”) se agrupan bajo su correspondiente fieldset> */
     private static final int GROUPED_SELECTION_BUTTONS = 443;
     /*<!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->*/
@@ -460,6 +461,43 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</fieldset>" +
                 "</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, REQUIRED_CONTROLS));
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+    }
+
+    @Test
+    public void evaluateLabelHiddenDisplayNone() throws Exception {
+        checkAccessibility.setContent("<html><style>label { display: none; }</style>" +
+                "<div>Los campos marcados con * son obligatorios" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<label for=\"id_1\">Lorem*</label><input>" +
+                "<input id=\"id_1\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+    }
+
+    @Test
+    public void evaluateLabelHiddenLeftNegative() throws Exception {
+        checkAccessibility.setContent("<html><style>label { left: -9000px; }</style>" +
+                "<div>Los campos marcados con * son obligatorios" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<label for=\"id_1\">Lorem*</label><input>" +
+                "<input id=\"id_1\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+    }
+
+    @Test
+    public void evaluateLabelHiddenLeftNegativeClass() throws Exception {
+        checkAccessibility.setContent("<html><style>.hidden { left: -9000px; }</style>" +
+                "<div>Los campos marcados con * son obligatorios" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<label class=\"hidden\" for=\"id_1\">Lorem*</label><input>" +
+                "<input id=\"id_1\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_HIDDEN));
     }
 
 }

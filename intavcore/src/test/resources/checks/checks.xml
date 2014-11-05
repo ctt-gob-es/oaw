@@ -5152,4 +5152,14 @@ Telephone: (416) 978-4360
             <function call="other-language" node="." />
         </machine>
     </check>
+
+    <check id="461" key="css" confidence="high">
+        <name>Ocultacion de label que sirven como el único name del control</name>
+        <error>check.461.error</error>
+        <rationale>check.461.rationale</rationale>
+        <machine>
+            <trigger element="css" />
+            <function call="css-label-hidden" node="." />
+        </machine>
+    </check>
 </checks>

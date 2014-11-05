@@ -302,7 +302,8 @@
                     <check id="91"/>
                     <!-- Elementos textarea tienen una etiqueta explícitamente asociada -->
                     <check id="95"/>
-<!-- NUEVA: Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS.-->
+                    <!-- Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS.-->
+                    <check id="461"/>
                     <!-- Tres o más de botones de radio y/o casillas de verificación agrupadas (mismo name) se agrupan bajo un fieldset.-->
                     <check id="443"/>
                     <!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
