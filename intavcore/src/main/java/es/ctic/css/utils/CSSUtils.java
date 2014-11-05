@@ -56,6 +56,8 @@ public final class CSSUtils {
                 return new CSSParseableDocumentHandler(checkCode);
             case CheckFunctionConstants.FUNCTION_CSS_OUTLINE:
                 return new CSSOutlineDocumentHandler(checkCode);
+            case CheckFunctionConstants.FUNCTION_CSS_LABEL_HIDDEN:
+                return new CSSLabelHiddenStyleParser();
             default:
                 Logger.putLog("Warning: unknown function id: " + checkCode.getFunctionId(), CSSUtils.class, Logger.LOG_LEVEL_WARNING);
                 throw new InstantiationException("Error: unknown CSS function id: " + checkCode.getFunctionId());
