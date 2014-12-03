@@ -23,7 +23,7 @@ public final class Check_1_1_4_DataTableTest extends EvaluateCheck {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test

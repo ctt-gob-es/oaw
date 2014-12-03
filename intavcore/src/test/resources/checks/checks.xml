@@ -1161,65 +1161,41 @@ Telephone: (416) 978-4360
             <condition type="or">
                 <condition type="and">
                     <function call="text-match" node="."
-                              value="^[\W_]*(Welcome|English(\s+version){0,1}|Ingl.{1,2}s|Ingl&amp;eacute;s)( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^en(-gb|-us){0,1}$"/>
-                    </condition>
+                              value="^[\W_]*(Welcome|English(\s+version){0,1})( *\(.*\)){0,1}[\W_]*$"/>
+                    <function call="current-language" node="." value="en" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
-                              value="^[\W_]*(Catal.{1,2}|Catal&amp;agrave;|Catal.{1,2}n|Catal&amp;aacute;n)( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^ca(-es){0,1}$"/>
-                    </condition>
+                              value="^[\W_]*(Catal.{1,2}|Catal&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
+                    <function call="current-language" node="." value="ca" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
-                              value="^[\W_]*(Valenci[^a]{1,2}|Valenci&amp;agrave;|Valenciano)( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^ca(-es|-valencia){0,1}$"/>
-                    </condition>
+                              value="^[\W_]*(Valenci[^a]{1,2}|Valenci&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
+                    <function call="current-language" node="." value="va" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="^[\W_]*(Benvin{0,1}guts{0,1})( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^ca(-es|-valencia){0,1}$"/>
-                    </condition>
+                    <function call="current-language" node="." value="ca" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
-                              value="^[\W_]*(Benvidos{0,1}|Galego|Gallego)( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^gl(-es){0,1}$"/>
-                    </condition>
+                              value="^[\W_]*(Benvidos{0,1}|Galego)( *\(.*\)){0,1}[\W_]*$"/>
+                    <function call="current-language" node="." value="gl" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
-                              value="^[\W_]*(Ongi\s+etorri|Eusk[ae]ra|Eusquera|Vasco)( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^eu(-es){0,1}$"/>
-                    </condition>
+                              value="^[\W_]*(Ongi\s+etorri|Eusk[ae]ra|Eusquera)( *\(.*\)){0,1}[\W_]*$"/>
+                    <function call="current-language" node="." value="eu" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
-                              value="^[\W_]*(Bienvenues{0,1}|Bienvenus{0,1}|Fran.{1,2}ais|Fran&amp;ccedil;ais|Franc.{1,2}s|Franc&amp;eacute;s)( *\(.*\)){0,1}[\W_]*$"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^fr(-fr){0,1}$"/>
-                    </condition>
+                              value="^[\W_]*(Bienvenues{0,1}|Bienvenus{0,1}|Fran.{1,2}ais|Fran&amp;ccedil;ais)( *\(.*\)){0,1}[\W_]*$"/>
+                    <function call="current-language" node="." value="fr" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="asturianu"/>
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="lang"/>
-                        <function call="text-not-match" node="@lang" value="^ast(-es){0,1}$"/>
-                    </condition>
+                    <function call="current-language" node="." value="ast" />
                 </condition>
             </condition>
         </machine>

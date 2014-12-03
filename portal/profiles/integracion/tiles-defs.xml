@@ -2,7 +2,7 @@
 
 <!DOCTYPE tiles-definitions PUBLIC
         "-//Apache Software Foundation//DTD Tiles Configuration 1.3//EN"
-        "file://${deploy.path}/WEB-INF/tiles-config_1_3.dtd">
+        "file://${deploy.path}/WEB-INF/tld/tiles-config_1_3.dtd">
 
 <tiles-definitions>
 
@@ -165,6 +165,10 @@
     <definition name=".graficasObservatorioEvolucion" extends="mainLayout">
         <put name="title" value="application.title.observatorio"/>
         <put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_graficas_comparativa.jsp"/>
+    </definition>
+    <definition name=".graficasObservatorioEvolucionUNE2012" extends="mainLayout">
+        <put name="title" value="application.title.observatorio"/>
+        <put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_graficas_comparativa_une_2012.jsp"/>
     </definition>
 
     <!-- Página GRÁFICAS OBSERVATORIO GLOBAL LENOX-->

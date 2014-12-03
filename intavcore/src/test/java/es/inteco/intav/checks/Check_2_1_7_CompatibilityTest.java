@@ -36,7 +36,7 @@ public final class Check_2_1_7_CompatibilityTest {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test
@@ -51,6 +51,8 @@ public final class Check_2_1_7_CompatibilityTest {
     @Test
     public void evaluateIDsUniques() throws Exception {
         checkAccessibility.setContent("<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        checkAccessibility.setTemplateContent("<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        checkAccessibility.setWebService(true);
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), IDS_UNIQUES));

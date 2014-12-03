@@ -22,7 +22,7 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test

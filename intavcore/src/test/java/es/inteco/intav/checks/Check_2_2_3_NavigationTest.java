@@ -29,7 +29,7 @@ public final class Check_2_2_3_NavigationTest {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test

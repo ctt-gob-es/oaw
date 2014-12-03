@@ -106,6 +106,7 @@ public class BasicServiceAction extends Action {
     }
 
     private ActionForward executeCrawling(ActionForm form, HttpServletRequest request) throws Exception {
+        Logger.putLog("executeCrawling", BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
         PropertiesManager pmgr = new PropertiesManager();
 
         Connection conn = null;
@@ -168,7 +169,7 @@ public class BasicServiceAction extends Action {
                 mailTo.add(basicServiceForm.getEmail());
                 String replyTo = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.reply.to.mail");
                 String replyToName = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.reply.to.name");
-
+                Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
                 MailUtils.sendMail(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.address"), pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.name"),
                         mailTo, subject, text, pdfPath, new File(pdfPath).getName(), replyTo, replyToName, false);
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_FINISHED);
@@ -191,11 +192,14 @@ public class BasicServiceAction extends Action {
             CrawlerUtils.warnAdministrators(e, BasicServiceAction.class);
             Logger.putLog("Excepcion: ", BasicServiceAction.class, Logger.LOG_LEVEL_ERROR, e);
             BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_ERROR);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            Logger.putLog("Throwable: ", BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
         } finally {
             DataBaseManager.closeConnection(conn);
             DataBaseManager.closeConnection(c);
 
-            if (StringUtils.isNotEmpty(pdfPath)) {
+            if (pdfPath != null && StringUtils.isNotEmpty(pdfPath)) {
                 // Borramos la carpeta con el PDF generado
                 File pdfFile = new File(pdfPath);
                 FileUtils.deleteDir(pdfFile.getParentFile());

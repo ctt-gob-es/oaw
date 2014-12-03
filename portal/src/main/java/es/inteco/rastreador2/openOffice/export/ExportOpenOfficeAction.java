@@ -28,7 +28,6 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 public class ExportOpenOfficeAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-
         long idExecution = 0;
         if (request.getParameter(Constants.ID) != null) {
             idExecution = Long.parseLong(request.getParameter(Constants.ID));
@@ -54,10 +53,9 @@ public class ExportOpenOfficeAction extends Action {
 
             filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
             String graphicPath = basePath + "temp" + File.separator;
-            ResultadosAnonimosObservatorioIntavUtils.generateGraphics(request, graphicPath, Constants.MINISTERIO_P, true);
             int numObs = ObservatorioDAO.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha()).size();
             ExportOpenOfficeUtils.createOpenOfficeDocument(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), numObs);
-            FileUtils.deleteDir(new File(graphicPath));
+            //FileUtils.deleteDir(new File(graphicPath));
         } catch (Exception e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR_PAGE);

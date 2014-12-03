@@ -6,6 +6,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.sexista.modules.analisis.dto.ResultsByUrlDto;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.rastreo.VerRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.lenox.service.InformesService;
 import es.inteco.rastreador2.utils.CrawlerUtils;
@@ -152,25 +153,19 @@ public class ExportAction extends Action {
         return null;
     }
 
-    public static Map<Long, List<Long>> resultEvolutionData(Long crawler_id, Long idTracking) throws Exception {
-
-        Connection c = null;
-        PropertiesManager pmgr = new PropertiesManager();
-
+    public static Map<Long, List<Long>> resultEvolutionData(Long idRastreo, Long idTracking) throws Exception {
+        final Connection c = DataBaseManager.getConnection();
         try {
-
-            c = DataBaseManager.getConnection();
-
-            List<Long> trackingsIds = RastreoDAO.getEvolutionExecutedCrawlerIds(c, crawler_id, idTracking, Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id")));
-            Map<Long, List<Long>> evaluationIdsMap = new HashMap<Long, List<Long>>();
-
+            VerRastreoForm vrf = new VerRastreoForm();
+            vrf = RastreoDAO.cargarRastreoVer(c, idRastreo, vrf);
+            final List<Long> trackingsIds = RastreoDAO.getEvolutionExecutedCrawlerIds(c, idRastreo, idTracking, vrf.getId_cartucho());
+            final Map<Long, List<Long>> evaluationIdsMap = new HashMap<Long, List<Long>>();
             for (Long idTrack : trackingsIds) {
                 List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idTrack);
                 evaluationIdsMap.put(idTrack, evaluationIds);
             }
 
             return evaluationIdsMap;
-
         } catch (Exception e) {
             Logger.putLog("Excepción genérica al generar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
@@ -178,4 +173,5 @@ public class ExportAction extends Action {
             DataBaseManager.closeConnection(c);
         }
     }
+
 }

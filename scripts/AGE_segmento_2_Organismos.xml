@@ -1,0 +1,1011 @@
+<?xml version="1.0"?>
+<lista>
+    <semilla>
+        <nombre>Agencia Estatal de Meteorología (AEMET)</nombre>
+        <activa>true</activa>
+        <url>http://www.aemet.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia de Información y Control Alimentarios</nombre>
+        <activa>true</activa>
+        <url>http://aplicaciones.magrama.es/pwAgenciaAO/General.aao?idioma=ESP&amp;avisosMostrados=NO&amp;control_acceso=S</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Aguas de las Cuencas de España (AcuaEs)</nombre>
+        <activa>true</activa>
+        <url>http://www.acuaes.com</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Entidad Estatal de Seguros Agrarios (ENESA)</nombre>
+        <activa>true</activa>
+        <url>http://enesa.mapa.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fondo Español de Garantía Agraria (FEGA)</nombre>
+        <activa>true</activa>
+        <url>http://www.fega.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Mancomunidad de los Canales del Taibilla</nombre>
+        <activa>true</activa>
+        <url>http://www.mct.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Parques Nacionales</nombre>
+        <activa>true</activa>
+        <url>http://www.magrama.gob.es/es/red-parques-nacionales/nuestros-parques</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Real Academia de España en Roma</nombre>
+        <activa>true</activa>
+        <url>http://www.raer.it/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española de Cooperación Internacional para el Desarrollo (AECID)</nombre>
+        <activa>true</activa>
+        <url>http://www.aecid.es/es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ejército de Tierra</nombre>
+        <activa>true</activa>
+        <url>http://www.ejercito.mde.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Armada</nombre>
+        <activa>true</activa>
+        <url>http://www.armada.mde.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ejército del Aire</nombre>
+        <activa>true</activa>
+        <url>http://www.ejercitodelaire.mde.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Superior de Estudios de la Defensa Nacional (CESEDEN)</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/ceseden/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Canal de Experiencias Hidrodinámicas de El Pardo (CEHIPAR)</nombre>
+        <activa>true</activa>
+        <url>http://www.cehipar.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Vivienda, Infraestructura y Equipamiento de la Defensa (INVIED)</nombre>
+        <activa>true</activa>
+        <url>http://www.invied.mde.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Técnica Aeroespacial Esteban Terradas (INTA)</nombre>
+        <activa>true</activa>
+        <url>http://www.inta.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Social de las Fuerzas Armadas (ISFAS)</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/isfas/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Español de Estudios Estratégico (IEEE)</nombre>
+        <activa>true</activa>
+        <url>http://www.ieee.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Guardia Real</nombre>
+        <activa>true</activa>
+        <url>http://www.guardiareal.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de Investigación, Desarrollo e Innovación</nombre>
+        <activa>true</activa>
+        <url>http://www.mineco.gob.es/portal/site/mineco/idi</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Investigaciones Energéticas, Medioambientales y Tecnológicas (CIEMAT)</nombre>
+        <activa>true</activa>
+        <url>http://www.ciemat.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro para el Desarrollo Tecnológico Industrial(CDTI)</nombre>
+        <activa>true</activa>
+        <url>http://www.cdti.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo Superior de Investigaciones Científicas (CSIC)</nombre>
+        <activa>true</activa>
+        <url>http://www.csic.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Astrofísica de Canarias</nombre>
+        <activa>true</activa>
+        <url>http://www.iac.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Salud Carlos III</nombre>
+        <activa>true</activa>
+        <url>http://www.isciii.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Español de Oceanografía (IEO)</nombre>
+        <activa>true</activa>
+        <url>http://www.ieo.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Geológico y Minero de España (IGME)</nombre>
+        <activa>true</activa>
+        <url>http://www.igme.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Investigación y Tecnología Agraria y Alimentaria (INIA)</nombre>
+        <activa>true</activa>
+        <url>http://www.inia.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Nacional de Investigaciones Oncológicas</nombre>
+        <activa>true</activa>
+        <url>http://www.cnio.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Español de Comercio Exterior (ICEX)</nombre>
+        <activa>true</activa>
+        <url>http://www.icex.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Invest in Spain (Sociedad Estatal para la Promoción y Atracción de Inversiones Exteriores)</nombre>
+        <activa>true</activa>
+        <url>http://www.investinspain.org/invest/es/invertir-en-espana/index.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Tesoro Público</nombre>
+        <activa>true</activa>
+        <url>https://www.tesoropublico.gob.es/carga_contenido_pse.aspx?sec=7</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consorcio de Compensación de Seguros</nombre>
+        <activa>true</activa>
+        <url>http://www.consorseguros.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Contabilidad y Auditoría de Cuentas</nombre>
+        <activa>true</activa>
+        <url>http://www.icac.meh.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Crédito Oficial (ICO)</nombre>
+        <activa>true</activa>
+        <url>http://www.ico.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Estadística (INE)</nombre>
+        <activa>true</activa>
+        <url>http://www.ine.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+	<url>https://iria.ine.es</url>
+	<nombre>Integración de la recogida de la información y su administración</nombre>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+	</semilla>
+    <semilla>
+        <nombre>Comisión Nacional de la Competencia (CNC)</nombre>
+        <activa>true</activa>
+        <url>http://www.cnmc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional del Mercado de Valores (CNMV)</nombre>
+        <activa>true</activa>
+        <url>http://www.cnmv.es/index.htm</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional de los Mercados y la Competencia (CNMC)</nombre>
+        <activa>true</activa>
+        <url>http://www.cnmc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo Superior de Deportes</nombre>
+        <activa>true</activa>
+        <url>http://www.csd.gob.es/csd</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Museo Nacional del Prado</nombre>
+        <activa>true</activa>
+        <url>http://www.museodelprado.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Museo Nacional Centro de Arte Reina Sofía</nombre>
+        <activa>true</activa>
+        <url>http://www.museoreinasofia.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Dramático Nacional</nombre>
+        <activa>true</activa>
+        <url>http://cdn.mcu.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituo Nacional de artes escénicas y de la música</nombre>
+        <activa>true</activa>
+        <url>http://www.mcu.es/artesEscenicas/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Nacional de Innovación e Investigación Educativa</nombre>
+        <activa>true</activa>
+        <url>http://educalab.es/cniie</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Biblioteca Nacional</nombre>
+        <activa>true</activa>
+        <url>http://www.bne.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Universidad Internacional Menéndez Pelayo- UIMP</nombre>
+        <activa>true</activa>
+        <url>http://www.uimp.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Universidad Nacional de Educación a Distancia</nombre>
+        <activa>true</activa>
+        <url>http://portal.uned.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>INTEF - Instituto Nacional de Tecnologías Educativas y de Formación del Profesorado</nombre>
+        <activa>true</activa>
+        <url>http://www.ite.educacion.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de la Cinematografía y de las Artes Audiovisuales</nombre>
+        <activa>true</activa>
+        <url>http://www.mcu.es/cine/index.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Evaluación Educativa</nombre>
+        <activa>true</activa>
+        <url>http://www.mecd.gob.es/inee/portada.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Teatro de la Zarzuela</nombre>
+        <activa>true</activa>
+        <url>http://teatrodelazarzuela.mcu.es/es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Teatro Real</nombre>
+        <activa>true</activa>
+        <url>http://www.teatro-real.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de la Seguridad Social</nombre>
+        <activa>true</activa>
+        <url>http://www.seg-social.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Público de Empleo Estatal</nombre>
+        <activa>true</activa>
+        <url>http://www.sepe.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría General de Inmigración y Emigración</nombre>
+        <activa>true</activa>
+        <url>http://extranjeros.empleo.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Seguridad e Higiene en el Trabajo (INSHT)</nombre>
+        <activa>true</activa>
+        <url>http://www.insht.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fondo de Garantía Salarial (FOGASA)</nombre>
+        <activa>true</activa>
+        <url>http://www.empleo.gob.es/fogasa/default.htm</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Administrador de Infraestructuras Ferroviarias (ADIF)</nombre>
+        <activa>true</activa>
+        <url>http://www.adif.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Geográfico Nacional</nombre>
+        <activa>true</activa>
+        <url>http://www.ign.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sociedad Española de Estudios para la Comunicación Fija a través del Estrecho de Gibraltar (SECEGSA)
+        </nombre>
+        <activa>true</activa>
+        <url>http://www.secegsa.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Puertos del Estado</nombre>
+        <activa>true</activa>
+        <url>http://www.puertos.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Entidad Pública Empresarial de Suelo (SEPES)</nombre>
+        <activa>true</activa>
+        <url>http://www.sepes.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Estudios y Experimentación de Obras Publicas (CEDEX)</nombre>
+        <activa>true</activa>
+        <url>http://www.cedex.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ente Público Aeropuertos Españoles y Navegación Aérea (AENA)</nombre>
+        <activa>true</activa>
+        <url>http://www.aena.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional del Sector Postal</nombre>
+        <activa>true</activa>
+        <url>http://www.cnspostal.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sociedad Española de Trasnporte Terrestre (SEITT)</nombre>
+        <activa>true</activa>
+        <url>http://www.seitt.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ferrocarriles de Vía Estrecha (FEVE)</nombre>
+        <activa>true</activa>
+        <url>http://www.feve.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sociedad Anónima Estatal de Correos y Telégrafos</nombre>
+        <activa>true</activa>
+        <url>http://www.correos.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sociedad Pública de Alquiler</nombre>
+        <activa>true</activa>
+        <url>http://www.spaviv.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Servicios y Estudios para la Navegación Aérea y la Seguridad Aeronáutica (SENASA)</nombre>
+        <activa>true</activa>
+        <url>http://www.senasa.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Red Nacional de los Ferrocarriles Españoles - RENFE</nombre>
+        <activa>true</activa>
+        <url>http://www.renfe.com/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal de Seguridad Aérea (AESA)</nombre>
+        <activa>true</activa>
+        <url>http://www.seguridadaerea.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sasemar</nombre>
+        <activa>true</activa>
+        <url>http://www.salvamentomaritimo.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de Administraciones Públicas</nombre>
+        <activa>true</activa>
+        <url>http://www.seap.minhap.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal de Administración Tributaria (AEAT)</nombre>
+        <activa>true</activa>
+        <url>http://www.agenciatributaria.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal de Evaluación de las Políticas Públicas y Calidad de los Servicios AEVAL)</nombre>
+        <activa>true</activa>
+        <url>http://www.aeval.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Intervención General de la Administración del Estado</nombre>
+        <activa>true</activa>
+        <url>http://www.igae.pap.meh.es/sitios/igae/es-ES/Paginas/inicio.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Mutualidad General de Funcionarios Civiles del Estado (MUFACE)</nombre>
+        <activa>true</activa>
+        <url>http://www.muface.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General del Catastro</nombre>
+        <activa>true</activa>
+        <url>http://www.catastro.meh.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fábrica Nacional de Moneda y Timbre</nombre>
+        <activa>true</activa>
+        <url>http://www.fnmt.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Estudios Fiscales</nombre>
+        <activa>true</activa>
+        <url>http://www.ief.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Administración Pública (INAP)</nombre>
+        <activa>true</activa>
+        <url>http://www.inap.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sociedad-Estatal-de-Participaciones-Industriales-(SEPI)</nombre>
+        <activa>true</activa>
+        <url>http://www.sepi.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Loterías y apuestas del Estado</nombre>
+        <activa>true</activa>
+        <url>http://www.loteriasyapuestas.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional de Energía (CNE)</nombre>
+        <activa>true</activa>
+        <url>http://www.cne.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión del Mercado de las Telecomunicaciones (CMT)</nombre>
+        <activa>true</activa>
+        <url>http://www.cmt.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Entidad Pública Red.es</nombre>
+        <activa>true</activa>
+        <url>http://www.red.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Turismo de España (Turespaña)</nombre>
+        <activa>true</activa>
+        <url>http://www.tourspain.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Oficina Española de Patentes y Marcas</nombre>
+        <activa>true</activa>
+        <url>http://www.oepm.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Español de Metrología</nombre>
+        <activa>true</activa>
+        <url>http://www.cem.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto para la Reestructuración de la Minería del Carbón y Desarrollo Alternativo de las Comarcas Mineras</nombre>
+        <activa>true</activa>
+        <url>http://www.irmc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto para la Diversificación y Ahorro de la Energía (IDAE)</nombre>
+        <activa>true</activa>
+        <url>http://www.idae.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Gerencia del Sector de la Construcción Naval</nombre>
+        <activa>true</activa>
+        <url>http://www.gernaval.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Compañía Española de Reafianzamiento, S.A. (CERSA)</nombre>
+        <activa>true</activa>
+        <url>http://www.reafianzamiento.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación Pública Escuela Organización Industrial(EOI)</nombre>
+        <activa>true</activa>
+        <url>http://www.eoi.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación Española para la Innovación de la Artesanía</nombre>
+        <activa>true</activa>
+        <url>http://www.fundesarte.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Empresa Nacional de Innovación, S.A. (ENISA)</nombre>
+        <activa>true</activa>
+        <url>http://www.enisa.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Tecnologías de la Comunicación</nombre>
+        <activa>true</activa>
+        <url>http://www.inteco.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Corporación de Reservas Estratégica de Productos Petrolíferos</nombre>
+        <activa>true</activa>
+        <url>http://www.cores.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación para el Desarrollo de la Formación en las zonas Mineras del Carbón</nombre>
+        <activa>true</activa>
+        <url>http://www.fundesfor.com/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación Observatorio de Prospectiva Tecnológica Industrial (OPTI)</nombre>
+        <activa>true</activa>
+        <url>http://www.opti.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación Centro Nacional de Referencia de Aplicación de las Tecnologías de la Información y la Comunicación basada en Fuentes Abiertas (CENATIC)</nombre>
+        <activa>true</activa>
+        <url>http://www.cenatic.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Empresa Nacional de Residuos Radiactivos (ENRESA)</nombre>
+        <activa>true</activa>
+        <url>http://www.enresa.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de la Policía</nombre>
+        <activa>true</activa>
+        <url>http://www.policia.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituciones Penitenciarias</nombre>
+        <activa>true</activa>
+        <url>http://www.institucionpenitenciaria.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Tráfico (Organismo Autónomo. Jefatura Central de Tráfico)</nombre>
+        <activa>true</activa>
+        <url>http://www.dgt.es</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de la Guardia Civil</nombre>
+        <activa>true</activa>
+        <url>http://www.guardiacivil.es</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Protección Civil y Emergencias</nombre>
+        <activa>true</activa>
+        <url>http://www.proteccioncivil.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Toxicología y Ciencias Forenses</nombre>
+        <activa>true</activa>
+        <url>
+            https://www.administraciondejusticia.gob.es/paj/publico/ciudadano/informacion_institucional/organismos/instituto_nacional_de_toxicologia_y_ciencias_forenses/!ut/p/c5/04_SB8K8xLLM9MSSzPy8xBz9CP0os3gzT1dTz6BgExPjUBcTA0_jsDDXAA9fAwNXI6B8JG55EwNidBvgAI6EdIeDXItbRbAZfnkTIwLyBhB5PO7z88jPTdUvyA2NMMj01AUA6k8A_w!!/dl3/d3/L2dBISEvZ0FBIS9nQSEh/
+        </url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Estudios Jurídicos</nombre>
+        <activa>true</activa>
+        <url>http://www.cej-mjusticia.es/cej_dode/servlet/CEJServlet?dispatcher=vacio&amp;action=1&amp;modelId=1&amp;type=DGM</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Mutualidad General Judicial</nombre>
+        <activa>true</activa>
+        <url>http://www.mugeju.es/es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal Boletín Oficial del Estado (BOE)</nombre>
+        <activa>true</activa>
+        <url>http://www.boe.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Estudios Políticos y Constitucionales</nombre>
+        <activa>true</activa>
+        <url>http://www.cepc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Investigaciones Sociológicas</nombre>
+        <activa>true</activa>
+        <url>http://www.cis.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Nacional de Inteligencia</nombre>
+        <activa>true</activa>
+        <url>http://www.cni.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Patrimonio Nacional</nombre>
+        <activa>true</activa>
+        <url>http://www.patrimonionacional.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española del Medicamento y Productos Sanitarios</nombre>
+        <activa>true</activa>
+        <url>http://www.aemps.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española de Consumo Seguridad Alimentaria y Nutrición</nombre>
+        <activa>true</activa>
+        <url>http://www.aecosan.msssi.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Gestión Sanitaria</nombre>
+        <activa>true</activa>
+        <url>http://www.ingesa.msssi.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Mayores y Servicios Sociales (IMSERSO)</nombre>
+        <activa>true</activa>
+        <url>http://www.imserso.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de la Juventud</nombre>
+        <activa>true</activa>
+        <url>http://www.injuve.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Organización Nacional de Transplantes</nombre>
+        <activa>true</activa>
+        <url>http://www.ont.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Real Patronato sobre Discapacidad</nombre>
+        <activa>true</activa>
+        <url>http://www.rpd.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Estatal de Autonomía Personal y Ayudas Técnicas</nombre>
+        <activa>true</activa>
+        <url>http://www.ceapat.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+</lista>

@@ -376,9 +376,8 @@ public final class CheckUtils {
                 domain = domain.substring(index);
             } else {
                 // Si la url comenzó directamente con el dominio de 2º nivel
-                // http://algo.es
-                // le anteponemos el caracter '.' para indicar comienzo de
-                // dominio
+                // http://algo.es le anteponemos el caracter '.' para indicar
+                // comienzo de dominio
                 domain = "." + domain;
             }
         }
@@ -394,4 +393,5 @@ public final class CheckUtils {
         }
         return newHost.equalsIgnoreCase(domain);
     }
+
 }

@@ -376,15 +376,13 @@ public final class EvaluatorUtils {
         return nodeList;
     }
 
-    private static String serializeOnlyElement(Element element) {
-        StringBuilder serialization = new StringBuilder("<");
-
+    private static String serializeOnlyElement(final Element element) {
+        final StringBuilder serialization = new StringBuilder("<");
         serialization.append(element.getNodeName());
-        NamedNodeMap attributes = element.getAttributes();
+        final NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
             serialization.append(" ").append(attributes.item(i).getNodeName()).append("=\"").append(attributes.item(i).getNodeValue()).append("\"");
         }
-
         serialization.append(">");
 
         return serialization.toString();
@@ -695,10 +693,9 @@ public final class EvaluatorUtils {
     }
 
     private static Map<String, List<Integer>> initializeAspects() {
-
-        Map<String, List<Integer>> aspectMap = new HashMap<String, List<Integer>>();
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> aspects = Arrays.asList(pmgr.getValue("intav.properties", "observatory.key.aspects").split(","));
+        final Map<String, List<Integer>> aspectMap = new HashMap<String, List<Integer>>();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> aspects = Arrays.asList(pmgr.getValue("intav.properties", "observatory.key.aspects").split(","));
 
         for (String key : aspects) {
             aspectMap.put(key, new ArrayList<Integer>());
@@ -736,22 +733,22 @@ public final class EvaluatorUtils {
             guideline = new Guideline();
             guideline = guideline.initialize(methodology);
         }
-        ObservatoryEvaluationForm evaluationForm = new ObservatoryEvaluationForm();
+        final ObservatoryEvaluationForm evaluationForm = new ObservatoryEvaluationForm();
 
         evaluationForm.setEntity(evaluation.getEntidad());
         evaluationForm.setUrl(evaluation.getFilename());
         evaluationForm.setCrawlerExecutionId(evaluation.getRastreo());
         evaluationForm.setChecksFailed(evaluation.getChecksFailed());
         evaluationForm.setSource(evaluation.getSource());
-        Map<String, List<Integer>> aspects = initializeAspects();
+        final Map<String, List<Integer>> aspects = initializeAspects();
 
         for (int i = 0; i < guideline.getGroups().size(); i++) {
-            GuidelineGroup levelGroup = guideline.getGroups().get(i);
-            ObservatoryLevelForm observatoryLevelForm = new ObservatoryLevelForm();
+            final GuidelineGroup levelGroup = guideline.getGroups().get(i);
+            final ObservatoryLevelForm observatoryLevelForm = new ObservatoryLevelForm();
             observatoryLevelForm.setName(levelGroup.getName());
             for (int j = 0; j < levelGroup.getGroupsVector().size(); j++) {
-                GuidelineGroup suitabilityGroup = levelGroup.getGroupsVector().get(j);
-                ObservatorySuitabilityForm observatorySuitabilityForm = new ObservatorySuitabilityForm();
+                final GuidelineGroup suitabilityGroup = levelGroup.getGroupsVector().get(j);
+                final ObservatorySuitabilityForm observatorySuitabilityForm = new ObservatorySuitabilityForm();
                 observatorySuitabilityForm.setName(suitabilityGroup.getName());
                 for (int k = 0; k < suitabilityGroup.getGroupsVector().size(); k++) {
                     final GuidelineGroup subgroup = suitabilityGroup.getGroupsVector().get(k);

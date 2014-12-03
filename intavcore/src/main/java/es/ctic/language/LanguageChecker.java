@@ -20,7 +20,7 @@ public class LanguageChecker {
     }
 
     /**
-     * Método que comprueba si un determinado texto está escrito en el idioma esperado (indicado en el constructor) por este comprobador
+     * Método que comprueba si un determinado texto está escrito en el idioma esperado (indicado en el constructor)
      * @param content cadena con el contenido en formato texto plano a comprobar el idioma
      * @return true si el idioma detectado es el esperado (indicado en el constructor)
      */

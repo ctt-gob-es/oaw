@@ -8,6 +8,7 @@ import es.inteco.rastreador2.actionform.cuentausuario.CargarCuentasUsuarioForm;
 import es.inteco.rastreador2.actionform.cuentausuario.NuevaCuentaUsuarioForm;
 import es.inteco.rastreador2.actionform.cuentausuario.RastreoClienteForm;
 import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
@@ -29,7 +30,7 @@ public class RastreoClienteAction extends Action {
         try {
             if (CrawlerUtils.hasAccess(request, "new.crawler")) {
                 if (isCancelled(request)) {
-                    return (mapping.findForward(Constants.VOLVER_CARGA));
+                    return mapping.findForward(Constants.VOLVER_CARGA);
                 }
 
                 PropertiesManager pmgr = new PropertiesManager();
@@ -70,7 +71,7 @@ public class RastreoClienteAction extends Action {
                             InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
                             insertarRastreoForm.setCuenta_cliente(Long.valueOf(rastreoClienteForm.getIdCuenta()));
                             insertarRastreoForm.setCartucho(rastreoClienteForm.getCartucho());
-                            if (insertarRastreoForm.getCartucho().equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                            if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(insertarRastreoForm.getCartucho()))) {
                                 insertarRastreoForm.setNormaAnalisis(rastreoClienteForm.getNormaAnalisis());
                             }
                             insertarRastreoForm.setCodigo(rastreoClienteForm.getNombre());
@@ -86,13 +87,12 @@ public class RastreoClienteAction extends Action {
                             request.setAttribute("mensajeExito", mensaje);
                             request.setAttribute("accionVolver", volver);
                             return mapping.findForward(Constants.EXITO);
-
                         } else {
                             ActionForward forward = new ActionForward();
                             forward.setPath(mapping.getInput());
                             forward.setRedirect(true);
                             saveErrors(request.getSession(), errors);
-                            return (forward);
+                            return forward;
                         }
                     }
                 } catch (Exception e) {

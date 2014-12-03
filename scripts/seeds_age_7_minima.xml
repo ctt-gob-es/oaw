@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<lista>
+<semilla>
+        <nombre>Casa Real</nombre>
+        <activa>true</activa>
+        <url>http://www.casareal.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de la Casa Real y Presidencia del Gobierno</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Presidencia del Gobierno</nombre>
+        <activa>true</activa>
+        <url>http://www.lamoncloa.gob.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de la Casa Real y Presidencia del Gobierno</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Congreso de los Diputados</nombre>
+        <activa>true</activa>
+        <url>http://www.congreso.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Legislativo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Senado de España</nombre>
+        <activa>true</activa>
+        <url>http://www.senado.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Legislativo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>  
+</lista>

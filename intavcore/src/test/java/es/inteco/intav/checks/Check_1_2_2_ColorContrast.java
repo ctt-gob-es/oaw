@@ -28,7 +28,7 @@ public final class Check_1_2_2_ColorContrast {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test

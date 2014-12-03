@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ExecuteScheduledCrawling implements StatefulJob {
@@ -52,7 +51,7 @@ public class ExecuteScheduledCrawling implements StatefulJob {
             cuentaCliente.getDatosRastreo().setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) cuentaCliente.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
             cuentaCliente.getDatosRastreo().setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList((long) cuentaCliente.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_RASTREABLE, false));
             cuentaCliente.getDatosRastreo().setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) cuentaCliente.getDatosRastreo().getId_rastreo()));
-            if (cuentaCliente.getDatosRastreo().getId_cartucho() == Integer.parseInt(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "cartridge.intav.id"))) {
+            if (CartuchoDAO.isCartuchoAccesibilidad(c, cuentaCliente.getDatosRastreo().getId_cartucho())) {
                 cuentaCliente.getDatosRastreo().setFicheroNorma(CrawlerUtils.getFicheroNorma(cuentaCliente.getDatosRastreo().getId_guideline()));
             }
             CrawlerData crawlerData = CrawlerUtils.getCrawlerData(cuentaCliente.getDatosRastreo(),

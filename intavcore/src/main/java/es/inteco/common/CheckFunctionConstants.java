@@ -156,6 +156,7 @@ public interface CheckFunctionConstants {
     public static final int FUNCTION_FALSE_BR_IMAGE_LIST = 147;
     public static final int FUNCTION_OTHER_LANGUAGE = 148;
     public static final int FUNCTION_CSS_LABEL_HIDDEN = 149;
+    public static final int FUNCTION_CURRENT_LANGUAGE = 150;
 
     // check codes
     public static final int CHECK_STATUS_OK = 1;

@@ -1,0 +1,54 @@
+<ignored_links>
+    <link>
+        <text>^[\W_]*(Bienvenid[oa]s{0,1}|Castellano|Espa.{1,2}ol|Espa&amp;ntilde;ol)( *\(.*\)){0,1}[\W_]*$</text>
+        <title>.*(Castellano|Espa.{1,2}ol|Espa&amp;ntilde;ol).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Welcome|English(\s+version){0,1}|Ingl.{1,2}s|Ingl&amp;eacute;s)( *\(.*\)){0,1}[\W_]*$</text>
+        <title>.*(English( version){0,1}|Ingl.{1,2}s|Ingl&amp;eacute;s).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Bienvenues{0,1}|Bienvenus{0,1}|Fran.{1,2}ais|Fran&amp;ccedil;ais|Franc.{1,2}s|Franc&amp;eacute;s)(
+            *\(.*\)){0,1}[\W_]*$
+        </text>
+        <title>.*(Fran.{1,2}ais|Fran&amp;ccedil;ais|Franc.{1,2}s|Franc&amp;eacute;s).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Be[nm]vidos{0,1}|Galego|Gallego)( *(.*)){0,1}[\W_]*$</text>
+        <title>.*(Galego|Gallego).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Ongi\s+etorri|Eusk[ae]ra|Eusquera|Vasco)( *\(.*\)){0,1}[\W_]*$</text>
+        <title>.*(Eusk[ae]ra|Eusquera|Vasco).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Benvin{0,1}guts{0,1}|Catal.{1,2}|Catal&amp;agrave;|Catal.{1,2}n|Catal&amp;aacute;n)(
+            *\(.*\)){0,1}[\W_]*$
+        </text>
+        <title>.*(Catal.{1,2}|Catal&amp;agrave;|Catal.{1,2}n|Catal&amp;aacute;n).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Benvin{0,1}guts{0,1}|Valenci[^a]{1,2}|Valenci&amp;agrave;|Valenciano)( *\(.*\)){0,1}[\W_]*$</text>
+        <title>.*(Valenci.{1,2}|Valenci&amp;agrave;|Valenciano).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Boas-vindas|Portugu.{1,2}s|Portugu&amp;ecirc;s{0,1})( *\(.*\)){0,1}[\W_]*$</text>
+        <title>.*(Portugu.{1,2}s|Portugu&amp;ecirc;s{0,1}).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Willkommen|Deutsch|Alem.{1,2}n|Alem&amp;aacute;n)( *\(.*\)){0,1}[\W_]*$</text>
+        <title>.*(Deutsch|Alem.{1,2}n|Alem&amp;aacute;n).*</title>
+    </link>
+    <link>
+        <text>^[\W_]*Imprimir[\W_]*$</text>
+        <title>^[\W_]*Imprimir[\W_]*$</title>
+    </link>
+    <link>
+        <text>^[\W_]*(Versi.{1,2}n imprimible|Versi&amp;oacute;n imprimible)[\W_]*$</text>
+        <title>^[\W_]*(Versi.{1,2}n imprimible|Versi&amp;oacute;n imprimible)[\W_]*$</title>
+    </link>
+    <link>
+        <text>^[\W_]*Asturiano[\W_]*$</text>
+        <title>.*Asturiano.*</title>
+    </link>
+</ignored_links>

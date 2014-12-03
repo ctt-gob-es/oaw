@@ -44,7 +44,7 @@ public final class Check_1_1_3_ListTest {
 
     @Before
     public void setUp() {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test

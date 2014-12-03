@@ -26,7 +26,7 @@
 	
 	code {font-size: 1.5em; color: #663399; font-style: bold}
 	
-/* Énfasis */
+/* ï¿½nfasis */
 	strong {font-weight:bold;color:#e21430;}
 /* Formularios */
 	form {display:inline;padding:0%;margin:0%;}
@@ -173,6 +173,7 @@
 	.cart{padding-left:4%;margin-top:1.5%;min-height:3%;background:url('../images/cart.png') 1% top no-repeat;border-bottom:dotted silver 1px;}
 	.sem{padding-left:4%;margin-top:1.5%;min-height:3%;background:url('../images/sem.png') 1% top no-repeat;border-bottom:dotted silver 1px;}
 	.login{padding-left:4%;margin-top:1.5%;min-height:3%;background:url('../images/login.png') 1% top no-repeat;border-bottom:dotted silver 1px;}
+	.diagnostico{padding-left:4%;margin-top:1.5%;min-height:3%;background:url('../images/report.png') 1% top no-repeat;border-bottom:dotted silver 1px;}
 	.grande {color:#e21430;font-size:180%;}
 	.toggler {cursor:pointer; cursor:hand; display: block; padding-left:5%}
 	.rationale {font-style: italic; border: 1px solid #ccc; background-color: #eee; padding: 2%; margin: 3% 6%;}
@@ -188,11 +189,11 @@
 
 /* SELECTORES */
 /**************/
-/* Cabecera de la página */
+/* Cabecera de la pï¿½gina */
 	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1.5%; text-align:right; background:url('../images/logo.jpg') left; background-repeat:no-repeat;min-height:12%;}
 	#cabeza a img {border:0%;}
 	
-/* Cuerpo de la página */
+/* Cuerpo de la pï¿½gina */
 	
 	#normaDiv {display: none;}
 	#pCenter {text-align: center; margin-top: 3%;}
@@ -237,8 +238,12 @@
 	
 	#observatoryInfo {margin: 0% 1% 1% 0%}
 	#observatoryInfo a {float:right;}
+	#cajaformularios_diagnostico p {margin: 4px; padding: 4px; font-size:1.2em;}
+	#cajaformularios_diagnostico fieldset {border: 1px solid #CCC;}
+	#cajaformularios_diagnostico ul {margin 4px; padding: 4px}
+	#cajaformularios_diagnostico ul li {margin 4px; padding: 4px}
 
-/* Paginación */
+/* Paginaciï¿½n */
 	.pag a.pagination, .pag .current, .pag a.paginationPF {display:inline-block; border: 1px solid #666; height: 3%; width: 4%; color: #666; text-decoration: none; padding: 0.5%}
 	.pag a.paginationPF  {width: 10%}
 	.pag .current {background-color: #666; color: #FFF; cursor: default}
@@ -246,7 +251,7 @@
 	.pag .noAlign {text-align: left; margin-left: 25%; margin-bottom: 4%}
 	.divCenter {text-align: center}
 	
-/* Pie de la página */
+/* Pie de la pï¿½gina */
 	#pie{clear:left;background:url('../images/bot.gif') top;background-repeat:repeat-x;min-height:3.5%;}
 	#pIzq {float:left;width:1.2%;background:url('../images/bot_izq.gif') no-repeat;min-height:3.5%;}
 	#creditos{background:url('../images/bot_der.gif') no-repeat right top;min-height:3.5%;padding-top:3%;font-size:100%;}
@@ -257,7 +262,7 @@
 
 
 /****************/
-/*  PESTAÑAS	*/
+/*  PESTAï¿½AS	*/
 /****************/
 
 .tabberlive .tabbertabhide {display:none;}

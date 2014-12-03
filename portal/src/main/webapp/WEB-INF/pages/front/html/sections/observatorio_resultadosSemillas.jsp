@@ -77,9 +77,9 @@
 												<caption><bean:message key="lista.semillas.observatorio"/></caption>
 												<tr>
 													<th><bean:message key="resultados.observatorio.nombre" /></th>
-													<logic:equal parameter="idCartucho" value="<%=idCartridgeIntav%>">
+
 														<th><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
-													</logic:equal>
+
 													<th><bean:message key="resultados.observatorio.estado" /></th>
 													<th><bean:message key="resultados.observatorio.acciones" /></th>
 												</tr>
@@ -101,6 +101,7 @@
 													<c:set target="${paramSTR}" property="${observatorioSTR}" value="${idObservatorio}" />
 													<c:set target="${paramSTR}" property="${observatorioExSTR}" value="${idExObs}" />
 													<c:set target="${paramSTR}" property="id" value="${semilla.idFulfilledCrawling}"/>
+													<c:set target="${paramSTR}" property="${idCartuchoSTR}" value="${idCartucho}"/>
 															
 													<jsp:useBean id="paramThrow" class="java.util.HashMap" />
 													<c:set target="${paramThrow}" property="${observatorioSTR}" value="${idObservatorio}" />
@@ -117,9 +118,9 @@
 													
 													<tr>
 														<td>
-															<logic:equal parameter="idCartucho" value="<%=idCartridgeIntav%>">
+
 																<li><html:link forward="showTracking" name="paramSTR"><bean:write name="semilla" property="name" /></html:link></li>
-															</logic:equal>
+
 															<logic:equal parameter="idCartucho" value="<%=idCartridgeLenox%>">
 																<li><html:link forward="showLenoxResultsByUrl" name="paramSTR"><bean:write name="semilla" property="name" /></html:link></li>
 															</logic:equal>
@@ -127,11 +128,11 @@
 																<li><html:link forward="multilanguageListAnalysis" name="paramSTR"><bean:write name="semilla" property="name" /></html:link></li>
 															</logic:equal>
 														</td>
-														<logic:equal parameter="idCartucho" value="<%=idCartridgeIntav%>">
+
 															<td>
 																<bean:write name="semilla" property="score"/>
 															</td>
-														</logic:equal>
+
 														<td>
 															<logic:equal value="true" name="semilla" property="active">
 																<img src="../images/verde.jpg" alt="<bean:message key="resultado.observatorio.activo.alt" />"/>
@@ -142,9 +143,9 @@
 														</td>
 														<td>
 															<ul class="lista_linea">
-																<logic:equal parameter="idCartucho" value="<%=idCartridgeIntav%>">
+
 																	<li><html:link forward="showTracking" name="paramSTR"><img src="../images/list.gif" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
-																</logic:equal>
+
 																<logic:equal parameter="idCartucho" value="<%=idCartridgeLenox%>">
 																	<li><html:link forward="showLenoxResultsByUrl" name="paramSTR"><img src="../images/transgender.png" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
 																</logic:equal>

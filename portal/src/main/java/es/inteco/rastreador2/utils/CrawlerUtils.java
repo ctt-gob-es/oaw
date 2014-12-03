@@ -198,7 +198,7 @@ public final class CrawlerUtils {
             out = response.getOutputStream();
             response.setContentType(contentype);
             response.setContentLength((int) file.length());
-            response.setHeader("Content-disposition", "inline; filename=" + file.getName());
+            response.setHeader("Content-disposition", "attachment; filename=\"" + file.getName()+"\"");
 
 
             byte[] buffer = new byte[2048];

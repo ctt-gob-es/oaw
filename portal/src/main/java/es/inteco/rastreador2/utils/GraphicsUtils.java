@@ -305,6 +305,8 @@ public final class GraphicsUtils {
             return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.AA");
         } else if (key.equals(Constants.OBS_NV)) {
             return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.NV");
+        } else if (key.equals(Constants.OBS_PARCIAL)) {
+            return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.Parcial");
         } else {
             return key;
         }

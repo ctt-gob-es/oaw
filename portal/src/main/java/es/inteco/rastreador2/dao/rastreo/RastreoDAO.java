@@ -11,6 +11,7 @@ import es.inteco.rastreador2.actionform.rastreo.*;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.UpdateListDataForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
@@ -1077,7 +1078,7 @@ public final class RastreoDAO {
             }
             DAOUtils.closeQueries(ps, rs);
             insertarRastreoForm.setId_cartucho(id_cartucho);
-            if (id_cartucho != Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+            if (!CartuchoDAO.isCartuchoAccesibilidad(c, id_cartucho)) {
                 ps = c.prepareStatement("INSERT INTO rastreo (nombre_rastreo, fecha, profundidad, topn, semillas, lista_no_rastreable, lista_rastreable, estado, id_cuenta, pseudoaleatorio, activo, id_language, id_observatorio, automatico, exhaustive, in_directory) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             } else {
@@ -1265,7 +1266,7 @@ public final class RastreoDAO {
                     ps.setLong(12, idRastreo);
                 }
 
-                if (insertarRastreoForm.getCartucho().equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(insertarRastreoForm.getCartucho()))) {
                     //Incluimos la norma dependiendo de el valor de los enlaces rotos
                     if (insertarRastreoForm.getNormaAnalisisEnlaces() != null &&
                             insertarRastreoForm.getNormaAnalisisEnlaces().equals("1")) {
@@ -1873,6 +1874,7 @@ public final class RastreoDAO {
                 form.setSeed(semilla);
                 return form;
             }
+            Logger.putLog("getFullfilledCrawlingExecution return null", RastreoDAO.class, Logger.LOG_LEVEL_INFO);
             return null;
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);

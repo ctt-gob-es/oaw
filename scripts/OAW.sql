@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `cartucho` (
   `aplicacion` varchar(100) COLLATE utf8_bin NOT NULL,
   `numrastreos` int(11) NOT NULL,
   `numhilos` int(11) NOT NULL,
+  `id_guideline` int(11) NOT NULL,
   PRIMARY KEY (`id_cartucho`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
 
@@ -64,11 +65,12 @@ CREATE TABLE IF NOT EXISTS `cartucho` (
 -- Volcado de datos para la tabla `cartucho`
 --
 
-INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`) VALUES
-(1, 'es.inteco.cartuchoUrlMaliciosa.CartuchoWebMaliciosas', 1, 'Malware', 6, 10),
-(2, 'es.inteco.crawler.sexista.modules.analisis.service.CartuchoSexista', 1, 'Lenox', 6, 10),
-(3, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'Intav', 30, 100),
-(4, 'es.inteco.plugin.MultilanguagePlugin', 1, 'Multilingüismo', 30, 100);
+INSERT INTO `cartucho` (`id_cartucho`, `nombre`, `instalado`, `aplicacion`, `numrastreos`, `numhilos`, `id_guideline`) VALUES
+(1, 'es.inteco.cartuchoUrlMaliciosa.CartuchoWebMaliciosas', 1, 'Malware', 6, 10, -1),
+(2, 'es.inteco.crawler.sexista.modules.analisis.service.CartuchoSexista', 1, 'Lenox', 6, 10, -1),
+(3, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2004', 15, 50, 4),
+(4, 'es.inteco.plugin.MultilanguagePlugin', 1, 'Multilingüismo', 15, 50, -1),
+(5, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-2012', 15,	50, 7);
 
 -- --------------------------------------------------------
 
@@ -479,7 +481,7 @@ CREATE TABLE IF NOT EXISTS `observatorio_tipo` (
   `id_tipo` bigint(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id_tipo`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 --
 -- Volcado de datos para la tabla `observatorio_tipo`
@@ -488,8 +490,7 @@ CREATE TABLE IF NOT EXISTS `observatorio_tipo` (
 INSERT INTO `observatorio_tipo` (`id_tipo`, `name`) VALUES
 (1, 'AGE'),
 (2, 'CCAA'),
-(3, 'EELL'),
-(4, 'PRENSA');
+(3, 'EELL');
 
 
 -- --------------------------------------------------------
@@ -659,7 +660,7 @@ CREATE TABLE IF NOT EXISTS `tguidelines` (
   `cod_guideline` bigint(20) NOT NULL AUTO_INCREMENT,
   `des_guideline` varchar(50) NOT NULL,
   PRIMARY KEY (`cod_guideline`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
 -- Volcado de datos para la tabla `tguidelines`
@@ -671,7 +672,8 @@ INSERT INTO `tguidelines` (`cod_guideline`, `des_guideline`) VALUES
 (3, 'wcag-2-0.xml'),
 (4, 'observatorio-inteco-1-0.xml'),
 (5, 'uneER-139803.xml'),
-(6, 'wcagER-1-0.xml');
+(6, 'wcagER-1-0.xml'),
+(7, 'observatorio-une-2012.xml');
 
 -- --------------------------------------------------------
 
@@ -747,14 +749,15 @@ CREATE TABLE IF NOT EXISTS `usuario` (
   `departamento` varchar(100) COLLATE utf8_bin NOT NULL,
   `email` varchar(100) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id_usuario`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
 INSERT INTO `usuario` (`id_usuario`, `usuario`, `password`, `nombre`, `apellidos`, `departamento`, `email`) VALUES
-(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Miguel', 'García Nicieza', 'CTIC', 'miguel.garcia@fundacionctic.org');
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Miguel', 'García Nicieza', 'CTIC', 'miguel.garcia@fundacionctic.org'),
+(2, 'Programado', '21232f297a57a5a743894a0e4a801fc3', '', '', '', 'miguel.garcia@fundacionctic.org');
 
 -- --------------------------------------------------------
 
@@ -768,6 +771,22 @@ CREATE TABLE IF NOT EXISTS `usuario_cartucho` (
   PRIMARY KEY (`id_usuario`,`id_cartucho`),
   KEY `id_cartucho` (`id_cartucho`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `usuario_cartucho`
+--
+
+INSERT INTO `usuario_cartucho` (`id_usuario`, `id_cartucho`) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(2, 1),
+(2, 2),
+(2, 3),
+(2, 4),
+(2, 5);
 
 -- --------------------------------------------------------
 
@@ -787,7 +806,8 @@ CREATE TABLE IF NOT EXISTS `usuario_rol` (
 --
 
 INSERT INTO `usuario_rol` (`usuario`, `id_rol`) VALUES
-(1, 1);
+(1, 1),
+(2, 1);
 
 -- --------------------------------------------------------
 

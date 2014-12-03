@@ -20,8 +20,6 @@ import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.util.ArrayList;
 
-import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
-
 public class LanzarComandoAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
@@ -134,7 +132,7 @@ public class LanzarComandoAction extends Action {
 
                 dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) dcrForm.getId_rastreo()));
 
-                if (dcrForm.getId_cartucho() == Integer.parseInt(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "cartridge.intav.id"))) {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, dcrForm.getId_cartucho())) {
                     dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
                 }
 

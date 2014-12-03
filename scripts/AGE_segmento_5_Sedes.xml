@@ -1,0 +1,843 @@
+<?xml version="1.0"?>
+<lista>
+    <semilla>
+        <nombre>Ministerio Agricultura, Alimentación y Medio Ambiente</nombre>
+        <activa>true</activa>
+        <url>https://sede.magrama.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal de Meteorología (AEMET)</nombre>
+        <activa>true</activa>
+        <url>https://sede.aemet.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fondo Español de Garantía Agraria (FEGA)</nombre>
+        <activa>true</activa>
+        <url>https://www.sede.fega.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Asuntos Exteriores y de Cooperación</nombre>
+        <activa>true</activa>
+        <url>https://sede.maec.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española de Cooperación Internacional para el Desarrollo</nombre>
+        <activa>true</activa>
+        <url>https://www.aecid.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Defensa</nombre>
+        <activa>true</activa>
+        <url>http://sede.defensa.gob.es/acceda/prehome.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Social de las Fuerzas Armadas (ISFAS)</nombre>
+        <activa>true</activa>
+        <url>https://sede.isfas.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Educación, Cultura y Deporte</nombre>
+        <activa>true</activa>
+        <url>http://www.mecd.gob.es/servicios-al-ciudadano-mecd/sede-electronica.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deportes</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Biblioteca Nacional de España</nombre>
+        <activa>true</activa>
+        <url>https://sede.bne.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deportes</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo Superior de Deportes</nombre>
+        <activa>true</activa>
+        <url>https://sede.csd.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deportes</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de Cultura</nombre>
+        <activa>true</activa>
+        <url>https://sede.mcu.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deportes</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Universidad Nacional de Educación a Distancia (UNED)</nombre>
+        <activa>true</activa>
+        <url>https://sede.uned.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deportes</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Economía y Competitividad</nombre>
+        <activa>true</activa>
+        <url>https://sede.mineco.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro para el Desarrollo Tecnológico Industrial</nombre>
+        <activa>true</activa>
+        <url>https://sede.cdti.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Investigaciones Energéticas, Medioambientales y Tecnológicas</nombre>
+        <activa>true</activa>
+        <url>https://sede.ciemat.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional del Mercado de Valores (CNMV)</nombre>
+        <activa>true</activa>
+        <url>https://sede.cnmv.gob.es/sedecnmv/sedeelectronica.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal Consejo Superior de Investigaciones Científicas (CSIC)</nombre>
+        <activa>true</activa>
+        <url>https://sede.csic.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional de los Mercados y la Competencia</nombre>
+        <activa>true</activa>
+        <url>http://sede.cnmc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Seguros y Fondos de Pensiones</nombre>
+        <activa>true</activa>
+        <url>https://www.sededgsfp.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de Investigación, Desarrollo e Innovación</nombre>
+        <activa>true</activa>
+        <url>https://sede.micinn.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Crédito Oficial (ICO)</nombre>
+        <activa>true</activa>
+        <url>https://sedeico.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Estadística (INE)</nombre>
+        <activa>true</activa>
+        <url>https://sede.ine.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Salud Carlos III</nombre>
+        <activa>true</activa>
+        <url>https://sede.isciii.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de Comercio</nombre>
+        <activa>true</activa>
+        <url>https://sede.comercio.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría General del Tesoro y Política Financiera</nombre>
+        <activa>true</activa>
+        <url>https://www.tesoropublico.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Instituto Astrofísico de Canarias (IAC)</nombre>
+        <activa>true</activa>
+        <url>
+            https://sede.micinn.gob.es/portal/site/eSede/menuitem.f1d447db53f9f8684963681001432ea0/?vgnextoid=8c6913a35767b210VgnVCM1000001034e20aRCRD
+        </url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Instituto de Contabilidad y Auditoría de Cuentas (ICAC)</nombre>
+        <activa>true</activa>
+        <url>https://sedeminhap.gob.es/es-ES/sedes/ICAC/Paginas/default.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Instituto Español de Oceanografía (IEO)</nombre>
+        <activa>true</activa>
+        <url>
+            https://sede.micinn.gob.es/portal/site/eSede/menuitem.f1d447db53f9f8684963681001432ea0/?vgnextoid=8c6913a35767b210VgnVCM1000001034e20aRCRD
+        </url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Instituto Geológico y Minero de España (IGME)</nombre>
+        <activa>true</activa>
+        <url>
+            https://sede.micinn.gob.es/portal/site/eSede/menuitem.f1d447db53f9f8684963681001432ea0/?vgnextoid=8c6913a35767b210VgnVCM1000001034e20aRCRD
+        </url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Instituto Nacional de Investigación y Tecnología Agraria y Alimentaria (INIA)</nombre>
+        <activa>true</activa>
+        <url>
+            https://sede.micinn.gob.es/portal/site/eSede/menuitem.f1d447db53f9f8684963681001432ea0/?vgnextoid=8c6913a35767b210VgnVCM1000001034e20aRCRD
+        </url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Empleo y Seguridad Social</nombre>
+        <activa>true</activa>
+        <url>https://sede.empleoyseguridadsocial.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Público de Empleo Estatal (SEPE)</nombre>
+        <activa>true</activa>
+        <url>https://sede.sepe.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sede electrónica de la Seguridad Social</nombre>
+        <activa>true</activa>
+        <url>https://sede.seg-social.gob.es/Sede_1/index.htm</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Fomento</nombre>
+        <activa>true</activa>
+        <url>https://sede.fomento.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Administrador de Infraestructuras Ferroviarias (ADIF)</nombre>
+        <activa>true</activa>
+        <url>https://sede.adif.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Entidad Pública Empresarial Aeropuertos Españoles y Navegación Aérea (AENA)</nombre>
+        <activa>true</activa>
+        <url>https://sede.aena.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal de Seguridad Aérea</nombre>
+        <activa>true</activa>
+        <url>https://sede.seguridadaerea.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria A Coruña</nombre>
+        <activa>true</activa>
+        <url>http://www.boe.es/diario_boe/txt.php?id=BOE-A-2013-8708</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Almeria</nombre>
+        <activa>true</activa>
+        <url>http://sede.apalmeria.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Valencia</nombre>
+        <activa>true</activa>
+        <url>http://www.boe.es/diario_boe/txt.php?id=BOE-A-2013-11767</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de la Bahía de Cádiz</nombre>
+        <activa>true</activa>
+        <url>https://sede.puertocadiz.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Alicante</nombre>
+        <activa>true</activa>
+        <url>https://sede.puertoalicante.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Avilés</nombre>
+        <activa>true</activa>
+        <url>http://sede.puertoaviles.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Barcelona</nombre>
+        <activa>true</activa>
+        <url>https://seu.portdebarcelona.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Bilbao</nombre>
+        <activa>true</activa>
+        <url>https://Sedebilbaoport.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Castellón</nombre>
+        <activa>true</activa>
+        <url>http://sede.portcastello.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Ceuta</nombre>
+        <activa>true</activa>
+        <url>https://sede.puertodeceuta.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Ferrol-San Cibrao</nombre>
+        <activa>true</activa>
+        <url>http://www.apfsc.com/castellano/administracion_electronica__proximamente_.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Huelva</nombre>
+        <activa>true</activa>
+        <url>http://puertohuelva.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Melilla</nombre>
+        <activa>true</activa>
+        <url>https://sede.puertodemelilla.gob.es:444/portal/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Motril</nombre>
+        <activa>true</activa>
+        <url>http://www.apmotril.com</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Santa Cruz de Tenerife</nombre>
+        <activa>true</activa>
+        <url>http://www.puertosdetenerife.org</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Santander</nombre>
+        <activa>true</activa>
+        <url>https://sede.puertosantander.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Vigo</nombre>
+        <activa>true</activa>
+        <url>http://sede.apvigo.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de Vilagarcía de Arousa y su Ría</nombre>
+        <activa>true</activa>
+        <url>https://sede.portovilagarcia.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Autoridad Portuaria de la Bahía de Algeciras</nombre>
+        <activa>true</activa>
+        <url>https://sede.autoridadportuariadelabahíadealgeciras.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro de Estudios y Experimentación de Obras Públicas (CEDEX)</nombre>
+        <activa>true</activa>
+        <url>https://sede.fomento.gob.es/SEDE_ELECTRONICA/LANG_CASTELLANO/OFICINAS_SECTORIALES/CEDEX/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional del Sector Postal (Se integra en la Sede de la Comisión Nacional de los Mercados y la
+            Competencia)
+        </nombre>
+        <activa>true</activa>
+        <url>http://sede.cnmc.es/es-es/sedeelectr%C3%B3nica.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Puertos del Estado</nombre>
+        <activa>true</activa>
+        <url>https://sede.puertos.gob.es/opencms/opencms/index.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Entidad Pública Empresarial de Suelo (SEPES)</nombre>
+        <activa>true</activa>
+        <url>https://sede-sepes.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Hacienda y Administraciones Públicas</nombre>
+        <activa>true</activa>
+        <url>https://sedeminhap.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Secretaría de Estado de Administraciones Públicas</nombre>
+        <activa>true</activa>
+        <url>https://sede.administracionespublicas.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sede del Punto de Acceso General</nombre>
+        <activa>true</activa>
+        <url>https://sede.administracion.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal de Administración Tributaria (AEAT)</nombre>
+        <activa>true</activa>
+        <url>https://www.agenciatributaria.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General del Catastro</nombre>
+        <activa>true</activa>
+        <url>https://www.sedecatastro.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Fondos Comunitarios</nombre>
+        <activa>true</activa>
+        <url>https://sedefondoscomunitarios.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Costes de Personal y Pensiones Públicas</nombre>
+        <activa>true</activa>
+        <url>https://clasespasivas.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Ordenación del Juego</nombre>
+        <activa>true</activa>
+        <url>https://sede.ordenacionjuego.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fábrica Nacional de Moneda y Timbre-Real Casa de la Moneda</nombre>
+        <activa>true</activa>
+        <url>https://www.sede.fnmt.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto Nacional de Administración Pública (INAP)</nombre>
+        <activa>true</activa>
+        <url>https://sede.inap.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Mutualidad de Funcionarios de la Administración del Estado (MUFACE)</nombre>
+        <activa>true</activa>
+        <url>https://sede.muface.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede de la Agencia de Evaluación y Calidad (AEVAL)</nombre>
+        <activa>true</activa>
+        <url>https://sede.administracionespublicas.gob.es/pagina/index/directorio/aeval</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Comisionado para el Mercado de Tabacos</nombre>
+        <activa>true</activa>
+        <url>http://sede.cmtabacos.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede de la Dirección General de Tributos</nombre>
+        <activa>true</activa>
+        <url>http://www.tributos.sedeminhap.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Instituto de Estudios Fiscales</nombre>
+        <activa>true</activa>
+        <url>http://sedeief.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede de la Intervención General de la Administración del Estado</nombre>
+        <activa>true</activa>
+        <url>http://www.sedeigae.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Tribunal Administrativo Central de Recursos Contractuales</nombre>
+        <activa>true</activa>
+        <url>http://tribunalcontratos.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede de los Tribunales Económico-Administrativos</nombre>
+        <activa>true</activa>
+        <url>http://www.tribunaleseconomicoadministrativos.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Industria, Energía y Turismo</nombre>
+        <activa>true</activa>
+        <url>https://sede.minetur.gob.es/es-ES/Paginas/principal.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión Nacional de Energía (Se integra en la Sede de la Comisión Nacional de los Mercados y la
+            Competencia)
+        </nombre>
+        <activa>true</activa>
+        <url>https://sede.cne.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo de Seguridad Nuclear</nombre>
+        <activa>true</activa>
+        <url>https://sede.csn.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto para la Reestructuración de la Minería del Carbón y Desarrollo Alternativo de las Comarcas
+            Mineras
+        </nombre>
+        <activa>true</activa>
+        <url>https://sede.irmc.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Turismo de España (Turespaña)</nombre>
+        <activa>true</activa>
+        <url>http://www.tourspain.es/sites/sedeelectronica</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Oficina Española de Patentes y Marcas</nombre>
+        <activa>true</activa>
+        <url>https://sede.oepm.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Red.es</nombre>
+        <activa>true</activa>
+        <url>https://sede.red.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Comisión del Mercado de las Telecomunicaciones (Se integra en la Sede de la Comisión Nacional de los
+            Mercados de la Competencia).
+        </nombre>
+        <activa>true</activa>
+        <url>https://sede.cmt.gob.es/Sede/index.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede de la DG. de Industria y de la Pequeña y Mediana Empresa</nombre>
+        <activa>true</activa>
+        <url>https://subsede.pyme.minetur.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Interior</nombre>
+        <activa>true</activa>
+        <url>https://sede.mir.gob.es/index2.html</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de la Policía</nombre>
+        <activa>true</activa>
+        <url>https://sede.policia.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirercción General de Tráfico</nombre>
+        <activa>true</activa>
+        <url>https://sede.dgt.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de la Guardia Civil</nombre>
+        <activa>true</activa>
+        <url>https://sede.guardiacivil.gob.es/ciudadano/inicio</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Justicia</nombre>
+        <activa>true</activa>
+        <url>https://sede.mjusticia.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Mutualidad General Judicial</nombre>
+        <activa>true</activa>
+        <url>https://sedemugeju.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de la Presidencia</nombre>
+        <activa>true</activa>
+        <url>https://sedempr.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Estatal del Boletín Oficial del Estado (BOE)</nombre>
+        <activa>true</activa>
+        <url>http://www.boe.es/sede_electronica/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Centro de Estudios Políticos y Constitucionales</nombre>
+        <activa>true</activa>
+        <url>https://sedempr.gob.es/es/content/centro-de-estudios-pol%C3%ADticos-y-constitucionales</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subsede del Centro de Investigaciones Sociológicas</nombre>
+        <activa>true</activa>
+        <url>https://sedempr.gob.es/es/content/centro-de-investigaciones-sociol%C3%B3gicas</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Nacional de Inteligencia</nombre>
+        <activa>true</activa>
+        <url>https://sede.cni.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Sanidad, Servicios Sociales e Igualdad</nombre>
+        <activa>true</activa>
+        <url>https://sede.msssi.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española de Medicamentos y Productos Sanitarios</nombre>
+        <activa>true</activa>
+        <url>https://sede.aemps.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto de Mayores y Servicios Sociales (IMSERSO)</nombre>
+        <activa>true</activa>
+        <url>https://sede.imserso.gob.es/Sede/portal/homePortal.seam</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Senado</nombre>
+        <activa>true</activa>
+        <url>https://sede.senado.es</url>
+        <acronimo/>
+        <depende_de>Cortes Generales</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española de Protección de Datos</nombre>
+        <activa>true</activa>
+        <url>http://sedeagpd.gob.es</url>
+        <acronimo/>
+        <depende_de>Otros</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+</lista>

@@ -445,7 +445,7 @@ public class Guideline {
                         vectorChecksWithoutSc.add(check);
                     }
                 } catch (NumberFormatException nfe) {
-                    Logger.putLog("Error: guideline check has invalid ID:" + stringId, Guideline.class, Logger.LOG_LEVEL_ERROR, nfe);
+                    Logger.putLog("Error: guideline check has invalid ID:" + stringId, Guideline.class, Logger.LOG_LEVEL_WARNING, nfe);
                 }
             }
         }

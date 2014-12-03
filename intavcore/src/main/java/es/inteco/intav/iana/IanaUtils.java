@@ -42,10 +42,10 @@ public final class IanaUtils {
         if (url.startsWith("/")) {
             return IanaUtils.class.getResourceAsStream(url);
         } else {
-            URLConnection connection = new URL(url).openConnection();
+            final URLConnection connection = new URL(url).openConnection();
             connection.connect();
             if (connection instanceof HttpURLConnection) {
-                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                final HttpURLConnection httpConnection = (HttpURLConnection) connection;
                 if (httpConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     return httpConnection.getInputStream();
                 } else {

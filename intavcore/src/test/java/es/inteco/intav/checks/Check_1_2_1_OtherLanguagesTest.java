@@ -31,7 +31,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test
@@ -94,6 +94,24 @@ public final class Check_1_2_1_OtherLanguagesTest {
     }
 
     @Test
+    public void evaluateLinkWrappedLang() throws Exception {
+        checkAccessibility.setContent("<html><body><p>Lorem <span lang=\"en\"><a>Welcome</a></span></p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><body><p lang=\"en\">Lorem <span><a>Welcome</a></span></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><body><p>Lorem <a><span lang=\"en\">Welcome</span></a></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
     public void evaluateOtherLang() throws Exception {
         checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong>You are welcome</strong></p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -111,4 +129,5 @@ public final class Check_1_2_1_OtherLanguagesTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
 }

@@ -37,7 +37,7 @@ public class ResourcesTest {
     @Test
     public void testLoadResources() throws IOException {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        InputStream is = classloader.getResourceAsStream("guidelines/observatorio-2.0.xml");
+        InputStream is = classloader.getResourceAsStream("guidelines/observatorio-une-2012.xml");
         Assert.assertNotNull(is);
         is.close();
     }

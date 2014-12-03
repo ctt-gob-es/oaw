@@ -2,8 +2,8 @@
 <%@page import="es.inteco.common.Constants"%>
 
 <div id="cabeza">
-	<a href="http://www.inteco.es">
-		<img src="images/inteco.jpg" alt="<bean:message key="logo.inteco.alt" />" />
+	<a href="http://www.minhap.gob.es/es-ES/Paginas/Home.aspx">
+		<img src="images/escudo.png" alt="<bean:message key="application.logo.alt" />" />
 	</a>
 </div>
 <div class="language">

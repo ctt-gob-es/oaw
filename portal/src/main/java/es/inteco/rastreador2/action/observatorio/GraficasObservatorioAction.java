@@ -2,6 +2,8 @@ package es.inteco.rastreador2.action.observatorio;
 
 import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -11,6 +13,7 @@ import org.apache.struts.action.ActionMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.sql.Connection;
 import java.util.Locale;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
@@ -18,28 +21,30 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 public class GraficasObservatorioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-
-        PropertiesManager pmgr = new PropertiesManager();
-        try {
-            if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
-                if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+        if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
+            final PropertiesManager pmgr = new PropertiesManager();
+            final Connection c = DataBaseManager.getConnection();
+            try {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(request.getParameter(Constants.TYPE_OBSERVATORY)))) {
                     return getIntavGraphic(request, response);
                 } else if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
                     return getLenoxGraphic(request, response);
                 } else if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
                     return getMultilanguageGraphic(request, response);
                 }
-            } else {
-                return mapping.findForward(Constants.NO_PERMISSION);
+            } catch (Exception e) {
+                CrawlerUtils.warnAdministrators(e, this.getClass());
+                return mapping.findForward(Constants.ERROR_PAGE);
+            } finally {
+                DataBaseManager.closeConnection(c);
             }
-        } catch (Exception e) {
-            CrawlerUtils.warnAdministrators(e, this.getClass());
-            return mapping.findForward(Constants.ERROR_PAGE);
+        } else {
+            return mapping.findForward(Constants.NO_PERMISSION);
         }
         return mapping.findForward(Constants.ERROR_PAGE);
     }
 
-    public ActionForward getIntavGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private ActionForward getIntavGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String graphic = request.getParameter(Constants.GRAPHIC);
         String graphicType = request.getParameter(Constants.GRAPHIC_TYPE);
@@ -127,7 +132,7 @@ public class GraficasObservatorioAction extends Action {
         return null;
     }
 
-    public ActionForward getLenoxGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private ActionForward getLenoxGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String graphic = request.getParameter(Constants.GRAPHIC);
         String execution_id = request.getParameter(Constants.ID);
         String observatory_id = request.getParameter(Constants.ID_OBSERVATORIO);
@@ -178,7 +183,7 @@ public class GraficasObservatorioAction extends Action {
         return null;
     }
 
-    public ActionForward getMultilanguageGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private ActionForward getMultilanguageGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String graphic = request.getParameter(Constants.GRAPHIC);
         String graphicType = request.getParameter(Constants.GRAPHIC_TYPE);
         String execution_id = request.getParameter(Constants.ID);

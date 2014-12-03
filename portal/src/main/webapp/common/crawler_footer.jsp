@@ -3,6 +3,6 @@
 	<div id="pie">
 		<div id="pIzq">&nbsp;</div>
 		<div id="creditos">
-			<bean:message key="copyrigth" />
+			<bean:message key="copyright" />
 		</div>
 	</div>
