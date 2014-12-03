@@ -30,7 +30,6 @@ public class NuevoObservatorioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
-
         try {
             if (CrawlerUtils.hasAccess(request, "new.observatory")) {
                 String esPrimera = request.getParameter(Constants.ES_PRIMERA);

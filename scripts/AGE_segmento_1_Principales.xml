@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<lista>
+	<semilla>
+		<url>http://www.magrama.gob.es/</url>
+		<nombre>Ministerio de Agricultura, Alimentación y Medio Ambiente</nombre>
+		<depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+		<acronimo>MAGRAMA</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.exteriores.gob.es</url>
+		<nombre>Ministerio de Asuntos Exteriores y de Cooperación</nombre>
+		<depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+		<acronimo>MAEC</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.defensa.gob.es/</url>
+		<nombre>Ministerio de Defensa</nombre>
+		<depende_de>Ministerio de Defensa</depende_de>
+		<acronimo>MDE</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.mineco.gob.es</url>
+		<nombre>Ministerio de Economía y Competitividad</nombre>
+		<depende_de>Ministerio de Economía y Competitividad</depende_de>
+		<acronimo>MINECO</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.mecd.gob.es/portada-mecd/</url>
+		<nombre>Ministerio de Educación, Cultura y Deporte</nombre>
+		<depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+		<acronimo>MECD</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.empleo.gob.es</url>
+		<nombre>Ministerio de Empleo y Seguridad Social</nombre>
+		<depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+		<acronimo>MESS</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.fomento.gob.es/</url>
+		<nombre>Ministerio de Fomento</nombre>
+		<depende_de>Ministerio de Fomento</depende_de>
+		<acronimo>MFOM</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.minhap.gob.es</url>
+		<nombre>Ministerio de Hacienda y Administraciones Públicas</nombre>
+		<depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+		<acronimo>MINHAP</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.minetur.gob.es</url>
+		<nombre>Ministerio de Industria, Energía y Turismo</nombre>
+		<depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+		<acronimo>MINETUR</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.interior.gob.es/</url>
+		<nombre>Ministerio del Interior</nombre>
+		<depende_de>Ministerio del Interior</depende_de>
+		<acronimo>MIR</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.mjusticia.gob.es</url>
+		<nombre>Ministerio de Justicia</nombre>
+		<depende_de>Ministerio de Justicia</depende_de>
+		<acronimo>MJU</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.mpr.gob.es</url>
+		<nombre>Ministerio de la Presidencia</nombre>
+		<depende_de>Ministerio de la Presidencia</depende_de>
+		<acronimo>MPR</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.msssi.gob.es/</url>
+		<nombre>Ministerio de Sanidad, Servicios Sociales e Igualdad</nombre>
+		<depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+		<acronimo>MSSSI</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.boe.es/</url>
+		<nombre>Boletín Oficial del Estado</nombre>
+		<depende_de>Ministerio de la Presidencia</depende_de>
+		<acronimo>BOE</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.lamoncloa.gob.es/Paginas/index.aspx</url>
+		<nombre>Presidencia del Gobierno</nombre>
+		<depende_de>Presidencia del Gobierno</depende_de>
+		<acronimo>MONCLOA</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.agenciatributaria.es/</url>
+		<nombre>Agencia Tributaria</nombre>
+		<depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+		<acronimo>AEAT</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://www.seg-social.es/Internet_1/index.htm</url>
+		<nombre>Seguridad Social</nombre>
+		<depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+		<acronimo>SS</acronimo>
+	</semilla>
+	<semilla>
+		<url>http://administracion.gob.es/pag_Home/index.html</url>
+		<nombre>Punto de Acceso General</nombre>
+		<depende_de>Ministerio de la Presidencia</depende_de>
+		<acronimo>PAG</acronimo>
+	</semilla>
+</lista>

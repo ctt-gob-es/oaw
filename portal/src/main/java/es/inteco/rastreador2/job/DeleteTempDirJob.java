@@ -7,6 +7,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
@@ -50,7 +51,7 @@ public class DeleteTempDirJob implements StatefulJob {
                 Logger.putLog("Se han encontrado rastreos viejos cuyas gráficas van a ser borradas", DeleteTempDirJob.class, Logger.LOG_LEVEL_INFO);
                 String path = "";
                 for (FulFilledCrawling crawling : crawlings) {
-                    if (crawling.getIdCartridge() == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                    if (CartuchoDAO.isCartuchoAccesibilidad(conn, crawling.getIdCartridge())) {
                         //Se borran las gráficas de rastreo de INTAV
                         path = pmgr.getValue(CRAWLER_PROPERTIES, "path.general.intav.chart.files");
                         pathsToDelete.add(path + File.separator + crawling.getIdCrawling() + File.separator + crawling.getId());

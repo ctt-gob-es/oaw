@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+	<title>RASTREADOR WEB - Servicio de diagnóstico</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />	
+	<meta name="keywords" content="inteco,malware,rastreador" />
+	<link rel="stylesheet" type="text/css" href="styles/estilo.css" /> 
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+<div id="cabeza">
+	<a href="http://www.minhap.gob.es/es-ES/Paginas/Home.aspx">
+		<img src="images/escudo.png" alt="MINHAP - Ministerio de Hacienda y Administraciones Públicas" />
+	</a>
+</div>
+<div class="language">
+			<a href="languageLogin.do?log=t&amp;lang=es">Español</a>
+			<a href="languageLogin.do?log=t&amp;lang=en">English</a>
+</div>
+	<div id="migas">
+		<p class="oculto">Esta usted en: </p> <p>Servicio de diagnóstico</p>
+	</div>
+	
+	<div id="cuerpo">
+		<div id="cIzq">&nbsp;</div>
+		<div id="contenido">
+			<div id="main">
+				<h1 class="diagnostico">Servicio de diagnóstico</h1>
+				<div id="cuerpoprincipal">
+					<div id="cajaformularios_diagnostico">
+						<form action="/oaw/basicServiceAction.do" method="post">
+      <p>El servicio on-line de diagn&oacute;stico de la Accesibilidad web remitir&aacute; en diferido, al correo electr&oacute;nico indicado, el informe de la web o código fuente analizado. Las peticiones son encoladas y procesadas progresivamente.</p>
+	  <p>Puede realizar el an&aacute;lisis de una p&aacute;gina web p&uacute;blica en Internet, o del c&oacute;digo fuente de una p&aacute;gina interna a la que el analizador no pueda acceder (por ejemplo una Intranet).</p>
+	  <p><strong>Nota:</strong> En caso de que rellene los campos URL y c&oacute;digo, se analizar&aacute; unicamente la URL.</p>
+      <p>
+<label for="url">
+<span style="font-weight: bold">URL del portal o p&aacute;gina a analizar:</span>
+<br/>
+      </label> <input id="url" name="url" size="80" type="text"/>
+</p>
+<p>
+<label for="codigo">
+<span style="font-weight: bold">C&oacute;digo fuente a analizar:</span>
+<br/>
+      </label> <textarea id="codigo" name="codigo" size="80" type="text" cols="80" rows="10"></textarea>
+</p>
+
+      <p>
+<label for="correo">
+<span style="font-weight: bold">Correo eletr&oacute;nico:</span>
+</label>
+<br/>
+       <input id="correo" name="correo" size="80" type="text"/>
+</p>
+<fieldset style="border:1px solid #ccc;margin:0;">
+<legend>Opciones de rastreo</legend>
+      <p>La profundidad y la amplitud determinan cuantas p&aacute;ginas se analizar&aacute;n en el informe (profundidad*amplitud) y c&oacute;mo se hace la selecci&oacute;n aleatoria de &eacute;stas. Si se desea analizar una p&aacute;gina en concreto se puede indicar su URL y especificar profundidad=1 y amplitud=1</p>
+	  <p><strong>Nota:</strong> En el análisis de código fuente no es posible realizar un rastreo de páginas, por lo que en ese caso los campos de amplitud y profundidad serán ignorados.</p>
+
+      <p>
+<label for="profundidad">
+<span style="font-weight: bold">Profundidad:</span>
+</label> <select id="profundidad" name="profundidad">
+        <option selected="selected" value="1">
+          1
+        </option>
+
+        <option value="2">
+          2
+        </option>
+
+        <option value="3">
+          3
+        </option>
+
+        <option value="4">
+          4
+        </option>
+      </select>
+</p>
+
+      <p>
+<label for="amplitud">
+<span style="font-weight: bold">Amplitud:</span>
+</label> <select id="amplitud" name="amplitud">
+        <option selected="selected" value="1">
+          1
+        </option>
+
+        <option value="2">
+          2
+        </option>
+
+        <option value="3">
+          3
+        </option>
+
+        <option value="4">
+          4
+        </option>
+      </select>
+</p>
+
+<p>Si la URL contiene un directorio (por ejemplo http://www.dominio.com/directorio) y desea que todas las páginas rastreadas estén dentro de ese directorio, marque la siguiente opción.</p>
+<p><label for="inDirectory"><input type="checkbox" name="inDirectory" id="inDirectory" value="true" /> No rastrear fuera del directorio</label></p>
+</fieldset>
+<fieldset>
+  <legend>Tipo de informe</legend>
+      <p>El servicio de diagn&oacute;stico permite generar 2 informes distintos:</p>
+
+      <ul>
+        <li>El informe <strong>&quot;UNE&quot;</strong> analiza en profundidad todos los requisitos especificados en la norma UNE 139803 de prioridad 1 y 2.</li>
+
+        <li>El informe <strong>&quot;Observatorio&quot;</strong>&nbsp;genera un informe conforme a la <a href="/webdav/site/ctt-map/users/memunnoz/public/Metodologia_Observatorio_Accesibilidad_AGE-v1_0.pdf" target="_blank" title="Metodolog&iacute;a del Observatorio de Accesibilidad (Se abre en ventana nueva)">metodolog&iacute;a&nbsp;del Observatorio de&nbsp;Accesibilidad</a> con el detalle de todos los errores producidos</li>
+      </ul>
+
+      <p>
+	<span style="font-weight: bold">Informe:</span>
+	<input checked="checked" id="informe-obs" name="informe" type="radio" value="observatorio"/> <label for="informe-obs">Observatorio</label> 
+	<input id="informe-une" name="informe" type="radio" value="une"/> <label for="informe-une">UNE</label>
+     </p>
+</fieldset>
+
+      <p><input id="usuario" name="usuario" type="hidden" value="diagnostico"/> <input name="submit" type="submit" value="Enviar"/></p>
+    </form>
+<script type="text/javascript">
+var userr=document.getElementById("usuario");
+userr.value=readCookie('Jesi_Template_Username');
+</script>	
+					</div><!-- fin cajaformularios_login -->
+				</div><!-- fin CUERPO PRINCIPAL -->
+			</div>
+		</div>
+	</div>  
+
+<!-- Pie -->
+	<div id="pie">
+		<div id="pIzq">&nbsp;</div>
+		<div id="creditos">
+			Copyright © 2014 - <span class="negrita"> Ministerio de Hacienda y Administraciones Públicas</span>
+		</div>
+	</div>
+</body>
+
+</html>

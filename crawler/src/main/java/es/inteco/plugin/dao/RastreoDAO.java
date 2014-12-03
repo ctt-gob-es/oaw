@@ -10,9 +10,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class RastreoDAO {
+public final class RastreoDAO {
 
     public static final Log LOG = LogFactory.getLog(RastreoDAO.class);
+
+    private RastreoDAO() {
+    }
 
     public static void stopRunningObservatories(Connection c) throws Exception {
         java.sql.PreparedStatement pst = null;
@@ -30,7 +33,7 @@ public class RastreoDAO {
                     pst.close();
                 }
             } catch (SQLException e) {
-                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
             }
         }
     }
@@ -51,7 +54,7 @@ public class RastreoDAO {
                         pst.close();
                     }
                 } catch (SQLException e) {
-                    LOG.error("Error al cerrar el objeto PreparedStatement");
+                    LOG.warn("Error al cerrar el objeto PreparedStatement");
                 }
             }
         }
@@ -74,14 +77,14 @@ public class RastreoDAO {
                     pst.close();
                 }
             } catch (SQLException e) {
-                LOG.error("Error al cerrar el objeto PreparedStatement");
+                LOG.warn("Error al cerrar el objeto PreparedStatement");
             }
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                LOG.error("Error al cerrar el objeto ResultSet");
+                LOG.warn("Error al cerrar el objeto ResultSet");
             }
         }
     }
@@ -102,7 +105,7 @@ public class RastreoDAO {
                     pst.close();
                 }
             } catch (SQLException e) {
-                LOG.error("Error al cerrar el objeto PreparedStatement");
+                LOG.warn("Error al cerrar el objeto PreparedStatement");
             }
         }
     }
@@ -140,14 +143,14 @@ public class RastreoDAO {
                     pst.close();
                 }
             } catch (SQLException e) {
-                LOG.error("Error al cerrar el objeto PreparedStatement");
+                LOG.warn("Error al cerrar el objeto PreparedStatement");
             }
             try {
                 if (rs != null) {
                     rs.close();
                 }
             } catch (SQLException e) {
-                LOG.error("Error al cerrar el objeto ResultSet");
+                LOG.warn("Error al cerrar el objeto ResultSet");
             }
         }
     }
@@ -175,7 +178,7 @@ public class RastreoDAO {
                     res1.close();
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
                 throw e;
             }
         }
@@ -204,7 +207,7 @@ public class RastreoDAO {
                     res.close();
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
                 throw e;
             }
         }
@@ -233,10 +236,45 @@ public class RastreoDAO {
                     res.close();
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("Excepcion al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
                 throw e;
             }
         }
         return null;
+    }
+
+    /**
+     * Método que dado un id de cartucho indica si el cartucho pertenece a una normativa de accesibilidad o no
+     * @param c Connection a la base de datos
+     * @param idCartucho long id del cartucho
+     * @return true si el cartucho pertenece a un cartucho de accesibilidad
+     * @throws Exception
+     */
+     public static boolean isCartuchoAccesibilidad(Connection c, long idCartucho) throws Exception {
+        PreparedStatement pes = null;
+        ResultSet res = null;
+        try {
+            pes = c.prepareStatement("SELECT nombre FROM cartucho WHERE id_cartucho = ?");
+            pes.setLong(1, idCartucho);
+            res = pes.executeQuery();
+            if (res.next()) {
+                return "es.inteco.accesibilidad.CartuchoAccesibilidad".equals(res.getString("nombre"));
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al invocar isCartuchoAccesibilidad", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        } finally {
+            try {
+                if (pes != null) {
+                    pes.close();
+                }
+                if (res != null) {
+                    res.close();
+                }
+            } catch (Exception e) {
+                Logger.putLog("Excepcion al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
+            }
+        }
+        return false;
     }
 }

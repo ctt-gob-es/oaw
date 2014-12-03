@@ -5,6 +5,8 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.plugin.dao.RastreoDAO;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.utils.FileUtils;
@@ -92,7 +94,7 @@ public class EliminarObservatorioRealizadoAction extends Action {
 
             String chartPath = "";
 
-            if (cartucho == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+            if (CartuchoDAO.isCartuchoAccesibilidad(c, cartucho)) {
                 chartPath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.intav.files");
             } else if (cartucho == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
                 chartPath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.lenox.files");

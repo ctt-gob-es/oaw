@@ -11,6 +11,7 @@ import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
 import es.inteco.rastreador2.actionform.rastreo.ObservatoryTypeForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.login.CartuchoForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
@@ -827,8 +828,7 @@ public final class ObservatorioDAO {
             ps.setInt(3, Integer.parseInt(nuevoObservatorioForm.getProfundidad()));
             ps.setInt(4, Integer.parseInt(nuevoObservatorioForm.getAmplitud()));
             ps.setTimestamp(5, new Timestamp(nuevoObservatorioForm.getFecha().getTime()));
-
-            ps.setString(6, Constants.ID_OBSERVATORY_GUIDELINE);
+            ps.setLong(6, CartuchoDAO.getGuideline(c, nuevoObservatorioForm.getCartucho().getId()));
             ps.setBoolean(7, Boolean.valueOf(nuevoObservatorioForm.getPseudoAleatorio()));
             ps.setLong(8, nuevoObservatorioForm.getLenguaje());
             ps.setLong(9, nuevoObservatorioForm.getCartucho().getId());
@@ -1400,7 +1400,7 @@ public final class ObservatorioDAO {
         PropertiesManager pmgr = new PropertiesManager();
         insertarRastreoForm.setId_observatorio(observatorioForm.getId());
         insertarRastreoForm.setCartucho(observatorioForm.getCartucho().getId().toString());
-        insertarRastreoForm.setNormaAnalisis(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"));
+        insertarRastreoForm.setNormaAnalisis(String.valueOf(observatorioForm.getId_guideline()));
         insertarRastreoForm.setProfundidad(observatorioForm.getProfundidad());
         insertarRastreoForm.setTopN(observatorioForm.getAmplitud());
         insertarRastreoForm.setPseudoAleatorio(observatorioForm.isPseudoAleatorio());
@@ -1735,7 +1735,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<CategoriaForm> getExecutionObservatoryCategories(Connection c, Long idExecutionObservatory) throws SQLException {
-        List<CategoriaForm> results = new ArrayList<CategoriaForm>();
+        final List<CategoriaForm> results = new ArrayList<CategoriaForm>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1750,7 +1750,7 @@ public final class ObservatorioDAO {
 
             while (rs.next()) {
                 // return rs.getBoolean("estado");
-                CategoriaForm categoriaForm = new CategoriaForm();
+                final CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("cl.id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
                 results.add(categoriaForm);

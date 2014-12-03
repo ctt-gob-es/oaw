@@ -3,6 +3,7 @@ package es.inteco.rastreador2.utils;
 import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.utils.FileUtils;
 
@@ -24,9 +25,8 @@ public final class RastreoUtils {
         int id = Integer.parseInt(fulfilledCrawlingForm.getId());
         String pdfPath = "";
 
-        if (cartucho == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
-            String chartPath = pmgr.getValue(CRAWLER_PROPERTIES, "path.general.intav.chart.files") +
-                    File.separator + id_rastreo + File.separator + id;
+        if (CartuchoDAO.isCartuchoAccesibilidad(c, cartucho)) {
+            String chartPath = pmgr.getValue(CRAWLER_PROPERTIES, "path.general.intav.chart.files") + File.separator + id_rastreo + File.separator + id;
             pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.intav");
             FileUtils.deleteDir(new File(chartPath));
             File rastreoDir = new File(pmgr.getValue(CRAWLER_PROPERTIES, "path.general.intav.chart.files") + File.separator + request.getParameter(Constants.ID_RASTREO));

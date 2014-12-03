@@ -1,0 +1,616 @@
+<?xml version="1.0"?>
+<lista>
+    <semilla>
+        <nombre>Alimentación.es</nombre>
+        <activa>true</activa>
+        <url>http://www.alimentacion.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Club pezqueñines</nombre>
+        <activa>true</activa>
+        <url>http://www.clubpezquenines.com</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación-biodiversidad</nombre>
+        <activa>true</activa>
+        <url>http://www.fundacion-biodiversidad.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Innovamar - Fundación Instituto Tecnológico para el Desarrollo de las Industrias Marítimas</nombre>
+        <activa>true</activa>
+        <url>http://www.innovamar.org</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Red de laboratorios agroalimentarios</nombre>
+        <activa>true</activa>
+        <url>http://lagrored.magrama.es/Publico/AGC_Inicio.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Revista Ambienta</nombre>
+        <activa>true</activa>
+        <url>http://www.revistaambienta.es/WebAmbienta/Principal.do</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subproductos de origen animal no destinados al consumo humano (SANDACH)</nombre>
+        <activa>true</activa>
+        <url>http://www.sandach.com.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Virtual Cervantes</nombre>
+        <activa>true</activa>
+        <url>http://cvc.cervantes.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Diplomas de Español</nombre>
+        <activa>true</activa>
+        <url>http://diplomas.cervantes.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>El Español en España</nombre>
+        <activa>true</activa>
+        <url>http://eee.cervantes.es/es/index.asp</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Red de Centros Asociados del Instituto Cervantes</nombre>
+        <activa>true</activa>
+        <url>http://acreditacion.cervantes.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Soldados</nombre>
+        <activa>true</activa>
+        <url>http://www.reclutamiento.defensa.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Reclutamiento</nombre>
+        <activa>true</activa>
+        <url>http://www.reclutamiento.defensa.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Canal del Ministerio de Defensa en Youtube</nombre>
+        <activa>true</activa>
+        <url>http://www.youtube.com/MinDefensa</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Reales y Militares Órdenes</nombre>
+        <activa>true</activa>
+        <url>http://www.rmo.mde.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Digital CSIC</nombre>
+        <activa>true</activa>
+        <url>http://digital.csic.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación Española para la Ciencia y la Tecnología (FECYT)</nombre>
+        <activa>true</activa>
+        <url>http://www.fecyt.es/fecyt/home.do;jsessionid=7605A57247DF4A2968C7888738E9711D</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>GTC digital - Gran Telescopio de Canarias</nombre>
+        <activa>true</activa>
+        <url>http://www.gtc.iac.es/GTChome_es.php</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ibercivis - La ciencia en casa</nombre>
+        <activa>true</activa>
+        <url>http://www.ibercivis.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Museos de Tenerife</nombre>
+        <activa>true</activa>
+        <url>http://www.museosdetenerife.org/index.php?al_id_mus=6</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Revistas científicas del CSIC</nombre>
+        <activa>true</activa>
+        <url>http://revistas.csic.es/index.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>SINC - Servicio de Información y Noticias Científicas</nombre>
+        <activa>true</activa>
+        <url>http://www.agenciasinc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>España es Cultura</nombre>
+        <activa>true</activa>
+        <url>http://www.españaescultura.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Bolonia en secundaria</nombre>
+        <activa>true</activa>
+        <url>http://www.educacion.gob.es/boloniaensecundaria/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal del Hispanismo</nombre>
+        <activa>true</activa>
+        <url>http://hispanismo.cervantes.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Estrategia Universidad 2015</nombre>
+        <activa>true</activa>
+        <url>https://sede.educacion.gob.es/publiventa/detalle.action?cod=14246</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Becas ERASMUS</nombre>
+        <activa>true</activa>
+        <url>http://www.oapee.es/oapee/inicio/pap/erasmus.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Todo FP</nombre>
+        <activa>true</activa>
+        <url>http://www.todofp.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Guía laboral</nombre>
+        <activa>true</activa>
+        <url>http://www.empleo.gob.es/es/Guia/index.htm</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Observatorio Español del Racismo y la Xenofobia</nombre>
+        <activa>true</activa>
+        <url>http://explotacion.mtin.gob.es/oberaxe/inicio</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Prevención10.es</nombre>
+        <activa>true</activa>
+        <url>https://www.prevencion10.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ciudadanía Española en el Exterior</nombre>
+        <activa>true</activa>
+        <url>http://www.ciudadaniaexterior.empleo.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Integra local</nombre>
+        <activa>true</activa>
+        <url>http://explotacion.mtin.gob.es/integralocal/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Empleo y Seguridad Social</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Atlas Estadístico de las Áreas Urbanas de España</nombre>
+        <activa>true</activa>
+        <url>http://siu.vivienda.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Fomento</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Administración Electrónica</nombre>
+        <activa>true</activa>
+        <url>http://administracionelectronica.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Plataforma de Contratación del Estado</nombre>
+        <activa>true</activa>
+        <url>https://contrataciondelestado.es/wps/portal/plataforma</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>EUGO</nombre>
+        <activa>true</activa>
+        <url>http://www.eugo.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Eurocadastre</nombre>
+        <activa>true</activa>
+        <url>http://www.eurocadastre.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Datos abiertos. (datos.gob.es)</nombre>
+        <activa>true</activa>
+        <url>http://www.datos.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Entidades Locales</nombre>
+        <activa>true</activa>
+        <url>https://ssweb.seap.minhap.es/portalEELL/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Registro de Entidades Locales</nombre>
+        <activa>true</activa>
+        <url>http://ssweb.seap.minhap.es/REL/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Firma electrónica</nombre>
+        <activa>true</activa>
+        <url>http://firmaelectronica.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Zona Especial Canaria</nombre>
+        <activa>true</activa>
+        <url>http://www.zec.org</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Controlas tu energía</nombre>
+        <activa>true</activa>
+        <url>http://www.controlastuenergia.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Crear tu empresa CIRCE Emprende en 3</nombre>
+        <activa>true</activa>
+        <url>http://portal.circe.es/es-ES/emprendedor/CrearEmpresa/Paginas/Crearunaempresa.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Banda Ancha</nombre>
+        <activa>true</activa>
+        <url>http://www.bandaancha.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Turismo en España</nombre>
+        <activa>true</activa>
+        <url>http://www.spain.info/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Puntos de Asesoramiento e Inicio de la Tramitación (PAIT)</nombre>
+        <activa>true</activa>
+        <url>http://www.circe.es/Circe.Publico.Web/pub/BusquedaPaitMapa.aspx?tipo_soc=16</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Geoportal de Hidrocarburos</nombre>
+        <activa>true</activa>
+        <url>http://geoportalgasolineras.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Televisión digital terrestre</nombre>
+        <activa>true</activa>
+        <url>http://www.televisiondigital.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación Ciudad de la Energía</nombre>
+        <activa>true</activa>
+        <url>http://www.ciuden.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Crear tu empresa paso a paso DG PYME</nombre>
+        <activa>true</activa>
+        <url>http://www.creatuempresa.org/es-es/pasoapaso/Paginas/Creatuempresapasoapaso.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Emplazamiento ATC</nombre>
+        <activa>true</activa>
+        <url>http://www.emplazamientoatc.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Usuarios Teleco</nombre>
+        <activa>true</activa>
+        <url>http://www.usuariosteleco.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Programa de Creación de Empresas</nombre>
+        <activa>true</activa>
+        <url>http://www.creatuempresa.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Facturae</nombre>
+        <activa>true</activa>
+        <url>http://www.facturae.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>DNI electrónico</nombre>
+        <activa>true</activa>
+        <url>http://www.dnielectronico.es</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Cita previa DNI y pasaporte</nombre>
+        <activa>true</activa>
+        <url>https://www.citapreviadnie.es</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Usa tu DNI</nombre>
+        <activa>true</activa>
+        <url>http://www.usatudni.es</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Web electoral</nombre>
+        <activa>true</activa>
+        <url>http://www.infoelectoral.mir.es</url>
+        <acronimo/>
+        <depende_de>Ministerio del Interior</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+	<semilla>
+	<url>http://www.plandepensiones-age.es/magnoliaPublic/funcionaPlanPensiones</url>
+	<nombre>Plan de Pensiones</nombre>
+	<depende_de>Ministerio del Interior</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de la Administración de Justicia</nombre>
+        <activa>true</activa>
+        <url>https://www.administraciondejusticia.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Oficina Judicial</nombre>
+        <activa>true</activa>
+        <url>http://oficinajudicial.justicia.es/portaloj/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Observatorio del pluralismo religioso en España</nombre>
+        <activa>true</activa>
+        <url>http://www.observatorioreligion.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Justicia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Marca España</nombre>
+        <activa>true</activa>
+        <url>http://marcaespana.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ley de transparencia</nombre>
+        <activa>true</activa>
+        <url>http://www.leydetransparencia.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Guías de salud</nombre>
+        <activa>true</activa>
+        <url>http://portal.guiasalud.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sistema para la Autonomía y Atención a la Dependencia SAAD</nombre>
+        <activa>true</activa>
+        <url>http://www.dependencia.imserso.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Español de Documentación sobre Discapacidad</nombre>
+        <activa>true</activa>
+        <url>http://www.cedd.net</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Plan Nacional sobre Drogas</nombre>
+        <activa>true</activa>
+        <url>http://www.pnsd.msps.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo de Consumidores y Usuarios</nombre>
+        <activa>true</activa>
+        <url>http://www.consumo-ccu.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Centro Europeo del Consumidor</nombre>
+        <activa>true</activa>
+        <url>http://cec.consumo-inc.es/cec/Index.html</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consumópolis</nombre>
+        <activa>true</activa>
+        <url>http://www.consumopolis.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ellas crean</nombre>
+        <activa>true</activa>
+        <url>http://www.ellascrean.com/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Juventud en acción</nombre>
+        <activa>true</activa>
+        <url>http://www.juventudenaccion.injuve.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Nutrición y Estrategia Naos</nombre>
+        <activa>true</activa>
+        <url>http://www.naos.aesan.msssi.gob.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Fundación para la Cooperación y Salud Internacional del Sistema Nacional de Salud de España</nombre>
+        <activa>true</activa>
+        <url>http://fcsai.isciii.es/index2.htm</url>
+        <acronimo/>
+        <depende_de>Ministerio de Sanidad, Servicios Sociales e Igualdad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+</lista>

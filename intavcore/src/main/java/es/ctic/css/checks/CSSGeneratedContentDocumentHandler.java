@@ -1,13 +1,14 @@
 package es.ctic.css.checks;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
-import ca.utoronto.atrc.tile.accessibilitychecker.Problem;
 import es.ctic.css.CSSDocumentHandler;
 import es.ctic.css.CSSProblem;
 import es.ctic.css.CSSResource;
 import es.ctic.css.utils.CSSSACUtils;
 import es.inteco.common.logging.Logger;
-import org.w3c.css.sac.*;
+import org.w3c.css.sac.CSSException;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.Node;
 
 import java.io.IOException;
@@ -31,7 +32,7 @@ public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
         try {
             // La generación de contenido desde CSS no se puede hacer con estilos en linea ya que requiere las pseudo clases
             // :before y :after
-            if ( !cssResource.isInline()) {
+            if (!cssResource.isInline()) {
                 parser.parseStyleSheet(is);
             }
         } catch (IOException e) {
@@ -45,9 +46,8 @@ public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
         if (isPseudoClass() && CONTENT_PROPERTY.equals(name)) {
             final String value = CSSSACUtils.parseLexicalValue(lexicalUnit);
             final int allowedChars = Integer.parseInt(getCheckCode().getFunctionNumber());
-            if (value.length()>allowedChars) {
-                System.out.println("GeneratedContentCSS DH: " + name +"="+ value);
-                getProblems().add(createCSSProblem(name+": "+value));
+            if (value.length() > allowedChars) {
+                getProblems().add(createCSSProblem(name + ": " + value));
             }
         }
     }

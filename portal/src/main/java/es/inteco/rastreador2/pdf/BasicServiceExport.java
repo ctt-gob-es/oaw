@@ -55,8 +55,8 @@ public final class BasicServiceExport {
     static {
         PMGR = new PropertiesManager();
 
-        X = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.X"));
-        Y = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.Y"));
+        X = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.x"));
+        Y = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.y"));
 
         COLOR = PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.intav.colors");
     }

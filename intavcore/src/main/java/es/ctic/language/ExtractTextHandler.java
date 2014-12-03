@@ -43,7 +43,7 @@ public class ExtractTextHandler extends DefaultHandler {
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         final String lang = attributes.getValue("lang");
-        languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek() ); //webpageLanguage);
+        languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek() );
     }
 
     @Override

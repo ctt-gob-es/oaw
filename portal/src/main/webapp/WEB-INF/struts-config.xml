@@ -436,6 +436,7 @@
             <forward name="getGlobalGraphics" path=".graficasObservatorioGlobal"/>
             <forward name="getSegmentGraphics" path=".graficasObservatorioSegmento"/>
             <forward name="getEvolutionGraphics" path=".graficasObservatorioEvolucion"/>
+            <forward name="getEvolutionGraphicsUNE2102" path=".graficasObservatorioEvolucionUNE2012"/>
             <forward name="categoryList" path=".indiceGraficasCatObservatorio"/>
         </action>
 

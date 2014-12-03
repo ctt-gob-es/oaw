@@ -5,6 +5,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class WebAnalayzer {
     private final Map<String, Cartucho> cartuchos;  //Tenemos esta estructura para reutilizar los cartuchos
 
     public WebAnalayzer() {
-        cartuchos = new Hashtable<String, Cartucho>();
+        cartuchos = new HashMap<String, Cartucho>();
     }
 
     public void runCartuchos(CrawledLink crawledLink, String fecha, CrawlerData crawlerData, String cookie, boolean isLast) {
@@ -44,7 +45,7 @@ public class WebAnalayzer {
     }
 
     private Map<String, Object> getData(CrawledLink crawledLink, long idFulfilledCrawling, String fecha, CrawlerData crawlerData, String cookie, boolean isLast) {
-        final Map<String, Object> datos = new Hashtable<String, Object>();
+        final Map<String, Object> datos = new HashMap<String, Object>();
 
         datos.put("id_rastreo", crawlerData.getIdCrawling());
         datos.put("idFulfilledCrawling", idFulfilledCrawling);

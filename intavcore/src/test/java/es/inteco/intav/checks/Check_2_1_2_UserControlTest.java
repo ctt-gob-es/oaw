@@ -28,7 +28,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test

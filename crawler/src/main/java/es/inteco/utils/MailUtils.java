@@ -3,11 +3,11 @@ package es.inteco.utils;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.MultiPartEmail;
 
+import javax.net.ssl.*;
 import java.net.URL;
 import java.util.List;
 
@@ -110,10 +110,76 @@ public final class MailUtils {
         final MultiPartEmail email = new MultiPartEmail();
         final PropertiesManager pmgr = new PropertiesManager();
 
+        /*final String trustStorePath = pmgr.getValue("crawler.properties", "digital.certificates.path");
+        final String trustStorePass = pmgr.getValue("crawler.properties", "digital.certificates.storepass");
+        Logger.putLog("Configurando el truststore en " + trustStorePath, MailUtils.class, Logger.LOG_LEVEL_INFO);
+        System.setProperty("javax.net.debug", "all");
+        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
+        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass); */
+
+        TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+        } catch (Exception e) {
+            Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+
         if (pmgr.getValue("crawler.core.properties", "mail.smtp.host") == null || pmgr.getValue("crawler.core.properties", "mail.smtp.host").trim().isEmpty()) {
             throw new Exception("No se configurado el servidor de correo");
         }
         email.setHostName(pmgr.getValue("crawler.core.properties", "mail.smtp.host"));
+        if (pmgr.getValue("crawler.core.properties", "mail.smtp.user") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.user").trim().isEmpty()) {
+            email.setAuthenticator(new DefaultAuthenticator(pmgr.getValue("crawler.core.properties", "mail.smtp.user").trim(), pmgr.getValue("crawler.core.properties", "mail.smtp.pass").trim()));
+        }
+        if (pmgr.getValue("crawler.core.properties", "mail.smtp.port") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.port").trim().isEmpty()) {
+            Logger.putLog("Configurando el port " + pmgr.getValue("crawler.core.properties", "mail.smtp.port"), MailUtils.class, Logger.LOG_LEVEL_INFO);
+            email.setSmtpPort(Integer.parseInt(pmgr.getValue("crawler.core.properties", "mail.smtp.port").trim()));
+        }
+        if (pmgr.getValue("crawler.core.properties", "mail.smtp.sslport") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.sslport").trim().isEmpty()) {
+            Logger.putLog("Configurando el sslport " + pmgr.getValue("crawler.core.properties", "mail.smtp.sslport"), MailUtils.class, Logger.LOG_LEVEL_INFO);
+            email.setSSLOnConnect(true);
+            email.setSslSmtpPort(pmgr.getValue("crawler.core.properties", "mail.smtp.sslport").trim());
+        }
+        Logger.putLog("Configurando TLS a " + pmgr.getValue("crawler.core.properties", "mail.smtp.tls"), MailUtils.class, Logger.LOG_LEVEL_INFO);
+        email.setStartTLSEnabled(Boolean.parseBoolean(pmgr.getValue("crawler.core.properties", "mail.smtp.tls")));
+        email.setStartTLSRequired(Boolean.parseBoolean(pmgr.getValue("crawler.core.properties", "mail.smtp.tls")));
+        email.setSSLCheckServerIdentity(false);
 
         return email;
     }

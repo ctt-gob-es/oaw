@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<lista>
+    <semilla>
+        <nombre>Ministerio de Asuntos Exteriores y de Cooperación</nombre>
+        <activa>true</activa>
+        <url>http://www.exteriores.gob.es/Portal/es/Paginas/inicio.aspx</url>
+        <acronimo>MAEC</acronimo>
+        <depende_de>Ministerio de Asuntos Exteriores y de Cooperación</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Ciencia e Innovación</nombre>
+        <activa>true</activa>
+        <url>http://www.micinn.es/portal/site/MICINN/</url>
+        <acronimo>MICINN</acronimo>
+        <depende_de>Ministerio de Ciencia e Innovación</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio de Defensa</nombre>
+        <activa>true</activa>
+        <url>http://www.mde.es/</url>
+        <acronimo>MDE</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>    
+</lista>

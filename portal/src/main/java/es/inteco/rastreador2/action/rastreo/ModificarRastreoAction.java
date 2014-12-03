@@ -166,8 +166,8 @@ public class ModificarRastreoAction extends Action {
                                     }
                                 }
                                 if (insertarRastreoForm.getCuenta_cliente() != null && insertarRastreoForm.getCuenta_cliente() != 0) {
-                                    insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Integer.parseInt(insertarRastreoForm.getCartucho())));
-                                    rastreo_antiguo += "-" + CartuchoDAO.getApplication(c, Integer.parseInt(insertarRastreoForm.getCartucho()));
+                                    insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho())));
+                                    rastreo_antiguo += "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho()));
                                 }
 
                                 //necesitamos los ids

@@ -6,9 +6,11 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.multilanguage.database.export.ExportMultilanguageUtils;
 import es.inteco.multilanguage.manager.ObservatoryManager;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.export.database.Category;
 import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
@@ -69,7 +71,7 @@ public class DatabaseExportAction extends Action {
             for (ObservatorioRealizadoForm fulfilledObservatory : fulfilledObservatories) {
                 PropertiesManager pmgr = new PropertiesManager();
 
-                if (String.valueOf(fulfilledObservatory.getCartucho().getId()).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
                     Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
                     if (observatory == null) {
                         // Información general de la ejecución del Observatorio

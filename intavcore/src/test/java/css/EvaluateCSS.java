@@ -12,7 +12,6 @@ import cz.vutbr.web.domassign.Analyzer;
 import cz.vutbr.web.domassign.MultiMap;
 import cz.vutbr.web.domassign.StyleMap;
 import es.ctic.css.CSSProblem;
-import es.ctic.css.checks.CSSPropertyValueDocumentHandler;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
@@ -77,30 +76,30 @@ public class EvaluateCSS {
         Assert.assertNull(cssDeclarationList);
     }
 
-    @Test
-    public void testSACCSS() throws IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
-        final String css = ".main:before {background-color: rgba(255, 255, 255, 0.85); font-size: 14px; content: \"Lorem: \";}";
-        System.setProperty("org.w3c.css.sac.parser", "com.steadystate.css.parser.SACParserCSS3");
-
-        ParserFactory pf = new ParserFactory();
-        Parser parser = pf.makeParser();
-        Assert.assertNotNull(parser);
-        CheckCode checkCode = new CheckCode();
-        checkCode.setFunctionValue("content");
-        parser.setDocumentHandler(new CSSPropertyValueDocumentHandler(checkCode));
-        final InputSource is = new InputSource();
-        //is.setURI("http://www.fundacionctic.org/sites/all/themes/ctic/css/html-reset.css");
-        is.setCharacterStream(new java.io.StringReader(css));
-        //parser.parseStyleDeclaration(is);
-        parser.parseStyleSheet(is);
-    }
+//    @Test
+//    public void testSACCSS() throws IllegalAccessException, InstantiationException, ClassNotFoundException, IOException {
+//        final String css = ".main:before {background-color: rgba(255, 255, 255, 0.85); font-size: 14px; content: \"Lorem: \";}";
+//        System.setProperty("org.w3c.css.sac.parser", "com.steadystate.css.parser.SACParserCSS3");
+//
+//        ParserFactory pf = new ParserFactory();
+//        Parser parser = pf.makeParser();
+//        Assert.assertNotNull(parser);
+//        CheckCode checkCode = new CheckCode();
+//        checkCode.setFunctionValue("content");
+//        parser.setDocumentHandler(new CSSPropertyValueDocumentHandler(checkCode));
+//        final InputSource is = new InputSource();
+//        //is.setURI("http://www.fundacionctic.org/sites/all/themes/ctic/css/html-reset.css");
+//        is.setCharacterStream(new java.io.StringReader(css));
+//        //parser.parseStyleDeclaration(is);
+//        parser.parseStyleSheet(is);
+//    }
 
     @Test
     public void testjStyleParser() throws MalformedURLException {
         final CheckAccessibility checkAccessibility = new CheckAccessibility();
         checkAccessibility.setEntity("Tests unitarios");
-        checkAccessibility.setGuideline("observatorio-2.0");
-        checkAccessibility.setGuidelineFile("observatorio-2.0.xml");
+        checkAccessibility.setGuideline("observatorio-une-2012");
+        checkAccessibility.setGuidelineFile("observatorio-une-2012.xml");
         checkAccessibility.setLevel("aa");
         checkAccessibility.setUrl("http://www.fundacionctic.org");
         checkAccessibility.setIdRastreo(0); // 0 - Indica análisis suelto (sin crawling y sin guardar datos en la BD de observatorio)
@@ -151,8 +150,8 @@ public class EvaluateCSS {
     public void testjStyleParserLabel() throws MalformedURLException {
         final CheckAccessibility checkAccessibility = new CheckAccessibility();
         checkAccessibility.setEntity("Tests unitarios");
-        checkAccessibility.setGuideline("observatorio-2.0");
-        checkAccessibility.setGuidelineFile("observatorio-2.0.xml");
+        checkAccessibility.setGuideline("observatorio-une-2012");
+        checkAccessibility.setGuidelineFile("observatorio-une-2012.xml");
         checkAccessibility.setLevel("aa");
         checkAccessibility.setUrl("http://www.fundacionctic.org/contacto");
         checkAccessibility.setIdRastreo(0); // 0 - Indica análisis suelto (sin crawling y sin guardar datos en la BD de observatorio)
@@ -292,8 +291,8 @@ public class EvaluateCSS {
     public void testjStyleParserConcept() throws MalformedURLException {
         final CheckAccessibility checkAccessibility = new CheckAccessibility();
         checkAccessibility.setEntity("Tests unitarios");
-        checkAccessibility.setGuideline("observatorio-2.0");
-        checkAccessibility.setGuidelineFile("observatorio-2.0.xml");
+        checkAccessibility.setGuideline("observatorio-une-2012");
+        checkAccessibility.setGuidelineFile("observatorio-une-2012.xml");
         checkAccessibility.setLevel("aa");
         checkAccessibility.setUrl("http://www2.fundacionctic.org");
         checkAccessibility.setIdRastreo(0); // 0 - Indica análisis suelto (sin crawling y sin guardar datos en la BD de observatorio)

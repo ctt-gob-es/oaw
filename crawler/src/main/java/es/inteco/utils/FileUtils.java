@@ -15,10 +15,10 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    public static void deleteDirs(List<String> paths) {
+    public static void deleteDirs(final List<String> paths) {
         for (String path : paths) {
             Logger.putLog("Borrando el contenido del directorio: " + path, FileUtils.class, Logger.LOG_LEVEL_INFO);
-            File dir = new File(path);
+            final File dir = new File(path);
             deleteDir(dir);
         }
     }
@@ -28,10 +28,10 @@ public final class FileUtils {
      * @param dir - directory to delete recursively
      * @return true if all deletions were successful or false if a deletion fails and then the method returns inmediately
      */
-    public static boolean deleteDir(File dir) {
+    public static boolean deleteDir(final File dir) {
         if (dir.exists()) {
             if (dir.isDirectory()) {
-                String[] children = dir.list();
+                final String[] children = dir.list();
                 for (String child : children) {
                     boolean success = deleteDir(new File(dir, child));
                     if (!success) {

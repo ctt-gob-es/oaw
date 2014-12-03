@@ -196,7 +196,7 @@ public final class EvaluatorUtility {
     }
 
     // Recursive function that returns a string containing all the text within the node
-    public static String getElementTextLoop(Node node, List<String> inlineTags) {
+    private static String getElementTextLoop(Node node, List<String> inlineTags) {
         try {
             StringBuilder buffer = new StringBuilder();
 
@@ -560,7 +560,8 @@ public final class EvaluatorUtility {
             Element elementRoot = null;
 
             String inStr = StringUtils.getContentAsString(inputStream, charset);
-
+            // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+            inStr = inStr.replaceAll("<iframe [^>]*/>", "");
             for (int i = 0; i < 2 && (doc == null || elementRoot == null); i++) {
                 parser.setFilename(checkAccessibility.getUrl());
 
@@ -581,12 +582,8 @@ public final class EvaluatorUtility {
                     doc = parser.getDocument();
                     // store the doctype status on the root element
                     elementRoot = doc.getDocumentElement();
-                } catch (IOException e) {
-
-                    if (doc == null || elementRoot == null) {
-                        parser = new CheckerParser(new HTMLConfiguration(true));
-                    }
-
+                } catch (Exception e) {
+                    parser = new CheckerParser(new HTMLConfiguration(true));
                     Logger.putLog("Error al parsear al documento. Se intentará de nuevo con el balanceo de etiquetas", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                 }
 
@@ -663,7 +660,7 @@ public final class EvaluatorUtility {
                 for (int x = 0; x < listMaps.getLength(); x++) {
                     Element elementMap = (Element) listMaps.item(x);
                     String stringNameMap = "#" + elementMap.getAttribute("name");
-                    if ((stringNameMap == null) || (stringNameMap.length() == 0)) {
+                    if ( stringNameMap.length() == 0) {
                         continue;
                     }
 

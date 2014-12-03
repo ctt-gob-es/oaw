@@ -174,8 +174,8 @@ public final class AnalisisDatos {
         try {
             Analysis analisis = new Analysis();
 
-            pstmt = conn.prepareStatement("SELECT * FROM tanalisis A INNER JOIN tguidelines G ON A.COD_GUIDELINE = G.COD_GUIDELINE " +
-                    "WHERE COD_ANALISIS = ?;");
+            pstmt = conn.prepareStatement("SELECT * FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline " +
+                    "WHERE cod_analisis = ?;");
             pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
 

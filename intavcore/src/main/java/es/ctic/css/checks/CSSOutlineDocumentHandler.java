@@ -21,7 +21,6 @@ public class CSSOutlineDocumentHandler extends CSSDocumentHandler {
         if (isFocusPseudoClass()) {
             if ( "outline".equals(name)) {
                 final String value = CSSSACUtils.parseLexicalValue(lexicalUnit);
-                System.out.println("CSSOUTLINE - " + value);
                 if ( isZero(value)) {
                     getProblems().add(createCSSProblem(name+": "+value));
                 }

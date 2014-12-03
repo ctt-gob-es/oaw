@@ -467,6 +467,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_FALSE_BR_IMAGE_LIST;
             } else if (stringCall.equals("other-language")) {
                 functionId = CheckFunctionConstants.FUNCTION_OTHER_LANGUAGE;
+            } else if (stringCall.equals("current-language")) {
+                functionId = CheckFunctionConstants.FUNCTION_CURRENT_LANGUAGE;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;

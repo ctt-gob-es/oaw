@@ -25,6 +25,7 @@
                     <include>*</include>
                     <include>checks/*</include>
                     <include>guidelines/*</include>
+                    <include>languages/*</include>
                 </includes>
             </resource>
             <resource>
@@ -123,6 +124,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock</artifactId>
+            <version>2.6.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

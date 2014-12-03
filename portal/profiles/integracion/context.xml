@@ -1,5 +1,4 @@
-<Context docBase="/var/lib/tomcat6/webapps/rastreador" path="/oaw" reloadable="true"
-         source="org.eclipse.jst.j2ee.server:rastreador">
+<Context path="/oaw" reloadable="true">
     <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
               name="jdbc/crawler_sistema" password="ttztrH" type="javax.sql.DataSource"
               url="jdbc:mysql://localhost:3306/OAW" username="USR_OAW"/>

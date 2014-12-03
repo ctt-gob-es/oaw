@@ -26,37 +26,59 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
     public List<CSSProblem> evaluate(final Node node, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
         final Document document = node.getOwnerDocument();
-        final StyleSheet styleSheet;
+        final Element html = document.getDocumentElement();
         try {
-            styleSheet = CSSFactory.getUsedStyles(document, "utf-8", new URL("http://www2.fundacionctic.org"), new MediaSpecAll());
+            final StyleSheet styleSheet = CSSFactory.getUsedStyles(document, "utf-8", new URL(String.valueOf(html.getUserData("url"))), new MediaSpecAll());
             final Analyzer analyzer = new Analyzer(styleSheet);
             final StyleMap styleMap = analyzer.evaluateDOM(document, new MediaSpecAll(), true);
             final NodeList labels = document.getElementsByTagName("label");
             for (int i = 0; i < labels.getLength(); i++) {
-                // TODO: Check que el label está asociado
-                // TODO: Check que el componente asociado no tiene title o aria-label
                 final Element labelElement = (Element) labels.item(i);
-                final NodeData nodeData = styleMap.get(labelElement);
-                for (String propertyName : nodeData.getPropertyNames()) {
-                    final CSSProperty cssProperty = nodeData.getProperty(propertyName);
-                    final Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
-                    if (cssProperty == CSSProperty.Left.length) {
-                        TermLength value = nodeData.getValue(TermLength.class, propertyName, true);
-                        if ( value.getValue()<-3000 ) {
+                if (isUniqueLabel(document, labelElement.getAttribute("for"))) {
+                    final NodeData nodeData = styleMap.get(labelElement);
+                    for (String propertyName : nodeData.getPropertyNames()) {
+                        final CSSProperty cssProperty = nodeData.getProperty(propertyName);
+                        final Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
+                        if (cssProperty == CSSProperty.Left.length) {
+                            TermLength value = nodeData.getValue(TermLength.class, propertyName, true);
+                            if (value.getValue() < -3000) {
+                                cssProblems.add(createCSSProblem(labelElement, declaration));
+                            }
+                        } else if (cssProperty == CSSProperty.Display.NONE) {
+                            cssProblems.add(createCSSProblem(labelElement, declaration));
+                        } else if (cssProperty == CSSProperty.Visibility.HIDDEN) {
                             cssProblems.add(createCSSProblem(labelElement, declaration));
                         }
-                    } else if (cssProperty == CSSProperty.Display.NONE) {
-                        cssProblems.add(createCSSProblem(labelElement, declaration));
-                    } else if (cssProperty == CSSProperty.Visibility.HIDDEN) {
-                        cssProblems.add(createCSSProblem(labelElement, declaration));
                     }
                 }
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();
         }
 
         return cssProblems;
+    }
+
+    /**
+     * Método que comprueba si este elemento label es la única etiqueta del control al que está asociado (es decir, que el control no tiene a su vez title o aria-label)
+     *
+     * @param document     Document para comprobar si existe control asociado y si dispone de otros etiquetadores (title o aria-label)
+     * @param forAttribute valor del atributo for del elemento label
+     * @return true si es la única etiqueta del control, false en caso contrario (includo si la etiqueta no está asociada)
+     */
+    private boolean isUniqueLabel(final Document document, final String forAttribute) {
+        if (forAttribute != null && !forAttribute.isEmpty()) {
+            final Element control = document.getElementById(forAttribute);
+            if (control != null) {
+                final String title = control.getAttribute("title");
+                final String ariaLabel = control.getAttribute("aria-label");
+                if ((title != null && !title.isEmpty()) || (ariaLabel != null && !ariaLabel.isEmpty())) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected CSSProblem createCSSProblem(final Element element, final Declaration declaration) {

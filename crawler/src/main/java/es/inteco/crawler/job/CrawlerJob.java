@@ -27,24 +27,24 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CrawlerJob implements InterruptableJob {
-    boolean interrupt = false;
+    private boolean interrupt = false;
 
     public static final Log LOG = LogFactory.getLog(CrawlerJob.class);
 
-    List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
-    List<String> auxDomains = new ArrayList<String>();
-    List<String> md5Content = new ArrayList<String>();
-    List<String> rejectedDomains = new ArrayList<String>();
+    private final List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
+    private final List<String> auxDomains = new ArrayList<String>();
+    private final List<String> md5Content = new ArrayList<String>();
+    private final List<String> rejectedDomains = new ArrayList<String>();
 
     @Override
-    public void execute(JobExecutionContext jobContext) throws JobExecutionException {
-        JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
-        CrawlerData crawlerData = (CrawlerData) jobDataMap.get(Constants.CRAWLER_DATA);
+    public void execute(final JobExecutionContext jobContext) throws JobExecutionException {
+        final JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
+        final CrawlerData crawlerData = (CrawlerData) jobDataMap.get(Constants.CRAWLER_DATA);
 
         launchCrawler(crawlerData);
     }
 
-    public void launchCrawler(CrawlerData crawlerData) {
+    public void launchCrawler(final CrawlerData crawlerData) {
         Connection conn = null;
 
         try {
@@ -79,7 +79,7 @@ public class CrawlerJob implements InterruptableJob {
         }
     }
 
-    public List<CrawledLink> testCrawler(CrawlerData crawlerData) {
+    public List<CrawledLink> testCrawler(final CrawlerData crawlerData) {
         try {
             makeCrawl(crawlerData);
         } catch (Exception e) {
@@ -88,9 +88,9 @@ public class CrawlerJob implements InterruptableJob {
         return crawlingDomains;
     }
 
-    public List<CrawledLink> runSimpleAnalysis(CrawlerData crawlerData) {
-        List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
-        CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
+    public List<CrawledLink> runSimpleAnalysis(final CrawlerData crawlerData) {
+        final List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
+        final CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
         crawlingDomains.add(crawledLink);
 
         try {
@@ -102,10 +102,10 @@ public class CrawlerJob implements InterruptableJob {
         return crawlingDomains;
     }
 
-    private void endCrawling(Connection c, CrawlerData crawlerData) throws Exception {
+    private void endCrawling(final Connection c, final CrawlerData crawlerData) throws Exception {
         if (!interrupt) {
             PropertiesManager pmgr = new PropertiesManager();
-            Logger.putLog("Enviando el informe por correo electrï¿½nico", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+            Logger.putLog("Enviando el informe por correo electrónico", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
             // Cambiamos el estado del rastreo a 'Finalizado'
             LOG.info("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos");
@@ -113,7 +113,7 @@ public class CrawlerJob implements InterruptableJob {
                 RastreoDAO.actualizarEstadoRastreo(c, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
 
                 int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());
-                if (idCartucho == Integer.parseInt(pmgr.getValue("crawler.core.properties", "cartridge.intav.id"))) {
+                if (RastreoDAO.isCartuchoAccesibilidad(c, idCartucho)) {
                     if (crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) {
                         // Intentamos enviar los resultados del informe por correo
                         generatePDFFile(crawlerData);
@@ -146,16 +146,16 @@ public class CrawlerJob implements InterruptableJob {
         }
     }
 
-    private void generatePDFFile(CrawlerData crawlerData) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+    private void generatePDFFile(final CrawlerData crawlerData) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        String attachUrl = pmgr.getValue("crawler.core.properties", "pdf.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
+        final String attachUrl = pmgr.getValue("crawler.core.properties", "pdf.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
                 .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
                 .replace("{2}", pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"));
 
         LOG.info("Se va a pedir la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"));
 
-        HttpURLConnection connection = CrawlerUtils.getConnection(attachUrl, null, true);
+        final HttpURLConnection connection = CrawlerUtils.getConnection(attachUrl, null, true);
         // Aumentamos el timeout porque puede que tarde en generarse
         connection.setConnectTimeout(20 * Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
         connection.setReadTimeout(20 * Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
@@ -168,8 +168,8 @@ public class CrawlerJob implements InterruptableJob {
         }
     }
 
-    private String buildMensajeCorreo(String mensaje, CrawlerData crawlerData) {
-        PropertiesManager pmgr = new PropertiesManager();
+    private String buildMensajeCorreo(final String mensaje, final CrawlerData crawlerData) {
+        final PropertiesManager pmgr = new PropertiesManager();
 
         return mensaje
                 .replace("{0}", new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format")).format(new Date()))
@@ -195,17 +195,17 @@ public class CrawlerJob implements InterruptableJob {
         return dominios.toString();
     }
 
-    public void makeCrawl(CrawlerData crawlerData) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+    public void makeCrawl(final CrawlerData crawlerData) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-        long timeRetry = Long.parseLong(pmgr.getValue("crawler.core.properties", "time.retry"));
+        final int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
+        final long timeRetry = Long.parseLong(pmgr.getValue("crawler.core.properties", "time.retry"));
 
         List<IgnoredLink> ignoredLinks = null;
 
         String cookie = null;
 
-        int chosenDepth = crawlerData.getProfundidad();
+        final int chosenDepth = crawlerData.getProfundidad();
         for (String url : crawlerData.getUrls()) {
             String domain = null;
 
@@ -229,8 +229,9 @@ public class CrawlerJob implements InterruptableJob {
 
                         InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                         String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
-
-                        Document document = CrawlerDOMUtils.getDocument(textContent);
+                        // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+                        textContent = textContent.replaceAll("<iframe [^>]*/>", "");
+                        final Document document = CrawlerDOMUtils.getDocument(textContent);
 
                         String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
                         if (StringUtils.isEmpty(metaRedirect)) {
@@ -257,7 +258,6 @@ public class CrawlerJob implements InterruptableJob {
                             connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), metaRedirect);
                             responseCode = Integer.MAX_VALUE;
                         }
-
                     } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                         numRedirections++;
                         connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), connection.getHeaderField("location"));
@@ -312,9 +312,10 @@ public class CrawlerJob implements InterruptableJob {
         if (!crawlerData.isTest()) {
             if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && chosenDepth != 1)) {
                 if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * chosenDepth + 1))) {
-                    List<String> mailTo = Arrays.asList(pmgr.getValue("crawler.core.properties", "incomplete.crawler.warning.emails").split(";"));
-                    String text = "El rastreo para " + crawlerData.getUrls().get(0) + " ha devuelto solo " + crawlingDomains.size() + " resultados";
-                    MailUtils.sendMail("rastreador@inteco.es", "Rastreador Web de Inteco", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
+                    final List<String> mailTo = Arrays.asList(pmgr.getValue("crawler.core.properties", "incomplete.crawler.warning.emails").split(";"));
+                    final String text = "El rastreo para " + crawlerData.getUrls().get(0) + " ha devuelto solo " + crawlingDomains.size() + " resultados";
+
+                    MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), "Rastreador Web de MINHAP", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
                 }
             }
         }
@@ -323,8 +324,8 @@ public class CrawlerJob implements InterruptableJob {
         analyze(crawlingDomains, crawlerData, cookie);
     }
 
-    private void analyze(List<CrawledLink> crawlingDomains, CrawlerData crawlerData, String cookie) throws Exception {
-        WebAnalayzer webAnalayzer = new WebAnalayzer();
+    private void analyze(final List<CrawledLink> crawlingDomains, final CrawlerData crawlerData, final String cookie) throws Exception {
+        final WebAnalayzer webAnalayzer = new WebAnalayzer();
 
         PropertiesManager pmgr = new PropertiesManager();
         DateFormat df = new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format"));
@@ -382,11 +383,11 @@ public class CrawlerJob implements InterruptableJob {
     }
 
     private void makeCrawl(String domain, String rootUrl, String url, String cookie, CrawlerData crawlerData, List<IgnoredLink> ignoredLinks) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
         if (crawlerData.getProfundidad() > 0 && !interrupt) {
-            List<CrawledLink> levelLinks = new ArrayList<CrawledLink>();
-            HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
+            final List<CrawledLink> levelLinks = new ArrayList<CrawledLink>();
+            final HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
             try {
                 connection.setRequestProperty("Cookie", cookie);
                 connection.connect();
@@ -401,9 +402,10 @@ public class CrawlerJob implements InterruptableJob {
                     }
 
                     connection.disconnect();
-
-                    Document document = CrawlerDOMUtils.getDocument(textContent);
-                    List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
+                    // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+                    textContent = textContent.replaceAll("<iframe [^>]*/>", "");
+                    final Document document = CrawlerDOMUtils.getDocument(textContent);
+                    final List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
 
                     if (crawlerData.isPseudoaleatorio()) {
                         Collections.shuffle(urlLinks, new Random(System.currentTimeMillis()));
@@ -452,7 +454,7 @@ public class CrawlerJob implements InterruptableJob {
      * @throws Exception
      */
     private boolean isHtmlTextContent(String domain, String urlLink, String cookie) throws Exception {
-        HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
+        final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
         connection.setRequestProperty("Cookie", cookie);
         connection.connect();
         int responseCode = connection.getResponseCode();
@@ -479,9 +481,9 @@ public class CrawlerJob implements InterruptableJob {
         int numRetries = 0;
         int numRedirections = 0;
 
-        PropertiesManager pmgr = new PropertiesManager();
-        int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-        int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
+        final int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
 
         while ((responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRetries < maxNumRetries) && (numRedirections < maxNumRedirections)) {
             urlLink = connection.getURL().toString();
@@ -540,7 +542,6 @@ public class CrawlerJob implements InterruptableJob {
             } else {
                 LOG.info("La url " + urlLink + " ha respondido con el código " + responseCode + " y no se le pasara al analizador");
             }
-
             connection.disconnect();
         }
 

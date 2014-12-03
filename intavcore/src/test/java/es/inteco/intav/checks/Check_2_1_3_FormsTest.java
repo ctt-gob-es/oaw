@@ -15,30 +15,30 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
     private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3 = "minhap.observatory.2.0.subgroup.2.1.3";
 
-    /*<!-- Nota: Se considera etiqueta asociada a <label> (con texto) asociado explícitamente; “aria-labelledby” con un “id” correspondiente a un elemento con contenido textual; “aria-label” o “títle” con contenido. -->*/
-    /*<!-- Elementos input tienen una etiqueta explícitamente asociada -->*/
+    /* Nota: Se considera etiqueta asociada a <label> (con texto) asociado explícitamente; “aria-labelledby” con un “id” correspondiente a un elemento con contenido textual; “aria-label” o “títle” con contenido. */
+    /* Elementos input tienen una etiqueta explícitamente asociada */
     private static final int INPUT_LABEL = 57;
-    /*<!-- Elementos label no asociados controla que exista for con un id válido (a un control) -->*/
+    /* Elementos label no asociados controla que exista for con un id válido (a un control) */
     private static final int LABEL_NO_FOR = 67;
-    /*<!-- Elementos select tienen una etiqueta explícitamente asociada -->*/
+    /* Elementos select tienen una etiqueta explícitamente asociada */
     private static final int SELECT_LABEL = 91;
-    /*<!-- Elementos textarea tienen una etiqueta explícitamente asociada -->*/
+    /* Elementos textarea tienen una etiqueta explícitamente asociada */
     private static final int TEXTAREA_LABEL = 95;
     /* Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS. */
-    private static final int LABEL_HIDDEN = 461;
+    private static final int LABEL_CSS_HIDDEN = 461;
     /* Tres o más de botones de radio y/o casillas de verificación agrupados (con el mismo “name”) se agrupan bajo su correspondiente fieldset> */
     private static final int GROUPED_SELECTION_BUTTONS = 443;
-    /*<!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->*/
+    /* Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) */
     private static final int HEADERS_AS_LEGEND = 429;
-    /*<!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->*/
+    /* En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) */
     private static final int COMPLEX_FORMS = 430;
-    /*<!-- Se verifica que todo “fieldset” tenga un único elemento “legend” con contenido (primer elemento semántico hijo).-->*/
+    /* Se verifica que todo “fieldset” tenga un único elemento “legend” con contenido (primer elemento semántico hijo).*/
     private static final int LEGEND_FIRST_CHILD = 444;
-    /*<!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->*/
+    /* Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) */
     private static final int OPTGROUP = 406;
-    /*<!-- Elementos select con opciones que comiencen por sucesiones de 3 o más caracteres repetidos no alfanuméricos (P. ej: “___”, “***”, “......”, etc.).-->*/
+    /* Elementos select con opciones que comiencen por sucesiones de 3 o más caracteres repetidos no alfanuméricos (P. ej: “___”, “***”, “......”, etc.).*/
     private static final int SIMULATED_OPTGROUP = 417;
-    /*<!-- Elementos optgroup tienen un atributo “label” con contenido -->*/
+    /* Elementos optgroup tienen un atributo “label” con contenido */
     private static final int OPTGROUP_LABEL = 407;
     /* Se identifican los campos obligatorios en formularios con más de N campos de texto (se busca los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes dentro del formulario <form>). (N = 4) */
     private static final int REQUIRED_CONTROLS = 446;
@@ -48,7 +48,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = getCheckAccessibility("observatorio-2.0");
+        checkAccessibility = getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test
@@ -461,7 +461,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</fieldset>" +
                 "</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, REQUIRED_CONTROLS));
-        Assert.assertEquals(0, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
     }
 
     @Test
@@ -473,7 +473,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "<input id=\"id_1\">" +
                 "</fieldset>" +
                 "</form>");
-        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
     }
 
     @Test
@@ -485,7 +485,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "<input id=\"id_1\">" +
                 "</fieldset>" +
                 "</form>");
-        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
     }
 
     @Test
@@ -497,7 +497,19 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "<input id=\"id_1\">" +
                 "</fieldset>" +
                 "</form>");
-        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_HIDDEN));
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
+    }
+
+    @Test
+    public void evaluateLabelAndTitle() throws Exception {
+        checkAccessibility.setContent("<html><style>.hidden { left: -9000px; }</style>" +
+                "<div>Los campos marcados con * son obligatorios" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<label class=\"hidden\" for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\" title=\"Grupo\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
     }
 
 }

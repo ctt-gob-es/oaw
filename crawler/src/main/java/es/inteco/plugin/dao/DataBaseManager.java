@@ -23,7 +23,7 @@ public class DataBaseManager {
     }
 
     public static Connection getConnection(String datasourceName) {
-        Logger.putLog("Conectando a la base de datos " + datasourceName, DBConnect.class, Logger.LOG_LEVEL_INFO);
+        Logger.putLog("Conectando a la base de datos " + datasourceName, DBConnect.class, Logger.LOG_LEVEL_DEBUG);
         Connection conn = null;
         try {
             Context initContext = new InitialContext();
@@ -40,7 +40,7 @@ public class DataBaseManager {
     public static void closeConnection(Connection conn) {
         if (conn != null) {
             try {
-                Logger.putLog("Desconectando " + conn.getCatalog(), DataBaseManager.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("Desconectando " + conn.getCatalog(), DataBaseManager.class, Logger.LOG_LEVEL_DEBUG);
                 conn.close();
             } catch (Exception e) {
                 Logger.putLog("Error al cerrar la conexión a base de datos", DataBaseManager.class, Logger.LOG_LEVEL_ERROR, e);

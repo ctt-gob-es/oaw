@@ -127,7 +127,7 @@ public final class BasicServiceUtils {
         try {
             return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
         } catch (Exception e) {
-            Logger.putLog("Error al verificar el dominio internacionalidazo", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+            Logger.putLog("Error al verificar el dominio internacionalizado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
             return url;
         }
     }
@@ -142,6 +142,7 @@ public final class BasicServiceUtils {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.id"));
         } else if (report.equals(Constants.REPORT_WCAG_2_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag2.intav.id"));
+            // TODO: Añadir condición para observatorio une-2012
         } else {
             return null;
         }

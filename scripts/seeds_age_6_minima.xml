@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<lista>
+    <semilla>
+	<url>http://www.museodelprado.es/</url>
+	<nombre>Museo Nacional del Prado</nombre>
+	<depende_de>Ministerio de Cultura</depende_de>
+    </semilla>
+    <semilla>
+	<url>http://www.museoreinasofia.es/</url>
+	<nombre>Museo Nacional Centro de Arte Reina Sofía</nombre>
+	<depende_de>Ministerio de Cultura</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://man.mcu.es/</url>
+        <nombre>Museo Arqueologico Nacional</nombre>
+        <depende_de>Ministerio de Cultura</depende_de>
+    </semilla>  
+</lista>

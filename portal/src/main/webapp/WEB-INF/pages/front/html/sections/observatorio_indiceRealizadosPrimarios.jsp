@@ -81,9 +81,9 @@
 													<c:set target="${paramsExportPDF}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
 													<ul class="lista_linea">
 														<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0">
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>">
+
 																<li><html:link forward="resultadosObservatorioSemillas" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/></html:link></li>
-															</logic:equal>
+
 															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeLenox%>">
 																<li><html:link forward="resultadosObservatorioSemillas" name="params"><img src="../images/transgender.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></html:link></li>
 															</logic:equal>
