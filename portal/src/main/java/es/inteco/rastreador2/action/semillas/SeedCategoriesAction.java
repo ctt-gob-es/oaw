@@ -185,7 +185,7 @@ public class SeedCategoriesAction extends Action {
                                     categoriaForm.getFileSeeds().getFileSize() <= Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
 
                         c = DataBaseManager.getConnection();
-                        Long idSeedCategory = SemillaDAO.createSeedCategory(c, categoriaForm.getName());
+                        Long idSeedCategory = SemillaDAO.createSeedCategory(c, categoriaForm);
 
                         String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada", categoriaForm.getName());
                         String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
@@ -394,7 +394,7 @@ public class SeedCategoriesAction extends Action {
 
             PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             String idCategory = request.getParameter(Constants.ID_CATEGORIA);
             String idSemilla = request.getParameter(Constants.ID_SEMILLA);

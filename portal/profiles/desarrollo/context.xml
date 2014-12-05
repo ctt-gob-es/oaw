@@ -1,26 +1,7 @@
 <Context path="/oaw" reloadable="true">
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
-              name="jdbc/crawler_sistema" password="root" type="javax.sql.DataSource"
-              url="jdbc:mysql://localhost:3306/OAW" username="root" removeAbandoned="true" testOnBorrow="true"
-              validationQuery="SELECT 1 as dbcp_connection_test" timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"/>
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
-              name="jdbc/multilanguage" password="root" type="javax.sql.DataSource"
-              url="jdbc:mysql://localhost:3306/OAW" username="root" removeAbandoned="true" testOnBorrow="true"
-              validationQuery="SELECT 1 as dbcp_connection_test" timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"/>
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
-              name="jdbc/lenox2" password="root" type="javax.sql.DataSource"
-              url="jdbc:mysql://localhost:3306/OAW" username="root" removeAbandoned="true" testOnBorrow="true"
-              validationQuery="SELECT 1 as dbcp_connection_test" timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"/>
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
-              name="jdbc/intav" password="root" type="javax.sql.DataSource"
-              url="jdbc:mysql://localhost:3306/OAW" username="root" removeAbandoned="true" testOnBorrow="true"
-              validationQuery="SELECT 1 as dbcp_connection_test" timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"/>
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
-              name="jdbc/malware" password="root" type="javax.sql.DataSource"
-              url="jdbc:mysql://localhost:3306/OAW" username="root" removeAbandoned="true" testOnBorrow="true"
-              validationQuery="SELECT 1 as dbcp_connection_test" timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"/>
-    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1"
-              name="jdbc/observatory" password="root" type="javax.sql.DataSource"
-              url="jdbc:mysql://localhost:3306/OAW" username="root" removeAbandoned="true" testOnBorrow="true"
-              validationQuery="SELECT 1 as dbcp_connection_test" timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"/>
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" type="javax.sql.DataSource"
+              name="jdbc/oaw" url="jdbc:mysql://localhost:3306/OAW" maxActive="100" maxIdle="10" maxWait="-1"
+              validationQuery="SELECT 1 as dbcp_connection_test" removeAbandoned="true" testOnBorrow="true"
+              timeBetweenEvictionRunsMillis="60000" testWhileIdle="true"
+              username="root" password="root"/>
 </Context>

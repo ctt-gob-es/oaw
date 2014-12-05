@@ -1869,6 +1869,7 @@ public final class RastreoDAO {
                 CategoriaForm categoria = new CategoriaForm();
                 categoria.setName(rs.getString("cl.nombre"));
                 categoria.setId(rs.getString("cl.id_categoria"));
+                categoria.setOrden(rs.getInt("cl.orden"));
                 semilla.setCategoria(categoria);
 
                 form.setSeed(semilla);

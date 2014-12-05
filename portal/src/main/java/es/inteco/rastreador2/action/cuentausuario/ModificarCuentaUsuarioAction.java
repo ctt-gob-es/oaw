@@ -48,7 +48,7 @@ public class ModificarCuentaUsuarioAction extends Action {
 
                 try {
                     c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
 
                     String id_cuenta = null;
                     if (request.getParameter(Constants.DE_MENU) == null) {

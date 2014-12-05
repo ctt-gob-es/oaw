@@ -123,7 +123,7 @@ public class BasicServiceAction extends Action {
 
         try {
             conn = DataBaseManager.getConnection();
-            c = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            c = DataBaseManager.getConnection();
             //Lanzamos el rastreo de INTAV
             CrawlerJob crawlerJob = new CrawlerJob();
 

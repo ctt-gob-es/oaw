@@ -10,7 +10,9 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 import org.odftoolkit.odfdom.OdfElement;
 import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -127,15 +129,16 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
     }
 
     private int replaceSection43(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<CategoriaForm> categories, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioIntavUtils.createGraphicsMap(categories);
+        final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioIntavUtils.createGraphicsMap(categories);
+        final MessageResources resources = CrawlerUtils.getResources(request);
         for (Integer i : resultLists.keySet()) {
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + i + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + resources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + i + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
         }
-        Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, categories);
+        final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, categories);
         int tableNum = 1;
         for (CategoriaForm category : categories) {
-            List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(request, res.get(category));
+            List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(resources, res.get(category));
             replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b2-", results.get(0).getValue());
             replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b3-", results.get(1).getValue());
             replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b4-", results.get(2).getValue());
@@ -271,7 +274,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
             Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
             java.util.List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(request, resultsMap);
 
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getId()) + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
 
             replaceText(odt, odfFileContent, "-" + numSection + "1.t1.b2-", labelValueBean.get(0).getPercentageP());
@@ -291,7 +294,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
 
     private int replaceSectionCat2(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.mark.allocation.segment.name", category.getId()) + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
         } else {
             PropertiesManager pmgr = new PropertiesManager();
@@ -308,7 +311,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
         if (!pageExecutionList.isEmpty()) {
             List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(request, resultL1);
 
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getId() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "31.t1.b2-", labelsL1.get(0).getValue());
             replaceText(odt, odfFileContent, "-" + numSection + "31.t1.b3-", labelsL1.get(1).getValue());
@@ -335,7 +338,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
         if (!pageExecutionList.isEmpty()) {
             List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(request, resultL2);
 
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getId() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b2-", labelsL2.get(0).getValue());
             replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b3-", labelsL2.get(1).getValue());
@@ -360,7 +363,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
             List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results1);
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.1.name") + category.getId() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "41.t1.b2-", labels.get(0).getGreenPercentage());
             replaceText(odt, odfFileContent, "-" + numSection + "41.t1.c2-", labels.get(0).getRedPercentage());
@@ -395,7 +398,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
             List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2);
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.2.name") + category.getId() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b2-", labels.get(0).getGreenPercentage());
             replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c2-", labels.get(0).getRedPercentage());
@@ -428,34 +431,22 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
 
     private int replaceSectionEv1(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-            Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioIntavUtils.getEvolutionObservatoriesSitesByType(request, pageExecutionList);
-            Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A);
-            Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA);
-            Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV);
+            final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNE2012Utils.getEvolutionObservatoriesSitesByType(request, pageExecutionList);
+            final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A);
+            final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA);
+            final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV);
 
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
-            int index = 2;
-            for (Map.Entry<String, BigDecimal> entry : resultDataAA.entrySet()) {
-                replaceText(odt, odfFileContent, "-" + numSection + "1.t1.a" + index + "-", entry.getKey());
-                replaceText(odt, odfFileContent, "-" + numSection + "1.t1.b" + index++ + "-", entry.getValue().toString().replace(".00", "") + "%");
-            }
+            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "1.t1", resultDataAA, true);
 
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
-            index = 2;
-            for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
-                replaceText(odt, odfFileContent, "-" + numSection + "2.t1.a" + index + "-", entry.getKey());
-                replaceText(odt, odfFileContent, "-" + numSection + "2.t1.b" + index++ + "-", entry.getValue().toString().replace(".00", "") + "%");
-            }
+            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "2.t1", resultDataA, true);
 
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
-            index = 2;
-            for (Map.Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
-                replaceText(odt, odfFileContent, "-" + numSection + "3.t1.a" + index + "-", entry.getKey());
-                replaceText(odt, odfFileContent, "-" + numSection + "3.t1.b" + index++ + "-", entry.getValue().toString().replace(".00", "") + "%");
-            }
+            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "3.t1", resultDataNV, true);
         } else {
             PropertiesManager pmgr = new PropertiesManager();
 
@@ -479,7 +470,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.mid.puntuation.name") + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
 
-            replaceTextCellTables(odt, odfFileContent, numSection + "4.t1", resultData);
+            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "4.t1", resultData);
         } else {
             PropertiesManager pmgr = new PropertiesManager();
             replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.graphic.noResults"), "media/image" + numImg + ".jpeg", "image/jpeg");
@@ -589,7 +580,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
             resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION, pageObservatoryMap);
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.6") + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
-            replaceTextCellTables(odt, odfFileContent, numSection + "24.t1", resultData);
+            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "24.t1", resultData);
         } else {
             PropertiesManager pmgr = new PropertiesManager();
 
@@ -626,7 +617,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
             resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(CrawlerUtils.getResources(request).getMessage("observatory.aspect.alternatives"), resultsByAspect);
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID) + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
-            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "28.t1", resultData);
+            replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "29.t1", resultData);
         } else {
             PropertiesManager pmgr = new PropertiesManager();
 
@@ -643,7 +634,7 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
             Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, pageExecutionList);
             List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(request, result);
 
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspect.mid.name") + category.getId() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
+            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg", "media/image" + numImg + ".jpeg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "5.t1.b2-", labels.get(0).getValue());
             replaceText(odt, odfFileContent, "-" + numSection + "5.t1.b3-", labels.get(1).getValue());
@@ -680,27 +671,41 @@ public class OpenOfficeUNE2004DocumentBuilder implements OpenOfficeDocumentBuild
     }
 
     private void replaceEvolutionTextCellTables(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String rowId, final Map<String, BigDecimal> resultData) throws XPathExpressionException {
-        replaceEvolutionTextCellTables(odt,odfFileContent,rowId,resultData,false);
+        replaceEvolutionTextCellTables(odt, odfFileContent, rowId, resultData, false);
     }
 
     private void replaceEvolutionTextCellTables(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String rowId, final Map<String, BigDecimal> resultData, final boolean percentValue) throws XPathExpressionException {
         int index = 2;
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
-            replaceText(odt, odfFileContent, "-"+rowId+".a" + index + "-", entry.getKey());
-            replaceText(odt, odfFileContent, "-"+rowId+".b" + index++ + "-", entry.getValue().toString().replace(".00", "") + (percentValue?"%":""));
+            final String value = getCellValue(entry.getValue(), percentValue);
+            replaceText(odt, odfFileContent, "-" + rowId + ".a" + index + "-", entry.getKey());
+            replaceText(odt, odfFileContent, "-" + rowId + ".b" + index++ + "-", value);
+        }
+        // Para el resto de la tabla borramos los placeholders para que al menos las celdas salgan vacías
+        while (index <= 6) {
+            replaceText(odt, odfFileContent, "-" + rowId + ".a" + index + "-", "");
+            replaceText(odt, odfFileContent, "-" + rowId + ".b" + index++ + "-", "");
+        }
+    }
+
+    private String getCellValue(final BigDecimal value, final boolean percentValue) {
+        if ( value.compareTo(BigDecimal.ZERO)<0 ) {
+            return "NP";
+        } else {
+            return value.toString()+ (percentValue ? "%" : "");
         }
     }
 
     private void replaceImg(OdfTextDocument odt, String newImagePath, String newImageName, String mymeType) throws Exception {
         final File f = new File(newImagePath);
-        final String embededName = OpenOfficeUNE2004ImageUtils.getEmbededIdImage(tipoObservatorio,f.getName());
+        final String embededName = OpenOfficeUNE2004ImageUtils.getEmbededIdImage(tipoObservatorio, f.getName());
         FileInputStream fin = null;
 
         try {
             fin = new FileInputStream(newImagePath);
             odt.getPackage().insert(fin, "Pictures/" + embededName, mymeType);
         } catch (Exception e) {
-            Logger.putLog("Error al intentar reemplazar una imagen en el documento OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("FALLO al intentar reemplazar una imagen en el documento OpenOffice", OpenOfficeUNE2004DocumentBuilder.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             if (fin != null) {

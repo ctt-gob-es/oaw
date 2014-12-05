@@ -48,18 +48,10 @@ public class AnonymousResultExportPdfAction extends Action {
     private ActionForward listPdf(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) {
         PropertiesManager pmgr = new PropertiesManager();
 
-        long idExecution = 0;
-        if (request.getParameter(Constants.ID) != null) {
-            idExecution = Long.parseLong(request.getParameter(Constants.ID));
-        }
-        long idObservatory = 0;
-        if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
-            idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
-        }
+        long idExecution = request.getParameter(Constants.ID) != null?Long.parseLong(request.getParameter(Constants.ID)):0;
+        long idObservatory =  request.getParameter(Constants.ID_OBSERVATORIO) != null?Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)):0;
 
-        String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav")
-                + idObservatory + File.separator + idExecution + File.separator + "anonymous"
-                + File.separator;
+        String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecution + File.separator + "anonymous" + File.separator;
 
         String filePath = null;
 
@@ -106,7 +98,7 @@ public class AnonymousResultExportPdfAction extends Action {
         FileOutputStream fileOut = null;
         try {
             conn = DataBaseManager.getConnection();
-            String entidad = ObservatorioDAO.getObservatoryForm(conn, idObservatory).getNombre();
+            final String entidad = ObservatorioDAO.getObservatoryForm(conn, idObservatory).getNombre();
 
             File file = new File(generalExpPath);
             if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {

@@ -15,6 +15,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -107,8 +108,8 @@ public final class AnonymousResultExportPdfSection4 {
 
     protected static void createSection43(HttpServletRequest request, Section section, String graphicPath, String execution_id,
                                           String observatory_id, java.util.List<ObservatoryEvaluationForm> pageExecutionList, java.util.List<CategoriaForm> categories) throws Exception {
-
-        Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(execution_id, pageExecutionList, categories);
+        final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(execution_id, pageExecutionList, categories);
+        final MessageResources resources = CrawlerUtils.getResources(request);
         PropertiesManager pmgr = new PropertiesManager();
         int numBarByGrapg = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "num.max.bar.graph"));
         int numGraph = categories.size() / numBarByGrapg;
@@ -116,14 +117,14 @@ public final class AnonymousResultExportPdfSection4 {
             numGraph++;
         }
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p1"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.43.p1"), ConstantsFont.paragraphFont, section);
 
         Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
-        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
+        SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.43.p4.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
-        section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4"), anchorMap, ConstantsFont.paragraphFont));
+        section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.43.p4"), anchorMap, ConstantsFont.paragraphFont));
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p5"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.43.p5"), ConstantsFont.paragraphFont, section);
         for (int i = 1; i <= numGraph; i++) {
             PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + i + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.img.alt"), 75);
         }
@@ -134,8 +135,8 @@ public final class AnonymousResultExportPdfSection4 {
         //AnonymousResultExportPdfVariableText.createVTextS43(request, res, section);
 
         for (CategoriaForm category : categories) {
-            PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.tableTitle", category.getName()), section, 300);
-            java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(request, res.get(category));
+            PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.43.tableTitle", category.getName()), section, 300);
+            java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(resources, res.get(category));
             java.util.List<String> headers = new ArrayList<String>();
             headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.level"));
             headers.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.resT"));

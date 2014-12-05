@@ -104,7 +104,7 @@ public class ChartIntavAction extends Action {
 
         Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             int numTotalProblems = 0;
             int numTotalWarnings = 0;

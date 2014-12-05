@@ -52,8 +52,6 @@ public final class PrimaryExportPdfUtils {
 
     public static void exportToPdf(Long idExecution, List<Long> evaluationIds, HttpServletRequest request, String generalExpPath, String seed, String content,
                                    long idObservatoryExecution, long observatoryType) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-
         File file = new File(generalExpPath);
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             Logger.putLog("Exception: No se ha podido crear los directorios al exportar a PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR);
@@ -65,7 +63,7 @@ public final class PrimaryExportPdfUtils {
         Connection conn = null;
         Connection c = null;
         try {
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
             c = DataBaseManager.getConnection();
 
             // Inicializamos el evaluador si hace falta
@@ -306,8 +304,6 @@ public final class PrimaryExportPdfUtils {
     }
 
     private static boolean hasProblems(ObservatoryLevelForm priority) {
-        boolean hasProblems = false;
-
         for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
             for (ObservatorySubgroupForm verification : level.getSubgroups()) {
                 if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
@@ -316,19 +312,17 @@ public final class PrimaryExportPdfUtils {
             }
         }
 
-        return hasProblems;
+        return false;
     }
 
     private static boolean hasProblems(ObservatorySuitabilityForm level) {
-        boolean hasProblems = false;
-
         for (ObservatorySubgroupForm verification : level.getSubgroups()) {
             if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
                 return true;
             }
         }
 
-        return hasProblems;
+        return false;
     }
 
     private static String getPriorityName(HttpServletRequest request, ObservatoryLevelForm priority) {
@@ -354,7 +348,6 @@ public final class PrimaryExportPdfUtils {
     }
 
     private static void addFailedChecksSection(HttpServletRequest request, Map<String, List<String>> failedChecks, Chapter chapter) {
-
         com.lowagie.text.List list = new com.lowagie.text.List();
         for (Map.Entry<String, List<String>> entry : failedChecks.entrySet()) {
             PDFUtils.addListItem(entry.getKey(), list, ConstantsFont.paragraphBoldFont, false, false);

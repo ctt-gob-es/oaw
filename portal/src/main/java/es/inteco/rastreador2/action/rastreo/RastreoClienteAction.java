@@ -21,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class RastreoClienteAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -42,7 +40,7 @@ public class RastreoClienteAction extends Action {
                 Connection con = null;
                 try {
                     c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
 
                     CargarCuentasUsuarioForm cargarCuentasUsuarioForm = new CargarCuentasUsuarioForm();
                     // Cargamos las cuentas de cliente

@@ -82,7 +82,7 @@ public final class BasicServiceExport {
 
         Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection(PMGR.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             // Inicializamos el evaluador si hace falta
             if (!EvaluatorUtility.isInitialized()) {

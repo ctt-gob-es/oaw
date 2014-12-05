@@ -3,6 +3,8 @@ package es.inteco.common.properties;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+
 /**
  *
  */
@@ -31,6 +33,16 @@ public class PropertiesManagerTest {
     public void testGetValueKeyExists() {
         PropertiesManager propertiesManager = new PropertiesManager();
         Assert.assertEquals("passed", propertiesManager.getValue("example.properties", "exists_key"));
+    }
+
+    @Test
+    public void testLoadPropertiesFile() {
+        try {
+            PropertiesManager.loadProperties("file:///home/mikunis/proyectos/minhap/oaw/portal/profiles/desarrollo/oaw.properties");
+        } catch (IOException e) {
+            e.printStackTrace();
+            Assert.fail("Excepción al intentar cargar el fichero de propiedades");
+        }
     }
 
 }

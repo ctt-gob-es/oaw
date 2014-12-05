@@ -49,7 +49,7 @@ public class InsertarRastreoAction extends Action {
                 try {
 
                     PropertiesManager pmgr = new PropertiesManager();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
                     c = DataBaseManager.getConnection();
 
                     //Si se ha pulsado Cargar Semilla

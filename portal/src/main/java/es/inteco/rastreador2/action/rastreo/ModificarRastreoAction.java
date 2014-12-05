@@ -53,7 +53,7 @@ public class ModificarRastreoAction extends Action {
                 try {
                     PropertiesManager pmgr = new PropertiesManager();
 
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
                     c = DataBaseManager.getConnection();
 
                     request.setAttribute(Constants.ID_RASTREO, id_rastreo);

@@ -122,9 +122,11 @@ public final class SemillaDAO {
                 semillaForm.setNombre(rs.getString("nombre"));
                 semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
                 if (type == Constants.ID_LISTA_SEMILLA_OBSERVATORIO) {
+
                     CategoriaForm categoriaForm = new CategoriaForm();
                     categoriaForm.setId(rs.getString("id_categoria"));
                     categoriaForm.setName(rs.getString("nombreCat"));
+                    categoriaForm.setOrden(rs.getInt("orden"));
                     semillaForm.setCategoria(categoriaForm);
                     if (rs.getLong("id_lista") == 0) {
                         semillaForm.setAsociada(false);
@@ -200,6 +202,7 @@ public final class SemillaDAO {
                 CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
+                categoriaForm.setOrden(rs.getInt("cl.orden"));
                 semillaForm.setCategoria(categoriaForm);
                 if (rs.getLong("l.activa") == 0) {
                     semillaForm.setActiva(false);
@@ -440,6 +443,7 @@ public final class SemillaDAO {
                 CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
+                categoriaForm.setOrden(rs.getInt("cl.orden"));
                 semillaForm.setCategoria(categoriaForm);
                 semillaForm.setDependencia(rs.getString("dependencia"));
                 semillaForm.setAcronimo(rs.getString("acronimo"));
@@ -716,6 +720,7 @@ public final class SemillaDAO {
                 CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("id_categoria"));
                 categoriaForm.setName(rs.getString("nombre"));
+                categoriaForm.setOrden(rs.getInt("orden"));
                 categories.add(categoriaForm);
             }
         } catch (Exception e) {
@@ -740,6 +745,7 @@ public final class SemillaDAO {
                 CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("id_categoria"));
                 categoriaForm.setName(rs.getString("nombre"));
+                categoriaForm.setOrden(rs.getInt("orden"));
                 return categoriaForm;
             }
         } catch (Exception e) {
@@ -968,17 +974,18 @@ public final class SemillaDAO {
         }
     }
 
-    public static Long createSeedCategory(Connection c, String name) throws Exception {
+    public static Long createSeedCategory(Connection c, CategoriaForm categoriaForm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("INSERT INTO categorias_lista (nombre) VALUES (?)");
-            ps.setString(1, name);
+            ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden) VALUES (?,?)");
+            ps.setString(1, categoriaForm.getName());
+            ps.setInt(2, categoriaForm.getOrden());
             ps.executeUpdate();
             DAOUtils.closeQueries(ps, rs);
 
             ps = c.prepareStatement("SELECT id_categoria FROM categorias_lista WHERE nombre LIKE ? ORDER BY id_categoria DESC");
-            ps.setString(1, name);
+            ps.setString(1, categoriaForm.getName());
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -998,9 +1005,10 @@ public final class SemillaDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ? WHERE id_categoria = ?");
+            ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=? WHERE id_categoria = ?");
             ps.setString(1, categoriaForm.getName());
-            ps.setString(2, categoriaForm.getId());
+            ps.setInt(2, categoriaForm.getOrden());
+            ps.setString(3, categoriaForm.getId());
             ps.executeUpdate();
         } catch (Exception e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);

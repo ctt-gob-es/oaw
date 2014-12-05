@@ -496,8 +496,8 @@ public final class EvaluatorUtility {
             URI srcUri = new URI(filename);
             URL srcUrl = srcUri.toURL();
 
-            HttpURLConnection httpConnection = EvaluatorUtils.getConnection(srcUrl.toString(), "GET", true);
-            httpConnection.connect();
+//            HttpURLConnection httpConnection = EvaluatorUtils.getConnection(srcUrl.toString(), "GET", true);
+//            httpConnection.connect();
             return srcUrl;
         } catch (Exception e) {
             Logger.putLog("Note: Can't open file: " + filename, EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
@@ -512,7 +512,7 @@ public final class EvaluatorUtility {
             HttpURLConnection connection = EvaluatorUtils.getConnection(checkAccessibility.getUrl(), "GET", true);
 
             try {
-                long inicio = System.currentTimeMillis();
+                final long inicio = System.currentTimeMillis();
                 // connect to the server
                 connection.connect();
                 InputStream content = connection.getInputStream();
