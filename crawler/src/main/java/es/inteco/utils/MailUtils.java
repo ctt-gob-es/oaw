@@ -5,6 +5,7 @@ import es.inteco.common.properties.PropertiesManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailAttachment;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
 import javax.net.ssl.*;
@@ -16,18 +17,12 @@ public final class MailUtils {
     private MailUtils() {
     }
 
-    public static void sendMail(String mailFrom, String mailFromName, List<String> mailTo, String subject, String text, String attachUrl, String attachName, String replyTo, String replyToName, boolean isError) {
+    public static void sendMail(String fromAddress, String fromName, List<String> mailTo, String subject, String text, String attachUrl, String attachName, String replyTo, String replyToName, boolean isError) {
         try {
             // Create the email message
             final MultiPartEmail email = createEmail();
 
-            for (String addressStr : mailTo) {
-                email.addBcc(addressStr);
-            }
-
-            email.setFrom(mailFrom, mailFromName);
-            email.setSubject(subject);
-            email.setMsg(text);
+            setEmailInfo(email, mailTo, fromAddress, fromName, subject, text);
 
             if (StringUtils.isNotEmpty(replyTo) && StringUtils.isNotEmpty(replyToName)) {
                 email.addReplyTo(replyTo, replyToName);
@@ -51,18 +46,12 @@ public final class MailUtils {
         }
     }
 
-    public static void sendExecutiveMail(String mailFrom, String mailFromName, List<String> mailTo, String subject, String text, URL attachUrl, String attachName, String replyTo, String replyToName, boolean isError) {
+    public static void sendExecutiveMail(String fromAddress, String fromName, List<String> mailTo, String subject, String text, URL attachUrl, String attachName, String replyTo, String replyToName, boolean isError) {
         try {
             // Create the email message
             final MultiPartEmail email = createEmail();
 
-            for (String addressStr : mailTo) {
-                email.addBcc(addressStr);
-            }
-
-            email.setFrom(mailFrom, mailFromName);
-            email.setSubject(subject);
-            email.setMsg(text);
+            setEmailInfo(email, mailTo, fromAddress, fromName, subject, text);
 
             if (StringUtils.isNotEmpty(replyTo) && StringUtils.isNotEmpty(replyToName)) {
                 email.addReplyTo(replyTo, replyToName);
@@ -91,13 +80,7 @@ public final class MailUtils {
             // Create the email message
             final MultiPartEmail email = createEmail();
 
-            for (String addressStr : mailsTo) {
-                email.addBcc(addressStr);
-            }
-
-            email.setFrom(fromAddress, fromName);
-            email.setSubject(subject);
-            email.setMsg(text);
+            setEmailInfo(email, mailsTo, fromAddress, fromName, subject, text);
 
             // send the email
             email.send();
@@ -106,9 +89,18 @@ public final class MailUtils {
         }
     }
 
+    private static void setEmailInfo(final MultiPartEmail email, final List<String> mailTo, final String mailFrom, final String mailFromName, final String subject, final String text) throws EmailException {
+        for (String addressStr : mailTo) {
+            email.addBcc(addressStr);
+        }
+
+        email.setFrom(mailFrom, mailFromName);
+        email.setSubject(subject);
+        email.setMsg(text);
+    }
+
     private static MultiPartEmail createEmail() throws Exception {
         final MultiPartEmail email = new MultiPartEmail();
-        final PropertiesManager pmgr = new PropertiesManager();
 
         /*final String trustStorePath = pmgr.getValue("crawler.properties", "digital.certificates.path");
         final String trustStorePass = pmgr.getValue("crawler.properties", "digital.certificates.storepass");
@@ -117,7 +109,7 @@ public final class MailUtils {
         System.setProperty("javax.net.ssl.trustStore", trustStorePath);
         System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass); */
 
-        TrustManager[] trustAllCerts = new TrustManager[]{
+        final TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
@@ -160,6 +152,7 @@ public final class MailUtils {
             Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
 
+        final PropertiesManager pmgr = new PropertiesManager();
         if (pmgr.getValue("crawler.core.properties", "mail.smtp.host") == null || pmgr.getValue("crawler.core.properties", "mail.smtp.host").trim().isEmpty()) {
             throw new Exception("No se configurado el servidor de correo");
         }

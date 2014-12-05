@@ -263,7 +263,7 @@ public final class PDFUtils {
     public static Paragraph createParagraphWithDiferentFormatWord(String text, java.util.List<String> boldWords, Font fontB, Font font, boolean spaceBefore, int alignment) {
         Paragraph p = new Paragraph();
         p.setAlignment(alignment);
-        if (text != null) {
+        if (text != null && text.contains("{0}")) {
             int count = 0;
             int textLength = text.length();
             try {
@@ -285,7 +285,7 @@ public final class PDFUtils {
                 }
                 return p;
             } catch (Exception e) {
-                Logger.putLog("Error, faltan parámetros en el texto. ", PDFUtils.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("FALLO faltan parámetros en el texto al generar informe PDF. ", PDFUtils.class, Logger.LOG_LEVEL_ERROR, e);
             }
         }
         return p;

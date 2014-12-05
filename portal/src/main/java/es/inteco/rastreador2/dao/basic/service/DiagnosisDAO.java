@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public final class DiagnosisDAO {
 
     private DiagnosisDAO() {
@@ -138,7 +136,7 @@ public final class DiagnosisDAO {
 
         Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             ps = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ?");
             ps.setLong(1, idCrawling);

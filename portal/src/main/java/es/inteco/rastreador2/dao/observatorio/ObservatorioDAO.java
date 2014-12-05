@@ -350,6 +350,7 @@ public final class ObservatorioDAO {
             if (rs.next()) {
                 category.setId(String.valueOf(rs.getLong("id_categoria")));
                 category.setName(rs.getString("nombre"));
+                category.setOrden(rs.getInt("orden"));
             }
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -802,6 +803,7 @@ public final class ObservatorioDAO {
                 CategoriaForm category = new CategoriaForm();
                 category.setId(String.valueOf(rs.getLong("cl.id_categoria")));
                 category.setName(rs.getString("cl.nombre"));
+                category.setOrden(rs.getInt("cl.orden"));
                 seed.setCategoria(category);
                 fulfilledCrawling.setSeed(seed);
             }
@@ -1722,6 +1724,7 @@ public final class ObservatorioDAO {
                 CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("oc.id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
+                categoriaForm.setOrden(rs.getInt("cl.orden"));
                 results.add(categoriaForm);
             }
 
@@ -1740,11 +1743,11 @@ public final class ObservatorioDAO {
         ResultSet rs = null;
         try {
 
-            ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria FROM rastreos_realizados rr " +
+            ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " +
                     "JOIN lista l ON (l.id_lista = rr.id_lista) " +
                     "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " +
                     "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) " +
-                    "WHERE rr.id_obs_realizado = ? GROUP BY cl.id_categoria;");
+                    "WHERE rr.id_obs_realizado = ? GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;");
             ps.setLong(1, idExecutionObservatory);
             rs = ps.executeQuery();
 
@@ -1753,6 +1756,7 @@ public final class ObservatorioDAO {
                 final CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("cl.id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
+                categoriaForm.setOrden(rs.getInt("cl.orden"));
                 results.add(categoriaForm);
             }
 

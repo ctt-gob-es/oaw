@@ -26,8 +26,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class ModificarObservatorioAction extends Action {
 
     private Log log = LogFactory.getLog(ModificarObservatorioAction.class);
@@ -113,7 +111,7 @@ public class ModificarObservatorioAction extends Action {
 
         try {
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             if (id_observatorio != null) {
                 modificarObservatorioForm.setId_observatorio(id_observatorio);

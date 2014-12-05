@@ -24,42 +24,55 @@ public class ScheduleObservatoryServlet extends GenericServlet {
      *
      */
     private static final long serialVersionUID = 1L;
+    private static Scheduler scheduler;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+        try {
+            scheduler = schedulerFactory.getScheduler();
+            scheduler.start();
+        } catch (SchedulerException e) {
+            Logger.putLog("FALLO al iniciar el scheduler de los observatorios", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_ERROR);
+        }
 
         Logger.putLog("Programando los observatorios", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_INFO);
 
         Connection c = null;
         try {
             c = DataBaseManager.getConnection();
-            List<ObservatorioForm> observatories = ObservatorioDAO.getObservatoryList(c);
+            final List<ObservatorioForm> observatories = ObservatorioDAO.getObservatoryList(c);
 
             for (ObservatorioForm observatory : observatories) {
                 scheduleJob(observatory.getNombre(), observatory.getId(),
                         new Date(observatory.getFecha_inicio().getTime()), observatory.getPeriodicidadForm(), observatory.getCartucho().getId());
             }
         } catch (Exception e) {
-            Logger.putLog("Error al programar los jobs para los rastreos de las cuentas de cliente y observatorios", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("FALLO al programar los jobs para los rastreos de observatorios", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
             DataBaseManager.closeConnection(c);
         }
     }
 
     @Override
-    public void service(ServletRequest arg0, ServletResponse arg1)
-            throws ServletException, IOException {
+    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+    }
+
+    @Override
+    public void destroy() {
+        try {
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+        super.destroy();
     }
 
     public static void scheduleJob(String observatoryName, Long observatoryId, Date observatoryDate, PeriodicidadForm periodicidadForm, Long idCartridge) {
         Logger.putLog("Programando el job para el observatorio " + observatoryName, ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_INFO);
 
         try {
-            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            Scheduler scheduler = schedulerFactory.getScheduler();
-            scheduler.start();
-
             JobDetail jobDetail = new JobDetail(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + observatoryId,
                     "ExecuteScheduledObservatory",
                     ExecuteScheduledObservatory.class);
@@ -88,10 +101,6 @@ public class ScheduleObservatoryServlet extends GenericServlet {
     }
 
     public static void deleteJob(Long observatoryId) throws Exception {
-        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-        Scheduler scheduler = schedulerFactory.getScheduler();
-        scheduler.start();
-
         scheduler.deleteJob(Constants.EXECUTE_SCHEDULED_OBSERVATORY + "_" + observatoryId, "ExecuteScheduledObservatory");
     }
 

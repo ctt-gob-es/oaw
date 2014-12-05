@@ -10,6 +10,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.EvaluationForm;
 import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -69,7 +70,7 @@ public final class AnalisisDatos {
         PreparedStatement pstmt = null;
         String query = " UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement(query);
             pstmt.setString(1, eval.getChecksExecutedStr());
             pstmt.setInt(2, IntavConstants.STATUS_SUCCESS);
@@ -88,7 +89,7 @@ public final class AnalisisDatos {
         ResultSet rs = null;
 
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
             pstmt.setString(1, checkAccessibility.getGuidelineFile());
             rs = pstmt.executeQuery();
@@ -209,7 +210,7 @@ public final class AnalisisDatos {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             if (pagina == IntavConstants.NO_PAGINATION) {
                 pstmt = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ?");
             } else {
@@ -257,7 +258,7 @@ public final class AnalisisDatos {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = ?");
             pstmt.setLong(1, idTracking);
             rs = pstmt.executeQuery();
@@ -289,7 +290,7 @@ public final class AnalisisDatos {
             Logger.putLog("Error al cerrar el resultSet", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
         }
 
-        DBConnect.disconnect(conn);
+        DataBaseManager.closeConnection(conn);
     }
 
     private static List<Analysis> getAnalysisList(Connection conn, ResultSet rs, HttpServletRequest request) throws SQLException {
@@ -330,7 +331,7 @@ public final class AnalisisDatos {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE COD_RASTREO = ? ORDER by cod_analisis");
             pstmt.setLong(1, idTracking);
             rs = pstmt.executeQuery();

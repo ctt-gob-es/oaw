@@ -51,23 +51,10 @@ public class PrimaryExportPdfAction extends Action {
         PropertiesManager pmgr = new PropertiesManager();
 
         final String user = (String) request.getSession().getAttribute(Constants.USER);
-        long idObservatory = 0;
-        if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
-            idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
-        }
-        long idExecutionOb = 0;
-        if (request.getParameter(Constants.ID_EX_OBS) != null) {
-            idExecutionOb = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
-        }
-        long idExecution = 0;
-        if (request.getParameter(Constants.ID) != null) {
-            idExecution = Long.parseLong(request.getParameter(Constants.ID));
-        }
-        long idRastreo = 0;
-        if (request.getParameter(Constants.ID_RASTREO) != null) {
-            idRastreo = Long.parseLong(request.getParameter(Constants.ID_RASTREO));
-        }
-
+        final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null?Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)):0;
+        final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null?Long.parseLong(request.getParameter(Constants.ID_EX_OBS)):0;
+        final long idExecution = request.getParameter(Constants.ID) != null?Long.parseLong(request.getParameter(Constants.ID)):0;
+        final long idRastreo = request.getParameter(Constants.ID_RASTREO) != null?Long.parseLong(request.getParameter(Constants.ID_RASTREO)):0;
         String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb;
         File checkFile = null;
 
@@ -113,15 +100,8 @@ public class PrimaryExportPdfAction extends Action {
 
     private ActionForward exportAllPdfs(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) {
         /* http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id_observatorio=8&idExObs=33&action=exportAllPdfs */
-        long idExecutionOb = 0;
-        if (request.getParameter(Constants.ID_EX_OBS) != null) {
-            idExecutionOb = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
-        }
-
-        long idObservatory = 0;
-        if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
-            idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
-        }
+        final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null?Long.parseLong(request.getParameter(Constants.ID_EX_OBS)):0;
+        final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null?Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)):0;
 
         PropertiesManager pmgr = new PropertiesManager();
         Connection c = null;
@@ -149,7 +129,7 @@ public class PrimaryExportPdfAction extends Action {
                 if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     Logger.putLog(++counter + " generados con éxito", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_INFO);
                 } else {
-                    Logger.putLog("No se ha generado con éxito", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_INFO);
+                    Logger.putLog("FALLO no se ha generado con éxito la exportación a pdf de "+ fulfilledCrawling.getSeed().getNombre(), PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR);
                 }
 
                 urlConnection.disconnect();

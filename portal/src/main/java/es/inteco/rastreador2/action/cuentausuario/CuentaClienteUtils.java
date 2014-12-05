@@ -9,8 +9,6 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 
 import java.sql.Connection;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public final class CuentaClienteUtils {
 
     private CuentaClienteUtils() {
@@ -23,7 +21,7 @@ public final class CuentaClienteUtils {
         Connection con = null;
         try {
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
             CuentaUsuarioDAO.getDatosUsuarioVer(c, verCuentaClienteForm, idCuenta);
 
             verCuentaClienteForm.setNormaAnalisisSt(RastreoDAO.getNombreNorma(con, verCuentaClienteForm.getNormaAnalisis()));

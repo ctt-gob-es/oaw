@@ -335,7 +335,7 @@ public final class CrawlerUtils {
         Connection c = null;
         try {
             PropertiesManager pmgr = new PropertiesManager();
-            c = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            c = DataBaseManager.getConnection();
             return es.inteco.plugin.dao.RastreoDAO.recuperarFicheroNorma(c, idGuideline);
         } catch (Exception e) {
             return null;

@@ -138,8 +138,7 @@ public class MultilanguageAction extends Action {
             if (request.getParameter(Constants.CODE) != null) {
                 long id = Long.parseLong(request.getParameter(Constants.CODE));
 
-                PropertiesManager pmgr = new PropertiesManager();
-                conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.multilanguage"));
+                conn = DataBaseManager.getConnection();
                 AnalysisForm analysis = AnalysisManager.getAnalysis(id);
 
                 LanguageFoundForm languageForm = new LanguageFoundForm();

@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
-        <property name="connection.datasource">java:comp/env/jdbc/observatory</property>
+        <property name="connection.datasource">java:comp/env/jdbc/oaw</property>
         <property name="dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
         <property name="current_session_context_class">thread</property>
         <property name="cache.provider_class">org.hibernate.cache.NoCacheProvider</property>

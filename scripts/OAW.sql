@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS `categoria` (
 CREATE TABLE IF NOT EXISTS `categorias_lista` (
   `id_categoria` bigint(20) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) COLLATE utf8_bin NOT NULL,
+  `orden` int(11) NOT NULL,
   PRIMARY KEY (`id_categoria`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 

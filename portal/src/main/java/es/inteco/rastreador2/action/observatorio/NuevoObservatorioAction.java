@@ -134,7 +134,7 @@ public class NuevoObservatorioAction extends Action {
 
         try {
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             nuevoObservatorioForm.setPeriodicidadVector(DAOUtils.getRecurrence(c));
 
@@ -176,7 +176,7 @@ public class NuevoObservatorioAction extends Action {
             }
 
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             ActionErrors errors = nuevoObservatorioForm.validate(mapping, request);
 

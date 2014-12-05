@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class VerObservatorioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
@@ -57,7 +55,7 @@ public class VerObservatorioAction extends Action {
 
         try {
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             int numResult = ObservatorioDAO.countSeeds(c, idObservatorio);
             int pagina = Pagination.getPage(request, Constants.PAG_PARAM);

@@ -1082,7 +1082,7 @@ public final class EvaluatorUtils {
 
     private static SSLSocketFactory getNaiveSSLSocketFactory() {
         // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[]{
+        TrustManager[] trustAllCerts = new TrustManager[] {
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;

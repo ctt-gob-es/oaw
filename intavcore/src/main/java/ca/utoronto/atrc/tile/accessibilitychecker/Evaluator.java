@@ -36,23 +36,16 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.comun.Incidencia;
 import es.inteco.intav.datos.AnalisisDatos;
-import es.inteco.intav.datos.DBConnect;
 import es.inteco.intav.datos.IncidenciaDatos;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 import org.w3c.dom.*;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
@@ -311,12 +304,12 @@ public class Evaluator {
         if (isCrawling) {
             Connection conn = null;
             try {
-                conn = DBConnect.connect();
+                conn = DataBaseManager.getConnection();
                 IncidenciaDatos.saveIncidenceList(conn, incidenceList);
             } catch (Exception e) {
                 Logger.putLog("Error al guardar las incidencias en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             } finally {
-                DBConnect.disconnect(conn);
+                DataBaseManager.closeConnection(conn);
             }
         }
 
@@ -453,7 +446,7 @@ public class Evaluator {
                         }
                         if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
                             // Añadimos el check a la lista de checks ejecutados (si no es un check prerrequisito que no se imprima)
-                            if ( !evaluation.getChecksExecuted().contains(check.getId())) {
+                            if (!evaluation.getChecksExecuted().contains(check.getId())) {
                                 evaluation.getChecksExecuted().add(check.getId());
                                 evaluation.setChecksExecutedStr(evaluation.getChecksExecutedStr().concat("," + check.getId()));
                             }
@@ -736,7 +729,7 @@ public class Evaluator {
 
     // Saves the global information about the analysis in DataBase and return the id of the analysis
     private int setAnalisisDB(Evaluation eval, CheckAccessibility checkAccessibility) {
-        Connection conn = DBConnect.connect();
+        Connection conn = DataBaseManager.getConnection();
         try {
             Analysis analysis = new Analysis();
 
@@ -755,7 +748,7 @@ public class Evaluator {
             Logger.putLog("Error al guardar el análisis en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             return -1;
         } finally {
-            DBConnect.disconnect(conn);
+            DataBaseManager.closeConnection(conn);
         }
     }
 

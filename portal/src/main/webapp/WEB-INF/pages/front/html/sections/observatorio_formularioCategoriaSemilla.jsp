@@ -57,6 +57,21 @@
 										<html:text styleClass="texto" property="name" styleId="name" maxlength="30"/>
 									</div>
 									<div class="formItem">
+                                        <label for="orden"><strong class="labelVisu"><bean:message key="categoria.semillas.orden" />: </strong></label>
+                                        <html:select styleClass="textoSelect" styleId="orden"  property="orden" >
+                                            <option value="1" <c:if test="${CategoriaForm.orden==1}">selected="selected"</c:if>>1</option>
+                                            <option value="2" <c:if test="${CategoriaForm.orden==2}">selected="selected"</c:if>>2</option>
+                                            <option value="3" <c:if test="${CategoriaForm.orden==3}">selected="selected"</c:if>>3</option>
+                                            <option value="4" <c:if test="${CategoriaForm.orden==4}">selected="selected"</c:if>>4</option>
+                                            <option value="5" <c:if test="${CategoriaForm.orden==5}">selected="selected"</c:if>>5</option>
+                                            <option value="6" <c:if test="${CategoriaForm.orden==6}">selected="selected"</c:if>>6</option>
+                                            <option value="7" <c:if test="${CategoriaForm.orden==7}">selected="selected"</c:if>>7</option>
+                                            <option value="8" <c:if test="${CategoriaForm.orden==8}">selected="selected"</c:if>>8</option>
+                                            <option value="9" <c:if test="${CategoriaForm.orden==9}">selected="selected"</c:if>>9</option>
+                                            <option value="10" <c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
+                                        </html:select>
+                                    </div>
+									<div class="formItem">
 										<label for="fileSeeds"><strong class="labelVisu"><bean:message key="categoria.semillas.fichero" />: </strong></label>
 										<html:file styleClass="texto" property="fileSeeds" styleId="fileSeeds"/>
 									</div>

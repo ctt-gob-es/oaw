@@ -988,7 +988,7 @@ public final class IntavExport {
         Connection conn = null;
         Connection c = null;
         try {
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             c = DataBaseManager.getConnection();
             // Inicializamos el evaluador si hace falta

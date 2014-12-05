@@ -154,7 +154,7 @@ public final class DAOUtils {
 
         for (String datasource : datasources) {
             try {
-                Connection connection = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, datasource));
+                Connection connection = DataBaseManager.getConnection();
                 if (connection != null) {
                     results.add(connection);
                 }

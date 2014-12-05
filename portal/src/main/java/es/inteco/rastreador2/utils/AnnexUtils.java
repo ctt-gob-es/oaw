@@ -403,7 +403,7 @@ public final class AnnexUtils {
         PropertiesManager pmgr = new PropertiesManager();
         try {
             conn = DataBaseManager.getConnection();
-            c = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.multilanguage"));
+            c = DataBaseManager.getConnection();
             Logger.putLog("Creando anexo portales multilingüismo", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
             createMultilanguageSiteAnnex(conn, idObsExecution, idOperation, false);
             Logger.putLog("Creando anexo portales completo multilingüismo", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
