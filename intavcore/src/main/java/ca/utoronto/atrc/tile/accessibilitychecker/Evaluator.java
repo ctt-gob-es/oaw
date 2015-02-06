@@ -201,7 +201,7 @@ public class Evaluator {
 
         //PropertiesManager pmgr = new PropertiesManager();
         //if (guideline.getFilename().equalsIgnoreCase(pmgr.getValue("intav.properties", "observatory.guideline.file"))) {
-        if (guideline.getFilename().startsWith("observatorio")) {
+        if (guideline.getFilename().startsWith("observatorio") || guideline.getFilename().startsWith("uneER-139803")) {
             guideline.getAllObservatoryChecks(checksSelected, checkAccessibility.getLevel());
         } else {
             guideline.getAllChecks(checksSelected, checkAccessibility.getLevel());

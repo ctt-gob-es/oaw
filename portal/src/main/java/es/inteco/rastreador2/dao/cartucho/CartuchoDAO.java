@@ -44,6 +44,7 @@ public final class CartuchoDAO {
             conn = DataBaseManager.getConnection();
             cartridgeNames = WebAnalyzerDao.getCartridgeNames(conn, idTracking);
         } catch (Exception e) {
+            Logger.putLog("Exception: ", CartuchoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DataBaseManager.closeConnection(conn);

@@ -53,7 +53,7 @@ public class TestCrawl {
         crawlerData.setPseudoaleatorio(true);
         crawlerData.setTest(true);
         crawlerData.setIdCrawling(-1);
-        makeCrawl(crawlerData);
+        //makeCrawl(crawlerData);
 
         for (CrawledLink cl: crawlingDomains) {
             System.out.println(cl.getUrl());

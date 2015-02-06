@@ -284,6 +284,9 @@ public final class EvaluatorUtils {
             code = getHtml(elementProblem, true, false);
         } else if ("headers".equals(nameProblemElement)) {
             code = getHtml(elementProblem, true, false);
+        } else if ("problem-text".equals(nameProblemElement)) {
+            Logger.putLog("Creando código a partir de PROBLEM-TEXT", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
+            code = Collections.singletonList(elementProblem.getTextContent());
         } else {
             if ("*".equals(check.getTriggerElement())) {
                 return getHtml(elementProblem, false, false);
@@ -1348,5 +1351,3 @@ public final class EvaluatorUtils {
         }
     }
 }
-
-

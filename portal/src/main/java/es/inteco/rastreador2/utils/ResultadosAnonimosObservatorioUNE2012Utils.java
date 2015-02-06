@@ -248,42 +248,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         }
     }
 
-    //INCLUDE LABELS METHODS
-
-    /*public static List<LabelValueBean> infoGlobalAccessibilityLevelNP(HttpServletRequest request, Map<String, Integer> result) throws Exception {
-
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
-
-        int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
-        LabelValueBean labelValue;
-
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales") +
-                " " + CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.totales"));
-        labelValue.setValue(String.valueOf((new BigDecimal(totalPort))));
-        labelValueList.add(labelValue);
-
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales") +
-                " " + CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa"));
-        labelValue.setValue(String.valueOf((new BigDecimal(result.get(Constants.OBS_AA)))));
-        labelValueList.add(labelValue);
-
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales") +
-                " " + CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a"));
-        labelValue.setValue(String.valueOf((new BigDecimal(result.get(Constants.OBS_A)))));
-        labelValueList.add(labelValue);
-
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales") +
-                " " + CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.nv"));
-        labelValue.setValue(String.valueOf((new BigDecimal(result.get(Constants.OBS_NV)))));
-        labelValueList.add(labelValue);
-
-        return labelValueList;
-    }*/
-
     public static List<GraphicData> infoGlobalAccessibilityLevel(HttpServletRequest request,
                                                                  Map<String, Integer> result) throws Exception {
 
@@ -384,9 +348,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     }
 
-    public static List<LabelValueBean> infoAspectMidsComparison(HttpServletRequest request,
-                                                                Map<String, BigDecimal> result) throws Exception {
-
+    public static List<LabelValueBean> infoAspectMidsComparison(HttpServletRequest request, Map<String, BigDecimal> result) throws Exception {
         List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
         LabelValueBean labelValue = new LabelValueBean();
@@ -468,7 +430,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         }
 
         return labelValueList;
-
     }
 
     public static List<LabelValueBean> infoLevelIVerificationMidsComparison(HttpServletRequest request,

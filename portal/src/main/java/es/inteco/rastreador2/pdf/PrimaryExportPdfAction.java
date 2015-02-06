@@ -33,6 +33,7 @@ import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class PrimaryExportPdfAction extends Action {
+
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
         if (request.getSession().getAttribute(Constants.ROLE) == null || CrawlerUtils.hasAccess(request, "export.observatory")) {
@@ -51,15 +52,15 @@ public class PrimaryExportPdfAction extends Action {
         PropertiesManager pmgr = new PropertiesManager();
 
         final String user = (String) request.getSession().getAttribute(Constants.USER);
-        final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null?Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)):0;
-        final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null?Long.parseLong(request.getParameter(Constants.ID_EX_OBS)):0;
-        final long idExecution = request.getParameter(Constants.ID) != null?Long.parseLong(request.getParameter(Constants.ID)):0;
-        final long idRastreo = request.getParameter(Constants.ID_RASTREO) != null?Long.parseLong(request.getParameter(Constants.ID_RASTREO)):0;
+        final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
+        final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
+        final long idExecution = request.getParameter(Constants.ID) != null ? Long.parseLong(request.getParameter(Constants.ID)) : 0;
+        final long idRastreo = request.getParameter(Constants.ID_RASTREO) != null ? Long.parseLong(request.getParameter(Constants.ID_RASTREO)) : 0;
         String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb;
         File checkFile = null;
 
         Connection c = null;
-        List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idExecution);
+        final List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idExecution);
         if (evaluationIds != null && !evaluationIds.isEmpty()) {
             try {
                 c = DataBaseManager.getConnection();
@@ -100,8 +101,8 @@ public class PrimaryExportPdfAction extends Action {
 
     private ActionForward exportAllPdfs(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) {
         /* http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id_observatorio=8&idExObs=33&action=exportAllPdfs */
-        final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null?Long.parseLong(request.getParameter(Constants.ID_EX_OBS)):0;
-        final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null?Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)):0;
+        final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
+        final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
 
         PropertiesManager pmgr = new PropertiesManager();
         Connection c = null;
@@ -115,7 +116,7 @@ public class PrimaryExportPdfAction extends Action {
 
             int counter = 0;
             for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
-                String url = pmgr.getValue(CRAWLER_PROPERTIES, "exportPdf.request")
+                final String url = pmgr.getValue(CRAWLER_PROPERTIES, "exportPdf.request")
                         .replace("{0}", String.valueOf(fulfilledCrawling.getId()))
                         .replace("{1}", String.valueOf(idExecutionOb))
                         .replace("{2}", String.valueOf(fulfilledCrawling.getIdCrawling()))
@@ -129,7 +130,7 @@ public class PrimaryExportPdfAction extends Action {
                 if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     Logger.putLog(++counter + " generados con éxito", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_INFO);
                 } else {
-                    Logger.putLog("FALLO no se ha generado con éxito la exportación a pdf de "+ fulfilledCrawling.getSeed().getNombre(), PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR);
+                    Logger.putLog("FALLO no se ha generado con éxito la exportación a pdf de " + fulfilledCrawling.getSeed().getNombre(), PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR);
                 }
 
                 urlConnection.disconnect();

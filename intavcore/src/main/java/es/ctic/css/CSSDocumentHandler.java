@@ -47,19 +47,15 @@ public abstract class CSSDocumentHandler implements DocumentHandler, CSSAnalyzer
                 public void fatalError(CSSParseException exception) throws CSSException {
                 }
             });
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            Logger.putLog("Fallo an intentar parser documento CSS", CSSDocumentHandler.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
     public List<CSSProblem> evaluate(final Node node, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
-        for (CSSResource cssResource: cssResources) {
-           cssProblems.addAll(evaluate(node, cssResource));
+        for (CSSResource cssResource : cssResources) {
+            cssProblems.addAll(evaluate(node, cssResource));
         }
 
         return cssProblems;

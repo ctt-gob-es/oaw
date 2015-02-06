@@ -923,7 +923,7 @@ public class Check {
                 // Si son distintos hay que devolver true para indicar que es fallo
                 return !languageChecker.isExpectedLanguage(extractedText);
             } catch (TransformerException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                Logger.putLog("Error al intentar extraer el texto en functionGuessLanguage", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
             return false;
         } else {
@@ -946,7 +946,7 @@ public class Check {
                     }
                 }
             } catch (TransformerException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                Logger.putLog("Error al intentar extraer el texto en functionOtherLanguage", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
             return false;
         } else {
@@ -3747,7 +3747,7 @@ public class Check {
                 if (text.length() > charactersNumber) {
                     try {
                         Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-                        if (!((String) elementRoot.getUserData("url")).equals("")) {
+                        if (!elementRoot.getUserData("url").equals("")) {
                             Logger.putLog("Tabla con elementos que contienen mas de 400 caracteres en la URL: " + (String) elementRoot.getUserData("url"), Check.class, Logger.LOG_LEVEL_INFO);
                         } else {
                             Logger.putLog("Tabla con elementos que contienen mas de 400 caracteres en el contenido introducido.", Check.class, Logger.LOG_LEVEL_INFO);

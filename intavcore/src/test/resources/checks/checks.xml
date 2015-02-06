@@ -4525,6 +4525,7 @@ Telephone: (416) 978-4360
     <check id="414" key="applet" confidence="high">
         <name>El elemento <code>applet</code> debe proporcionar alternativas textuales.</name>
         <error>check.414.error</error>
+        <rationale>check.414.rationale</rationale>
         <machine>
             <trigger element="applet"/>
             <condition type="and">
@@ -4544,6 +4545,7 @@ Telephone: (416) 978-4360
             para identificar las celdas.
         </name>
         <error>check.415.error</error>
+        <rationale>check.415.rationale</rationale>
         <machine>
             <trigger element="table"/>
             <condition type="and">
@@ -4640,6 +4642,7 @@ Telephone: (416) 978-4360
     <check id="422" key="headers" confidence="high">
         <name>Hay dos del mismo nivel seguidos sin contenido entre ellos</name>
         <error>check.422.error</error>
+        <error>check.422.rationale</error>
         <machine>
             <trigger element="*"/>
             <condition type="and">
@@ -4737,6 +4740,7 @@ Telephone: (416) 978-4360
     <check id="429" key="form" confidence="medium">
         <name>Uso de más de 1 encabezado dentro de un formulario</name>
         <error>check.429.error</error>
+        <rationale>check.429.rationale</rationale>
         <machine>
             <trigger element="form"/>
             <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1"/>
@@ -4847,7 +4851,6 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <!-- FIXME: Modificar para contabilizar únicamente valores positivos de tabindex (1,2,3...) valores 0 y -1 no cuentan -->
     <check id="436" key="html" confidence="medium">
         <name>Más de 10 elementos br en la página</name>
         <error>check.436.error</error>
@@ -4861,13 +4864,14 @@ Telephone: (416) 978-4360
     <check id="437" key="iframe">
         <name>Existen iframes en la página.</name>
         <error>check.437.error</error>
+        <rationale>check.437.rationale</rationale>
         <machine>
             <trigger element="iframe"/>
         </machine>
     </check>
 
     <check id="438" key="html">
-        <name>Valores de únicos para id</name>
+        <name>Valores únicos para id</name>
         <error>check.438.error</error>
         <rationale>check.438.rationale</rationale>
         <machine>
@@ -4951,8 +4955,8 @@ Telephone: (416) 978-4360
 
     <check id="445" key="p" confidence="high" occurrence="first">
         <name>Listas mal creadas con 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).</name>
-        <error>check.444.error</error>
-        <rationale>check.444.rationale</rationale>
+        <error>check.445.error</error>
+        <rationale>check.445.rationale</rationale>
         <machine>
             <trigger element="p"/>
             <condition type="and">

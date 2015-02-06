@@ -16,10 +16,8 @@ import java.net.URLEncoder;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class BasicServiceThread extends Thread {
-    private BasicServiceForm basicServiceForm;
 
-    public BasicServiceThread() {
-    }
+    private final BasicServiceForm basicServiceForm;
 
     public BasicServiceThread(BasicServiceForm basicServiceForm) {
         this.basicServiceForm = basicServiceForm;
@@ -28,18 +26,18 @@ public class BasicServiceThread extends Thread {
     @Override
     public void run() {
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            String url = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.url");
+            final PropertiesManager pmgr = new PropertiesManager();
+            final String url = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.url");
 
             BasicServiceConcurrenceSystem.incrementConcurrentUsers();
-            HttpURLConnection connection = CrawlerUtils.getConnection(url, null, true);
+            final HttpURLConnection connection = CrawlerUtils.getConnection(url, null, true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setDoOutput(true);
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+            final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 
-            URLCodec codec = new URLCodec();
-            String postRequest = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.post.request")
+            final URLCodec codec = new URLCodec();
+            final String postRequest = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.post.request")
                     .replace("{0}", StringUtils.isNotEmpty(basicServiceForm.getDomain()) ? URLEncoder.encode(basicServiceForm.getDomain(), "UTF-8") : "")
                     .replace("{1}", basicServiceForm.getEmail())
                     .replace("{2}", String.valueOf(basicServiceForm.getProfundidad()))

@@ -6,7 +6,6 @@ import es.ctic.css.CSSDocumentHandler;
 import es.ctic.css.utils.CSSSACUtils;
 import org.w3c.css.sac.CSSException;
 import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.Parser;
 import org.w3c.css.sac.SelectorList;
 
 import java.awt.*;
@@ -73,24 +72,24 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
     }
 
     private double obtainLuminance(final Color color) {
-        final float RsRGB = (float) color.getRed() / 255;
-        final float GsRGB = (float) color.getGreen() / 255;
-        final float BsRGB = (float) color.getBlue() / 255;
+        final float rRGB = (float) color.getRed() / 255;
+        final float gRGB = (float) color.getGreen() / 255;
+        final float bRGB = (float) color.getBlue() / 255;
 
-        final double R = RsRGB <= 0.03928 ? RsRGB / 12.92 : Math.pow(((RsRGB + 0.055) / 1.055), 2.4);
-        final double G = GsRGB <= 0.03928 ? GsRGB / 12.92 : Math.pow(((GsRGB + 0.055) / 1.055), 2.4);
-        final double B = BsRGB <= 0.03928 ? BsRGB / 12.92 : Math.pow(((BsRGB + 0.055) / 1.055), 2.4);
+        final double r = rRGB <= 0.03928 ? rRGB / 12.92 : Math.pow(((rRGB + 0.055) / 1.055), 2.4);
+        final double g = gRGB <= 0.03928 ? gRGB / 12.92 : Math.pow(((gRGB + 0.055) / 1.055), 2.4);
+        final double b = bRGB <= 0.03928 ? bRGB / 12.92 : Math.pow(((bRGB + 0.055) / 1.055), 2.4);
 
-        return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
     }
 
     private double obtainContrastRatio(double colorLuminance, double backgroundLuminance) {
         // Obtenemos el valor mayor y menor para calcular el ratio
-        final double L1 = Math.max(colorLuminance, backgroundLuminance);
-        final double L2 = Math.min(colorLuminance, backgroundLuminance);
+        final double maxLuminance = Math.max(colorLuminance, backgroundLuminance);
+        final double minLuminance = Math.min(colorLuminance, backgroundLuminance);
 
         // Calculamos el constraste
-        double contrastRatio = (L1 + 0.05) / (L2 + 0.05);
+        final double contrastRatio = (maxLuminance + 0.05) / (minLuminance + 0.05);
         // Redondeamos a 2 decimales
         return Math.round(contrastRatio * 100) / 100d;
     }

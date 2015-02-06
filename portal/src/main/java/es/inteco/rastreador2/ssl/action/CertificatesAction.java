@@ -32,7 +32,6 @@ public class CertificatesAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
-
         if (CrawlerUtils.hasAccess(request, "add.certificate")) {
             // Marcamos el menú
             request.getSession().setAttribute(Constants.MENU, Constants.MENU_CERTIFICATES);
@@ -101,8 +100,7 @@ public class CertificatesAction extends Action {
     }
 
     private ActionForward uploadCertificate(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-
-        CertificateForm certificateForm = (CertificateForm) form;
+        final CertificateForm certificateForm = (CertificateForm) form;
 
         if (request.getParameter(Constants.ES_PRIMERA) != null && request.getParameter(Constants.ES_PRIMERA).equals(Constants.CONF_SI)) {
             return mapping.findForward(Constants.NUEVO_CERTIFICADO);
@@ -153,7 +151,6 @@ public class CertificatesAction extends Action {
                 return mapping.getInputForward();
             }
         }
-
     }
 
     private ActionForward deleteCertificate(ActionMapping mapping, HttpServletRequest request) throws Exception {
@@ -170,8 +167,8 @@ public class CertificatesAction extends Action {
         // TODO: ¿Por qué no funciona esto?
         if (keyStore.containsAlias(alias)) {
             PropertiesManager pmgr = new PropertiesManager();
-            File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.path"));
-            char[] passphrase = pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.storepass").toCharArray();
+            File file = new File(pmgr.getValue("certificados.properties", "truststore.path"));
+            char[] passphrase = pmgr.getValue("certificados.properties", "truststore.pass").toCharArray();
 
             keyStore.deleteEntry(alias);
             FileOutputStream fos = null;
@@ -212,8 +209,8 @@ public class CertificatesAction extends Action {
 
     private void loadKeyStore(KeyStore keyStore) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
-        File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.path"));
-        char[] passphrase = pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.storepass").toCharArray();
+        File file = new File(pmgr.getValue("certificados.properties", "truststore.path"));
+        char[] passphrase = pmgr.getValue("certificados.properties", "truststore.pass").toCharArray();
         Logger.putLog("Cargando KeyStore " + file + "...", CertificatesAction.class, Logger.LOG_LEVEL_INFO);
         InputStream in = null;
         try {
@@ -251,8 +248,8 @@ public class CertificatesAction extends Action {
 
     private void addCertificates(X509Certificate[] chain, KeyStore keyStore, CertificateForm certificateForm) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
-        File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.path"));
-        char[] passphrase = pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.storepass").toCharArray();
+        File file = new File(pmgr.getValue("certificados.properties", "truststore.path"));
+        char[] passphrase = pmgr.getValue("certificados.properties", "truststore.pass").toCharArray();
         for (int k = 0; k < chain.length; k++) {
             X509Certificate cert = chain[k];
             String alias = certificateForm.getHost() + "-" + (k + 1);
@@ -275,7 +272,7 @@ public class CertificatesAction extends Action {
     }
 
     private CertificateForm getCertificateForm(X509Certificate x509certificate, DateFormat df, String alias) {
-        CertificateForm certificateForm = new CertificateForm();
+        final CertificateForm certificateForm = new CertificateForm();
 
         certificateForm.setIssuer(getCNValue(x509certificate.getIssuerDN().getName()));
         certificateForm.setSubject(getCNValue(x509certificate.getSubjectDN().getName()));

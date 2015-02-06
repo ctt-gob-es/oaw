@@ -21,79 +21,79 @@ public class Prueba {
     private final Map<String, String> IMAGES = Collections.unmodifiableMap(
             new HashMap<String, String>() {
                 {
-                    put("DistribucionNivelAccesibilidadGlobal.jpg", "1000000000000235000001C656F13328.jpg");
-                    put("DistribucionNivelAccesibilidadS1.jpg", "1000000000000235000001C69C5B6C64.jpg");
-                    put("DistribucionNivelAccesibilidadS2.jpg", "1000000000000235000001C614F27F0A.jpg");
-                    put("DistribucionNivelAccesibilidadS3.jpg", "1000000000000235000001C6BD0B4CBA.jpg");
-                    put("DistribucionNivelAccesibilidadS4.jpg", "1000000000000235000001C6E28F2B85.jpg");
+                    put("DistribucionNivelAccesibilidadGlobal.jpg", "1000000000000235000001C63A0DBA2F.png");
+                    put("DistribucionNivelAccesibilidadS1.jpg", "1000000000000235000001C6A7FE4DFA.png");
+                    put("DistribucionNivelAccesibilidadS2.jpg", "1000000000000235000001C66B579E26.png");
+                    put("DistribucionNivelAccesibilidadS3.jpg", "1000000000000235000001C6DFB98657.png");
+                    put("DistribucionNivelAccesibilidadS4.jpg", "1000000000000235000001C6A1F81E9E.png");
 
-                    put("ComparacionAdecuacionSegmento1.jpg", "1000000000000235000001C61A4A3B95.jpg");
-                    put("ComparacionPuntuacionSegmento1.jpg", "1000000000000235000001C6AE8D6D4C.jpg");
+                    put("ComparacionAdecuacionSegmento1.jpg", "1000000000000235000001C69CA5E81F.png");
+                    put("ComparacionPuntuacionSegmento1.jpg", "1000000000000235000001C6D20C3BF2.png");
 
-                    put("ComparacionMediasVerificacionNAI.jpg", "1000000000000235000001C67F09331B.jpg");
-                    put("ComparacionMediasVerificacionNAI1.jpg", "1000000000000235000001C603BF8AC4.jpg");
-                    put("ComparacionMediasVerificacionNAI2.jpg", "1000000000000235000001C6497B82D1.jpg");
-                    put("ComparacionMediasVerificacionNAI3.jpg", "1000000000000235000001C6C99DC95B.jpg");
-                    put("ComparacionMediasVerificacionNAI4.jpg", "1000000000000235000001C6937174F5.jpg");
+                    put("ComparacionMediasVerificacionNAI.jpg", "1000000000000235000001C6F8DD6D50.png");
+                    put("ComparacionMediasVerificacionNAI1.jpg", "1000000000000235000001C63ABD59C4.png");
+                    put("ComparacionMediasVerificacionNAI2.jpg", "1000000000000235000001C6AB68ECBD.png");
+                    put("ComparacionMediasVerificacionNAI3.jpg", "1000000000000235000001C663AB7C79.png");
+                    put("ComparacionMediasVerificacionNAI4.jpg", "1000000000000235000001C6430426C2.png");
 
-                    put("ComparacionMediasVerificacionNAII.jpg", "1000000000000235000001C621A45F48.jpg");
-                    put("ComparacionMediasVerificacionNAII1.jpg", "1000000000000235000001C69D68F6EF.jpg");
-                    put("ComparacionMediasVerificacionNAII2.jpg", "1000000000000235000001C677D6555E.jpg");
-                    put("ComparacionMediasVerificacionNAII3.jpg", "1000000000000235000001C67940FBFF.jpg");
-                    put("ComparacionMediasVerificacionNAII4.jpg", "1000000000000235000001C6861A9DB9.jpg");
+                    put("ComparacionMediasVerificacionNAII.jpg", "1000000000000235000001C677D975C9.png");
+                    put("ComparacionMediasVerificacionNAII1.jpg", "1000000000000235000001C642096CA7.png");
+                    put("ComparacionMediasVerificacionNAII2.jpg", "1000000000000235000001C6592A2A7E.png");
+                    put("ComparacionMediasVerificacionNAII3.jpg", "1000000000000235000001C6B6F4DE69.png");
+                    put("ComparacionMediasVerificacionNAII4.jpg", "1000000000000235000001C61BF6A009.png");
 
-                    put("ComparacionModalidadVerificacionI.jpg", "1000000000000235000001C69ED29945.jpg");
-                    put("ComparacionModalidadVerificacionI1.jpg", "1000000000000235000001C6E138B19F.jpg");
-                    put("ComparacionModalidadVerificacionI2.jpg", "1000000000000235000001C62E0F8A11.jpg");
-                    put("ComparacionModalidadVerificacionI3.jpg", "1000000000000235000001C6098AEA60.jpg");
-                    put("ComparacionModalidadVerificacionI4.jpg", "1000000000000235000001C6EBE93738.jpg");
+                    put("ComparacionModalidadVerificacionI.jpg", "1000000000000235000001C69834DB3D.png");
+                    put("ComparacionModalidadVerificacionI1.jpg", "1000000000000235000001C6E60F7658.png");
+                    put("ComparacionModalidadVerificacionI2.jpg", "1000000000000235000001C66FB1A862.png");
+                    put("ComparacionModalidadVerificacionI3.jpg", "1000000000000235000001C69A194821.png");
+                    put("ComparacionModalidadVerificacionI4.jpg", "1000000000000235000001C641FA9C4E.png");
 
-                    put("ComparacionModalidadVerificacionII.jpg", "1000000000000235000001C6C8E40FC5.jpg");
-                    put("ComparacionModalidadVerificacionII1.jpg", "1000000000000235000001C61C06A346.jpg");
-                    put("ComparacionModalidadVerificacionII2.jpg", "1000000000000235000001C65EEC8D6A.jpg");
-                    put("ComparacionModalidadVerificacionII3.jpg", "1000000000000235000001C644B3AB97.jpg");
-                    put("ComparacionModalidadVerificacionII4.jpg", "1000000000000235000001C6E86A1A4D.jpg");
+                    put("ComparacionModalidadVerificacionII.jpg", "1000000000000235000001C60CF9E5FE.png");
+                    put("ComparacionModalidadVerificacionII1.jpg", "1000000000000235000001C65F95E422.png");
+                    put("ComparacionModalidadVerificacionII2.jpg", "1000000000000235000001C62E00411F.png");
+                    put("ComparacionModalidadVerificacionII3.jpg", "1000000000000235000001C6A56B3157.png");
+                    put("ComparacionModalidadVerificacionII4.jpg", "1000000000000235000001C693518304.png");
 
-                    put("ComparacionMediasAspectos.jpg", "1000000000000235000001C6BE79C3C1.jpg");
-                    put("ComparacionMediasAspectos1.jpg", "1000000000000235000001C6121C10CC.jpg");
-                    put("ComparacionMediasAspectos2.jpg", "1000000000000235000001C6D1EFC0F6.jpg");
-                    put("ComparacionMediasAspectos3.jpg", "1000000000000235000001C657B26CD6.jpg");
-                    put("ComparacionMediasAspectos4.jpg", "1000000000000235000001C6B6775FE7.jpg");
+                    put("ComparacionMediasAspectos.jpg", "1000000000000235000001C63F715313.png");
+                    put("ComparacionMediasAspectos1.jpg", "1000000000000235000001C62DF54803.png");
+                    put("ComparacionMediasAspectos2.jpg", "1000000000000235000001C666025F16.png");
+                    put("ComparacionMediasAspectos3.jpg", "1000000000000235000001C6AB18A299.png");
+                    put("ComparacionMediasAspectos4.jpg", "1000000000000235000001C68DE4E659.png");
 
-                    put("DistribucionPuntuacionesS1.jpg", "1000000000000235000001C69F161F89.jpg");
-                    put("DistribucionPuntuacionesS2.jpg", "1000000000000235000001C65FD6B2D9.jpg");
-                    put("DistribucionPuntuacionesS3.jpg", "1000000000000235000001C6629DC1E0.jpg");
-                    put("DistribucionPuntuacionesS4.jpg", "1000000000000235000001C64F035130.jpg");
+                    put("DistribucionPuntuacionesS1.jpg", "1000000000000235000001C68E60A079.png");
+                    put("DistribucionPuntuacionesS2.jpg", "1000000000000235000001C69F9F7D43.png");
+                    put("DistribucionPuntuacionesS3.jpg", "1000000000000235000001C6B793C1C1.png");
+                    put("DistribucionPuntuacionesS4.jpg", "1000000000000235000001C655E19925.png");
 
-                    put("EvolucionNivelConformidadAccesibilidadA.jpg", "1000000000000235000001C68AE3915D.jpg");
-                    put("EvolucionNivelConformidadAccesibilidadAA.jpg", "1000000000000235000001C69D84230E.jpg");
-                    put("EvolucionNivelConformidadAccesibilidadNV.jpg", "1000000000000235000001C60A54315E.jpg");
-                    put("EvolucionPuntuacionMediaAspectoA1.jpg", "1000000000000235000001C67E12C804.jpg");
-                    put("EvolucionPuntuacionMediaAspectoA2.jpg", "1000000000000235000001C690C0FAA4.jpg");
-                    put("EvolucionPuntuacionMediaAspectoA3.jpg", "1000000000000235000001C67686AF27.jpg");
-                    put("EvolucionPuntuacionMediaAspectoA4.jpg", "1000000000000235000001C6523B4FD4.jpg");
-                    put("EvolucionPuntuacionMediaAspectoA5.jpg", "1000000000000235000001C627AC2925.jpg");
-                    put("EvolucionPuntuacionMediaObservatorio.jpg", "1000000000000235000001C6BC60CD63.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.1.1.jpg", "1000000000000235000001C654B664E9.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.1.2.jpg", "1000000000000235000001C65A63BCFD.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.1.3.jpg", "1000000000000235000001C6A1D35AB0.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.1.4.jpg", "1000000000000235000001C608649C62.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.2.1.jpg", "1000000000000235000001C62939C133.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.2.2.jpg", "1000000000000235000001C67FE9D927.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.2.3.jpg", "1000000000000235000001C64973F0AA.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.2.4.jpg", "1000000000000235000001C67372430A.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.2.5.jpg", "1000000000000235000001C65B14D0A4.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV1.2.6.jpg", "1000000000000235000001C610EEA931.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.1.1.jpg", "1000000000000235000001C6D569F5D8.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.1.2.jpg", "1000000000000235000001C62A3E716D.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.1.3.jpg", "1000000000000235000001C622BA8F28.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.1.4.jpg", "1000000000000235000001C6E29E7FBA.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.2.1.jpg", "1000000000000235000001C63945088C.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.2.2.jpg", "1000000000000235000001C6B3A4A5A7.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.2.3.jpg", "1000000000000235000001C65B622F7A.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.2.4.jpg", "1000000000000235000001C6F84BBB63.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.2.5.jpg", "1000000000000235000001C67A0B42D7.jpg");
-                    put("EvolucionPuntuacionMediaVerificacionV2.2.6.jpg", "1000000000000235000001C69BD75158.jpg");
+                    put("EvolucionNivelConformidadAccesibilidadA.jpg", "1000000000000235000001C6B0671186.png");
+                    put("EvolucionNivelConformidadAccesibilidadAA.jpg", "1000000000000235000001C61859BDB5.png");
+                    put("EvolucionNivelConformidadAccesibilidadNV.jpg", "1000000000000235000001C68ADD29E8.png");
+                    put("EvolucionPuntuacionMediaAspectoA1.jpg", "1000000000000235000001C6897C2C00.png");
+                    put("EvolucionPuntuacionMediaAspectoA2.jpg", "1000000000000235000001C6EC5BA3EF.png");
+                    put("EvolucionPuntuacionMediaAspectoA3.jpg", "1000000000000235000001C62FFA56F9.png");
+                    put("EvolucionPuntuacionMediaAspectoA4.jpg", "1000000000000235000001C60A75AF5E.png");
+                    put("EvolucionPuntuacionMediaAspectoA5.jpg", "1000000000000235000001C6D670B07D.png");
+                    put("EvolucionPuntuacionMediaObservatorio.jpg", "1000000000000235000001C6F5E33319.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.1.jpg", "1000000000000235000001C66C679733.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.2.jpg", "1000000000000235000001C63E51552F.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.3.jpg", "1000000000000235000001C6521FAA3F.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.4.jpg", "1000000000000235000001C6EE11BE16.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.5.jpg", "1000000000000235000001C62B25C34B.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.6.jpg", "1000000000000235000001C606D6CC0E.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.1.7.jpg", "1000000000000235000001C6B0D30E06.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.2.1.jpg", "1000000000000235000001C6A71C6E40.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.2.2.jpg", "1000000000000235000001C67526C00E.png");
+                    put("EvolucionPuntuacionMediaVerificacionV1.2.3.jpg", "1000000000000235000001C66B571CAF.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.1.jpg", "1000000000000235000001C654FD74D2.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.2.jpg", "1000000000000235000001C60ABEB8D9.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.3.jpg", "1000000000000235000001C62F576C67.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.4.jpg", "1000000000000235000001C6412BFDE0.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.5.jpg", "1000000000000235000001C63E300023.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.6.jpg", "1000000000000235000001C6E3B66F46.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.1.7.jpg", "1000000000000235000001C6B2AF3291.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.2.1.jpg", "1000000000000235000001C6AEED98BC.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.2.2.jpg", "1000000000000235000001C6138E2F7A.png");
+                    put("EvolucionPuntuacionMediaVerificacionV2.2.3.jpg", "1000000000000235000001C6F6FA94DD.png");
                 }
             });
 

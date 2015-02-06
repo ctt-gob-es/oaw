@@ -31,7 +31,7 @@ public final class AnalisisDatos {
 
         try {
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
-            pstmt.setString(1, analisis.getGuideline());
+            pstmt.setString(1, getGuideline(analisis.getGuideline()));
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
@@ -91,7 +91,7 @@ public final class AnalisisDatos {
         try {
             conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
-            pstmt.setString(1, checkAccessibility.getGuidelineFile());
+            pstmt.setString(1, getGuideline(checkAccessibility.getGuidelineFile()) );
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
@@ -123,50 +123,6 @@ public final class AnalisisDatos {
             close(conn, rs, pstmt);
         }
     }
-
-    /*public static int countAnalysis(SearchAnalysis searchAnalysis) {
-        PropertiesManager pmgr = new PropertiesManager();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String query = "SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = 0 ";
-        try {
-            conn = DBConnect.connect();
-            if (searchAnalysis.getEntity() != null && !searchAnalysis.getEntity().isEmpty()) {
-                query += " AND NOM_ENTIDAD = '" + searchAnalysis.getEntity() + "'";
-            }
-            if (searchAnalysis.getDomain() != null && searchAnalysis.getDomain().isEmpty()) {
-                query += " AND COD_URL LIKE '%" + searchAnalysis.getDomain() + "%'";
-            }
-            if (searchAnalysis.getDate() != null && searchAnalysis.getDate().isEmpty()) {
-                DateFormat dateF = new SimpleDateFormat(pmgr.getValue("intav.properties", "simple.date.format"));
-                Date date = dateF.parse(searchAnalysis.getDate());
-                query += " AND FEC_ANALISIS BETWEEN '" + new java.sql.Timestamp(date.getTime()) + "' AND '" + new java.sql.Timestamp(getFinalDate(date).getTime()) + "'";
-            }
-            pstmt = conn.prepareStatement(query);
-            rs = pstmt.executeQuery();
-            int numRes = 0;
-            if (rs.next()) {
-                numRes = rs.getInt(1);
-            }
-            return numRes;
-        } catch (Exception ex) {
-            Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-        } finally {
-            close(conn, rs, pstmt);
-        }
-        return 0;
-    } //*/
-
-    /*private static Date getFinalDate(Date initialDate) {
-        Calendar cl1 = Calendar.getInstance();
-
-        cl1.setTime(initialDate);
-        cl1.add(Calendar.DATE, 1);
-        cl1.add(Calendar.SECOND, -1);
-
-        return cl1.getTime();
-    }//*/
 
     public static Analysis getAnalisisFromId(Connection conn, long id) {
         PreparedStatement pstmt = null;
@@ -349,29 +305,11 @@ public final class AnalisisDatos {
         return evaluationIds;
     }
 
-    /*public static List<Long> getEvaluationIds(String entity) {
-        List<Long> evaluationIds = new ArrayList<Long>();
-
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = DBConnect.connect();
-            pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE nom_entidad = ?");
-            pstmt.setString(1, entity);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                evaluationIds.add(rs.getLong(1));
-            }
-        } catch (Exception ex) {
-            Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return null;
-        } finally {
-            close(conn, rs, pstmt);
+    private static String getGuideline(final String guideline) {
+        if ( guideline.contains("-nobroken") ) {
+            return guideline.replace("-nobroken","");
+        } else {
+            return guideline;
         }
-
-        return evaluationIds;
-    }//*/
-
+    }
 }

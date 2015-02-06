@@ -42,7 +42,7 @@ public final class MailUtils {
             // send the email
             email.send();
         } catch (Exception e) {
-            Logger.putLog("No se ha podido enviar el correo MailUtils.sendMail.", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("FALLO No se ha podido enviar el correo", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -71,7 +71,7 @@ public final class MailUtils {
             // send the email
             email.send();
         } catch (Exception e) {
-            Logger.putLog("No se han podido enviar los resultados del rastreo por correo.", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("FALLO No se han podido enviar los resultados del rastreo por correo.", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -85,7 +85,7 @@ public final class MailUtils {
             // send the email
             email.send();
         } catch (Exception e) {
-            Logger.putLog("No se han podido enviar el correo correo.", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("FALLO No se han podido enviar el correo simple", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -101,13 +101,17 @@ public final class MailUtils {
 
     private static MultiPartEmail createEmail() throws Exception {
         final MultiPartEmail email = new MultiPartEmail();
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        /*final String trustStorePath = pmgr.getValue("crawler.properties", "digital.certificates.path");
-        final String trustStorePass = pmgr.getValue("crawler.properties", "digital.certificates.storepass");
-        Logger.putLog("Configurando el truststore en " + trustStorePath, MailUtils.class, Logger.LOG_LEVEL_INFO);
-        System.setProperty("javax.net.debug", "all");
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-        System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass); */
+        final String trustStorePath = pmgr.getValue("certificados.properties", "truststore.path");
+        final String trustStorePass = pmgr.getValue("certificados.properties", "truststore.pass");
+        if ( trustStorePath!=null && !trustStorePath.isEmpty()) {
+            System.setProperty("javax.net.ssl.trustStore", trustStorePath);
+            Logger.putLog("Configurando el truststore en " + trustStorePath, MailUtils.class, Logger.LOG_LEVEL_INFO);
+        }
+        if ( trustStorePass!=null && !trustStorePass.isEmpty()) {
+            System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass);
+        }
 
         final TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
@@ -127,6 +131,7 @@ public final class MailUtils {
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLContext.setDefault(sc);
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
                 @Override
@@ -141,6 +146,7 @@ public final class MailUtils {
         try {
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLContext.setDefault(sc);
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
                 @Override
@@ -152,7 +158,6 @@ public final class MailUtils {
             Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
 
-        final PropertiesManager pmgr = new PropertiesManager();
         if (pmgr.getValue("crawler.core.properties", "mail.smtp.host") == null || pmgr.getValue("crawler.core.properties", "mail.smtp.host").trim().isEmpty()) {
             throw new Exception("No se configurado el servidor de correo");
         }

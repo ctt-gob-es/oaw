@@ -89,25 +89,9 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Soldados</nombre>
-        <activa>true</activa>
-        <url>http://www.reclutamiento.defensa.gob.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Defensa</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Reclutamiento</nombre>
         <activa>true</activa>
         <url>http://www.reclutamiento.defensa.gob.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Defensa</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Canal del Ministerio de Defensa en Youtube</nombre>
-        <activa>true</activa>
-        <url>http://www.youtube.com/MinDefensa</url>
         <acronimo/>
         <depende_de>Ministerio de Defensa</depende_de>
         <en_directorio>false</en_directorio>
@@ -121,6 +105,94 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
+        <nombre>Reales Ordenanzas para las Fuerzas Armadas</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/RROO_2009/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Tecnología e Innovación del Ministerio de Defensa</nombre>
+        <activa>true</activa>
+        <url>http://www.tecnologiaeinnovacion.defensa.gob.es</url>
+        <acronimo>ETID</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Cultura de Defensa</nombre>
+        <activa>true</activa>
+        <url>http://www.portalcultura.mde.es</url>
+        <acronimo>PCD</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Biblioteca Virtual de Defensa</nombre>
+        <activa>true</activa>
+        <url>http://bibliotecavirtualdefensa.es</url>
+        <acronimo>BVD</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Registro de Asociaciones Profesionales de miembros de las Fuerzas Armadas</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/rapfas</url>
+        <acronimo>RAPFAS</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Sistema de Aprovechamiento de Capacidades Profesionales del Personal Militar</nombre>
+        <activa>true</activa>
+        <url>http://www.sapromil.es</url>
+        <acronimo>SAPROMIL</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Cría Caballar de las Fuerzas Armadas</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/ccfas/</url>
+        <acronimo>CCFAS</acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Memoria Histórica del MDE</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/memoriahistorica/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Día de las Fuerzas Armadas</nombre>
+        <activa>true</activa>
+        <url>http://www.diadelasfuerzasarmadas.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Memoria Responsabilidad Social del MDE</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/memoriaRSminisdef/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>12 de Octubre</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/12octubre/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>true</en_directorio>
+    </semilla>
+    <semilla>
         <nombre>Digital CSIC</nombre>
         <activa>true</activa>
         <url>http://digital.csic.es/</url>
@@ -132,14 +204,6 @@
         <nombre>Fundación Española para la Ciencia y la Tecnología (FECYT)</nombre>
         <activa>true</activa>
         <url>http://www.fecyt.es/fecyt/home.do;jsessionid=7605A57247DF4A2968C7888738E9711D</url>
-        <acronimo/>
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>GTC digital - Gran Telescopio de Canarias</nombre>
-        <activa>true</activa>
-        <url>http://www.gtc.iac.es/GTChome_es.php</url>
         <acronimo/>
         <depende_de>Ministerio de Economía y Competitividad</depende_de>
         <en_directorio>false</en_directorio>
@@ -281,14 +345,6 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Plataforma de Contratación del Estado</nombre>
-        <activa>true</activa>
-        <url>https://contrataciondelestado.es/wps/portal/plataforma</url>
-        <acronimo/>
-        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>EUGO</nombre>
         <activa>true</activa>
         <url>http://www.eugo.es/</url>
@@ -305,7 +361,7 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Datos abiertos. (datos.gob.es)</nombre>
+        <nombre>Datos abiertos (datos.gob.es)</nombre>
         <activa>true</activa>
         <url>http://www.datos.gob.es</url>
         <acronimo/>
@@ -345,17 +401,50 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Controlas tu energía</nombre>
+        <nombre>Foro Iberoamericano de Contabilidad Pública</nombre>
         <activa>true</activa>
-        <url>http://www.controlastuenergia.gob.es</url>
+        <url>http://www.fic.igae.pap.minhap.gob.es/sitios/fic/es-ES/Paginas/inicio.aspx</url>
         <acronimo/>
-        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Crear tu empresa CIRCE Emprende en 3</nombre>
+        <nombre>Portal de Comunidades Autónomas</nombre>
         <activa>true</activa>
-        <url>http://portal.circe.es/es-ES/emprendedor/CrearEmpresa/Paginas/Crearunaempresa.aspx</url>
+        <url>https://ssweb.seap.minhap.es/portalCCAA/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Normadoc. Normativa de economía y de Hacienda</nombre>
+        <activa>true</activa>
+        <url>http://www.normadoc.gob.es/es-es/default.aspx</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>CERES-FNMT</nombre>
+        <activa>true</activa>
+        <url>http://www.cert.fnmt.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Plan de Pensiones</nombre>
+        <activa>true</activa>
+        <url>http://www.plandepensiones-age.es/magnoliaPublic/funcionaPlanPensiones</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+
+    <semilla>
+        <nombre>Controlas tu energía</nombre>
+        <activa>true</activa>
+        <url>http://www.controlastuenergia.gob.es</url>
         <acronimo/>
         <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
         <en_directorio>false</en_directorio>
@@ -377,9 +466,9 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Puntos de Asesoramiento e Inicio de la Tramitación (PAIT)</nombre>
+        <nombre>Centro de Información y Red de Creación de Empresas</nombre>
         <activa>true</activa>
-        <url>http://www.circe.es/Circe.Publico.Web/pub/BusquedaPaitMapa.aspx?tipo_soc=16</url>
+        <url>http://portal.circe.es/</url>
         <acronimo/>
         <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
         <en_directorio>false</en_directorio>
@@ -401,17 +490,9 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Fundación Ciudad de la Energía</nombre>
+        <nombre>Programa de Creación de Empresas</nombre>
         <activa>true</activa>
-        <url>http://www.ciuden.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Crear tu empresa paso a paso DG PYME</nombre>
-        <activa>true</activa>
-        <url>http://www.creatuempresa.org/es-es/pasoapaso/Paginas/Creatuempresapasoapaso.aspx</url>
+        <url>http://www.creatuempresa.org</url>
         <acronimo/>
         <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
         <en_directorio>false</en_directorio>
@@ -433,9 +514,65 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Programa de Creación de Empresas</nombre>
+        <nombre>Emprendedores y PYME</nombre>
         <activa>true</activa>
-        <url>http://www.creatuempresa.org/</url>
+        <url>http://www.ipyme.org/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Plan Avanza</nombre>
+        <activa>true</activa>
+        <url>http://www.planavanza.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ley de Servicios de la Sociedad de la Información</nombre>
+        <activa>true</activa>
+        <url>http://www.lssi.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>IPV6</nombre>
+        <activa>true</activa>
+        <url>http://www.ipv6.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agenda digital</nombre>
+        <activa>true</activa>
+        <url>http://www.agendadigital.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Subdirección General de Conocimiento y Estudios Turísticos</nombre>
+        <activa>true</activa>
+        <url>http://www.iet.tourspain.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Turismo en cifras</nombre>
+        <activa>true</activa>
+        <url>http://www.turismoencifras.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Estudiar en España</nombre>
+        <activa>true</activa>
+        <url>http://www.studyinspain.info</url>
         <acronimo/>
         <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
         <en_directorio>false</en_directorio>
@@ -443,7 +580,7 @@
     <semilla>
         <nombre>Facturae</nombre>
         <activa>true</activa>
-        <url>http://www.facturae.es/</url>
+        <url>http://www.facturae.gob.es/</url>
         <acronimo/>
         <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
         <en_directorio>false</en_directorio>

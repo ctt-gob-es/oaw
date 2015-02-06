@@ -38,13 +38,13 @@ public final class RastreoDAO {
         }
     }
 
-    public static void actualizarEstadoRastreo(Connection c, long id_rast, int status) {
-        if (id_rast != -1) {
+    public static void actualizarEstadoRastreo(Connection c, long idRastreo, int status) {
+        if (idRastreo != -1) {
             java.sql.PreparedStatement pst = null;
             try {
                 pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE id_rastreo = ?");
                 pst.setInt(1, status);
-                pst.setLong(2, id_rast);
+                pst.setLong(2, idRastreo);
                 pst.executeUpdate();
             } catch (SQLException e) {
                 LOG.error("Error al actualizar el estado del rastreo");
@@ -155,13 +155,13 @@ public final class RastreoDAO {
         }
     }
 
-    public static int recuperarCartuchoPorRastreo(Connection c, long id_rastreo) throws Exception {
+    public static int recuperarCartuchoPorRastreo(Connection c, long idRastreo) throws Exception {
         PreparedStatement pes1 = null;
         ResultSet res1 = null;
         int id_cartucho = -1;
         try {
             pes1 = c.prepareStatement("SELECT * FROM cartucho_rastreo WHERE id_rastreo = ?");
-            pes1.setLong(1, id_rastreo);
+            pes1.setLong(1, idRastreo);
             res1 = pes1.executeQuery();
             if (res1.next()) {
                 id_cartucho = res1.getInt(1);
@@ -185,12 +185,12 @@ public final class RastreoDAO {
         return id_cartucho;
     }
 
-    public static Long recuperarIdNorma(Connection c, long id_rastreo) throws Exception {
+    public static Long recuperarIdNorma(Connection c, long idRastreo) throws Exception {
         PreparedStatement pes = null;
         ResultSet res = null;
         try {
             pes = c.prepareStatement("SELECT * FROM rastreo WHERE id_rastreo = ?");
-            pes.setLong(1, id_rastreo);
+            pes.setLong(1, idRastreo);
             res = pes.executeQuery();
             if (res.next()) {
                 return res.getLong("id_guideline");
@@ -214,12 +214,12 @@ public final class RastreoDAO {
         return null;
     }
 
-    public static String recuperarFicheroNorma(Connection c, long id_guideline) throws Exception {
+    public static String recuperarFicheroNorma(Connection c, long idGuideline) throws Exception {
         PreparedStatement pes = null;
         ResultSet res = null;
         try {
-            pes = c.prepareStatement("SELECT * FROM tguidelines WHERE cod_guideline = ?");
-            pes.setLong(1, id_guideline);
+            pes = c.prepareStatement("SELECT des_guideline FROM tguidelines WHERE cod_guideline = ?");
+            pes.setLong(1, idGuideline);
             res = pes.executeQuery();
             if (res.next()) {
                 return res.getString("des_guideline");
@@ -265,11 +265,11 @@ public final class RastreoDAO {
             throw e;
         } finally {
             try {
-                if (pes != null) {
-                    pes.close();
-                }
                 if (res != null) {
                     res.close();
+                }
+                if (pes != null) {
+                    pes.close();
                 }
             } catch (Exception e) {
                 Logger.putLog("Excepcion al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);

@@ -44,23 +44,23 @@ public final class AnnexUtils {
 
     //Anexos sin iteraciones *************************************************************************************
 
-    public static void createAnnex(HttpServletRequest request, Long idObsExecution, Long idOperation) throws Exception {
+    public static void createAnnex(final HttpServletRequest request, final Long idObsExecution, final Long idOperation) throws Exception {
         FileWriter writer = null;
         Connection c = DataBaseManager.getConnection();
         try {
-            OutputFormat of = new OutputFormat("XML", "UTF-8", true);
+            final OutputFormat of = new OutputFormat("XML", "UTF-8", true);
 
-            PropertiesManager pmgr = new PropertiesManager();
-            File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_paginas.xml");
+            final PropertiesManager pmgr = new PropertiesManager();
+            final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_paginas.xml");
             if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
                 Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
             }
             writer = new FileWriter(file);
 
-            ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
+            final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
 
-            XMLSerializer serializer = new XMLSerializer(writer, of);
-            ContentHandler hd = serializer.asContentHandler();
+            final XMLSerializer serializer = new XMLSerializer(writer, of);
+            final ContentHandler hd = serializer.asContentHandler();
             hd.startDocument();
             hd.startElement("", "", "resultados", null);
 
@@ -112,177 +112,30 @@ public final class AnnexUtils {
             hd.endElement("", "", "resultados");
             hd.endDocument();
         } catch (IOException e) {
-            Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         } catch (SAXException e) {
-            Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
             try {
                 writer.close();
             } catch (Exception e) {
-                Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
             }
             DataBaseManager.closeConnection(c);
         }
     }
 
-    /*public static void createAnnex2E(HttpServletRequest request, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        FileWriter writer = null;
-        try {
-            OutputFormat of = new OutputFormat("XML", "UTF-8", true);
-
-            writer = new FileWriter("/usr/share/anexos/anexo_portales.xml");
-
-            XMLSerializer serializer = new XMLSerializer(writer, of);
-            ContentHandler hd = serializer.asContentHandler();
-            hd.startDocument();
-            hd.startElement("", "", "resultados", null);
-
-            List<ObservatoryEvaluationForm> siteEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
-            String semilla = "";
-
-            for (int i = 0; i < pageExecutionList.size(); i++) {
-                ObservatoryEvaluationForm evaluationForm = pageExecutionList.get(i);
-
-                if (StringUtils.isEmpty(semilla)) {
-                    semilla = evaluationForm.getUrl();
-                }
-
-                if ((i == 0) || (!evaluationForm.getCrawlerExecutionId().equals(pageExecutionList.get(i - 1).getCrawlerExecutionId()))) {
-                    hd.startElement("", "", "portal", null);
-
-                    hd.startElement("", "", "nombre", null);
-                    hd.characters(evaluationForm.getSeed().getName().toCharArray(), 0, evaluationForm.getSeed().getName().length());
-                    hd.endElement("", "", "nombre");
-
-                    hd.startElement("", "", "categoria", null);
-                    hd.characters(evaluationForm.getSeed().getCategory().toCharArray(), 0, evaluationForm.getSeed().getCategory().length());
-                    hd.endElement("", "", "categoria");
-
-                    hd.startElement("", "", "depende_de", null);
-                    hd.characters(evaluationForm.getSeed().getDependence().toCharArray(), 0, evaluationForm.getSeed().getDependence().length());
-                    hd.endElement("", "", "depende_de");
-                }
-
-                siteEvaluationList.add(evaluationForm);
-
-                if ((i == pageExecutionList.size() - 1) || (!evaluationForm.getCrawlerExecutionId().equals(pageExecutionList.get(i + 1).getCrawlerExecutionId()))) {
-
-                    if (siteEvaluationList.size() > 0) {
-                        ScoreForm scoreForm = IntavUtils.generateScores(request, siteEvaluationList);
-
-                        hd.startElement("", "", "semilla", null);
-                        hd.characters(semilla.toCharArray(), 0, semilla.length());
-                        hd.endElement("", "", "semilla");
-
-                        hd.startElement("", "", "puntuacion", null);
-                        hd.characters(scoreForm.getTotalScore().toString().toCharArray(), 0, scoreForm.getTotalScore().toString().length());
-                        hd.endElement("", "", "puntuacion");
-
-                        hd.startElement("", "", "adecuacion", null);
-                        hd.characters(IntavUtils.getValidationLevel(scoreForm, request).toCharArray(), 0, IntavUtils.getValidationLevel(scoreForm, request).length());
-                        hd.endElement("", "", "adecuacion");
-                    }
-
-                    hd.endElement("", "", "portal");
-
-                    siteEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
-                    semilla = "";
-                }
-            }
-            hd.endElement("", "", "resultados");
-            hd.endDocument();
-        } catch (IOException e) {
-            Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } catch (SAXException e) {
-            Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-        }
-    }*/
-
-    //Anexos con iteraciones *************************************************************************************
-
-	/*public static Map<Long, Map<String, ScoreForm>> createAnnexMap(HttpServletRequest request, List<ObservatoryEvaluationForm> pageExecutionList){
-        Connection c = null;
-		Connection conn = null;
-		PropertiesManager pmgr = new PropertiesManager();
-		
-		Map<Long, Map<String, ScoreForm>> seedMap = new HashMap<Long, Map<String, ScoreForm>>();
-		
-		try{
-			c = DataBaseManager.getConnection();
-			conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
-			
-			//Semillas
-			List<Long> initialSeedList = new ArrayList<Long>();
-			for (ObservatoryEvaluationForm oeForm : pageExecutionList){
-				if (!initialSeedList.contains(Long.valueOf(oeForm.getSeed().getId()))){
-					initialSeedList.add(Long.valueOf(oeForm.getSeed().getId()));
-				}
-			}
-			//Observatorios asociados y fechas de estos
-			Map<Long, String> observatoryDateMap = new HashMap<Long, String>();
-			Long idExecution = pageExecutionList.get(0).getObservatoryExecutionId();
-			Long idObservatory = ObservatorioDAO.getObservatoryFormFromExecution(c, idExecution).getId();
-			List<ObservatorioRealizadoForm> fulfilledObsList = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, null);
-			for (ObservatorioRealizadoForm orForm : fulfilledObsList){
-				observatoryDateMap.put(orForm.getId(), orForm.getFechaStr());
-			}
-			
-			int i = 0;
-			for(Long idSeed :initialSeedList) {
-				List<Long> executedCrawlerList = new ArrayList<Long>();
-				//lista de ids de todas las ejecuciones del rastreo asociado a una semilla de un observatorio
-				executedCrawlerList = ObservatorioDAO.getSeedExecutionsFromObservatory(c, String.valueOf(idSeed), idObservatory);
-				Collections.reverse(executedCrawlerList);
-				Map<String, ScoreForm> mapCrawler = new HashMap<String, ScoreForm>();
-				for (Long executedCrawler : executedCrawlerList){
-					Evaluator evaluator = new Evaluator();
-					idExecution = ObservatorioDAO.getIdExecutionObservatoryFromExCrawler(c, executedCrawler);
-					List<ObservatoryEvaluationForm> siteEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
-					String methodology = ObservatorioDAO.getMethodology(c, idExecution);
-					ArrayList<Analysis> analisisList = AnalisisDatos.getAnalysisByTracking(executedCrawler, IntavConstants.NO_PAGINATION, request);
-					if (analisisList != null && !analisisList.isEmpty()){	
-						for (Analysis analisis : analisisList){
-							Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, analisis.getCode(), EvaluatorUtils.getDocList());
-							ObservatoryEvaluationForm seedEvaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
-							siteEvaluationList.add(seedEvaluationForm);	
-						}
-						ScoreForm scoreForm = IntavUtils.generateScores(request, siteEvaluationList);
-						if (observatoryDateMap.get(idExecution) != null){
-							mapCrawler.put(observatoryDateMap.get(idExecution), scoreForm);
-						}
-					}
-				}
-				seedMap.put(idSeed, mapCrawler);
-				System.out.println("SEMILLA N: " + i++);
-			}
-		}catch (Exception e) {
-			Logger.putLog("Error al recuperar las semillas del Observatorio al crear el anexo", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-		}finally{
-			DataBaseManager.closeConnection(c);
-			DataBaseManager.closeConnection(conn);
-		}
-		
-		return seedMap;
-	}*/
-
     public static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(HttpServletRequest request, Long idObsExecution) {
-
-        Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<Long, TreeMap<String, ScoreForm>>();
+        final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<Long, TreeMap<String, ScoreForm>>();
         Connection c = null;
 
         try {
             c = DataBaseManager.getConnection();
-            ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
-            ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
-            List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false);
+            final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
+            final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
+            final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false);
 
-            List<ObservatoryForm> observatoryFormList = new ArrayList<ObservatoryForm>();
+            final List<ObservatoryForm> observatoryFormList = new ArrayList<ObservatoryForm>();
             for (ObservatorioRealizadoForm orForm : observatoriesList) {
                 observatoryFormList.add(ObservatoryExportManager.getObservatory(orForm.getId()));
             }
@@ -291,7 +144,7 @@ public final class AnnexUtils {
                 for (CategoryForm category : observatory.getCategoryFormList()) {
                     for (SiteForm siteForm : category.getSiteFormList()) {
                         TreeMap<String, ScoreForm> seedInfo = new TreeMap<String, ScoreForm>();
-                        ScoreForm scoreForm = new ScoreForm();
+                        final ScoreForm scoreForm = new ScoreForm();
                         scoreForm.setLevel(siteForm.getLevel());
                         scoreForm.setTotalScore(new BigDecimal(siteForm.getScore()));
                         if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) {
@@ -400,7 +253,6 @@ public final class AnnexUtils {
     public static void createMultilanguageAnnexes(Long idObsExecution, Long idOperation) {
         Connection c = null;
         Connection conn = null;
-        PropertiesManager pmgr = new PropertiesManager();
         try {
             conn = DataBaseManager.getConnection();
             c = DataBaseManager.getConnection();

@@ -581,6 +581,7 @@ public interface Constants {
     public static final String MENU_CLIENT = "menuClient";
     public static final String MENU_CARTRIDGES = "menuCartridges";
     public static final String MENU_INTECO_OBS = "menuObservatory";
+    public static final String MENU_SERVICIO_DIAGNOSTICO = "menuServicioDiagnostico";
     public static final String MENU_CATEGORIES = "menuCategories";
     public static final String MENU_CRAWLINGS = "menuCrawlings";
     public static final String MENU_SEEDS = "menuSeeds";
@@ -834,7 +835,8 @@ public interface Constants {
     public static final String PARAM_CONTENT = "content";
     public static final String PARAM_IN_DIRECTORY = "inDirectory";
     public static final String EXECUTE = "execute";
-    public static final String REPORT_OBSERVATORY = "observatorio";
+    public static final String REPORT_OBSERVATORY = "observatorio-1";
+    public static final String REPORT_OBSERVATORY_2_0 = "observatorio-2";
     public static final String REPORT_UNE = "une";
     public static final String REPORT_OBSERVATORY_FILE = "observatorio-inteco-1-0";
     public static final String REPORT_UNE_FILE = "une-139803";

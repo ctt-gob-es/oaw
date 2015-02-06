@@ -20,14 +20,17 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
-import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSections;
 import es.inteco.rastreador2.pdf.BasicServiceExport;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.pdf.PrimaryExportPdfAction;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.utils.*;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
@@ -52,18 +55,41 @@ public final class PrimaryExportPdfUtils {
 
     public static void exportToPdf(Long idExecution, List<Long> evaluationIds, HttpServletRequest request, String generalExpPath, String seed, String content,
                                    long idObservatoryExecution, long observatoryType) throws Exception {
+
+        AnonymousResultExportPdf builder = null;
+        Connection c = null;
+        try {
+            c = DataBaseManager.getConnection();
+            FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idExecution);
+            final String application = CartuchoDAO.getApplication(c, Long.valueOf(crawling.getIdCartridge()));
+            Logger.putLog("Normativa " + application, PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_INFO);
+            if ("UNE-2012".equalsIgnoreCase(application)) {
+                builder = new AnonymousResultExportPdfUNE2012();
+            } else if ("UNE-2004".equalsIgnoreCase(application)) {
+                builder = new AnonymousResultExportPdfUNE2004();
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al preparar el builder de PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            builder = new AnonymousResultExportPdfUNE2004();
+        } finally {
+            DataBaseManager.closeConnection(c);
+        }
+
+        exportToPdf(builder, idExecution, evaluationIds, request, generalExpPath, seed, content, idObservatoryExecution, observatoryType);
+    }
+
+    public static void exportToPdf(final AnonymousResultExportPdf pdfBuilder, final Long idExecution, final List<Long> evaluationIds, final HttpServletRequest request, final String generalExpPath, final String seed, final String content,
+                                    long idObservatoryExecution, long observatoryType) throws Exception {
         File file = new File(generalExpPath);
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             Logger.putLog("Exception: No se ha podido crear los directorios al exportar a PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR);
         }
-        Logger.putLog("Exportando a PDF PrimaryExportPdfUtils.exportToPdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_INFO);
+        Logger.putLog("Exportando a PDF PrimaryExportPdfUtils.exportToPdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_DEBUG);
         FileOutputStream fileOut = new FileOutputStream(file);
         Document document = new Document(PageSize.A4, 50, 50, 120, 72);
 
-        Connection conn = null;
         Connection c = null;
         try {
-            conn = DataBaseManager.getConnection();
             c = DataBaseManager.getConnection();
 
             // Inicializamos el evaluador si hace falta
@@ -79,13 +105,13 @@ public final class PrimaryExportPdfUtils {
             Guideline guideline = null;
             for (Long id : evaluationIds) {
                 Evaluator evaluator = new Evaluator();
-                Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), false);
+                Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false);
                 String methodology = ObservatorioDAO.getMethodology(c, idObservatoryExecution);
                 ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true);
                 evaList.add(evaluationForm);
 
                 if (guideline == null) {
-                    guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0).toString());
+                    guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
                 }
             }
             
@@ -101,7 +127,7 @@ public final class PrimaryExportPdfUtils {
 
             String dateStr = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 
-            boolean isBasicService = idExecution < 0;
+            final boolean isBasicService = idExecution < 0;
             String footerText = CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.foot", seed, dateStr);
             writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, dateStr, isBasicService));
             ExportPageEventsObservatoryMP.setLastPage(false);
@@ -116,20 +142,20 @@ public final class PrimaryExportPdfUtils {
 
             int numChapter = 1;
             int countSections = 1;
-            countSections = AnonymousResultExportPdfSections.createIntroductionChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont);
+            countSections = pdfBuilder.createIntroductionChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont);
             numChapter++;
-            countSections = AnonymousResultExportPdfSections.createObjetiveChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, observatoryType);
+            countSections = pdfBuilder.createObjetiveChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, observatoryType);
             numChapter++;
-            countSections = AnonymousResultExportPdfSections.createMethodologyChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, evaList, observatoryType, isBasicService);
+            countSections = pdfBuilder.createMethodologyChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, evaList, observatoryType, isBasicService);
             numChapter++;
 
             // Resumen de las puntuaciones del Observatorio
             RankingInfo rankingInfo = crawling != null ? calculateRankings(c, idObservatoryExecution, crawling.getSeed()) : null;
-            countSections = addObservatoryScoreSummary(request, document, index, evaList, numChapter, countSections, file, rankingInfo);
+            countSections = addObservatoryScoreSummary(pdfBuilder, request, document, index, evaList, numChapter, countSections, file, rankingInfo);
             numChapter++;
 
             // Resumen de las puntuaciones del Observatorio
-            countSections = addObservatoryResultsSummary(request, document, index, evaList, numChapter, countSections);
+            countSections = addObservatoryResultsSummary(pdfBuilder, request, document, index, evaList, numChapter, countSections);
             numChapter++;
 
             int counter = 1;
@@ -208,7 +234,7 @@ public final class PrimaryExportPdfUtils {
 
             if (!StringUtils.isEmpty(content)) {
                 // Añadir el código fuente analizado
-                countSections = AnonymousResultExportPdfSections.createContentChapter(request, document, content, index, numChapter, countSections);
+                countSections = pdfBuilder.createContentChapter(request, document, content, index, numChapter, countSections);
                 numChapter++;
             }
 
@@ -229,7 +255,6 @@ public final class PrimaryExportPdfUtils {
                     Logger.putLog("Error al cerrar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
-            DataBaseManager.closeConnection(conn);
             DataBaseManager.closeConnection(c);
         }
     }
@@ -365,7 +390,7 @@ public final class PrimaryExportPdfUtils {
         verificationsSection.add(list);
     }
 
-    private static int addObservatoryScoreSummary(HttpServletRequest request, Document document, IndexEvents index, List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections, File file, RankingInfo rankingInfo) throws Exception {
+    private static int addObservatoryScoreSummary(AnonymousResultExportPdf pdfBuilder, HttpServletRequest request, Document document, IndexEvents index, List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections, File file, RankingInfo rankingInfo) throws Exception {
         Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWord = new ArrayList<String>();
@@ -380,7 +405,7 @@ public final class PrimaryExportPdfUtils {
         boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3.bold1"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
 
-        ScoreForm scoreForm = IntavUtils.generateScores(request, evaList);
+        ScoreForm scoreForm = pdfBuilder.generateScores(request, evaList);
 
         boldWord = new ArrayList<String>();
         boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.nivel.adecuacion") + ": ");
@@ -406,13 +431,13 @@ public final class PrimaryExportPdfUtils {
 
         Section section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.41.p1"), ConstantsFont.paragraphFont, section);
-        addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_1);
+        addMidsComparationByVerificationLevelGraphic(pdfBuilder,request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createGlobalTable(request, scoreForm, Constants.OBS_PRIORITY_1));
         //chapter.newPage();
 
         section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.42.p1"), ConstantsFont.paragraphFont, section);
-        addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_2);
+        addMidsComparationByVerificationLevelGraphic(pdfBuilder,request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_2);
         section.add(createGlobalTable(request, scoreForm, Constants.OBS_PRIORITY_2));
 
         PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
@@ -422,7 +447,7 @@ public final class PrimaryExportPdfUtils {
         return countSections;
     }
 
-    private static int addObservatoryResultsSummary(HttpServletRequest request, Document document, IndexEvents index, List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections) throws Exception {
+    private static int addObservatoryResultsSummary(AnonymousResultExportPdf pdfBuilder, HttpServletRequest request, Document document, IndexEvents index, List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections) throws Exception {
         Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, false);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p2"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, false);
@@ -460,7 +485,7 @@ public final class PrimaryExportPdfUtils {
         section.add(table);
     }
 
-    private static void addMidsComparationByVerificationLevelGraphic(HttpServletRequest request, Section section, File file, List<ObservatoryEvaluationForm> evaList, String noDataMess, String level) throws Exception {
+    private static void addMidsComparationByVerificationLevelGraphic(AnonymousResultExportPdf pdfBuilder, HttpServletRequest request, Section section, File file, List<ObservatoryEvaluationForm> evaList, String noDataMess, String level) throws Exception {
         String title;
         String filePath;
         if (level.equals(Constants.OBS_PRIORITY_1)) {
@@ -471,7 +496,7 @@ public final class PrimaryExportPdfUtils {
             filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test3.jpg";
         }
         PropertiesManager pmgr = new PropertiesManager();
-        ResultadosAnonimosObservatorioIntavUtils.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), true);
+        pdfBuilder.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), true);
         Image image = PDFUtils.createImage(filePath, null);
         image.scalePercent(60);
         image.setAlignment(Element.ALIGN_CENTER);

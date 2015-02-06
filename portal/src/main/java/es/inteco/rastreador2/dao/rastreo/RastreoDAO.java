@@ -1875,7 +1875,6 @@ public final class RastreoDAO {
                 form.setSeed(semilla);
                 return form;
             }
-            Logger.putLog("getFullfilledCrawlingExecution return null", RastreoDAO.class, Logger.LOG_LEVEL_INFO);
             return null;
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);

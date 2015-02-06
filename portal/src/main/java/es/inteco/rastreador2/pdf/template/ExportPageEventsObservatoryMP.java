@@ -97,26 +97,27 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
         int posX = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posX"));
         int posY = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posY"));
 
-        Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Informe de Accesibilidad. Logotipo Ministerio de la Presidencia.");
+        Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Ministerio de Hacienda y Administraciones Públicas");
         if (logoMinisterio != null) {
             logoMinisterio.setAbsolutePosition(posX, posY);
             cb.addImage(logoMinisterio);
             cb.endMarkedContentSequence();
         }
 
-        Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Informe de Accesibilidad. Logotipo Observatorio INTECO.");
+        Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Observatorio de Accesibilidad Web");
         if (logoObservatorio != null) {
-            logoObservatorio.setAbsolutePosition(posX + logoMinisterio.getScaledWidth(), posY);
+            //logoObservatorio.setAbsolutePosition(posX + logoMinisterio.getScaledWidth(), posY);
+            logoObservatorio.setAbsolutePosition(d.getPageSize().getWidth() - logoMinisterio.getScaledWidth() - posX - 70, posY);
             cb.addImage(logoObservatorio);
             cb.endMarkedContentSequence();
         }
 
-        Image logoINTECO = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.inteco.logo"), 70, 45, "Informe de Accesibilidad. Logotipo INTECO.");
+        /*Image logoINTECO = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.inteco.logo"), 70, 45, "Informe de Accesibilidad. Logotipo INTECO.");
         if (logoINTECO != null) {
             logoINTECO.setAbsolutePosition(d.getPageSize().getWidth() - logoINTECO.getScaledWidth() - posX, posY);
             cb.addImage(logoINTECO);
             cb.endMarkedContentSequence();
-        }
+        } //*/
     }
 
     private void createFooter(PdfContentByte cb, PdfWriter w, BaseFont texto, Document d) throws DocumentException {
@@ -138,6 +139,6 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
         } else {
             ExportPageEventsUtils.addFooter(d, w, cb, texto, footText, Constants.VERDE_O_MP);
         }
-
     }
+
 }
