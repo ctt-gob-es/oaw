@@ -24,11 +24,11 @@ import java.util.regex.Pattern;
 public class CrawlerDOMUtils {
 
     public static List<Element> getElementsByTagName(Document document, String tag) {
-        List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<Element>();
 
-        NodeList allElements = document.getElementsByTagName("*");
+        final NodeList allElements = document.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
-            Element tagElement = (Element) allElements.item(i);
+            final Element tagElement = (Element) allElements.item(i);
             if (tagElement.getNodeName().equalsIgnoreCase(tag)) {
                 elements.add(tagElement);
             }
@@ -37,12 +37,12 @@ public class CrawlerDOMUtils {
         return elements;
     }
 
-    public static List<Element> getElementsByTagName(Element element, String tag) {
-        List<Element> elements = new ArrayList<Element>();
+    public static List<Element> getElementsByTagName(final Element element, final String tag) {
+        final List<Element> elements = new ArrayList<Element>();
 
-        NodeList allElements = element.getElementsByTagName("*");
+        final NodeList allElements = element.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
-            Element tagElement = (Element) allElements.item(i);
+            final Element tagElement = (Element) allElements.item(i);
             if (tagElement.getNodeName().equalsIgnoreCase(tag)) {
                 elements.add(tagElement);
             }
@@ -51,10 +51,10 @@ public class CrawlerDOMUtils {
         return elements;
     }
 
-    public static boolean hasAttribute(Element element, String attributeName) {
-        NamedNodeMap attributes = element.getAttributes();
+    public static boolean hasAttribute(final Element element, final String attributeName) {
+        final NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
-            Node attribute = attributes.item(i);
+            final Node attribute = attributes.item(i);
             if (attribute.getNodeName().equalsIgnoreCase(attributeName)) {
                 return true;
             }
@@ -62,10 +62,10 @@ public class CrawlerDOMUtils {
         return false;
     }
 
-    public static String getAttribute(Element element, String attributeName) {
-        NamedNodeMap attributes = element.getAttributes();
+    public static String getAttribute(final Element element, final String attributeName) {
+        final NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
-            Node attribute = attributes.item(i);
+            final Node attribute = attributes.item(i);
             if (attribute.getNodeName().equalsIgnoreCase(attributeName)) {
                 return attribute.getTextContent();
             }
@@ -73,7 +73,7 @@ public class CrawlerDOMUtils {
         return null;
     }
 
-    public static Document getDocument(String textContent) throws Exception {
+    public static Document getDocument(final String textContent) throws Exception {
         CheckerParser parser = new CheckerParser(new HTMLConfiguration());
 
         try {
@@ -86,7 +86,7 @@ public class CrawlerDOMUtils {
         return parser.getDocument();
     }
 
-    private static String getFrameContent(String url) throws Exception {
+    private static String getFrameContent(final String url) throws Exception {
         HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
         InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
         String textContent = StringUtils.getContentAsString(markableInputStream, CrawlerUtils.getCharset(connection, markableInputStream));
@@ -98,7 +98,7 @@ public class CrawlerDOMUtils {
         return textContent;
     }
 
-    public static String getFramesSource(String rootUrl, String textContent) throws Exception {
+    public static String getFramesSource(final String rootUrl, final String textContent) throws Exception {
         String framesSource = "";
         Document document = getDocument(textContent);
         List<Element> frames = getElementsByTagName(document, "frame");
@@ -123,7 +123,7 @@ public class CrawlerDOMUtils {
         return framesSource;
     }
 
-    public static String appendFramesSource(String textContent, String framesSource) throws Exception {
+    public static String appendFramesSource(final String textContent, String framesSource) throws Exception {
         Document document = getDocument(textContent);
 
         List<Element> noframes = getElementsByTagName(document, "noframes");
@@ -165,8 +165,8 @@ public class CrawlerDOMUtils {
         return serializeDocument(document);
     }
 
-    private static void addFrameDocument(Element element, Document frameDocument) {
-        NodeList frameChildren = frameDocument.getChildNodes();
+    private static void addFrameDocument(final Element element, final Document frameDocument) {
+        final NodeList frameChildren = frameDocument.getChildNodes();
 
         for (int i = 0; i < frameChildren.getLength(); i++) {
             if (frameChildren.item(i).getNodeType() == Node.ELEMENT_NODE || frameChildren.item(i).getNodeType() == Node.TEXT_NODE) {
@@ -175,8 +175,8 @@ public class CrawlerDOMUtils {
         }
     }
 
-    private static void addFrameDocumentSibling(Element parentElement, Element element, Document frameDocument) {
-        NodeList frameChildren = frameDocument.getChildNodes();
+    private static void addFrameDocumentSibling(final Element parentElement, final Element element, final Document frameDocument) {
+        final NodeList frameChildren = frameDocument.getChildNodes();
 
         for (int i = 0; i < frameChildren.getLength(); i++) {
             if (frameChildren.item(i).getNodeType() == Node.ELEMENT_NODE || frameChildren.item(i).getNodeType() == Node.TEXT_NODE) {
@@ -192,7 +192,7 @@ public class CrawlerDOMUtils {
             for (Element iframe : iframes) {
                 try {
                     if (hasAttribute(iframe, "src") && StringUtils.isNotEmpty(getAttribute(iframe, "src"))) {
-                        if (!getAttribute(iframe, "src").equals("#")) {
+                        if (!getAttribute(iframe, "src").equals("#") && !getAttribute(iframe, "src").endsWith(".gif")) {
                             String frameUrl = new URL(new URL(rootUrl), getAttribute(iframe, "src")).toString();
                             String frameSource = "<!-- Código HTML del iframe localizado en " + frameUrl + " -->\n\n" +
                                     getFrameContent(frameUrl) +
@@ -332,8 +332,8 @@ public class CrawlerDOMUtils {
         return results;
     }
 
-    public static String getBaseUrl(Document document) {
-        List<Element> bases = getElementsByTagName(document, "base");
+    public static String getBaseUrl(final Document document) {
+        final List<Element> bases = getElementsByTagName(document, "base");
 
         for (Element base : bases) {
             if (base.hasAttribute("href") && StringUtils.isNotEmpty(base.getAttribute("href"))) {

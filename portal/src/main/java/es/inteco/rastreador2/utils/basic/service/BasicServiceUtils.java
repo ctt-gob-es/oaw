@@ -35,7 +35,7 @@ public final class BasicServiceUtils {
     private BasicServiceUtils() {
     }
 
-    public static long saveRequestData(BasicServiceForm basicServiceForm, String status) {
+    public static long saveRequestData(final BasicServiceForm basicServiceForm, final String status) {
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
@@ -48,7 +48,7 @@ public final class BasicServiceUtils {
         return 0;
     }
 
-    public static void updateRequestStatus(BasicServiceForm basicServiceForm, String status) {
+    public static void updateRequestStatus(final BasicServiceForm basicServiceForm, final String status) {
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
@@ -60,7 +60,7 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static void somethingWasWrongMessage(HttpServletRequest request, BasicServiceForm basicServiceForm, String message) throws Exception {
+    public static void somethingWasWrongMessage(final HttpServletRequest request, final BasicServiceForm basicServiceForm, final String message) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         String subject = CrawlerUtils.getResources(request).getMessage("basic.service.mail.error.subject");
         ArrayList<String> mailTo = new ArrayList<String>();
@@ -69,7 +69,7 @@ public final class BasicServiceUtils {
                 mailTo, subject, message, null, null, null, null, true);
     }
 
-    public static List<BasicServiceForm> getBasicServiceRequestByStatus(String status) {
+    public static List<BasicServiceForm> getBasicServiceRequestByStatus(final String status) {
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
@@ -82,7 +82,7 @@ public final class BasicServiceUtils {
         return null;
     }
 
-    public static BasicServiceForm getBasicServiceForm(BasicServiceForm basicServiceForm, HttpServletRequest request) throws Exception {
+    public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) throws Exception {
         basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
         basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
         basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
@@ -102,18 +102,18 @@ public final class BasicServiceUtils {
         return basicServiceForm;
     }
 
-    public static ActionErrors validateReport(BasicServiceForm basicServiceForm) {
-        ActionErrors errors = new ActionErrors();
-
-        if (!basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_OBSERVATORY)
-                && !basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE)) {
+    public static ActionErrors validateReport(final BasicServiceForm basicServiceForm) {
+        final ActionErrors errors = new ActionErrors();
+        final String report = basicServiceForm.getReport();
+        if (!report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) && !report.equalsIgnoreCase(Constants.REPORT_UNE)
+                && !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_2_0) && !report.equalsIgnoreCase("observatorio-1-nobroken") ) {
             errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.report.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
         }
 
         return errors;
     }
 
-    public static ActionErrors validateUrlOrContent(BasicServiceForm basicServiceForm) {
+    public static ActionErrors validateUrlOrContent(final BasicServiceForm basicServiceForm) {
         ActionErrors errors = new ActionErrors();
 
         if (StringUtils.isEmpty(basicServiceForm.getDomain()) && StringUtils.isEmpty(basicServiceForm.getContent())) {
@@ -123,7 +123,7 @@ public final class BasicServiceUtils {
         return errors;
     }
 
-    public static String checkIDN(String url) {
+    public static String checkIDN(final String url) {
         try {
             return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
         } catch (Exception e) {
@@ -132,9 +132,9 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static Long getGuideline(String report) {
+    public static Long getGuideline(final String report) {
         PropertiesManager pmgr = new PropertiesManager();
-        if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE)) {
+        if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE) || report.equals("observatorio-1-nobroken")) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"));
         } else if (report.equals(Constants.REPORT_UNE) || report.equalsIgnoreCase(Constants.REPORT_UNE_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.id"));
@@ -142,33 +142,34 @@ public final class BasicServiceUtils {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.id"));
         } else if (report.equals(Constants.REPORT_WCAG_2_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag2.intav.id"));
-            // TODO: Añadir condición para observatorio une-2012
+        } else if (report.equals(Constants.REPORT_OBSERVATORY_2_0)) {
+            return 7l;
         } else {
             return null;
         }
     }
 
-    public static void scheduleBasicServiceJob(BasicServiceForm basicServiceForm) throws Exception {
+    public static void scheduleBasicServiceJob(final BasicServiceForm basicServiceForm) throws Exception {
         Logger.putLog("Programando el rastreo con la fecha: " + basicServiceForm.getSchedulingDate(), CrawlerWS.class, Logger.LOG_LEVEL_INFO);
-        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-        Scheduler scheduler = schedulerFactory.getScheduler();
+        final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+        final Scheduler scheduler = schedulerFactory.getScheduler();
         scheduler.start();
 
-        JobDetail jobDetail = new JobDetail("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
+        final JobDetail jobDetail = new JobDetail("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
 
         if (basicServiceForm.getId() == 0) {
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, es.inteco.common.Constants.BASIC_SERVICE_STATUS_SCHEDULED));
         }
 
-        JobDataMap jobDataMap = new JobDataMap();
+        final JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(es.inteco.rastreador2.ws.commons.Constants.BASIC_SERVICE_FORM, basicServiceForm);
         jobDetail.setJobDataMap(jobDataMap);
 
-        Trigger trigger = new SimpleTrigger("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
+        final Trigger trigger = new SimpleTrigger("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
-    public static String getTitleFromContent(String content) {
+    public static String getTitleFromContent(final String content) {
         String result;
         PropertiesManager pmgr = new PropertiesManager();
         Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -191,7 +192,7 @@ public final class BasicServiceUtils {
         return FileUtils.normalizeFileName(result);
     }
 
-    public static String getTitleDocFromContent(String content, boolean isCompleted) {
+    public static String getTitleDocFromContent(final String content, final boolean isCompleted) {
         try {
             PropertiesManager pmgr = new PropertiesManager();
             Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);

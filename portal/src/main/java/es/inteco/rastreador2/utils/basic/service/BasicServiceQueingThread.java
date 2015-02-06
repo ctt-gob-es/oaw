@@ -4,10 +4,8 @@ import es.inteco.common.Constants;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 
 public class BasicServiceQueingThread extends Thread {
-    private BasicServiceForm basicServiceForm;
 
-    public BasicServiceQueingThread() {
-    }
+    private final BasicServiceForm basicServiceForm;
 
     public BasicServiceQueingThread(BasicServiceForm basicServiceForm) {
         this.basicServiceForm = basicServiceForm;

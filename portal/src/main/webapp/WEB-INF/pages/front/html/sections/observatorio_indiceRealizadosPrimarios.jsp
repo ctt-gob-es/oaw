@@ -102,10 +102,10 @@
 																<li><img src="../images/multilanguage_disable.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></li>
 															</logic:equal>
 														</logic:notEqual>
-														<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>">
-															<li><html:link forward="getAnnexes" name="params2"><img src="../images/xml.jpg" alt="<bean:message key="indice.observatorio.eliminar.alt" />"/></html:link></li>
+														<%-- <logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>"> --%>
+															<li><html:link forward="getAnnexes" name="params2"><img src="../images/xml.jpg" alt="<bean:message key="indice.observatorio.anexos.alt" />"/></html:link></li>
 															<li><html:link forward="<%= Constants.EXPORT_ALL_PDF_FORWARD %>" name="paramsExportPDF"><img src="../images/AllPDF.gif" alt="<bean:message key="indice.observatorio.generar.PDFs.alt" />"/></html:link></li>
-														</logic:equal>
+														<%-- </logic:equal> --%>
 														<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeMultilanguage%>">
 															<li><html:link forward="getAnnexesMultilanguage" name="params2"><img src="../images/xml.jpg" alt="<bean:message key="indice.observatorio.eliminar.alt" />"/></html:link></li>
 															<li><html:link forward="<%= Constants.EXPORT_ALL_PDF_FORWARD_MULTILANGUAGE %>" name="paramsExportPDF"><img src="../images/AllPDF.gif" alt="<bean:message key="indice.observatorio.generar.PDFs.alt" />"/></html:link></li>

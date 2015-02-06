@@ -29,9 +29,15 @@ public class SetSystemPropertiesServlet extends GenericServlet {
     }
 
     private void setTrustStore(PropertiesManager pmgr) {
-        String trustStorePath = pmgr.getValue(CRAWLER_PROPERTIES, "digital.certificates.path");
-        Logger.putLog("Configurando el truststore en " + trustStorePath, SetSystemPropertiesServlet.class, Logger.LOG_LEVEL_INFO);
-        System.setProperty("javax.net.ssl.trustStore", trustStorePath);
+        final String trustStorePath = pmgr.getValue("certificados.properties", "truststore.path");
+        final String trustStorePass = pmgr.getValue("certificados.properties", "truststore.pass");
+        if ( trustStorePath!=null && !trustStorePath.isEmpty()) {
+            System.setProperty("javax.net.ssl.trustStore", trustStorePath);
+            Logger.putLog("Configurando el truststore en " + trustStorePath, SetSystemPropertiesServlet.class, Logger.LOG_LEVEL_INFO);
+        }
+        if ( trustStorePass!=null && !trustStorePass.isEmpty()) {
+            System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass);
+        }
     }
 
     private void setProxy(PropertiesManager pmgr) {
@@ -67,6 +73,17 @@ public class SetSystemPropertiesServlet extends GenericServlet {
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLContext.setDefault(sc);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (Exception e) {
+            Logger.putLog("Excepción: ", SetSystemPropertiesServlet.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLContext.setDefault(sc);
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
         } catch (Exception e) {
             Logger.putLog("Excepción: ", SetSystemPropertiesServlet.class, Logger.LOG_LEVEL_ERROR, e);

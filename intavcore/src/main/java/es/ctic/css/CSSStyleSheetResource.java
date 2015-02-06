@@ -3,7 +3,7 @@ package es.ctic.css;
 import org.w3c.dom.Element;
 
 /**
- * Clase que representa un recurso CSS que representa una hoja de estilos completa. Esta clase contendrá los estilos de
+ * Clase que simula un recurso CSS que representa una hoja de estilos completa. Esta clase contendrá los estilos de
  * un bloque style o una hoja de estilos enlazada bien mediante la etiqueta link o mediante la regla @import de CSS
  */
 public class CSSStyleSheetResource implements CSSResource {

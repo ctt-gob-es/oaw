@@ -34,16 +34,16 @@ public class ExecuteScheduledObservatory implements StatefulJob {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        Long observatoryId = (Long) jobDataMap.get(Constants.OBSERVATORY_ID);
-        Long cartridgeId = (Long) jobDataMap.get(Constants.CARTRIDGE_ID);
-        String url = "";
+        final JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+        final Long observatoryId = (Long) jobDataMap.get(Constants.OBSERVATORY_ID);
+        final Long cartridgeId = (Long) jobDataMap.get(Constants.CARTRIDGE_ID);
 
         Logger.putLog("Lanzando la ejecución del observatorio con id " + observatoryId, ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
 
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
 
         Connection c = null;
+        String url = "";
         try {
             c = DataBaseManager.getConnection();
 

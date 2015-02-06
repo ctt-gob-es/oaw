@@ -43,8 +43,6 @@ public class VerObservatorioAction extends Action {
     }
 
     private ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-
         long idObservatorio = 0;
         if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
             idObservatorio = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));

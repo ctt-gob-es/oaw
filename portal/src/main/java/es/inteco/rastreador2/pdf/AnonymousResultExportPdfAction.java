@@ -15,7 +15,11 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2004Builder;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012Builder;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
@@ -48,8 +52,8 @@ public class AnonymousResultExportPdfAction extends Action {
     private ActionForward listPdf(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) {
         PropertiesManager pmgr = new PropertiesManager();
 
-        long idExecution = request.getParameter(Constants.ID) != null?Long.parseLong(request.getParameter(Constants.ID)):0;
-        long idObservatory =  request.getParameter(Constants.ID_OBSERVATORIO) != null?Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)):0;
+        long idExecution = request.getParameter(Constants.ID) != null ? Long.parseLong(request.getParameter(Constants.ID)) : 0;
+        long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
 
         String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecution + File.separator + "anonymous" + File.separator;
 
@@ -64,11 +68,16 @@ public class AnonymousResultExportPdfAction extends Action {
 
             File checkFile = new File(filePath);
 
-            // Si el pdf no ha sido creado lo creamos
-            if (ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null).size() != 0) {
+            final String version = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
+            if (hasResults(idExecution)) {
+                // Si el pdf no ha sido creado o lo queremos regenerar lo creamos
                 if (request.getParameter(Constants.EXPORT_PDF_REGENERATE) != null || !checkFile.exists()) {
-                    ResultadosAnonimosObservatorioIntavUtils.generateGraphics(request, graphicPath, Constants.MINISTERIO_P, true);
-                    exportToPdf(idObservatory, idExecution, request, filePath, graphicPath, observatoryForm.getTipo());
+                    checkFile.createNewFile();
+                    final boolean includeEvolution = includeEvolution(c, idObservatory, idExecution);
+                    final AnonymousResultPdfBuilder pdfBuilder = getPdfBuilder(checkFile, observatoryForm.getTipo(), version);
+                    pdfBuilder.generateGraphics(request, graphicPath);
+                    List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecution);
+                    pdfBuilder.buildDocument(CrawlerUtils.getResources(request), null, graphicPath, Long.toString(idObservatory), Long.toString(idExecution), categories, includeEvolution);
                     FileUtils.deleteDir(new File(graphicPath));
                 }
             } else {
@@ -91,6 +100,24 @@ public class AnonymousResultExportPdfAction extends Action {
         }
 
         return null;
+    }
+
+    private AnonymousResultPdfBuilder getPdfBuilder(final File file, final long tipo, final String version) throws Exception {
+        if ("UNE-2012".equalsIgnoreCase(version)) {
+            return new AnonymousResultPdfUNE2012Builder(file, tipo);
+        } else {
+            return new AnonymousResultPdfUNE2004Builder(file, tipo);
+        }
+    }
+
+    private boolean hasResults(long idExecution) throws Exception {
+        return ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null).size() != 0;
+    }
+
+    private boolean includeEvolution(Connection c, long idObservatory, long idExecution) throws Exception {
+        PropertiesManager pmgr = new PropertiesManager();
+        final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
+        return ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, observatoryRealizadoForm.getFecha()).size() >= Integer.parseInt(pmgr.getValue("pdf.properties", "pdf.anonymous.results.pdf.min.obser"));
     }
 
     private void exportToPdf(Long idObservatory, Long idExecution, HttpServletRequest request, String generalExpPath, String graphicPath, long observatoryType) {
@@ -170,7 +197,7 @@ public class AnonymousResultExportPdfAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Error al crear la seccion de resultados.", AnonymousResultExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
-            if (fileOut!=null) {
+            if (fileOut != null) {
                 try {
                     fileOut.close();
                 } catch (IOException e) {

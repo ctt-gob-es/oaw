@@ -330,7 +330,7 @@
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
                     <check id="32" onlyWarning="true"/>
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
-                    <check id="437" onlyWarning="true"/>
+                    <!-- <check id="437" onlyWarning="true"/> -->
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
                     <check id="31"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->

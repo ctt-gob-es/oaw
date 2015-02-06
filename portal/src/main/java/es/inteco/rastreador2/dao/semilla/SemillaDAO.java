@@ -88,7 +88,7 @@ public final class SemillaDAO {
             ps.setBoolean(7, activa);
             ps.setBoolean(8, inDirectory);
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
 
             ps = c.prepareStatement("SELECT id_lista FROM lista WHERE nombre like ? ORDER BY id_lista DESC LIMIT 1");
             ps.setString(1, nombreSemilla);
@@ -147,7 +147,6 @@ public final class SemillaDAO {
     }
 
     public static List<SemillaForm> getObservatorySeeds(Connection c, int pagina, SemillaSearchForm searchForm) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<SemillaForm> seedList = new ArrayList<SemillaForm>();
@@ -223,10 +222,8 @@ public final class SemillaDAO {
     }
 
     public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
             int count = 1;
             String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
@@ -274,7 +271,6 @@ public final class SemillaDAO {
     }
 
     public static List<SemillaForm> getSeedsChoose(Connection c, int pagina, SemillaSearchForm searchForm) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<SemillaForm> seedList = new ArrayList<SemillaForm>();
@@ -329,7 +325,6 @@ public final class SemillaDAO {
     }
 
     public static int countSeedsChoose(Connection c, int type, SemillaSearchForm searchForm) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -373,7 +368,6 @@ public final class SemillaDAO {
     }
 
     public static void deleteSeed(Connection c, long idSemilla) throws Exception {
-
         PreparedStatement ps = null;
 
         try {
@@ -389,7 +383,6 @@ public final class SemillaDAO {
     }
 
     public static void deleteObservatorySeed(Connection c, long idSemilla, List<ObservatorioForm> observatoryFormList) throws Exception {
-
         PreparedStatement ps = null;
 
         try {
@@ -419,7 +412,6 @@ public final class SemillaDAO {
     }
 
     public static SemillaForm getSeedById(Connection c, long idSemilla) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rs = null;
         SemillaForm semillaForm = new SemillaForm();
@@ -461,7 +453,6 @@ public final class SemillaDAO {
     }
 
     public static long getIdList(Connection c, String nombreLista, Long id_categoria) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -492,7 +483,6 @@ public final class SemillaDAO {
     }
 
     public static void editSeed(Connection c, SemillaForm semillaForm) throws Exception {
-
         PreparedStatement ps = null;
 
         try {
@@ -527,25 +517,10 @@ public final class SemillaDAO {
     }
 
     public static void removeListById(Connection c, long idList) throws Exception {
-
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("DELETE FROM lista WHERE id_lista = ?");
             ps.setLong(1, idList);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
-        }
-    }
-
-    public static void removeListByName(Connection c, String nameList) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = c.prepareStatement("DELETE FROM lista WHERE nombre = ?");
-            ps.setString(1, nameList);
             ps.executeUpdate();
         } catch (Exception e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -679,22 +654,6 @@ public final class SemillaDAO {
             for (Connection conn : connections) {
                 DataBaseManager.closeConnection(conn);
             }
-        }
-    }
-
-    public static void addObservatorySeed(Connection c, long id_seed, long id_observatory) throws Exception {
-        PreparedStatement ps = null;
-
-        try {
-            ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES (?, ?)");
-            ps.setLong(1, id_observatory);
-            ps.setLong(2, id_seed);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
@@ -939,38 +898,13 @@ public final class SemillaDAO {
         }
     }
 
-    public static List<Long> getCategorySeedIds(Connection c, Long idCategory) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT id_lista FROM lista WHERE id_categoria = ?");
-            ps.setLong(1, idCategory);
-            rs = ps.executeQuery();
-
-            List<Long> categoryIdsList = new ArrayList<Long>();
-            while (rs.next()) {
-                categoryIdsList.add(rs.getLong(1));
-            }
-
-            return categoryIdsList;
-        } catch (Exception e) {
-            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-    }
-
     public static void deleteCategorySeed(Connection c, String idSemilla) throws Exception {
-        PreparedStatement ps = null;
         try {
             List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
             deleteObservatorySeed(c, Long.parseLong(idSemilla), observatoryFormList);
         } catch (Exception e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
@@ -982,7 +916,7 @@ public final class SemillaDAO {
             ps.setString(1, categoriaForm.getName());
             ps.setInt(2, categoriaForm.getOrden());
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
 
             ps = c.prepareStatement("SELECT id_categoria FROM categorias_lista WHERE nombre LIKE ? ORDER BY id_categoria DESC");
             ps.setString(1, categoriaForm.getName());
@@ -1003,7 +937,6 @@ public final class SemillaDAO {
 
     public static void updateSeedCategory(Connection c, CategoriaForm categoriaForm) throws Exception {
         PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
             ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=? WHERE id_categoria = ?");
             ps.setString(1, categoriaForm.getName());
@@ -1014,12 +947,11 @@ public final class SemillaDAO {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
         }
     }
 
-    public static void saveSeedsCategory(Connection c, List<SemillaForm> semillas,
-                                         String idCategory) throws Exception {
+    public static void saveSeedsCategory(Connection c, List<SemillaForm> semillas, String idCategory) throws Exception {
         PreparedStatement ps = null;
         try {
             c.setAutoCommit(false);

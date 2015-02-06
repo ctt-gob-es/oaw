@@ -19,7 +19,7 @@
     <semilla>
         <nombre>Congreso de los Diputados</nombre>
         <activa>true</activa>
-        <url>http://www.congreso.es/</url>
+        <url>http://www.congreso.es/portal/page/portal/Congreso/Congreso</url>
         <acronimo/>
         <depende_de>Webs públicas del Poder Legislativo</depende_de>
         <en_directorio>false</en_directorio>
@@ -27,7 +27,7 @@
     <semilla>
         <nombre>Senado de España</nombre>
         <activa>true</activa>
-        <url>http://www.senado.es/</url>
+        <url>http://www.senado.es/web/index.html</url>
         <acronimo/>
         <depende_de>Webs públicas del Poder Legislativo</depende_de>
         <en_directorio>false</en_directorio>
@@ -67,7 +67,7 @@
     <semilla>
         <nombre>Tribunal de Cuentas</nombre>
         <activa>true</activa>
-        <url>http://www.tcu.es/</url>
+        <url>http://www.tcu.es/tribunal-de-cuentas/es/</url>
         <acronimo/>
         <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
         <en_directorio>false</en_directorio>
@@ -115,7 +115,7 @@
     <semilla>
         <nombre>Agencia Española de Protección de Datos</nombre>
         <activa>true</activa>
-        <url>https://www.agpd.es/</url>
+        <url>https://www.agpd.es/portalwebAGPD/index-ides-idphp.php</url>
         <acronimo/>
         <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
         <en_directorio>false</en_directorio>
@@ -194,7 +194,7 @@
         <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
     </semilla>
     <semilla>
-        <url>http://museocerralbo.mcu.es/esp/index2.html</url>
+        <url>http://museocerralbo.mcu.es/</url>
         <nombre>Museo Cerralbo</nombre>
         <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
     </semilla>

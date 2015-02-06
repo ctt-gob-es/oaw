@@ -859,5 +859,11 @@
     	<put name="title" value="application.title.resultados" />
         <put name="contents" value="/WEB-INF/pages/front/html/sections/multilanguage_analysisDetail.jsp"/>
     </definition>
+
+    <!-- Página CAMBIAR PASS ADMIN -->
+    <definition name=".servicioDiagnostico" extends="mainLayout">
+        <put name="title" value="application.title.diagnostico" />
+        <put name="contents" value="/WEB-INF/pages/front/html/sections/servicioDiagnostico.jsp"/>
+    </definition>
     
     </tiles-definitions>    

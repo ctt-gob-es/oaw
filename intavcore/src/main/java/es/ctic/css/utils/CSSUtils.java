@@ -39,7 +39,7 @@ public final class CSSUtils {
             final CSSAnalyzer cssAnalyzer = getCSSAnalyzer(checkCode);
             return cssAnalyzer.evaluate(node, cssResources);
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            Logger.putLog("No se ha podido instanciar CSSAnalyzer", CSSUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return Collections.emptyList();
     }

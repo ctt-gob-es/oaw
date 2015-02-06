@@ -17,6 +17,7 @@ import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSectionEv;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSections;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -287,6 +288,8 @@ public final class PDFUtils {
             } catch (Exception e) {
                 Logger.putLog("FALLO faltan parámetros en el texto al generar informe PDF. ", PDFUtils.class, Logger.LOG_LEVEL_ERROR, e);
             }
+        } else if ( text!=null ) {
+            p.add( new Phrase(text,font) );
         }
         return p;
     }
@@ -333,22 +336,6 @@ public final class PDFUtils {
         return item;
     }
 
-    /*public static void addListItem(String text, String url, List list, Font font, boolean spaceBefore, boolean withSymbol) {
-
-        Anchor anchor = new Anchor(text);
-        anchor.setReference(url);
-
-        Paragraph p = new Paragraph(anchor);
-        if (spaceBefore) {
-            p.setSpacingBefore(ConstantsFont.SPACE_LINE);
-        }
-        ListItem item = new ListItem(p);
-        if (!withSymbol) {
-            item.setListSymbol(new Chunk(""));
-        }
-        list.add(item);
-    }*/
-
     public static Image createImage(String path, String alt) {
         try {
             Image image = Image.getInstance(path);
@@ -363,6 +350,10 @@ public final class PDFUtils {
 
     public static PdfPCell createTableCell(HttpServletRequest request, String text, Color backgroundColor, Font font, int align, int margin) {
         return createTableCell(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), text), backgroundColor, font, align, margin);
+    }
+
+    public static PdfPCell createTableCell(final MessageResources resources, String text, Color backgroundColor, Font font, int align, int margin) {
+        return createTableCell(resources.getMessage(text), backgroundColor, font, align, margin);
     }
 
     public static PdfPCell createTableCell(String text, Color backgroundColor, Font font, int align, int margin) {
@@ -395,6 +386,10 @@ public final class PDFUtils {
         return createColSpanTableCell(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), text), backgroundColor, font, colSpan, align);
     }
 
+    public static PdfPCell createColSpanTableCell(final MessageResources resources, String text, Color backgroundColor, Font font, int colSpan, int align) {
+        return createColSpanTableCell(resources.getMessage(text), backgroundColor, font, colSpan, align);
+    }
+
     public static PdfPCell createColSpanTableCell(String text, Color backgroundColor, Font font, int colSpan, int align) {
         int margin = 0;
         if (align == Element.ALIGN_LEFT) {
@@ -404,24 +399,6 @@ public final class PDFUtils {
         labelCell.setColspan(colSpan);
         return labelCell;
     }
-
-    /*public static List addResultsList(java.util.List<LabelValueBean> results, String text1) {
-        List list = new List();
-        boolean first = true;
-        for (LabelValueBean label : results) {
-            String text = text1 + " {0} : " + label.getValue();
-            ArrayList<String> words = new ArrayList<String>();
-            words.add(label.getLabel());
-            ListItem item = PDFUtils.addMixFormatListItem(text, words, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
-            if (first) {
-                item.setSpacingBefore(ConstantsFont.SPACE_LINE);
-                first = false;
-            }
-            list.add(item);
-        }
-        list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-        return list;
-    }*/
 
     public static PdfPTable createResultTable(java.util.List<LabelValueBean> results, java.util.List<String> headers) {
         float[] widths = {50f, 50f};
@@ -440,10 +417,6 @@ public final class PDFUtils {
         return table;
     }
 
-/*    public static PdfPTable createResultTable(java.util.List<LabelValueBean> results, java.util.List<String> headers) {
-        return createResultTable(results, headers, Element.ALIGN_CENTER);
-    }//*/
-
     public static void createTitleTable(String text, Section section, float scaleX) throws BadElementException, IOException {
         PropertiesManager pmgr = new PropertiesManager();
         Image img = Image.getInstance(pmgr.getValue("pdf.properties", "path.images") + pmgr.getValue("pdf.properties", "name.table.line.roja.image"));
@@ -457,14 +430,18 @@ public final class PDFUtils {
     }
 
     public static PdfPTable createTableMod(HttpServletRequest request, java.util.List<ModalityComparisonForm> result) {
+        return createTableMod(CrawlerUtils.getResources(request), result);
+    }
+
+    public static PdfPTable createTableMod(final MessageResources resources, java.util.List<ModalityComparisonForm> result) {
         float[] widths = {50f, 25f, 25f};
         PdfPTable table = new PdfPTable(widths);
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.puntuacion.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.pasa"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.falla"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.puntuacion.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.porc.pasa"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.porc.falla"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
         for (ModalityComparisonForm form : result) {
-            table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(form.getVerification()), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 5));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage(form.getVerification()), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 5));
             table.addCell(PDFUtils.createTableCell(form.getGreenPercentage(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(form.getRedPercentage(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
@@ -506,10 +483,9 @@ public final class PDFUtils {
         return phrase;
     }
 
-
-    public static String formatSeedName(String seedName) {
+    public static String formatSeedName(final String seedName) {
         if (seedName != null) {
-            seedName = replaceAccent(seedName.trim()).replace(" ", "_").toLowerCase();
+            return replaceAccent(seedName.trim()).replaceAll("[\\s,.]+", "_").toLowerCase();
         }
         return seedName;
     }

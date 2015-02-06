@@ -214,4 +214,15 @@
 			</li>
 		</logic:equal>
 	</inteco:menu>
+
+		<inteco:menu roles="<%=rolAdmin%>">
+        	<li class="menutit">
+        		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
+        			<html:link forward="servicioDiagnostico" styleId="selected" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
+        		</logic:equal>
+        		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
+        			<html:link forward="servicioDiagnostico" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
+        		</logic:notEqual>
+        	</li>
+        </inteco:menu>
 </ul>

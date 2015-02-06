@@ -64,7 +64,7 @@ public class ScheduleObservatoryServlet extends GenericServlet {
         try {
             scheduler.shutdown();
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            Logger.putLog("FALLO al desprogramar los jobs para los rastreos de observatorios (puede producir fallo de memoria)", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_ERROR, e);
         }
         super.destroy();
     }

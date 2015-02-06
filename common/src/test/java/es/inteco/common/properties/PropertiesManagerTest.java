@@ -36,13 +36,15 @@ public class PropertiesManagerTest {
     }
 
     @Test
-    public void testLoadPropertiesFile() {
-        try {
-            PropertiesManager.loadProperties("file:///home/mikunis/proyectos/minhap/oaw/portal/profiles/desarrollo/oaw.properties");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Assert.fail("Excepción al intentar cargar el fichero de propiedades");
-        }
+    public void testPM() {
+        final PropertiesManager pm = new PropertiesManager();
+        // Se carga el fichero mail.properties con la clave crawler.core.properties (para que sea backwards-compatible)
+        // Ver fichero propertiesmanager.properties
+        Assert.assertNotNull(pm.getProperties("crawler.core.properties"));
+        // Esta cadena la reconoce porque está en el fichero mail.properties
+        Assert.assertEquals("smtp", pm.getValue("crawler.core.properties", "mail.transport.protocol"));
+        // Esta cadena no existe porque no está en el fichero mail.properties
+        Assert.assertNull(pm.getValue("crawler.core.properties", "crawler.user.name"));
     }
 
 }

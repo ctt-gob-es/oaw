@@ -45,13 +45,13 @@ public final class CategoriasDAO {
         }
     }
 
-    public static int countTerms(Connection c, int id_category) throws Exception {
+    public static int countTerms(Connection c, int idCategory) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             ps = c.prepareStatement("SELECT COUNT(*) FROM categoria_termino WHERE id_categoria = ? ");
-            ps.setInt(1, id_category);
+            ps.setInt(1, idCategory);
             rs = ps.executeQuery();
             int numRes = 0;
             if (rs.next()) {
@@ -98,11 +98,11 @@ public final class CategoriasDAO {
         return cats;
     }
 
-    public static void deleteCategory(Connection c, String id_category) throws SQLException {
+    public static void deleteCategory(Connection c, String idCategory) throws SQLException {
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("DELETE FROM categoria WHERE id_categoria = ?");
-            ps.setInt(1, Integer.parseInt(id_category));
+            ps.setInt(1, Integer.parseInt(idCategory));
             ps.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception: ", CategoriasDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -113,7 +113,7 @@ public final class CategoriasDAO {
         }
     }
 
-    public static VerCategoriaForm showCategories(Connection c, VerCategoriaForm verCategoriaForm, String id_category) throws Exception {
+    public static VerCategoriaForm showCategories(Connection c, VerCategoriaForm verCategoriaForm, String idCategory) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -122,7 +122,7 @@ public final class CategoriasDAO {
                     "INNER JOIN categoria_termino ct ON (c.id_categoria = ct.id_categoria)" +
                     "INNER JOIN termino t ON (ct.id_termino = t.id_termino)" +
                     "WHERE c.id_categoria = ?;");
-            ps.setInt(1, Integer.parseInt(id_category));
+            ps.setInt(1, Integer.parseInt(idCategory));
             rs = ps.executeQuery();
             DAOUtils.closeQueries(ps, rs);
             boolean areThereResults = false;
@@ -130,7 +130,7 @@ public final class CategoriasDAO {
                 areThereResults = true;
                 verCategoriaForm.setUmbral(String.valueOf(rs.getFloat("umbral")));
                 verCategoriaForm.setCategoria(rs.getString("categoria"));
-                verCategoriaForm.setId_categoria(Integer.parseInt(id_category));
+                verCategoriaForm.setId_categoria(Integer.parseInt(idCategory));
 
                 TerminoCatVer t = new TerminoCatVer();
                 t.setPorcentaje(String.valueOf(rs.getFloat("porcentaje")));
@@ -141,12 +141,12 @@ public final class CategoriasDAO {
             }
             if (!areThereResults) {
                 ps = c.prepareStatement("SELECT * FROM categoria WHERE id_categoria= ?;");
-                ps.setInt(1, Integer.parseInt(id_category));
+                ps.setInt(1, Integer.parseInt(idCategory));
                 rs = ps.executeQuery();
                 if (rs.next()) {
                     verCategoriaForm.setUmbral(String.valueOf(rs.getFloat("umbral")));
                     verCategoriaForm.setCategoria(rs.getString("categoria"));
-                    verCategoriaForm.setId_categoria(Integer.parseInt(id_category));
+                    verCategoriaForm.setId_categoria(Integer.parseInt(idCategory));
                 }
             }
 
@@ -183,7 +183,6 @@ public final class CategoriasDAO {
 
     public static void deleteTerm(Connection c, NuevoTerminoCatForm nuevoTerminoCatForm) throws Exception {
         PreparedStatement ps = null;
-        ResultSet re = null;
         try {
             ps = c.prepareStatement("DELETE FROM termino WHERE id_termino = ?");
             ps.setInt(1, nuevoTerminoCatForm.getId_termino());
@@ -193,11 +192,11 @@ public final class CategoriasDAO {
             Logger.putLog("Exception: ", CategoriasDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, re);
+            DAOUtils.closeQueries(ps, null);
         }
     }
 
-    public static List<TerminoCatVer> loadCategoryTerms(Connection c, int id_category, int page) throws Exception {
+    public static List<TerminoCatVer> loadCategoryTerms(Connection c, int idCategory, int page) throws Exception {
         PreparedStatement ps = null;
         ResultSet rss = null;
         List<TerminoCatVer> termsVector = new ArrayList<TerminoCatVer>();
@@ -206,7 +205,7 @@ public final class CategoriasDAO {
         int resultFrom = pagSize * page;
         try {
             ps = c.prepareStatement("SELECT * FROM categoria_termino WHERE id_categoria = ? LIMIT ? OFFSET ?;");
-            ps.setInt(1, id_category);
+            ps.setInt(1, idCategory);
             ps.setInt(2, pagSize);
             ps.setInt(3, resultFrom);
             rss = ps.executeQuery();
@@ -234,9 +233,7 @@ public final class CategoriasDAO {
     }
 
     public static VerCategoriaForm getCategory(Connection c, VerCategoriaForm verCategoriaForm) throws Exception {
-
         PreparedStatement ps = null;
-        ResultSet rss = null;
         try {
             ps = c.prepareStatement("SELECT * FROM categoria WHERE id_categoria = ?");
             ps.setInt(1, verCategoriaForm.getId_categoria());
@@ -250,7 +247,7 @@ public final class CategoriasDAO {
             Logger.putLog("Exception: ", CategoriasDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rss);
+            DAOUtils.closeQueries(ps, null);
         }
         return verCategoriaForm;
     }
@@ -271,15 +268,15 @@ public final class CategoriasDAO {
         }
     }
 
-    public static void updatePercentage(Connection c, String percentage, String id_category, String id_term) throws Exception {
+    public static void updatePercentage(Connection c, String percentage, String idCategory, String idTerm) throws Exception {
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("UPDATE categoria_termino SET porcentaje = ? WHERE id_categoria = ? AND id_termino = ?");
             ps.setFloat(1, Float.parseFloat(percentage));
-            ps.setInt(2, Integer.parseInt(id_category));
-            ps.setInt(3, Integer.parseInt(id_term));
+            ps.setInt(2, Integer.parseInt(idCategory));
+            ps.setInt(3, Integer.parseInt(idTerm));
             ps.executeUpdate();
-            NormalizarCats.normaliza(Integer.parseInt(id_category));
+            NormalizarCats.normaliza(Integer.parseInt(idCategory));
         } catch (Exception e) {
             Logger.putLog("Exception: ", CategoriasDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
@@ -288,12 +285,12 @@ public final class CategoriasDAO {
         }
     }
 
-    public static boolean existCategory(Connection c, String category_name) throws Exception {
+    public static boolean existCategory(Connection c, String categoryName) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = c.prepareStatement("SELECT * FROM categoria WHERE categoria = ?");
-            ps.setString(1, category_name);
+            ps.setString(1, categoryName);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return true;
@@ -308,7 +305,6 @@ public final class CategoriasDAO {
     }
 
     public static int insertrCategory(Connection c, NuevaCategoriaForm nuevaCategoriaForm, String[] arrayTerms, float[] arrayWeights) throws Exception {
-
         PreparedStatement ps = null;
         ResultSet rsd = null;
         int id_c = -1;
@@ -317,7 +313,7 @@ public final class CategoriasDAO {
             ps.setString(1, nuevaCategoriaForm.getNombre());
             ps.setFloat(2, Float.parseFloat(nuevaCategoriaForm.getUmbral()));
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rsd);
+            DAOUtils.closeQueries(ps, null);
 
             ps = c.prepareStatement("SELECT id_categoria FROM categoria WHERE categoria = ?");
             ps.setString(1, nuevaCategoriaForm.getNombre());
@@ -354,8 +350,7 @@ public final class CategoriasDAO {
         return -1;
     }
 
-    public static void insertTerm(Connection c, int id_category, String[] arrayTerms, float[] arrayWeights) throws Exception {
-
+    public static void insertTerm(Connection c, int idCategory, String[] arrayTerms, float[] arrayWeights) throws Exception {
         for (int i = 0; i < arrayTerms.length; i++) {
             int id_term = -1;
             PreparedStatement ps = null;
@@ -363,7 +358,7 @@ public final class CategoriasDAO {
             try {
                 if (CategoriasDAO.existTerm(c, arrayTerms[i]) != -1) {
                     ps = c.prepareStatement("INSERT INTO categoria_termino(id_categoria, id_termino, porcentaje, porcentaje_normalizado) VALUES (?, ?, ?, 0)");
-                    ps.setInt(1, id_category);
+                    ps.setInt(1, idCategory);
                     ps.setInt(2, id_term);
                     ps.setFloat(3, arrayWeights[i]);
                     ps.executeUpdate();
@@ -379,7 +374,7 @@ public final class CategoriasDAO {
                         id_t = rs.getInt(1);
                     }
                     ps = c.prepareStatement("INSERT INTO categoria_termino(id_categoria, id_termino, porcentaje, porcentaje_normalizado) VALUES (?, ?, ?, 0)");
-                    ps.setInt(1, id_category);
+                    ps.setInt(1, idCategory);
                     ps.setInt(2, id_t);
                     ps.setFloat(3, arrayWeights[i]);
                     ps.executeUpdate();
@@ -393,15 +388,15 @@ public final class CategoriasDAO {
         }
     }
 
-    public static List<Integer> termCategories(Connection c, int id_term) throws Exception {
-        List<Integer> ids_c = new ArrayList<Integer>();
+    public static List<Integer> termCategories(Connection c, int idTerm) throws Exception {
+        final List<Integer> categoriasIds = new ArrayList<Integer>();
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("SELECT * FROM categoria_termino WHERE id_termino = ?");
-            ps.setInt(1, id_term);
+            ps.setInt(1, idTerm);
             ResultSet rs2 = ps.executeQuery();
             while (rs2.next()) {
-                ids_c.add(rs2.getInt("id_categoria"));
+                categoriasIds.add(rs2.getInt("id_categoria"));
             }
         } catch (Exception e) {
             Logger.putLog("Exception: ", CategoriasDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -409,7 +404,7 @@ public final class CategoriasDAO {
         } finally {
             DAOUtils.closeQueries(ps, null);
         }
-        return ids_c;
+        return categoriasIds;
     }
 
 }

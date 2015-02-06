@@ -190,7 +190,7 @@
 /* SELECTORES */
 /**************/
 /* Cabecera de la p�gina */
-	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1.5%; text-align:right; background:url('../images/logo.jpg') left; background-repeat:no-repeat;min-height:12%;}
+	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1.5%; text-align:right; background:url('../images/logo.jpg') left; background-repeat:no-repeat;min-height:125px;}
 	#cabeza a img {border:0%;}
 	
 /* Cuerpo de la p�gina */

@@ -67,7 +67,7 @@
 		<acronimo>MJU</acronimo>
 	</semilla>
 	<semilla>
-		<url>http://www.mpr.gob.es</url>
+		<url>http://www.mpr.gob.es/Paginas/index.aspx</url>
 		<nombre>Ministerio de la Presidencia</nombre>
 		<depende_de>Ministerio de la Presidencia</depende_de>
 		<acronimo>MPR</acronimo>

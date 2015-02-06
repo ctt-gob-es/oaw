@@ -16,6 +16,7 @@ import java.util.Locale;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 
+// FIXME: ¿Eliminar esta clase?
 public final class ObservatoryExport {
 
     private ObservatoryExport() {

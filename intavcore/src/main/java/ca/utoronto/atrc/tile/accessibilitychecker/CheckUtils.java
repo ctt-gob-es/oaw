@@ -30,10 +30,10 @@ public final class CheckUtils {
     private CheckUtils() {
     }
 
-    public static List<Element> getSectionLink(NodeList links, String sectionRegExp) {
-        List<Element> linksFound = new ArrayList<Element>();
+    public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
+        final List<Element> linksFound = new ArrayList<Element>();
         for (int i = 0; i < links.getLength(); i++) {
-            Element link = (Element) links.item(i);
+            final Element link = (Element) links.item(i);
             if (link.hasAttribute("href")) {
                 if (StringUtils.isNotEmpty(link.getTextContent())) {
                     if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp)) {
@@ -47,9 +47,9 @@ public final class CheckUtils {
                     }
                 }
 
-                NodeList imgs = link.getElementsByTagName("img");
+                final NodeList imgs = link.getElementsByTagName("img");
                 for (int j = 0; j < imgs.getLength(); j++) {
-                    Element img = (Element) imgs.item(j);
+                    final Element img = (Element) imgs.item(j);
                     if (img.hasAttribute("alt")) {
                         if (StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp)) {
                             linksFound.add(link);
@@ -58,26 +58,27 @@ public final class CheckUtils {
                 }
             }
         }
+
         return linksFound;
     }
 
-    public static boolean hasContact(Document document, String contactRegExp, String emailRegExp) throws Exception {
+    public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) throws Exception {
         // Texto de correo electrónico en el texto normal
-        Pattern pattern = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(getDocumentText(document));
+        final Pattern pattern = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = pattern.matcher(getDocumentText(document));
         if (matcher.find()) {
             // Hemos encontrado una dirección de correo electrónico en la página
             return true;
         }
 
         // Enlaces a la sección de contacto
-        List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
-        NodeList links = document.getElementsByTagName("a");
+        final List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
+        final NodeList links = document.getElementsByTagName("a");
 
         for (int i = 0; i < links.getLength(); i++) {
-            Element link = (Element) links.item(i);
-            String linkText = link.getTextContent().toLowerCase().trim();
-            String linkTitle = link.getAttribute("title").toLowerCase().trim();
+            final Element link = (Element) links.item(i);
+            final String linkText = link.getTextContent().toLowerCase().trim();
+            final String linkTitle = link.getAttribute("title").toLowerCase().trim();
             for (String contactText : contactTexts) {
                 if (linkText.toUpperCase().contains(contactText.toUpperCase()) || linkTitle.toUpperCase().contains(contactText.toUpperCase())) {
                     return true;
@@ -88,10 +89,10 @@ public final class CheckUtils {
         return false;
     }
 
-    public static boolean hasRevisionDate(Document document, String dateRegExp) throws Exception {
+    public static boolean hasRevisionDate(final Document document, final String dateRegExp) throws Exception {
         // Texto de correo electrónico en el texto normal
-        Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(getDocumentText(document));
+        final Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher(getDocumentText(document));
 
         // Hemos encontrado una dirección de correo electrónico en la página
         return matcher.find();
@@ -109,13 +110,13 @@ public final class CheckUtils {
         return documentText.toString();
     }
 
-    public static Document getRemoteDocument(String documentUrlStr, String remoteUrlStr) throws Exception {
-        HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
+    public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws Exception {
+        final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
         connection.setRequestProperty("referer", documentUrlStr);
         connection.connect();
-        int responseCode = connection.getResponseCode();
+        final int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            DOMParser parser = new DOMParser(new HTMLConfiguration());
+            final DOMParser parser = new DOMParser(new HTMLConfiguration());
             parser.parse(new InputSource(connection.getInputStream()));
             return parser.getDocument();
         } else {
@@ -123,7 +124,7 @@ public final class CheckUtils {
         }
     }
 
-    public static String getElementText(Node checkedNode, boolean backward, List<String> inlineTags) {
+    public static String getElementText(Node checkedNode, boolean backward, final List<String> inlineTags) {
         String text = "";
 
         while (checkedNode != null && (StringUtils.isEmpty(text) || StringUtils.isOnlyBlanks(text))) {
@@ -154,18 +155,18 @@ public final class CheckUtils {
      * @param backward
      * @return
      */
-    public static boolean isFalseBrNode(Element checkedElement, List<String> inlineTags, Pattern pattern, boolean backward) {
-        String text = getElementText(checkedElement, backward, inlineTags);
+    public static boolean isFalseBrNode(final Element checkedElement, final List<String> inlineTags, final Pattern pattern, boolean backward) {
+        final String text = getElementText(checkedElement, backward, inlineTags);
 
-        Matcher matcher = pattern.matcher(text);
+        final Matcher matcher = pattern.matcher(text);
         return matcher.find();
     }
 
-    public static String getBaseUrl(Element documentElement) {
-        NodeList bases = documentElement.getElementsByTagName("base");
+    public static String getBaseUrl(final Element documentElement) {
+        final NodeList bases = documentElement.getElementsByTagName("base");
 
         for (int i = bases.getLength() - 1; i >= 0; i--) {
-            Element base = (Element) bases.item(i);
+            final Element base = (Element) bases.item(i);
             if (base.hasAttribute("href") && StringUtils.isNotEmpty(base.getAttribute("href"))) {
                 return base.getAttribute("href");
             }
@@ -174,7 +175,7 @@ public final class CheckUtils {
         return null;
     }
 
-    public static boolean isValidUrl(Element elementRoot, Node nodeNode) {
+    public static boolean isValidUrl(final Element elementRoot, final Node nodeNode) {
         URL remoteUrl = null;
         URL documentUrl = null;
         CheckedLinks checkedLinks = null;
@@ -186,8 +187,8 @@ public final class CheckUtils {
                 remoteUrl = new URL(encodeUrl(nodeNode.getTextContent().trim()));
             }
 
-            PropertiesManager pmgr = new PropertiesManager();
-            List<String> allowedPorts = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "broken.links.allowed.ports").split(";"));
+            final PropertiesManager pmgr = new PropertiesManager();
+            final List<String> allowedPorts = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "broken.links.allowed.ports").split(";"));
 
             if (allowedPorts.contains(String.valueOf(remoteUrl.getPort()))) {
                 checkedLinks = (CheckedLinks) elementRoot.getUserData("checkedLinks");
@@ -196,16 +197,17 @@ public final class CheckUtils {
                     return true;
                 } else if (checkedLinks == null ||
                         (!checkedLinks.getBrokenLinks().contains(remoteUrl.toString()) && !checkedLinks.getAvailablelinks().contains(remoteUrl.toString()))) {
-                    Logger.putLog("Verificando que existe la URL " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_INFO);
-                    HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrl.toString(), "GET", true);
+                    Logger.putLog("Verificando que existe la URL " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
+                    // FIXME: ¿Cambiar GET por HEAD para acelerar el proceso de comprobación de enlaces rotos?
+                    final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrl.toString(), "GET", true);
                     if (documentUrl != null) {
                         connection.setRequestProperty("referer", documentUrl.toString());
                     }
                     connection.connect();
-                    int responseCode = connection.getResponseCode();
+                    final int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
                         checkedLinks.getBrokenLinks().add(remoteUrl.toString());
-                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_INFO);
+                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                         return false;
                     } else {
                         if (checkedLinks != null) {
@@ -215,7 +217,7 @@ public final class CheckUtils {
                     }
                 } else {
                     if (checkedLinks.getBrokenLinks().contains(remoteUrl.toString())) {
-                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_INFO);
+                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                         return false;
                     } else if (checkedLinks.getAvailablelinks().contains(remoteUrl.toString())) {
                         return true;
@@ -237,7 +239,7 @@ public final class CheckUtils {
         return true;
     }
 
-    private static boolean isAbsolute(String url) {
+    private static boolean isAbsolute(final String url) {
         return url.startsWith("http");
     }
 
@@ -251,9 +253,9 @@ public final class CheckUtils {
         return path;
     }
 
-    public static boolean hasContent(Node node) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "content.tags").split(";"));
+    public static boolean hasContent(final Node node) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "content.tags").split(";"));
         if (node.getNodeType() == Node.TEXT_NODE && StringUtils.isNotEmpty(node.getTextContent()) && !StringUtils.isOnlyBlanks(node.getTextContent())) {
             return true;
         } else if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -264,7 +266,7 @@ public final class CheckUtils {
         return false;
     }
 
-    private static boolean isPreviousHeader(String str1, String str2) {
+    private static boolean isPreviousHeader(final String str1, final String str2) {
         try {
             if (!str2.substring(0, 1).equalsIgnoreCase("h")) {
                 return false;
@@ -277,21 +279,21 @@ public final class CheckUtils {
         return false;
     }
 
-    public static int isEmptyDescendentContent(Node nextSimbling, Element elementGiven) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> noContentTags = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
-        while (nextSimbling != null) {
-            if (!nextSimbling.getNodeName().equalsIgnoreCase(elementGiven.getNodeName()) && !isPreviousHeader(nextSimbling.getNodeName(), elementGiven.getNodeName())) {
+    public static int isEmptyDescendentContent(Node node, Element elementGiven) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> noContentTags = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
+        while (node != null) {
+            if (!node.getNodeName().equalsIgnoreCase(elementGiven.getNodeName()) && !isPreviousHeader(node.getNodeName(), elementGiven.getNodeName())) {
                 //Si tiene contenido devuelves false
-                if (nextSimbling.getNodeType() == Node.TEXT_NODE) {
-                    if (StringUtils.isNotEmpty(nextSimbling.getTextContent()) && !StringUtils.isOnlyBlanks(nextSimbling.getTextContent())) {
+                if (node.getNodeType() == Node.TEXT_NODE) {
+                    if (StringUtils.isNotEmpty(node.getTextContent()) && !StringUtils.isOnlyBlanks(node.getTextContent())) {
                         return IntavConstants.IS_NOT_EMPTY;
                     }
-                } else if (!noContentTags.contains(nextSimbling.getNodeName().toUpperCase())) {
-                    if (CheckUtils.hasContent(nextSimbling)) {
+                } else if (!noContentTags.contains(node.getNodeName().toUpperCase())) {
+                    if (CheckUtils.hasContent(node)) {
                         return IntavConstants.IS_NOT_EMPTY;
                     } else {
-                        int hasChildContent = CheckUtils.hasChildContent(nextSimbling, elementGiven);
+                        int hasChildContent = CheckUtils.hasChildContent(node, elementGiven);
                         if (hasChildContent == IntavConstants.HAS_CONTENT) {
                             return IntavConstants.IS_NOT_EMPTY;
                         } else if (hasChildContent == IntavConstants.EQUAL_HEADER_TAG) {
@@ -302,15 +304,15 @@ public final class CheckUtils {
             } else {
                 return IntavConstants.EQUAL_HEADER_TAG;
             }
-            nextSimbling = nextSimbling.getNextSibling();
+            node = node.getNextSibling();
         }
         return IntavConstants.IS_EMPTY;
     }
 
-    public static int hasChildContent(Node node, Element elementGiven) {
-        NodeList nodeList = node.getChildNodes();
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
+    public static int hasChildContent(final Node node, final Element elementGiven) {
+        final NodeList nodeList = node.getChildNodes();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
         if (node.getNodeName().equalsIgnoreCase(elementGiven.getNodeName()) && isPreviousHeader(node.getNodeName(), elementGiven.getNodeName())) {
             return IntavConstants.EQUAL_HEADER_TAG;
         }
@@ -333,18 +335,18 @@ public final class CheckUtils {
         return IntavConstants.HAS_NOT_CONTENT;
     }
 
-    public static ImageReader getImageReader(Element img, URL url) throws Exception {
+    public static ImageReader getImageReader(final Element img, final URL url) throws Exception {
         if (img.getUserData(IntavConstants.GIF_VERIFICATED) == null && img.getUserData(IntavConstants.GIF_READER) == null) {
             img.setUserData(IntavConstants.GIF_VERIFICATED, Boolean.TRUE, null);
 
             Logger.putLog("Descargando la imagen " + url + " para analizar su contenido", CheckUtils.class, Logger.LOG_LEVEL_INFO);
-            HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", true);
-            PropertiesManager pmgr = new PropertiesManager();
+            final HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", true);
+            final PropertiesManager pmgr = new PropertiesManager();
             connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "gif.connection.timeout")));
             connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "gif.connection.timeout")));
             ImageInputStream imageInputStream = new MemoryCacheImageInputStream(connection.getInputStream());
 
-            java.util.Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
+            final java.util.Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
             if (readers.hasNext()) {
                 ImageReader reader = readers.next();
                 reader.setInput(imageInputStream);

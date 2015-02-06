@@ -25,14 +25,15 @@ public class CartuchoAccesibilidad extends Cartucho {
 
         CheckAccessibility checkAccesibility = new CheckAccessibility();
         checkAccesibility.setEntity((String) datos.get("entity"));
-        checkAccesibility.setGuideline(datos.get("guidelineFile").toString().substring(0, datos.get("guidelineFile").toString().lastIndexOf('.')));
+        checkAccesibility.setGuideline(datos.get("guidelineFile").toString().substring(0, datos.get("guidelineFile").toString().lastIndexOf('.')).replace("-nobroken",""));
         checkAccesibility.setGuidelineFile(datos.get("guidelineFile").toString());
         checkAccesibility.setLevel(pmgr.getValue("crawler.core.properties", "check.accessibility.default.level"));
         checkAccesibility.setUrl((String) datos.get("url"));
         checkAccesibility.setIdRastreo((Long) datos.get("idFulfilledCrawling"));
         checkAccesibility.setIdObservatory((Long) datos.get("idObservatory"));
         checkAccesibility.setContent((String) datos.get("contenido"));
-
+Logger.putLog("Guideline: "+checkAccesibility.getGuideline(),CartuchoAccesibilidad.class,Logger.LOG_LEVEL_ERROR);
+Logger.putLog("GuidelineFile: "+checkAccesibility.getGuidelineFile(),CartuchoAccesibilidad.class,Logger.LOG_LEVEL_ERROR);
         boolean isLast = (Boolean) datos.get("isLast");
 
         try {
