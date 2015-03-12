@@ -1,4 +1,4 @@
-package es.inteco.intav.checks;
+package es.inteco.intav.checks.une2012;
 
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.EvaluateCheck;

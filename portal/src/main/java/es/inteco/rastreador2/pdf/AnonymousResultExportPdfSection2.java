@@ -25,11 +25,11 @@ public final class AnonymousResultExportPdfSection2 {
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.PRENSA"), ConstantsFont.paragraphFont, chapter);
         } else {
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2"), ConstantsFont.paragraphFont, chapter);
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
+            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2"), ConstantsFont.paragraphFont, chapter);
+            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
 
             if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.paragraphFont, chapter);
+                //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.paragraphFont, chapter);
                 PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.paragraphFont, chapter);
             } else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
                 PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.paragraphFont, chapter);

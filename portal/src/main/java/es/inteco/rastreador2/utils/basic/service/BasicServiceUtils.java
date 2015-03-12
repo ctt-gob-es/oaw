@@ -20,6 +20,7 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.net.IDN;
 import java.net.URL;
 import java.sql.Connection;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class BasicServiceUtils {
@@ -61,12 +63,12 @@ public final class BasicServiceUtils {
     }
 
     public static void somethingWasWrongMessage(final HttpServletRequest request, final BasicServiceForm basicServiceForm, final String message) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        String subject = CrawlerUtils.getResources(request).getMessage("basic.service.mail.error.subject");
-        ArrayList<String> mailTo = new ArrayList<String>();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String subject = CrawlerUtils.getResources(request).getMessage("basic.service.mail.error.subject");
+        final ArrayList<String> mailTo = new ArrayList<String>();
         mailTo.add(basicServiceForm.getEmail());
-        MailUtils.sendMail(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.address"), pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.name"),
-                mailTo, subject, message, null, null, null, null, true);
+        final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
+        MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", mailTo, subject, message, null, null, null, null, true);
     }
 
     public static List<BasicServiceForm> getBasicServiceRequestByStatus(final String status) {
@@ -105,8 +107,9 @@ public final class BasicServiceUtils {
     public static ActionErrors validateReport(final BasicServiceForm basicServiceForm) {
         final ActionErrors errors = new ActionErrors();
         final String report = basicServiceForm.getReport();
-        if (!report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) && !report.equalsIgnoreCase(Constants.REPORT_UNE)
-                && !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_2_0) && !report.equalsIgnoreCase("observatorio-1-nobroken") ) {
+        if (!report.equalsIgnoreCase(Constants.REPORT_UNE) &&
+                !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) && !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_1_NOBROKEN) &&
+                !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_2) && !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
             errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.report.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
         }
 
@@ -114,7 +117,7 @@ public final class BasicServiceUtils {
     }
 
     public static ActionErrors validateUrlOrContent(final BasicServiceForm basicServiceForm) {
-        ActionErrors errors = new ActionErrors();
+        final ActionErrors errors = new ActionErrors();
 
         if (StringUtils.isEmpty(basicServiceForm.getDomain()) && StringUtils.isEmpty(basicServiceForm.getContent())) {
             errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.url.or.content"));
@@ -133,8 +136,8 @@ public final class BasicServiceUtils {
     }
 
     public static Long getGuideline(final String report) {
-        PropertiesManager pmgr = new PropertiesManager();
-        if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE) || report.equals("observatorio-1-nobroken")) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE) || report.equals(Constants.REPORT_OBSERVATORY_1_NOBROKEN)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"));
         } else if (report.equals(Constants.REPORT_UNE) || report.equalsIgnoreCase(Constants.REPORT_UNE_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.id"));
@@ -142,7 +145,7 @@ public final class BasicServiceUtils {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.id"));
         } else if (report.equals(Constants.REPORT_WCAG_2_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag2.intav.id"));
-        } else if (report.equals(Constants.REPORT_OBSERVATORY_2_0)) {
+        } else if (report.equals(Constants.REPORT_OBSERVATORY_2) || report.equals(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
             return 7l;
         } else {
             return null;

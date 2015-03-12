@@ -138,11 +138,11 @@ public final class PrimaryExportPdfUtils {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + seed.toUpperCase(), "", ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
+            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + seed.toUpperCase(), pdfBuilder.getTitle(), ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
 
             int numChapter = 1;
             int countSections = 1;
-            countSections = pdfBuilder.createIntroductionChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont);
+            countSections = pdfBuilder.createIntroductionChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, isBasicService);
             numChapter++;
             countSections = pdfBuilder.createObjetiveChapter(request, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, observatoryType);
             numChapter++;

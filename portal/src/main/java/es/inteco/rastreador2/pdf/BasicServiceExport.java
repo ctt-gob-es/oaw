@@ -195,7 +195,7 @@ public final class BasicServiceExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.subtitle"), ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
+            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.subtitle"),basicServiceForm.getReport(), ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
 
             int numChapter = 1;
             int countSections = 1;

@@ -1,4 +1,4 @@
-package es.inteco.intav.checks;
+package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import es.inteco.common.CheckAccessibility;

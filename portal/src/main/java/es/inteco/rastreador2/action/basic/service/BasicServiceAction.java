@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class BasicServiceAction extends Action {
@@ -149,11 +150,11 @@ public class BasicServiceAction extends Action {
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_2_FILE)) {
                     BasicServiceExport.generatePDF(request, basicServiceForm, evaluationIds, idCrawling, pdfPath);
                 } else if (basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY) ||
-                        basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_FILE) || basicServiceForm.getReport().equals("observatorio-1-nobroken")) {
+                        basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_FILE) || basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_1_NOBROKEN)) {
                     Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
                     final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
                     PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004(), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
-                } else if (basicServiceForm.getReport().equals("observatorio-2")) {
+                } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport())) {
                     Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
                     final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
                     PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
@@ -170,11 +171,11 @@ public class BasicServiceAction extends Action {
                 final String text = getMailText(request, basicServiceForm);
                 final ArrayList<String> mailTo = new ArrayList<String>();
                 mailTo.add(basicServiceForm.getEmail());
-                final String replyTo = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.reply.to.mail");
-                final String replyToName = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.reply.to.name");
+                final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
+                final String replyToName = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from.name");
                 Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
-                MailUtils.sendMail(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.address"), pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.name"),
-                        mailTo, subject, text, pdfPath, new File(pdfPath).getName(), replyTo, replyToName, false);
+                MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad",
+                        mailTo, subject, text, pdfPath, new File(pdfPath).getName(), mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", false);
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_FINISHED);
             } else {
                 // Avisamos de que ha sido imposible acceder a la página a rastrear
@@ -235,24 +236,24 @@ public class BasicServiceAction extends Action {
         crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
         crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
         crawlerData.setInDirectory(basicServiceForm.isInDirectory());
-Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceAction.class,Logger.LOG_LEVEL_ERROR);
+        Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
         return crawlerData;
     }
 
     private String includeBrokenLinksCheck(final String ficheroNorma, final String report) {
-        if ( report.endsWith("-nobroken") ) {
-            return ficheroNorma.substring(0,ficheroNorma.length()-4) + "-nobroken.xml";
+        if (report.endsWith("-nobroken")) {
+            return ficheroNorma.substring(0, ficheroNorma.length() - 4) + "-nobroken.xml";
         } else {
             return ficheroNorma;
         }
     }
 
     private String getMailSubject(final String reportType) {
-        if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType) || "observatorio-1-nobroken".equals(reportType)) {
+        if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType) || Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
             return "Informe de Accesibilidad Web: Observatorio UNE 2004";
-        } else if ("observatorio-2".equals(reportType) || "observatorio-2-nobroken".equals(reportType) ) {
+        } else if (Constants.REPORT_OBSERVATORY_2.equals(reportType) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
             return "Informe de Accesibilidad Web: Observatorio UNE 2012";
-        } else if ( "une".equals(reportType) ) {
+        } else if ("une".equals(reportType)) {
             return "Informe de Accesibilidad Web: UNE 139803";
         }
         return "Informe de Accesibilidad Web";
@@ -275,11 +276,11 @@ Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceAction.class,Logger.LOG
     private String reportToString(final String reportType) {
         if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType)) {
             return "Observatorio UNE 2004";
-        } else if ("observatorio-2".equals(reportType)) {
+        } else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)) {
             return "Observatorio UNE 2012";
         } else if ("observatorio-1-nobroken".equals(reportType)) {
             return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
-        } else if ("observatorio-2-nobroken".equals(reportType)) {
+        } else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
             return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
         } else {
             return reportType;
