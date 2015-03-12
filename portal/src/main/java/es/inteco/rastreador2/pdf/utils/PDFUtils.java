@@ -30,20 +30,45 @@ public final class PDFUtils {
     private PDFUtils() {
     }
 
-    public static void addTitlePage(Document document, String titleText, String subtitleText, Font titleFont, Font subtitleFont) throws DocumentException {
 
+    public static void addTitlePage(Document document, String titleText, String subtitleText, String report, Font titleFont, Font subtitleFont) throws DocumentException {
         document.add(Chunk.NEWLINE);
         Paragraph title = new Paragraph(titleText, titleFont);
         title.setSpacingBefore(ConstantsFont.SPACE_TITLE_LINE);
         title.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(title);
 
+//        // FIXME: Cambiar para
+//        Paragraph tipo = new Paragraph(getReport(report), titleFont);
+//        tipo.setSpacingBefore(ConstantsFont.SPACE_TITLE_LINE);
+//        tipo.setAlignment(Paragraph.ALIGN_CENTER);
+//        document.add(tipo);
+
+
         if (!subtitleText.equals("")) {
-            Paragraph subtitle = new Paragraph(subtitleText, subtitleFont);
+            Paragraph subtitle = new Paragraph(subtitleText, titleFont);
             subtitle.setAlignment(Paragraph.ALIGN_CENTER);
-            subtitle.setSpacingBefore(ConstantsFont.SPACE_SUBTITLE_LINE);
+            //subtitle.setSpacingBefore(ConstantsFont.SPACE_SUBTITLE_LINE);
             document.add(subtitle);
         }
+    }
+
+    private static String getReport(final String reportType) {
+        if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType)) {
+            return "UNE 139803:2004";
+        } else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)) {
+            return "UNE 139803:2012";
+        } else if ("observatorio-1-nobroken".equals(reportType)) {
+            return "UNE 139803:2004";
+        } else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
+            return "UNE 139803:2012";
+        } else {
+            return reportType;
+        }
+    }
+
+    public static void addTitlePage(Document document, String titleText, String subtitleText, Font titleFont, Font subtitleFont) throws DocumentException {
+        addTitlePage(document,titleText,subtitleText,"UNE 139803:2004", titleFont, subtitleFont);
     }
 
     public static Chapter addChapterTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont) {
@@ -499,4 +524,5 @@ public final class PDFUtils {
             Logger.putLog("Error al crear imagen en la exportación anónima de resultados", AnonymousResultExportPdfSectionEv.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
+
 }

@@ -17,30 +17,6 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Fundación-biodiversidad</nombre>
-        <activa>true</activa>
-        <url>http://www.fundacion-biodiversidad.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Innovamar - Fundación Instituto Tecnológico para el Desarrollo de las Industrias Marítimas</nombre>
-        <activa>true</activa>
-        <url>http://www.innovamar.org</url>
-        <acronimo/>
-        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Red de laboratorios agroalimentarios</nombre>
-        <activa>true</activa>
-        <url>http://lagrored.magrama.es/Publico/AGC_Inicio.aspx</url>
-        <acronimo/>
-        <depende_de>Ministerio de Agricultura, Alimentación y Medio Ambiente</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Revista Ambienta</nombre>
         <activa>true</activa>
         <url>http://www.revistaambienta.es/WebAmbienta/Principal.do</url>
@@ -201,41 +177,9 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Fundación Española para la Ciencia y la Tecnología (FECYT)</nombre>
-        <activa>true</activa>
-        <url>http://www.fecyt.es/fecyt/home.do;jsessionid=7605A57247DF4A2968C7888738E9711D</url>
-        <acronimo/>
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Ibercivis - La ciencia en casa</nombre>
-        <activa>true</activa>
-        <url>http://www.ibercivis.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Museos de Tenerife</nombre>
-        <activa>true</activa>
-        <url>http://www.museosdetenerife.org/index.php?al_id_mus=6</url>
-        <acronimo/>
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Revistas científicas del CSIC</nombre>
         <activa>true</activa>
         <url>http://revistas.csic.es/index.html</url>
-        <acronimo/>
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>SINC - Servicio de Información y Noticias Científicas</nombre>
-        <activa>true</activa>
-        <url>http://www.agenciasinc.es/</url>
         <acronimo/>
         <depende_de>Ministerio de Economía y Competitividad</depende_de>
         <en_directorio>false</en_directorio>
@@ -329,17 +273,17 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Atlas Estadístico de las Áreas Urbanas de España</nombre>
-        <activa>true</activa>
-        <url>http://siu.vivienda.es</url>
-        <acronimo/>
-        <depende_de>Ministerio de Fomento</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Portal de Administración Electrónica</nombre>
         <activa>true</activa>
         <url>http://administracionelectronica.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Plataforma de Contratación del Estado</nombre>
+        <activa>true</activa>
+        <url>https://contrataciondelestado.es/wps/portal/plataforma</url>
         <acronimo/>
         <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
         <en_directorio>false</en_directorio>
@@ -361,25 +305,9 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Datos abiertos (datos.gob.es)</nombre>
-        <activa>true</activa>
-        <url>http://www.datos.gob.es</url>
-        <acronimo/>
-        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Portal de Entidades Locales</nombre>
         <activa>true</activa>
         <url>https://ssweb.seap.minhap.es/portalEELL/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Registro de Entidades Locales</nombre>
-        <activa>true</activa>
-        <url>http://ssweb.seap.minhap.es/REL/</url>
         <acronimo/>
         <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
         <en_directorio>false</en_directorio>
@@ -440,7 +368,6 @@
         <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
         <en_directorio>false</en_directorio>
     </semilla>
-
     <semilla>
         <nombre>Controlas tu energía</nombre>
         <activa>true</activa>
@@ -586,6 +513,14 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
+        <nombre>Datos abiertos (datos.gob.es)</nombre>
+        <activa>true</activa>
+        <url>http://www.datos.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
         <nombre>DNI electrónico</nombre>
         <activa>true</activa>
         <url>http://www.dnielectronico.es</url>
@@ -658,6 +593,14 @@
         <nombre>Ley de transparencia</nombre>
         <activa>true</activa>
         <url>http://www.leydetransparencia.gob.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de la Presidencia</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Portal de transparencia</nombre>
+        <activa>true</activa>
+        <url>http://transparencia.gob.es/</url>
         <acronimo/>
         <depende_de>Ministerio de la Presidencia</depende_de>
         <en_directorio>false</en_directorio>

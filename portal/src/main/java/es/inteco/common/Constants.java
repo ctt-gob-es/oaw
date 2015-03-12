@@ -836,7 +836,9 @@ public interface Constants {
     public static final String PARAM_IN_DIRECTORY = "inDirectory";
     public static final String EXECUTE = "execute";
     public static final String REPORT_OBSERVATORY = "observatorio-1";
-    public static final String REPORT_OBSERVATORY_2_0 = "observatorio-2";
+    public static final String REPORT_OBSERVATORY_1_NOBROKEN = "observatorio-1-nobroken";
+    public static final String REPORT_OBSERVATORY_2 = "observatorio-2";
+    public static final String REPORT_OBSERVATORY_2_NOBROKEN = "observatorio-2-nobroken";
     public static final String REPORT_UNE = "une";
     public static final String REPORT_OBSERVATORY_FILE = "observatorio-inteco-1-0";
     public static final String REPORT_UNE_FILE = "une-139803";

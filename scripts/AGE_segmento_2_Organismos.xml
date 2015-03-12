@@ -281,14 +281,6 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Invest in Spain (Sociedad Estatal para la Promoción y Atracción de Inversiones Exteriores)</nombre>
-        <activa>true</activa>
-        <url>http://www.investinspain.org/invest/es/invertir-en-espana/index.html</url>
-        <acronimo/>
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Tesoro Público</nombre>
         <activa>true</activa>
         <url>https://www.tesoropublico.gob.es/carga_contenido_pse.aspx?sec=7</url>
@@ -333,14 +325,6 @@
 	<activa>true</activa>
 	<url>https://iria.ine.es</url>
 	<acronimo/>	
-        <depende_de>Ministerio de Economía y Competitividad</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Comisión Nacional de la Competencia (CNC)</nombre>
-        <activa>true</activa>
-        <url>http://www.cnmc.es/</url>
-        <acronimo/>
         <depende_de>Ministerio de Economía y Competitividad</depende_de>
         <en_directorio>false</en_directorio>
     </semilla>
@@ -460,14 +444,6 @@
         <nombre>Teatro de la Zarzuela</nombre>
         <activa>true</activa>
         <url>http://teatrodelazarzuela.mcu.es/es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Teatro Real</nombre>
-        <activa>true</activa>
-        <url>http://www.teatro-real.es/</url>
         <acronimo/>
         <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
         <en_directorio>false</en_directorio>
@@ -689,14 +665,6 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Sociedad-Estatal-de-Participaciones-Industriales-(SEPI)</nombre>
-        <activa>true</activa>
-        <url>http://www.sepi.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Comisionado para el Mercado de Tabacos</nombre>
         <activa>true</activa>
         <url>http://www.cmtabacos.es</url>
@@ -732,14 +700,6 @@
         <nombre>Fondos Comunitarios</nombre>
         <activa>true</activa>
         <url>http://www.dgfc.sepg.minhap.gob.es/sitios/DGFC/es-ES/Paginas/inicio.aspx</url>
-        <acronimo/>
-        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Plataforma de Contratación del Estado</nombre>
-        <activa>true</activa>
-        <url>https://contrataciondelestado.es/wps/portal/plataforma</url>
         <acronimo/>
         <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
         <en_directorio>false</en_directorio>
@@ -789,6 +749,14 @@
         <activa>true</activa>
         <url>http://www.irmc.es/</url>
         <acronimo/>
+        <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Instituto para la Diversificación y Ahorro de la Energía</nombre>
+        <activa>true</activa>
+        <url>http://www.idae.es/</url>
+        <acronimo>IDAE</acronimo>
         <depende_de>Ministerio de Industria, Energía y Turismo</depende_de>
         <en_directorio>false</en_directorio>
     </semilla>

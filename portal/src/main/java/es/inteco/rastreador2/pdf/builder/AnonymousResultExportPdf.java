@@ -26,7 +26,7 @@ import java.util.List;
  */
 public abstract class AnonymousResultExportPdf {
 
-    public abstract int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception;
+    public abstract int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, boolean isBasicService) throws Exception;
 
     public abstract int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, long observatoryType) throws DocumentException;
 
@@ -37,6 +37,8 @@ public abstract class AnonymousResultExportPdf {
     public abstract void getMidsComparationByVerificationLevelGraphic(HttpServletRequest request, String level, String title, String filePath, String noDataMess, List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception;
 
     public abstract ScoreForm generateScores(HttpServletRequest request, List<ObservatoryEvaluationForm> evaList) throws Exception;
+
+    public abstract String getTitle();
 
     /**
      * Métodos de utilidad
@@ -210,5 +212,6 @@ public abstract class AnonymousResultExportPdf {
             return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a");
         }
     }
+
 
 }

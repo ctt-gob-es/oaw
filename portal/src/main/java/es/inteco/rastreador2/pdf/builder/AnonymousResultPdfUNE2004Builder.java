@@ -77,7 +77,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
 
         if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-            PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.paragraphFont, chapter);
+            //PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.paragraphFont, chapter);
             PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.paragraphFont, chapter);
         } else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
             PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.paragraphFont, chapter);
