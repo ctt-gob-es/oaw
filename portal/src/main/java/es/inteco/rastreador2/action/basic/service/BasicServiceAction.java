@@ -154,7 +154,7 @@ public class BasicServiceAction extends Action {
                     Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
                     final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
                     PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004(), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
-                } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport())) {
+                } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
                     Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
                     final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
                     PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
@@ -162,7 +162,6 @@ public class BasicServiceAction extends Action {
 
                 // Comprimimos el fichero
                 pdfPath = BasicServiceExport.compressReport(pdfPath);
-
                 //Borramos el análisis
                 DiagnosisDAO.deleteAnalysis(conn, basicServiceForm.getName(), idCrawling);
 
@@ -172,7 +171,6 @@ public class BasicServiceAction extends Action {
                 final ArrayList<String> mailTo = new ArrayList<String>();
                 mailTo.add(basicServiceForm.getEmail());
                 final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
-                final String replyToName = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from.name");
                 Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
                 MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad",
                         mailTo, subject, text, pdfPath, new File(pdfPath).getName(), mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", false);
@@ -236,7 +234,7 @@ public class BasicServiceAction extends Action {
         crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
         crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
         crawlerData.setInDirectory(basicServiceForm.isInDirectory());
-        Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+        Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
         return crawlerData;
     }
 

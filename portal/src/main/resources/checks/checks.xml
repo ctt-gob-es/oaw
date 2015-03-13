@@ -5162,4 +5162,14 @@ Telephone: (416) 978-4360
             <function call="css-label-hidden" node="." />
         </machine>
     </check>
+
+    <check id="462" key="title" confidence="high">
+        <name>Títulos diferentes en la muestra</name>
+        <error>check.462.error</error>
+        <rationale>check.462.rationale</rationale>
+        <machine>
+            <trigger element="title" />
+            <function call="characters-greater-than" node="." value="0"/>
+        </machine>
+    </check>
 </checks>

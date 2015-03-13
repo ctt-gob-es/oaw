@@ -1852,10 +1852,8 @@ public class Check {
                         if (!isDt) {  //Si isDt es false es que el anterior es un dd
                             isDt = true;
                             dtHasDd = false;
-                        } else {
-                            // dos dt seguidos se permiten
-                            //return true;
                         }
+                        // else -> dos dt seguidos se permiten
                     } else if (!exceptions.contains(nodeList.item(i).getNodeName().toLowerCase())) {
                         return true;
                     }
@@ -3574,13 +3572,13 @@ public class Check {
     private boolean checkBrImage(final CheckCode checkCode, final Element checkedElement) {
         if (checkedElement != null) {
             final Element nextElement = "br".equalsIgnoreCase(checkedElement.getNodeName()) ? EvaluatorUtils.getNextElement(checkedElement, false) : EvaluatorUtils.getFirstElement(checkedElement, false);
-            return "img".equalsIgnoreCase(nextElement.getNodeName()) && functionImgDimensionsLessThan(checkCode, nextElement, nextElement);
+            return nextElement!=null && "img".equalsIgnoreCase(nextElement.getNodeName()) && functionImgDimensionsLessThan(checkCode, nextElement, nextElement);
         } else {
             return false;
         }
     }
 
-    private int getCurrentOrder(String text, String patternStr) {
+    private int getCurrentOrder(final String text, final String patternStr) {
         final Pattern pattern = Pattern.compile(patternStr, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         final Matcher matcher = pattern.matcher(text);
 
@@ -3591,7 +3589,7 @@ public class Check {
         }
     }
 
-    private boolean functionHasIncorrectTabindex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+    private boolean functionHasIncorrectTabindex(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
         final List<Element> elementList = new ArrayList<Element>();
 
         elementList.addAll(createElementList(elementGiven.getElementsByTagName("a")));

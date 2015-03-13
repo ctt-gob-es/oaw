@@ -65,6 +65,23 @@ public final class AnalisisDatos {
         }
     }
 
+    public static void updateChecksEjecutados(String updatedChecks, long idAnalisis) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String query = " UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
+        try {
+            conn = DataBaseManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, updatedChecks);
+            pstmt.setLong(2, idAnalisis);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            Logger.putLog("SQLException: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
+        } finally {
+            close(conn, null, pstmt);
+        }
+    }
+
     public static void endAnalysisSuccess(Evaluation eval) {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -91,7 +108,7 @@ public final class AnalisisDatos {
         try {
             conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
-            pstmt.setString(1, getGuideline(checkAccessibility.getGuidelineFile()) );
+            pstmt.setString(1, getGuideline(checkAccessibility.getGuidelineFile().replace("-nobroken","")) );
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
