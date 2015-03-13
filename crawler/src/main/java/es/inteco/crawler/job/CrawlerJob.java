@@ -223,17 +223,17 @@ public class CrawlerJob implements InterruptableJob {
                         // Si hay redirecciones, puede que el dominio cambie
                         domain = connection.getURL().getHost();
 
-                        InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+                        final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                         String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
                         // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
                         textContent = textContent.replaceAll("(?i)<iframe [^>]*/>", "");
                         final Document document = CrawlerDOMUtils.getDocument(textContent);
 
-                        String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
+                        final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
                         if (StringUtils.isEmpty(metaRedirect)) {
-                            String textContentHash = CrawlerUtils.getHash(textContent);
+                            final String textContentHash = CrawlerUtils.getHash(textContent);
                             if (!md5Content.contains(textContentHash)) {
-                                CrawledLink crawledLink = new CrawledLink(url, textContent, counter, numRedirections);
+                                final CrawledLink crawledLink = new CrawledLink(url, textContent, counter, numRedirections);
                                 crawlingDomains.add(crawledLink);
                                 md5Content.add(textContentHash);
                                 Logger.putLog("Introducida la URL número " + crawlingDomains.size() + ": " + url, CrawlerJob.class, Logger.LOG_LEVEL_INFO);
@@ -340,7 +340,6 @@ public class CrawlerJob implements InterruptableJob {
             }
             cont++;
         }
-        // TODO: ¿Crear aqui un postanalyze para calcular % de títulos distintos?
     }
 
     private boolean isValidUrl(final String urlRoot, final String domain, final String urlLink, final CrawlerData crawlerData) {

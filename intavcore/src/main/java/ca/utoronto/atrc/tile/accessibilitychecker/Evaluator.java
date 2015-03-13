@@ -68,13 +68,10 @@ public class Evaluator {
 
     // evaluates the given file for accessibility problems
     // filename - URL of the page
-    public Evaluation evaluate(CheckAccessibility checkAccesibility, String language) {
-
-        URL url = null;
+    public Evaluation evaluate(final CheckAccessibility checkAccesibility, final String language) {
         try {
             // load the HTML document
-
-            url = EvaluatorUtility.openUrl(checkAccesibility.getUrl());
+            final URL url = EvaluatorUtility.openUrl(checkAccesibility.getUrl());
             if (url == null) {
                 return null;
             }
@@ -89,25 +86,25 @@ public class Evaluator {
 
     // evaluates the given file for accessibility problems from the crawler application
     // filename - URL of the page
-    public Evaluation evaluateContent(CheckAccessibility checkAccesibility, String language) throws Exception {
+    public Evaluation evaluateContent(final CheckAccessibility checkAccesibility, final String language) throws Exception {
         return evaluateWorkFromContent(checkAccesibility, language);
     }
 
-    private Evaluation evaluateWork(CheckAccessibility checkAccessibility, String language) {
-        AllChecks allChecks = EvaluatorUtility.getAllChecks();
+    private Evaluation evaluateWork(final CheckAccessibility checkAccessibility, final String language) {
+        final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
         // create a list of checks that fulfill the given guidelines
-        Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
-        List<Integer> checksSelected = createCheckList(checkAccessibility, allChecks, guideline);
+        final Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
+        final List<Integer> checksSelected = createCheckList(checkAccessibility, guideline);
 
-        boolean htmlValidationNeeded = EvaluatorUtils.isHtmlValidationNeeded(checksSelected);
-        boolean cssValidationNeeded = EvaluatorUtils.isCssValidationNeeded(checksSelected);
+        final boolean htmlValidationNeeded = EvaluatorUtils.isHtmlValidationNeeded(checksSelected);
+        final boolean cssValidationNeeded = EvaluatorUtils.isCssValidationNeeded(checksSelected);
 
-        Document docHtml = EvaluatorUtility.loadHtmlFile(checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, false);
+        final Document docHtml = EvaluatorUtility.loadHtmlFile(checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, false);
         if (docHtml == null) {
             return null;
         } else {
-            String cacheKey = IntavConstants.CHECKED_LINKS_CACHE_KEY + checkAccessibility.getIdRastreo();
+            final String cacheKey = IntavConstants.CHECKED_LINKS_CACHE_KEY + checkAccessibility.getIdRastreo();
             CheckedLinks checkedLinks = new CheckedLinks();
             if (checkAccessibility.getIdRastreo() > 0) {
                 try {
@@ -117,7 +114,7 @@ public class Evaluator {
                 }
             }
             docHtml.getDocumentElement().setUserData("checkedLinks", checkedLinks, null);
-            Evaluation evaluation = applyEvaluation(checkAccessibility, checksSelected, allChecks, docHtml, language, guideline);
+            final Evaluation evaluation = applyEvaluation(checkAccessibility, checksSelected, allChecks, docHtml, language);
 
             if (checkAccessibility.getIdRastreo() > 0) {
                 CacheUtils.putInCache(docHtml.getDocumentElement().getUserData("checkedLinks"), cacheKey);
@@ -127,27 +124,27 @@ public class Evaluator {
         }
     }
 
-    private Evaluation evaluateWorkFromContent(CheckAccessibility checkAccessibility, String language) throws Exception {
-        AllChecks allChecks = EvaluatorUtility.getAllChecks();
-        Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
+    private Evaluation evaluateWorkFromContent(final CheckAccessibility checkAccessibility, final String language) throws Exception {
+        final AllChecks allChecks = EvaluatorUtility.getAllChecks();
+        final Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
 
         // create a list of checks that fulfill the given guidelines
-        List<Integer> checksSelected = createCheckList(checkAccessibility, allChecks, guideline);
+        final List<Integer> checksSelected = createCheckList(checkAccessibility, guideline);
 
-        boolean htmlValidationNeeded = EvaluatorUtils.isHtmlValidationNeeded(checksSelected);
-        boolean cssValidationNeeded = EvaluatorUtils.isCssValidationNeeded(checksSelected);
+        final boolean htmlValidationNeeded = EvaluatorUtils.isHtmlValidationNeeded(checksSelected);
+        final boolean cssValidationNeeded = EvaluatorUtils.isCssValidationNeeded(checksSelected);
 
         // Si se ha invocado desde el rastreador, llevará asociado un ID de rastreo
-        boolean fromCrawler = checkAccessibility.getIdRastreo() != 0;
+        final boolean fromCrawler = checkAccessibility.getIdRastreo() != 0;
 
-        InputStream inputStream;
+        final InputStream inputStream;
         if (!fromCrawler) {
             inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes(IntavConstants.DEFAULT_ENCODING));
         } else {
             inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes());
         }
 
-        Document docHtml = EvaluatorUtility.loadHtmlFile(inputStream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, fromCrawler, IntavConstants.DEFAULT_ENCODING);
+        final Document docHtml = EvaluatorUtility.loadHtmlFile(inputStream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, fromCrawler, IntavConstants.DEFAULT_ENCODING);
         if (docHtml == null) {
             return null;
         } else {
@@ -161,7 +158,7 @@ public class Evaluator {
             }
             docHtml.getDocumentElement().setUserData("checkedLinks", checkedLinks, null);
 
-            Evaluation evaluation = applyEvaluation(checkAccessibility, checksSelected, allChecks, docHtml, language, guideline);
+            final Evaluation evaluation = applyEvaluation(checkAccessibility, checksSelected, allChecks, docHtml, language);
 
             if (checkAccessibility.getIdRastreo() > 0) {
                 CacheUtils.putInCache(docHtml.getDocumentElement().getUserData("checkedLinks"), "checkedLinks_" + checkAccessibility.getIdRastreo());
@@ -170,14 +167,14 @@ public class Evaluator {
         }
     }
 
-    private Evaluation applyEvaluation(CheckAccessibility checkAccessibility, List<Integer> checksSelected, AllChecks allChecks, Document docHtml, String language, Guideline guideline) {
+    private Evaluation applyEvaluation(final CheckAccessibility checkAccessibility, final List<Integer> checksSelected, final AllChecks allChecks, final Document docHtml, final String language) {
         // make sure there is at least one check in our vector
         if (checksSelected.isEmpty()) {
             Logger.putLog("Error: No checks selected for target guidelines", Evaluator.class, Logger.LOG_LEVEL_INFO);
             return null;
         } else {
             try {
-                Map<String, List<Check>> elementsMap = createElementChecksLinks(checksSelected, allChecks);
+                final Map<String, List<Check>> elementsMap = createElementChecksLinks(checksSelected, allChecks);
 
                 // find the HTML element and look for a 'lang' attribute
                 Node nodeHTML = EvaluatorUtils.getHtmlElement(docHtml);
@@ -186,7 +183,7 @@ public class Evaluator {
                 // set the appropriate language for selected checks
                 setAppropriateData(checksSelected, language);
 
-                return getEvaluation(checkAccessibility, nodeHTML, docHtml, language, elementsMap);
+                return getEvaluation(checkAccessibility, nodeHTML, docHtml, elementsMap);
 
             } catch (Exception e) {
                 Logger.putLog("Exception al evaluar " + checkAccessibility.getUrl() + ": ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
@@ -196,7 +193,7 @@ public class Evaluator {
     }
 
 
-    private List<Integer> createCheckList(CheckAccessibility checkAccessibility, AllChecks allChecks, Guideline guideline) {
+    private List<Integer> createCheckList(final CheckAccessibility checkAccessibility, final Guideline guideline) {
         final List<Integer> checksSelected = new ArrayList<Integer>();
 
         //PropertiesManager pmgr = new PropertiesManager();
@@ -225,16 +222,16 @@ public class Evaluator {
 
     // create an index that links each element to its required checks
 
-    private Map<String, List<Check>> createElementChecksLinks(List<Integer> checksSelected, AllChecks allChecks) {
-        Map<String, List<Check>> elementsMap = new HashMap<String, List<Check>>();
+    private Map<String, List<Check>> createElementChecksLinks(final List<Integer> checksSelected, final AllChecks allChecks) {
+        final Map<String, List<Check>> elementsMap = new HashMap<String, List<Check>>();
         for (Integer integerSelectedCheck : checksSelected) {
-            Check check = allChecks.getCheck(integerSelectedCheck);
+            final Check check = allChecks.getCheck(integerSelectedCheck);
             if (check == null) {
                 Logger.putLog("Warning: Guideline contains check ID not found in master list: " + integerSelectedCheck, Evaluator.class, Logger.LOG_LEVEL_WARNING);
             }
             // add this check to our map
             else {
-                String elementName = check.getTriggerElement();
+                final String elementName = check.getTriggerElement();
                 if ((elementName != null) && (elementName.length() != 0)) {
                     List<Check> listOfChecks = elementsMap.get(elementName);
                     if (listOfChecks == null) {
@@ -270,11 +267,10 @@ public class Evaluator {
     }
 
 
-    private Evaluation getEvaluation(CheckAccessibility checkAccesibility, Node nodeHTML, Document docHtml, String language, Map<String, List<Check>> elementsMap) {
+    private Evaluation getEvaluation(final CheckAccessibility checkAccesibility, final Node nodeHTML, final Document docHtml, final Map<String, List<Check>> elementsMap) {
+        final boolean isCrawling = checkAccesibility.getIdRastreo() != 0;
 
-        boolean isCrawling = checkAccesibility.getIdRastreo() != 0;
-
-        Evaluation evaluation = new Evaluation();
+        final Evaluation evaluation = new Evaluation();
         evaluation.setFilename(checkAccesibility.getUrl());
         evaluation.setHtmlDoc(docHtml);
         evaluation.setBase();
@@ -290,7 +286,7 @@ public class Evaluator {
 
         evaluation.addGuideline(checkAccesibility.getGuidelineFile());
         // perform the evaluation
-        List<Incidencia> incidenceList = evaluateLoop(nodeHTML, evaluation, elementsMap, isCrawling);
+        final List<Incidencia> incidenceList = evaluateLoop(nodeHTML, evaluation, elementsMap, isCrawling);
 
         // perform any special tests (doctype etc.)
         evaluateSpecial(nodeHTML, evaluation, elementsMap);
@@ -316,13 +312,11 @@ public class Evaluator {
         return evaluation;
     }
 
-    private void addIncidenceToList(Node node, Check check, Evaluation evaluation, List<Incidencia> incidenceList, boolean isCrawling) {
-        PropertiesManager properties = new PropertiesManager();
-        Date now = new Date();
-        SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
-        String stringDate = format.format(now);
-        Problem problem = new Problem((Element) node);
-        problem.setDate(stringDate);
+    private void addIncidenceToList(final Node node, final Check check, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
+        final PropertiesManager properties = new PropertiesManager();
+        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
+        final Problem problem = new Problem((Element) node);
+        problem.setDate(format.format(new Date()));
         problem.setCheck(check);
         problem.setXpath(getXpath(node));
 
@@ -338,8 +332,8 @@ public class Evaluator {
         }
     }
 
-    private void addIncidence(Evaluation eval, Problem prob, List<Incidencia> incidenceList) {
-        Incidencia incidencia = new Incidencia();
+    private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList) {
+        final Incidencia incidencia = new Incidencia();
 
         incidencia.setCodigoAnalisis(eval.getIdAnalisis());
         incidencia.setCodigoComprobacion(prob.getCheck().getId());
@@ -351,8 +345,8 @@ public class Evaluator {
     }
 
 
-    private void addIncidence(Evaluation eval, Problem prob, List<Incidencia> incidenceList, String text) {
-        Incidencia incidencia = new Incidencia();
+    private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList, final String text) {
+        final Incidencia incidencia = new Incidencia();
 
         incidencia.setCodigoAnalisis(eval.getIdAnalisis());
         incidencia.setCodigoComprobacion(prob.getCheck().getId());
@@ -365,9 +359,9 @@ public class Evaluator {
 
     // Realiza la evaluación de un conjunto de checks sobre un nodo
 
-    private void performEvaluation(Node node, List<Check> vectorChecks, Evaluation evaluation, List<Incidencia> incidenceList, boolean isCrawling) {
+    private void performEvaluation(final Node node, final List<Check> vectorChecks, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
         // keep track of the checks that have run (needed for prerequisites)
-        List<Integer> vectorChecksRun = new ArrayList<Integer>();
+        final List<Integer> vectorChecksRun = new ArrayList<Integer>();
 
         for (Check check : vectorChecks) {
             // Comprobamos que el check está activo
@@ -404,7 +398,7 @@ public class Evaluator {
                 }
             } catch (AccessibilityError ae) {
                 // Añadimos los problemas de validación de código HTML
-                PropertiesManager pmgr = new PropertiesManager();
+                final PropertiesManager pmgr = new PropertiesManager();
                 if (check.getId() == Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif"))) {
                     addValidationIncidences(evaluation, check, incidenceList);
                 } else if (EvaluatorUtils.isCssValidationNeeded(check.getId())) {
@@ -438,7 +432,6 @@ public class Evaluator {
                         if (cssProblems.isEmpty()) {
                             vectorChecksRun.add(check.getId());
                         } else {
-                            // TODO: Hay que añadir los problemas de CSS
                             // Se ha encontrado un error y se va a registrar en la base de datos
                             if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
                                 addCssIncidences(evaluation, check, incidenceList, cssProblems);
@@ -460,21 +453,19 @@ public class Evaluator {
     }
 
     // Añade los problemas de validación HTML
-    private List<Incidencia> addValidationIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
-        List<Incidencia> validationProblems = new ArrayList<Incidencia>();
+    private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        final List<Incidencia> validationProblems = new ArrayList<Incidencia>();
 
-        Document docHtml = evaluation.getHtmlDoc();
-        Element elementHtmlRoot = docHtml.getDocumentElement();
-        List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementHtmlRoot.getUserData("validationErrors");
+        final Document docHtml = evaluation.getHtmlDoc();
+        final Element elementHtmlRoot = docHtml.getDocumentElement();
+        final List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementHtmlRoot.getUserData("validationErrors");
 
         if (vectorValidationErrors != null) {
             for (ValidationError validationError : vectorValidationErrors) {
-                PropertiesManager properties = new PropertiesManager();
-                Date now = new Date();
-                SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
-                String stringDate = format.format(now);
+                final PropertiesManager properties = new PropertiesManager();
+                final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
                 Problem problem = new Problem();
-                problem.setDate(stringDate);
+                problem.setDate(format.format(new Date()));
                 problem.setCheck(check);
                 problem.setColumnNumber(validationError.getColumn());
                 problem.setLineNumber(validationError.getLine());
@@ -498,21 +489,19 @@ public class Evaluator {
     }
 
     // Añade los problemas de validación de CSS
-    private List<Incidencia> addCssValidationIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
-        List<Incidencia> validationProblems = new ArrayList<Incidencia>();
+    private List<Incidencia> addCssValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        final List<Incidencia> validationProblems = new ArrayList<Incidencia>();
 
-        Document docHtml = evaluation.getHtmlDoc();
-        Element elementHtmlRoot = docHtml.getDocumentElement();
-        List<CssValidationError> vectorValidationErrors = (List<CssValidationError>) elementHtmlRoot.getUserData("cssValidationErrors");
+        final Document docHtml = evaluation.getHtmlDoc();
+        final Element elementHtmlRoot = docHtml.getDocumentElement();
+        final List<CssValidationError> vectorValidationErrors = (List<CssValidationError>) elementHtmlRoot.getUserData("cssValidationErrors");
 
         if (vectorValidationErrors != null) {
             for (CssValidationError cssValidationError : vectorValidationErrors) {
-                PropertiesManager properties = new PropertiesManager();
-                Date now = new Date();
-                SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
-                String stringDate = format.format(now);
-                Problem problem = new Problem();
-                problem.setDate(stringDate);
+                final PropertiesManager properties = new PropertiesManager();
+                final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
+                final Problem problem = new Problem();
+                problem.setDate(format.format(new Date()));
                 problem.setCheck(check);
                 problem.setColumnNumber(0);
                 problem.setLineNumber(cssValidationError.getLine());
@@ -535,7 +524,7 @@ public class Evaluator {
         return validationProblems;
     }
 
-    private void addCssIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList, List<CSSProblem> cssProblems) {
+    private void addCssIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final List<CSSProblem> cssProblems) {
         if (cssProblems != null) {
             for (CSSProblem cssProblem : cssProblems) {
                 final Problem problem = CSSUtils.getProblemFromCSS(cssProblem, check, evaluation);
@@ -551,7 +540,7 @@ public class Evaluator {
     }
 
     // Añade los checks especificos de un elemento
-    private void addSpecificChecks(List<Check> vectorChecks, Map<String, List<Check>> elementsMap, String nameElement) {
+    private void addSpecificChecks(final List<Check> vectorChecks, final Map<String, List<Check>> elementsMap, final String nameElement) {
         final List<Check> vectorTemp = elementsMap.get(nameElement);
         if (vectorTemp != null) {
             for (Check check : vectorTemp) {
@@ -561,7 +550,7 @@ public class Evaluator {
     }
 
     // Añade los checks generales de todos los elementos
-    private void addGeneralChecks(List<Check> checks, Map<String, List<Check>> elementsMap) {
+    private void addGeneralChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap) {
         // add the checks that apply to all elements
         final List<Check> allElementsChecks = elementsMap.get("*");
         if (allElementsChecks != null) {
@@ -572,7 +561,7 @@ public class Evaluator {
     }
 
     // Añade los checks específicos de CSS
-    private void addCssChecks(List<Check> checks, Map<String, List<Check>> elementsMap) {
+    private void addCssChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap) {
         // add the checks that apply to css
         final List<Check> cssChecks = elementsMap.get("css");
         if (cssChecks != null) {
@@ -583,22 +572,22 @@ public class Evaluator {
     }
 
     // Evalua la lista de nodos del documento
-    private List<Incidencia> evaluateLoop(Node rootNode, Evaluation evaluation, Map<String, List<Check>> elementsMap, boolean isCrawling) {
-        PropertiesManager pmgr = new PropertiesManager();
+    private List<Incidencia> evaluateLoop(final Node rootNode, final Evaluation evaluation, final Map<String, List<Check>> elementsMap, final boolean isCrawling) {
+        final PropertiesManager pmgr = new PropertiesManager();
         int maxNumElements = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "intav.max.num.html.elements"));
         long time = System.currentTimeMillis();
-        List<Incidencia> incidenceList = new ArrayList<Incidencia>();
+        final List<Incidencia> incidenceList = new ArrayList<Incidencia>();
         if (rootNode != null) {
-            List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
+            final List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
             int counter = 0;
             for (Node node : nodeList) {
-                String nameElement = node.getNodeName().toLowerCase();
+                final String nameElement = node.getNodeName().toLowerCase();
                 if (counter <= maxNumElements || nameElement.equals("body") || nameElement.equals("html")) {
                     if (nameElement.equals("html") && (node.getUserData("realHtml") != null) && (node.getUserData("realHtml").equals("false"))) {
                         continue;
                     }
                     // get a list of checks for this element
-                    List<Check> vectorChecks = new ArrayList<Check>();
+                    final List<Check> vectorChecks = new ArrayList<Check>();
                     addSpecificChecks(vectorChecks, elementsMap, nameElement);
                     addGeneralChecks(vectorChecks, elementsMap);
                     addCssChecks(vectorChecks, elementsMap);
@@ -617,21 +606,19 @@ public class Evaluator {
     }
 
     // Evaluates any special tests (doctype etc.)
-    private void evaluateSpecial(Node nodeGiven, Evaluation evaluation, Map<String, List<Check>> elementsMap) {
+    private void evaluateSpecial(final Node nodeGiven, final Evaluation evaluation, final Map<String, List<Check>> elementsMap) {
         // get a list of checks for this element
-        PropertiesManager properties = new PropertiesManager();
-        List<Check> vectorChecks = elementsMap.get("doctype");
+        final PropertiesManager properties = new PropertiesManager();
+        final List<Check> vectorChecks = elementsMap.get("doctype");
         if (vectorChecks != null) {
             for (Check check : vectorChecks) {
                 if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "contHTML.decDoctype"))) {
-                    Element elementRoot = nodeGiven.getOwnerDocument().getDocumentElement();
-                    String hasDoctype = (String) elementRoot.getUserData("doctype");
+                    final Element elementRoot = nodeGiven.getOwnerDocument().getDocumentElement();
+                    final String hasDoctype = (String) elementRoot.getUserData("doctype");
                     if (hasDoctype.equals("false")) {
-                        Date now = new Date();
-                        SimpleDateFormat format = new SimpleDateFormat(properties.getValue(IntavConstants.INTAV_PROPERTIES, "complet.date.format.ymd"));
-                        String stringDate = format.format(now);
-                        Problem problem = new Problem((Element) nodeGiven);
-                        problem.setDate(stringDate);
+                        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue(IntavConstants.INTAV_PROPERTIES, "complet.date.format.ymd"));
+                        final Problem problem = new Problem((Element) nodeGiven);
+                        problem.setDate( format.format(new Date()));
                         problem.setCheck(check);
                         problem.setXpath(getXpath(nodeGiven));
 
@@ -643,7 +630,7 @@ public class Evaluator {
     }
 
     // sets the 'appropriate' flag for all data used in the given checks
-    private void setAppropriateData(List<Integer> checksIds, String language) {
+    private void setAppropriateData(final List<Integer> checksIds, final String language) {
         final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
         for (Integer checkId : checksIds) {
@@ -678,7 +665,7 @@ public class Evaluator {
     }
 
     // Recursive function that creates the Xpath expression
-    private static String getXpathLoop(Node node, String expression) {
+    private static String getXpathLoop(final Node node, final String expression) {
         Node nodeParent = node.getParentNode();
         if ((nodeParent == null) ||
                 (nodeParent.getNodeType() == Node.DOCUMENT_NODE)) {
@@ -697,8 +684,8 @@ public class Evaluator {
         return getXpathLoop(nodeParent, newExpression);
     }
 
-    private static String getXpathSuffix(Node node) {
-        Node nodeParent = node.getParentNode();
+    private static String getXpathSuffix(final Node node) {
+        final Node nodeParent = node.getParentNode();
         if (nodeParent == null) {
             return "";
         }
@@ -707,7 +694,7 @@ public class Evaluator {
             return "";
         }
 
-        NodeList childNodes = nodeParent.getChildNodes();
+        final NodeList childNodes = nodeParent.getChildNodes();
         int count = 0; // number of elements that are the same as the given element
         int index = 1; // the index of the given element amongst all same elements
         for (int x = 0; x < childNodes.getLength(); x++) {
@@ -728,10 +715,10 @@ public class Evaluator {
     }
 
     // Saves the global information about the analysis in DataBase and return the id of the analysis
-    private int setAnalisisDB(Evaluation eval, CheckAccessibility checkAccessibility) {
+    private int setAnalisisDB(final Evaluation eval, final CheckAccessibility checkAccessibility) {
         Connection conn = DataBaseManager.getConnection();
         try {
-            Analysis analysis = new Analysis();
+            final Analysis analysis = new Analysis();
 
             analysis.setDate(new Date());
             analysis.setFile("");
@@ -753,15 +740,14 @@ public class Evaluator {
     }
 
     // Gets the global information about the analysis from DataBase and returns it
-    public Evaluation getAnalisisDB(Connection conn, long id, Document doc, boolean getOnlyChecks) {
-        Evaluation eval = new Evaluation();
-
-        Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
+    public Evaluation getAnalisisDB(final Connection conn, final long id, final Document doc, final boolean getOnlyChecks) {
+        final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
         if (analysis == null) {
             return null;
         }
 
+        Evaluation eval = new Evaluation();
         eval.setIdAnalisis(id);
         eval.setHtmlDoc(doc);
         eval.setFilename(analysis.getUrl());
@@ -776,16 +762,15 @@ public class Evaluator {
         return eval;
     }
 
-    public Evaluation getObservatoryAnalisisDB(Connection conn, long id, Document doc) {
-        Evaluation eval = new Evaluation();
-
-        Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
+    public Evaluation getObservatoryAnalisisDB(final Connection conn, final long id, final Document doc) {
+        final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
         if (analysis == null) {
             Logger.putLog("No ha sido posible recuperar los datos del análisis " + id, Evaluator.class, Logger.LOG_LEVEL_INFO);
             return null;
         }
 
+        Evaluation eval = new Evaluation();
         eval.setIdAnalisis(id);
         eval.setHtmlDoc(doc);
         eval.setFilename(analysis.getUrl());
@@ -803,10 +788,10 @@ public class Evaluator {
         return eval;
     }
 
-    private List<Integer> getChecksExecuted(String checksExecutedStr) {
-        List<Integer> results = new ArrayList<Integer>();
+    private List<Integer> getChecksExecuted(final String checksExecutedStr) {
+        final List<Integer> results = new ArrayList<Integer>();
         if (checksExecutedStr != null) {
-            String[] checksExecutedArray = checksExecutedStr.split(",");
+            final String[] checksExecutedArray = checksExecutedStr.split(",");
             for (int i = 1; i < checksExecutedArray.length; i++) {
                 results.add(Integer.valueOf(checksExecutedArray[i]));
             }
@@ -815,18 +800,17 @@ public class Evaluator {
     }
 
     // Gets the list of problems related with an analysis from DataBase
-    private Evaluation getIncidenciasFromAnalisisDB(Connection conn, Evaluation eval, boolean getOnlyCheck) {
-        List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck);
-
-        AllChecks allChecks = EvaluatorUtility.getAllChecks();
+    private Evaluation getIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval, final boolean getOnlyCheck) {
+        final List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck);
+        final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
         for (Incidencia inc : arrlist) {
-            Problem problem = new Problem();
-            Check check = allChecks.getCheck(inc.getCodigoComprobacion());
+            final Problem problem = new Problem();
+            final Check check = allChecks.getCheck(inc.getCodigoComprobacion());
             problem.setCheck(check);
             problem.setLineNumber(inc.getCodigoLineaFuente());
             problem.setColumnNumber(inc.getCodigoColumnaFuente());
-            Element nodeRoot = eval.getHtmlDoc().createElement("problem-text");
+            final Element nodeRoot = eval.getHtmlDoc().createElement("problem-text");
             nodeRoot.setTextContent(inc.getCodigoFuente());
             nodeRoot.setAttribute(IntavConstants.GETTING_FROM_BD, IntavConstants.TRUE);
             problem.setNode(nodeRoot);
@@ -837,14 +821,13 @@ public class Evaluator {
         return eval;
     }
 
-    private Evaluation getObservatoryIncidenciasFromAnalisisDB(Connection conn, Evaluation eval) {
-        List<Incidencia> arrlist = IncidenciaDatos.getObservatoryIncidenciasFromAnalisisId(conn, eval.getIdAnalisis());
-
-        AllChecks allChecks = EvaluatorUtility.getAllChecks();
+    private Evaluation getObservatoryIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval) {
+        final List<Incidencia> arrlist = IncidenciaDatos.getObservatoryIncidenciasFromAnalisisId(conn, eval.getIdAnalisis());
+        final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
         for (Incidencia inc : arrlist) {
-            Problem problem = new Problem();
-            Check check = allChecks.getCheck(inc.getCodigoComprobacion());
+            final Problem problem = new Problem();
+            final Check check = allChecks.getCheck(inc.getCodigoComprobacion());
             problem.setCheck(check);
             eval.addProblem(problem);
             eval.setIdProblems();
