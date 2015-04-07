@@ -16,7 +16,7 @@ public final class Check_2_1_7_CompatibilityTest {
 
     public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7 = "minhap.observatory.2.0.subgroup.2.1.7";
 
-    /* Documento tenga un DTD válido (TODO: incluir HTML5) */
+    /* Documento tenga un DTD válido */
     private static final int DOCTYPE_VALID = 323;
     /* Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) */
     /* Se verifica que no se repite el mismo atributo con diferente valor en el mismo elemento */
@@ -36,7 +36,7 @@ public final class Check_2_1_7_CompatibilityTest {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012", true);
     }
 
     @Test
@@ -44,6 +44,27 @@ public final class Check_2_1_7_CompatibilityTest {
         checkAccessibility.setContent("<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateValidDoctype() throws Exception {
+        checkAccessibility.setContent(DOCTYPE_HTML4 + "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent(DOCTYPE_HTML5 + "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateInvalidDoctype() throws Exception {
+        checkAccessibility.setContent("<!DOCTYPE HTML PUBLIC \"4.01\">" + System.lineSeparator() + "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_RED_ZERO);
     }

@@ -211,9 +211,16 @@ public final class EvaluatorUtility {
                     continue;
                 }
                 // comments within scripts are treated as 'text' nodes so ignore them
-                if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
+                /*if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
                         (nodeChild.getNodeName().equalsIgnoreCase("script"))) {
                     continue;
+                }//*/
+                if (nodeChild.getNodeType() == Node.ELEMENT_NODE) {
+                    if (nodeChild.getNodeName().equalsIgnoreCase("script")) {
+                        continue;
+//                    } else  if ( nodeChild.getNodeName().equalsIgnoreCase("img")) {
+//                        buffer.append(((Element)nodeChild).getAttribute("alt"));
+                    }
                 }
                 if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                     buffer.append(nodeChild.getNodeValue());
@@ -276,6 +283,11 @@ public final class EvaluatorUtility {
             if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
                     (nodeChild.getNodeName().equalsIgnoreCase("abbr") || nodeChild.getNodeName().equalsIgnoreCase("input"))) {
                 buffer.append(((Element) nodeChild).getAttribute("title"));
+                buffer.append(" ");
+            }
+            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
+                    (nodeChild.getNodeName().equalsIgnoreCase("img"))) {
+                buffer.append(((Element) nodeChild).getAttribute("alt"));
                 buffer.append(" ");
             }
             if (nodeChild.getNodeType() == Node.TEXT_NODE) {

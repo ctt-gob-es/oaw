@@ -157,6 +157,12 @@ public interface CheckFunctionConstants {
     public static final int FUNCTION_OTHER_LANGUAGE = 148;
     public static final int FUNCTION_CSS_LABEL_HIDDEN = 149;
     public static final int FUNCTION_CURRENT_LANGUAGE = 150;
+    public static final int FUNCTION_INVALID_SCOPE = 151;
+    public static final int FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONFORMANCE_LEVEL = 152;
+    public static final int FUNCTION_TABINDEX_EXCESSIVE_USAGE = 153;
+    public static final int FUNCTION_LINK_CHARS_GREATER = 154;
+
+
 
     // check codes
     public static final int CHECK_STATUS_OK = 1;

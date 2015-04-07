@@ -396,4 +396,119 @@ public final class CheckUtils {
         return newHost.equalsIgnoreCase(domain);
     }
 
+    /**
+     * Comprueba si un documento HTML tiene declaración de conformidad de accesibilidad aplicando una serie de patrones sobre los enlaces e imagenes
+     *
+     * @param document documento HTML sobre el que buscar la declaración de conformidad de accesibilidad
+     * @return true si se ha detectado una declaración de conformidad, false en caso contrario
+     */
+    public static boolean hasConformanceLevel(final Document document) {
+        /*
+        “Nivel .* A”, “Nivel .* AA”, “Nivel .* AAA” (.* por si se incluye algún texto adicional como “Nivel de Accesibilidad AA”, “Nivel de Conformidad AA”, etc.).-->
+                    <!--Un texto con los patrones “doble A”, “triple AAA”, “prioridad X” (con x = 1, 2 o 3).-->
+                    <!--Iconos de conformidad del W3C identificándolos buscando patrones similares a los anteriores en su texto alternativo o, en caso de ser enlaces, reconociendo las URLs de las páginas de conformidad del W3C.
+         */
+        // FIXME: Comprobar texto
+        final NodeList enlaces = document.getElementsByTagName("a");
+        for (int i = 0; i < enlaces.getLength(); i++) {
+            final Element tag = (Element) enlaces.item(i);
+            if (tag.getAttribute("href") != null) {
+                final String href = tag.getAttribute("href");
+                if (WCAG1A.equalsIgnoreCase(href) || WCAG2A.equalsIgnoreCase(href)) {
+                    return true;
+                } else if (WCAG1AA.equalsIgnoreCase(href) || WCAG2AA.equalsIgnoreCase(href)) {
+                    return true;
+                } else if (WCAG1AAA.equalsIgnoreCase(href) || WCAG2AAA.equalsIgnoreCase(href)) {
+                    return true;
+                }
+            }
+        }
+        final NodeList images = document.getElementsByTagName("img");
+        for (int i = 0; i < images.getLength(); i++) {
+            final Element tag = (Element) images.item(i);
+
+            if (tag.getAttribute("src") != null) {
+                final String src = tag.getAttribute("src");
+                if (src.contains(SRC1AAA) || src.contains(TAW1AAA) || src.contains(TAW2AAA) || src.contains(SRC2AAA)) {
+                    return true;
+                } else if (src.contains(SRC1AA) || src.contains(TAW1AA) || src.contains(TAW2AA) || src.contains(SRC2AA)) {
+                    return true;
+                } else if (src.contains(SRC1A) || src.contains(TAW1A) || src.contains(TAW2A) || src.contains(SRC2A)) {
+                    return true;
+                }
+            }
+            if (tag.getAttribute("alt") != null) {
+                final String alt = tag.getAttribute("alt");
+                for (Pattern pattern : altA) {
+                    if (pattern.matcher(alt).find()) {
+                        return true;
+                    }
+                }
+                for (Pattern pattern : altAA) {
+                    if (pattern.matcher(alt).find()) {
+                        return true;
+                    }
+                }
+                for (Pattern pattern : altAAA) {
+                    if (pattern.matcher(alt).find()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // Patrones usados para la función hasConformanceLevel
+    private static final String WCAG1A = "http://www.w3.org/WAI/WCAG1A-Conformance";
+    private static final String WCAG1AA = "http://www.w3.org/WAI/WCAG1AA-Conformance";
+    private static final String WCAG1AAA = "http://www.w3.org/WAI/WCAG1AAA-Conformance";
+
+    private static final String WCAG2A = "http://www.w3.org/WAI/WCAG2A-Conformance";
+    private static final String WCAG2AA = "http://www.w3.org/WAI/WCAG2AA-Conformance";
+    private static final String WCAG2AAA = "http://www.w3.org/WAI/WCAG2AAA-Conformance";
+
+    private static final String TAW1A = "taw_1_A.png";
+    private static final String TAW2A = "taw_2_A.png";
+    private static final String TAW1AA = "taw_1_AA.png";
+    private static final String TAW2AA = "taw_2_AA.png";
+    private static final String TAW1AAA = "taw_1_AAA.png";
+    private static final String TAW2AAA = "taw_2_AAA.png";
+
+    private static final String SRC1A = "wcag1A";
+    private static final String SRC1AA = "wcag1AA";
+    private static final String SRC1AAA = "wcag1AAA";
+
+    private static final String SRC2A = "wcag2A";
+    private static final String SRC2AA = "wcag2AA";
+    private static final String SRC2AAA = "wcag2AAA";
+
+    private static final Pattern[] altA = new Pattern[]{
+            Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE),
+    };
+
+    private static final Pattern[] altAA = new Pattern[]{
+            Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bnivel\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE),
+    };
+
+    private static final Pattern[] altAAA = new Pattern[]{
+            Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bnivel\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE),
+    };
 }

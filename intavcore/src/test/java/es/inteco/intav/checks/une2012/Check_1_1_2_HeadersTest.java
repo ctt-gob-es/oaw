@@ -55,7 +55,12 @@ public final class Check_1_1_2_HeadersTest {
     @Test
     public void evaluateIncorrectNestingStartFirstLevel() throws Exception {
         checkAccessibility.setContent("<html><body><h1>Lorem</h1><p>Ipsum</p><h4>Sic semper</h4><p>Foo</p></body></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content</p><h3>Ipsum</h3><p>Some content</p><h5>Ipsum</h5><p>Some content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        // La comprobacion es global al documento y binaria (es correcto o incorrecto, no contabiliza el número de encabezados incorrectos)
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
     }
 
@@ -121,13 +126,11 @@ public final class Check_1_1_2_HeadersTest {
     @Test
     public void evaluateAdjacentSameHeadings() throws Exception {
         checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Foo bar</h2><h2>Ipsum</h2><p>Some content<p></body></html>");
-//        Assert.assertEquals(1, getNumProblems(checkAccessibility, SAME_LEVEL_HEADERS_NO_CONTENT_ID));
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
         ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
         TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_2, TestUtils.OBS_VALUE_RED_ZERO);
-
     }
 
     @Test
@@ -185,4 +188,133 @@ public final class Check_1_1_2_HeadersTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_STRUCTURE));
     }
 
+    @Test
+    public void evaluateExistsH1() throws Exception {
+        /* MET 4.2.2
+           Title: Se verifica la presencia de un encabezado de primer nivel, en cualquier posición
+           Subject:     <h1>
+           Check:       debe existir al menos 1
+         */
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Ipsum</h2><p>Some content<p><h2>No content</h2></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), EXISTS_H1_ID));
+
+        checkAccessibility.setContent("<html><body><h2>Ipsum</h2><p>Some content<p><h2>No content</h2><h1>foo</h1><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), EXISTS_H1_ID));
+
+        checkAccessibility.setContent("<html><body><h2>Ipsum</h2><p>Some content<p><h2>No content</h2></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), EXISTS_H1_ID));
+
+        checkAccessibility.setContent("<html><body><h2>Ipsum</h2><p>Some content<p><h2>No content</h2><h4>No content</h4><h1>foo</h1><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), EXISTS_H1_ID));
+    }
+
+
+    @Test
+    public void evaluateContentBetweenHeaders() throws Exception {
+
+        /* MET 4.2.4
+           Title:       Se verifica que no haya dos encabezados seguidos del mismo nivel (o superior) son contenido entre ellos
+           Subject:     <h1>...</h6>
+           Check:       Si se pasa de un nivel Hx a un nivel Hx-y (y=0..x-1) debe haber contenido entre ambos
+         */
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>No content</h3><h5>Ipsum</h5><p>Some content<p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>No content</h3><h4>Ipsum</h4><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>No content</h3><h3>Ipsum</h3><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content</p><h3>No content</h3><h2>Ipsum</h2><p>Some content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>No content</h3><h1>Ipsum</h1><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h5>Ipsum</h5><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h4>Ipsum</h4><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h3>Ipsum</h3><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h2>Ipsum</h2><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h1>Ipsum</h1><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Ipsum</h2><p>Some content</p><h2>No content</h2></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content</p><h3>No content</h3></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+    }
+
+
+    @Test
+    public void evaluateHeadersNesting() throws Exception {
+
+        /* MET 4.2.5
+           Title:       Se verifica que, a partir del primer encabezado del documento, e independientemente de cuál sea ese nivel, no se producen saltos en los niveles de los encabezados sucesivos
+           Subject:     <h1>...</h6>
+           Check:       No puede pasarse de un nivel Hx a un nivel Hx+y (y>=2)
+                        Sólo se puede pasarde un nivel Hx a un Hx+y donde y=(1-x)...(1)
+         */
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h1>Ipsum</h1><p>Some content<p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h2>Ipsum</h2><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h3>Ipsum</h3><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h4>Ipsum</h4><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h5>Ipsum</h5><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content<p><h3>Ipsum</h3><p>Some content<p><h6>Ipsum</h6><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content</p><h3>Ipsum</h3><p>Some content</p><h5>Ipsum</h5><p>Some content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        // La comprobacion es global al documento y binaria (es correcto o incorrecto, no contabiliza el número de encabezados incorrectos)
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content<p><h3>foo</h3><h5>Ipsum</h5><p>Some content<p><h6>Ipsum</h6><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        // La comprobacion es global al documento y binaria (es correcto o incorrecto, no contabiliza el número de encabezados incorrectos)
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+    }
 }

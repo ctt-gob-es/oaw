@@ -38,7 +38,7 @@ public final class Check_1_1_4_DataTableTest extends EvaluateCheck {
 
     @Test
     public void evaluateScopesValid() throws Exception {
-        checkAccessibility.setContent("<table><tr><th scope=\"column\">Header 1</th><th scope=\"row\">Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table>");
+        checkAccessibility.setContent("<table><tr><th scope=\"col\">Header 1</th><th scope=\"row\">Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         int numProblems = getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID);
@@ -48,7 +48,7 @@ public final class Check_1_1_4_DataTableTest extends EvaluateCheck {
 
     @Test
     public void evaluateScopesInvalid() throws Exception {
-        checkAccessibility.setContent("<html><body><table><tr><th scope=\"foo\">Header 1</th><th>Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table></body></html>");
+        checkAccessibility.setContent("<html><body><table><tr><th scope=\"bar\">Header 1</th><th>Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table></body></html>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         int numProblems = getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID);

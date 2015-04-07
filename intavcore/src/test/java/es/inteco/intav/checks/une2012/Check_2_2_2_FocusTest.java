@@ -3,9 +3,7 @@ package es.inteco.intav.checks.une2012;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
-import es.inteco.intav.EvaluateCheck;
 import es.inteco.intav.TestUtils;
-import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,6 +39,17 @@ public final class Check_2_2_2_FocusTest {
     }
 
     @Test
+    public void evaluateIgnorableTabindex() throws Exception {
+        checkAccessibility.setContent("<html><p><a tabindex=\"0\">Lorem ipsum</a><a tabindex=\"0\">Lorem ipsum</a><a tabindex=\"-1\">Lorem ipsum</a><a tabindex=\"-1\">Lorem ipsum</a></p></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_EXCESSIVE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+
+    @Test
     public void evaluateOneTabindex() throws Exception {
         checkAccessibility.setContent("<html><p><a tabindex=\1\">Lorem ipsum</a></p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -72,7 +81,7 @@ public final class Check_2_2_2_FocusTest {
 
     @Test
     public void evaluateTenTabindex() throws Exception {
-        checkAccessibility.setContent("<html><p><a tabindex=\"1\">Lorem ipsum</a>, <a tabindex=\"2\">Lorem ipsum</a>, <a tabindex=\"3\">Lorem ipsum</a>, <a tabindex=\"4\">Lorem ipsum</a></p></html>");
+        checkAccessibility.setContent("<html><p><a tabindex=\"1\">Lorem ipsum</a>, <a tabindex=\"-1\">Lorem ipsum</a>, <a tabindex=\"2\">Lorem ipsum</a>, <a tabindex=\"3\">Lorem ipsum</a>, <a tabindex=\"4\">Lorem ipsum</a></p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getVectorProblems(), TABINDEX_USSAGE_LOW));

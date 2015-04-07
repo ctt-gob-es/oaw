@@ -17,6 +17,8 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
 
     private LexicalUnit backgroundProperty;
     private LexicalUnit foregroundProperty;
+    private LexicalUnit fontSizeProperty;
+    private LexicalUnit fontWeightProperty;
 
     public CSSColorContrastDocumentHandler(final CheckCode checkCode) {
         super(checkCode);
@@ -32,6 +34,8 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
         // Inicializamos los valores
         backgroundProperty = null;
         foregroundProperty = null;
+        fontSizeProperty = null;
+        fontWeightProperty = null;
     }
 
     @Override
@@ -43,7 +47,39 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
         } else if ("background".equals(name)) {
             // El valor de background-color de la propiedad background
             backgroundProperty = value;
+        } else if ("font-size".equals(name)) {
+            fontSizeProperty = value;
+        } else if ( "font-weight".equals(name)) {
+            fontWeightProperty = value;
         }
+    }
+
+    private boolean needHighContrast() {
+        final boolean isBold = isFontBold();
+        if ( fontSizeProperty==null ) {
+            return  false;
+        } else  if (fontSizeProperty.getLexicalUnitType()== LexicalUnit.SAC_POINT) {
+            return isBold?fontSizeProperty.getIntegerValue()<14:fontSizeProperty.getIntegerValue()<18;
+        } else if (fontSizeProperty.getLexicalUnitType()== LexicalUnit.SAC_PIXEL) {
+            return isBold?fontSizeProperty.getIntegerValue()<14:fontSizeProperty.getIntegerValue()<18;
+        } else if (fontSizeProperty.getLexicalUnitType()== LexicalUnit.SAC_EM) {
+            return isBold?fontSizeProperty.getIntegerValue()<1.2:fontSizeProperty.getFloatValue()<1.5;
+        } else if (fontSizeProperty.getLexicalUnitType()== LexicalUnit.SAC_PERCENTAGE) {
+            return isBold?fontSizeProperty.getIntegerValue()<120:fontSizeProperty.getFloatValue()<150;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isFontBold() {
+        if ( fontWeightProperty!=null ) {
+            if ( fontWeightProperty.getLexicalUnitType()==LexicalUnit.SAC_IDENT) {
+                return "bold".equalsIgnoreCase(fontWeightProperty.getStringValue());
+            } else if (fontWeightProperty.getLexicalUnitType()==LexicalUnit.SAC_INTEGER) {
+                return fontWeightProperty.getIntegerValue()>=400;
+            }
+        }
+        return false;
     }
 
     private void checkColorContrast() {
@@ -56,9 +92,14 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
         // Calculamos la diferencia de contraste
         final double contrastRatio = obtainContrastRatio(foregroundLuminance, backgroundLuminance);
 
-        // TODO: Controlar el tamaño de fuente
-        if (contrastRatio < 3) {
-            getProblems().add(createCSSProblem("Ratio color:background - " + contrastRatio));
+        if ( !needHighContrast() ) {
+            if (contrastRatio < 3.5) {
+                getProblems().add(createCSSProblem("Ratio color:background - " + contrastRatio));
+            }
+        } else {
+            if (contrastRatio < 4.5) {
+                getProblems().add(createCSSProblem("Ratio color:background - " + contrastRatio));
+            }
         }
     }
 
