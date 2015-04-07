@@ -42,8 +42,19 @@ public class ExtractTextHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        final String lang = attributes.getValue("lang");
-        languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek() );
+        final String lang = normalizeLang(attributes.getValue("lang"));
+        languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek());
+        if ( "img".equalsIgnoreCase(localName) && attributes.getValue("alt")!=null) {
+            if (extractSameLanguage) {
+                if (webpageLanguage.equals(languages.peek())) {
+                    extractedText.append(attributes.getValue("alt"));
+                }
+            } else {
+                if (!webpageLanguage.equals(languages.peek())) {
+                    extractedText.append(attributes.getValue("alt"));
+                }
+            }
+        }
     }
 
     @Override
@@ -66,6 +77,20 @@ public class ExtractTextHandler extends DefaultHandler {
 
     public String getExtractedText() {
         return extractedText.toString();
+    }
+
+
+    /**
+     * Eliminamos las variantes idiomáticas para quedarnos únicamente con el idioma base (ej. en-us pasa a en)
+     *
+     * @param lang la cadena que representa el idioma completo con las variantes
+     * @return una cadena que representa el idioma base
+     */
+    private String normalizeLang(final String lang) {
+        if (lang!=null && lang.contains("-")) {
+            return lang.substring(0, lang.indexOf('-'));
+        }
+        return lang;
     }
 
 }

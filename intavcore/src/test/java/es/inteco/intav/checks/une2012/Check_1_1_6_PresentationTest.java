@@ -1,10 +1,9 @@
 package es.inteco.intav.checks.une2012;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.*;
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
+import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
-import es.inteco.intav.EvaluateCheck;
 import es.inteco.intav.TestUtils;
-import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,9 +18,9 @@ public final class Check_1_1_6_PresentationTest {
     private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6 = "minhap.observatory.2.0.subgroup.1.1.6";
 
     private static final int DATA_ELEMENTS_ON_LAYOUT_TABLES = 45;
-    private static final int PRESENTATION_ELEMENTS =345;
+    private static final int PRESENTATION_ELEMENTS = 345;
     // Comprobar que no se genera contenido desde CSS mediante :before o :after
-    private static final int CSS_GENERATED_CONTENT= 447;
+    private static final int CSS_GENERATED_CONTENT = 447;
 
     private CheckAccessibility checkAccessibility;
 
@@ -97,5 +96,23 @@ public final class Check_1_1_6_PresentationTest {
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
     }
+
+
+    /****************
+     *      ABB     *
+     ****************/
+
+        /*
+            MET 4.6.1 - Comprobacion de que es una tabla de maquetacion (ID 81 - modificado límite 150 caracteres)
+            MET 4.6.2 - Se verifica que no haya tablas de maquetación que empleen elementos o atributos propios de tablas de datos (ID 88 - modificado el conjunto de elementos o atributos)
+            MET 4.6.3 - Se verifica que no se se empleen elementos desaconsejados con carácter presentacional (NUEVA)
+            MET 4.6.4 - Se verifica que no se incluya contenido que transmita información desde las hojas de estilo con los pseudoelementos :before o :after (NUEVA)
+
+            DATA_ELEMENTS_ON_LAYOUT_TABLES = 45;
+            PRESENTATION_ELEMENTS =345;
+            CSS_GENERATED_CONTENT= 447;
+
+        */
+
 
 }

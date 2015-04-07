@@ -61,6 +61,8 @@ public class TestPage01 extends EvaluatePage {
     @Test
     public void test() throws Exception {
         CheckAccessibility checkAccessibility = getCheckAccessibility("test1.html");
+        checkAccessibility.setGuideline("observatorio-inteco-1-0");
+        checkAccessibility.setGuideline("observatorio-inteco-1-0.xml");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 

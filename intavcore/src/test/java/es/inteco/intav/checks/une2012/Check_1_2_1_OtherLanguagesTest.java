@@ -130,4 +130,72 @@ public final class Check_1_2_1_OtherLanguagesTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
+
+    /**
+     * *************
+     * ABB     *
+     * **************
+     */
+
+        /*
+            MET 4.8.1 - Se verifica que todos los idiomas especificados por los elementos sean válidos (ID 161)
+            MET 4.8.2 - Se verifica que los cambios de idioma más habituales encontrados en un documento se marquen adecuadamente (ID 93)
+            MET 4.8.3 - Se verifica que los textos en inglés encontrados en un documento se marquen adecuadamente (NUEVA)
+
+            VALID_LANGUAGE_ELEMENT = 161;
+            LANGUAGE_CHANGE_LINKS = 93;
+            OTHER_LANGUAGES = 460;
+
+        */
+    @Test
+    public void MET_4_8_3_evaluateLanguageChanges() throws Exception {
+
+        /* MET 4.8.3
+            Title:      Se verifica que los textos en inglés (que contienen alguna de las 100 palabras más habituales) están correctamente identificados. Se busca en textos, alternativas textuales y títulos.
+            Subject:    *
+            Check:      Si el texto está en inglés debe estar identificado con lang="en" (u otras variedades de inglés).
+
+         */
+
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong lang=\"en\">You are welcome</strong></p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+
+        // FALLA: Expected 0, Actual 1
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong lang=\"en-us\">You are welcome</strong></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p lang=\"en\">You are <strong>the other</strong></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p lang=\"en\">You are <img src=\"img.png\" alt=\"the other\"></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p>Tu eres <img src=\"img.png\" alt=\"the other\" lang=\"en\"></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+
+        // FALLA: Expected 1, Actual 0
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p>Tu eres <img src=\"img.png\" alt=\"You are welcome the other\"></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
+
+
+    }
+
+
 }

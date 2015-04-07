@@ -21,7 +21,7 @@ public class GuessLanguage {
 
     private static final String[] ACTIVE_MODELS = new String[]{"en", "eu",
             "ca", "es", "fr", "de", "it", "pt", "ru", "uk", "ar", "fa", "ps",
-            "ur", "pt_BR", "pt_PT"};
+            "ur", "pt_BR", "pt_PT", "ast"};
 
     private static List<String> BASIC_LATIN;
     private static List<String> EXTENDED_LATIN;
@@ -34,7 +34,7 @@ public class GuessLanguage {
 
     static {
         BASIC_LATIN = Arrays.asList("en", "eu");
-        EXTENDED_LATIN = Arrays.asList("ca", "es", "fr", "de", "it", "pt");
+        EXTENDED_LATIN = Arrays.asList("ca", "es", "fr", "de", "it", "pt", "ast");
         ALL_LATIN = new ArrayList<String>(BASIC_LATIN.size()
                 + EXTENDED_LATIN.size());
         ALL_LATIN.addAll(BASIC_LATIN);

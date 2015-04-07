@@ -6,7 +6,6 @@ import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.utils.EvaluatorUtils;
-import org.apache.tika.language.LanguageIdentifier;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -172,12 +171,24 @@ public final class Check_1_1_7_PrimaryLanguageTest {
 
     @Test
     public void evaluateASTLang() throws Exception {
-        // L'Academia de la Llingua Asturiana (A.Ll.A.) ye una institución del Principáu d'Asturies que se creó en 1980 por Decretu del Conseyu Rexonal d'Asturies 33/1980 de 15 d'avientu y con Estatutos aprobaos pol mesmu muérganu por Decretu 9/1981, modificaos el 12 d'abril de 1995 (BOPA nu 136 de 14.6.1995). L'Academia tien anguaño 23 miembros de númberu, 19 miembros correspondientes y 15 académicos d'honor. Los académicos nun perciben nenguna retribución nin pola so condición de tales nin polos cargos que desempeñen na Academia.
-        checkAccessibility.setContent("<html lang='ast'><body><p>L'asturianu ye una llingua romancep ropia d'Asturies, perteneciente al subgrupu asturllionés.</p></body></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-
-        Assert.assertTrue("Asturiano no reconocido", LanguageIdentifier.getSupportedLanguages().contains("ast"));
+        checkAccessibility.setContent("<html lang='ast'><body><p>L'asturianu ye una llingua romance propia d'Asturies, perteneciente al subgrupu asturllionés.</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html lang='es'><body><p>L'asturianu ye una llingua romance propia d'Asturies, perteneciente al subgrupu asturllionés.</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html lang='ast'><body><p>L'Academia de la Llingua Asturiana (A.Ll.A.) ye una institución del Principáu d'Asturies que se creó en 1980 por Decretu del Conseyu Rexonal d'Asturies 33/1980 de 15 d'avientu y con Estatutos aprobaos pol mesmu muérganu por Decretu 9/1981, modificaos el 12 d'abril de 1995 (BOPA nu 136 de 14.6.1995). L'Academia tien anguaño 23 miembros de númberu, 19 miembros correspondientes y 15 académicos d'honor. Los académicos nun perciben nenguna retribución nin pola so condición de tales nin polos cargos que desempeñen na Academia.</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html lang='en'><body><p>L'Academia de la Llingua Asturiana (A.Ll.A.) ye una institución del Principáu d'Asturies que se creó en 1980 por Decretu del Conseyu Rexonal d'Asturies 33/1980 de 15 d'avientu y con Estatutos aprobaos pol mesmu muérganu por Decretu 9/1981, modificaos el 12 d'abril de 1995 (BOPA nu 136 de 14.6.1995). L'Academia tien anguaño 23 miembros de númberu, 19 miembros correspondientes y 15 académicos d'honor. Los académicos nun perciben nenguna retribución nin pola so condición de tales nin polos cargos que desempeñen na Academia.</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 

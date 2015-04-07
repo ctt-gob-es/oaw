@@ -39,6 +39,14 @@ public final class TestUtils {
         return checkAccessibility;
     }
 
+    public static CheckAccessibility getCheckAccessibility(final String guideline, final boolean includeGrammarValidation) {
+        if (includeGrammarValidation) {
+            return  getCheckAccessibility(guideline+"-validate-grammar");
+        } else {
+            return getCheckAccessibility(guideline);
+        }
+    }
+
     public static int getNumProblems(final List<Problem> problems, int idCheck) {
         int numProblems = 0;
         for (Problem problem : problems) {

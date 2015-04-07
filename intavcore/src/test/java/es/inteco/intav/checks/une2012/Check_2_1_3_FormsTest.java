@@ -159,6 +159,24 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
+    public void evaluateOptgroupNbspSpaces() throws Exception {
+        checkAccessibility.setContent("<select>" +
+                "<option>Opción  1</option>" +
+                "<option>Opción  2</option>" +
+                "<option>Opción  3</option>" +
+                "<option>Opción  4</option>" +
+                "<option>Opción  5</option>" +
+                "<option>Opción  6</option>" +
+                "<option>Opción  7</option>" +
+                "<option>Opción  8</option>" +
+                "<option>Opción  9</option>" +
+                "<optgroup  label=\"&nbsp;\"/>" +
+                "<option>Opción 10</option>" +
+                "</select>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, OPTGROUP_LABEL));
+    }
+
+    @Test
     public void evaluateFewOptions() throws Exception {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción 1</option>" +

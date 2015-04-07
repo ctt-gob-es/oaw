@@ -26,6 +26,7 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
@@ -305,56 +306,56 @@ public class CheckerParser extends DOMParser {
         // look at heading levels here too
         // store the previous and next heading level on each header
         else if (node.getNodeName().equalsIgnoreCase("h1")) {
-            node.setUserData("previouslevel", headingLevel, null);
+            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
             headingLevel = 1;
             inHeading = true;
             if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData("nextlevel", 1, null);
+                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 1, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
             }
             nodePreviousHeader = node;
         } else if (node.getNodeName().equalsIgnoreCase("h2")) {
-            node.setUserData("previouslevel", headingLevel, null);
+            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
             headingLevel = 2;
             inHeading = true;
             if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData("nextlevel", 2, null);
+                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 2, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
             }
             nodePreviousHeader = node;
         } else if (node.getNodeName().equalsIgnoreCase("h3")) {
-            node.setUserData("previouslevel", headingLevel, null);
+            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
             headingLevel = 3;
             inHeading = true;
             if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData("nextlevel", 3, null);
+                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 3, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
             }
             nodePreviousHeader = node;
         } else if (node.getNodeName().equalsIgnoreCase("h4")) {
-            node.setUserData("previouslevel", headingLevel, null);
+            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
             headingLevel = 4;
             inHeading = true;
             if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData("nextlevel", 4, null);
+                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 4, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
             }
             nodePreviousHeader = node;
         } else if (node.getNodeName().equalsIgnoreCase("h5")) {
-            node.setUserData("previouslevel", headingLevel, null);
+            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
             headingLevel = 5;
             inHeading = true;
             if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData("nextlevel", 5, null);
+                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 5, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
             }
             nodePreviousHeader = node;
         } else if (node.getNodeName().equalsIgnoreCase("h6")) {
-            node.setUserData("previouslevel", headingLevel, null);
+            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
             headingLevel = 6;
             inHeading = true;
             if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData("nextlevel", 6, null);
+                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 6, null);
                 nodePreviousHeader.setUserData("nextheader", node, null);
             }
             nodePreviousHeader = node;

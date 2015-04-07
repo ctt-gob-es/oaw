@@ -217,6 +217,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_CHARS_GREATER;
             } else if (stringCall.equals("characters-less-than")) {
                 functionId = CheckFunctionConstants.FUNCTION_CHARS_LESS;
+            } else if (stringCall.equals("link-greater-than")) {
+                functionId = CheckFunctionConstants.FUNCTION_LINK_CHARS_GREATER;
             } else if (stringCall.equals("number-any")) {
                 functionId = CheckFunctionConstants.FUNCTION_NUMBER_ANY;
             } else if (stringCall.equals("number-less-than")) {
@@ -297,6 +299,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_MISSING_ID_HEADERS;
             } else if (stringCall.equals("missing-scope")) {
                 functionId = CheckFunctionConstants.FUNCTION_MISSING_SCOPE;
+            } else if (stringCall.equals("invalid-scope")) {
+                functionId = CheckFunctionConstants.FUNCTION_INVALID_SCOPE;
             } else if (stringCall.equals("caption-summary-same")) {
                 functionId = CheckFunctionConstants.FUNCTION_CAPTION_SUMMARY_SAME;
             } else if (stringCall.equals("is-only-blanks")) {
@@ -397,6 +401,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENTS_EXCESSIVE_USAGE;
             } else if (stringCall.equals("attributes-excessive-usage")) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTES_EXCESSIVE_USAGE;
+            } else if (stringCall.equals("tabindex-excessive-usage")) {
+                functionId = CheckFunctionConstants.FUNCTION_TABINDEX_EXCESSIVE_USAGE;
             } else if (stringCall.equals("element-percentage")) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_PERCENTAGE;
             } else if (stringCall.equals("correct-links")) {
@@ -417,6 +423,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONTACT;
             } else if (stringCall.equals("accessibility-declaration-not-revision-date")) {
                 functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_REVISION_DATE;
+            } else if (stringCall.equals("accessibility-declaration-not-conformance-level")) {
+                functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONFORMANCE_LEVEL;
             } else if (stringCall.equals("has-complex-structure")) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_COMPLEX_STRUCTURE;
             } else if (stringCall.equals("too-many-broken-links")) {

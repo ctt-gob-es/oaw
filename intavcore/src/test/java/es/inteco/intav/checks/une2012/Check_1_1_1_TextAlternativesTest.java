@@ -20,6 +20,9 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
     private static final int IMG_DECORATIVE_NO_TITLE_ID = 413;
     private static final int IMG_DIMENSIONS_DECORATIVE = 426;
     private static final int APPLET_ALTERNATIVES_ID = 414;
+    private static final int AREA_ALT_ID = 64;
+    private static final int AREA_HREF_ALT_ID = 157;
+
 
     private CheckAccessibility checkAccessibility;
 
@@ -143,7 +146,7 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
     @Test
     public void evaluateAltBlankAndTitleWhiteSpaces() throws Exception {
         checkAccessibility.setContent("<img src=\"\" alt=\"\" title=\"   \">");
-        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
     }
 
     @Test
@@ -169,6 +172,9 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
         checkAccessibility.setContent("<img src=\"\" alt=\"\" title=\"Foo\" role=\"link\">");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
 
+        checkAccessibility.setContent("<img src=\"\" alt=\" \" title=\"Foo\" role=\"link\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
+
         checkAccessibility.setContent("<img src=\"\" alt=\"\" title=\"\" role=\"link\">");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
     }
@@ -176,6 +182,12 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
     @Test
     public void evaluateAltBlankAndTitleAndRolePresentation() throws Exception {
         checkAccessibility.setContent("<img src=\"\" alt=\"\" title=\"Foo\" role=\"presentation\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\" \" title=\"Foo\" role=\"presentation\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
+
+        checkAccessibility.setContent("<img src=\"\" title=\"Foo\" role=\"presentation\">");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
     }
 
@@ -237,9 +249,11 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 
         checkAccessibility.setContent("<img src=\"\" alt=\"lorem_gif\">");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+        TestUtils.checkVerificacion(checkAccessibility, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
 
         checkAccessibility.setContent("<img src=\"\" alt=\"lorem.gifo\">");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+        TestUtils.checkVerificacion(checkAccessibility, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
@@ -247,14 +261,32 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
         checkAccessibility.setContent("<img src=\"\" alt=\"Foto\">");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
 
-        checkAccessibility.setContent("<img src=\"\" alt=\"Fotomatón\">");
-        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
-
         checkAccessibility.setContent("<img src=\"\" alt=\"foToGrafIa\">");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
 
-        checkAccessibility.setContent("<img src=\"\" alt=\"Fotografía del acto\">");
+        checkAccessibility.setContent("<img src=\"\" alt=\"Fotografía del evento\">");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+    }
+
+    @Test
+    public void evaluateSuspiciousWordsMultilangAlt() throws Exception {
+        checkAccessibility.setContent("<img src=\"\" alt=\"figura\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"photo\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"graphique\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"DibUix\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"imaXe\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"koadroa\">");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_SUSPICIOUS_ALT));
     }
 
     @Test
@@ -303,6 +335,29 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 
         checkAccessibility.setContent("<img src=\"\" height=\"2\" alt=\"Foo\">");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, IMG_DIMENSIONS_DECORATIVE));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"foo\">" +
+                "<img src=\"\" alt=\"foo\" width=\"3\">" +
+                "<img src=\"\" alt=\"foo\" height=\"3\">" +
+                "<img src=\"\" alt=\"foo\" width=\"3\" height=\"3\">");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_DIMENSIONS_DECORATIVE));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"foo\" width=\"2\">" +
+                "<img src=\"\" alt=\"foo\" height=\"2\">" +
+                "<img src=\"\" alt=\"foo\" width=\"2\" height=\"2\">");
+        Assert.assertEquals(3, getNumProblems(checkAccessibility, IMG_DIMENSIONS_DECORATIVE));
+
+        checkAccessibility.setContent("<img src=\"\" alt=\"foo\" width=\"2\" height=\"200\">" +
+                "<img src=\"\" alt=\"foo\" height=\"2\" width=\"200\" >");
+        Assert.assertEquals(2, getNumProblems(checkAccessibility, IMG_DIMENSIONS_DECORATIVE));
+
+        checkAccessibility.setContent("<img src=\"\" width=\"2\">" +
+                "<img src=\"\" width=\"2\" alt>" +
+                "<img src=\"\" width=\"2\" alt=\"\">" +
+                "<img src=\"\" width=\"2\" alt=\" \">" +
+                "<img src=\"\" width=\"2\" alt=\"&nbsp;\">" +
+                "<img src=\"\" width=\"2\" alt=\" &nbsp; \">");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_DIMENSIONS_DECORATIVE));
     }
 
     @Test
@@ -333,6 +388,40 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
     public void evaluateAppletAltBlankNoTextAlternative() throws Exception {
         checkAccessibility.setContent("<applet alt=\"\"></applet>");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, APPLET_ALTERNATIVES_ID));
+    }
+
+    @Test
+    public void evaluateAreaWithoutAlt() throws Exception {
+        checkAccessibility.setContent("<area>" +
+                "<area alt>" +
+                "<area alt=\"\">" +
+                "<area alt=\" \">" +
+                "<area alt=\"&nbsp;\">" +
+                "<area alt=\"foo\">" +
+                "<area href=\"\">" +
+                "<area href=\"\" alt>" +
+                "<area href=\"\" alt=\"\">" +
+                "<area href=\"\" alt=\" \">" +
+                "<area href=\"\" alt=\"&nbsp;\">" +
+                "<area href=\"\" alt=\"foo\">");
+        Assert.assertEquals(2, getNumProblems(checkAccessibility, AREA_ALT_ID));
+    }
+
+    @Test
+    public void evaluateAreaHrefWithoutAlt() throws Exception {
+        checkAccessibility.setContent("<area>" +
+                "<area alt>" +
+                "<area alt=\"\">" +
+                "<area alt=\" \">" +
+                "<area alt=\"&nbsp;\">" +
+                "<area alt=\"foo\">" +
+                "<area href=\"\">" +
+                "<area href=\"\" alt>" +
+                "<area href=\"\" alt=\"\">" +
+                "<area href=\"\" alt=\" \">" +
+                "<area href=\"\" alt=\"&nbsp;\">" +
+                "<area href=\"\" alt=\"foo\">");
+        Assert.assertEquals(4, getNumProblems(checkAccessibility, AREA_HREF_ALT_ID));
     }
 
 }
