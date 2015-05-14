@@ -111,15 +111,19 @@ public final class CheckUtils {
     }
 
     public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws Exception {
-        final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
-        connection.setRequestProperty("referer", documentUrlStr);
-        connection.connect();
-        final int responseCode = connection.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            final DOMParser parser = new DOMParser(new HTMLConfiguration());
-            parser.parse(new InputSource(connection.getInputStream()));
-            return parser.getDocument();
-        } else {
+        try {
+            final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
+            connection.setRequestProperty("referer", documentUrlStr);
+            connection.connect();
+            final int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                final DOMParser parser = new DOMParser(new HTMLConfiguration());
+                parser.parse(new InputSource(connection.getInputStream()));
+                return parser.getDocument();
+            } else {
+                return null;
+            }
+        } catch (RuntimeException t) {
             return null;
         }
     }
@@ -454,6 +458,22 @@ public final class CheckUtils {
                         return true;
                     }
                 }
+            }
+        }
+        final String text = getDocumentText(document);
+        for (Pattern pattern : altA) {
+            if (pattern.matcher(text).find()) {
+                return true;
+            }
+        }
+        for (Pattern pattern : altAA) {
+            if (pattern.matcher(text).find()) {
+                return true;
+            }
+        }
+        for (Pattern pattern : altAAA) {
+            if (pattern.matcher(text).find()) {
+                return true;
             }
         }
 

@@ -79,15 +79,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         String executionId = request.getParameter(Constants.ID);
         List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, Constants.COMPLEXITY_SEGMENT_NONE, null);
 
-        PropertiesManager pmgr = new PropertiesManager();
-        if (pmgr.getValue(CRAWLER_PROPERTIES, "debug.checks").equals(Boolean.TRUE.toString())) {
-            debugChecks(request, pageExecutionList);
-        }
-
-        //Creación de anexox sin iteraciones
-        //AnnexUtils.createAnnex(request, pageExecutionList);
-        //AnnexUtils.createAnnex2Ev(request, pageExecutionList);
-
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
 
@@ -147,11 +138,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                 title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.title", category.getName());
                 file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg";
                 List<ObservatorySiteEvaluationForm> result = getSitesListByLevel(pageExecutionList);
-                //if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA){
-                //getMarkAllocationLevelSegmentGraphic(request, title, file, noDataMess, result, true, regenerate);
-                //}else{
                 getMarkAllocationLevelSegmentGraphic(request, title, file, noDataMess, result, false, regenerate);
-                //}
 
                 file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg";
                 title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.segment.aspect.mid.title", category.getName());
@@ -1122,7 +1109,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
         } catch (NeedsRefreshException nre) {
             Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_INFO);
-            PropertiesManager pmgr = new PropertiesManager();
             try {
                 observatoryEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
                 List<Long> listAnalysis = new ArrayList<Long>();
@@ -1145,15 +1131,15 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                         EvaluatorUtility.initialize();
                     }
 
-                    Evaluator evaluator = new Evaluator();
+                    final Evaluator evaluator = new Evaluator();
                     for (Long idAnalysis : listAnalysis) {
-                        Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
-                        String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
-                        ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
+                        final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
+                        final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
+                        final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
                         evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
-                        FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
+                        final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
                         if (ffCrawling != null) {
-                            SeedForm seedForm = new SeedForm();
+                            final SeedForm seedForm = new SeedForm();
                             seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
                             seedForm.setAcronym(ffCrawling.getSeed().getAcronimo());
                             seedForm.setName(ffCrawling.getSeed().getNombre());
@@ -1549,13 +1535,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             final BigDecimal value = ((new BigDecimal(pageType.get(Constants.OBS_A)).multiply(new BigDecimal(5))).add(
                     new BigDecimal(pageType.get(Constants.OBS_AA)).multiply(BigDecimal.TEN))).divide(
                     new BigDecimal(numPages), 2, BigDecimal.ROUND_HALF_UP);
-            /*if (value.compareTo(new BigDecimal(3.5)) == -1 || value.compareTo(new BigDecimal(3.5)) == 0 ){
-                globalResult.put(Constants.OBS_NV, globalResult.get(Constants.OBS_NV) + 1);
-			}else if (value.compareTo(new BigDecimal(8)) >= 0){
-				globalResult.put(Constants.OBS_AA, globalResult.get(Constants.OBS_AA) + 1);
-			}else{
-				globalResult.put(Constants.OBS_A, globalResult.get(Constants.OBS_A) + 1);
-			}*/
             if (value.compareTo(new BigDecimal(8)) >= 0) {
                 globalResult.put(Constants.OBS_AA, globalResult.get(Constants.OBS_AA) + 1);
             } else if (value.compareTo(new BigDecimal("3.5")) <= 0) {

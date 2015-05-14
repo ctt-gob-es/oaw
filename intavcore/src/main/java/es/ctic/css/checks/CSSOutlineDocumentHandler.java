@@ -43,7 +43,7 @@ public class CSSOutlineDocumentHandler extends CSSDocumentHandler {
     }
 
     private boolean isFocusPseudoClass() {
-        return selector.contains(":focus");
+        return selector!=null && selector.contains(":focus");
     }
 
 }

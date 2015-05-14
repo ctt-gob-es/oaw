@@ -28,6 +28,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
+import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,8 +79,8 @@ public final class BasicServiceExport {
         }
     }
 
-    public static Map<String, List<EvaluationForm>> getResultData(List<Long> evaluationIds, String language) throws Exception {
-        Map<String, List<EvaluationForm>> evolutionMap = new HashMap<String, List<EvaluationForm>>();
+    public static Map<String, List<EvaluationForm>> getResultData(final List<Long> evaluationIds, final String language) throws Exception {
+        final Map<String, List<EvaluationForm>> evolutionMap = new HashMap<String, List<EvaluationForm>>();
 
         Connection conn = null;
         try {
@@ -94,17 +95,17 @@ public final class BasicServiceExport {
                 }
             }
 
-            List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+            final List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
             for (Long id : evaluationIds) {
-                Evaluator evaluator = new Evaluator();
+                final Evaluator evaluator = new Evaluator();
                 Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), false);
                 EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, language);
                 evaList.add(evaluationForm);
             }
 
-            GregorianCalendar calendar = new GregorianCalendar();
-            Date d = calendar.getTime();
-            DateFormat df = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+            final GregorianCalendar calendar = new GregorianCalendar();
+            final Date d = calendar.getTime();
+            final DateFormat df = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
             evolutionMap.put(df.format(d), evaList);
 
             return evolutionMap;
@@ -298,8 +299,8 @@ public final class BasicServiceExport {
                                 if (StringUtils.isNotEmpty(problem.getRationale())) {
                                     PDFUtils.addParagraphRationale(Arrays.asList(CrawlerUtils.getResources(request).getMessage(problem.getRationale()).split("<p>|</p>")), subSection);
                                 }
-
-                                addSpecificProblems(request, subSection, problem.getSpecificProblems());
+Logger.putLog("createPDF - Check " + problem.getCheck(), BasicServiceExport.class, Logger.LOG_LEVEL_ERROR);
+                                addSpecificProblems(CrawlerUtils.getResources(request), subSection, problem.getSpecificProblems());
 
                                 if (problem.getCheck().equals(PMGR.getValue("check.properties", "doc.valida.especif")) ||
                                         problem.getCheck().equals(PMGR.getValue("check.properties", "css.valida.especif"))) {
@@ -702,17 +703,19 @@ public final class BasicServiceExport {
         }
     }
 
-    public static void addSpecificProblems(HttpServletRequest request, Section subSubSection, List<SpecificProblemForm> specificProblems) {
+    public static void addSpecificProblems(final MessageResources messageResources, final Section subSubSection, final List<SpecificProblemForm> specificProblems) {
         int maxNumErrors = Integer.parseInt(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"));
         for (SpecificProblemForm specificProblem : specificProblems) {
             maxNumErrors--;
             if (specificProblem.getCode() != null) {
-                StringBuilder code = new StringBuilder();
+                final StringBuilder code = new StringBuilder();
                 for (int i = 0; i < specificProblem.getCode().size(); i++) {
                     code.append(specificProblem.getCode().get(i)).append("\n");
 
                 }
-                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
+                if (!specificProblem.getLine().isEmpty() && !"-1".equalsIgnoreCase(specificProblem.getLine())) {
+                    PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
+                }
                 PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(code.toString()), specificProblem.getMessage(), subSubSection);
             } else if (specificProblem.getNote() != null) {
                 String linkCode = getMatch(specificProblem.getNote().get(0), "(<a.*?</a>)");
@@ -732,7 +735,7 @@ public final class BasicServiceExport {
                     String[] arguments = new String[2];
                     arguments[0] = PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number");
                     arguments[1] = String.valueOf(specificProblems.size());
-                    Paragraph p = new Paragraph(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
+                    Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
                     p.setAlignment(Paragraph.ALIGN_RIGHT);
                     subSubSection.add(p);
                 }

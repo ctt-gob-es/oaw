@@ -1712,7 +1712,7 @@ public final class ObservatorioDAO {
 
             ps = c.prepareStatement("SELECT * FROM observatorio_categoria oc " +
                     "JOIN categorias_lista cl ON (cl.id_categoria = oc.id_categoria) " +
-                    "WHERE id_observatorio = ?");
+                    "WHERE id_observatorio = ? ORDER BY cl.nombre");
             ps.setLong(1, idObservatory);
             rs = ps.executeQuery();
 

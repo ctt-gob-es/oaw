@@ -39,7 +39,6 @@ public class InformesService {
 
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             conn = DataBaseManager.getConnection();
 
             InformesDao dao = new InformesDao();
@@ -79,7 +78,6 @@ public class InformesService {
     public List<ResultsByUrlDto> getResultsByUrl(Long idRastreo, int pagina) throws BusinessException {
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             conn = DataBaseManager.getConnection();
 
             return new InformesDao().getResultsByUrl(conn, idRastreo, pagina);

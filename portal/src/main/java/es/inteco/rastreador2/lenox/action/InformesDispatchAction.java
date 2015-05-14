@@ -66,7 +66,6 @@ public class InformesDispatchAction extends Action {
     public ActionForward getResultsByUrl(ActionMapping mapping, ActionForm form,
                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        PropertiesManager pmgr = new PropertiesManager();
         Connection c = null;
 
         String Observatory = request.getParameter(Constants.ID_OBSERVATORIO);

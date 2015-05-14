@@ -60,11 +60,11 @@ public class Identifier {
 
         Enumeration<Object> enu = inReq.getParameterNames();
         while (enu.hasMoreElements()) {
-            String nameParam = (String) enu.nextElement();
+            final String nameParam = (String) enu.nextElement();
 
             // ignore some of the attribute values
-            if ((nameParam.equals(IntavConstants.FILE) == false) &&
-                    (nameParam.equals(IntavConstants.ELEMENT) == false)) {
+            if (!nameParam.equals(IntavConstants.FILE) &&
+                    !nameParam.equals(IntavConstants.ELEMENT)) {
 
                 hashtableAttributes.put(nameParam, inReq.getParameter(nameParam));
             }

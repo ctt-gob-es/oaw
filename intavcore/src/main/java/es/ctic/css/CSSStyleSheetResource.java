@@ -1,5 +1,7 @@
 package es.ctic.css;
 
+import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.inteco.intav.utils.EvaluatorUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -27,7 +29,9 @@ public class CSSStyleSheetResource implements CSSResource {
             return "";
         } else if ("style".equalsIgnoreCase(htmlElement.getNodeName())) {
             return htmlElement.getTextContent();
-        } else {
+        } else if ("link".equalsIgnoreCase(htmlElement.getNodeName())) {
+            return htmlElement.getUserData("css")!=null?htmlElement.getUserData("css").toString():"";
+        }else {
             return  "";
         }
     }
@@ -45,6 +49,17 @@ public class CSSStyleSheetResource implements CSSResource {
     @Override
     public boolean isInline() {
         return false;
+    }
+
+    @Override
+    public String getStringSource() {
+        if ("style".equalsIgnoreCase(htmlElement.getNodeName())) {
+            return "Bloque <style>";
+        } else if ("link".equalsIgnoreCase(htmlElement.getNodeName())) {
+            return "CSS enlazada " + htmlElement.getAttribute("href");
+        } else {
+            return "";
+        }
     }
 
     @Override

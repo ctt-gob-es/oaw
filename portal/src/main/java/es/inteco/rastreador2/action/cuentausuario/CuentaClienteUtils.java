@@ -16,7 +16,6 @@ public final class CuentaClienteUtils {
 
     public static VerCuentaUsuarioForm getCuentaUsuarioForm(long idCuenta) throws Exception {
         VerCuentaUsuarioForm verCuentaClienteForm = new VerCuentaUsuarioForm();
-        PropertiesManager pmgr = new PropertiesManager();
         Connection c = null;
         Connection con = null;
         try {

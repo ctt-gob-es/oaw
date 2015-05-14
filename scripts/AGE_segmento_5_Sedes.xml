@@ -213,7 +213,7 @@
     <semilla>
         <nombre>Subsede del Instituto de Contabilidad y Auditoría de Cuentas (ICAC)</nombre>
         <activa>true</activa>
-        <url>https://sedeminhap.gob.es/es-ES/sedes/ICAC/Paginas/default.aspx</url>
+        <url>https://sede.mineco.gob.es/portal/site/sede/icac</url>
         <acronimo/>
         <depende_de>Ministerio de Economía y Competitividad</depende_de>
         <en_directorio>false</en_directorio>

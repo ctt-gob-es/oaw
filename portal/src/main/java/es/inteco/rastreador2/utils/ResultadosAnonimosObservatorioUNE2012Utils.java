@@ -1104,10 +1104,9 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
         } catch (NeedsRefreshException nre) {
             Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_INFO);
-            PropertiesManager pmgr = new PropertiesManager();
             try {
                 observatoryEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
-                List<Long> listAnalysis = new ArrayList<Long>();
+                final List<Long> listAnalysis = new ArrayList<Long>();
 
                 c = DataBaseManager.getConnection();
                 conn = DataBaseManager.getConnection();
@@ -1127,7 +1126,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                         EvaluatorUtility.initialize();
                     }
 
-                    Evaluator evaluator = new Evaluator();
+                    final Evaluator evaluator = new Evaluator();
                     for (Long idAnalysis : listAnalysis) {
                         final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
                         final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
@@ -1135,7 +1134,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                         evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
                         final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
                         if (ffCrawling != null) {
-                            SeedForm seedForm = new SeedForm();
+                            final SeedForm seedForm = new SeedForm();
                             seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
                             seedForm.setAcronym(ffCrawling.getSeed().getAcronimo());
                             seedForm.setName(ffCrawling.getSeed().getNombre());

@@ -498,13 +498,11 @@ public abstract class AnonymousResultPdfBuilder {
 
         String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
         addLevelAllocationResultsSummary(request, chapter, file, evaList, noDataMess);
-        //chapter.newPage();
 
         Section section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.41.p1"), ConstantsFont.paragraphFont, section);
         addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createGlobalTable(request, scoreForm, Constants.OBS_PRIORITY_1));
-        //chapter.newPage();
 
         section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.42.p1"), ConstantsFont.paragraphFont, section);
@@ -579,21 +577,8 @@ public abstract class AnonymousResultPdfBuilder {
                 table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor.uno"), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
             }
 
-			/*PropertiesManager pmgr = new PropertiesManager();
-            Image image = null;
-			try{
-				if(value == Constants.OBS_VALUE_NOT_SCORE || value == Constants.OBS_VALUE_GREEN_ZERO || value == Constants.OBS_VALUE_GREEN_ONE) {
-					image = Image.getInstance(pmgr.getValue("pdf.properties", "path.mode.green"));
-				} else {
-					image = Image.getInstance(pmgr.getValue("pdf.properties", "path.mode.red"));
-				}
-			}catch (Exception e) {
-				Logger.putLog("Error al incluir imagen de modalidad", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_WARNING);
-			}*/
-
             PdfPCell labelCell;
             if (value == Constants.OBS_VALUE_NOT_SCORE || value == Constants.OBS_VALUE_GREEN_ZERO || value == Constants.OBS_VALUE_GREEN_ONE) {
-                //labelCell.addElement(PDFUtils.createImageTextParagraph(request, image, " " + getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad.pasa"), ConstantsFont.descriptionFontGreen));
                 labelCell = PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad.pasa"), Color.WHITE, ConstantsFont.descriptionFontGreen, Element.ALIGN_CENTER, 0);
             } else {
                 labelCell = PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad.falla"), Color.WHITE, ConstantsFont.descriptionFontRed, Element.ALIGN_CENTER, 0);
@@ -664,8 +649,6 @@ public abstract class AnonymousResultPdfBuilder {
         image.scalePercent(80);
         image.setAlignment(Element.ALIGN_CENTER);
         chapter.add(image);
-
-        // chapter.newPage();
 
         float[] widths = {33f, 33f, 33f};
         PdfPTable table = new PdfPTable(widths);

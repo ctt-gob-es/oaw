@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lista>
+    <semilla>
+        <nombre>Agencia de Empleo y Desarrollo Local</nombre>
+        <url>http://www.melilla.es/melillaPortal/contenedor.jsp?seccion=s_floc_d4_v1.jsp&amp;contenido=3733&amp;tipo=1&amp;nivel=1400&amp;layout=contenedor.jsp&amp;codResi=1&amp;language=es&amp;codMenu=171&amp;codMenuPN=601&amp;codMenuSN=4</url>
+        <acronimo>Melilla</acronimo>
+        <depende_de>Ciudad Autónoma de Melilla</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Consejería de Trabajo y Formación</nombre>
+        <url>http://www.caib.es/govern/organigrama/area.do?lang=ca&amp;coduo=1464</url>
+        <acronimo>CAIB</acronimo>
+        <depende_de>Gobierno de las Islas Baleares</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Consejo Económico y Social</nombre>
+        <url>http://www.procesa.es/index.php?option=com_content&amp;view=article&amp;id=56:agencia-de-empleo-y-desarrollo-local&amp;catid=72:agencia-de-empleo-y-desarrollo-local&amp;Itemid=152</url>
+        <acronimo>Ceuta</acronimo>
+        <depende_de>Ciudad Autónoma de Ceuta</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Extremadura Trabaja</nombre>
+        <url>http://extremaduratrabaja.gobex.es/</url>
+        <acronimo>JuntaEX</acronimo>
+        <depende_de>Junta de Extremadura</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Empleo CyL</nombre>
+        <url>http://www.empleo.jcyl.es/</url>
+        <acronimo>JCyL</acronimo>
+        <depende_de>Junta de Castilla y León</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Aragón Empleo</nombre>
+        <url>http://www.aragon.es/Temas/Empleo</url>
+        <acronimo>Aragon</acronimo>
+        <depende_de>Gobierno de Aragón</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Empleo</nombre>
+        <url>http://www.madrid.org/cs/Satellite?pagename=Empleo/Page/EMPL_Home</url>
+        <acronimo>Madrid</acronimo>
+        <depende_de>Comunidad de Madrid</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Empleo y Formación</nombre>
+        <url>http://www.sefcarm.es/web/pagina?IDCONTENIDO=8&amp;IDTIPO=180</url>
+        <acronimo>CARM</acronimo>
+        <depende_de>Región de Murcia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servef</nombre>
+        <url>http://www.ocupacio.gva.es:7017/portal/web/home/</url>
+        <acronimo>GVA</acronimo>
+        <depende_de>Generalitat Valenciana</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servei d'Ocupacio de Catalunya</nombre>
+        <url>http://www.oficinadetreball.gencat.cat/socweb/opencms/socweb_es/home.html</url>
+        <acronimo>GenCAT</acronimo>
+        <depende_de>Generalitat de Catalunya</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Andaluz de Empleo</nombre>
+        <url>http://www.juntadeandalucia.es/servicioandaluzdeempleo/web/websae/portal/es/index.html</url>
+        <acronimo>JA</acronimo>
+        <depende_de>Junta de Andalucía</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Canario de Empleo</nombre>
+        <url>http://www2.gobiernodecanarias.org/empleo/portal/portalInicio2.html</url>
+        <acronimo>GobCan</acronimo>
+        <depende_de>Gobierno de Canarias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Cántabro de Empleo</nombre>
+        <url>http://www.empleacantabria.com/es/portal.do</url>
+        <acronimo>GobCant</acronimo>
+        <depende_de>Gobierno de Cantabria</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Navarro de Empleo</nombre>
+        <url>http://www.navarra.es/home_es/Temas/Empleo+y+Economia/Empleo/default.htm</url>
+        <acronimo>Navarra</acronimo>
+        <depende_de>Gobierno de Navarra</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Público de Empleo de Castilla-La Mancha</nombre>
+        <url>http://www.sepecam.jccm.es/</url>
+        <acronimo>JCCM</acronimo>
+        <depende_de>Junta de Castilla-La Mancha</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Público de Empleo de Galicia</nombre>
+        <url>http://emprego.xunta.es/cmspro/contido/indice.html</url>
+        <acronimo>Xunta</acronimo>
+        <depende_de>Xunta de Galicia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Riojano de Empleo</nombre>
+        <url>http://www.larioja.org/npRioja/default/defaultpage.jsp?idtab=423403</url>
+        <acronimo>LaRioja</acronimo>
+        <depende_de>Gobierno de La Rioja</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Servicio Vasco de Empleo</nombre>
+        <url>http://www.lanbide.net/plsql/ge_home?idioma=C</url>
+        <acronimo>Euskadi</acronimo>
+        <depende_de>Gobierno Vasco</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Trabajastur</nombre>
+        <url>http://www.asturias.es/trabajastur</url>
+        <acronimo>Asturias</acronimo>
+        <depende_de>Gobierno del Principado de Asturias</depende_de>
+    </semilla>
+</lista>

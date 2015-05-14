@@ -35,14 +35,13 @@ public final class IntavUtils {
     public static ScoreForm calculateScore(HttpServletRequest request, long idExecution) {
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             conn = DataBaseManager.getConnection();
             // Inicializamos el evaluador
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();
             }
 
-            List<Long> listAnalysis = AnalisisDatos.getAnalysisIdsByTracking(conn, idExecution);
+            final List<Long> listAnalysis = AnalisisDatos.getAnalysisIdsByTracking(conn, idExecution);
 
             return generateScores(request, conn, listAnalysis);
         } catch (Exception e) {

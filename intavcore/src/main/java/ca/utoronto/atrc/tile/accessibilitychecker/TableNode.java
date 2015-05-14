@@ -50,7 +50,7 @@ public class TableNode {
         colSpan = 0;
         node = null;
         isSpanCell = true;
-        isHeaderCell = true;
+        isHeaderCell = false;
     }
 
     public TableNode(Node node) {

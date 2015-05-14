@@ -86,13 +86,7 @@ public final class CSSSACUtils {
                 sb.append(parseLexicalValue(lexicalUnit.getParameters()));
                 break;
             case LexicalUnit.SAC_RGBCOLOR:
-                // SAC Parser translates #FFF in 255,255,255 so we sorround it
-                // with rgb
-            /*
-             * sb.append("rgb("); sb.append(
-             * parseLexicalValue(lexicalUnit.getParameters()));
-             * sb.append(")");
-             */
+                // SAC Parser translates #FFF in 255,255,255 so sorround it with 'rgb()'
                 // OR If we want the hexadecimal format
                 LexicalUnit colorUnit = lexicalUnit.getParameters();
                 sb.append('#');
@@ -118,7 +112,6 @@ public final class CSSSACUtils {
                 sb.append("inherit");
                 break;
             case LexicalUnit.SAC_OPERATOR_COMMA:
-                // sb.append(", ");
                 break;
             case LexicalUnit.SAC_SUB_EXPRESSION:
                 break;

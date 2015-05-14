@@ -175,6 +175,7 @@ public final class EvaluatorUtility {
         final StringBuilder buffer2 = new StringBuilder(text.length());
         boolean space = false;
         for (int x = 0; x < text.length(); x++) {
+
             if (text.charAt(x) != '\t' && text.charAt(x) != '\n') {
                 if (text.charAt(x) == ' ') {
                     if (space) {
@@ -186,8 +187,19 @@ public final class EvaluatorUtility {
                 }
                 buffer2.append(text.charAt(x));
             }
+//            if (Character.isWhitespace(text.charAt(x))) {
+//                if ( space ) {
+//                    continue;
+//                } else {
+//                    buffer2.append(text.charAt(x));
+//                }
+//                space = true;
+//            } else {
+//                space = false;
+//                buffer2.append(text.charAt(x));
+//            }
         }
-        return buffer2.toString().trim();
+        return buffer2.toString().replaceAll("\\s{2,}"," ").trim();
     }
 
     // returns the text that is contained by the given element
@@ -211,22 +223,13 @@ public final class EvaluatorUtility {
                     continue;
                 }
                 // comments within scripts are treated as 'text' nodes so ignore them
-                /*if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
-                        (nodeChild.getNodeName().equalsIgnoreCase("script"))) {
-                    continue;
-                }//*/
                 if (nodeChild.getNodeType() == Node.ELEMENT_NODE) {
                     if (nodeChild.getNodeName().equalsIgnoreCase("script")) {
                         continue;
-//                    } else  if ( nodeChild.getNodeName().equalsIgnoreCase("img")) {
-//                        buffer.append(((Element)nodeChild).getAttribute("alt"));
                     }
                 }
                 if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                     buffer.append(nodeChild.getNodeValue());
-                    if (inlineTags == null) {
-                        //buffer.append(" ");
-                    }
                 }
                 buffer.append(getElementTextLoop(nodeChild, inlineTags));
             }
@@ -507,8 +510,6 @@ public final class EvaluatorUtility {
             URI srcUri = new URI(filename);
             URL srcUrl = srcUri.toURL();
 
-//            HttpURLConnection httpConnection = EvaluatorUtils.getConnection(srcUrl.toString(), "GET", true);
-//            httpConnection.connect();
             return srcUrl;
         } catch (Exception e) {
             Logger.putLog("Note: Can't open file: " + filename, EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
@@ -788,7 +789,7 @@ public final class EvaluatorUtility {
     private static void loadStyleSheet(final Element styleSheet, final String urlRoot) {
         try {
             final URL cssUrl;
-            if (StringUtils.isNotEmpty(urlRoot)) {
+            if (StringUtils.isNotEmpty(urlRoot) && URI.create(urlRoot).isAbsolute()) {
                 cssUrl = new URL(new URL(urlRoot), styleSheet.getAttribute("href"));
             } else {
                 cssUrl = new URL(styleSheet.getAttribute("href"));
@@ -1113,7 +1114,7 @@ public final class EvaluatorUtility {
             // trim stringRelative to make sure there is no whitespace at end of URL
             return new URI(filenameURL).resolve(stringRelative.trim()).toString();
         } catch (Exception e) {
-            //Logger.putLog("Exception: ", EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Exception: ", EvaluatorUtility.class, Logger.LOG_LEVEL_DEBUG, e);
         }
         return "";
     }

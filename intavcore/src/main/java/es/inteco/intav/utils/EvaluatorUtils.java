@@ -139,7 +139,8 @@ public final class EvaluatorUtils {
     }
 
     // Devuelve los tipos de problemas asociados a una pauta concreta
-    private static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, GuidelineGroup subgroup, Evaluation evaluation, String language) {
+    // TODO: Cambiar a private
+    public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, GuidelineGroup subgroup, Evaluation evaluation, String language) {
         List<ProblemForm> problems = new ArrayList<ProblemForm>();
 
         Integer lastProblem = 0;
@@ -186,8 +187,8 @@ public final class EvaluatorUtils {
             }
 
             SpecificProblemForm specificProblem = new SpecificProblemForm();
-            specificProblem.setLine(problem.getLineNumberString());
-            specificProblem.setColumn(problem.getColumnNumberString());
+            specificProblem.setLine(problem.getLineNumber()!=-1?problem.getLineNumberString():"");
+            specificProblem.setColumn(problem.getColumnNumber()!=-1?problem.getColumnNumberString():"");
 
             if (problem.isSummary()) {
                 specificProblem.setNote(getCode(problem, evaluation));
@@ -237,8 +238,10 @@ public final class EvaluatorUtils {
         } else if ("html".equals(nameProblemElement)) {
             if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "doc.codIdioma.valido"))) { // valid language code
                 code = getHtml(elementProblem, false, false);
-            } else if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif"))) { // valid document
+            } else if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif")) ||
+                    check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) { // valid document
                 if (evaluation != null) {
+                    Logger.putLog(problem.getNode().getTextContent(), EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
                     code.add(problem.getNode().getTextContent());
                 }
             }
@@ -419,7 +422,7 @@ public final class EvaluatorUtils {
 
                         Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-                        Matcher matcher = pattern.matcher(codigoString);
+                        Matcher matcher = pattern.matcher(codigoString.replaceAll("\\s{2,}",""));
 
                         int numChar = 0;
 
@@ -452,7 +455,7 @@ public final class EvaluatorUtils {
                             }
                         }
                     } else {
-                        codigo.add(HTMLEntities.htmlAngleBrackets(codigoString.trim()));
+                        codigo.add(HTMLEntities.htmlAngleBrackets(codigoString.trim().replaceAll("\\s{2,}","")));
                     }
                 }
 
@@ -1299,7 +1302,8 @@ public final class EvaluatorUtils {
     public static boolean isHtmlValidationNeeded(List<Integer> checkSelected) {
         PropertiesManager pmgr = new PropertiesManager();
         return checkSelected.contains(Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif")))
-                || checkSelected.contains(Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif.observatory")));
+                || checkSelected.contains(Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif.observatory")))
+                || checkSelected.contains(440);
     }
 
     // Es necesaria la validación css

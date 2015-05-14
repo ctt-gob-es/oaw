@@ -27,6 +27,7 @@ public class ExtractTextHandler extends DefaultHandler {
     private final StringBuilder extractedText;
 
     private final boolean extractSameLanguage;
+    private boolean inScript;
 
     public ExtractTextHandler(final String language) {
         this(language, true);
@@ -44,7 +45,7 @@ public class ExtractTextHandler extends DefaultHandler {
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         final String lang = normalizeLang(attributes.getValue("lang"));
         languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek());
-        if ( "img".equalsIgnoreCase(localName) && attributes.getValue("alt")!=null) {
+        if ("img".equalsIgnoreCase(localName) && attributes.getValue("alt") != null) {
             if (extractSameLanguage) {
                 if (webpageLanguage.equals(languages.peek())) {
                     extractedText.append(attributes.getValue("alt"));
@@ -54,6 +55,8 @@ public class ExtractTextHandler extends DefaultHandler {
                     extractedText.append(attributes.getValue("alt"));
                 }
             }
+        } else if ("script".equalsIgnoreCase(localName)) {
+            inScript = true;
         }
     }
 
@@ -64,13 +67,15 @@ public class ExtractTextHandler extends DefaultHandler {
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        if (extractSameLanguage) {
-            if (webpageLanguage.equals(languages.peek())) {
-                extractedText.append(ch, start, length);
-            }
-        } else {
-            if (!webpageLanguage.equals(languages.peek())) {
-                extractedText.append(ch, start, length);
+        if (!inScript) {
+            if (extractSameLanguage) {
+                if (webpageLanguage.equals(languages.peek())) {
+                    extractedText.append(ch, start, length);
+                }
+            } else {
+                if (!webpageLanguage.equals(languages.peek())) {
+                    extractedText.append(ch, start, length);
+                }
             }
         }
     }
@@ -87,7 +92,7 @@ public class ExtractTextHandler extends DefaultHandler {
      * @return una cadena que representa el idioma base
      */
     private String normalizeLang(final String lang) {
-        if (lang!=null && lang.contains("-")) {
+        if (lang != null && lang.contains("-")) {
             return lang.substring(0, lang.indexOf('-'));
         }
         return lang;

@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 /**
  * Port del codigo utilizado por KDE para identificar el idioma
  *
- * @see http://code.google.com/p/guess-language/
+ * see http://code.google.com/p/guess-language/
  */
 public class GuessLanguage {
     // Valor utilizado para idiomas que no se pueden detectar
@@ -23,14 +23,14 @@ public class GuessLanguage {
             "ca", "es", "fr", "de", "it", "pt", "ru", "uk", "ar", "fa", "ps",
             "ur", "pt_BR", "pt_PT", "ast"};
 
-    private static List<String> BASIC_LATIN;
-    private static List<String> EXTENDED_LATIN;
-    private static List<String> ALL_LATIN;
-    private static List<String> CYRILLIC;
-    private static List<String> ARABIC;
-    private static List<String> DEVANAGARI;
-    private static Map<UnicodeBlock, String> SINGLETONS;
-    private static List<String> PT;
+    private final static List<String> BASIC_LATIN;
+    private final static List<String> EXTENDED_LATIN;
+    private final static List<String> ALL_LATIN;
+    private final static List<String> CYRILLIC;
+    private final static List<String> ARABIC;
+    private final static List<String> DEVANAGARI;
+    private final static Map<UnicodeBlock, String> SINGLETONS;
+    private final static List<String> PT;
 
     static {
         BASIC_LATIN = Arrays.asList("en", "eu");
@@ -49,7 +49,7 @@ public class GuessLanguage {
         PT = Arrays.asList("pt_BR", "pt_PT");
     }
 
-    private final HashMap<String, HashMap<String, Integer>> models;
+    private final Map<String, Map<String, Integer>> models;
 
     // Longitud mínima de texto para poder aplicar el algoritmo con garantías
     private static final int MIN_LENGTH = 20;
@@ -57,32 +57,7 @@ public class GuessLanguage {
     private static final int MAXGRAMS = 300;
 
     public GuessLanguage() {
-
-        // TODO: ¿Importa el orden de inserción?
-        // BASIC_LATIN << "en" << "ceb" << "ha" << "so" << "tlh" << "id" <<
-        // "haw" << "la" << "sw" << "eu" << "nr" << "nso" << "zu" << "xh" <<
-        // "ss" << "st" << "tn" << "ts";
-        // EXTENDED_LATIN << "cs" << "af" << "pl" << "hr" << "ro" << "sk" <<
-        // "sl" << "tr" << "hu" << "az" << "et" << "sq" << "ca" << "es" << "fr"
-        // << "de" << "nl" << "it" << "da" << "is" << "nb" << "sv" << "fi" <<
-        // "lv" << "pt" << "ve" << "lt" << "tl" << "cy" ;
-        // ALL_LATIN << BASIC_LATIN << EXTENDED_LATIN;
-        // CYRILLIC << "ru" << "uk" << "kk" << "uz" << "mn" << "sr" << "mk" <<
-        // "bg" << "ky";
-        // ARABIC << "ar" << "fa" << "ps" << "ur";
-        // DEVANAGARI << "hi" << "ne";
-        // // NOTE mn appears twice, once for mongolian script and once for
-        // CYRILLIC
-        // SINGLETONS << "Armenian" << "hy" << "Hebrew" << "he" << "Bengali" <<
-        // "bn" << "Gurmukhi" << "pa" << "Greek" << "el" << "Gujarati" << "gu"
-        // << "Oriya" << "or" << "Tamil" << "ta" << "Telugu" << "te" <<
-        // "Kannada" << "kn" << "Malayalam" << "ml" << "Sinhala" << "si" <<
-        // "Thai" << "th" << "Lao" << "lo" << "Tibetan" << "bo" << "Burmese" <<
-        // "my" << "Georgian" << "ka" << "Mongolian" << "mn-Mong" << "Khmer" <<
-        // "km";
-        // PT << "pt_BR" << "pt_PT";
-
-        models = new HashMap<String, HashMap<String, Integer>>();
+        models = new HashMap<String, Map<String, Integer>>();
         if (models.isEmpty()) {
             loadModels();
         }
@@ -170,8 +145,7 @@ public class GuessLanguage {
 
         if (scripts.contains(UnicodeBlock.HANGUL_SYLLABLES)
                 || scripts.contains(UnicodeBlock.HANGUL_JAMO)
-                || scripts.contains(UnicodeBlock.HANGUL_COMPATIBILITY_JAMO)
-                || scripts.contains("Hangul")) {
+                || scripts.contains(UnicodeBlock.HANGUL_COMPATIBILITY_JAMO)) {
             return "ko";
         }
 
@@ -218,10 +192,7 @@ public class GuessLanguage {
             return "vi";
         }
 
-        // No existe Extended Latin en UnicodeBlock
-        if (scripts.contains(UnicodeBlock.LATIN_EXTENDED_A)) {// "Extended
-            // Latin")) {
-            // final String latinLang = check(sample, EXTENDED_LATIN);
+        if (scripts.contains(UnicodeBlock.LATIN_EXTENDED_A)) {
             final String latinLang = check(sample, ALL_LATIN);
             if (latinLang.equals("pt")) {
                 return check(sample, PT);
@@ -274,7 +245,7 @@ public class GuessLanguage {
             }
         }
 
-        for (String key : trigrams.keySet()) {
+        for (Entry<String, Integer> entry : trigrams.entrySet()) {
             // iterator QHash::insertMulti ( const Key & key, const T & value )
             // Inserts a new item with the key key and a value of value.
             // If there is already an item with the same key in the hash, this
@@ -283,26 +254,23 @@ public class GuessLanguage {
             // existing item.)
             // See also insert() and values().
             // Otrigrams.insertMulti( - trigrams[key], key);
-            List<String> trigram = otrigrams.get(-trigrams.get(key));
+            List<String> trigram = otrigrams.get(-entry.getValue());
             if (trigram == null) {
                 trigram = new LinkedList<String>();
-                otrigrams.put(-trigrams.get(key), trigram);
+                otrigrams.put(-entry.getValue(), trigram);
             }
-            trigram.add(key);
+            trigram.add(entry.getKey());
         }
 
         return otrigrams;
     }
 
     private int distance(final Map<Integer, List<String>> model,
-                         final HashMap<String, Integer> knownModel) {
+                         final Map<String, Integer> knownModel) {
         int counter = -1;
         int dist = 0;
 
-        final Iterator<List<String>> itr = model.values().iterator();
-        while (itr.hasNext()) {
-            final List<String> values = itr.next();
-
+        for (List<String> values : model.values()) {
             for (String value : values) {
                 if (!value.contains("  ")) {
                     if (knownModel.containsKey(value.toLowerCase())) {

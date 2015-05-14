@@ -107,7 +107,6 @@ public class ModificarObservatorioAction extends Action {
     private ModificarObservatorioForm loadData(ModificarObservatorioForm modificarObservatorioForm, HttpServletRequest request, boolean esPrimera, String id_observatorio) throws Exception {
         Connection c = null;
         Connection con = null;
-        PropertiesManager pmgr = new PropertiesManager();
 
         try {
             c = DataBaseManager.getConnection();

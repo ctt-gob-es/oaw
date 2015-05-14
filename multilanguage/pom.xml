@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>multilanguage</artifactId>
-    <version>1.0.1</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>multilanguage</name>
@@ -11,7 +11,7 @@
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>1.0.1</version>
+        <version>2.0.0</version>
         <relativePath>../oaw/pom.xml</relativePath>
     </parent>
 
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>intav-common</artifactId>
-            <version>1.0.1</version>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>javax.persistence</groupId>

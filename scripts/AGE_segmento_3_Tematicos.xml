@@ -185,6 +185,14 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
+        <nombre>The Spanish Economy</nombre>
+        <activa>true</activa>
+        <url>http://www.thespanisheconomy.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
         <nombre>España es Cultura</nombre>
         <activa>true</activa>
         <url>http://www.españaescultura.es/</url>

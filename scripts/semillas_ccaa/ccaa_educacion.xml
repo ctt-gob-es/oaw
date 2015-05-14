@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lista>
+    <semilla>
+        <nombre>Consejería de Educación, Universidades, Cultura y Deportes</nombre>
+        <url>http://www.gobiernodecanarias.org/educacion/</url>
+        <acronimo>GobCan</acronimo>
+        <depende_de>Gobierno de Canarias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Conselleria d'Educació</nombre>
+        <url>http://www.cece.gva.es/es/default.asp</url>
+        <acronimo>GVA</acronimo>
+        <depende_de>Generalitat Valenciana</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Departament d'Educació</nombre>
+        <url>http://ensenyament.gencat.cat/ca</url>
+        <acronimo>GenCAT</acronimo>
+        <depende_de>Generalitat de Catalunya</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>DP M. Educación</nombre>
+        <url>http://www.mecd.gob.es/educacion-mecd/areas-educacion/comunidades-autonomas/ceuta.html</url>
+        <acronimo>Ceuta</acronimo>
+        <depende_de>Ciudad Autónoma de Ceuta</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>DP M. Educación</nombre>
+        <url>http://www.mecd.gob.es/educacion-mecd/areas-educacion/comunidades-autonomas/melilla.html</url>
+        <acronimo>Melilla</acronimo>
+        <depende_de>Ciudad Autónoma de Melilla</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>eduaragón</nombre>
+        <url>http://www.educaragon.org/</url>
+        <acronimo>Aragon</acronimo>
+        <depende_de>Gobierno de Aragón</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Educación CyL</nombre>
+        <url>http://www.educa.jcyl.es/educacyl/cm</url>
+        <acronimo>JCyL</acronimo>
+        <depende_de>Junta de Castilla y León</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>EducarEx</nombre>
+        <url>http://www.educarex.es/</url>
+        <acronimo>JuntaEX</acronimo>
+        <depende_de>Junta de Extremadura</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>EducaRioja</nombre>
+        <url>http://www.larioja.org/npRioja/default/defaultpage.jsp?idtab=740917</url>
+        <acronimo>LaRioja</acronimo>
+        <depende_de>Gobierno de La Rioja</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Hezkuntza, Unibertsitate eta Ikerketa Saila</nombre>
+        <url>http://www.hezkuntza.ejgv.euskadi.eus/r43-2591/es/</url>
+        <acronimo>Euskadi</acronimo>
+        <depende_de>Gobierno Vasco</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>MURCIA EDUCARM. Portal Educativo.</nombre>
+        <url>http://www.educarm.es/home</url>
+        <acronimo>CARM</acronimo>
+        <depende_de>Región de Murcia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://www.juntadeandalucia.es/educacion/</url>
+        <acronimo>JA</acronimo>
+        <depende_de>Junta de Andalucía</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://www.educastur.es/</url>
+        <acronimo>Asturias</acronimo>
+        <depende_de>Gobierno del Principado de Asturias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://weib.caib.es/</url>
+        <acronimo>CAIB</acronimo>
+        <depende_de>Gobierno de las Islas Baleares</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://www.educantabria.es/</url>
+        <acronimo>GobCant</acronimo>
+        <depende_de>Gobierno de Cantabria</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://www.educa.jccm.es/educa-jccm/cm</url>
+        <acronimo>JCCM</acronimo>
+        <depende_de>Junta de Castilla-La Mancha</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://www.madrid.org/cs/Satellite?c=Page&amp;cid=1273687122273&amp;idTema=1109265604873&amp;language=es&amp;pagename=ComunidadMadrid%2FEstructura&amp;pid=1273078188154url>
+        <acronimo>Madrid</acronimo>
+        <depende_de>Comunidad de Madrid</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal de Educación</nombre>
+        <url>http://www.educacion.navarra.es/portal/</url>
+        <acronimo>Navarra</acronimo>
+        <depende_de>Gobierno de Navarra</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal Educativo Xunta</nombre>
+        <url>http://www.edu.xunta.es/web/</url>
+        <acronimo>Xunta</acronimo>
+        <depende_de>Xunta de Galicia</depende_de>
+    </semilla>
+</lista>

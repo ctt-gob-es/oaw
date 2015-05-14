@@ -205,7 +205,7 @@ public final class CheckTables {
                 } else {
                     //Cmprobamos si la tabla es horizontal o vertical y si está bien formada
                     if (isCorrectHorizontalHeading(table, 0, x, false)) {
-                        return (isCorrectHorizontalTable(table, x, y));
+                        return isCorrectHorizontalTable(table, x, y);
                     } else if (isCorrectVerticalHeading(table, y, 0, false)) {
                         return isCorrectVerticalTable(table, x, y);
                     } else {
@@ -360,6 +360,10 @@ public final class CheckTables {
                     if (table[i][j].getRowSpan() != 0) {
                         for (int z = 1; z < table[i][j].getRowSpan(); z++) {
                             TableNode node = new TableNode(true);
+                            if (isHeaderCell(nodeElementList.get(element-1))) {
+                                //Es un th con texto, estamos seguros de que es encabezado
+                                tableNode.setHeaderCell(true);
+                            }
                             if (i + z < y) {
                                 table[i + z][j] = node;
                             }
@@ -368,6 +372,10 @@ public final class CheckTables {
                     if (table[i][j].getColSpan() != 0) {
                         for (int z = 1; z < table[i][j].getColSpan(); z++) {
                             TableNode node = new TableNode(true);
+                            if (isHeaderCell(nodeElementList.get(element-1))) {
+                                //Es un th con texto, estamos seguros de que es encabezado
+                                tableNode.setHeaderCell(true);
+                            }
                             if (j + z < x) {
                                 table[i][j + z] = node;
                             }

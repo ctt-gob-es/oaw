@@ -80,7 +80,7 @@ public final class ZipUtils {
         FileOutputStream fos = null;
         ZipOutputStream zos = null;
         try {
-            File file = new File(zipPath);
+            final File file = new File(zipPath);
             if (!file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();
             }

@@ -55,9 +55,8 @@
                 <name>inteco.observatory.subgroup.1.2.1</name>
                 <checks>
                     <check id="94" onlyWarning="true"/>
-                    <!-- Validación CSS
                     <check id="119" onlyWarning="true"/>
-                    <check id="131" relatedWith="119"/> -->
+                    <check id="131" relatedWith="119"/>
                     <check id="152" relatedWith="94"/>
                     <check id="323"/>
                 </checks>

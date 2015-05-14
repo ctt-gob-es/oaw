@@ -41,7 +41,6 @@ public class EliminarCuentaUsuarioAction extends Action {
                     String id_cuenta = request.getParameter(Constants.ID_CUENTA);
 
                     try {
-                        PropertiesManager pmgr = new PropertiesManager();
                         c = DataBaseManager.getConnection();
                         con = DataBaseManager.getConnection();
                         eliminarCuentaUsuarioForm = CuentaUsuarioDAO.getDeleteUserAccounts(c, Long.valueOf(id_cuenta), eliminarCuentaUsuarioForm);

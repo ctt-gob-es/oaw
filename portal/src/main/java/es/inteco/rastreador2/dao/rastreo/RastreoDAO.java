@@ -1697,62 +1697,6 @@ public final class RastreoDAO {
         return -1;
     }
 
-    /*public static int getNumObservatoryAnalysePages(Connection c, List<Long> ids) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            StringBuilder IdStrList = new StringBuilder("(");
-            for (int i = 1; i <= ids.size(); i++) {
-                if (ids.size() > i) {
-                    IdStrList.append("?,");
-                } else if (ids.size() == i) {
-                    IdStrList.append("?)");
-                }
-            }
-
-            ps = c.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo IN " + IdStrList);
-            for (int i = 0; i < ids.size(); i++) {
-                ps.setLong(i + 1, ids.get(i));
-            }
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-        return -1;
-    }*/
-
-    /*public static List<Long> getExecutedCrawlerCategoryIds(Connection connR, long id_observatorio, long id_categoria) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<Long>();
-        try {
-            //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS PARA EL OBSERVATORIO
-            ps = connR.prepareStatement("SELECT rr.id FROM rastreo r " +
-                    "JOIN rastreos_realizados rr ON (r.id_rastreo = rr.id_rastreo) " +
-                    "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio )" +
-                    "WHERE r.id_observatorio = ? AND o.id_categoria = ?");
-            ps.setLong(1, id_observatorio);
-            ps.setLong(2, id_categoria);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                executedCrawlerIds.add(rs.getLong("id"));
-            }
-            return executedCrawlerIds;
-        } catch (Exception e) {
-            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-    }*/
-
     public static void updateCrawlerName(Connection c, String name, long crawlerId) throws Exception {
         PreparedStatement ps = null;
         try {

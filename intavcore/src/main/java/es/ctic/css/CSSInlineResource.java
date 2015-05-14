@@ -35,6 +35,11 @@ public class CSSInlineResource implements CSSResource {
     }
 
     @Override
+    public String getStringSource() {
+        return "Atributo style " + htmlElement.getLocalName();
+    }
+
+    @Override
     public boolean isImported() {
         return false;
     }

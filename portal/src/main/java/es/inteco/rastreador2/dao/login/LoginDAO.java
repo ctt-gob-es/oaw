@@ -49,7 +49,6 @@ public final class LoginDAO {
                 user.setLogin(rs.getString("Usuario"));
                 user.setEmail(rs.getString("Email"));
                 user.setDepartment(rs.getString("Departamento"));
-                //usuario.setCartridge(listaFromString(rs.getString("grupo")));
                 return user;
             } else {
                 return null;

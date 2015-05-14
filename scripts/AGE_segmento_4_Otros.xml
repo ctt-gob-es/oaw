@@ -218,4 +218,9 @@
         <nombre>Museo Lázaro Galdiano</nombre>
         <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
     </semilla>
+    <semilla>
+        <url>http://www.muncyt.es/</url>
+        <nombre>Museo Nacional de Ciencia y Tecnología</nombre>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+    </semilla>
 </lista>

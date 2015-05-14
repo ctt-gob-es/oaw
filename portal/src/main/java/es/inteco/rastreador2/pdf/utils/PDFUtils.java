@@ -38,17 +38,9 @@ public final class PDFUtils {
         title.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(title);
 
-//        // FIXME: Cambiar para
-//        Paragraph tipo = new Paragraph(getReport(report), titleFont);
-//        tipo.setSpacingBefore(ConstantsFont.SPACE_TITLE_LINE);
-//        tipo.setAlignment(Paragraph.ALIGN_CENTER);
-//        document.add(tipo);
-
-
         if (!subtitleText.equals("")) {
             Paragraph subtitle = new Paragraph(subtitleText, titleFont);
             subtitle.setAlignment(Paragraph.ALIGN_CENTER);
-            //subtitle.setSpacingBefore(ConstantsFont.SPACE_SUBTITLE_LINE);
             document.add(subtitle);
         }
     }

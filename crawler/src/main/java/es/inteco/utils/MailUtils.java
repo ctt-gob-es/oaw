@@ -33,7 +33,6 @@ public final class MailUtils {
                 EmailAttachment attachment = new EmailAttachment();
                 attachment.setPath(attachUrl);
                 attachment.setDisposition(EmailAttachment.ATTACHMENT);
-                // attachment.setDescription("Informe PDF");
                 attachment.setName(attachName);
                 // add the attachment
                 email.attach(attachment);
@@ -62,7 +61,6 @@ public final class MailUtils {
                 EmailAttachment attachment = new EmailAttachment();
                 attachment.setURL(attachUrl);
                 attachment.setDisposition(EmailAttachment.ATTACHMENT);
-                // attachment.setDescription("Informe PDF");
                 attachment.setName(attachName);
                 // add the attachment
                 email.attach(attachment);
@@ -107,7 +105,6 @@ public final class MailUtils {
         final String trustStorePass = pmgr.getValue("certificados.properties", "truststore.pass");
         if ( trustStorePath!=null && !trustStorePath.isEmpty()) {
             System.setProperty("javax.net.ssl.trustStore", trustStorePath);
-            Logger.putLog("Configurando el truststore en " + trustStorePath, MailUtils.class, Logger.LOG_LEVEL_INFO);
         }
         if ( trustStorePass!=null && !trustStorePass.isEmpty()) {
             System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass);

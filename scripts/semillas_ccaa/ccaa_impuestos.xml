@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lista>
+    <semilla>
+        <nombre>Administración Tributaria Canaria</nombre>
+        <url>http://www.gobiernodecanarias.org/tributos/</url>
+        <acronimo>GobCan</acronimo>
+        <depende_de>Gobierno de Canarias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Administración Tributaria de Aragón</nombre>
+        <url>http://portal.aragon.es/portal/page/portal/TRIBUTOS</url>
+        <acronimo>Aragon</acronimo>
+        <depende_de>Gobierno de Aragón</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Tributaria de Andalucía</nombre>
+        <url>http://www.juntadeandalucia.es/agenciatributariadeandalucia/</url>
+        <acronimo>JA</acronimo>
+        <depende_de>Junta de Andalucía</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Tributaria de las Islas Baleares</nombre>
+        <url>http://www.atib.es/Default.aspx</url>
+        <acronimo>CAIB</acronimo>
+        <depende_de>Gobierno de las Islas Baleares</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Bienvenidos a e-tributs portal tributario</nombre>
+        <url>http://www.e-tributs.net/pt/es/Inici</url>
+        <acronimo>GenCAT</acronimo>
+        <depende_de>Generalitat de Catalunya</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Consejería de Economía y Hacienda</nombre>
+        <url>http://www.consejeriadeeconomiayhacienda.com/index.php</url>
+        <acronimo>GobCant</acronimo>
+        <depende_de>Gobierno de Cantabria</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Consejero de Hacienda y Presupuestos</nombre>
+        <url>http://www.melillatributos.com/</url>
+        <acronimo>Melilla</acronimo>
+        <depende_de>Ciudad Autónoma de Melilla</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Consellería de Facenda - Tributos</nombre>
+        <url>http://www.conselleriadefacenda.es/web/portal/introducion-area-tributos</url>
+        <acronimo>Xunta</acronimo>
+        <depende_de>Xunta de Galicia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Hacienda</nombre>
+        <url>http://www.juntaex.es/consejerias/admin-publica-hacienda/dg-hacienda/index-ides-idweb.html</url>
+        <acronimo>JuntaEX</acronimo>
+        <depende_de>Junta de Extremadura</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Dirección General de Tributos de Murcia</nombre>
+        <url>http://www.carm.es/neweb2/servlet/integra.servlets.ControlPublico?IDCONTENIDO=401&amp;IDTIPO=140&amp;RASTRO=c443$m</url>
+        <acronimo>CARM</acronimo>
+        <depende_de>Región de Murcia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Economía</nombre>
+        <url>http://www.jccm.es/cs/Satellite/Tu_Region/Economia/contenidoFinal1212675772673pg/index.html</url>
+        <acronimo>JCCM</acronimo>
+        <depende_de>Junta de Castilla-La Mancha</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Hacienda Tributaria de Navarra</nombre>
+        <url>http://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/</url>
+        <acronimo>Navarra</acronimo>
+        <depende_de>Gobierno de Navarra</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Hacienda y Administración Pública del Gobierno Vasco</nombre>
+        <url>http://www.ogasun.ejgv.euskadi.net/r51-341/es/contenidos/informacion/6981/es_2319/es_12221.html</url>
+        <acronimo>Euskadi</acronimo>
+        <depende_de>Gobierno Vasco</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal del Contribuyente de Madrid</nombre>
+        <url>http://www.madrid.org/cs/Satellite?language=es&amp;pagename=Contribuyente%2FPage%2FCONT_home</url>
+        <acronimo>Madrid</acronimo>
+        <depende_de>Comunidad de Madrid</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal Servicios Tributarios de Ceuta</nombre>
+        <url>http://www.tributosceuta.org/index2.cfm?codigo=0000</url>
+        <acronimo>Ceuta</acronimo>
+        <depende_de>Ciudad Autónoma de Ceuta</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal Tributario</nombre>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0000</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0001</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0027</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0030</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0020</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0024</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0022</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=anuncio</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0064&amp;tipo=2</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0009</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0002</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0041</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0016</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0073</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0109</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0076</url>
+        <url>https://www.tributasenasturias.es/portal/detalle.asp?pagina=0021</url>
+        <acronimo>Asturias</acronimo>
+        <depende_de>Gobierno del Principado de Asturias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal Tributario</nombre>
+        <url>http://portales.gva.es/c_economia/web/html/subhome_Tributos_c.htm</url>
+        <acronimo>GVA</acronimo>
+        <depende_de>Generalitat Valenciana</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal Tributario de Castilla y León</nombre>
+        <url>http://www.jcyl.es/web/jcyl/pr/es/Tributos/Page/TributosPlantillaHomePortal/1164017318953/_/_/_?asm=jcyl</url>
+        <acronimo>JCyL</acronimo>
+        <depende_de>Junta de Castilla y León</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Tributos de La Rioja</nombre>
+        <url>http://www.larioja.org/npRioja/default/defaultpage.jsp?idtab=486461</url>
+        <acronimo>LaRioja</acronimo>
+        <depende_de>Gobierno de La Rioja</depende_de>
+    </semilla>
+</lista>

@@ -17,7 +17,7 @@ public final class IanaUtils {
     private IanaUtils() {
     }
 
-    public static String loadIanaRegistries(final String url) throws Exception {
+    public static String loadIanaRegistries(final String url) {
         InputStream inputStream = null;
         String content = null;
         try {
