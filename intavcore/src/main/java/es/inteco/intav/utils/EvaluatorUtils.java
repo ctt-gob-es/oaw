@@ -241,7 +241,6 @@ public final class EvaluatorUtils {
             } else if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif")) ||
                     check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) { // valid document
                 if (evaluation != null) {
-                    Logger.putLog(problem.getNode().getTextContent(), EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
                     code.add(problem.getNode().getTextContent());
                 }
             }
