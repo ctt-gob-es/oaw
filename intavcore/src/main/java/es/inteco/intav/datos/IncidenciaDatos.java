@@ -76,35 +76,36 @@ public final class IncidenciaDatos {
         }
     }
 
-    public static List<Incidencia> getIncidenciasFromAnalisisId(Connection conn, long id, boolean getOnlyChecks) {
+    public static List<Incidencia> getIncidenciasFromAnalisisId(final Connection conn, final long id, final boolean getOnlyChecks) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String query = null;
+        final String query;
         if (getOnlyChecks) {
-            query = "SELECT COD_COMPROBACION FROM tincidencia WHERE COD_ANALISIS = " + id;
+            query = "SELECT COD_COMPROBACION FROM tincidencia WHERE COD_ANALISIS = ?";
         } else {
-            query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, SUBSTRING(DES_FUENTE, -LENGTH(DES_FUENTE), 400) AS DES_FUENTE_TRUNC FROM tincidencia WHERE COD_ANALISIS = " + id;
+            query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE COD_ANALISIS = ?";
         }
 
         try {
             pstmt = conn.prepareStatement(query);
+            pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
-            ArrayList<Incidencia> arrlist = new ArrayList<Incidencia>();
+            final List<Incidencia> incidencias = new ArrayList<Incidencia>();
 
             while (rs.next()) {
-                Incidencia incidencia = new Incidencia();
+                final Incidencia incidencia = new Incidencia();
                 incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
                 if (!getOnlyChecks) {
                     incidencia.setCodigoAnalisis(rs.getInt("COD_ANALISIS"));
                     incidencia.setCodigoLineaFuente(rs.getInt("COD_LINEA_FUENTE"));
                     incidencia.setCodigoColumnaFuente(rs.getInt("COD_COLUMNA_FUENTE"));
                     incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
-                    incidencia.setCodigoFuente(rs.getString("DES_FUENTE_TRUNC"));
+                    incidencia.setCodigoFuente(rs.getString("DES_FUENTE"));
                 }
-                arrlist.add(incidencia);
+                incidencias.add(incidencia);
             }
 
-            return arrlist;
+            return incidencias;
 
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);

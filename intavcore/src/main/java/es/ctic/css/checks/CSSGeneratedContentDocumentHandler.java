@@ -27,6 +27,7 @@ public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
 
     @Override
     public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
+        this.resource = cssResource;
         final InputSource is = new InputSource();
         is.setCharacterStream(new java.io.StringReader(cssResource.getContent()));
         try {
@@ -53,7 +54,7 @@ public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
     }
 
     private boolean isPseudoClass() {
-        return selector.contains(":before") || selector.contains(":after");
+        return selector!=null && (selector.contains(":before") || selector.contains(":after"));
     }
 
 }

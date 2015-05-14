@@ -130,7 +130,6 @@ public class NuevoObservatorioAction extends Action {
     private NuevoObservatorioForm inicializeData(NuevoObservatorioForm nuevoObservatorioForm, HttpServletRequest request) throws Exception {
         Connection c = null;
         Connection con = null;
-        PropertiesManager pmgr = new PropertiesManager();
 
         try {
             c = DataBaseManager.getConnection();
@@ -138,7 +137,7 @@ public class NuevoObservatorioAction extends Action {
 
             nuevoObservatorioForm.setPeriodicidadVector(DAOUtils.getRecurrence(c));
 
-            List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);
+            final List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);
             nuevoObservatorioForm.setLenguajeVector(new ArrayList<LenguajeForm>());
             for (LenguajeForm lenguajeForm : lenguajeFormList) {
                 lenguajeForm.setName(getResources(request).getMessage(getLocale(request), lenguajeForm.getKeyName()));

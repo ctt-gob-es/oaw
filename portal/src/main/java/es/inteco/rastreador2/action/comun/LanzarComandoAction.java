@@ -114,7 +114,6 @@ public class LanzarComandoAction extends Action {
         Connection c = null;
 
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
 
             //Si el comando está LAUNCH

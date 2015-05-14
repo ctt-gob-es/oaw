@@ -30,6 +30,13 @@ public interface CSSResource {
     public abstract boolean isInline();
 
     /**
+     * Método para obtener una cadena que identifique de donde proviene este recurso CSS
+     *
+     * @return "<style>" si proviene de un bloque style, el atributo href si proviene de un elemento link y el nombre de la etiqueta si es un estilo incrustado
+     */
+    public abstract String getStringSource();
+
+    /**
      * Método para saber si este recurso CSS ha sido importado mediante la regla @import
      *
      * @return true si el recurso ha sido incluido mediante la regla @import y false en cualquier otro caso

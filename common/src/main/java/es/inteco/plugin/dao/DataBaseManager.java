@@ -9,6 +9,9 @@ import java.sql.Connection;
 
 public class DataBaseManager {
 
+    private DataBaseManager() {
+    }
+
     public static Connection getConnection() {
         Logger.putLog("Conectando a la base de datos OAW", DataBaseManager.class, Logger.LOG_LEVEL_DEBUG);
         try {

@@ -14,14 +14,15 @@ public class CrawlerTest {
 
     final static String OBSERVATORIO_1_0 = "observatorio-inteco-1-0.xml";
     final static String OBSERVATORIO_1_0_NO_LINKS = "observatorio-inteco-1-0-nobroken.xml";
+    final static String OBSERVATORIO_2_0 = "observatorio-une-2012.xml";
+    final static String OBSERVATORIO_2_0_NO_LINKS = "observatorio-une-2012-nobroken.xml";
 
     //"http://www.congreso.es/portal/page/portal/Congreso/Congreso"
 
     @Test
     public void testCrawler() {
-        final String url = "http://www.dgojuego.minhap.gob.es/";//http://www.congreso.es/portal/page/portal/Congreso/Congreso";//"http://www.tcu.es/tribunal-de-cuentas/es/";
+        final String url = "http://administracionelectronica.gob.es";
         final CrawlerJob crawlerJob = new CrawlerJob();
-        //https://sede.guardiacivil.gob.es/ciudadano/inicio
         final List<CrawledLink> crawledLinkList = crawlerJob.testCrawler(createCrawlerData(url,OBSERVATORIO_1_0_NO_LINKS));
         Assert.assertNotNull(crawledLinkList);
         Assert.assertFalse(crawledLinkList.isEmpty());

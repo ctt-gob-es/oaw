@@ -43,15 +43,6 @@ public final class StringUtils {
         return true;
     }
 
-    // Quita la extensión del nombre de un archivo
-    /*public static String removeFileExtension(String filename) {
-        int indexDot = filename.indexOf('.');
-        if (indexDot != -1) {
-            filename = filename.substring(0, indexDot);
-        }
-        return filename;
-    }*/
-
     // Comprueba si una cadena está formada únicamente por espacios en blanco
     public static boolean isOnlyBlanks(String string) {
         return (string.length() > 0 && (string.trim().length() == 0 || hasOnlyNbspEntities(string)));
@@ -75,17 +66,6 @@ public final class StringUtils {
 
         return true;
     }
-
-    // Comprueba si una cadena está formada únicamente por entidades &nbsp;
-    /*public static boolean hasOnlyNbspEntities(String string) {
-        return string.trim().replaceAll("&nbsp;", "").length() == 0;
-	}*/
-
-    // Normaliza un string
-    /*public static String normalize(String string) {
-        return string.toLowerCase().replaceAll("á", "a").replaceAll("é", "e").replaceAll("í", "i").
-                replaceAll("ó", "o").replaceAll("ú", "u");
-    }*/
 
     /**
      * Convierte un InputStream en un String usando la codificación de caracteres por defecto

@@ -34,6 +34,7 @@ import es.ctic.css.utils.CSSUtils;
 import es.inteco.common.*;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.comun.Incidencia;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.datos.IncidenciaDatos;
@@ -65,6 +66,8 @@ public class Evaluator {
     public static final int ERRORCODE_BAD_LOCAL_FILE = 7;
     public static final int ERRORCODE_AUTH_FAILED = 8;
     public static final int ERRORCODE_NO_AUTHENTICATION = 9;
+
+    private static final String ALL_HTML_VALIDATION_ERRORS = "_ALL_ERRORS_";
 
     // evaluates the given file for accessibility problems
     // filename - URL of the page
@@ -403,6 +406,10 @@ public class Evaluator {
                     addValidationIncidences(evaluation, check, incidenceList);
                 } else if (EvaluatorUtils.isCssValidationNeeded(check.getId())) {
                     addCssValidationIncidences(evaluation, check, incidenceList);
+                } else if (check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) {
+                    addValidationIncidences(evaluation, check, incidenceList, String.valueOf(check.getId()));
+                } else if (check.getId() == 460) {
+                    addLanguageIncidences(evaluation, check, incidenceList);
                 } else {
                     // Se ha encontrado un error y se va a registrar en la base de datos
                     if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
@@ -415,12 +422,21 @@ public class Evaluator {
         } // end for (Check check : vectorChecks)
 
         // Una vez acabadas las comprobaciones sobre HTML, ejecutamos las comprobaciones de CSS (que tienen estructura distinta)
+        final List<CSSResource> cssResources = new ArrayList<CSSResource>();
         // TODO: Extraer únicamente una vez los estilos (y cachear los linked)
         final NodeList embeddedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("style");
-        final List<CSSResource> cssResources = new ArrayList<CSSResource>();
         if (embeddedStyleSheets != null && embeddedStyleSheets.getLength() > 0) {
             for (int i = 0; i < embeddedStyleSheets.getLength(); i++) {
                 cssResources.add(new CSSStyleSheetResource((Element) embeddedStyleSheets.item(i)));
+            }
+        }
+        final NodeList linkedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("link");
+        if (linkedStyleSheets != null && linkedStyleSheets.getLength() > 0) {
+            for (int i = 0; i < linkedStyleSheets.getLength(); i++) {
+                final Element linkElement = (Element) linkedStyleSheets.item(i);
+                if ( linkElement.hasAttribute("href") && "stylesheet".equalsIgnoreCase(linkElement.getAttribute("rel"))) {
+                    cssResources.add(new CSSStyleSheetResource(linkElement));
+                }
             }
         }
         for (Check check : vectorChecks) {
@@ -452,8 +468,42 @@ public class Evaluator {
         }
     }
 
+    private List<Incidencia> addLanguageIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        final PropertiesManager properties = new PropertiesManager();
+        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
+        final Problem problem = new Problem();
+        problem.setDate(format.format(new Date()));
+        problem.setCheck(check);
+        problem.setColumnNumber(-1);
+        problem.setLineNumber(-1);
+        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+        final Document docHtml = evaluation.getHtmlDoc();
+        final List<String> enWords = (List<String>) docHtml.getUserData("en_words");
+        final StringBuilder textContent = new StringBuilder();
+        if ( !enWords.isEmpty() ) {
+            final Iterator<String> itr = enWords.iterator();
+            textContent.append(itr.next());
+            while ( itr.hasNext() ) {
+                textContent.append(", ").append(itr.next());
+            }
+        }
+
+        problemTextNode.setTextContent(textContent.toString());
+        problem.setNode(problemTextNode);
+        problem.setSummary(false);
+
+        evaluation.addProblem(problem);
+
+        addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+
+        return incidenceList;
+    }
+
     // Añade los problemas de validación HTML
     private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        return addValidationIncidences(evaluation, check, incidenceList, ALL_HTML_VALIDATION_ERRORS);
+    }
+    private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final String id) {
         final List<Incidencia> validationProblems = new ArrayList<Incidencia>();
 
         final Document docHtml = evaluation.getHtmlDoc();
@@ -462,25 +512,27 @@ public class Evaluator {
 
         if (vectorValidationErrors != null) {
             for (ValidationError validationError : vectorValidationErrors) {
-                final PropertiesManager properties = new PropertiesManager();
-                final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
-                Problem problem = new Problem();
-                problem.setDate(format.format(new Date()));
-                problem.setCheck(check);
-                problem.setColumnNumber(validationError.getColumn());
-                problem.setLineNumber(validationError.getLine());
-                Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-                problemTextNode.setTextContent(validationError.getCode());
-                problem.setNode(problemTextNode);
-                problem.setSummary(validationError.isSummary());
+                if ( ALL_HTML_VALIDATION_ERRORS.equalsIgnoreCase(id) || validationError.getMessageId().equalsIgnoreCase(id)) {
+                    final PropertiesManager properties = new PropertiesManager();
+                    final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
+                    final Problem problem = new Problem();
+                    problem.setDate(format.format(new Date()));
+                    problem.setCheck(check);
+                    problem.setColumnNumber(validationError.getColumn());
+                    problem.setLineNumber(validationError.getLine());
+                    final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+                    problemTextNode.setTextContent(validationError.getCode());
+                    problem.setNode(problemTextNode);
+                    problem.setSummary(validationError.isSummary());
 
-                evaluation.addProblem(problem);
+                    evaluation.addProblem(problem);
 
-                addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+                    addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
 
-                // should this check be run only on first occurrence?
-                if (check.isFirstOccuranceOnly()) {
-                    evaluation.addCheckRun(check.getId());
+                    // should this check be run only on first occurrence?
+                    if (check.isFirstOccuranceOnly()) {
+                        evaluation.addCheckRun(check.getId());
+                    }
                 }
             }
         }

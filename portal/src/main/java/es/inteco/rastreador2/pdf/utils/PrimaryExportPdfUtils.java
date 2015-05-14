@@ -35,6 +35,7 @@ import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.utils.*;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -114,10 +115,6 @@ public final class PrimaryExportPdfUtils {
                     guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
                 }
             }
-            
-    		/*if(pmgr.getValue(CRAWLER_PROPERTIES, "debug.checks").equals(Boolean.TRUE.toString())) {
-                ResultadosAnonimosObservatorioIntavUtils.debugChecks(request, evaList);
-    		}*/
 
             FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idExecution);
 
@@ -128,6 +125,7 @@ public final class PrimaryExportPdfUtils {
             String dateStr = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 
             final boolean isBasicService = idExecution < 0;
+            Logger.putLog("exportToPdf isBasicService?" + isBasicService, PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_INFO);
             String footerText = CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.foot", seed, dateStr);
             writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, dateStr, isBasicService));
             ExportPageEventsObservatoryMP.setLastPage(false);
@@ -163,7 +161,6 @@ public final class PrimaryExportPdfUtils {
                 String evaluationTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.score.by.page.label", counter);
                 Chapter chapter = PDFUtils.addChapterTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
-
                 String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
                 String url = evaluationForm.getUrl();
 
@@ -173,7 +170,6 @@ public final class PrimaryExportPdfUtils {
                     Phrase p2 = PDFUtils.createPhraseLink(url, url, ConstantsFont.scoreFont);
                     p.add(p1);
                     p.add(p2);
-
                 }
                 p.setSpacingBefore(ConstantsFont.SPACE_LINE);
                 chapter.add(p);
@@ -282,38 +278,38 @@ public final class PrimaryExportPdfUtils {
                 prioritySection.setNumberDepth(0);
                 for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
                     if (hasProblems(level)) {
-                        Paragraph levelTitle = new Paragraph(getLevelName(request, level), ConstantsFont.chapterTitleMPFont);
+                        final Paragraph levelTitle = new Paragraph(getLevelName(request, level), ConstantsFont.chapterTitleMPFont);
                         levelTitle.setSpacingBefore(10);
-                        Section levelSection = prioritySection.addSection(levelTitle);
+                        final Section levelSection = prioritySection.addSection(levelTitle);
                         levelSection.setNumberDepth(0);
+                        final MessageResources messageResources = CrawlerUtils.getResources(request);
                         for (ObservatorySubgroupForm verification : level.getSubgroups()) {
                             if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
-                                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage(verification.getDescription()), ConstantsFont.guidelineDescMPFont, levelSection);
+                                PDFUtils.addParagraph(messageResources.getMessage(verification.getDescription()), ConstantsFont.guidelineDescMPFont, levelSection);
                                 for (ProblemForm problem : verification.getProblems()) {
                                     String description = "";
                                     Image image = null;
                                     com.lowagie.text.Font font = null;
                                     if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
-                                        description += CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.warning") + ": ";
+                                        description += messageResources.getMessage("pdf.accessibility.bs.warning") + ": ";
                                         image = imgWarnings;
                                         font = ConstantsFont.warningFont;
                                     } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high"))) {
-                                        description += CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.problem") + ": ";
+                                        description += messageResources.getMessage("pdf.accessibility.bs.problem") + ": ";
                                         image = imgProblemA;
                                         font = ConstantsFont.problemFont;
                                     } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
-                                        description += CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.info") + ": ";
+                                        description += messageResources.getMessage("pdf.accessibility.bs.info") + ": ";
                                         image = imgInfos;
                                         font = ConstantsFont.cannottellFont;
                                     }
-                                    Paragraph p = PDFUtils.createImageParagraphWithDiferentFont(image, description, font, StringUtils.removeHtmlTags(CrawlerUtils.getResources(request).getMessage(problem.getError())), ConstantsFont.strongDescriptionFont, Chunk.ALIGN_LEFT);
+                                    final Paragraph p = PDFUtils.createImageParagraphWithDiferentFont(image, description, font, StringUtils.removeHtmlTags(messageResources.getMessage(problem.getError())), ConstantsFont.strongDescriptionFont, Chunk.ALIGN_LEFT);
                                     levelSection.add(p);
 
-                                    if (StringUtils.isNotEmpty(problem.getRationale()) && CrawlerUtils.getResources(request).isPresent(problem.getRationale())) {
-                                        PDFUtils.addParagraphRationale(Arrays.asList(CrawlerUtils.getResources(request).getMessage(problem.getRationale()).split("<p>|</p>")), levelSection);
+                                    if (StringUtils.isNotEmpty(problem.getRationale()) && messageResources.isPresent(problem.getRationale())) {
+                                        PDFUtils.addParagraphRationale(Arrays.asList(messageResources.getMessage(problem.getRationale()).split("<p>|</p>")), levelSection);
                                     }
-
-                                    BasicServiceExport.addSpecificProblems(request, levelSection, problem.getSpecificProblems());
+                                    BasicServiceExport.addSpecificProblems(messageResources, levelSection, problem.getSpecificProblems());
 
                                     if (problem.getCheck().equals(pmgr.getValue("check.properties", "doc.valida.especif")) ||
                                             problem.getCheck().equals(pmgr.getValue("check.properties", "css.valida.especif"))) {
@@ -427,13 +423,11 @@ public final class PrimaryExportPdfUtils {
 
         String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
         addLevelAllocationResultsSummary(request, chapter, file, evaList, noDataMess);
-        //chapter.newPage();
 
         Section section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.41.p1"), ConstantsFont.paragraphFont, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder,request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createGlobalTable(request, scoreForm, Constants.OBS_PRIORITY_1));
-        //chapter.newPage();
 
         section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.42.p1"), ConstantsFont.paragraphFont, section);
@@ -522,8 +516,6 @@ public final class PrimaryExportPdfUtils {
         image.setAlignment(Element.ALIGN_CENTER);
         chapter.add(image);
 
-        // chapter.newPage();
-
         float[] widths = {33f, 33f, 33f};
         PdfPTable table = new PdfPTable(widths);
         table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -591,21 +583,8 @@ public final class PrimaryExportPdfUtils {
                 table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor.uno"), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
             }
 
-			/*PropertiesManager pmgr = new PropertiesManager();
-            Image image = null;
-			try{
-				if(value == Constants.OBS_VALUE_NOT_SCORE || value == Constants.OBS_VALUE_GREEN_ZERO || value == Constants.OBS_VALUE_GREEN_ONE) {
-					image = Image.getInstance(pmgr.getValue("pdf.properties", "path.mode.green"));
-				} else {
-					image = Image.getInstance(pmgr.getValue("pdf.properties", "path.mode.red"));
-				}
-			}catch (Exception e) {
-				Logger.putLog("Error al incluir imagen de modalidad", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_WARNING);
-			}*/
-
             PdfPCell labelCell;
             if (value == Constants.OBS_VALUE_NOT_SCORE || value == Constants.OBS_VALUE_GREEN_ZERO || value == Constants.OBS_VALUE_GREEN_ONE) {
-                //labelCell.addElement(PDFUtils.createImageTextParagraph(request, image, " " + getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad.pasa"), ConstantsFont.descriptionFontGreen));
                 labelCell = PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad.pasa"), Color.WHITE, ConstantsFont.descriptionFontGreen, Element.ALIGN_CENTER, 0);
             } else {
                 labelCell = PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad.falla"), Color.WHITE, ConstantsFont.descriptionFontRed, Element.ALIGN_CENTER, 0);

@@ -266,25 +266,25 @@ public class Check {
         Node nodeNode = null;
         String stringNodeAttribute = checkCode.getNodeRelation();
 
-        if (stringNodeAttribute.equals(".")) {
+        if (".".equals(stringNodeAttribute)) {
             nodeNode = elementGiven;
         } else if (stringNodeAttribute.charAt(0) == '@') {
             nodeNode = elementGiven.getAttributeNode(stringNodeAttribute.substring(1));
-        } else if (stringNodeAttribute.equals("parent")) {
+        } else if ("parent".equals(stringNodeAttribute)) {
             nodeNode = elementGiven.getParentNode();
-        } else if (stringNodeAttribute.equals("./li[1]")) {
+        } else if ("./li[1]".equals(stringNodeAttribute)) {
             // first list item
             NodeList listItems = elementGiven.getElementsByTagName("li");
             if (listItems.getLength() > 0) {
                 nodeNode = listItems.item(0);
             }
-        } else if (stringNodeAttribute.equals("./dt[1]")) {
+        } else if ("./dt[1]".equals(stringNodeAttribute)) {
             // first list item
             NodeList listItems = elementGiven.getElementsByTagName("dt");
             if (listItems.getLength() > 0) {
                 nodeNode = listItems.item(0);
             }
-        } else if (stringNodeAttribute.equals("./img[1]")) {
+        } else if ("./img[1]".equals(stringNodeAttribute)) {
             // first img child
             NodeList childItems = elementGiven.getChildNodes();
             if (childItems.getLength() > 0) {
@@ -297,7 +297,7 @@ public class Check {
             } else {
                 return CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
             }
-        } else if (stringNodeAttribute.equals(".//link/@rel")) {
+        } else if (".//link/@rel".equals(stringNodeAttribute)) {
             // all link elements that have a 'rel' attribute
             NodeList listNodes = elementGiven.getElementsByTagName("link");
             if (listNodes.getLength() == 0) {
@@ -323,13 +323,13 @@ public class Check {
                     if (stringTemp.length() == 0) {
                         continue;
                     }
-                    if (stringTemp.equalsIgnoreCase("alternate")) {
+                    if ("alternate".equalsIgnoreCase(stringTemp)) {
                         return CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
                     }
                 }
                 return CheckFunctionConstants.CODE_RESULT_PROBLEM;
             }
-        } else if (stringNodeAttribute.equals(".//img/@alt")) {
+        } else if (".//img/@alt".equals(stringNodeAttribute)) {
             // all img elements that have an 'alt' attribute
             // return true if there is no alt text in all img elements
             NodeList listNodes = elementGiven.getElementsByTagName("img");
@@ -878,7 +878,11 @@ public class Check {
                 while (currentNode.getNodeType() == Node.TEXT_NODE && currentNode.getTextContent().trim().isEmpty()) {
                     currentNode = currentNode.getNextSibling();
                 }
-                return functionNotFirstChild(checkCode, nodeNode, (Element) currentNode);
+                if ( currentNode instanceof Element) {
+                    return functionNotFirstChild(checkCode, nodeNode, (Element) currentNode);
+                } else {
+                    return false;
+                }
             } else {
                 return true;
             }
@@ -960,11 +964,14 @@ public class Check {
                 TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
                 final String extractedText = extractTextHandler.getExtractedText();
                 final String[] words = extractedText.toLowerCase().split("\\s+");
+                final List<String> enWords = new ArrayList<String>();
                 for (String word : words) {
                     if (Diccionario.containsWord("en", word)) {
-                        return true;
+                        enWords.add(word);
                     }
                 }
+                document.setUserData("en_words",enWords,null);
+                return !enWords.isEmpty();
             } catch (TransformerException e) {
                 Logger.putLog("Error al intentar extraer el texto en functionOtherLanguage", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -982,16 +989,20 @@ public class Check {
             startElement = (Element) elementGiven.getFirstChild();
         }
         String language = getLanguage(startElement, false);
-        // Desde el punto de comienzo y recorriendo hacia el nodo padre paramos en el primer nodo que defina un idioma
-        // si recorremos el arbol DOM completo y no se definió entonces language es vacio
-        Node parent = (Element) elementGiven.getParentNode();
-        while (parent != null && language.isEmpty()) {
-            if (parent.getNodeType() == Node.ELEMENT_NODE) {
-                language = getLanguage((Element) parent, false);
+        if (language != null) {
+            // Desde el punto de comienzo y recorriendo hacia el nodo padre paramos en el primer nodo que defina un idioma
+            // si recorremos el arbol DOM completo y no se definió entonces language es vacio
+            Node parent = elementGiven.getParentNode();
+            while (parent != null && language.isEmpty()) {
+                if (parent.getNodeType() == Node.ELEMENT_NODE) {
+                    language = getLanguage((Element) parent, false);
+                }
+                parent = parent.getParentNode();
             }
-            parent = parent.getParentNode();
+            return !language.startsWith(expectedLanguage);
+        } else {
+            return true;
         }
-        return !language.startsWith(expectedLanguage);
     }
 
     private boolean functionHasValidationErrors(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -1006,6 +1017,7 @@ public class Check {
             int count = 0;
             for (ValidationError validationError : vectorValidationErrors) {
                 if (messageId.equals(validationError.getMessageId())) {
+                    validationError.setMessageId(String.valueOf(id));
                     count++;
                 }
             }
@@ -1113,7 +1125,13 @@ public class Check {
     //Comprueba si una tabla es o no de maquetacion
     protected boolean functionLayoutTable(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         checkCode.setFunctionElement("table");
-        final String maxLength = checkCode.getFunctionAttribute1().isEmpty() ? "400" : checkCode.getFunctionAttribute1();
+        String maxLength;
+        try {
+            Integer.parseInt(checkCode.getFunctionAttribute1());
+            maxLength = checkCode.getFunctionAttribute1();
+        } catch (NumberFormatException nfe) {
+            maxLength = "400";
+        }
         if (functionContains(checkCode, nodeNode, elementGiven)) {
             //Una tabla que contiene otra tabla
             return true;
@@ -1137,7 +1155,7 @@ public class Check {
                     checkCode.setFunctionAttribute1("td");
                     checkCode.setFunctionAttribute2("th");
                     if (!functionTextCellsPercentageGreaterThan(checkCode, nodeNode, elementGiven)) {
-                        //Tabla con menos del 70% de celdas con texto 
+                        //Tabla con menos del 70% de celdas con texto
                         return true;
                     } else {
                         checkCode.setFunctionElement("td");
@@ -1167,7 +1185,7 @@ public class Check {
         String numCode = checkCode.getFunctionNumber();
         for (int i = 0; i < nodeList.getLength(); i++) {
             checkCode.setFunctionElement("table");
-            checkCode.setFunctionNumber(numCode);
+            //checkCode.setFunctionNumber(numCode);
             if (functionLayoutTable(checkCode, nodeNode, (Element) nodeList.item(i))) {
                 count++;
             }
@@ -1316,7 +1334,7 @@ public class Check {
 
     // Comprueba si el elemento applet tiene alternativa
     private boolean functionAppletHasAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        if (elementGiven.getAttribute("alt") != null) {
+        if ( !elementGiven.getAttribute("alt").isEmpty() ) {
             return true;
         } else {
             NodeList nodeList = elementGiven.getChildNodes();
@@ -1474,7 +1492,6 @@ public class Check {
         }
 
         return true;
-
     }
 
     // Note: Part of the checking for missing noembed happens in the parser so that it 
@@ -2401,6 +2418,9 @@ public class Check {
     }
 
     private boolean functionTextMatch(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        if (nodeNode==null) {
+            return false;
+        }
         String regexp = checkCode.getFunctionValue();
         Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
@@ -2969,11 +2989,7 @@ public class Check {
         // check if the table has more than one row/column of headers
         if (elementGiven.hasAttribute("scope")) {
             final String scope = elementGiven.getAttribute("scope");
-            if ("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope) || "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope)) {
-                return false;
-            } else {
-                return true;
-            }
+            return !("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope) || "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope));
         }
         return false; // no problem
     }
@@ -3401,7 +3417,7 @@ public class Check {
                 } else {
                     document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
                 }
-                if (CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
+                if (document!=null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
                     found = true;
                     break;
                 } else {
@@ -3439,7 +3455,7 @@ public class Check {
                 } else {
                     document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
                 }
-                if (CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
+                if (document!=null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
                     found = true;
                     break;
                 } else {
@@ -3488,7 +3504,7 @@ public class Check {
                 } else {
                     document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
                 }
-                if (CheckUtils.hasConformanceLevel(document)) {
+                if (document!=null && CheckUtils.hasConformanceLevel(document)) {
                     found = true;
                     break;
                 } else {
@@ -3645,7 +3661,6 @@ public class Check {
      * @return true si se detecta un uso incorrecto de br e imágenes (problema de accesibilidad), false en caso contrario
      */
     private boolean functionFalseBrImageList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         final int number = Integer.parseInt(checkCode.getFunctionNumber());
 
         Element checkedElement = elementGiven;
@@ -3843,8 +3858,8 @@ public class Check {
     }
 
     private boolean functionChildElementCharactersGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        NodeList elementList = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
-        int charactersNumber = Integer.parseInt(checkCode.getFunctionValue());
+        final NodeList elementList = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
+        final int charactersNumber = Integer.parseInt(checkCode.getFunctionValue());
 
         if (elementList != null && elementList.getLength() > 0) {
             for (int i = 0; i < elementList.getLength(); i++) {
@@ -3854,10 +3869,11 @@ public class Check {
                     try {
                         Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
                         if (!elementRoot.getUserData("url").equals("")) {
-                            Logger.putLog("Tabla con elementos que contienen mas de 400 caracteres en la URL: " + (String) elementRoot.getUserData("url"), Check.class, Logger.LOG_LEVEL_INFO);
+                            Logger.putLog(checkCode.getFunctionId() + " - " + checkCode.getFunctionElement() +" con mas de "+charactersNumber+" caracteres en la URL: " + (String) elementRoot.getUserData("url"), Check.class, Logger.LOG_LEVEL_INFO);
                         } else {
-                            Logger.putLog("Tabla con elementos que contienen mas de 400 caracteres en el contenido introducido.", Check.class, Logger.LOG_LEVEL_INFO);
+                            Logger.putLog(checkCode.getFunctionId() + " - " +checkCode.getFunctionElement() +" con mas de "+charactersNumber+" caracteres en el contenido introducido.", Check.class, Logger.LOG_LEVEL_INFO);
                         }
+                        Logger.putLog(text, Check.class, Logger.LOG_LEVEL_INFO);
                     } catch (Exception e) {
                         // TODO: handle exception
                     }

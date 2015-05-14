@@ -193,9 +193,57 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
+        <nombre>DIAPER</nombre>
+        <activa>true</activa>
+        <url>http://www.diaper.ejercito.mde.es/</url>
+        <acronimo></acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>EA-AGUILA</nombre>
+        <activa>true</activa>
+        <url>http://www.patrullaguila.defensa.gob.es/</url>
+        <acronimo></acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>EA-PAPEA</nombre>
+        <activa>true</activa>
+        <url>http://www.papea.defensa.gob.es</url>
+        <acronimo></acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>EA-ASPA</nombre>
+        <activa>true</activa>
+        <url>http://www.patrullaaspa.defensa.gob.es/</url>
+        <acronimo></acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Publicaciones</nombre>
+        <activa>true</activa>
+        <url>http://www.publicaciones.defensa.gob.es/</url>
+        <acronimo></acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>AGREDWAS</nombre>
+        <activa>true</activa>
+        <url>http://www.defensa.gob.es/agredwas/</url>
+        <acronimo></acronimo>
+        <depende_de>Ministerio de Defensa</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
         <nombre>Secretaría de Estado de Investigación, Desarrollo e Innovación</nombre>
         <activa>true</activa>
-        <url>http://www.mineco.gob.es/portal/site/mineco/idi</url>
+        <url>http://www.idi.mineco.gob.es</url>
         <acronimo/>
         <depende_de>Ministerio de Economía y Competitividad</depende_de>
         <en_directorio>false</en_directorio>
@@ -283,7 +331,7 @@
     <semilla>
         <nombre>Tesoro Público</nombre>
         <activa>true</activa>
-        <url>https://www.tesoropublico.gob.es/carga_contenido_pse.aspx?sec=7</url>
+        <url>https://www.tesoropublico.es/</url>
         <acronimo/>
         <depende_de>Ministerio de Economía y Competitividad</depende_de>
         <en_directorio>false</en_directorio>
@@ -337,6 +385,22 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
+        <nombre>Dirección General de Seguros y Fondos de Pensiones</nombre>
+        <activa>true</activa>
+        <url> http://www.dgsfp.mineco.es/</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+<semilla>
+        <nombre>Comisión de Prevención de Blanqueo de Capitales e Infracciones Monetarias</nombre>
+        <activa>true</activa>
+        <url>http://www.sepblac.es</url>
+        <acronimo/>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+<semilla>
         <nombre>Comisión Nacional de los Mercados y la Competencia (CNMC)</nombre>
         <activa>true</activa>
         <url>http://www.cnmc.es/</url>
@@ -593,14 +657,6 @@
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>
-        <nombre>Agencia Estatal de Administración Tributaria (AEAT)</nombre>
-        <activa>true</activa>
-        <url>http://www.agenciatributaria.es</url>
-        <acronimo/>
-        <depende_de>Ministerio de Hacienda y Administraciones Públicas</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
         <nombre>Agencia Estatal de Evaluación de las Políticas Públicas y Calidad de los Servicios AEVAL)</nombre>
         <activa>true</activa>
         <url>http://www.aeval.es</url>
@@ -803,9 +859,7 @@
     <semilla>
         <nombre>Instituto Nacional de Toxicología y Ciencias Forenses</nombre>
         <activa>true</activa>
-        <url>
-            https://www.administraciondejusticia.gob.es/paj/publico/ciudadano/informacion_institucional/organismos/instituto_nacional_de_toxicologia_y_ciencias_forenses/!ut/p/c5/04_SB8K8xLLM9MSSzPy8xBz9CP0os3gzT1dTz6BgExPjUBcTA0_jsDDXAA9fAwNXI6B8JG55EwNidBvgAI6EdIeDXItbRbAZfnkTIwLyBhB5PO7z88jPTdUvyA2NMMj01AUA6k8A_w!!/dl3/d3/L2dBISEvZ0FBIS9nQSEh/
-        </url>
+        <url>https://www.administraciondejusticia.gob.es/paj/publico/ciudadano/informacion_institucional/organismos/instituto_nacional_de_toxicologia_y_ciencias_forenses/!ut/p/c5/04_SB8K8xLLM9MSSzPy8xBz9CP0os3gzT1dTz6BgExPjUBcTA0_jsDDXAA9fAwNXI6B8JG55EwNidBvgAI6EdIeDXItbRbAZfnkTIwLyBhB5PO7z88jPTdUvyA2NMMj01AUA6k8A_w!!/dl3/d3/L2dBISEvZ0FBIS9nQSEh/</url>
         <acronimo/>
         <depende_de>Ministerio de Justicia</depende_de>
         <en_directorio>false</en_directorio>
@@ -824,14 +878,6 @@
         <url>http://www.mugeju.es/es/</url>
         <acronimo/>
         <depende_de>Ministerio de Justicia</depende_de>
-        <en_directorio>false</en_directorio>
-    </semilla>
-    <semilla>
-        <nombre>Agencia Estatal Boletín Oficial del Estado (BOE)</nombre>
-        <activa>true</activa>
-        <url>http://www.boe.es/</url>
-        <acronimo/>
-        <depende_de>Ministerio de la Presidencia</depende_de>
         <en_directorio>false</en_directorio>
     </semilla>
     <semilla>

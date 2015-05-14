@@ -165,5 +165,12 @@ public final class Check_2_1_7_CompatibilityTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
-}
+    @Test
+    public void evaluateCSS404() throws Exception {
+        checkAccessibility.setContent("<html lang=\"es\"><head><title>Foo</title><link href=\"http://www.noexiste.no/css/no_existe.css\" rel=\"stylesheet\" type=\"text/css\"/></head><body><p>Lorem</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+}

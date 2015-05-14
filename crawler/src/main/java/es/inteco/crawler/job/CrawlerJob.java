@@ -20,6 +20,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -308,7 +311,7 @@ public class CrawlerJob implements InterruptableJob {
         if (!crawlerData.isTest()) {
             if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && chosenDepth != 1)) {
                 if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * chosenDepth + 1))) {
-                    final List<String> mailTo = Arrays.asList(pmgr.getValue("crawler.core.properties", "incomplete.crawler.warning.emails").split(";"));
+                    final List<String> mailTo = getAdministradoresMails();
                     final String text = "El rastreo para " + crawlerData.getUrls().get(0) + " ha devuelto solo " + crawlingDomains.size() + " resultados";
 
                     MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), "Rastreador Web de MINHAP", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
@@ -583,4 +586,43 @@ public class CrawlerJob implements InterruptableJob {
         return linkDirectory.contains(urlRootDirectory);
     }
 
+    private static List<String> getAdministradoresMails() throws SQLException {
+        Connection c = DataBaseManager.getConnection();
+        List<String> mails = new ArrayList<String>();
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = c.prepareStatement("SELECT email FROM usuario u " +
+                    "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
+                    "WHERE ur.id_rol = ?;");
+            ps.setLong(1, 1);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                mails.add(rs.getString("email"));
+            }
+        } catch (SQLException e) {
+            Logger.putLog("Error al cerrar el preparedStament", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
+            }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
+            }
+            DataBaseManager.closeConnection(c);
+        }
+        return mails;
+    }
 }

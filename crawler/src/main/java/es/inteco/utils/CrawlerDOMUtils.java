@@ -23,6 +23,9 @@ import java.util.regex.Pattern;
 
 public class CrawlerDOMUtils {
 
+    private CrawlerDOMUtils() {
+    }
+
     public static List<Element> getElementsByTagName(Document document, String tag) {
         final List<Element> elements = new ArrayList<Element>();
 

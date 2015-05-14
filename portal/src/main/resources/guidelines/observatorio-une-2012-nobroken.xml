@@ -69,7 +69,7 @@
                     <!-- Listas no ordeandas mal creadas con elementos br -->
                     <check id="121" noExecutedMark="true"/>
                     <!-- Listas ordenadas mal creadas con elementos br -->
-                    <check id="150" noExecutedMark="true"/>
+                    <check id="410" noExecutedMark="true"/>
                     <!-- Elemento de lista (li) fuera de contenedor (ul, ol) -->
                     <check id="311"/>
                     <!-- Lista de definicion (dl) mal construida -->
@@ -204,6 +204,8 @@
                     <check id="126"/>
                     <check id="148" onlyWarning="true"/>
                     <check id="149" onlyWarning="true"/>
+                    <!-- Se comprueba si en la página de accesibilidad se proporciona información sobre el nivel de conformidad.-->
+                    <check id="463" onlyWarning="true"/>
                 </checks>
             </subgroup>
         </suitability>
@@ -215,10 +217,10 @@
 
         <!-- Nivel A-->
         <suitability>
-        <name>A</name>
+            <name>A</name>
             <subgroup aspect="observatory.aspect.navigation">
-            <!-- Navegación con Javascript accesible -->
-            <name>minhap.observatory.2_0.subgroup.2.1.1</name>
+                <!-- Navegación con Javascript accesible -->
+                <name>minhap.observatory.2_0.subgroup.2.1.1</name>
                 <checks>
                     <!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
                     <check id="160"/>
@@ -294,7 +296,7 @@
                     <check id="31"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
                     <check id="295"/>
-                    <!-- Titulos distintos para la muestra (si es mayor de 10 páginas) -->
+                    <!-- Comprobar titulos distintos entre la muestra -->
                     <check id="462"/>
                 </checks>
             </subgroup>
@@ -334,8 +336,9 @@
                 <!-- Compatibilidad -->
                 <name>minhap.observatory.2_0.subgroup.2.1.7</name>
                 <checks>
-                    <check id="232"/>
-                    <!-- Documento tenga un DTD válido (TODO: incluir HTML5) -->
+                    <!-- Comprobación para validación estricta de la gramática del docuemnto -->
+                    <!--<check id="232"/>-->
+                    <!-- Documento tenga un DTD válido -->
                     <check id="323"/>
                     <!-- Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) -->
                     <check id="440"/>
@@ -345,7 +348,8 @@
                     <check id="439"/>
                     <!-- Se verifica que el valor de los atributos que deben tener un valor único por página (“id”, “accesskey”) efectivamente tienen un valor único -->
                     <check id="438"/>
-                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis) -->
+                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis)
+                    La comprobación 78 realiza la validación estricta de CSS (servicio W3C) ¿Cambiar por un parseo? -->
                     <check id="450"/>
                 </checks>
             </subgroup>

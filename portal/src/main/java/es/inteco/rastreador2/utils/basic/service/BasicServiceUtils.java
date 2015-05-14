@@ -127,10 +127,14 @@ public final class BasicServiceUtils {
     }
 
     public static String checkIDN(final String url) {
-        try {
-            return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
-        } catch (Exception e) {
-            Logger.putLog("Error al verificar el dominio internacionalizado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+        if ( url!=null && !url.isEmpty()){
+            try {
+                return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
+            } catch (Exception e) {
+                Logger.putLog("Error al verificar el dominio internacionalizado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+                return url;
+            }
+        } else {
             return url;
         }
     }

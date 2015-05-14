@@ -4850,7 +4850,7 @@ Telephone: (416) 978-4360
     </check>
 
 
-    <check id="434" key="html">
+    <check id="434" key="html" confidence="high">
         <name>Más de 3 elementos con atributo tabindex</name>
         <error>check.434.error</error>
         <rationale>check.434.rationale</rationale>
@@ -4864,7 +4864,7 @@ Telephone: (416) 978-4360
     </check>
 
 
-    <check id="435" key="html">
+    <check id="435" key="html" confidence="high">
         <name>Más de 10 elementos con atributo tabindex</name>
         <error>check.435.error</error>
         <rationale>check.435.rationale</rationale>
@@ -4887,7 +4887,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="437" key="iframe">
+    <check id="437" key="iframe" confidence="high">
         <name>Existen iframes en la página.</name>
         <error>check.437.error</error>
         <rationale>check.437.rationale</rationale>
@@ -4896,7 +4896,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="438" key="html">
+    <check id="438" key="html" confidence="high">
         <name>Valores únicos para id</name>
         <error>check.438.error</error>
         <rationale>check.438.rationale</rationale>
@@ -4906,7 +4906,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="439" key="html">
+    <check id="439" key="html" confidence="high">
         <name>Atributos entrecomillados si usa caracteres distintos de letras.</name>
         <error>check.439.error</error>
         <rationale>check.439.rationale</rationale>
@@ -4921,7 +4921,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="440" key="html">
+    <check id="440" key="html" confidence="high">
         <name>Etiquetas mal cerradas.</name>
         <error>check.440.error</error>
         <rationale>check.440.rationale</rationale>
@@ -4934,7 +4934,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="441" key="html">
+    <check id="441" key="html" confidence="high">
         <name>Atributos duplicados en la misma etiqueta</name>
         <error>check.441.error</error>
         <rationale>check.441.rationale</rationale>
@@ -4944,7 +4944,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="442" key="html">
+    <check id="442" key="html" confidence="high">
         <name>Detección automática del idioma de la página</name>
         <error>check.442.error</error>
         <rationale>check.442.rationale</rationale>
@@ -4954,7 +4954,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="443" key="form">
+    <check id="443" key="form" confidence="high">
         <name>Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) se agrupan bajo su correspondiente fieldset.</name>
         <error>check.443.error</error>
         <rationale>check.443.rationale</rationale>
@@ -4968,7 +4968,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="444" key="form">
+    <check id="444" key="form" confidence="high">
         <name>Todo fieldset debe tener un único elemento legend con contenido (como primer elemento semántico hijo)</name>
         <error>check.444.error</error>
         <rationale>check.444.rationale</rationale>
@@ -5153,7 +5153,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="460" key="html">
+    <check id="460" key="text" confidence="medium" occurrence="first">
         <name>Detección de términos en otros idiomas</name>
         <error>check.460.error</error>
         <rationale>check.460.rationale</rationale>

@@ -215,22 +215,6 @@ public final class CrawlerUtils {
             // found = false;
         }
 
-
-        // Si no lo hemos encontrado en las cabeceras, intentaremos buscarlo en la etiqueta <meta> correspondiente
-        /*if(!found) {
-            String regexp = "<meta.*charset=(.*?)\"";
-			Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-				
-			Matcher matcher = pattern.matcher(StringUtils.getContentAsString(markableInputStream));
-			if(matcher.find()) {
-				charset = matcher.group(1);
-				found = true;
-			}
-			
-			// Reseteamos el InputStream para poder leerlo de nuevo más tarde
-			markableInputStream.reset();
-		}*/
-
         if (!found || !isValidCharset(charset)) {
             charset = getCharsetWithUniversalDetector(markableInputStream);
             markableInputStream.reset();

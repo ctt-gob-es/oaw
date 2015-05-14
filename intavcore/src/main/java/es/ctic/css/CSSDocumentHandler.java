@@ -24,6 +24,7 @@ public abstract class CSSDocumentHandler implements DocumentHandler, CSSAnalyzer
 
     private final List<CSSProblem> problems = new ArrayList<CSSProblem>();
     protected Parser parser;
+    protected CSSResource resource;
     protected final CheckCode checkCode;
     protected String selector;
 
@@ -62,18 +63,21 @@ public abstract class CSSDocumentHandler implements DocumentHandler, CSSAnalyzer
     }
 
     public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
-        final InputSource is = new InputSource();
-        is.setCharacterStream(new java.io.StringReader(cssResource.getContent()));
-        // Si en vez un String es el enlace a la hoja de estilo usar
-        //is.setURI("http://www.fundacionctic.org/sites/all/themes/ctic/css/html-reset.css");
-        try {
-            if (cssResource.isInline()) {
-                parser.parseStyleDeclaration(is);
-            } else {
-                parser.parseStyleSheet(is);
+        if ( !cssResource.getContent().isEmpty() ) {
+            resource = cssResource;
+            final InputSource is = new InputSource();
+            is.setCharacterStream(new java.io.StringReader(cssResource.getContent()));
+            // Si en vez un String es el enlace a la hoja de estilo usar
+            //is.setURI("http://www.fundacionctic.org/sites/all/themes/ctic/css/html-reset.css");
+            try {
+                if (cssResource.isInline()) {
+                    parser.parseStyleDeclaration(is);
+                } else {
+                    parser.parseStyleSheet(is);
+                }
+            } catch (IOException e) {
+                Logger.putLog("Error al parsear código CSS", CSSDocumentHandler.class, Logger.LOG_LEVEL_ERROR, e);
             }
-        } catch (IOException e) {
-            Logger.putLog("Error al parsear código CSS", CSSDocumentHandler.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return problems;
     }
@@ -155,15 +159,17 @@ public abstract class CSSDocumentHandler implements DocumentHandler, CSSAnalyzer
         cssProblem.setLineNumber(getLineNumber());
         cssProblem.setColumnNumber(getColumnNumber());
         cssProblem.setSelector(selector);
-        cssProblem.setTextContent(textContent);
+        if ( resource!=null && !resource.isInline() && resource.getHTMLElement()!=null ) {
+//            cssProblem.setElement(resource.getHTMLElement());
+        }
+        cssProblem.setTextContent((resource.getStringSource().isEmpty()?"":resource.getStringSource()+System.lineSeparator()) + textContent);
 
         return cssProblem;
     }
 
     private int getLineNumber() {
         if (parser instanceof SACParserCSS3) {
-            final SACParserCSS3 sacParserCSS3 = (SACParserCSS3) parser;
-            return sacParserCSS3.token.beginLine;
+            return ((SACParserCSS3) parser).token.beginLine;
         } else {
             return -1;
         }
@@ -171,8 +177,7 @@ public abstract class CSSDocumentHandler implements DocumentHandler, CSSAnalyzer
 
     private int getColumnNumber() {
         if (parser instanceof SACParserCSS3) {
-            final SACParserCSS3 sacParserCSS3 = (SACParserCSS3) parser;
-            return sacParserCSS3.token.beginColumn;
+            return ((SACParserCSS3) parser).token.beginColumn;
         } else {
             return -1;
         }

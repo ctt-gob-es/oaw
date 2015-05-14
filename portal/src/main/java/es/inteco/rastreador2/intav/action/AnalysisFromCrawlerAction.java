@@ -55,7 +55,6 @@ public class AnalysisFromCrawlerAction extends Action {
         Connection c = null;
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
             conn = DataBaseManager.getConnection();
             // Inicializamos el evaluador
@@ -225,7 +224,6 @@ public class AnalysisFromCrawlerAction extends Action {
             if (request.getParameter(Constants.CODE) != null) {
                 long id = Long.parseLong(request.getParameter(Constants.CODE));
 
-                PropertiesManager pmgr = new PropertiesManager();
                 conn = DataBaseManager.getConnection();
                 Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 

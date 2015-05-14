@@ -75,7 +75,6 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.11.p5"), ConstantsFont.paragraphFont, section);
         boldWords = new ArrayList<String>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.11.p1.bold"));
-        //section.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.11.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.11.p1"),ConstantsFont.paragraphFont, section);
     }
 
@@ -93,11 +92,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
 
-        //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2"), ConstantsFont.paragraphFont, chapter);
-        //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
-
         if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.paragraphFont, chapter);
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.paragraphFont, chapter);
         } else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.paragraphFont, chapter);
@@ -262,11 +257,11 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         list2 = new com.lowagie.text.List();
         boldWords = new ArrayList<String>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p10"));
-        itemL2 = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
+        itemL2 = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("une2012.resAnon.intav.report.33.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
         list2.add(itemL2);
         boldWords = new ArrayList<String>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p12"));
-        itemL2 = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
+        itemL2 = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("une2012.resAnon.intav.report.33.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
         list2.add(itemL2);
         list2.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         item.add(list2);

@@ -172,7 +172,6 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
 
         try {
             c = DataBaseManager.getConnection();
-            PropertiesManager pmgr = new PropertiesManager();
             conn = DataBaseManager.getConnection();
             List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), idCategory);
             if (listExecutionsIds != null && !listExecutionsIds.isEmpty()) {
