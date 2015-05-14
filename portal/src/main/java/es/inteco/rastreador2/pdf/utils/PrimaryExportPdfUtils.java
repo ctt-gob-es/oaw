@@ -125,7 +125,6 @@ public final class PrimaryExportPdfUtils {
             String dateStr = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 
             final boolean isBasicService = idExecution < 0;
-            Logger.putLog("exportToPdf isBasicService?" + isBasicService, PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_INFO);
             String footerText = CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.foot", seed, dateStr);
             writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, dateStr, isBasicService));
             ExportPageEventsObservatoryMP.setLastPage(false);
