@@ -410,6 +410,8 @@ public class Evaluator {
                     addValidationIncidences(evaluation, check, incidenceList, String.valueOf(check.getId()));
                 } else if (check.getId() == 460) {
                     addLanguageIncidences(evaluation, check, incidenceList);
+                } else if (check.getId() == 455 || check.getId() == 456 || check.getId() == 457 || check.getId() == 458) {
+                    addBrokenLinksIncidences(evaluation, check, incidenceList);
                 } else {
                     // Se ha encontrado un error y se va a registrar en la base de datos
                     if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
@@ -466,6 +468,39 @@ public class Evaluator {
                 }
             }
         }
+    }
+
+    private  List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        final PropertiesManager properties = new PropertiesManager();
+        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
+        final List<Element> brokenLinks;
+        final String scope = check.getVectorCode().get(0).getFunctionAttribute1();
+        if ( "domain".equalsIgnoreCase(scope) ) {
+            brokenLinks = (List<Element>) evaluation.getHtmlDoc().getDocumentElement().getUserData("domainLinks");
+        } else if ("external".equalsIgnoreCase(scope) ) {
+            brokenLinks = (List<Element>) evaluation.getHtmlDoc().getDocumentElement().getUserData("externalLinks");
+        } else {
+            brokenLinks = Collections.emptyList();
+        }
+        for (Element brokenLink : brokenLinks) {
+            final Problem problem = new Problem(brokenLink);
+            problem.setDate(format.format(new Date()));
+            problem.setCheck(check);
+            final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+            problemTextNode.setTextContent("<A href=\""+brokenLink.getAttribute("href")+"\">"+brokenLink.getTextContent()+"</A>");
+            problem.setNode(problemTextNode);
+
+            evaluation.addProblem(problem);
+
+            addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+        }
+
+        // should this check be run only on first occurrence?
+        if (check.isFirstOccuranceOnly()) {
+            evaluation.addCheckRun(check.getId());
+        }
+
+        return incidenceList;
     }
 
     private List<Incidencia> addLanguageIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {

@@ -221,7 +221,7 @@ public final class UtilCalculateTerms {
         if (term != null && term.length() > 0) {
             termino = term.trim().toUpperCase();
 
-            //�triz
+            //-triz
             if (termino.length() > 3) {
                 terminacion = termino.substring(termino.length() - 4);
 

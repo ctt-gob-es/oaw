@@ -20,11 +20,11 @@ public final class UtilCalculateTerms {
             "UÁ", "UÉ", "UÓ", "ÁI", "ÉI", "ÓI", "IÁ", "IÉ", "IÓ"};
 
     /**
-     * Array de letras que van acompa�adas de vocal.
+     * Array de letras que van acompañadas de vocal.
      */
     private static final String[] CONSONANTES_CON_VOCAL = {"GUE", "GUI", "QUE", "QUI"};
     /**
-     * Array de sustitucion letras que van acompa�adas de vocal.
+     * Array de sustitucion letras que van acompañadas de vocal.
      */
     private static final String[] SUSTIT_CONSONANTES_CON_VOCAL = {"GGE", "GGI", "QQE", "QQI"};
 

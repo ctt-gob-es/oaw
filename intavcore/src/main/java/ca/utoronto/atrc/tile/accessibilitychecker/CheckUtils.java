@@ -388,8 +388,15 @@ public final class CheckUtils {
             }
         }
 
-        String newHost = new URL(link).getHost();
+        String newHost = "";
+        if (URI.create(link).isAbsolute()) {
+            newHost = new URL(link).getHost();
+        } else {
+            newHost = new URL(new URL(url), link).getHost();
+        }
+
         index = newHost.lastIndexOf('.');
+
         if (index != -1) {
             if ((index = newHost.lastIndexOf('.', index - 1)) != -1) {
                 newHost = newHost.substring(index);

@@ -33,7 +33,7 @@ public final class CSSSACUtils {
 
     public static String parseSingleLexicalValue(final LexicalUnit lexicalUnit) {
         final StringBuilder sb = new StringBuilder();
-        int lexicalUnitType = lexicalUnit.getLexicalUnitType();
+        final int lexicalUnitType = lexicalUnit.getLexicalUnitType();
         switch (lexicalUnitType) {
             case LexicalUnit.SAC_INTEGER:
                 sb.append(Integer.toString(lexicalUnit.getIntegerValue()));
