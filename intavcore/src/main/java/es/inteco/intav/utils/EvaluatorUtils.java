@@ -139,19 +139,18 @@ public final class EvaluatorUtils {
     }
 
     // Devuelve los tipos de problemas asociados a una pauta concreta
-    // TODO: Cambiar a private
     public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, GuidelineGroup subgroup, Evaluation evaluation, String language) {
-        List<ProblemForm> problems = new ArrayList<ProblemForm>();
+        final List<ProblemForm> problems = new ArrayList<ProblemForm>();
 
-        Integer lastProblem = 0;
+        int lastProblem = 0;
 
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
 
         // now iterate for every problem in the check
         for (int j = 0; j < vProblems.size(); j++) {
             Problem problem = vProblems.get(j);
 
-            ProblemForm problemForm = null;
+            ProblemForm problemForm;
             if (lastProblem != problem.getCheck().getId()) {
                 // Si el tipo de problema es nuevo, creamos un nuevo ProblemForm para guardar el tipo de problema
                 problemForm = new ProblemForm();
@@ -243,6 +242,10 @@ public final class EvaluatorUtils {
                 if (evaluation != null) {
                     code.add(problem.getNode().getTextContent());
                 }
+            }
+
+            if (check.getId()==455 || check.getId()==456 || check.getId()==457 || check.getId()==458) {
+                code.add(problem.getNode().getTextContent());
             }
 
             if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "ordenLect.attrDir.siIdiomPrimDI"))) { // valid "dir" attribute
@@ -402,12 +405,12 @@ public final class EvaluatorUtils {
     }
 
     private static List<String> getHtmlText(Element elementGiven, boolean bIncludeChildren, boolean noSangrado) {
-        PropertiesManager pmgr = new PropertiesManager();
-        int sourceMaxNumChar = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "source.max.num.characters"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int sourceMaxNumChar = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "source.max.num.characters"));
         try {
             if (elementGiven != null) {
-                List<String> codigo = new ArrayList<String>();
-                String codigoString = "";
+                final List<String> codigo = new ArrayList<String>();
+                final String codigoString;
 
                 if (elementGiven.getAttribute(IntavConstants.GETTING_FROM_BD).equals(IntavConstants.TRUE)) {
                     codigoString = elementGiven.getTextContent();
@@ -417,11 +420,9 @@ public final class EvaluatorUtils {
 
                 if (codigoString != null) {
                     if (!noSangrado) {
-                        String regexp = "(.*?\\\n)|(<.*?>)|([^<>]*)";
-
-                        Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
-                        Matcher matcher = pattern.matcher(codigoString.replaceAll("\\s{2,}",""));
+                        final String regexp = "(.*?\\\n)|(<.*?>)|([^<>]*)";
+                        final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+                        final Matcher matcher = pattern.matcher(codigoString.replaceAll("\\s{2,}",""));
 
                         int numChar = 0;
 
@@ -459,7 +460,6 @@ public final class EvaluatorUtils {
                 }
 
                 return codigo;
-
             } else {
                 return null;
             }

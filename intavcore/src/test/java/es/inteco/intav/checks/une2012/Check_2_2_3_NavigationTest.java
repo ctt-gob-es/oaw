@@ -2,8 +2,11 @@ package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import ca.utoronto.atrc.tile.accessibilitychecker.Problem;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
+import es.inteco.intav.form.ProblemForm;
+import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -84,7 +87,7 @@ public final class Check_2_2_3_NavigationTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
+        Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMBINED_ADJACENT_LINKS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_RED_ZERO);
     }
@@ -119,7 +122,7 @@ public final class Check_2_2_3_NavigationTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_EXTERNAL_LINKS_WARNING));
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_TWO_BROKEN_EXTERNAL_LINKS));
+        Assert.assertEquals(3, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_TWO_BROKEN_EXTERNAL_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMBINED_ADJACENT_LINKS));
@@ -135,6 +138,22 @@ public final class Check_2_2_3_NavigationTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_TWO_BROKEN_EXTERNAL_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMBINED_ADJACENT_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateMixedBrokenLink() throws Exception {
+        checkAccessibility.setContent("<html><p><a href=\"https://www.fundacionctic.org/user/1\">Lorem</a>" +
+                "<a href=\"aa.html\">enlace aa</a>" +
+                "<a href=\"bb.html\">enlace bb</a>" +
+                "<a href=\"http://www.noexiste_deverdad.es/no_existe.html\">enlace no existe</a></li></p></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_EXTERNAL_LINKS_WARNING));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_TWO_BROKEN_EXTERNAL_LINKS));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
+        Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMBINED_ADJACENT_LINKS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
     }

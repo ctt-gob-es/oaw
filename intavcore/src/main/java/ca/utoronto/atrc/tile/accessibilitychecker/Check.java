@@ -2307,12 +2307,15 @@ public class Check {
     }
 
     private boolean functionTooManyBrokenLinks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-        NodeList links = elementGiven.getElementsByTagName("A");
+        final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+        final NodeList links = elementGiven.getElementsByTagName("A");
 
-        int maxNumBrokenLinks = Integer.parseInt(checkCode.getFunctionNumber());
+        final int maxNumBrokenLinks = Integer.parseInt(checkCode.getFunctionNumber());
 
         ((CheckedLinks) elementRoot.getUserData("checkedLinks")).setCheckedLinks(new ArrayList<String>());
+
+        final List<Element> domainLinks = new LinkedList<Element>();
+        final List<Element> externalLinks = new LinkedList<Element>();
         final String scope = checkCode.getFunctionAttribute1();
         final String url = (String) elementRoot.getUserData("url");
         int cont = 0;
@@ -2326,22 +2329,28 @@ public class Check {
                         try {
                             if (CheckUtils.checkLinkInDomain(url, link.getAttribute("href"))) {
                                 cont++;
+                                domainLinks.add(link);
                             }
                         } catch (MalformedURLException e) {
                             cont++;
+                            domainLinks.add(link);
                         }
                     } else if ("external".equals(scope)) {
                         try {
                             if (!CheckUtils.checkLinkInDomain(url, link.getAttribute("href"))) {
                                 cont++;
+                                externalLinks.add(link);
                             }
                         } catch (MalformedURLException e) {
                             cont++;
+                            externalLinks.add(link);
                         }
                     }
                 }
             }
             if (cont > maxNumBrokenLinks) {
+                elementRoot.setUserData("domainLinks", domainLinks, null);
+                elementRoot.setUserData("externalLinks", externalLinks, null);
                 return true;
             }
         }
@@ -2626,7 +2635,7 @@ public class Check {
         Element elementPrevious = EvaluatorUtils.getPreviousElement(elementGiven, false);
 
         if (elementPrevious != null && elementPrevious.getNodeName().equalsIgnoreCase("a")) {
-            if (StringUtils.isNotEmpty(elementGiven.getAttribute("href")) && StringUtils.isNotEmpty(elementGiven.getAttribute("href"))) {
+            if (StringUtils.isNotEmpty(elementGiven.getAttribute("href")) && StringUtils.isNotEmpty(elementPrevious.getAttribute("href"))) {
                 Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
                 try {
                     URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
@@ -3568,9 +3577,6 @@ public class Check {
     private boolean functionHasComplexStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList paragraphs = elementGiven.getElementsByTagName("p");
 
-        //PropertiesManager pmgr = new PropertiesManager();
-        //List<String> inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
-
         int cont = 0;
         for (int i = 0; i < paragraphs.getLength(); i++) {
             if (paragraphs.item(i).getTextContent().length() >= 80) {
@@ -3866,17 +3872,6 @@ public class Check {
                 String text = elementList.item(i).getTextContent();
                 text = Pattern.compile("[\\n\\r\\t ]{2,}", Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(text).replaceAll(" ");
                 if (text.length() > charactersNumber) {
-                    try {
-                        Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-                        if (!elementRoot.getUserData("url").equals("")) {
-                            Logger.putLog(checkCode.getFunctionId() + " - " + checkCode.getFunctionElement() +" con mas de "+charactersNumber+" caracteres en la URL: " + (String) elementRoot.getUserData("url"), Check.class, Logger.LOG_LEVEL_INFO);
-                        } else {
-                            Logger.putLog(checkCode.getFunctionId() + " - " +checkCode.getFunctionElement() +" con mas de "+charactersNumber+" caracteres en el contenido introducido.", Check.class, Logger.LOG_LEVEL_INFO);
-                        }
-                        Logger.putLog(text, Check.class, Logger.LOG_LEVEL_INFO);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                    }
                     return true;
                 }
             }

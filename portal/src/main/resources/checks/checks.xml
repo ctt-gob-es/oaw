@@ -5105,8 +5105,8 @@ Telephone: (416) 978-4360
 
     <check id="455" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces internos rotos</name>
-        <error>check.176.error</error>
-        <rationale>check.176.rationale</rationale>
+        <error>check.455.error</error>
+        <rationale>check.455.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="0" attribute1="domain"/>
@@ -5115,8 +5115,8 @@ Telephone: (416) 978-4360
 
     <check id="456" key="html" confidence="high" status="5">
         <name>La página contiene más de 1 enlace interno roto</name>
-        <error>check.177.error</error>
-        <rationale>check.177.rationale</rationale>
+        <error>check.456.error</error>
+        <rationale>check.456.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="1" attribute1="domain"/>
@@ -5125,8 +5125,8 @@ Telephone: (416) 978-4360
 
     <check id="457" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces externos rotos</name>
-        <error>check.176.error</error>
-        <rationale>check.176.rationale</rationale>
+        <error>check.457.error</error>
+        <rationale>check.457.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="0" attribute1="external"/>
@@ -5135,8 +5135,8 @@ Telephone: (416) 978-4360
 
     <check id="458" key="html" confidence="high" status="5">
         <name>La página contiene más de 2 enlaces externos rotos</name>
-        <error>check.177.error</error>
-        <rationale>check.177.rationale</rationale>
+        <error>check.458.error</error>
+        <rationale>check.458.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="2" attribute1="external"/>

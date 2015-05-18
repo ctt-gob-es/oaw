@@ -62,7 +62,7 @@ public class TerminationConstants {
      */
     public static final String TAD = "TAD";
     /**
-     * Constante I�N.
+     * Constante IÓN.
      */
     public static final String ION = "ION";
     /**
