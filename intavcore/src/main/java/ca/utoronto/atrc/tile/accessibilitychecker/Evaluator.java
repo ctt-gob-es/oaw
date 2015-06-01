@@ -34,7 +34,6 @@ import es.ctic.css.utils.CSSUtils;
 import es.inteco.common.*;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.comun.Incidencia;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.datos.IncidenciaDatos;
@@ -425,18 +424,23 @@ public class Evaluator {
 
         // Una vez acabadas las comprobaciones sobre HTML, ejecutamos las comprobaciones de CSS (que tienen estructura distinta)
         final List<CSSResource> cssResources = new ArrayList<CSSResource>();
-        // TODO: Extraer únicamente una vez los estilos (y cachear los linked)
         final NodeList embeddedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("style");
         if (embeddedStyleSheets != null && embeddedStyleSheets.getLength() > 0) {
             for (int i = 0; i < embeddedStyleSheets.getLength(); i++) {
-                cssResources.add(new CSSStyleSheetResource((Element) embeddedStyleSheets.item(i)));
+                final Element styleElement = (Element) embeddedStyleSheets.item(i);
+                if ( validMedia(styleElement.getAttribute("media"))) {
+                    cssResources.add(new CSSStyleSheetResource(styleElement));
+                }
             }
         }
         final NodeList linkedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("link");
         if (linkedStyleSheets != null && linkedStyleSheets.getLength() > 0) {
             for (int i = 0; i < linkedStyleSheets.getLength(); i++) {
                 final Element linkElement = (Element) linkedStyleSheets.item(i);
-                if ( linkElement.hasAttribute("href") && "stylesheet".equalsIgnoreCase(linkElement.getAttribute("rel"))) {
+                if ( linkElement.hasAttribute("href")
+                        && "stylesheet".equalsIgnoreCase(linkElement.getAttribute("rel"))
+                        && "text/css".equalsIgnoreCase(linkElement.getAttribute("type"))
+                        && validMedia(linkElement.getAttribute("media"))) {
                     cssResources.add(new CSSStyleSheetResource(linkElement));
                 }
             }
@@ -468,6 +472,10 @@ public class Evaluator {
                 }
             }
         }
+    }
+
+    private boolean validMedia(final String media) {
+        return media == null || media.trim().isEmpty() || media.contains("all") || media.contains("screen");
     }
 
     private  List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {

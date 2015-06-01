@@ -1,4 +1,5 @@
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.inteco.common.CheckAccessibility;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -7,9 +8,11 @@ import es.inteco.crawler.ignored.links.Utils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
+import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 import es.inteco.utils.MailUtils;
+import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
@@ -47,18 +50,18 @@ public class TestCrawl {
     @Test
     public void test() throws Exception {
         final CrawlerData crawlerData = new CrawlerData();
-        crawlerData.setUrls(Collections.singletonList("http://www.mecd.gob.es/portada-mecd/"));
+        crawlerData.setUrls(Collections.singletonList("http://www.parlamentodenavarra.es/inicio.aspx"));
         crawlerData.setProfundidad(4);
         crawlerData.setTopN(4);
         crawlerData.setPseudoaleatorio(true);
         crawlerData.setTest(true);
         crawlerData.setIdCrawling(-1);
-        //makeCrawl(crawlerData);
-
-        for (CrawledLink cl: crawlingDomains) {
-            System.out.println(cl.getUrl());
-
-        }
+//        makeCrawl(crawlerData);
+//
+//        for (CrawledLink cl: crawlingDomains) {
+//            System.out.println(cl.getUrl());
+//        }
+//        Assert.assertEquals(17, crawlingDomains.size());
     }
 
     private void makeCrawl(CrawlerData crawlerData) throws Exception {
@@ -171,6 +174,7 @@ public class TestCrawl {
                 }
 
             } catch (Exception e) {
+                e.printStackTrace();
                 LOG.info("Error al rastrear el dominio " + url + ": " + e.getMessage());
             }
         }

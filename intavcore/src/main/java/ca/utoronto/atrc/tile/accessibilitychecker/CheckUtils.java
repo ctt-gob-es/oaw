@@ -191,6 +191,10 @@ public final class CheckUtils {
                 remoteUrl = new URL(encodeUrl(nodeNode.getTextContent().trim()));
             }
 
+            if (!remoteUrl.getProtocol().startsWith("http")) {
+                return true;
+            }
+
             final PropertiesManager pmgr = new PropertiesManager();
             final List<String> allowedPorts = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "broken.links.allowed.ports").split(";"));
 

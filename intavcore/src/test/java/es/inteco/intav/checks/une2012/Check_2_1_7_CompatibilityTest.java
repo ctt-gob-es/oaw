@@ -136,7 +136,7 @@ public final class Check_2_1_7_CompatibilityTest {
 
     @Test
     public void evaluateCSSTwoOpenBrackets() throws Exception {
-        checkAccessibility.setContent("<html><style>.main { color: #FFF; a { background-color: #FFF;}</style><p>Lorem ipsum</p></html>");
+        checkAccessibility.setContent("<html><style type=\"text/css\">.main { color: #FFF; a { background-color: #FFF;}</style><p>Lorem ipsum</p></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
@@ -172,5 +172,29 @@ public final class Check_2_1_7_CompatibilityTest {
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateMediaQueries() throws Exception {
+        checkAccessibility.setContent("<html><head><title>Foo</title>" +
+                "<style type=\"text/css\" media=\"screen\">" +
+                " @media screen and (max-width : 400px) and (color) { a {color: #000; background-color: #000} }"+
+                "</style>" +
+                "</head><body><p>Lorem</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        //Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 448 /*ColorContrast*/));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
+    }
+
+    @Test
+    public void evaluateCSSSyntaxMediaQueries() throws Exception {
+        checkAccessibility.setContent("<html><head><title>Foo</title>" +
+                "<style type=\"text/css\" media=\"screen\">" +
+                " @media screen and (max-width : 400px) and (color) { a {color: #000 background-color: #000} }"+
+                "</style>" +
+                "</head><body><p>Lorem</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
+        TestUtils.printProblems(evaluation.getProblems(), CSS_PARSEABLE);
     }
 }

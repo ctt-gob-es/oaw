@@ -51,6 +51,11 @@ public final class StringUtils {
     // Cuando en el html detecta un &nbsp;, en lugar de devolver el caracter vacío devuelve un caracter con
     // código -96
     public static boolean hasOnlyNbspEntities(String string) {
+        if ( string.length()==1 ) {
+          if ( string.codePointAt(0)==0xA0 ) {
+              return true;
+          }
+        }
         byte[] bytes = string.trim().getBytes();
         for (byte aByte : bytes) {
             boolean isNbsp = false;
@@ -143,6 +148,7 @@ public final class StringUtils {
     }
 
     public static String normalizeWhiteSpaces(String text) {
+        text = text.replace("&nbsp;", " ").replace("&#160;"," ");
         final StringBuilder sb = new StringBuilder(text);
         for (int i=0; i<sb.length(); i++) {
             if (Character.isWhitespace(sb.charAt(i)) || sb.charAt(i)==0xA0) {

@@ -1,10 +1,8 @@
 package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
-import es.inteco.intav.EvaluateCheck;
 import es.inteco.intav.TestUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
@@ -15,7 +13,7 @@ import org.junit.Test;
  *
  */
 public final class Check_1_1_4_DataTableTest {
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4 = "minhap.observatory.2.0.subgroup.1.1.4";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4 = "minhap.observatory.2_0.subgroup.1.1.4";
 
     /*<!-- Tabla de datos sin encabezados -->*/
     private static final int HEADERS = 86;
@@ -32,14 +30,12 @@ public final class Check_1_1_4_DataTableTest {
     /*<!-- Ningún th está vacío. -->*/
     private static final int TH_BLANK= 159;
     /*<!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar las celdas. -->*/
-    private static final int MISSING_ID_HEADERS_CHECK = 245;
+    private static final int MISSING_ID_HEADERS = 245;
     /*<!--Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.-->*/
     private static final int COMPLEX_TABLE_SUMMARY = 418;
-    private static final int TABLE_HEADINGS_ID = 415;
     /*<!-- Summary y Caption diferentes. -->*/
     private static final int SAME_CAPTION_SUMMARY_CHECK = 243;
-    private  static final int MISSING_SCOPE_CHECK = 244;
-
+    private  static final int MISSING_SCOPE_CHECK = 415;
 
     private CheckAccessibility checkAccessibility;
 
@@ -52,31 +48,25 @@ public final class Check_1_1_4_DataTableTest {
     @Test
     public void evaluateNoScopes() throws Exception {
         checkAccessibility.setContent("<table><tr><th>Header 1</th><th>Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
-        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        int numProblems = TestUtils.getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID);
-
-        Assert.assertEquals(0, numProblems);
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
     }
 
     @Test
     public void evaluateScopesValid() throws Exception {
         checkAccessibility.setContent("<table><tr><th scope=\"col\">Header 1</th><th scope=\"row\">Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
-        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        int numProblems = TestUtils.getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID);
-
-        Assert.assertEquals(0, numProblems);
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
     }
 
     @Test
     public void evaluateScopesInvalid() throws Exception {
         checkAccessibility.setContent("<html><body><table><tr><th scope=\"bar\">Header 1</th><th>Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table></body></html>");
-
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        int numProblems = TestUtils.getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID);
 
-        Assert.assertEquals(1, numProblems);
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
     }
 
 
@@ -87,7 +77,7 @@ public final class Check_1_1_4_DataTableTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
     }
 
     @Test
@@ -115,9 +105,8 @@ public final class Check_1_1_4_DataTableTest {
         checkAccessibility.setContent("<html><body><table summary=\"\"><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        int numProblems = TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY);
-
-        Assert.assertEquals(1, numProblems);
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
     @Test
@@ -125,9 +114,7 @@ public final class Check_1_1_4_DataTableTest {
         checkAccessibility.setContent("<html><body><table summary=\"Table summary\"><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        int numProblems = TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY);
-
-        Assert.assertEquals(0, numProblems);
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
     }
 
     @Test
@@ -164,7 +151,7 @@ public final class Check_1_1_4_DataTableTest {
                 "Desarrollo Económico TIC</td>\n" +
                 "</tr></tbody></table></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_HEADINGS_ID));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
     @Test
@@ -250,56 +237,154 @@ public final class Check_1_1_4_DataTableTest {
                 "\t\t\t\t</tbody>\n"+
                 "\t\t\t</table>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        //Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
     }
 
     @Test
     public void evaluateLayoutTable() throws Exception {
         checkAccessibility.setContent("<html><body><table summary=\"Table summary\"><tr><td>Header 1</td><td>Header 2</td></tr><tr><th><table><tr><td>Foo</td></tr></table></th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
-        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
+    @Test
+    public void evaluateRealExampleTable() throws Exception {
+        checkAccessibility.setContent("<html>" +
+                "<table summary=\"Esta tabla proporciona información sobre el número total de\n" +
+                "solicitudes registradas, proyectos aprobados y financiación concedida en Europa\n" +
+                "investigación y Europa Redes y Gestores\">\n" +
+                "<caption>Acciones en Participación en Europa investigación y Europa Redes y Gestores</caption>\n" +
+                "        <thead>\n" +
+                "                <tr class=\"tituloTabla\">\n" +
+                "                        <td>&#160;</td>\n" +
+                "                        <th scope=\"col\">Solicitudes totales registradas</th>\n" +
+                "                        <th scope=\"col\">Proyectos concedidos</th>\n" +
+                "                        <th scope=\"col\">Financiación concedida</th>\n" +
+                "                </tr>\n" +
+                "        </thead>\n" +
+                "        <tbody>\n" +
+                "                <tr>\n" +
+                "                        <th scope=\"row\">Europa Investigación</th>\n" +
+                "                        <td>192</td>\n" +
+                "                        <td>142</td>\n" +
+                "                        <td>3.000€</td>\n" +
+                "                </tr>\n" +
+                "                <tr>\n" +
+                "                        <th scope=\"row\">Europa Redes y Gestores</th>\n" +
+                "                        <td>139</td>\n" +
+                "                        <td>34</td>\n" +
+                "                        <td>5.000€</td>\n" +
+                "                </tr>\n" +
+                "        </tbody>\n" +
+                "</table></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        // Esta tabla se considera compleja y necesita la combinación ID, HEADERS
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+    }
 
-//    @Test
-//    public void evaluateCTICTable() throws Exception {
-//        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-inteco-1-0");
-//        checkAccessibility.setUrl("http://www.fundacionctic.org/conocenos/acuerdos-y-colaboraciones");
-//        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 7));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 86));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 116));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 151));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 156));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 159));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 245));
-//        TestUtils.checkVerificacion(evaluation, "inteco.observatory.subgroup.2.1.1", TestUtils.OBS_VALUE_GREEN_ONE);
-//
-//
-//        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-inteco-1-0");
-//        checkAccessibility.setUrl("http://monitor.fundacionctic.org/tawmonitor/es/inicio.xhtml");
-//        evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 7));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 86));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 116));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 151));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 156));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 159));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 245));
-//        TestUtils.checkVerificacion(evaluation, "inteco.observatory.subgroup.2.1.1", TestUtils.OBS_VALUE_GREEN_ONE);
-//
-//        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-inteco-1-0");
-//        checkAccessibility.setUrl("http://www.fundacionctic.org/inicio");
-//        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 7));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 86));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 116));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 151));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 156));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 159));
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 245));
-//        TestUtils.checkVerificacion(evaluation, "inteco.observatory.subgroup.2.1.1", TestUtils.OBS_VALUE_M_GREEN_ONE);
-//    }
+    @Test
+    public void evaluateRealExampleTableIdHeadersBlankTD() throws Exception {
+        checkAccessibility.setContent("<html>" +
+                "<table summary=\"Esta tabla proporciona información sobre el número total de\n" +
+                "solicitudes registradas, proyectos aprobados y financiación concedida en Europa\n" +
+                "investigación y Europa Redes y Gestores\">\n" +
+                "<caption>Acciones en Participación en Europa investigación y Europa Redes y Gestores</caption>\n" +
+                "        <thead>\n" +
+                "                <tr class=\"tituloTabla\">\n" +
+                "                        <td>&#160;</td>\n" +
+                "                        <th id=\"solicitudes\">Solicitudes totales registradas</th>\n" +
+                "                        <th id=\"proyectos\">Proyectos concedidos</th>\n" +
+                "                        <th id=\"financiacion\">Financiación concedida</th>\n" +
+                "                </tr>\n" +
+                "        </thead>\n" +
+                "        <tbody>\n" +
+                "                <tr>\n" +
+                "                        <th id=\"investigacion\">Europa Investigación</th>\n" +
+                "                        <td headers=\"investigacion solicitudes\">192</td>\n" +
+                "                        <td headers=\"investigacion redes\">142</td>\n" +
+                "                        <td headers=\"investigacion financiacion\">3.000€</td>\n" +
+                "                </tr>\n" +
+                "                <tr>\n" +
+                "                        <th id=\"redes\">Europa Redes y Gestores</th>\n" +
+                "                        <td headers=\"redes solicitudes\">139</td>\n" +
+                "                        <td headers=\"redes proyectos\">34</td>\n" +
+                "                        <td headers=\"redes financiacion\">5.000€</td>\n" +
+                "                </tr>\n" +
+                "        </tbody>\n" +
+                "</table></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 
+    @Test
+    public void evaluateRealExampleTableIdHeadersBlankTH() throws Exception {
+        checkAccessibility.setContent("<html>" +
+                "<table summary=\"Esta tabla proporciona información sobre el número total de\n" +
+                "solicitudes registradas, proyectos aprobados y financiación concedida en Europa\n" +
+                "investigación y Europa Redes y Gestores\">\n" +
+                "<caption>Acciones en Participación en Europa investigación y Europa Redes y Gestores</caption>\n" +
+                "        <thead>\n" +
+                "                <tr class=\"tituloTabla\">\n" +
+                "                        <th>&#160;</th>\n" +
+                "                        <th id=\"solicitudes\">Solicitudes totales registradas</th>\n" +
+                "                        <th id=\"proyectos\">Proyectos concedidos</th>\n" +
+                "                        <th id=\"financiacion\">Financiación concedida</th>\n" +
+                "                </tr>\n" +
+                "        </thead>\n" +
+                "        <tbody>\n" +
+                "                <tr>\n" +
+                "                        <th id=\"investigacion\">Europa Investigación</th>\n" +
+                "                        <td headers=\"investigacion solicitudes\">192</td>\n" +
+                "                        <td headers=\"investigacion redes\">142</td>\n" +
+                "                        <td headers=\"investigacion financiacion\">3.000€</td>\n" +
+                "                </tr>\n" +
+                "                <tr>\n" +
+                "                        <th id=\"redes\">Europa Redes y Gestores</th>\n" +
+                "                        <td headers=\"redes solicitudes\">139</td>\n" +
+                "                        <td headers=\"redes proyectos\">34</td>\n" +
+                "                        <td headers=\"redes financiacion\">5.000€</td>\n" +
+                "                </tr>\n" +
+                "        </tbody>\n" +
+                "</table></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 
 }

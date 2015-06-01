@@ -1,27 +1,30 @@
 package es.ctic.css.checks;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
-import es.ctic.css.CSSDocumentHandler;
+import com.helger.css.decl.CSSDeclaration;
+import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
-import org.w3c.css.sac.CSSException;
-import org.w3c.css.sac.LexicalUnit;
-import org.w3c.css.sac.Parser;
+
+import javax.annotation.Nonnull;
 
 /**
- *
+ * Clase para detectar si se produccen parpadeos generados desde CSS mediante text-decoration:blink o text-decoration-line:blink
  */
-public class CSSBlinkDocumentHandler extends CSSDocumentHandler {
+public class CSSBlinkDocumentHandler extends OAWCSSVisitor {
 
     public CSSBlinkDocumentHandler(final CheckCode checkCode) {
         super(checkCode);
     }
 
     @Override
-    public void property(final String name, final LexicalUnit lexicalUnit, boolean important) throws CSSException {
-        if ("text-decoration".equals(name) || "text-decoration-line".equals(name)) {
-            final String value = CSSSACUtils.parseLexicalValue(lexicalUnit);
-            if ("blink".equalsIgnoreCase(value)) {
-                getProblems().add(createCSSProblem(name+": "+value));
+    public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
+        if (isValidMedia()) {
+            if ("text-decoration".equals(cssDeclaration.getProperty())
+                    || "text-decoration-line".equals(cssDeclaration.getProperty())) {
+                final String value = CSSSACUtils.parseLexicalValue(getValue(cssDeclaration));
+                if ("blink".equalsIgnoreCase(value)) {
+                    getProblems().add(createCSSProblem("", cssDeclaration));
+                }
             }
         }
     }

@@ -475,6 +475,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_OTHER_LANGUAGE;
             } else if ("current-language".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CURRENT_LANGUAGE;
+            } else if ("table-heading-blank".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_HEADING_BLANK;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;

@@ -831,6 +831,9 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_CURRENT_LANGUAGE:
                 return functionCurrentLanguage(checkCode, nodeNode, elementGiven);
 
+            case CheckFunctionConstants.FUNCTION_TABLE_HEADING_BLANK:
+                return CheckTables.functionTableHeadingBlank(checkCode, nodeNode, elementGiven);
+
             default:
                 Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
                 break;
@@ -849,8 +852,21 @@ public class Check {
 
     private boolean functionRequiredControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList inputs = elementGiven.getElementsByTagName("input");
+        int filteredControls = 0;
+        for(int i=0; i<inputs.getLength(); i++ ) {
+            if ( inputs.item(i) instanceof Element) {
+                final Element element = (Element) inputs.item(i);
+                // Los input de tipo hidden & button no cuentan
+                if ( !"hidden".equals(element.getAttribute("type"))
+                        && !"button".equals(element.getAttribute("type"))
+                        && !"submit".equals(element.getAttribute("type"))) {
+                    filteredControls++;
+                }
+            }
+        }
+
         final int minInputs = Integer.parseInt(checkCode.getFunctionNumber());
-        if (inputs.getLength() > minInputs) {
+        if (filteredControls > minInputs) {
             final String formText = EvaluatorUtility.getLabelText(elementGiven);
             final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(formText);
@@ -959,6 +975,13 @@ public class Check {
         final String expectedLanguage = getLanguage(elementGiven, false);
         final Document document = elementGiven.getOwnerDocument();
         if (expectedLanguage != null && !expectedLanguage.isEmpty()) {
+            int maxNumber;
+            try {
+                maxNumber = checkCode.getFunctionNumber().isEmpty() ? 4 : Integer.parseInt(checkCode.getFunctionNumber());
+            } catch (NumberFormatException nfe) {
+                maxNumber = 4;
+            }
+
             final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false);
             try {
                 TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
@@ -970,8 +993,8 @@ public class Check {
                         enWords.add(word);
                     }
                 }
-                document.setUserData("en_words",enWords,null);
-                return !enWords.isEmpty();
+                document.setUserData("en_words", enWords, null);
+                return enWords.size() > maxNumber;
             } catch (TransformerException e) {
                 Logger.putLog("Error al intentar extraer el texto en functionOtherLanguage", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -3537,7 +3560,7 @@ public class Check {
         boolean first = true;
         Element checkedElement = elementGiven;
         for (int i = 0; i < number; i++) {
-            if (checkedElement != null && checkedElement.getNodeName().equalsIgnoreCase(elementName)) {
+            if (checkedElement != null && checkedElement.getNodeName().equalsIgnoreCase(elementName) && !checkedElement.getParentNode().getNodeName().equalsIgnoreCase("ol")) {
                 final String text = EvaluatorUtility.getElementText(checkedElement);
                 final Matcher matcher = pattern.matcher(text);
                 if (!matcher.find()) {

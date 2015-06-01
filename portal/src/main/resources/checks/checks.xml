@@ -1190,7 +1190,7 @@ Telephone: (416) 978-4360
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Valenci[^a]{1,2}|Valenci&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="va" />
+                    <function call="current-language" node="." value="ca" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="^[\W_]*(Benvin{0,1}guts{0,1})( *\(.*\)){0,1}[\W_]*$"/>
@@ -1995,7 +1995,7 @@ Telephone: (416) 978-4360
         <error>check.159.error</error>
         <machine>
             <trigger element="table"/>
-            <function call="is-empty-element" node="." element="th" value="any"/>
+            <function call="table-heading-blank" node="." />
         </machine>
     </check>
 
@@ -4515,7 +4515,7 @@ Telephone: (416) 978-4360
         <rationale>check.411.rationale</rationale>
         <machine>
             <trigger element="p"/>
-            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"/>
+            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
         </machine>
     </check>
 
@@ -4568,6 +4568,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="415" key="th" confidence="high">
+        <!--<prerequisite id="7"/>-->
         <name>Las tablas de datos que contienen cabeceras de filas y columna usan el atributo <code>scope</code>
             para identificar las celdas.
         </name>
@@ -4603,11 +4604,12 @@ Telephone: (416) 978-4360
         <rationale>check.417.rationale</rationale>
         <machine>
             <trigger element="option"/>
-            <function call="text-match" node="." value="[-\*#\.]{3,}.*"/>
+            <function call="text-match" node="." value="^[-\*#\.]{3,}.*"/>
         </machine>
     </check>
 
     <check id="418" key="table" confidence="high">
+        <prerequisite id="7"/>
         <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.</name>
         <error>check.418.error</error>
         <rationale>check.418.rationale</rationale>

@@ -27,7 +27,7 @@ public class ExtractTextHandler extends DefaultHandler {
     private final StringBuilder extractedText;
 
     private final boolean extractSameLanguage;
-    private boolean inScript;
+    private boolean skipCharacters;
 
     public ExtractTextHandler(final String language) {
         this(language, true);
@@ -39,6 +39,7 @@ public class ExtractTextHandler extends DefaultHandler {
         languages = new Stack<String>();
         languages.push(language);
         extractedText = new StringBuilder(200);
+        skipCharacters = false;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class ExtractTextHandler extends DefaultHandler {
         final String lang = normalizeLang(attributes.getValue("lang"));
         languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek());
         if ("img".equalsIgnoreCase(localName) && attributes.getValue("alt") != null) {
+            extractedText.append(" ");
             if (extractSameLanguage) {
                 if (webpageLanguage.equals(languages.peek())) {
                     extractedText.append(attributes.getValue("alt"));
@@ -55,19 +57,23 @@ public class ExtractTextHandler extends DefaultHandler {
                     extractedText.append(attributes.getValue("alt"));
                 }
             }
-        } else if ("script".equalsIgnoreCase(localName)) {
-            inScript = true;
+        } else if ("script".equalsIgnoreCase(localName) || "style".equalsIgnoreCase(localName)) {
+            skipCharacters = true;
         }
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         languages.pop();
+        if ("script".equalsIgnoreCase(localName) || "style".equalsIgnoreCase(localName)) {
+            skipCharacters = false;
+        }
+        extractedText.append(" ");
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-        if (!inScript) {
+        if (!skipCharacters) {
             if (extractSameLanguage) {
                 if (webpageLanguage.equals(languages.peek())) {
                     extractedText.append(ch, start, length);

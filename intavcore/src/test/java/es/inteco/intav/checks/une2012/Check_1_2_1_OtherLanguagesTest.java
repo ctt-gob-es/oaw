@@ -70,8 +70,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
-        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
-        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
@@ -80,8 +79,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
-        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
-        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
@@ -113,7 +111,13 @@ public final class Check_1_2_1_OtherLanguagesTest {
 
     @Test
     public void evaluateOtherLang() throws Exception {
-        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong>You are welcome</strong></p></body></html>");
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong>You are welcome and get well</strong> and some others english words being\n" +
+                " not " +
+                " by " +
+                " one " +
+                " who " +
+                " take " +
+                " other</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
@@ -188,14 +192,74 @@ public final class Check_1_2_1_OtherLanguagesTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
 
 
-        // FALLA: Expected 1, Actual 0
-        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p>Tu eres <img src=\"img.png\" alt=\"You are welcome the other\"></p></body></html>");
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p>Tu eres <img src=\"img.png\" alt=\"You are welcome the other\"> if you are doing the most</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
 
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p><p>if you are doing</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        // Menos de 4 palabras
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
 
     }
 
+    @Test
+    public void evaluateLanguageLinks() throws Exception {
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem</p>" +
+                "<div class=\"menuRecurrente\">\n" +
+                "    <ul>\n" +
+                "      <li>\n" +
+                "        <span lang=\"es\">\n" +
+                "           <a title=\"Idioma Castellano\" href=\"/pae_Home.html?idioma=es\" lang=\"es\" hreflang=\"es\">Castellano</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"ca\">\n" +
+                "           <a title=\"Idioma Catal&agrave;\" href=\"/pae_Home.html?idioma=ca\" lang=\"ca\" hreflang=\"ca\">Catal&agrave;</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"ca\">\n" +
+                "           <a title=\"Idioma Catal&agrave;\" href=\"/pae_Home.html?idioma=ca\" lang=\"ca\" hreflang=\"ca\">Benvinguts</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"eu\">\n" +
+                "           <a title=\"Hizkuntza Euskara\" href=\"/pae_Home.html?idioma=eu\" lang=\"eu\" hreflang=\"eu\">Euskara</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"gl\">\n" +
+                "           <a title=\"Lingua Galego\" href=\"/pae_Home.html?idioma=gl\" lang=\"gl\" hreflang=\"gl\">Galego</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"ca-valencia\">\n" +
+                "           <a title=\"Idioma Valenci&agrave;\" href=\"/pae_Home.html?idioma=ca_valencia\" lang=\"ca-valencia\" hreflang=\"ca-valencia\">Valenci&agrave;</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"ca-valencia\">\n" +
+                "           <a title=\"Idioma Valenci&agrave;\" href=\"/pae_Home.html?idioma=ca_valencia\" lang=\"ca-valencia\" hreflang=\"ca-valencia\">Valenciano</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li>\n" +
+                "        <span lang=\"ca-valencia\">\n" +
+                "           <a title=\"Idioma Valenci&agrave;\" href=\"/pae_Home.html?idioma=ca_valencia\" lang=\"ca-valencia\" hreflang=\"ca-valencia\">Valenciá</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "      <li class=\"last\">\n" +
+                "        <span lang=\"en\">\n" +
+                "           <a title=\"Language English\" href=\"/pae_Home.html?idioma=en\" lang=\"en\" hreflang=\"en\">English</a>\n" +
+                "        </span>\n" +
+                "      </li>\n" +
+                "    </ul>\n" +
+                "  </div>" +
+                "</body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
+    }
 
 }

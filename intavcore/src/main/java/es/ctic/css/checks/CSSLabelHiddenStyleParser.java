@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
+ * Clase para comprobar si la etiqueta (elemento label) de un control de formulario está oculta mediante CSS y es el único elemento que proporciona el "name" del control (no dispone de title ni aria-label)
  */
 public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
 

@@ -2,20 +2,20 @@ package es.ctic.css.checks;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
 import ca.utoronto.atrc.tile.accessibilitychecker.ColorValues;
-import com.steadystate.css.parser.selectors.PseudoElementSelectorImpl;
-import es.ctic.css.CSSDocumentHandler;
+import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CSSStyleRule;
+import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
-import org.w3c.css.sac.*;
+import org.w3c.css.sac.LexicalUnit;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 
 /**
- *
+ * Clase que para cada selector de CSS comprueba, si se definen, los colores de primer plano y fondo el contraste entre ambos colores según el algoritmo WCAG 2.0
+ * ver http://www.w3.org/TR/2014/NOTE-WCAG20-TECHS-20140916/G18
  */
-public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
-
-    private static final String SPACE_SEPARATOR = " ";
-    private static final String COMMA_SEPARATOR = ", ";
+public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 
     private LexicalUnit backgroundProperty;
     private LexicalUnit foregroundProperty;
@@ -27,32 +27,34 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
     }
 
     @Override
-    public void endSelector(final SelectorList selectors) throws CSSException {
-        super.endSelector(selectors);
+    public void onEndStyleRule(@Nonnull CSSStyleRule cssStyleRule) {
         // Si al finalizar de procesar un bloque de declaración de estilos tenemos ambas propiedades comprobamos el contraste
         if (backgroundProperty != null && foregroundProperty != null) {
-            checkColorContrast(selectors);
+            checkColorContrast();
         }
         // Inicializamos los valores
         backgroundProperty = null;
         foregroundProperty = null;
         fontSizeProperty = null;
         fontWeightProperty = null;
+        super.onEndStyleRule(cssStyleRule);
     }
 
     @Override
-    public void property(final String name, final LexicalUnit value, boolean important) throws CSSException {
-        if ("color".equals(name)) {
-            foregroundProperty = value;
-        } else if ("background-color".equals(name)) {
-            backgroundProperty = value;
-        } else if ("background".equals(name)) {
-            // El valor de background-color de la propiedad background
-            backgroundProperty = value;
-        } else if ("font-size".equals(name)) {
-            fontSizeProperty = value;
-        } else if ("font-weight".equals(name)) {
-            fontWeightProperty = value;
+    public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
+        if (isValidMedia()) {
+            if ("color".equals(cssDeclaration.getProperty())) {
+                foregroundProperty = getValue(cssDeclaration);
+            } else if ("background-color".equals(cssDeclaration.getProperty())) {
+                backgroundProperty = getValue(cssDeclaration);
+            } else if ("background".equals(cssDeclaration.getProperty())) {
+                // El valor de background-color de la propiedad background
+                backgroundProperty = getValue(cssDeclaration);
+            } else if ("font-size".equals(cssDeclaration.getProperty())) {
+                fontSizeProperty = getValue(cssDeclaration);
+            } else if ("font-weight".equals(cssDeclaration.getProperty())) {
+                fontWeightProperty = getValue(cssDeclaration);
+            }
         }
     }
 
@@ -84,7 +86,7 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
         return false;
     }
 
-    private void checkColorContrast(SelectorList selectors) {
+    private void checkColorContrast() {
         try {
             final Color foreground = obtainColor(foregroundProperty);
             final Color background = obtainColor(backgroundProperty);
@@ -97,11 +99,11 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
 
             if (!needHighContrast()) {
                 if (contrastRatio < 3.5) {
-                    getProblems().add(createCSSProblem(buildSelector(selectors) + " (ratio:" + contrastRatio + ")"));
+                    getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ")", null));
                 }
             } else {
                 if (contrastRatio < 4.5) {
-                    getProblems().add(createCSSProblem(buildSelector(selectors) + " (ratio:" + contrastRatio + ")"));
+                    getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ")", null));
                 }
             }
         } catch (RuntimeException t) {
@@ -110,8 +112,18 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
 
     private Color obtainColor(final LexicalUnit colorValue) throws NumberFormatException {
         if (colorValue.getLexicalUnitType() == LexicalUnit.SAC_IDENT) {
-            // Si es un nombre de color obtenemos su equivalente hexadecimal
-            return Color.decode(ColorValues.getHexColorFromName(colorValue.getStringValue()));
+            if ("none".equalsIgnoreCase(colorValue.getStringValue())) {
+                LexicalUnit lastValue = colorValue;
+                LexicalUnit itrLexicalUnit = colorValue.getNextLexicalUnit();
+                while (itrLexicalUnit != null) {
+                    lastValue = itrLexicalUnit;
+                    itrLexicalUnit = itrLexicalUnit.getNextLexicalUnit();
+                }
+                return Color.decode(CSSSACUtils.parseSingleLexicalValue(lastValue));
+            } else {
+                // Si es un nombre de color obtenemos su equivalente hexadecimal
+                return Color.decode(ColorValues.getHexColorFromName(colorValue.getStringValue()));
+            }
         } else {
             return Color.decode(CSSSACUtils.parseSingleLexicalValue(colorValue));
         }
@@ -140,112 +152,4 @@ public class CSSColorContrastDocumentHandler extends CSSDocumentHandler {
         return Math.round(contrastRatio * 100) / 100d;
     }
 
-    private String buildSelector(final SelectorList selectorList) {
-        final StringBuilder sb = new StringBuilder(100);
-        if (selectorList != null && selectorList.getLength() > 0) {
-            sb.append(buildSelector(selectorList.item(0)));
-            for (int i = 1; i < selectorList.getLength(); i++) {
-                sb.append(COMMA_SEPARATOR);
-                sb.append(buildSelector(selectorList.item(i)));
-            }
-        }
-        return sb.toString();
-    }
-
-    private String buildSelector(final Selector sel) {
-        final StringBuilder selectorBuilder = new StringBuilder(60);
-
-        switch (sel.getSelectorType()) {
-            case Selector.SAC_ELEMENT_NODE_SELECTOR:
-                // This selector matches only tag type
-                final ElementSelector es = (ElementSelector) sel;
-                if (es.getLocalName() != null) {
-                    selectorBuilder.append(es.getLocalName());
-                }
-                break;
-            case Selector.SAC_CONDITIONAL_SELECTOR:
-                // This selector matches all the interesting things:
-                // #myId
-                // [someattr="someval"]
-                // simple[role="private"]
-                // myclass#myId (check this. [bshine 9.05.06])
-                final ConditionalSelector cs = (ConditionalSelector) sel;
-                // Take care of the simple selector part of this
-                selectorBuilder.append(buildSelector(cs.getSimpleSelector()));
-                selectorBuilder.append(buildCondition(cs.getCondition()));
-                break;
-            case Selector.SAC_DESCENDANT_SELECTOR:
-                final DescendantSelector ds = (DescendantSelector) sel;
-                selectorBuilder.append(buildSelector(ds.getAncestorSelector()));
-                selectorBuilder.append(SPACE_SEPARATOR);
-                selectorBuilder.append(buildSelector(ds.getSimpleSelector()));
-                break;
-            case Selector.SAC_CHILD_SELECTOR:
-                final DescendantSelector chs = (DescendantSelector) sel;
-                selectorBuilder.append(buildSelector(chs.getAncestorSelector()));
-                if (chs.getSimpleSelector().getSelectorType() != Selector.SAC_PSEUDO_ELEMENT_SELECTOR) {
-                    selectorBuilder.append('>');
-                }
-                selectorBuilder.append(buildSelector(chs.getSimpleSelector()));
-                break;
-            case Selector.SAC_DIRECT_ADJACENT_SELECTOR:
-                final SiblingSelector das = (SiblingSelector) sel;
-                selectorBuilder.append(buildSelector(das.getSelector()));
-                selectorBuilder.append('+');
-                selectorBuilder.append(buildSelector(das.getSiblingSelector()));
-                break;
-            case Selector.SAC_PSEUDO_ELEMENT_SELECTOR:
-                if (sel instanceof PseudoElementSelectorImpl) {
-                    final PseudoElementSelectorImpl pses = (PseudoElementSelectorImpl) sel;
-                    selectorBuilder.append(':');
-                    selectorBuilder.append(pses.getLocalName());
-                }
-                break;
-            default:
-                selectorBuilder.append("unknown_selector ");
-                selectorBuilder.append(sel.getSelectorType());
-                break;
-        }
-
-        return selectorBuilder.toString();
-    }
-
-    private String buildCondition(final Condition condition) {
-        final StringBuilder conditionBuilder = new StringBuilder(20);
-        switch (condition.getConditionType()) {
-            case Condition.SAC_ID_CONDITION: /* #id */
-                final AttributeCondition idCond = (AttributeCondition) condition;
-                conditionBuilder.append('#');
-                conditionBuilder.append(idCond.getValue());
-                break;
-            case Condition.SAC_ATTRIBUTE_CONDITION: // [attr] or [attr="val"] or
-                // elem[attr="val"]
-                final AttributeCondition attrCond = (AttributeCondition) condition;
-                String name = attrCond.getLocalName();
-                String value = attrCond.getValue();
-                conditionBuilder.append('[');
-                conditionBuilder.append(name);
-                if (value != null) {
-                    conditionBuilder.append("=\"");
-                    conditionBuilder.append(value);
-                    conditionBuilder.append('"');
-                }
-                conditionBuilder.append(']');
-                break;
-            case Condition.SAC_CLASS_CONDITION:
-                final AttributeCondition classCond = (AttributeCondition) condition;
-                conditionBuilder.append('.');
-                conditionBuilder.append(classCond.getValue());
-                break;
-            case Condition.SAC_PSEUDO_CLASS_CONDITION:
-                final AttributeCondition pclassCond = (AttributeCondition) condition;
-                conditionBuilder.append(':');
-                conditionBuilder.append(pclassCond.getValue());
-                break;
-            default:
-                conditionBuilder.append(condition.toString());
-                break;
-        }
-        return conditionBuilder.toString();
-    }
 }

@@ -5159,7 +5159,7 @@ Telephone: (416) 978-4360
         <rationale>check.460.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="other-language" node="." />
+            <function call="other-language" node="." number="4" />
         </machine>
     </check>
 

@@ -46,6 +46,19 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     }
 
     @Test
+    public void evaluateLangXHTML2() throws Exception {
+        checkAccessibility.setContent("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"es\" lang=\"es\">\n" +
+                "<body><p>Esto es una prueba de texto en español</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HAS_LANGUAGE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE));
+        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
     public void evaluateNoLang() throws Exception {
         checkAccessibility.setContent("<html><body><p>Lorem</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -80,6 +93,18 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     @Test
     public void evaluateInlineENTag() throws Exception {
         checkAccessibility.setContent("<html lang='es'><body><p>Fundación CTIC <img lang='en' alt='Blank'/>es una de las entidades que participan y apoyan la  Feria Internacional del Ocio Interactivo, Gamelab, que celebrará su quinta edición los próximos días 1, 2 y 3 de julio en Gijón (Teatro de la Laboral). El Ministerio de Cultura, el Gobierno del Principado de Asturias, a través de la Consejerías de Cultura y de Administraciones Públicas, el Ayuntamiento de Gijón y las principales empresas y asociaciones nacionales e internacionales del sector del Videojuego colaboran con esta iniciativa, ya consolidada, una de las más importantes de Europa.</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateENRemark() throws Exception {
+        checkAccessibility.setContent("<html lang='es'><body>" +
+                "<p>Fundación CTIC <img lang='en' alt='Blank'/>es una de las entidades que participan y apoyan la  Feria Internacional del Ocio Interactivo, Gamelab, que celebrará su quinta edición los próximos días 1, 2 y 3 de julio en Gijón (Teatro de la Laboral). El Ministerio de Cultura, el Gobierno del Principado de Asturias, a través de la Consejerías de Cultura y de Administraciones Públicas, el Ayuntamiento de Gijón y las principales empresas y asociaciones nacionales e internacionales del sector del Videojuego colaboran con esta iniciativa, ya consolidada, una de las más importantes de Europa.</p>" +
+                "<!-- This is an example of english remark in order to test guess language verification result -->" +
+                "</body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
@@ -191,5 +216,14 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
+//    @Test
+//    public void testURL() throws Exception {
+//        // Test para comprobar rápidamente el resultado que genera la comprobacion de detección de idioma para una página 'real'
+//        checkAccessibility.setUrl("http://www.mineco.gob.es/portal/site/mineco/menuitem.d288f4af5ced702fafb0240e026041a0/?vgnextoid=532925d4d394c310VgnVCM1000001d04140aRCRD");
+//        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+//        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+//    }
 
 }
