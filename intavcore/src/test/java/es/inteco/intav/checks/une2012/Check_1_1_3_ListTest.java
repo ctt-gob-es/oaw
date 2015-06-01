@@ -15,6 +15,8 @@ import org.junit.Test;
  */
 public final class Check_1_1_3_ListTest {
 
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_3 = "minhap.observatory.2_0.subgroup.1.1.3";
+
     private static final int P_SIMULATING_OL = 101;
     private static final int P_SIMULATING_UL = 120;
     private static final int BR_SIMULATING_UL = 121;
@@ -1038,7 +1040,7 @@ public final class Check_1_1_3_ListTest {
                 "<li>3) Opción 3</li>" +
                 "</ul>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
+//        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
 
         checkAccessibility.setContent("<ul>" +
                 "<li>1) Opción 1</li>" +
@@ -1047,7 +1049,7 @@ public final class Check_1_1_3_ListTest {
                 "<li>3) Opción 3</li>" +
                 "</ul>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
+//        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
 
         checkAccessibility.setContent("<ul>" +
                 "<li>1) Opción 1</li>" +
@@ -1174,6 +1176,17 @@ public final class Check_1_1_3_ListTest {
                 "</ul>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
+    }
+
+    @Test
+    public void evaluateOrderedList() throws Exception {
+        checkAccessibility.setContent("<ol>" +
+                "<li>A) Opción 1</li>" +
+                "<li>B) Opción 2</li>" +
+                "<li>C) Opción 3</li>" +
+                "</ol>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
     }
 
 }

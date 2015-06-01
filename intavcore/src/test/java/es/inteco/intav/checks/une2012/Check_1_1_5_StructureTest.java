@@ -97,10 +97,6 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 33));
-        for (Problem problem : evaluation.getVectorProblems()) {
-            System.out.println(problem.getNode().getTextContent());
-        }
-
         ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
         TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_RED_ZERO);
     }

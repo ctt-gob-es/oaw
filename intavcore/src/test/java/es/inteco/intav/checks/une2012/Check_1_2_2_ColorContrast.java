@@ -2,6 +2,7 @@ package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import ca.utoronto.atrc.tile.accessibilitychecker.Problem;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
@@ -15,7 +16,7 @@ import org.junit.Test;
  */
 public final class Check_1_2_2_ColorContrast {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2 = "minhap.observatory.2.0.subgroup.1.2.2";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2 = "minhap.observatory.2_0.subgroup.1.2.2";
 
     private static final int CSS_COLOR_CONTRAST = 448;
 
@@ -76,6 +77,21 @@ public final class Check_1_2_2_ColorContrast {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
+    @Test
+    public void evaluateCSSBackground() throws Exception {
+        //<link href="http://www.thespanisheconomy.com/recursos_tse/css/style.css" rel="stylesheet"/>
+        checkAccessibility.setContent("<html><head><link href=\"http://www.thespanisheconomy.com/recursos_tse/css/style.css\" rel=\"stylesheet\" type=\"text/css\"/><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+
+        for (Problem problem : evaluation.getProblems()) {
+            if (problem.getCheck().getId()==CSS_COLOR_CONTRAST) {
+                System.out.printf("%d:%d  %s%n", problem.getLineNumber(), problem.getColumnNumber(), problem.getNode().getTextContent());
+            }
+        }
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 
     /**
      * *************
@@ -188,6 +204,48 @@ public final class Check_1_2_2_ColorContrast {
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><head><style>.main { color: #FFF; background: none no-repeat right top #000;}</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><head><style>.main { color: #FFF; background: none no-repeat right top #FFF;}</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_2, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
+    @Test
+    public void testStyle() throws Exception {
+        checkAccessibility.setContent("<html><head>" +
+                "<style>#cabecera .barraConfiguracion { color: #FFF; background-color: #C80E0E;}</style>"+
+                "</head><body><p>Lorem ipsum</body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+    }
+
+    @Test
+    public void testMedia() throws Exception {
+        checkAccessibility.setContent("<html><head>" +
+                "<style>@media print {#cabecera .barraConfiguracion { color: #FFF; background-color: #FFF;} }</style>"+
+                "</head><body><p>Lorem ipsum</body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+
+        checkAccessibility.setContent("<html><head>" +
+                "<style>@media print {" +
+                "  #cabecera { color: #FFF; background-color: #FFF; } " +
+                "  @media screen { #main {color: #FFF; background-color: #FFF;} }" +
+                "}</style>"+
+                "</head><body><p>Lorem ipsum</body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+
+        checkAccessibility.setContent("<html><head>" +
+                "<style media=\"print\">#cabecera { color: #FFF; background-color: #FFF; }</style>"+
+                "</head><body><p>Lorem ipsum</body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+    }
 }

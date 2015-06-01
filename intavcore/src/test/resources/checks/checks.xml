@@ -797,9 +797,9 @@ Telephone: (416) 978-4360
             <trigger element="area"/>
             <function call="attribute-missing" node="." value="alt"/>
             <!--<condition type="or">-->
-                <!--<function call="attribute-missing" node="." value="alt"/>-->
-                <!--<function call="is-only-blanks" node="@alt"/>-->
-                <!--<function call="characters-less-than" node="@alt" value="1"/>-->
+            <!--<function call="attribute-missing" node="." value="alt"/>-->
+            <!--<function call="is-only-blanks" node="@alt"/>-->
+            <!--<function call="characters-less-than" node="@alt" value="1"/>-->
             <!--</condition>-->
         </machine>
     </check>
@@ -1190,7 +1190,7 @@ Telephone: (416) 978-4360
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Valenci[^a]{1,2}|Valenci&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="va" />
+                    <function call="current-language" node="." value="ca" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="^[\W_]*(Benvin{0,1}guts{0,1})( *\(.*\)){0,1}[\W_]*$"/>
@@ -1995,7 +1995,7 @@ Telephone: (416) 978-4360
         <error>check.159.error</error>
         <machine>
             <trigger element="table"/>
-            <function call="is-empty-element" node="." element="th" value="any"/>
+            <function call="table-heading-blank" node="." />
         </machine>
     </check>
 
@@ -4515,7 +4515,7 @@ Telephone: (416) 978-4360
         <rationale>check.411.rationale</rationale>
         <machine>
             <trigger element="p"/>
-            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"/>
+            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
         </machine>
     </check>
 
@@ -4568,6 +4568,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="415" key="th" confidence="high">
+        <!--<prerequisite id="7"/>-->
         <name>Las tablas de datos que contienen cabeceras de filas y columna usan el atributo <code>scope</code>
             para identificar las celdas.
         </name>
@@ -4603,11 +4604,12 @@ Telephone: (416) 978-4360
         <rationale>check.417.rationale</rationale>
         <machine>
             <trigger element="option"/>
-            <function call="text-match" node="." value="[-\*#\.]{3,}.*"/>
+            <function call="text-match" node="." value="^[-\*#\.]{3,}.*"/>
         </machine>
     </check>
 
     <check id="418" key="table" confidence="high">
+        <prerequisite id="7"/>
         <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.</name>
         <error>check.418.error</error>
         <rationale>check.418.rationale</rationale>
@@ -4723,19 +4725,19 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="img"/>
             <condition type="or">
-                    <condition type="and">
-                        <!-- attribute1 = width & attribute2 = height -->
-                        <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
-                        <function call="characters-greater-than" node="@alt" value="0"/>
-                        <function call="is-not-only-blanks" node="@alt"/>
-                    </condition>
+                <condition type="and">
+                    <!-- attribute1 = width & attribute2 = height -->
+                    <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
+                    <function call="characters-greater-than" node="@alt" value="0"/>
+                    <function call="is-not-only-blanks" node="@alt"/>
+                </condition>
 
-                    <condition type="and">
-                        <!-- attribute1 = width & attribute2 = height -->
-                        <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
-                        <function call="attribute-exists" node="@role" />
-                        <function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation"/>
-                    </condition>
+                <condition type="and">
+                    <!-- attribute1 = width & attribute2 = height -->
+                    <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
+                    <function call="attribute-exists" node="@role" />
+                    <function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation"/>
+                </condition>
             </condition>
         </machine>
     </check>
@@ -5105,8 +5107,8 @@ Telephone: (416) 978-4360
 
     <check id="455" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces internos rotos</name>
-        <error>check.176.error</error>
-        <rationale>check.176.rationale</rationale>
+        <error>check.455.error</error>
+        <rationale>check.455.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="0" attribute1="domain"/>
@@ -5115,8 +5117,8 @@ Telephone: (416) 978-4360
 
     <check id="456" key="html" confidence="high" status="5">
         <name>La página contiene más de 1 enlace interno roto</name>
-        <error>check.177.error</error>
-        <rationale>check.177.rationale</rationale>
+        <error>check.456.error</error>
+        <rationale>check.456.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="1" attribute1="domain"/>
@@ -5125,8 +5127,8 @@ Telephone: (416) 978-4360
 
     <check id="457" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces externos rotos</name>
-        <error>check.176.error</error>
-        <rationale>check.176.rationale</rationale>
+        <error>check.457.error</error>
+        <rationale>check.457.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="0" attribute1="external"/>
@@ -5135,8 +5137,8 @@ Telephone: (416) 978-4360
 
     <check id="458" key="html" confidence="high" status="5">
         <name>La página contiene más de 2 enlaces externos rotos</name>
-        <error>check.177.error</error>
-        <rationale>check.177.rationale</rationale>
+        <error>check.458.error</error>
+        <rationale>check.458.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="2" attribute1="external"/>
@@ -5153,7 +5155,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="460" key="text" confidence="medium" occurrence="first">
+    <check id="460" key="text" confidence="medium" ocurrence="first">
         <name>Detección de términos en otros idiomas</name>
         <error>check.460.error</error>
         <rationale>check.460.rationale</rationale>

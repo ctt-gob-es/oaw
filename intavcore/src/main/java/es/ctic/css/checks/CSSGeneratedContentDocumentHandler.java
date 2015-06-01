@@ -1,23 +1,26 @@
 package es.ctic.css.checks;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
-import es.ctic.css.CSSDocumentHandler;
+import com.helger.css.ECSSVersion;
+import com.helger.css.decl.CSSDeclaration;
+import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.decl.visit.CSSVisitor;
+import com.helger.css.reader.CSSReader;
+import com.helger.css.reader.errorhandler.CollectingCSSParseErrorHandler;
+import com.helger.css.writer.CSSWriterSettings;
 import es.ctic.css.CSSProblem;
 import es.ctic.css.CSSResource;
+import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
-import es.inteco.common.logging.Logger;
-import org.w3c.css.sac.CSSException;
-import org.w3c.css.sac.InputSource;
-import org.w3c.css.sac.LexicalUnit;
 import org.w3c.dom.Node;
 
-import java.io.IOException;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- *
+ * Clase que comprueba si se genera contenido de cierta longitud mediante las pseudo clases :before o :after
  */
-public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
+public class CSSGeneratedContentDocumentHandler extends OAWCSSVisitor {
 
     private static final String CONTENT_PROPERTY = "content";
 
@@ -27,34 +30,29 @@ public class CSSGeneratedContentDocumentHandler extends CSSDocumentHandler {
 
     @Override
     public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
-        this.resource = cssResource;
-        final InputSource is = new InputSource();
-        is.setCharacterStream(new java.io.StringReader(cssResource.getContent()));
-        try {
-            // La generación de contenido desde CSS no se puede hacer con estilos en linea ya que requiere las pseudo clases
-            // :before y :after
-            if (!cssResource.isInline()) {
-                parser.parseStyleSheet(is);
-            }
-        } catch (IOException e) {
-            Logger.putLog("Error al parsear código CSS", CSSDocumentHandler.class, Logger.LOG_LEVEL_ERROR, e);
+        if (!cssResource.getContent().isEmpty() && !cssResource.isInline()) {
+            resource = cssResource;
+            CSSReader.setDefaultParseErrorHandler(new CollectingCSSParseErrorHandler());
+            final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30);
+            CSSVisitor.visitCSS(aCSS, this);
         }
-        return getProblems();
+        return problems;
     }
 
     @Override
-    public void property(final String name, final LexicalUnit lexicalUnit, boolean important) throws CSSException {
-        if (isPseudoClass() && CONTENT_PROPERTY.equals(name)) {
-            final String value = CSSSACUtils.parseLexicalValue(lexicalUnit);
+    public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
+        if (isValidMedia() && isPseudoClass() && CONTENT_PROPERTY.equals(cssDeclaration.getProperty())) {
+            final String value = CSSSACUtils.parseLexicalValue(getValue(cssDeclaration));
             final int allowedChars = Integer.parseInt(getCheckCode().getFunctionNumber());
             if (value.length() > allowedChars) {
-                getProblems().add(createCSSProblem(name + ": " + value));
+                getProblems().add(createCSSProblem("", cssDeclaration));
             }
         }
     }
 
     private boolean isPseudoClass() {
-        return selector!=null && (selector.contains(":before") || selector.contains(":after"));
+        final String selector = currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0);
+        return selector.contains(":before") || selector.contains(":after");
     }
 
 }

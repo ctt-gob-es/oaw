@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Clase con métodos de utilidad para evaluar las comprobaciones de CSS
  */
 public final class CSSUtils {
 
@@ -44,6 +44,12 @@ public final class CSSUtils {
         return Collections.emptyList();
     }
 
+    /**
+     * Método para obtener la instancia encargada de realizar la comprobación
+     * @param checkCode objeto CheckCode con la información de la comprobación
+     * @return una instancia de CSSAnalyzer que evaluará una comprobación de CSS
+     * @throws InstantiationException
+     */
     private static CSSAnalyzer getCSSAnalyzer(final CheckCode checkCode) throws InstantiationException {
         switch (checkCode.getFunctionId()) {
             case CheckFunctionConstants.FUNCTION_CSS_GENERATED_CONTENT:
@@ -64,6 +70,13 @@ public final class CSSUtils {
         }
     }
 
+    /**
+     * Método que transforma un problema de CSS (CSSProblem) a un problema de accesibilidad (Problem)
+     * @param cssProblem un problema encontrado en una CSS
+     * @param check comprobacion Check asociada al problema
+     * @param evaluation evaluación Evaluation que se está realizando
+     * @return un problema Problem
+     */
     public static Problem getProblemFromCSS(final CSSProblem cssProblem, final Check check, final Evaluation evaluation) {
         final PropertiesManager properties = new PropertiesManager();
         final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));

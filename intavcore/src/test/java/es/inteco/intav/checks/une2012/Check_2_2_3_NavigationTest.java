@@ -2,11 +2,8 @@ package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import ca.utoronto.atrc.tile.accessibilitychecker.Problem;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
-import es.inteco.intav.form.ProblemForm;
-import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;

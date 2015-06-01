@@ -4,7 +4,7 @@ import com.steadystate.css.parser.selectors.PseudoElementSelectorImpl;
 import org.w3c.css.sac.*;
 
 /**
- *
+ * Clase con métodos de utilidad para transformar desde los tipos usados por un parseador CSS SAC
  */
 public final class CSSSACUtils {
 
@@ -15,6 +15,12 @@ public final class CSSSACUtils {
     private CSSSACUtils() {
     }
 
+    /**
+     * Convierte un valor completo (recorre todos los valores) de una propiedad CSS de tipo LexicalUnit a una cadena
+     *
+     * @param lexicalUnit el valor a transformar
+     * @return una cadena correspondiente al valor
+     */
     public static String parseLexicalValue(LexicalUnit lexicalUnit) {
         final StringBuilder sb = new StringBuilder();
         while (lexicalUnit != null) {
@@ -31,6 +37,12 @@ public final class CSSSACUtils {
         return sb.toString();
     }
 
+    /**
+     * Convierte un <strong>único</strong> valor de una propiedad CSS de tipo LexicalUnit a una cadena
+     *
+     * @param lexicalUnit el valor a transformar
+     * @return una cadena correspondiente al valor
+     */
     public static String parseSingleLexicalValue(final LexicalUnit lexicalUnit) {
         final StringBuilder sb = new StringBuilder();
         final int lexicalUnitType = lexicalUnit.getLexicalUnitType();
@@ -91,22 +103,19 @@ public final class CSSSACUtils {
                 LexicalUnit colorUnit = lexicalUnit.getParameters();
                 sb.append('#');
                 // get R value from RGB
-                int valor = colorUnit.getIntegerValue();
-                // Si es el valor 0 no lo duplica por lo que un color FF0000 lo
-                // escribe como FF00, por eso se duplica el valor
-                sb.append(valor == 0 ? "00" : Integer.toHexString(valor));
+                // Si el valor es un único digito no lo "paddea" por lo que un color FF0006 lo
+                // escribe como FF06, por eso se antepone un "0" mediante la función converTo2DigitsHexString
+                sb.append(converTo2DigitsHexString(colorUnit.getIntegerValue()));
                 // Skip COMMA_SEPARATOR
                 colorUnit = colorUnit.getNextLexicalUnit();
                 // get G value from RGB
                 colorUnit = colorUnit.getNextLexicalUnit();
-                valor = colorUnit.getIntegerValue();
-                sb.append(valor == 0 ? "00" : Integer.toHexString(valor));
+                sb.append(converTo2DigitsHexString(colorUnit.getIntegerValue()));
                 // Skip COMMA_SEPARATOR
                 colorUnit = colorUnit.getNextLexicalUnit();
                 // get B value from RGB
                 colorUnit = colorUnit.getNextLexicalUnit();
-                valor = colorUnit.getIntegerValue();
-                sb.append(valor == 0 ? "00" : Integer.toHexString(valor));
+                sb.append(converTo2DigitsHexString(colorUnit.getIntegerValue()));
                 break;
             case LexicalUnit.SAC_INHERIT:
                 sb.append("inherit");
@@ -122,6 +131,23 @@ public final class CSSSACUtils {
         return sb.toString();
     }
 
+    /**
+     * Convierte un valor entero en su representación hexadecimal en formato cadena de al menos 2 dígitos
+     * (transforma los valores 1-F en 01-0F)
+     *
+     * @param valor entero a transformar
+     * @return string de al menos dos caracteres con la representación hexadecimal del valor
+     */
+    private static String converTo2DigitsHexString(final int valor) {
+        return (valor < 16 ? "0" : "") + Integer.toHexString(valor);
+    }
+
+    /**
+     * Convierte una lista de selectores CSS a una cadena
+     *
+     * @param selectorList una lista de selectores
+     * @return una cadena con la transcripción de los selectores
+     */
     public static String buildSelector(final SelectorList selectorList) {
         if (selectorList == null) {
             return "";
@@ -137,6 +163,12 @@ public final class CSSSACUtils {
         return sb.toString();
     }
 
+    /**
+     * Convierte un selector de CSS a una cadena
+     *
+     * @param sel el selector a convertir
+     * @return una cadena con la transcripción del selector
+     */
     public static String buildSelector(final Selector sel) {
         final StringBuilder selectorBuilder = new StringBuilder(60);
 
@@ -193,6 +225,12 @@ public final class CSSSACUtils {
         return selectorBuilder.toString();
     }
 
+    /**
+     * Convierte una condición de un selector a una cadena
+     *
+     * @param condition la condicion Condition a convertir
+     * @return una cadena con la transformación textual del objeto condition
+     */
     public static String buildCondition(final Condition condition) {
         final StringBuilder conditionBuilder = new StringBuilder(20);
         switch (condition.getConditionType()) {
@@ -214,12 +252,12 @@ public final class CSSSACUtils {
                 }
                 conditionBuilder.append(']');
                 break;
-            case Condition.SAC_CLASS_CONDITION:
+            case Condition.SAC_CLASS_CONDITION: // .class
                 final AttributeCondition classCond = (AttributeCondition) condition;
                 conditionBuilder.append('.');
                 conditionBuilder.append(classCond.getValue());
                 break;
-            case Condition.SAC_PSEUDO_CLASS_CONDITION:
+            case Condition.SAC_PSEUDO_CLASS_CONDITION: //:pseudo
                 final AttributeCondition pclassCond = (AttributeCondition) condition;
                 conditionBuilder.append(':');
                 conditionBuilder.append(pclassCond.getValue());

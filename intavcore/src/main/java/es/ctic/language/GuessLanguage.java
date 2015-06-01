@@ -296,7 +296,7 @@ public class GuessLanguage {
                 // Se lee el fichero
                 final BufferedReader reader = new BufferedReader(
                         new InputStreamReader(loader
-                                .getResourceAsStream("trigrams/" + trigram),
+                                .getResourceAsStream("languages/trigrams/" + trigram),
                                 "utf-8"));
                 // Asignamos una capacidad adecuada para que no haya operaciones
                 // de rehash (300/.75=400)

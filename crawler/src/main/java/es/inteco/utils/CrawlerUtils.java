@@ -268,7 +268,10 @@ public final class CrawlerUtils {
 
         // Añadimos el código de los IFRAMES
         try {
-            textContent = CrawlerDOMUtils.appendIframesSource(connection.getURL().toString(), textContent);
+            String iframesSource = CrawlerDOMUtils.appendIframesSource(connection.getURL().toString(), textContent);
+            if (StringUtils.isNotEmpty(iframesSource)) {
+                textContent = iframesSource;
+            }
         } catch (Exception e) {
             Logger.putLog("Error al añadir el código fuente de los iframes", CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
         }

@@ -105,4 +105,13 @@ public final class TestUtils {
         final ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
         checkVerificacion(oef,idSubgroup,expectedValue);
     }
+
+    public static void printProblems(final List<Problem> problems, int idCheck) {
+        for (Problem problem : problems) {
+            if ( problem.getCheck().getId()==idCheck) {
+                System.out.printf("%s:%s  %s%n", problem.getLineNumberString(), problem.getColumnNumberString(), problem.getNode().getTextContent());
+            }
+        }
+    }
+
 }
