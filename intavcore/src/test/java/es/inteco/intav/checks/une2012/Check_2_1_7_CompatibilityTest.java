@@ -70,6 +70,15 @@ public final class Check_2_1_7_CompatibilityTest {
     }
 
     @Test
+    public void evaluateXHTMLRDFaDoctype() throws Exception {
+        checkAccessibility.setContent("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"\n" +
+                "  \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">" +
+                "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+    }
+
+    @Test
     public void evaluateIDsUniques() throws Exception {
         checkAccessibility.setContent("<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
         checkAccessibility.setTemplateContent("<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
@@ -129,6 +138,12 @@ public final class Check_2_1_7_CompatibilityTest {
     public void evaluateCSS() throws Exception {
         checkAccessibility.setContent("<html><style>.main { color: #FFF background-color: #FFF;}</style><p>Lorem ipsum</p></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><style>#heading .company-title a{margin 0 auto}</style><p>Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_RED_ZERO);

@@ -59,6 +59,20 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     }
 
     @Test
+    public void evaluateLangXHTMLXMLLangOnly() throws Exception {
+        checkAccessibility.setContent("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"\n" +
+                "  \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">\n" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"es\">\n" +
+                "<body><p>Esto es una prueba de texto en español</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HAS_LANGUAGE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE));
+        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
     public void evaluateNoLang() throws Exception {
         checkAccessibility.setContent("<html><body><p>Lorem</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");

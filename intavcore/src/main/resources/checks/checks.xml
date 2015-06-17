@@ -584,7 +584,7 @@ Telephone: (416) 978-4360
         <rationale>check.48.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="has-language" node="."/>
+            <function call="has-language" node="." attribute1="noSevere"/>
         </machine>
     </check>
 
@@ -1190,7 +1190,7 @@ Telephone: (416) 978-4360
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Valenci[^a]{1,2}|Valenci&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="va" />
+                    <function call="current-language" node="." value="ca" />
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="^[\W_]*(Benvin{0,1}guts{0,1})( *\(.*\)){0,1}[\W_]*$"/>
@@ -1269,7 +1269,7 @@ Telephone: (416) 978-4360
                 <function call="text-equals" node="@alt" value=".png" position="end"/>
                 <function call="text-equals" node="@alt" value=".bmp" position="end"/>
                 <function call="text-match" node="@alt" value="^pic0*\d+" />
-                <function call="text-match" node="@alt" value="^\d+" />
+                <function call="text-match" node="@alt" value="^\d+$" />
                 <function call="text-match" node="@alt" value="^img_?\d+.*" />
                 <function call="text-match" node="@alt" value="^imagen$$$|^dibujo$|^pintura$|^cuadro$|^figura$|^ilustración$|^foto$|^fotograf[í|i]a$|^instantánea$|^retrato$|^captura$|^captura de pantalla$|^gráfico$|^gráfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espaciador$|^espacio$|^decorativa$|^ornamental$|^imagen decorativa$|^texto alternativo$|^descripción$|^descripción de la imagen$" />
                 <function call="text-match" node="@alt" value="^image$|^drawing$|^picture$|^painting$|^figure$|^illustration$|^photo$|^snapshot$|^snap$|^shot$|^shooting$|^photograph$|^photography$|^portrait$|^screenshot$|^graphic$|^graph$|^chart$|^diagram$|^scheme$|^diagram$|^thumb$|^thumbnail$|^separator$|^spacer$|^space$|^decorative$|^ornamental$|^decorative image$|^alternative text$|^description$|^image description$" />
@@ -1995,7 +1995,7 @@ Telephone: (416) 978-4360
         <error>check.159.error</error>
         <machine>
             <trigger element="table"/>
-            <function call="is-empty-element" node="." element="th" value="any"/>
+            <function call="table-heading-blank" node="." />
         </machine>
     </check>
 
@@ -3720,7 +3720,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="351" key="form" confidence="cannottell">
+    <check id="351" key="form" confidence="medium">
         <name>Puede que no se esté agrupando adecuadamente los controles del formulario.</name>
         <error>check.351.error</error>
         <rationale>check.351.rationale</rationale>
@@ -4515,7 +4515,7 @@ Telephone: (416) 978-4360
         <rationale>check.411.rationale</rationale>
         <machine>
             <trigger element="p"/>
-            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"/>
+            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
         </machine>
     </check>
 
@@ -4568,6 +4568,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="415" key="th" confidence="high">
+        <!--<prerequisite id="7"/>-->
         <name>Las tablas de datos que contienen cabeceras de filas y columna usan el atributo <code>scope</code>
             para identificar las celdas.
         </name>
@@ -4603,11 +4604,12 @@ Telephone: (416) 978-4360
         <rationale>check.417.rationale</rationale>
         <machine>
             <trigger element="option"/>
-            <function call="text-match" node="." value="[-\*#\.]{3,}.*"/>
+            <function call="text-match" node="." value="^[-\*#\.]{3,}.*"/>
         </machine>
     </check>
 
     <check id="418" key="table" confidence="high">
+        <prerequisite id="7"/>
         <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.</name>
         <error>check.418.error</error>
         <rationale>check.418.rationale</rationale>
@@ -4653,7 +4655,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="421" key="html" confidence="medium">
+    <check id="421" key="html" confidence="high">
         <name>Inexistencia de encabezado H1</name>
         <error>check.421.error</error>
         <rationale>check.421.rationale</rationale>
@@ -4683,7 +4685,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="423" key="ol" confidence="medium" status="1">
+    <check id="423" key="ol" confidence="high" status="1">
         <name>Lista ordenada vacía.</name>
         <error>check.423.error</error>
         <rationale>check.423.rationale</rationale>
@@ -4693,7 +4695,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="424" key="ul" confidence="medium" status="1">
+    <check id="424" key="ul" confidence="high" status="1">
         <name>Lista no ordenada vacía.</name>
         <error>check.424.error</error>
         <rationale>check.424.rationale</rationale>
@@ -4771,7 +4773,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="430" key="form" confidence="cannottell">
+    <check id="430" key="form" confidence="medium">
         <name>Uso de formularios extensos sin fieldset ni legend</name>
         <error>check.430.error</error>
         <rationale>check.430.rationale</rationale>
@@ -4785,7 +4787,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="431" key="form" confidence="cannottell">
+    <check id="431" key="form" confidence="medium">
         <name>Tablas de una única columna pueden estar simulando lista</name>
         <error>check.431.error</error>
         <rationale>check.431.rationale</rationale>
@@ -5105,8 +5107,8 @@ Telephone: (416) 978-4360
 
     <check id="455" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces internos rotos</name>
-        <error>check.176.error</error>
-        <rationale>check.176.rationale</rationale>
+        <error>check.455.error</error>
+        <rationale>check.455.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="0" attribute1="domain"/>
@@ -5115,8 +5117,8 @@ Telephone: (416) 978-4360
 
     <check id="456" key="html" confidence="high" status="5">
         <name>La página contiene más de 1 enlace interno roto</name>
-        <error>check.177.error</error>
-        <rationale>check.177.rationale</rationale>
+        <error>check.456.error</error>
+        <rationale>check.456.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="1" attribute1="domain"/>
@@ -5125,8 +5127,8 @@ Telephone: (416) 978-4360
 
     <check id="457" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces externos rotos</name>
-        <error>check.176.error</error>
-        <rationale>check.176.rationale</rationale>
+        <error>check.457.error</error>
+        <rationale>check.457.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="0" attribute1="external"/>
@@ -5135,8 +5137,8 @@ Telephone: (416) 978-4360
 
     <check id="458" key="html" confidence="high" status="5">
         <name>La página contiene más de 2 enlaces externos rotos</name>
-        <error>check.177.error</error>
-        <rationale>check.177.rationale</rationale>
+        <error>check.458.error</error>
+        <rationale>check.458.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="too-many-broken-links" node="." number="2" attribute1="external"/>
@@ -5153,7 +5155,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="460" key="html" confidence="medium">
+    <check id="460" key="text" confidence="medium" ocurrence="first">
         <name>Detección de términos en otros idiomas</name>
         <error>check.460.error</error>
         <rationale>check.460.rationale</rationale>
@@ -5190,7 +5192,7 @@ Telephone: (416) 978-4360
         <rationale>check.463.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="accessibility-declaration-not-conformance-level" node="." />
+            <function call="accessibility-declaration-not-conformance-level" node="." value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
         </machine>
     </check>
 </checks>

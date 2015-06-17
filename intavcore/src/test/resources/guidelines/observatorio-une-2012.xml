@@ -19,28 +19,20 @@
                 <checks>
                     <!-- Imágenes con atributo alt -->
                     <check id="1"/>
-
                     <!-- Elementos area con atributo alt (puede ser vacío) -->
                     <check id="64"/>
-
                     <!-- Imágenes con atributo alt sospechoso -->
                     <check id="100"/>
-
                     <!-- Elementos area pinchables con atributo alt no vacío-->
                     <check id="157"/>
-
                     <!-- Longdesc válido** Mod check original-->
                     <check id="278"/>
-
                     <!-- Input type image con alternativas -->
                     <check id="306"/>
-
                     <!-- Imágenes decorativas (alt blank) sin atributo title -->
                     <check id="413"/>
-
                     <!-- Applets sin alternativas (atributo alt o descripción en el cuerpo applet) -->
                     <check id="414"/>
-
                     <!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, role=presentation) -->
                     <check id="426"/>
                 </checks>
@@ -51,22 +43,16 @@
                 <checks>
                     <!-- Anidación correcta de encabezados -->
                     <check id="37"/>
-
                     <!-- Existencia de encabezado H1 -->
                     <check id="421" onlyWarning="true"/>
-
                     <!-- Existencia de encabezados -->
                     <check id="38"/>
-
                     <!-- Encabezados vacios -->
                     <check id="395"/>
-
                     <!-- Encabezados mismo nivel con mismo texto -->
                     <!--<check id="141"/>-->
-
                     <!-- Encabezados mismo nivel seguidos sin contenido-->
                     <check id="422"/>
-
                     <!-- Más de un encabezado si hay más de 15 párrafos -->
                     <check id="433"/>
                 </checks>
@@ -78,58 +64,40 @@
                 <checks>
                     <!-- Listas ordenadas mal creadas con elementos p -->
                     <check id="101" noExecutedMark="true"/>
-
                     <!-- Listas no ordenadas mal creadas con elementos p-->
                     <check id="120" noExecutedMark="true"/>
-
                     <!-- Listas no ordeandas mal creadas con elementos br -->
                     <check id="121" noExecutedMark="true"/>
-
                     <!-- Listas ordenadas mal creadas con elementos br -->
                     <check id="410" noExecutedMark="true"/>
-
                     <!-- Elemento de lista (li) fuera de contenedor (ul, ol) -->
                     <check id="311"/>
-
                     <!-- Lista de definicion (dl) mal construida -->
                     <check id="427"/>
-
                     <!-- Elemento de lista de definicion (dt) fuera de contenedor (dl) -->
                     <check id="313"/>
-
                     <!-- Elemento de lista de definicion (dd) fuera de contenedor (dl) -->
                     <check id="314"/>
-
                     <!-- Lista anidada directamente en lista ordenada (ol), no dentro de li -->
                     <check id="317"/>
-
                     <!-- Lista anidada directamente en lista no ordenada (ul), no dentro de li -->
                     <check id="318"/>
-
                     <!-- Lista ordenada mal construida -->
                     <check id="319"/>
-
                     <!-- Lista no ordenada mal construida-->
                     <check id="320"/>
-
                     <!-- Lista ordenada vacía (sin ítems li) -->
                     <check id="423"/>
-
                     <!-- Lista no ordenada vacía (sin ítems li) -->
                     <check id="424"/>
-
                     <!-- Lista de definición ordenada vacía (sin ítems dt, dd) -->
                     <check id="425"/>
-
                     <!-- Lista ordenada simulada con lista no ordenada -->
                     <check id="416"/>
-
                     <!-- 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
                     <check id="445"/>
-
                     <!-- 3 o más líneas separadas por BR que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
                     <check id="459"/>
-
                     <!-- Tablas formadas por una única columna y 3 o más filas y que las celdas no superen los X caracteres (Heurístico X=150) -->
                     <check id="431"/>
                 </checks>
@@ -141,31 +109,22 @@
                 <checks>
                     <!-- Tabla de datos sin encabezados -->
                     <check id="7" noExecutedMark="true"/>
-
                     <!-- Tabla de datos sin encabezados -->
                     <check id="86"/>
-
                     <!-- Encabezamientos de tabla correctos -->
                     <check id="116"/>
-
                     <!-- Todas las tablas de datos contienen un elemento caption a menos que la tabla esté identificada en el documento. -->
                     <check id="151"/>
-
                     <!-- Celdas únicas que ocupan el ancho completo de la tabla para simular encabezamientos -->
                     <check id="156"/>
-
                     <!-- Ningún th está vacío. -->
                     <check id="159"/>
-
                     <!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar las celdas. -->
                     <check id="245"/>
-
                     <!--Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.-->
                     <check id="418"/>
-
                     <!-- Summary y Caption diferentes. -->
                     <check id="243"/>
-
                     <!-- Uso del atributo scope (validando valores) -->
                     <check id="415"/>
                 </checks>
@@ -192,10 +151,8 @@
                     <!-- Utilizar en tablas de maquetación elementos de tablas de datos (th, caption, summary,...) -->
                     <!-- TODO: Comprobar todas las opciones descritas en la metodología -->
                     <check id="45"/>
-
                     <!-- Uso de elementos HTML de presentación desaconsejados (basefont, font, center, s, strike, u) -->
                     <check id="345" noExecutedMark="true"/>
-
                     <!-- Contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres alfanuméricos (Heurístico X=2).-->
                     <check id="447"/>
                 </checks>
@@ -267,7 +224,6 @@
                 <checks>
                     <!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
                     <check id="160"/>
-
                     <!-- Elementos con “onclick” u “onkeypress” son nativos de interacción (enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
                     <check id="432"/>
                 </checks>
@@ -279,13 +235,10 @@
                 <checks>
                     <!-- Se verifica que no se use la etiqueta "blink" o “marquee” -->
                     <check id="130"/>
-
                     <!-- No se debe redigir automáticamente con el elemento "meta" y el atributo "http-equiv" (con tiempo > 0) -->
                     <check id="71"/>
-
                     <!-- No se refresca la página con el elemento "meta" y el atributo "http-equiv" (independientemente del tiempo definido) -->
                     <check id="72"/>
-
                     <!-- No se emplea la propiedad de CSS 'text-decoration: blink' -->
                     <check id="449"/>
                 </checks>
@@ -335,15 +288,14 @@
                     <check id="51"/>
                     <!-- Title sospechoso (no title, sin título...) -->
                     <check id="53"/>
-
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
                     <check id="32" onlyWarning="true"/>
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
                     <check id="437" onlyWarning="true"/>
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
-                    <check id="31"/>
+                    <check id="31" relatedWith="32"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
-                    <check id="295"/>
+                    <check id="295" relatedWith="437"/>
                     <!-- Comprobar titulos distintos entre la muestra -->
                     <check id="462"/>
                 </checks>
@@ -441,7 +393,6 @@
                     <check id="457" onlyWarning="true"/>
                     <!-- Comprobamos que haya MÁS de 2 enlaces rotos -->
                     <check id="458" relatedWith="457"/>
-
                     <!-- Enlaces adyacentes al mismo recurso deben estar combinados -->
                     <check id="180"/>
                 </checks>

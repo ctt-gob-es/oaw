@@ -30,7 +30,7 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     }
 
     private final Stack<Boolean> currentMedia = new Stack<Boolean>();
-    private final CheckCode checkCode;
+    private CheckCode checkCode;
     protected CSSStyleRule currentStyleRule;
     protected final List<CSSProblem> problems = new ArrayList<CSSProblem>();
     protected CSSResource resource;
@@ -39,6 +39,15 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         super();
         this.checkCode = checkCode;
         currentMedia.push(true);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        // Aseguramos que se liberan las referencias a objetos manejados por otras librerias
+        checkCode = null;
+        currentStyleRule = null;
+        resource = null;
+        super.finalize();
     }
 
     public List<CSSProblem> evaluate(final Node node, final List<CSSResource> cssResources) {
@@ -52,11 +61,14 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
     public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
         if (!cssResource.getContent().isEmpty()) {
-            resource = cssResource;
-            CSSReader.setDefaultParseErrorHandler(new CollectingCSSParseErrorHandler());
-            final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30);
-            if ( aCSS!=null ) {
-                CSSVisitor.visitCSS(aCSS, this);
+            try {
+                resource = cssResource;
+                final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30, new CollectingCSSParseErrorHandler());
+                if (aCSS != null) {
+                    CSSVisitor.visitCSS(aCSS, this);
+                }
+            } catch (Exception e) {
+                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO);
             }
         }
         return problems;
@@ -98,15 +110,23 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     protected CSSProblem createCSSProblem(final String textContent, final CSSDeclaration cssDeclaration) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());
+        cssProblem.setSelector(currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
         if (cssDeclaration != null && cssDeclaration.getSourceLocation() != null) {
             cssProblem.setLineNumber(cssDeclaration.getSourceLocation().getFirstTokenBeginLineNumber());
             cssProblem.setColumnNumber(cssDeclaration.getSourceLocation().getFirstTokenBeginColumnNumber());
-        }
-        cssProblem.setSelector(currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
-        if (resource.getStringSource().isEmpty()) {
-            cssProblem.setTextContent(textContent);
-        } else {
-            cssProblem.setTextContent(resource.getStringSource() + System.lineSeparator() + textContent);
+            if (resource.getStringSource().isEmpty()) {
+                cssProblem.setTextContent(textContent + cssDeclaration.getAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
+            } else {
+                cssProblem.setTextContent(resource.getStringSource() + System.lineSeparator() + textContent + cssDeclaration.getAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
+            }
+        } else if (currentStyleRule != null && currentStyleRule.getSourceLocation() != null) {
+            cssProblem.setLineNumber(currentStyleRule.getSourceLocation().getFirstTokenBeginLineNumber());
+            cssProblem.setColumnNumber(currentStyleRule.getSourceLocation().getFirstTokenBeginColumnNumber());
+            if (resource.getStringSource().isEmpty()) {
+                cssProblem.setTextContent(textContent + cssProblem.getSelector());
+            } else {
+                cssProblem.setTextContent(resource.getStringSource() + System.lineSeparator() + textContent + cssProblem.getSelector());
+            }
         }
 
         return cssProblem;

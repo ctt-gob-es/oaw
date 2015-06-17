@@ -6,6 +6,7 @@ import cz.vutbr.web.domassign.StyleMap;
 import es.ctic.css.CSSAnalyzer;
 import es.ctic.css.CSSProblem;
 import es.ctic.css.CSSResource;
+import es.inteco.common.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -52,7 +53,8 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
                     }
                 }
             }
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
+            Logger.putLog("Error al comprobar CSSLabelHiddenStyleParser: " + e.getMessage(), CSSLabelHiddenStyleParser.class, Logger.LOG_LEVEL_WARNING);
         }
 
         return cssProblems;

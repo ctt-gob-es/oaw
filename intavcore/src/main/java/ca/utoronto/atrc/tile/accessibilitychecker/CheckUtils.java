@@ -34,7 +34,7 @@ public final class CheckUtils {
         final List<Element> linksFound = new ArrayList<Element>();
         for (int i = 0; i < links.getLength(); i++) {
             final Element link = (Element) links.item(i);
-            if (link.hasAttribute("href")) {
+            if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
                 if (StringUtils.isNotEmpty(link.getTextContent())) {
                     if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp)) {
                         linksFound.add(link);
@@ -239,6 +239,7 @@ public final class CheckUtils {
             return false;
         } catch (Exception e) {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
+            return false;
         } finally {
             if (checkedLinks != null && remoteUrl != null) {
                 checkedLinks.getCheckedLinks().add(remoteUrl.toString());
@@ -392,7 +393,7 @@ public final class CheckUtils {
             }
         }
 
-        String newHost = "";
+        String newHost;
         if (URI.create(link).isAbsolute()) {
             newHost = new URL(link).getHost();
         } else {
@@ -420,10 +421,9 @@ public final class CheckUtils {
     public static boolean hasConformanceLevel(final Document document) {
         /*
         “Nivel .* A”, “Nivel .* AA”, “Nivel .* AAA” (.* por si se incluye algún texto adicional como “Nivel de Accesibilidad AA”, “Nivel de Conformidad AA”, etc.).-->
-                    <!--Un texto con los patrones “doble A”, “triple AAA”, “prioridad X” (con x = 1, 2 o 3).-->
-                    <!--Iconos de conformidad del W3C identificándolos buscando patrones similares a los anteriores en su texto alternativo o, en caso de ser enlaces, reconociendo las URLs de las páginas de conformidad del W3C.
+        Un texto con los patrones “doble A”, “triple AAA”, “prioridad X” (con x = 1, 2 o 3).
+        Iconos de conformidad del W3C identificándolos buscando patrones similares a los anteriores en su texto alternativo o, en caso de ser enlaces, reconociendo las URLs de las páginas de conformidad del W3C.
          */
-        // FIXME: Comprobar texto
         final NodeList enlaces = document.getElementsByTagName("a");
         for (int i = 0; i < enlaces.getLength(); i++) {
             final Element tag = (Element) enlaces.item(i);

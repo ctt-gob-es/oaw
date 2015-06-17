@@ -853,11 +853,11 @@ public class Check {
     private boolean functionRequiredControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList inputs = elementGiven.getElementsByTagName("input");
         int filteredControls = 0;
-        for(int i=0; i<inputs.getLength(); i++ ) {
-            if ( inputs.item(i) instanceof Element) {
+        for (int i = 0; i < inputs.getLength(); i++) {
+            if (inputs.item(i) instanceof Element) {
                 final Element element = (Element) inputs.item(i);
                 // Los input de tipo hidden & button no cuentan
-                if ( !"hidden".equals(element.getAttribute("type"))
+                if (!"hidden".equals(element.getAttribute("type"))
                         && !"button".equals(element.getAttribute("type"))
                         && !"submit".equals(element.getAttribute("type"))) {
                     filteredControls++;
@@ -870,7 +870,12 @@ public class Check {
             final String formText = EvaluatorUtility.getLabelText(elementGiven);
             final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(formText);
-            return !matcher.find();
+            boolean foundRequiredText = matcher.find();
+            if ( !foundRequiredText && elementGiven.getParentNode()!=null) {
+                final String parentText = EvaluatorUtility.getLabelText(elementGiven.getParentNode());
+                foundRequiredText = pattern.matcher(parentText).find();
+            }
+            return !foundRequiredText;
         }
         return false;
     }
@@ -894,7 +899,7 @@ public class Check {
                 while (currentNode.getNodeType() == Node.TEXT_NODE && currentNode.getTextContent().trim().isEmpty()) {
                     currentNode = currentNode.getNextSibling();
                 }
-                if ( currentNode instanceof Element) {
+                if (currentNode instanceof Element) {
                     return functionNotFirstChild(checkCode, nodeNode, (Element) currentNode);
                 } else {
                     return false;
@@ -1357,7 +1362,7 @@ public class Check {
 
     // Comprueba si el elemento applet tiene alternativa
     private boolean functionAppletHasAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        if ( !elementGiven.getAttribute("alt").isEmpty() ) {
+        if (!elementGiven.getAttribute("alt").isEmpty()) {
             return true;
         } else {
             NodeList nodeList = elementGiven.getChildNodes();
@@ -1450,12 +1455,12 @@ public class Check {
 
         if (hasDoctype.equals(IntavConstants.FALSE)) {
             // no doctype so assume it's HTML
-            return elementHtml.getAttribute("lang");
+            return elementHtml.hasAttribute("lang")?elementHtml.getAttribute("lang"):elementHtml.getAttribute("xml:lang");
         } else { // has doctype (html/xhtml type and version in parser)
             String doctypeType = (String) elementRoot.getUserData("doctypeType");
             if (doctypeType != null && doctypeType.equals("html")) {
-                // Html solo tiene que tener "lang"
-                return elementHtml.getAttribute("lang");
+                // Html solo tiene que tener "lang" pero dejamos tambien xml:lang como 'fallback'
+                return elementHtml.hasAttribute("lang")?elementHtml.getAttribute("lang"):elementHtml.getAttribute("xml:lang");
             } else if ((doctypeType != null) && doctypeType.equals("xhtml")) {
                 String doctypeTypeVersion = (String) elementRoot.getUserData("doctypeVersion");
                 if (doctypeTypeVersion != null && doctypeTypeVersion.equals("1.0")) {
@@ -2331,54 +2336,56 @@ public class Check {
 
     private boolean functionTooManyBrokenLinks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-        final NodeList links = elementGiven.getElementsByTagName("A");
 
-        final int maxNumBrokenLinks = Integer.parseInt(checkCode.getFunctionNumber());
+        if (elementRoot.getUserData("domainLinks") == null && elementRoot.getUserData("externalLinks") == null) {
+            ((CheckedLinks) elementRoot.getUserData("checkedLinks")).setCheckedLinks(new ArrayList<String>());
 
-        ((CheckedLinks) elementRoot.getUserData("checkedLinks")).setCheckedLinks(new ArrayList<String>());
-
-        final List<Element> domainLinks = new LinkedList<Element>();
-        final List<Element> externalLinks = new LinkedList<Element>();
-        final String scope = checkCode.getFunctionAttribute1();
-        final String url = (String) elementRoot.getUserData("url");
-        int cont = 0;
-        for (int i = 0; i < links.getLength(); i++) {
-            final Element link = (Element) links.item(i);
-            if (StringUtils.isNotEmpty(link.getAttribute("href"))) {
-                if (!CheckUtils.isValidUrl(elementRoot, link.getAttributeNode("href"))) {
-                    if (scope.isEmpty()) {
-                        cont++;
-                    } else if ("domain".equals(scope)) {
+            final List<Element> domainLinks = new LinkedList<Element>();
+            final List<Element> externalLinks = new LinkedList<Element>();
+            final String url = (String) elementRoot.getUserData("url");
+            final NodeList links = elementGiven.getElementsByTagName("A");
+            for (int i = 0; i < links.getLength(); i++) {
+                final Element link = (Element) links.item(i);
+                if (StringUtils.isNotEmpty(link.getAttribute("href"))) {
+                    if (!CheckUtils.isValidUrl(elementRoot, link.getAttributeNode("href"))) {
                         try {
                             if (CheckUtils.checkLinkInDomain(url, link.getAttribute("href"))) {
-                                cont++;
                                 domainLinks.add(link);
-                            }
-                        } catch (MalformedURLException e) {
-                            cont++;
-                            domainLinks.add(link);
-                        }
-                    } else if ("external".equals(scope)) {
-                        try {
-                            if (!CheckUtils.checkLinkInDomain(url, link.getAttribute("href"))) {
-                                cont++;
+                            } else {
                                 externalLinks.add(link);
                             }
                         } catch (MalformedURLException e) {
-                            cont++;
-                            externalLinks.add(link);
+                            if (link.getAttribute("href").contains(url)) {
+                                domainLinks.add(link);
+                            } else {
+                                externalLinks.add(link);
+                            }
                         }
                     }
                 }
             }
-            if (cont > maxNumBrokenLinks) {
-                elementRoot.setUserData("domainLinks", domainLinks, null);
-                elementRoot.setUserData("externalLinks", externalLinks, null);
-                return true;
-            }
+
+            elementRoot.setUserData("domainLinks", domainLinks, null);
+            elementRoot.setUserData("externalLinks", externalLinks, null);
         }
 
-        return false;
+        final String scope = checkCode.getFunctionAttribute1();
+        final int maxNumBrokenLinks = Integer.parseInt(checkCode.getFunctionNumber());
+        int cont = 0;
+        try {
+            if (elementRoot.getUserData("domainLinks") != null && elementRoot.getUserData("externalLinks") != null) {
+                if (scope.isEmpty()) {
+                    cont = ((List) elementRoot.getUserData("domainLinks")).size() + ((List) elementRoot.getUserData("externalLinks")).size();
+                } else if ("domain".equals(scope)) {
+                    cont = ((List) elementRoot.getUserData("domainLinks")).size();
+                } else if ("external".equals(scope)) {
+                    cont = ((List) elementRoot.getUserData("externalLinks")).size();
+                }
+            }
+        } catch (Exception e) {
+        }
+
+        return cont > maxNumBrokenLinks;
     }
 
     private boolean functionCountAttributeValueGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -2450,7 +2457,7 @@ public class Check {
     }
 
     private boolean functionTextMatch(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        if (nodeNode==null) {
+        if (nodeNode == null) {
             return false;
         }
         String regexp = checkCode.getFunctionValue();
@@ -2778,8 +2785,6 @@ public class Check {
         } else if (string.endsWith(".cfm")) {
             return true;
         } else if (string.endsWith(".cfml")) {
-            return true;
-        } else if (string.endsWith(".htm")) {
             return true;
         } else if (string.endsWith(".asp")) {
             return true;
@@ -3201,8 +3206,14 @@ public class Check {
         if (doctypeSource != null) {
             final PropertiesManager pmgr = new PropertiesManager();
             final List<String> validDoctypes = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "valid.doctypes").split(";"));
+            for (String validDoctype : validDoctypes) {
+                if (validDoctype.equalsIgnoreCase(doctypeSource)) {
+                    return true;
+                }
+            }
+            return false;
 
-            return validDoctypes.contains(doctypeSource);
+            //return validDoctypes.contains(doctypeSource);
         } else {
             // Comprobación específica para HTML5
             final DocumentType docType = elementGiven.getOwnerDocument().getDoctype();
@@ -3449,7 +3460,7 @@ public class Check {
                 } else {
                     document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
                 }
-                if (document!=null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
+                if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
                     found = true;
                     break;
                 } else {
@@ -3487,7 +3498,7 @@ public class Check {
                 } else {
                     document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
                 }
-                if (document!=null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
+                if (document != null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
                     found = true;
                     break;
                 } else {
@@ -3525,26 +3536,28 @@ public class Check {
 
         boolean found = false;
         for (Element accessibilityLink : accessibilityLinks) {
-            try {
-                Document document = null;
-                final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                    Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                    document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                    ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                } else {
-                    document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+            if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
+                try {
+                    Document document = null;
+                    final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+                    String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
+                    if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
+                        Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
+                        document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
+                        ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
+                    } else {
+                        document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+                    }
+                    if (document != null && CheckUtils.hasConformanceLevel(document)) {
+                        found = true;
+                        break;
+                    } else {
+                        Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica el nivel de conformidad.", Check.class, Logger.LOG_LEVEL_INFO);
+                    }
+                } catch (Exception e) {
+                    Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+                    //return false;
                 }
-                if (document!=null && CheckUtils.hasConformanceLevel(document)) {
-                    found = true;
-                    break;
-                } else {
-                    Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica el nivel de conformidad.", Check.class, Logger.LOG_LEVEL_INFO);
-                }
-            } catch (Exception e) {
-                Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                return false;
             }
         }
 

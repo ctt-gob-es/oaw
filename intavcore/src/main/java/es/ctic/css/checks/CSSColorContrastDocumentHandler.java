@@ -6,6 +6,7 @@ import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSStyleRule;
 import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
+import es.inteco.common.logging.Logger;
 import org.w3c.css.sac.LexicalUnit;
 
 import javax.annotation.Nonnull;
@@ -27,7 +28,7 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
     }
 
     @Override
-    public void onEndStyleRule(@Nonnull CSSStyleRule cssStyleRule) {
+    public void onEndStyleRule(@Nonnull final CSSStyleRule cssStyleRule) {
         // Si al finalizar de procesar un bloque de declaración de estilos tenemos ambas propiedades comprobamos el contraste
         if (backgroundProperty != null && foregroundProperty != null) {
             checkColorContrast();
@@ -99,14 +100,15 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
 
             if (!needHighContrast()) {
                 if (contrastRatio < 3.5) {
-                    getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ")", null));
+                    getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ") ", null));
                 }
             } else {
                 if (contrastRatio < 4.5) {
-                    getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ")", null));
+                    getProblems().add(createCSSProblem(" (ratio:" + contrastRatio + ") ", null));
                 }
             }
-        } catch (RuntimeException t) {
+        } catch (Exception e) {
+            Logger.putLog("Error al comprobar CSSColorContrastDocumentHandler: " +e.getMessage(), CSSColorContrastDocumentHandler.class, Logger.LOG_LEVEL_WARNING);
         }
     }
 
@@ -138,10 +140,10 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
         final double g = gRGB <= 0.03928 ? gRGB / 12.92 : Math.pow(((gRGB + 0.055) / 1.055), 2.4);
         final double b = bRGB <= 0.03928 ? bRGB / 12.92 : Math.pow(((bRGB + 0.055) / 1.055), 2.4);
 
-        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+        return (0.2126 * r) + (0.7152 * g) + (0.0722 * b);
     }
 
-    private double obtainContrastRatio(double colorLuminance, double backgroundLuminance) {
+    private double obtainContrastRatio(final double colorLuminance, final double backgroundLuminance) {
         // Obtenemos el valor mayor y menor para calcular el ratio
         final double maxLuminance = Math.max(colorLuminance, backgroundLuminance);
         final double minLuminance = Math.min(colorLuminance, backgroundLuminance);

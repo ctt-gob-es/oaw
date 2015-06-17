@@ -584,7 +584,7 @@ Telephone: (416) 978-4360
         <rationale>check.48.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="has-language" node="."/>
+            <function call="has-language" node="." attribute1="noSevere"/>
         </machine>
     </check>
 
@@ -1269,7 +1269,7 @@ Telephone: (416) 978-4360
                 <function call="text-equals" node="@alt" value=".png" position="end"/>
                 <function call="text-equals" node="@alt" value=".bmp" position="end"/>
                 <function call="text-match" node="@alt" value="^pic0*\d+" />
-                <function call="text-match" node="@alt" value="^\d+" />
+                <function call="text-match" node="@alt" value="^\d+$" />
                 <function call="text-match" node="@alt" value="^img_?\d+.*" />
                 <function call="text-match" node="@alt" value="^imagen$$$|^dibujo$|^pintura$|^cuadro$|^figura$|^ilustración$|^foto$|^fotograf[í|i]a$|^instantánea$|^retrato$|^captura$|^captura de pantalla$|^gráfico$|^gráfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espaciador$|^espacio$|^decorativa$|^ornamental$|^imagen decorativa$|^texto alternativo$|^descripción$|^descripción de la imagen$" />
                 <function call="text-match" node="@alt" value="^image$|^drawing$|^picture$|^painting$|^figure$|^illustration$|^photo$|^snapshot$|^snap$|^shot$|^shooting$|^photograph$|^photography$|^portrait$|^screenshot$|^graphic$|^graph$|^chart$|^diagram$|^scheme$|^diagram$|^thumb$|^thumbnail$|^separator$|^spacer$|^space$|^decorative$|^ornamental$|^decorative image$|^alternative text$|^description$|^image description$" />
@@ -1840,6 +1840,7 @@ Telephone: (416) 978-4360
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra la forma de contactar</name>
         <error>check.148.error</error>
+        <rationale>check.148.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="accessibility-declaration-not-contact" node="."
@@ -1853,6 +1854,7 @@ Telephone: (416) 978-4360
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra la última fecha de revisión</name>
         <error>check.149.error</error>
+        <rationale>check.149.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <condition type="and">
@@ -3720,7 +3722,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="351" key="form" confidence="cannottell">
+    <check id="351" key="form" confidence="medium">
         <name>Puede que no se esté agrupando adecuadamente los controles del formulario.</name>
         <error>check.351.error</error>
         <rationale>check.351.rationale</rationale>
@@ -4655,7 +4657,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="421" key="html" confidence="medium">
+    <check id="421" key="html" confidence="high">
         <name>Inexistencia de encabezado H1</name>
         <error>check.421.error</error>
         <rationale>check.421.rationale</rationale>
@@ -4685,7 +4687,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="423" key="ol" confidence="medium" status="1">
+    <check id="423" key="ol" confidence="high" status="1">
         <name>Lista ordenada vacía.</name>
         <error>check.423.error</error>
         <rationale>check.423.rationale</rationale>
@@ -4695,7 +4697,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="424" key="ul" confidence="medium" status="1">
+    <check id="424" key="ul" confidence="high" status="1">
         <name>Lista no ordenada vacía.</name>
         <error>check.424.error</error>
         <rationale>check.424.rationale</rationale>
@@ -4773,7 +4775,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="430" key="form" confidence="cannottell">
+    <check id="430" key="form" confidence="medium">
         <name>Uso de formularios extensos sin fieldset ni legend</name>
         <error>check.430.error</error>
         <rationale>check.430.rationale</rationale>
@@ -4787,7 +4789,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="431" key="form" confidence="cannottell">
+    <check id="431" key="form" confidence="medium">
         <name>Tablas de una única columna pueden estar simulando lista</name>
         <error>check.431.error</error>
         <rationale>check.431.rationale</rationale>
@@ -5161,7 +5163,7 @@ Telephone: (416) 978-4360
         <rationale>check.460.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="other-language" node="." />
+            <function call="other-language" node="." number="4" />
         </machine>
     </check>
 
@@ -5192,7 +5194,7 @@ Telephone: (416) 978-4360
         <rationale>check.463.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="accessibility-declaration-not-conformance-level" node="." />
+            <function call="accessibility-declaration-not-conformance-level" node="." value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
         </machine>
     </check>
 </checks>

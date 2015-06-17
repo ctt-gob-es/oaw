@@ -52,7 +52,7 @@ public class CartuchoAccesibilidad extends Cartucho {
 
             // Calculamos el resultado de la comprobacion titulos diferentes ya que requiere haber realizado el rastreo completo
             if (checkAccesibility.getGuidelineFile().startsWith("observatorio-une-2012")) {
-                final long idRastreo = (Long) datos.get("id_rastreo");
+                final long idRastreo = (Long) datos.get("idFulfilledCrawling");
                 final Connection connection = DataBaseManager.getConnection();
                 final Set<String> distribucionTitulos = new HashSet<String>();
                 final List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idRastreo);
