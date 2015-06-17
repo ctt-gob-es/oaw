@@ -10,7 +10,6 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.utils.FileUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -38,7 +37,7 @@ public class ExportOpenOfficeAction extends Action {
             idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
         }
 
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
         final String basePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office")
                 + idObservatory + File.separator + idExecution + File.separator;
 
@@ -55,7 +54,7 @@ public class ExportOpenOfficeAction extends Action {
             String graphicPath = basePath + "temp" + File.separator;
             int numObs = ObservatorioDAO.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha()).size();
             ExportOpenOfficeUtils.createOpenOfficeDocument(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), numObs);
-            //FileUtils.deleteDir(new File(graphicPath));
+            FileUtils.deleteDir(new File(graphicPath));
         } catch (Exception e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR_PAGE);

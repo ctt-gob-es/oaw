@@ -293,9 +293,9 @@
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
                     <check id="437" onlyWarning="true"/>
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
-                    <check id="31"/>
+                    <check id="31" relatedWith="32"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
-                    <check id="295"/>
+                    <check id="295" relatedWith="437"/>
                     <!-- Comprobar titulos distintos entre la muestra -->
                     <check id="462"/>
                 </checks>
@@ -348,8 +348,7 @@
                     <check id="439"/>
                     <!-- Se verifica que el valor de los atributos que deben tener un valor único por página (“id”, “accesskey”) efectivamente tienen un valor único -->
                     <check id="438"/>
-                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis)
-                    La comprobación 78 realiza la validación estricta de CSS (servicio W3C) ¿Cambiar por un parseo? -->
+                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis) -->
                     <check id="450"/>
                 </checks>
             </subgroup>

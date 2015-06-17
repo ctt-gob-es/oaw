@@ -364,6 +364,11 @@ public class CheckerParser extends DOMParser {
         // is this an IMG?
         else if (node.getNodeName().equalsIgnoreCase("img")) {
             parseImg(node);
+            if (!((Element) node).getAttribute("alt").trim().isEmpty()) {
+                if (nodePreviousHeader != null) {
+                    nodePreviousHeader.setUserData("headerHasContents", true, null);
+                }
+            }
         }
 
         // is this an SCRIPT (and requires a NOSCRIPT)?
@@ -457,7 +462,7 @@ public class CheckerParser extends DOMParser {
                                 node.setUserData("dimension", dimension, null);
                             } else {
                                 Logger.putLog("Can't get image, buffered image null: " + stringUrl, CheckerParser.class, Logger.LOG_LEVEL_INFO);
-                                throw new Exception();
+//                                throw new Exception();
                             }
 //							}
                         } catch (Exception e) {

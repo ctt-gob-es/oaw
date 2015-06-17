@@ -36,7 +36,7 @@ public final class Check_2_2_1_MultiplesWaysTest {
 
     @Test
     public void evaluateSiteMapNoSearchForm() throws Exception {
-        checkAccessibility.setContent("<html><body><p>Lorem ipsum</p><p><a href=\"http:\\\\www.google.com\">Mapa web</a></p></html>");
+        checkAccessibility.setContent("<html><body><p>Lorem ipsum</p><p><a href=\"http://www.google.com\">Mapa web</a></p></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MULTIPLES_WAYS_ID));

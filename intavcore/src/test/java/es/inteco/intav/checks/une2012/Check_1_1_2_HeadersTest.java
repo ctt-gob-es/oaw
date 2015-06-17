@@ -270,6 +270,10 @@ public final class Check_1_1_2_HeadersTest {
         checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Loren</h2><p>Some content</p><h3>No content</h3></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h2>Ipsum</h2><p><img src=\"\" alt=\"Some content\"></p><h2>Content</h2><p>Final content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
     }
 
 

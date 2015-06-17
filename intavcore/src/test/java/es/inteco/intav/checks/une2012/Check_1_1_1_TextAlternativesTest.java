@@ -215,7 +215,7 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
         checkAccessibility.setUrl("http://www.fundacionctic.org");
 
         checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"#foo\"></p></body></html>");
-        Assert.assertEquals("URL relativa que empieza por ../", 0, getNumProblems(checkAccessibility, IMG_LONGDESC_ID));
+        Assert.assertEquals("URL relativa que es un ancla", 0, getNumProblems(checkAccessibility, IMG_LONGDESC_ID));
 
         checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"../path/index.html#foo\"></p></body></html>");
         Assert.assertEquals("URL relativa que empieza por ../", 0, getNumProblems(checkAccessibility, IMG_LONGDESC_ID));

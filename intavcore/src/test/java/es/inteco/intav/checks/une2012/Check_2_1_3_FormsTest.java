@@ -483,6 +483,20 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
+    public void evaluateRequiredControlsImg() throws Exception {
+        checkAccessibility.setContent("<form>" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<label>Lorem <img src=\"img/asterisk.gif\" alt=\"Campo obligatorio\"></label><input>" +
+                "<input>" +
+                "<input>" +
+                "<input>" +
+                "<input>" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, REQUIRED_CONTROLS));
+    }
+
+    @Test
     public void evaluateLabelHiddenDisplayNone() throws Exception {
         checkAccessibility.setContent("<html><style>label { display: none; }</style>" +
                 "<div>Los campos marcados con * son obligatorios" +

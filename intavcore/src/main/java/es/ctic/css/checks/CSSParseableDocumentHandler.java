@@ -7,9 +7,11 @@ import com.helger.css.decl.visit.CSSVisitor;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.errorhandler.CSSParseError;
 import com.helger.css.reader.errorhandler.CollectingCSSParseErrorHandler;
+import com.helger.css.writer.CSSWriterSettings;
 import es.ctic.css.CSSProblem;
 import es.ctic.css.CSSResource;
 import es.ctic.css.OAWCSSVisitor;
+import es.inteco.common.logging.Logger;
 import org.w3c.dom.Node;
 
 import java.util.Date;
@@ -20,22 +22,26 @@ import java.util.List;
  */
 public class CSSParseableDocumentHandler extends OAWCSSVisitor {
 
-    public CSSParseableDocumentHandler(CheckCode checkCode) {
+    public CSSParseableDocumentHandler(final CheckCode checkCode) {
         super(checkCode);
     }
 
     @Override
     public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
         if (!cssResource.getContent().isEmpty()) {
-            resource = cssResource;
-            final CollectingCSSParseErrorHandler errorHandler = new CollectingCSSParseErrorHandler();
-            CSSReader.setDefaultParseErrorHandler(errorHandler);
-            final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30);
-            CSSVisitor.visitCSS(aCSS, this);
-            for (CSSParseError cssParseError : errorHandler.getAllParseErrors()) {
-                getProblems().add(createCSSParserError(cssParseError));
+            try {
+                resource = cssResource;
+                final CollectingCSSParseErrorHandler errorHandler = new CollectingCSSParseErrorHandler();
+                final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30, errorHandler);
+                if (aCSS != null) {
+                    CSSVisitor.visitCSS(aCSS, this);
+                    for (CSSParseError cssParseError : errorHandler.getAllParseErrors()) {
+                        getProblems().add(createCSSParserError(cssParseError));
+                    }
+                }
+            } catch (Exception e) {
+                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO);
             }
-
         }
         return problems;
     }
@@ -48,8 +54,16 @@ public class CSSParseableDocumentHandler extends OAWCSSVisitor {
             cssProblem.setColumnNumber(cssParseError.getFirstSkippedToken().getBeginColumn());
         }
 
-        cssProblem.setSelector("");
-        cssProblem.setTextContent(cssParseError.getErrorMessage());
+        if ( currentStyleRule!=null ) {
+            cssProblem.setSelector(currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
+        } else {
+            cssProblem.setSelector("");
+        }
+        if ( cssParseError.getLastValidToken()!=null && cssParseError.getLastValidToken().getImage()!=null && !cssParseError.getLastValidToken().getImage().trim().isEmpty()) {
+            cssProblem.setTextContent(resource.getStringSource() +System.lineSeparator() + "Encontrado error de parseo en: " + cssParseError.getLastValidToken().getImage());
+        } else {
+            cssProblem.setTextContent(resource.getStringSource() + System.lineSeparator() + cssParseError.getErrorMessage());
+        }
 
         return cssProblem;
     }
