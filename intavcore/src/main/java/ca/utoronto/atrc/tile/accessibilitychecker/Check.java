@@ -834,12 +834,29 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_TABLE_HEADING_BLANK:
                 return CheckTables.functionTableHeadingBlank(checkCode, nodeNode, elementGiven);
 
+            case CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS:
+                return functionTitleNotContains(checkCode, nodeNode, elementGiven);
+
             default:
                 Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
                 break;
         }
 
         return false;
+    }
+
+    public static boolean functionTitleNotContains(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
+        final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+        final NodeList titles = elementGiven.getOwnerDocument().getDocumentElement().getElementsByTagName("title");
+
+        for (int i = 0; i < titles.getLength(); i++) {
+            final Element title = (Element) titles.item(i);
+            if (pattern.matcher(title.getTextContent()).find()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean functionLinkCharactersGreaterThan(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
@@ -871,7 +888,7 @@ public class Check {
             final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
             final Matcher matcher = pattern.matcher(formText);
             boolean foundRequiredText = matcher.find();
-            if ( !foundRequiredText && elementGiven.getParentNode()!=null) {
+            if (!foundRequiredText && elementGiven.getParentNode() != null) {
                 final String parentText = EvaluatorUtility.getLabelText(elementGiven.getParentNode());
                 foundRequiredText = pattern.matcher(parentText).find();
             }
@@ -1455,12 +1472,12 @@ public class Check {
 
         if (hasDoctype.equals(IntavConstants.FALSE)) {
             // no doctype so assume it's HTML
-            return elementHtml.hasAttribute("lang")?elementHtml.getAttribute("lang"):elementHtml.getAttribute("xml:lang");
+            return elementHtml.hasAttribute("lang") ? elementHtml.getAttribute("lang") : elementHtml.getAttribute("xml:lang");
         } else { // has doctype (html/xhtml type and version in parser)
             String doctypeType = (String) elementRoot.getUserData("doctypeType");
             if (doctypeType != null && doctypeType.equals("html")) {
                 // Html solo tiene que tener "lang" pero dejamos tambien xml:lang como 'fallback'
-                return elementHtml.hasAttribute("lang")?elementHtml.getAttribute("lang"):elementHtml.getAttribute("xml:lang");
+                return elementHtml.hasAttribute("lang") ? elementHtml.getAttribute("lang") : elementHtml.getAttribute("xml:lang");
             } else if ((doctypeType != null) && doctypeType.equals("xhtml")) {
                 String doctypeTypeVersion = (String) elementRoot.getUserData("doctypeVersion");
                 if (doctypeTypeVersion != null && doctypeTypeVersion.equals("1.0")) {
@@ -3448,31 +3465,41 @@ public class Check {
         }
 
         boolean found = false;
-        for (Element accessibilityLink : accessibilityLinks) {
+        if (accessibilityLinks.isEmpty()) {
+            // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
             try {
-                Document document = null;
-                final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                    Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                    document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                    ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                } else {
-                    document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
-                }
-                if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
-                    found = true;
-                    break;
-                } else {
-                    Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica forma de contactar con los administradores.", Check.class, Logger.LOG_LEVEL_INFO);
-                }
+                return !CheckUtils.hasContact(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
             } catch (Exception e) {
                 Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                return false;
             }
-        }
+            return false;
+        } else {
+            for (Element accessibilityLink : accessibilityLinks) {
+                try {
+                    Document document = null;
+                    final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+                    String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
+                    if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
+                        Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
+                        document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
+                        ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
+                    } else {
+                        document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+                    }
+                    if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
+                        found = true;
+                        break;
+                    } else {
+                        Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica forma de contactar con los administradores.", Check.class, Logger.LOG_LEVEL_INFO);
+                    }
+                } catch (Exception e) {
+                    Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+                    return false;
+                }
+            }
 
-        return !found;
+            return !found;
+        }
     }
 
     private boolean functionAccessibilityDeclarationNoRevisionDate(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -3486,33 +3513,43 @@ public class Check {
         }
 
         boolean found = false;
-        for (Element accessibilityLink : accessibilityLinks) {
+        if (accessibilityLinks.isEmpty()) {
+            // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
             try {
-                Document document = null;
-                final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                    Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                    document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                    ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                } else {
-                    document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
-                }
-                if (document != null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
-                    found = true;
-                    break;
-                } else {
-                    if (checkCode.getFunctionPosition() != null && checkCode.getFunctionPosition().equals("end")) {
-                        Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica fecha de última revisión.", Check.class, Logger.LOG_LEVEL_INFO);
-                    }
-                }
+                return !CheckUtils.hasContact(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
             } catch (Exception e) {
                 Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                return false;
             }
-        }
+            return false;
+        } else {
+            for (Element accessibilityLink : accessibilityLinks) {
+                try {
+                    Document document = null;
+                    final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+                    String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
+                    if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
+                        Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
+                        document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
+                        ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
+                    } else {
+                        document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+                    }
+                    if (document != null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
+                        found = true;
+                        break;
+                    } else {
+                        if (checkCode.getFunctionPosition() != null && checkCode.getFunctionPosition().equals("end")) {
+                            Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica fecha de última revisión.", Check.class, Logger.LOG_LEVEL_INFO);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+                    return false;
+                }
+            }
 
-        return !found;
+            return !found;
+        }
     }
 
 
@@ -3535,33 +3572,43 @@ public class Check {
         }
 
         boolean found = false;
-        for (Element accessibilityLink : accessibilityLinks) {
-            if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
-                try {
-                    Document document = null;
-                    final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                    String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                    if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                        Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                        document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                        ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                    } else {
-                        document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+        if (accessibilityLinks.isEmpty()) {
+            // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
+            try {
+                return !CheckUtils.hasContact(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
+            } catch (Exception e) {
+                Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+            }
+            return false;
+        } else {
+            for (Element accessibilityLink : accessibilityLinks) {
+                if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
+                    try {
+                        Document document = null;
+                        final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+                        String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
+                        if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
+                            Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
+                            document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
+                            ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
+                        } else {
+                            document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+                        }
+                        if (document != null && CheckUtils.hasConformanceLevel(document)) {
+                            found = true;
+                            break;
+                        } else {
+                            Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica el nivel de conformidad.", Check.class, Logger.LOG_LEVEL_INFO);
+                        }
+                    } catch (Exception e) {
+                        Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+                        //return false;
                     }
-                    if (document != null && CheckUtils.hasConformanceLevel(document)) {
-                        found = true;
-                        break;
-                    } else {
-                        Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica el nivel de conformidad.", Check.class, Logger.LOG_LEVEL_INFO);
-                    }
-                } catch (Exception e) {
-                    Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                    //return false;
                 }
             }
-        }
 
-        return !found;
+            return !found;
+        }
     }
 
     private boolean functionFalseParagraphList(CheckCode checkCode, Node nodeNode, Element elementGiven) {

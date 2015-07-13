@@ -162,7 +162,7 @@ public interface CheckFunctionConstants {
     public static final int FUNCTION_TABINDEX_EXCESSIVE_USAGE = 153;
     public static final int FUNCTION_LINK_CHARS_GREATER = 154;
     public static final int FUNCTION_TABLE_HEADING_BLANK = 155;
-
+    public static final int FUNCTION_TITLE_NOT_CONTAINS = 156;
 
 
     // check codes

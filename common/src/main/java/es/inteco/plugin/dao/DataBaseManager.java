@@ -7,7 +7,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-public class DataBaseManager {
+public final class DataBaseManager {
 
     private DataBaseManager() {
     }
