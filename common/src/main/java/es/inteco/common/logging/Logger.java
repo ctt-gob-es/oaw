@@ -12,17 +12,15 @@ public final class Logger {
     private Logger() {
     }
 
-    public static void putLog(String message, Class clazz, int logLevel) {
-        Log logger = LogFactory.getLog(clazz);
-        writeLog(logger, message, logLevel, null);
+    public static void putLog(final String message, final Class clazz, final int logLevel) {
+        writeLog(LogFactory.getLog(clazz), message, logLevel, null);
     }
 
-    public static void putLog(String message, Class clazz, int logLevel, Exception ex) {
-        Log logger = LogFactory.getLog(clazz);
-        writeLog(logger, message, logLevel, ex);
+    public static void putLog(final String message, final Class clazz, final int logLevel, final Exception ex) {
+        writeLog(LogFactory.getLog(clazz), message, logLevel, ex);
     }
 
-    private static void writeLog(Log logger, String message, int logLevel, Exception exception) {
+    private static void writeLog(final Log logger, final String message, final int logLevel, final Exception exception) {
         if (logLevel == LOG_LEVEL_ERROR) {
             logger.error(message, exception);
         } else if (logLevel == LOG_LEVEL_DEBUG) {

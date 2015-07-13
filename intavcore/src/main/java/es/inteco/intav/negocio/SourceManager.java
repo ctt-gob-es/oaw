@@ -17,7 +17,7 @@ public final class SourceManager {
      * @param problem el problema de accesibilidad Problem detectado durante el análisis
      * @return la cadena con el texto
      */
-    public static String getSourceInfo(Problem problem) {
+    public static String getSourceInfo(final Problem problem) {
         final Check check = problem.getCheck();
         final Element elementProblem = (Element) problem.getNode();
         final String nameProblemElement = check.getKeyElement();

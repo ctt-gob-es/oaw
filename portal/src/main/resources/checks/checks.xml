@@ -797,9 +797,9 @@ Telephone: (416) 978-4360
             <trigger element="area"/>
             <function call="attribute-missing" node="." value="alt"/>
             <!--<condition type="or">-->
-                <!--<function call="attribute-missing" node="." value="alt"/>-->
-                <!--<function call="is-only-blanks" node="@alt"/>-->
-                <!--<function call="characters-less-than" node="@alt" value="1"/>-->
+            <!--<function call="attribute-missing" node="." value="alt"/>-->
+            <!--<function call="is-only-blanks" node="@alt"/>-->
+            <!--<function call="characters-less-than" node="@alt" value="1"/>-->
             <!--</condition>-->
         </machine>
     </check>
@@ -1585,6 +1585,8 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <condition type="and">
+                <function call="title-not-contains" node="."
+                          value="\b(accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun)\b" />
                 <function call="has-not-section-link" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
             </condition>
@@ -4727,19 +4729,19 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="img"/>
             <condition type="or">
-                    <condition type="and">
-                        <!-- attribute1 = width & attribute2 = height -->
-                        <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
-                        <function call="characters-greater-than" node="@alt" value="0"/>
-                        <function call="is-not-only-blanks" node="@alt"/>
-                    </condition>
+                <condition type="and">
+                    <!-- attribute1 = width & attribute2 = height -->
+                    <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
+                    <function call="characters-greater-than" node="@alt" value="0"/>
+                    <function call="is-not-only-blanks" node="@alt"/>
+                </condition>
 
-                    <condition type="and">
-                        <!-- attribute1 = width & attribute2 = height -->
-                        <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
-                        <function call="attribute-exists" node="@role" />
-                        <function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation"/>
-                    </condition>
+                <condition type="and">
+                    <!-- attribute1 = width & attribute2 = height -->
+                    <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
+                    <function call="attribute-exists" node="@role" />
+                    <function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation"/>
+                </condition>
             </condition>
         </machine>
     </check>

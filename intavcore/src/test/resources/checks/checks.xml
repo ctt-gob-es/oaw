@@ -1585,6 +1585,8 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <condition type="and">
+                <function call="title-not-contains" node="."
+                          value="\b(accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun)\b" />
                 <function call="has-not-section-link" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
             </condition>
@@ -1840,6 +1842,7 @@ Telephone: (416) 978-4360
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra la forma de contactar</name>
         <error>check.148.error</error>
+        <rationale>check.148.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <function call="accessibility-declaration-not-contact" node="."
@@ -1853,6 +1856,7 @@ Telephone: (416) 978-4360
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra la última fecha de revisión</name>
         <error>check.149.error</error>
+        <rationale>check.149.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <condition type="and">
