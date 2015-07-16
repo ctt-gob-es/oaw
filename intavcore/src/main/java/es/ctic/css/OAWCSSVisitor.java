@@ -8,16 +8,17 @@ import com.helger.css.decl.visit.DefaultCSSVisitor;
 import com.helger.css.reader.CSSReader;
 import com.helger.css.reader.errorhandler.CollectingCSSParseErrorHandler;
 import com.helger.css.writer.CSSWriterSettings;
+import es.ctic.css.utils.CSSSACUtils;
 import es.inteco.common.logging.Logger;
-import org.w3c.css.sac.*;
-import org.w3c.css.sac.helpers.ParserFactory;
-import org.w3c.dom.Node;
+import org.dom4j.Document;
+import org.w3c.css.sac.InputSource;
+import org.w3c.css.sac.LexicalUnit;
+import org.w3c.css.sac.Parser;
+import org.w3c.css.sac.SelectorList;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Stack;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Clase básica para la comprobacion de problemas en recursos CSS.
@@ -25,15 +26,12 @@ import java.util.Stack;
  */
 public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
-    static {
-        System.setProperty("org.w3c.css.sac.parser", "com.steadystate.css.parser.SACParserCSS3");
-    }
-
     private final Stack<Boolean> currentMedia = new Stack<Boolean>();
     private CheckCode checkCode;
     protected CSSStyleRule currentStyleRule;
     protected final List<CSSProblem> problems = new ArrayList<CSSProblem>();
     protected CSSResource resource;
+    private Document document;
 
     public OAWCSSVisitor(final CheckCode checkCode) {
         super();
@@ -47,19 +45,22 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         checkCode = null;
         currentStyleRule = null;
         resource = null;
+        document = null;
+        currentMedia.clear();
         super.finalize();
     }
 
-    public List<CSSProblem> evaluate(final Node node, final List<CSSResource> cssResources) {
+    public List<CSSProblem> evaluate(final Document document, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
         for (CSSResource cssResource : cssResources) {
-            cssProblems.addAll(evaluate(node, cssResource));
+            cssProblems.addAll(evaluate(document, cssResource));
         }
 
         return cssProblems;
     }
 
-    public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
+    public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
+        this.document = document;
         if (!cssResource.getContent().isEmpty()) {
             try {
                 resource = cssResource;
@@ -94,6 +95,13 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     public void onEndMediaRule(@Nonnull final CSSMediaRule cssMediaRule) {
         currentMedia.pop();
     }
+
+    @Override
+    public void end() {
+        filterCSSProblems();
+        super.end();
+    }
+
 
     public List<CSSProblem> getProblems() {
         return problems;
@@ -134,22 +142,7 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
     protected LexicalUnit getValue(final CSSDeclaration cssDeclaration) {
         try {
-            final ParserFactory parserFactory = new ParserFactory();
-            final Parser parser = parserFactory.makeParser();
-            // Inicializamos a un ErrorHandler vacío porque por defecto imprime los errores por System.err
-            parser.setErrorHandler(new ErrorHandler() {
-                @Override
-                public void warning(CSSParseException exception) throws CSSException {
-                }
-
-                @Override
-                public void error(CSSParseException exception) throws CSSException {
-                }
-
-                @Override
-                public void fatalError(CSSParseException exception) throws CSSException {
-                }
-            });
+            final Parser parser = CSSSACUtils.getSACParser();
             final InputSource is = new InputSource();
             is.setCharacterStream(new java.io.StringReader(cssDeclaration.getExpression().getAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0)));
             return parser.parsePropertyValue(is);
@@ -157,6 +150,53 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
             Logger.putLog("Fallo an intentar parsear el valor de una propiedad", OAWCSSVisitor.class, Logger.LOG_LEVEL_WARNING, e);
         }
         return null;
+    }
+
+    /**
+     * Método para eliminar aquellas incidencias de CSS que no se aplican sobre la página (selectores que no se encuentran en la página)
+     *
+     * @return lista con únicamente los problemas de CSS que se aplican en esta página
+     */
+    private List<CSSProblem> filterCSSProblems() {
+        if (document != null) {
+            final ListIterator<CSSProblem> iterator = problems.listIterator();
+            try {
+                final Parser cssParser = CSSSACUtils.getSACParser();
+                while (iterator.hasNext()) {
+                    final CSSProblem cssProblem = iterator.next();
+                    if (!isSelectorUsed(cssParser, cssProblem.getSelector())) {
+                        iterator.remove();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return problems;
+    }
+
+    private boolean isSelectorUsed(final Parser cssParser, final String selectors) {
+        if (!selectors.isEmpty()) {
+            final InputSource is = new InputSource();
+            is.setCharacterStream(new java.io.StringReader(selectors));
+            boolean isSelectorUsed = false;
+            try {
+                final SelectorList selectorList = cssParser.parseSelectors(is);
+                for (int i = 0; i < selectorList.getLength(); i++) {
+                    final String xpath = CSSSACUtils.getXPATHFromSelector(selectorList.item(i));
+                    try {
+                        final List<?> nodes = document.selectNodes(xpath);
+                        isSelectorUsed |= !nodes.isEmpty();
+                    } catch (Exception e) {
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return isSelectorUsed;
+        }
+        return true;
     }
 
 }

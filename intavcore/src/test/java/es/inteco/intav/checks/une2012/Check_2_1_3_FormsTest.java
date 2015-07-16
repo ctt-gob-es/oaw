@@ -498,11 +498,11 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
     @Test
     public void evaluateLabelHiddenDisplayNone() throws Exception {
-        checkAccessibility.setContent("<html><style>label { display: none; }</style>" +
-                "<div>Los campos marcados con * son obligatorios" +
+        checkAccessibility.setContent("<html><style type=\"text/css\">label { display: none; }</style>" +
+                "<div>Los campos marcados con * son obligatorios</div>" +
                 "<fieldset><legend>Grupo</legend>" +
-                "<label for=\"id_1\">Lorem*</label><input>" +
-                "<input id=\"id_1\">" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\" />" +
                 "</fieldset>" +
                 "</form>");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
@@ -511,6 +511,15 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     @Test
     public void evaluateLabelHiddenLeftNegative() throws Exception {
         checkAccessibility.setContent("<html><style>label { left: -9000px; }</style>" +
+                "<div>Los campos marcados con * son obligatorios" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<label for=\"id_1\">Lorem*</label><input>" +
+                "<input id=\"id_1\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
+
+        checkAccessibility.setContent("<html><style>label { left: -999em; }</style>" +
                 "<div>Los campos marcados con * son obligatorios" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label for=\"id_1\">Lorem*</label><input>" +

@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>intav-core</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
     <packaging>jar</packaging>
 
     <name>intav-core</name>
@@ -11,11 +11,32 @@
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>2.0.3</version>
+        <version>2.0.4</version>
         <relativePath>../oaw/pom.xml</relativePath>
     </parent>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.4.201502262128</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <resources>
             <resource>
                 <directory>profiles/${profile.name}</directory>
@@ -31,7 +52,7 @@
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>intav-common</artifactId>
-            <version>2.0.3</version>
+            <version>2.0.4</version>
         </dependency>
 
         <dependency>
@@ -77,13 +98,25 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ccil.cowan.tagsoup</groupId>
+            <artifactId>tagsoup</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>net.sourceforge.cssparser</groupId>
             <artifactId>cssparser</artifactId>
             <version>0.9.14</version>
         </dependency>
 
         <!-- Aunque el parseador de CSS va a ser mediante SAC y la implementacion de cssparser
-             mantenemos las dependencias del resto de librerías como test para posteriores pruebas puntuales -->
+        mantenemos las dependencias del resto de librerías como test para posteriores pruebas puntuales -->
         <dependency>
             <groupId>net.sf.cssbox</groupId>
             <artifactId>jstyleparser</artifactId>

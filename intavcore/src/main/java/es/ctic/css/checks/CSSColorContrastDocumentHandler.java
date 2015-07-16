@@ -126,6 +126,14 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
                 // Si es un nombre de color obtenemos su equivalente hexadecimal
                 return Color.decode(ColorValues.getHexColorFromName(colorValue.getStringValue()));
             }
+        } else if (colorValue.getLexicalUnitType() == LexicalUnit.SAC_URI) {
+            LexicalUnit lastValue = colorValue;
+            LexicalUnit itrLexicalUnit = colorValue.getNextLexicalUnit();
+            while (itrLexicalUnit != null) {
+                lastValue = itrLexicalUnit;
+                itrLexicalUnit = itrLexicalUnit.getNextLexicalUnit();
+            }
+            return Color.decode(CSSSACUtils.parseSingleLexicalValue(lastValue));
         } else {
             return Color.decode(CSSSACUtils.parseSingleLexicalValue(colorValue));
         }

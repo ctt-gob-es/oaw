@@ -1,7 +1,9 @@
 package es.ctic.css.utils;
 
+import com.steadystate.css.parser.selectors.AndConditionImpl;
 import com.steadystate.css.parser.selectors.PseudoElementSelectorImpl;
 import org.w3c.css.sac.*;
+import org.w3c.css.sac.helpers.ParserFactory;
 
 /**
  * Clase con métodos de utilidad para transformar desde los tipos usados por un parseador CSS SAC
@@ -11,8 +13,37 @@ public final class CSSSACUtils {
     private static final String SPACE_SEPARATOR = " ";
     private static final String COMMA_SEPARATOR = ", ";
     private static final java.text.DecimalFormat DECIMAL_FORMAT = new java.text.DecimalFormat("0.##");
+    // Inicializamos un ErrorHandler vacío porque por defecto imprime los errores por System.err
+    private static final ErrorHandler NO_ERROR_HANDLER = new ErrorHandler() {
+        @Override
+        public void warning(CSSParseException exception) throws CSSException {
+            // Do nothing
+        }
+
+        @Override
+        public void error(CSSParseException exception) throws CSSException {
+            // Do nothing
+        }
+
+        @Override
+        public void fatalError(CSSParseException exception) throws CSSException {
+            // Do nothing
+        }
+    };
+
+    static {
+        System.setProperty("org.w3c.css.sac.parser", "com.steadystate.css.parser.SACParserCSS3");
+    }
 
     private CSSSACUtils() {
+    }
+
+    public static Parser getSACParser() throws Exception {
+        final ParserFactory parserFactory = new ParserFactory();
+        final Parser cssParser = parserFactory.makeParser();
+        cssParser.setErrorHandler(NO_ERROR_HANDLER);
+
+        return cssParser;
     }
 
     /**
@@ -261,6 +292,120 @@ public final class CSSSACUtils {
                 final AttributeCondition pclassCond = (AttributeCondition) condition;
                 conditionBuilder.append(':');
                 conditionBuilder.append(pclassCond.getValue());
+                break;
+            default:
+                conditionBuilder.append(condition.toString());
+                break;
+        }
+        return conditionBuilder.toString();
+    }
+
+    public static String getXPATHFromSelector(final Selector sel) {
+        final StringBuilder selectorString = new StringBuilder("//");
+        getXPATHFromSelector(sel, selectorString);
+        return selectorString.toString().trim();
+    }
+
+    protected static void getXPATHFromSelector(final Selector sel, final StringBuilder selectorString) {
+        switch (sel.getSelectorType()) {
+            case Selector.SAC_ELEMENT_NODE_SELECTOR:
+                // This selector matches only tag type
+                final ElementSelector es = (ElementSelector) sel;
+                if (es.getLocalName() != null) {
+                    selectorString.append(es.getLocalName());
+                } else {
+                    selectorString.append('*');
+                }
+                break;
+            case Selector.SAC_CONDITIONAL_SELECTOR:
+                // This selector matches all the interesting things:
+                // #myId
+                // [someattr="someval"]
+                // simple[role="private"]
+                // myclass#myId (check this. [bshine 9.05.06])
+                final ConditionalSelector cs = (ConditionalSelector) sel;
+                // Take care of the simple selector part of this
+                getXPATHFromSelector(cs.getSimpleSelector(), selectorString);
+                selectorString.append(buildXPATHCondition(cs.getCondition()));
+                break;
+            case Selector.SAC_DESCENDANT_SELECTOR:
+                final DescendantSelector descendantSelector = (DescendantSelector) sel;
+                getXPATHFromSelector(descendantSelector.getAncestorSelector(), selectorString);
+                if ( descendantSelector.getSimpleSelector().getSelectorType()!= Selector.SAC_PSEUDO_ELEMENT_SELECTOR) {
+                    selectorString.append("//");
+                }
+                getXPATHFromSelector(descendantSelector.getSimpleSelector(), selectorString);
+
+                break;
+            case Selector.SAC_CHILD_SELECTOR:
+                final DescendantSelector childSelector = (DescendantSelector) sel;
+                getXPATHFromSelector(childSelector.getAncestorSelector(), selectorString);
+                // Los pseudo elementos como :before se consideran tambien como
+                // SAC_CHILD_SELECTOR. En esos casos no se añade la / porque
+                // realmente no hay elemento hijo
+                if (childSelector.getSimpleSelector().getSelectorType() != Selector.SAC_PSEUDO_ELEMENT_SELECTOR) {
+                    selectorString.append('/');
+                }
+
+                getXPATHFromSelector(childSelector.getSimpleSelector(), selectorString);
+                break;
+            case Selector.SAC_DIRECT_ADJACENT_SELECTOR:
+                final SiblingSelector siblingSelector = (SiblingSelector) sel;
+                getXPATHFromSelector(siblingSelector.getSelector(), selectorString);
+                selectorString.append("/following-sibling::*[1]/self::");
+                getXPATHFromSelector(siblingSelector.getSiblingSelector(),
+                        selectorString);
+                break;
+            case Selector.SAC_PSEUDO_ELEMENT_SELECTOR:
+                // Ignoramos 'pseudo elementos' como :first-line ¿algún otro?
+                // (:before y :after se consideran SAC_CHILD_SELECTOR)
+                break;
+            default:
+                break;
+        }
+    }
+
+    protected static String buildXPATHCondition(final Condition condition) {
+        final StringBuilder conditionBuilder = new StringBuilder(20);
+        switch (condition.getConditionType()) {
+            case Condition.SAC_ID_CONDITION: /* #id */
+                final AttributeCondition idCond = (AttributeCondition) condition;
+                conditionBuilder.append("[@id='");
+                conditionBuilder.append(idCond.getValue());
+                conditionBuilder.append("']");
+                break;
+            case Condition.SAC_ATTRIBUTE_CONDITION: // [attr] or [attr="val"] or
+                // elem[attr="val"]
+                final AttributeCondition attrCond = (AttributeCondition) condition;
+                final String name = attrCond.getLocalName();
+                final String value = attrCond.getValue();
+                conditionBuilder.append('[');
+                conditionBuilder.append('@');
+                conditionBuilder.append(name);
+                if (value != null) {
+                    conditionBuilder.append("='");
+                    conditionBuilder.append(value);
+                    conditionBuilder.append('\'');
+                }
+                conditionBuilder.append(']');
+                break;
+            case Condition.SAC_CLASS_CONDITION:
+                // FIXME: No comprueba el uso de múltiples valores en el attributo
+                // class. Sería algo tipo:
+                // [ contains(concat(" ",@class," "),concat(" ","value", " ")) ]
+                final AttributeCondition classCond = (AttributeCondition) condition;
+                conditionBuilder.append("[@class='");
+                conditionBuilder.append(classCond.getValue());
+                conditionBuilder.append("']");
+                break;
+            case Condition.SAC_PSEUDO_CLASS_CONDITION:
+                // Ignoramos las pseudo class y comprobaremos sobre el elemento
+                break;
+            case Condition.SAC_AND_CONDITION:
+                // Unión de condiciones ej #main.noticia .css_1.css_2
+                final AndConditionImpl andCondition = (AndConditionImpl) condition;
+                conditionBuilder.append(buildXPATHCondition(andCondition.getFirstCondition()));
+                conditionBuilder.append(buildXPATHCondition(andCondition.getSecondCondition()));
                 break;
             default:
                 conditionBuilder.append(condition.toString());

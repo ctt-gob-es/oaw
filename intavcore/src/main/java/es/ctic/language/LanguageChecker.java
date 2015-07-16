@@ -31,7 +31,7 @@ public class LanguageChecker {
     /**
      * Obtiene el código de idioma, si está entre los admitidos por este comprobador, de un texto
      * @param content cadena con el contenido en texto plano
-     * @return una cadena con el código del idioma detectado para el contenido o la cadena "unknown" si no puede ser detectado
+     * @return una cadena con el código del idioma detectado para el contenido o el idioma esperado si no se puede detectar ese idioma
      */
     protected String getLanguage(final String content) {
         if (GuessLanguage.isSupportedLanguage(expectedLanguage)) {
@@ -42,7 +42,7 @@ public class LanguageChecker {
             final LanguageIdentifier languageIdentifier = new LanguageIdentifier(content);
             return languageIdentifier.getLanguage();
         }
-        return "unknown";
+        return expectedLanguage;
     }
 
 }

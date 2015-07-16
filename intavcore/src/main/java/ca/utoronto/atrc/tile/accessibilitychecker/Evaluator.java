@@ -42,6 +42,8 @@ import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import org.dom4j.io.DOMReader;
+import org.dom4j.util.UserDataDocumentFactory;
 import org.w3c.dom.*;
 
 import java.io.ByteArrayInputStream;
@@ -449,7 +451,7 @@ public class Evaluator {
             if ("html".equalsIgnoreCase(node.getNodeName()) && "css".equalsIgnoreCase(check.getTriggerElement())) {
                 for (CheckCode checkCode : check.getVectorCode()) {
                     if (checkCode.getType() == CheckFunctionConstants.CODE_TYPE_FUNCTION) {
-                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(node, checkCode, cssResources);
+                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(node.getOwnerDocument().getDocumentElement(), checkCode, cssResources);
                         // Ha pasado el check, lo metemos en la lista de checks pasados con éxito
                         if (cssProblems.isEmpty()) {
                             vectorChecksRun.add(check.getId());

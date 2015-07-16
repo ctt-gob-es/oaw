@@ -173,6 +173,24 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     }
 
     @Test
+    public void evaluateEN_GBLang() throws Exception {
+        checkAccessibility.setContent("<html lang='en-GB'><body><p>The World Wide Web Consortium (W3C) is an international consortium where Member organizations, a full-time staff, and the public work together to develop Web standards.</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateEN_USLang() throws Exception {
+        checkAccessibility.setContent("<html lang='en-US'><body><p>The World Wide Web Consortium (W3C) is an international consortium where Member organizations, a full-time staff, and the public work together to develop Web standards.</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
     public void evaluateFRLang() throws Exception {
         checkAccessibility.setContent("<html lang='fr'><body><p>La mission du W3C est d’amener le Web à son plein potentiel, en développant des protocoles et des directives permettant une croissance à long terme du Web.</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -202,6 +220,15 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     @Test
     public void evaluateVALang() throws Exception {
         checkAccessibility.setContent("<html lang='va'><body><p>L'Acadèmia Valenciana de la Llengua ha introduït en el seu web una sèrie de canvis i novetats amb l’objectiu d’actualitzar al màxim la pàgina d’informació permanent als usuaris. L’activitat de la institució normativa ha augmentat amb el pas dels anys i l'increment es veu reflectit en el contingut dels diferents apartats del web.</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateCA_ValenciaLang() throws Exception {
+        checkAccessibility.setContent("<html lang='ca-valencia'><body><p>L'Acadèmia Valenciana de la Llengua ha introduït en el seu web una sèrie de canvis i novetats amb l’objectiu d’actualitzar al màxim la pàgina d’informació permanent als usuaris. L’activitat de la institució normativa ha augmentat amb el pas dels anys i l'increment es veu reflectit en el contingut dels diferents apartats del web.</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
