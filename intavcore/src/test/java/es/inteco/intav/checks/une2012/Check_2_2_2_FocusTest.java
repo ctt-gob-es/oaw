@@ -113,7 +113,7 @@ public final class Check_2_2_2_FocusTest {
 
     @Test
     public void evaluateCSSOutline() throws Exception {
-        checkAccessibility.setContent("<html><style>.main:focus { outline: 10px solid none }</style><p>Lorem</p></html>");
+        checkAccessibility.setContent("<html><style>.main:focus { outline: 10px solid none }</style><p><a class=\"main\">Lorem</a></p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));

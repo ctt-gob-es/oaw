@@ -19,9 +19,7 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,18 +29,20 @@ public final class CheckUtils {
     }
 
     public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
+        final Set<String> includedLinks = new HashSet<String>();
         final List<Element> linksFound = new ArrayList<Element>();
         for (int i = 0; i < links.getLength(); i++) {
             final Element link = (Element) links.item(i);
+            final String href = link.getAttribute("href").toLowerCase();
             if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
                 if (StringUtils.isNotEmpty(link.getTextContent())) {
-                    if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp)) {
+                    if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp) && includedLinks.add(href)) {
                         linksFound.add(link);
                     }
                 }
 
                 if (link.hasAttribute("title")) {
-                    if (StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp)) {
+                    if (StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp) && includedLinks.add(href)) {
                         linksFound.add(link);
                     }
                 }
@@ -51,7 +51,7 @@ public final class CheckUtils {
                 for (int j = 0; j < imgs.getLength(); j++) {
                     final Element img = (Element) imgs.item(j);
                     if (img.hasAttribute("alt")) {
-                        if (StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp)) {
+                        if (StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp) && includedLinks.add(href)) {
                             linksFound.add(link);
                         }
                     }
@@ -195,6 +195,10 @@ public final class CheckUtils {
                 return true;
             }
 
+            if ("jigsaw.w3.org".equals(remoteUrl.getHost()) || "validator.w3.org".equals(remoteUrl.getHost())) {
+                return true;
+            }
+
             final PropertiesManager pmgr = new PropertiesManager();
             final List<String> allowedPorts = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "broken.links.allowed.ports").split(";"));
 
@@ -206,7 +210,6 @@ public final class CheckUtils {
                 } else if (checkedLinks == null ||
                         (!checkedLinks.getBrokenLinks().contains(remoteUrl.toString()) && !checkedLinks.getAvailablelinks().contains(remoteUrl.toString()))) {
                     Logger.putLog("Verificando que existe la URL " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
-                    // FIXME: ¿Cambiar GET por HEAD para acelerar el proceso de comprobación de enlaces rotos?
                     final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrl.toString(), "GET", true);
                     if (documentUrl != null) {
                         connection.setRequestProperty("referer", documentUrl.toString());
@@ -516,30 +519,30 @@ public final class CheckUtils {
     private static final String SRC2AAA = "wcag2AAA";
 
     private static final Pattern[] altA = new Pattern[]{
-            Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
     private static final Pattern[] altAA = new Pattern[]{
-            Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bnivel\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
     private static final Pattern[] altAAA = new Pattern[]{
-            Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bnivel\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE),
-            Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 }

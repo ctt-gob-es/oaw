@@ -12,6 +12,7 @@ import es.ctic.css.CSSProblem;
 import es.ctic.css.CSSResource;
 import es.ctic.css.OAWCSSVisitor;
 import es.inteco.common.logging.Logger;
+import org.dom4j.Document;
 import org.w3c.dom.Node;
 
 import java.util.Date;
@@ -27,7 +28,7 @@ public class CSSParseableDocumentHandler extends OAWCSSVisitor {
     }
 
     @Override
-    public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
+    public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
         if (!cssResource.getContent().isEmpty()) {
             try {
                 resource = cssResource;
@@ -44,6 +45,10 @@ public class CSSParseableDocumentHandler extends OAWCSSVisitor {
             }
         }
         return problems;
+    }
+
+    @Override
+    public void end() {
     }
 
     private CSSProblem createCSSParserError(final CSSParseError cssParseError) {

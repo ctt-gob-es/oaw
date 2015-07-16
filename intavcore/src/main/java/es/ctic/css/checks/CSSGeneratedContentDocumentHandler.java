@@ -13,6 +13,7 @@ import es.ctic.css.CSSResource;
 import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
 import es.inteco.common.logging.Logger;
+import org.dom4j.Document;
 import org.w3c.dom.Node;
 
 import javax.annotation.Nonnull;
@@ -30,7 +31,7 @@ public class CSSGeneratedContentDocumentHandler extends OAWCSSVisitor {
     }
 
     @Override
-    public List<CSSProblem> evaluate(final Node node, final CSSResource cssResource) {
+    public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
         if (!cssResource.getContent().isEmpty() && !cssResource.isInline()) {
             try {
                 resource = cssResource;

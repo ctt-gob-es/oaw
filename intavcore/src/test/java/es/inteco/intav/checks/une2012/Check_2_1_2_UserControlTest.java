@@ -104,7 +104,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
 
     @Test
     public void evaluateCSSTextDecorationBlink() throws Exception {
-        checkAccessibility.setContent("<html><style>p { text-decoration: blink; }</style><p>Lorem ipsum</p></html>");
+        checkAccessibility.setContent("<html><style>p { text-decoration: blink; }</style><p class=\"main\">Lorem ipsum</p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));

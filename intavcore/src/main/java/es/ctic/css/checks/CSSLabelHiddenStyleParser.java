@@ -9,10 +9,8 @@ import es.ctic.css.CSSResource;
 import es.inteco.common.logging.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,13 +21,17 @@ import java.util.List;
  */
 public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
 
+    private final Document document;
+
+    public CSSLabelHiddenStyleParser(final Document document) {
+        this.document = document;
+    }
+
     @Override
-    public List<CSSProblem> evaluate(final Node node, final List<CSSResource> cssResources) {
+    public List<CSSProblem> evaluate(final org.dom4j.Document dom4jDocument, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
-        final Document document = node.getOwnerDocument();
-        final Element html = document.getDocumentElement();
         try {
-            final StyleSheet styleSheet = CSSFactory.getUsedStyles(document, "utf-8", new URL(String.valueOf(html.getUserData("url"))), new MediaSpecAll());
+            final StyleSheet styleSheet = CSSFactory.getUsedStyles(document, "utf-8", new URL(String.valueOf(document.getDocumentElement().getUserData("url"))), new MediaSpecAll());
             final Analyzer analyzer = new Analyzer(styleSheet);
             final StyleMap styleMap = analyzer.evaluateDOM(document, new MediaSpecAll(), true);
             final NodeList labels = document.getElementsByTagName("label");
@@ -41,8 +43,10 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
                         final CSSProperty cssProperty = nodeData.getProperty(propertyName);
                         final Declaration declaration = nodeData.getSourceDeclaration(propertyName, true);
                         if (cssProperty == CSSProperty.Left.length) {
-                            TermLength value = nodeData.getValue(TermLength.class, propertyName, true);
-                            if (value.getValue() < -3000) {
+                            final TermLength value = nodeData.getValue(TermLength.class, propertyName, true);
+                            if (value.getUnit() == TermNumeric.Unit.px && value.getValue() < -3000) {
+                                cssProblems.add(createCSSProblem(labelElement, declaration));
+                            } else if (value.getUnit() == TermNumeric.Unit.em && value.getValue() <= -900) {
                                 cssProblems.add(createCSSProblem(labelElement, declaration));
                             }
                         } else if (cssProperty == CSSProperty.Display.NONE) {
