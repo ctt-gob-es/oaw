@@ -69,7 +69,7 @@ public final class CSSUtils {
 
                 dom4jDocument = DocumentHelper.parseText(xhtml);
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.putLog("No se ha podido convertir el documento a dom4j", CSSUtils.class, Logger.LOG_LEVEL_WARNING, e);
                 return null;
             }
         } else {
@@ -85,10 +85,8 @@ public final class CSSUtils {
             xmlReader.setProperty(Parser.schemaProperty, theSchema);
             xmlReader.setFeature(Parser.defaultAttributesFeature, false);
             xmlReader.setFeature(Parser.ignorableWhitespaceFeature, true);
-        } catch (SAXNotRecognizedException snre) {
-            snre.printStackTrace();
-        } catch (SAXNotSupportedException snse) {
-            snse.printStackTrace();
+        } catch (Exception e) {
+            Logger.putLog("No se ha podido configurar el parseador de xml de tagsoup", CSSUtils.class, Logger.LOG_LEVEL_WARNING, e);
         }
 
         final StringWriter writer = new StringWriter();
@@ -101,10 +99,8 @@ public final class CSSUtils {
         inputSource.setCharacterStream(reader);
         try {
             xmlReader.parse(inputSource);
-        } catch (SAXException saxe) {
-            saxe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        } catch (Exception e) {
+            Logger.putLog("No se ha podido parsear mediante tagsoup", CSSUtils.class, Logger.LOG_LEVEL_WARNING, e);
         }
         // Se elimina el namespace porque si no da problemas la expresión XPATH
         return writer.toString().trim().replace("xmlns=\"http://www.w3.org/1999/xhtml\"", "");
@@ -119,7 +115,7 @@ public final class CSSUtils {
             transformer.transform(new DOMSource(element), new StreamResult(buffer));
             return buffer.toString();
         } catch (TransformerException e) {
-            e.printStackTrace();
+            Logger.putLog("No se ha podido convertir el document a cadena", CSSUtils.class, Logger.LOG_LEVEL_WARNING, e);
         }
         return "";
     }

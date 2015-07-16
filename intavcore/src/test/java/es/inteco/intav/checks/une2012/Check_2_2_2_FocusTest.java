@@ -51,7 +51,7 @@ public final class Check_2_2_2_FocusTest {
 
     @Test
     public void evaluateOneTabindex() throws Exception {
-        checkAccessibility.setContent("<html><p><a tabindex=\1\">Lorem ipsum</a></p></html>");
+        checkAccessibility.setContent("<html><p><a tabindex=\"1\">Lorem ipsum</a></p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
