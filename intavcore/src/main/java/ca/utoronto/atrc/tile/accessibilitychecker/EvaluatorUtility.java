@@ -543,6 +543,7 @@ public final class EvaluatorUtility {
                 Logger.putLog("Tiempo tardado en cargar el HTML remoto: " + tiempo + " milisegundos", Evaluator.class, Logger.LOG_LEVEL_INFO);
                 return loadHtmlFile(stream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, fromCrawler, charset);
             } catch (Exception e) {
+                Logger.putLog("Exception: " + checkAccessibility.getUrl(), EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
                 return null;
             }
         } catch (Exception e) {
