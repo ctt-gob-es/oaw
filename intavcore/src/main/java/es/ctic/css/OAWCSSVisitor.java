@@ -39,17 +39,6 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
         currentMedia.push(true);
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        // Aseguramos que se liberan las referencias a objetos manejados por otras librerias
-        checkCode = null;
-        currentStyleRule = null;
-        resource = null;
-        document = null;
-        currentMedia.clear();
-        super.finalize();
-    }
-
     public List<CSSProblem> evaluate(final Document document, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
         for (CSSResource cssResource : cssResources) {
@@ -99,7 +88,16 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     @Override
     public void end() {
         filterCSSProblems();
+        cleanupResources();
         super.end();
+    }
+
+    protected void cleanupResources() {
+        // Aseguramos que se liberan las referencias a objetos manejados por otras librerias
+        checkCode = null;
+        currentStyleRule = null;
+        document = null;
+        currentMedia.clear();
     }
 
 
@@ -169,7 +167,7 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Logger.putLog("Error al intentar filtrar los problemas de CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_WARNING);
             }
         }
 
@@ -189,10 +187,11 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
                         final List<?> nodes = document.selectNodes(xpath);
                         isSelectorUsed |= !nodes.isEmpty();
                     } catch (Exception e) {
+                        Logger.putLog("Error al aplicar la expresión XPATH en el filtrado", OAWCSSVisitor.class, Logger.LOG_LEVEL_WARNING, e);
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.putLog("Error al comprobar si un selector de CSS se usa", OAWCSSVisitor.class, Logger.LOG_LEVEL_WARNING, e);
             }
             return isSelectorUsed;
         }

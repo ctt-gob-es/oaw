@@ -18,7 +18,8 @@ import org.ccil.cowan.tagsoup.XMLWriter;
 import org.dom4j.DocumentHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.*;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -26,7 +27,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -123,12 +123,12 @@ public final class CSSUtils {
     /**
      * Método para obtener la instancia encargada de realizar la comprobación
      *
-     * @param document
+     * @param node nodo sobre el que se está aplicando la comprobación (debería ser siempre el nodo raíz HTML)
      * @param checkCode objeto CheckCode con la información de la comprobación
      * @return una instancia de CSSAnalyzer que evaluará una comprobación de CSS
      * @throws InstantiationException
      */
-    private static CSSAnalyzer getCSSAnalyzer(final Node document, final CheckCode checkCode) throws InstantiationException {
+    private static CSSAnalyzer getCSSAnalyzer(final Node node, final CheckCode checkCode) throws InstantiationException {
         switch (checkCode.getFunctionId()) {
             case CheckFunctionConstants.FUNCTION_CSS_GENERATED_CONTENT:
                 return new CSSGeneratedContentDocumentHandler(checkCode);
@@ -141,7 +141,7 @@ public final class CSSUtils {
             case CheckFunctionConstants.FUNCTION_CSS_OUTLINE:
                 return new CSSOutlineDocumentHandler(checkCode);
             case CheckFunctionConstants.FUNCTION_CSS_LABEL_HIDDEN:
-                return new CSSLabelHiddenStyleParser(document.getOwnerDocument());
+                return new CSSLabelHiddenStyleParser(node.getOwnerDocument());
             default:
                 Logger.putLog("Warning: unknown function id: " + checkCode.getFunctionId(), CSSUtils.class, Logger.LOG_LEVEL_WARNING);
                 throw new InstantiationException("Error: unknown CSS function id: " + checkCode.getFunctionId());

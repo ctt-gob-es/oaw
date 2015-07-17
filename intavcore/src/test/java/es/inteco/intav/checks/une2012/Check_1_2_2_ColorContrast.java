@@ -249,11 +249,11 @@ public final class Check_1_2_2_ColorContrast {
 //                "</head><body><p>Lorem ipsum</body></html>");
 //        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 //        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
-
-        checkAccessibility.setUrl("http://administracionelectronica.gob.es/pae_Home.html");
-        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
-        TestUtils.printProblems(evaluation.getProblems(),448);
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
+//
+//        checkAccessibility.setUrl("http://administracionelectronica.gob.es/pae_Home.html");
+//        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+//        TestUtils.printProblems(evaluation.getProblems(),448);
+//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_COLOR_CONTRAST));
     }
 
 

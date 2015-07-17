@@ -41,7 +41,7 @@ public class CSSParseableDocumentHandler extends OAWCSSVisitor {
                     }
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("Error al intentar parsear el CSS", CSSParseableDocumentHandler.class, Logger.LOG_LEVEL_INFO);
             }
         }
         return problems;
@@ -49,6 +49,7 @@ public class CSSParseableDocumentHandler extends OAWCSSVisitor {
 
     @Override
     public void end() {
+        cleanupResources();
     }
 
     private CSSProblem createCSSParserError(final CSSParseError cssParseError) {

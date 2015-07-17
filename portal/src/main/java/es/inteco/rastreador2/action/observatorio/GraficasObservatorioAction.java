@@ -1,9 +1,12 @@
 package es.inteco.rastreador2.action.observatorio;
 
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -57,7 +60,7 @@ public class GraficasObservatorioAction extends Action {
         }
 
         if (graphic != null) {
-            PropertiesManager pmgr = new PropertiesManager();
+            final PropertiesManager pmgr = new PropertiesManager();
             String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.intav.files") + File.separator + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
             String title = "";
             if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_GLOBAL_ALLOCATION)) {
@@ -71,22 +74,22 @@ public class GraficasObservatorioAction extends Action {
                 title = getResources(request).getMessage(getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name");
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_S)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + graphicType + File.separator;
-                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.accessibility.level.allocation.segment.name", graphicType);
+                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.accessibility.level.allocation.segment.name", getSegmentName(graphicType));
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_MARK_ALLOCATION_S)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + graphicType + File.separator;
-                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.mark.allocation.segment.name", graphicType);
+                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.mark.allocation.segment.name", getSegmentName(graphicType));
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_MID_VERIFICATION_N1_S)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + graphicType + File.separator;
-                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + graphicType;
+                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + getSegmentName(graphicType);
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_MID_VERIFICATION_N2_S)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + graphicType + File.separator;
-                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + graphicType;
+                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + getSegmentName(graphicType);
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_MODALITY_VERIFICATION_N1_S)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + graphicType + File.separator;
-                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + graphicType;
+                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + getSegmentName(graphicType);
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_MODALITY_VERIFICATION_N2_S)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + graphicType + File.separator;
-                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + graphicType;
+                title = getResources(request).getMessage(getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + getSegmentName(graphicType);
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_MID_ASPECT)) {
                 path += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
                 title = getResources(request).getMessage(getLocale(request), "observatory.graphic.aspect.mid.name");
@@ -130,6 +133,19 @@ public class GraficasObservatorioAction extends Action {
         }
 
         return null;
+    }
+
+    private String getSegmentName(final String graphicType) {
+        final Connection c = DataBaseManager.getConnection();
+        try {
+            final CategoriaForm category = ObservatorioDAO.getCategoryById(c, Long.parseLong(graphicType));
+            return String.valueOf(category.getOrden());
+        } catch (Exception e) {
+            Logger.putLog("Problema al generar las gráficas para el segmento " + graphicType, GraficasObservatorioAction.class, Logger.LOG_LEVEL_WARNING, e);
+        } finally {
+            DataBaseManager.closeConnection(c);
+        }
+        return graphicType;
     }
 
     private ActionForward getLenoxGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
