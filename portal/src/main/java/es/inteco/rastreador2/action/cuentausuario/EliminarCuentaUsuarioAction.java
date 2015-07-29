@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class EliminarCuentaUsuarioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -43,9 +41,8 @@ public class EliminarCuentaUsuarioAction extends Action {
                     String id_cuenta = request.getParameter(Constants.ID_CUENTA);
 
                     try {
-                        PropertiesManager pmgr = new PropertiesManager();
                         c = DataBaseManager.getConnection();
-                        con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                        con = DataBaseManager.getConnection();
                         eliminarCuentaUsuarioForm = CuentaUsuarioDAO.getDeleteUserAccounts(c, Long.valueOf(id_cuenta), eliminarCuentaUsuarioForm);
                         eliminarCuentaUsuarioForm.setNormaAnalisisSt(RastreoDAO.getNombreNorma(con, Long.parseLong(eliminarCuentaUsuarioForm.getNormaAnalisis())));
                     } catch (Exception e) {

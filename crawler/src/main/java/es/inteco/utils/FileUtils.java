@@ -15,21 +15,23 @@ public final class FileUtils {
     private FileUtils() {
     }
 
-    public static void deleteDirs(List<String> paths) {
+    public static void deleteDirs(final List<String> paths) {
         for (String path : paths) {
             Logger.putLog("Borrando el contenido del directorio: " + path, FileUtils.class, Logger.LOG_LEVEL_INFO);
-            File dir = new File(path);
+            final File dir = new File(path);
             deleteDir(dir);
         }
     }
 
-    // Deletes all files and subdirectories under dir.
-    // Returns true if all deletions were successful.
-    // If a deletion fails, the method stops attempting to delete and returns false.
-    public static boolean deleteDir(File dir) {
+    /**
+     * Deletes recursively all files and subdirectories
+     * @param dir - directory to delete recursively
+     * @return true if all deletions were successful or false if a deletion fails and then the method returns inmediately
+     */
+    public static boolean deleteDir(final File dir) {
         if (dir.exists()) {
             if (dir.isDirectory()) {
-                String[] children = dir.list();
+                final String[] children = dir.list();
                 for (String child : children) {
                     boolean success = deleteDir(new File(dir, child));
                     if (!success) {
@@ -163,20 +165,6 @@ public final class FileUtils {
         }
 
         return domains;
-    }
-
-    // Convierte un inputStream en un string
-    public static String getContentAsString(InputStream in, String charset) throws IOException {
-        StringBuilder out = new StringBuilder();
-        byte[] b = new byte[4096];
-        for (int n; (n = in.read(b)) != -1; ) {
-            if (charset != null) {
-                out.append(new String(b, 0, n, charset));
-            } else {
-                out.append(new String(b, 0, n));
-            }
-        }
-        return out.toString();
     }
 
     public static void moveFile(String dirFrom, String dirTo, String filename) {

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lista>
+    <semilla>
+        <nombre>Asamblea Ciudad Autónoma de Melilla</nombre>
+        <url>http://www.melilla.es/melillaPortal/contenedor.jsp?seccion=distribuidor_menus.jsp&amp;language=es&amp;codResi=1&amp;codMenuPN=600&amp;codMenu=231&amp;layout=contenedor.jsp&amp;layout=contenedor.jsp</url>
+        <acronimo>Melilla</acronimo>
+        <depende_de>Ciudad Autónoma de Melilla</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Asamblea de Extremadura</nombre>
+        <url>http://www.asambleaex.es/</url>
+        <acronimo>JuntaEX</acronimo>
+        <depende_de>Junta de Extremadura</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Asamblea de Madrid</nombre>
+        <url>http://www.asambleamadrid.es/</url>
+        <acronimo>Madrid</acronimo>
+        <depende_de>Comunidad de Madrid</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Asamblea Murcia</nombre>
+        <url>http://www.asambleamurcia.es/</url>
+        <acronimo>CARM</acronimo>
+        <depende_de>Región de Murcia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Cortes de Aragón</nombre>
+        <url>http://www.cortesaragon.es/</url>
+        <acronimo>Aragon</acronimo>
+        <depende_de>Gobierno de Aragón</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Cortes de Castilla y León</nombre>
+        <url>http://www.ccyl.es/</url>
+        <acronimo>JCyL</acronimo>
+        <depende_de>Junta de Castilla y León</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Cortes de Castilla-La Mancha</nombre>
+        <url>http://www.cortesclm.es/index.htm</url>
+        <acronimo>JCCM</acronimo>
+        <depende_de>Junta de Castilla-La Mancha</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Cortes Valencianas</nombre>
+        <url>http://www.cortsvalencianes.es/cs/Satellite/Layout/Page/1260974710668/Home.html?&amp;lang=ca_VA</url>
+        <acronimo>GVA</acronimo>
+        <depende_de>Generalitat Valenciana</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlament de Catalunya</nombre>
+        <url>http://www.parlament.cat/web</url>
+        <acronimo>GenCAT</acronimo>
+        <depende_de>Generalitat de Catalunya</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de Asturias</nombre>
+        <url>http://www.jgpa.es/</url>
+        <acronimo>Asturias</acronimo>
+        <depende_de>Gobierno del Principado de Asturias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de Canarias</nombre>
+        <url>http://www.parcan.es/</url>
+        <acronimo>GobCan</acronimo>
+        <depende_de>Gobierno de Canarias</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de Cantabria</nombre>
+        <url>http://www.parlamento-cantabria.es/</url>
+        <acronimo>GobCant</acronimo>
+        <depende_de>Gobierno de Cantabria</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de Galicia</nombre>
+        <url>http://www.parlamentodegalicia.com/sites/ParlamentoGalicia/default.aspx</url>
+        <acronimo>Xunta</acronimo>
+        <depende_de>Xunta de Galicia</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de La Rioja</nombre>
+        <url>www.parlamento-larioja.org</url>
+        <acronimo>LaRioja</acronimo>
+        <depende_de>Gobierno de La Rioja</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de las Islas Baleares</nombre>
+        <url>http://www.parlamentib.es/Home/Default.aspx</url>
+        <acronimo>CAIB</acronimo>
+        <depende_de>Gobierno de las Islas Baleares</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento de Navarra</nombre>
+        <url>http://www.parlamentodenavarra.es/</url>
+        <acronimo>Navarra</acronimo>
+        <depende_de>Gobierno de Navarra</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Parlamento Vasco</nombre>
+        <url>http://www.legebiltzarra.eus/es</url>
+        <acronimo>Euskadi</acronimo>
+        <depende_de>Gobierno Vasco</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Portal Institucional</nombre>
+        <url>http://www.gobiernodeceuta.es/index.php/el-gobierno/la-asamblea</url>
+        <acronimo>Ceuta</acronimo>
+        <depende_de>Ciudad Autónoma de Ceuta</depende_de>
+    </semilla>
+    <semilla>
+        <nombre>Presidencia del Parlamento de Andalucía</nombre>
+        <url>http://www.parlamentodeandalucia.es/webdinamica/portal-web-parlamento/inicio.do</url>
+        <acronimo>JA</acronimo>
+        <depende_de>Junta de Andalucía</depende_de>
+    </semilla>
+</lista>

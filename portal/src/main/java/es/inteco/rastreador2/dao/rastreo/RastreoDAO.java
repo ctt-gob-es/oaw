@@ -3,7 +3,7 @@ package es.inteco.rastreador2.dao.rastreo;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
@@ -11,6 +11,7 @@ import es.inteco.rastreador2.actionform.rastreo.*;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.UpdateListDataForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
@@ -1077,7 +1078,7 @@ public final class RastreoDAO {
             }
             DAOUtils.closeQueries(ps, rs);
             insertarRastreoForm.setId_cartucho(id_cartucho);
-            if (id_cartucho != Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+            if (!CartuchoDAO.isCartuchoAccesibilidad(c, id_cartucho)) {
                 ps = c.prepareStatement("INSERT INTO rastreo (nombre_rastreo, fecha, profundidad, topn, semillas, lista_no_rastreable, lista_rastreable, estado, id_cuenta, pseudoaleatorio, activo, id_language, id_observatorio, automatico, exhaustive, in_directory) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             } else {
@@ -1265,7 +1266,7 @@ public final class RastreoDAO {
                     ps.setLong(12, idRastreo);
                 }
 
-                if (insertarRastreoForm.getCartucho().equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(insertarRastreoForm.getCartucho()))) {
                     //Incluimos la norma dependiendo de el valor de los enlaces rotos
                     if (insertarRastreoForm.getNormaAnalisisEnlaces() != null &&
                             insertarRastreoForm.getNormaAnalisisEnlaces().equals("1")) {
@@ -1696,62 +1697,6 @@ public final class RastreoDAO {
         return -1;
     }
 
-    /*public static int getNumObservatoryAnalysePages(Connection c, List<Long> ids) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            StringBuilder IdStrList = new StringBuilder("(");
-            for (int i = 1; i <= ids.size(); i++) {
-                if (ids.size() > i) {
-                    IdStrList.append("?,");
-                } else if (ids.size() == i) {
-                    IdStrList.append("?)");
-                }
-            }
-
-            ps = c.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo IN " + IdStrList);
-            for (int i = 0; i < ids.size(); i++) {
-                ps.setLong(i + 1, ids.get(i));
-            }
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-        return -1;
-    }*/
-
-    /*public static List<Long> getExecutedCrawlerCategoryIds(Connection connR, long id_observatorio, long id_categoria) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<Long>();
-        try {
-            //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS PARA EL OBSERVATORIO
-            ps = connR.prepareStatement("SELECT rr.id FROM rastreo r " +
-                    "JOIN rastreos_realizados rr ON (r.id_rastreo = rr.id_rastreo) " +
-                    "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio )" +
-                    "WHERE r.id_observatorio = ? AND o.id_categoria = ?");
-            ps.setLong(1, id_observatorio);
-            ps.setLong(2, id_categoria);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                executedCrawlerIds.add(rs.getLong("id"));
-            }
-            return executedCrawlerIds;
-        } catch (Exception e) {
-            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-    }*/
-
     public static void updateCrawlerName(Connection c, String name, long crawlerId) throws Exception {
         PreparedStatement ps = null;
         try {
@@ -1868,6 +1813,7 @@ public final class RastreoDAO {
                 CategoriaForm categoria = new CategoriaForm();
                 categoria.setName(rs.getString("cl.nombre"));
                 categoria.setId(rs.getString("cl.id_categoria"));
+                categoria.setOrden(rs.getInt("cl.orden"));
                 semilla.setCategoria(categoria);
 
                 form.setSeed(semilla);

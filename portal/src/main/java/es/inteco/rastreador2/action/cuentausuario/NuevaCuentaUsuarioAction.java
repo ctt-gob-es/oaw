@@ -24,8 +24,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class NuevaCuentaUsuarioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
@@ -44,7 +42,7 @@ public class NuevaCuentaUsuarioAction extends Action {
                 Connection con = null;
                 try {
                     c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
 
                     String esPrimera = request.getParameter(Constants.ES_PRIMERA);
 

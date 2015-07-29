@@ -28,7 +28,7 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import es.inteco.common.CheckFunctionConstants;
 import es.inteco.common.logging.Logger;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import org.apache.xerces.util.DOMUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -164,7 +164,7 @@ public class Guideline {
         }
     }
 
-    public void getAllObservatoryChecks(List inChecks, String level) {
+    public void getAllObservatoryChecks(List<Integer> inChecks, String level) {
         for (GuidelineGroup group : groups) {
             for (GuidelineGroup subgroup : group.getGroupsVector()) {
                 subgroup.getChecks(inChecks);
@@ -203,9 +203,9 @@ public class Guideline {
     }
 
     // Returns the name of the group that the given check belongs to.
-    public String getGroupIdString(int CheckId) {
+    public String getGroupIdString(int checkId) {
         for (GuidelineGroup group : groups) {
-            if (group.containsCheck(CheckId)) {
+            if (group.containsCheck(checkId)) {
                 return group.getName();
             }
         }
@@ -213,9 +213,9 @@ public class Guideline {
     }
 
     // Returns true if the given check ID is part of this guideline.
-    public boolean containsCheck(int CheckId) {
+    public boolean containsCheck(int checkId) {
         for (GuidelineGroup group : groups) {
-            if (group.containsCheck(CheckId)) {
+            if (group.containsCheck(checkId)) {
                 return true;
             }
         }
@@ -233,12 +233,11 @@ public class Guideline {
     }
 
     // Returns the subgroup of a given check
-    public String getSubgroupFromCheck(int CheckId) {
-        for (int x = 0; x < groups.size(); x++) {
-            GuidelineGroup group = groups.get(x);
+    public String getSubgroupFromCheck(int checkId) {
+        for (GuidelineGroup group : groups) {
             for (int y = 0; y < group.getGroupsVector().size(); y++) {
                 GuidelineGroup group2 = group.getGroupsVector().get(y);
-                String subgroup = group2.getSubgroupFromCheck(CheckId);
+                String subgroup = group2.getSubgroupFromCheck(checkId);
                 if (!subgroup.equalsIgnoreCase("")) {
                     return subgroup;
                 }
@@ -446,7 +445,7 @@ public class Guideline {
                         vectorChecksWithoutSc.add(check);
                     }
                 } catch (NumberFormatException nfe) {
-                    Logger.putLog("Error: guideline check has invalid ID:" + stringId, Guideline.class, Logger.LOG_LEVEL_ERROR, nfe);
+                    Logger.putLog("Error: guideline check has invalid ID:" + stringId, Guideline.class, Logger.LOG_LEVEL_WARNING, nfe);
                 }
             }
         }

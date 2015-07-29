@@ -118,6 +118,9 @@
 
         <!-- SERVICIO BASICO -->
         <form-bean name="BasicServiceForm" type="es.inteco.rastreador2.actionform.basic.service.BasicServiceForm"/>
+
+        <form-bean name="ServicioDiagnosticoForm"
+                   type="es.ctic.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm"/>
     </form-beans>
 
     <!-- Global Exception Definitions -->
@@ -138,6 +141,7 @@
         <forward name="editObservatoryUser" path="/secure/ModificarUsuarioObservatorio.do"/>
         <forward name="deleteSystemUser" path="/secure/EliminarUsuarioSistema.do"/>
         <forward name="usersMenu" path="/secure/CargarUsuariosSistema.do"/>
+        <forward name="servicioDiagnostico" path="/secure/ServicioDiagnostico.do"/>
         <forward name="viewUser" path="/secure/VerUsuario.do"/>
         <forward name="newSystemUser" path="/secure/NuevoUsuarioSistema.do"/>
         <forward name="newClientUser" path="/secure/NuevoUsuarioCliente.do"/>
@@ -436,6 +440,7 @@
             <forward name="getGlobalGraphics" path=".graficasObservatorioGlobal"/>
             <forward name="getSegmentGraphics" path=".graficasObservatorioSegmento"/>
             <forward name="getEvolutionGraphics" path=".graficasObservatorioEvolucion"/>
+            <forward name="getEvolutionGraphicsUNE2102" path=".graficasObservatorioEvolucionUNE2012"/>
             <forward name="categoryList" path=".indiceGraficasCatObservatorio"/>
         </action>
 
@@ -1280,6 +1285,17 @@
             <forward name="listAnalysisByTracking" path=".listAnalysisByTrackingMultilanguage"/>
             <forward name="analysisDetail" path=".analysisDetailMultilanguage"/>
             <forward name="getMultilanguageHtmlSource" path=".analysisDetailMultilanguage"/>
+        </action>
+
+        <!-- SERVICIO DIAGNOSTICO -->
+        <action path="/secure/ServicioDiagnostico"
+                type="es.ctic.rastreador2.action.diagnostico.ServicioDiagnosticoAction"
+                scope="request"
+                name="ServicioDiagnosticoForm"
+                input="/secure/ServicioDiagnosticoAction.do"
+                validate="false">
+            <forward name="exito" path=".servicioDiagnostico"/>
+            <forward name="volver" path=".indexAdmin"/>
         </action>
 
     </action-mappings>

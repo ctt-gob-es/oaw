@@ -51,7 +51,7 @@ public final class AnonymousResultExportPdfSectionCat {
             Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
             List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(request, resultsMap);
 
-            PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getId()) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat1.img.alt"), 75);
+            PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat1.img.alt"), 75);
 
             PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat.tableTitle", category.getName()), section, 380);
 

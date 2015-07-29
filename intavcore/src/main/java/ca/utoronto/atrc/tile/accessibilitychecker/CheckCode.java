@@ -164,7 +164,7 @@ public class CheckCode {
     }
 
     public boolean create(Element elementCode) {
-        if (elementCode.getNodeName().equalsIgnoreCase("function")) {
+        if ("function".equalsIgnoreCase(elementCode.getNodeName())) {
             type = CheckFunctionConstants.CODE_TYPE_FUNCTION;
 
             String stringNodeAttribute = elementCode.getAttribute("node").trim();
@@ -187,260 +187,312 @@ public class CheckCode {
                 return false;
             }
 
-            if (stringCall.equals("not-valid-doctype")) {
+            if ("not-valid-doctype".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_VALID_DOCTYPE;
-            } else if (stringCall.equals("text-equals")) {
+            } else if ("text-equals".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TEXT_EQUALS;
-            } else if (stringCall.equals("text-not-equals")) {
+            } else if ("text-not-equals".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TEXT_NOTEQUALS;
-            } else if (stringCall.equals("attribute-exists")) {
+            } else if ("attribute-exists".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_EXISTS;
-            } else if (stringCall.equals("attribute-missing")) {
+            } else if ("attribute-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_MISSING;
-            } else if (stringCall.equals("attributes-same")) {
+            } else if ("attributes-same".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTES_SAME;
-            } else if (stringCall.equals("attributes-not-same")) {
+            } else if ("attributes-not-same".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTES_NOT_SAME;
-            } else if (stringCall.equals("element-count-greater-than")) {
+            } else if ("element-count-greater-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_GREATER;
-            } else if (stringCall.equals("internal-element-count-greater-than")) {
+            } else if ("internal-element-count-greater-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_INTERNAL_ELEMENT_COUNT_GREATER;
-            } else if (stringCall.equals("element-count-less-than")) {
+            } else if ("element-count-less-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_LESS;
-            } else if (stringCall.equals("element-count-equals")) {
+            } else if ("element-count-equals".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_EQUALS;
-            } else if (stringCall.equals("element-count-not-equals")) {
+            } else if ("element-count-not-equals".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_NOTEQUALS;
-            } else if (stringCall.equals("attribute-null")) {
+            } else if ("attribute-null".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_NULL;
-            } else if (stringCall.equals("characters-greater-than")) {
+            } else if ("characters-greater-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CHARS_GREATER;
-            } else if (stringCall.equals("characters-less-than")) {
+            } else if ("characters-less-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CHARS_LESS;
-            } else if (stringCall.equals("number-any")) {
+            } else if ("link-greater-than".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_LINK_CHARS_GREATER;
+            } else if ("number-any".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NUMBER_ANY;
-            } else if (stringCall.equals("number-less-than")) {
+            } else if ("number-less-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NUMBER_LESS_THAN;
-            } else if (stringCall.equals("number-greater-than")) {
+            } else if ("number-greater-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NUMBER_GREATER_THAN;
-            } else if (stringCall.equals("container")) {
+            } else if ("container".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CONTAINER;
-            } else if (stringCall.equals("container-not")) {
+            } else if ("container-not".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOTCONTAINER;
-            } else if (stringCall.equals("text-link-equivalents-missing")) {
+            } else if ("text-link-equivalents-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TEXT_LINK_EQUIVS_MISSING;
-            } else if (stringCall.equals("label-not-associated")) {
+            } else if ("label-not-associated".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LABEL_NOT_ASSOCIATED;
-            } else if (stringCall.equals("label-incorrectly-associated")) {
+            } else if ("label-incorrectly-associated".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LABEL_INCORRECTLY_ASSOCIATED;
-            } else if (stringCall.equals("label-no-text")) {
+            } else if ("label-no-text".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LABEL_NO_TEXT;
-            } else if (stringCall.equals("metadata-missing")) {
+            } else if ("metadata-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_METADATA_MISSING;
-            } else if (stringCall.equals("d-link-missing")) {
+            } else if ("d-link-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_DLINK_MISSING;
-            } else if (stringCall.equals("next-heading-wrong")) {
+            } else if ("next-heading-wrong".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NEXT_HEADING_BAD;
-            } else if (stringCall.equals("previous-heading-wrong")) {
+            } else if ("previous-heading-wrong".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD;
-            } else if (stringCall.equals("duplicate-following-headers")) {
+            } else if ("duplicate-following-headers".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_DUPLICATE_FOLLOWING_HEADERS;
-            } else if (stringCall.equals("correct-document-structure")) {
-                functionId = CheckFunctionConstants.FUNCTION_CORRECT_DOCUMENT_STRUCTURE;
-            } else if (stringCall.equals("no-correct-document-structure")) {
+            } else if ("incorrect-heading-structure".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_INCORRECT_HEADING_STRUCTURE;
+            } else if ("no-correct-document-structure".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NO_CORRECT_DOCUMENT_STRUCTURE;
-            } else if (stringCall.equals("headers-missing")) {
+            } else if ("headers-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HEADERS_MISSING;
-            } else if (stringCall.equals("headers-exist")) {
+            } else if ("headers-exist".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HEADERS_EXIST;
-            } else if (stringCall.equals("noscript-missing")) {
+            } else if ("noscript-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOSCRIPT_MISSING;
-            } else if (stringCall.equals("noframe-missing")) {
+            } else if ("noframe-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOFRAME_MISSING;
-            } else if (stringCall.equals("iframe-has-not-alternative")) {
+            } else if ("iframe-has-not-alternative".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IFRAME_HAS_NOT_ALTERNATIVE;
-            } else if (stringCall.equals("iframe-has-alternative")) {
+            } else if ("iframe-has-alternative".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IFRAME_HAS_ALTERNATIVE;
-            } else if (stringCall.equals("noembed-missing")) {
+            } else if ("noembed-missing".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOEMBED_MISSING;
-            } else if (stringCall.equals("row-count-not-equals")) {
-                functionId = CheckFunctionConstants.FUNCTION_ROW_COUNT_NOT_EQUALS;
-            } else if (stringCall.equals("column-count-not-equals")) {
-                functionId = CheckFunctionConstants.FUNCTION_COL_COUNT_NOT_EQUALS;
-            } else if (stringCall.equals("element-previous")) {
+            } else if ("row-count".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_ROW_COUNT;
+            } else if ("column-count".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_COL_COUNT;
+            } else if ("element-previous".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_PREVIOUS;
-            } else if (stringCall.equals("targets-same")) {
+            } else if ("targets-same".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TARGETS_SAME;
-            } else if (stringCall.equals("html-content-not")) {
+            } else if ("html-content-not".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HTML_CONTENT_NOT;
-            } else if (stringCall.equals("has-language")) {
+            } else if ("has-language".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_LANGUAGE;
-            } else if (stringCall.equals("not-valid-language")) {
+            } else if ("not-valid-language".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_VALID_LANGUAGE;
-            } else if (stringCall.equals("multi-radio-no-fieldset")) {
+            } else if ("multi-radio-no-fieldset".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_MULTIRADIO_NOFIELDSET;
-            } else if (stringCall.equals("multi-checkbox-no-fieldset")) {
+            } else if ("multi-checkbox-no-fieldset".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_MULTICHECKBOX_NOFIELDSET;
-            } else if (stringCall.equals("luminosity-contrast-ratio")) {
-                functionId = CheckFunctionConstants.FUNCTION_LUMONISOTY_CONTRAST_RATIO;
-            } else if (stringCall.equals("wai-ert-color-algorithm")) {
+            } else if ("luminosity-contrast-ratio".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_LUMINOSITY_CONTRAST_RATIO;
+            } else if ("wai-ert-color-algorithm".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ERT_COLOR_ALGORITHM;
-            } else if (stringCall.equals("doctype-attribute-not-equal")) {
+            } else if ("doctype-attribute-not-equal".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_DOCTYPE_ATTRIBUTE_NOT_EQUAL;
-            } else if (stringCall.equals("validate")) {
+            } else if ("validate".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_VALIDATE;
-            } else if (stringCall.equals("validate-css")) {
+            } else if ("validate-css".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_VALIDATE_CSS;
-            } else if (stringCall.equals("table-type")) {
+            } else if ("table-type".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TABLE_TYPE;
-            } else if (stringCall.equals("missing-id-headers")) {
+            } else if ("missing-id-headers".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_MISSING_ID_HEADERS;
-            } else if (stringCall.equals("missing-scope")) {
+            } else if ("missing-scope".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_MISSING_SCOPE;
-            } else if (stringCall.equals("caption-summary-same")) {
+            } else if ("invalid-scope".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_INVALID_SCOPE;
+            } else if ("caption-summary-same".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CAPTION_SUMMARY_SAME;
-            } else if (stringCall.equals("is-only-blanks")) {
+            } else if ("is-only-blanks".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_ONLY_BLANKS;
-            } else if (stringCall.equals("is-empty-element")) {
+            } else if ("is-empty-element".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_EMPTY_ELEMENT;
-            } else if (stringCall.equals("object-has-not-alternative")) {
+            } else if ("object-has-not-alternative".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_OBJECT_HAS_NOT_ALTERNATIVE;
-            } else if (stringCall.equals("applet-has-not-alternative")) {
+            } else if ("applet-has-not-alternative".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_APPLET_HAS_NOT_ALTERNATIVE;
-            } else if (stringCall.equals("applet-has-alternative")) {
+            } else if ("applet-has-alternative".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_APPLET_HAS_ALTERNATIVE;
-            } else if (stringCall.equals("is-not-only-blanks")) {
+            } else if ("is-not-only-blanks".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_NOT_ONLY_BLANKS;
-            } else if (stringCall.equals("grammar-lang")) {
+            } else if ("grammar-lang".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_GRAMMAR_LANG;
-            } else if (stringCall.equals("not-all-labels")) {
+            } else if ("not-all-labels".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_ALL_LABELS;
-            } else if (stringCall.equals("not-valid-url")) {
+            } else if ("not-valid-url".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_VALID_URL;
-            } else if (stringCall.equals("table-heading-complex")) {
+            } else if ("table-heading-complex".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TABLE_HEADING_COMPLEX;
-            } else if (stringCall.equals("has-not-element-childs")) {
+            } else if ("has-not-element-childs".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_NOT_ELEMENT_CHILDS;
-            } else if (stringCall.equals("has-all-id-headers")) {
+            } else if ("has-all-id-headers".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_ALL_ID_HEADERS;
-            } else if (stringCall.equals("contains")) {
+            } else if ("contains".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CONTAINS;
-            } else if (stringCall.equals("user-data-matchs")) {
+            } else if ("user-data-matchs".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_USER_DATA_MATCHS;
-            } else if (stringCall.equals("not-user-data-matchs")) {
+            } else if ("not-user-data-matchs".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_USER_DATA_MATCHS;
-            } else if (stringCall.equals("contains-not")) {
+            } else if ("contains-not".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CONTAINS_NOT;
-            } else if (stringCall.equals("check-colors")) {
+            } else if ("check-colors".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CHECK_COLORS;
-            } else if (stringCall.equals("has-element-into")) {
+            } else if ("has-element-into".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_ELEMENT_INTO;
-            } else if (stringCall.equals("same-following-list")) {
+            } else if ("same-following-list".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_SAME_FOLLOWING_LIST;
-            } else if (stringCall.equals("text-contain-general-quote")) {
+            } else if ("text-contain-general-quote".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TEXT_CONTAIN_GENERAL_QUOTE;
-            } else if (stringCall.equals("same-following-list-not")) {
+            } else if ("same-following-list-not".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_SAME_FOLLOWING_LIST_NOT;
-            } else if (stringCall.equals("definition-list-construction")) {
+            } else if ("definition-list-construction".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_DEFINITION_LIST_CONSTRUCTION;
-            } else if (stringCall.equals("all-elements-not-like-this")) {
+            } else if ("all-elements-not-like-this".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ALL_ELEMENTS_NOT_LIKE_THIS;
-            } else if (stringCall.equals("same-element-not")) {
+            } else if ("same-element-not".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_SAME_ELEMENT_NOT;
-            } else if (stringCall.equals("same-element")) {
+            } else if ("same-element".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_SAME_ELEMENT;
-            } else if (stringCall.equals("has-nbsp-entities")) {
+            } else if ("has-nbsp-entities".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_NBSP_ENTITIES;
-            } else if (stringCall.equals("not-is-only-blanks")) {
+            } else if ("not-is-only-blanks".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_IS_ONLY_BLANKS;
-            } else if (stringCall.equals("link-same-page")) {
+            } else if ("link-same-page".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LINK_SAME_PAGE;
-            } else if (stringCall.equals("num-more-controls")) {
+            } else if ("num-more-controls".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NUM_MORE_CONTROLS;
-            } else if (stringCall.equals("text-match")) {
+            } else if ("text-match".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TEXT_MATCH;
-            } else if (stringCall.equals("text-not-match")) {
+            } else if ("text-not-match".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TEXT_NOT_MATCH;
-            } else if (stringCall.equals("attribute-element-text-match")) {
+            } else if ("attribute-element-text-match".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_ELEMENT_TEXT_MATCH;
-            } else if (stringCall.equals("attribute-element-text-not-match")) {
+            } else if ("attribute-element-text-not-match".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_ELEMENT_TEXT_NOT_MATCH;
-            } else if (stringCall.equals("is-odd")) {
+            } else if ("is-odd".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_ODD;
-            } else if (stringCall.equals("is-even")) {
+            } else if ("is-even".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_EVEN;
-            } else if (stringCall.equals("not-children-have-attribute")) {
+            } else if ("not-children-have-attribute".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_CHILDREN_HAVE_ATTRIBUTE;
-            } else if (stringCall.equals("not-clear-language")) {
+            } else if ("not-clear-language".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_CLEAR_LANGUAGE;
-            } else if (stringCall.equals("has-not-enough-text")) {
+            } else if ("has-not-enough-text".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_NOT_ENOUGH_TEXT;
-            } else if (stringCall.equals("not-correct-heading")) {
+            } else if ("not-correct-heading".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_CORRECT_HEADING;
-            } else if (stringCall.equals("has-not-section-link")) {
+            } else if ("has-not-section-link".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_NOT_SECTION_LINK;
-            } else if (stringCall.equals("false-paragraph-list")) {
+            } else if ("false-paragraph-list".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_FALSE_PARAGRAPH_LIST;
-            } else if (stringCall.equals("false-paragraph-list")) {
-                functionId = CheckFunctionConstants.FUNCTION_FALSE_PARAGRAPH_LIST;
-            } else if (stringCall.equals("false-br-list")) {
+            } else if ("false-br-list".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_FALSE_BR_LIST;
-            } else if (stringCall.equals("false-header-with-only-cell")) {
+            } else if ("false-header-with-only-cell".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_FALSE_HEADER_WITH_ONLY_CELL;
-            } else if (stringCall.equals("has-incorrect-tabindex")) {
+            } else if ("has-incorrect-tabindex".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_INCORRECT_TABINDEX;
-            } else if (stringCall.equals("language-not-equals")) {
+            } else if ("language-not-equals".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LANGUAGE_NOT_EQUALS;
-            } else if (stringCall.equals("empty-elements")) {
+            } else if ("empty-elements".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_EMPTY_ELEMENTS;
-            } else if (stringCall.equals("elements-excessive-usage")) {
+            } else if ("elements-excessive-usage".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENTS_EXCESSIVE_USAGE;
-            } else if (stringCall.equals("attributes-excessive-usage")) {
+            } else if ("attributes-excessive-usage".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTES_EXCESSIVE_USAGE;
-            } else if (stringCall.equals("element-percentage")) {
+            } else if ("tabindex-excessive-usage".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TABINDEX_EXCESSIVE_USAGE;
+            } else if ("element-percentage".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ELEMENT_PERCENTAGE;
-            } else if (stringCall.equals("correct-links")) {
+            } else if ("correct-links".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CORRECT_LINKS;
-            } else if (stringCall.equals("child-element-characters-greater-than")) {
+            } else if ("child-element-characters-greater-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_GREATER;
-            } else if (stringCall.equals("layout-table")) {
+            } else if ("child-element-characters-lesser-than".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_LESSER;
+            } else if ("layout-table".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LAYOUT_TABLE;
-            } else if (stringCall.equals("layout-table-number")) {
+            } else if ("layout-table-number".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_LAYOUT_TABLE_NUMBER;
-            } else if (stringCall.equals("not-layout-table")) {
+            } else if ("not-layout-table".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_LAYOUT_TABLE;
-            } else if (stringCall.equals("not-external-url")) {
+            } else if ("not-external-url".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_EXTERNAL_URL;
-            } else if (stringCall.equals("accessibility-declaration-not-contact")) {
+            } else if ("accessibility-declaration-not-contact".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONTACT;
-            } else if (stringCall.equals("accessibility-declaration-not-revision-date")) {
+            } else if ("accessibility-declaration-not-revision-date".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_REVISION_DATE;
-            } else if (stringCall.equals("has-complex-structure")) {
+            } else if ("accessibility-declaration-not-conformance-level".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONFORMANCE_LEVEL;
+            } else if ("has-complex-structure".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_HAS_COMPLEX_STRUCTURE;
-            } else if (stringCall.equals("too-many-broken-links")) {
+            } else if ("too-many-broken-links".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TOO_MANY_BROKEN_LINKS;
-            } else if (stringCall.equals("exist-attribute-value")) {
+            } else if ("exist-attribute-value".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_EXIST_ATTRIBUTE_VALUE;
-            } else if (stringCall.equals("not-exist-attribute-value")) {
+            } else if ("not-exist-attribute-value".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_EXIST_ATTRIBUTE_VALUE;
-            } else if (stringCall.equals("count-attribute-value-greater-than")) {
+            } else if ("count-attribute-value-greater-than".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE_GREATER_THAN;
-            } else if (stringCall.equals("empty-section")) {
+            } else if ("empty-section".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_EMPTY_SECTION;
-            } else if (stringCall.equals("is-animated-gif")) {
+            } else if ("is-animated-gif".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_IS_ANIMATED_GIF;
+            } else if ("following-headers-without-content".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_FOLLOWING_HEADERS_WITHOUT_CONTENT;
+            } else if ("img-dimensions-less-than".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_IMG_DIMENSIONS_LESS_THAN;
+            } else if ("redundant-img-alt".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_REDUNDANT_IMG_ALT;
+            } else if ("table-columns".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_COLUMNS;
+            } else if ("table-rows".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_ROWS;
+            } else if ("has-validation-errors".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_HAS_VALIDATION_ERRORS;
+            } else if ("guess-language".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_GUESS_LANGUAGE;
+            } else if ("grouped-selection-buttons".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_GROUPED_SELECTION_BUTTONS;
+            } else if ("not-first-child".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_NOT_FIRST_CHILD;
+            } else if ("required-controls".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_REQUIRED_CONTROLS;
+            } else if ("css-generated-content".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_GENERATED_CONTENT;
+            } else if ("css-color-contrast".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_COLOR_CONTRAST;
+            } else if ("css-blink".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_BLINK;
+            } else if ("css-parseable".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_PARSEABLE;
+            } else if ("css-outline".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_OUTLINE;
+            } else if ("css-label-hidden".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CSS_LABEL_HIDDEN;
+            } else if ("false-br-image-list".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_FALSE_BR_IMAGE_LIST;
+            } else if ("other-language".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_OTHER_LANGUAGE;
+            } else if ("current-language".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_CURRENT_LANGUAGE;
+            } else if ("table-heading-blank".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_HEADING_BLANK;
+            } else if ("title-not-contains".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS;
+            } else if ("previous-sibling-no-header".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;
             }
             return true;
-        } else if (elementCode.getNodeName().equalsIgnoreCase("condition")) {
+        } else if ("condition".equalsIgnoreCase(elementCode.getNodeName())) {
             type = CheckFunctionConstants.CODE_TYPE_CONDITION;
 
             String stringType = elementCode.getAttribute("type");
-            if (stringType.equalsIgnoreCase("and")) {
+            if ("and".equalsIgnoreCase(stringType)) {
                 conditionType = CheckFunctionConstants.CONDITION_AND;
-            } else if (stringType.equalsIgnoreCase("or")) {
+            } else if ("or".equalsIgnoreCase(stringType)) {
                 conditionType = CheckFunctionConstants.CONDITION_OR;
             } else {
                 Logger.putLog("Warning: invalid condition type: " + stringType, CheckCode.class, Logger.LOG_LEVEL_WARNING);
@@ -452,13 +504,13 @@ public class CheckCode {
             for (int x = 0; x < listFunctions.getLength(); x++) {
                 if (listFunctions.item(x).getNodeType() == Node.ELEMENT_NODE) {
                     CheckCode checkCode = new CheckCode();
-                    if (checkCode.create((Element) listFunctions.item(x)) == true) {
+                    if (checkCode.create((Element) listFunctions.item(x))) {
                         vectorCode.add(checkCode);
                     }
                 }
             }
             return true;
-        } else if (elementCode.getNodeName().equalsIgnoreCase("language")) {
+        } else if ("language".equalsIgnoreCase(elementCode.getNodeName())) {
             type = CheckFunctionConstants.CODE_TYPE_LANGUAGE;
             stringLanguage = elementCode.getAttribute("value");
 
@@ -467,7 +519,7 @@ public class CheckCode {
             for (int x = 0; x < listFunctions.getLength(); x++) {
                 if (listFunctions.item(x).getNodeType() == Node.ELEMENT_NODE) {
                     CheckCode checkCode = new CheckCode();
-                    if (checkCode.create((Element) listFunctions.item(x)) == true) {
+                    if (checkCode.create((Element) listFunctions.item(x))) {
                         vectorCode.add(checkCode);
                     }
                 }

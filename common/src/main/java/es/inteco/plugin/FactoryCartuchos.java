@@ -20,7 +20,7 @@ public final class FactoryCartuchos {
      */
     public static Cartucho getCartucho(final String nombreCartucho) {
         try {
-            Class clase = Class.forName(nombreCartucho);
+            final Class clase = Class.forName(nombreCartucho);
             // Creo una instancia
             return (Cartucho) clase.newInstance();
         } catch (ClassCastException cce) {

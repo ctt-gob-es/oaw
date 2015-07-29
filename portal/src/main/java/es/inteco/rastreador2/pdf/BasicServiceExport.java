@@ -15,9 +15,9 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.form.*;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.intav.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryBS;
@@ -28,6 +28,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
+import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +41,8 @@ import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
@@ -55,8 +57,8 @@ public final class BasicServiceExport {
     static {
         PMGR = new PropertiesManager();
 
-        X = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.X"));
-        Y = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.Y"));
+        X = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.x"));
+        Y = Integer.parseInt(PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.graphic.y"));
 
         COLOR = PMGR.getValue(CRAWLER_PROPERTIES, "chart.pdf.intav.colors");
     }
@@ -77,12 +79,12 @@ public final class BasicServiceExport {
         }
     }
 
-    public static Map<String, List<EvaluationForm>> getResultData(List<Long> evaluationIds, String language) throws Exception {
-        Map<String, List<EvaluationForm>> evolutionMap = new HashMap<String, List<EvaluationForm>>();
+    public static Map<String, List<EvaluationForm>> getResultData(final List<Long> evaluationIds, final String language) throws Exception {
+        final Map<String, List<EvaluationForm>> evolutionMap = new HashMap<String, List<EvaluationForm>>();
 
         Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection(PMGR.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             // Inicializamos el evaluador si hace falta
             if (!EvaluatorUtility.isInitialized()) {
@@ -93,17 +95,17 @@ public final class BasicServiceExport {
                 }
             }
 
-            List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+            final List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
             for (Long id : evaluationIds) {
-                Evaluator evaluator = new Evaluator();
+                final Evaluator evaluator = new Evaluator();
                 Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), false);
                 EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, language);
                 evaList.add(evaluationForm);
             }
 
-            GregorianCalendar calendar = new GregorianCalendar();
-            Date d = calendar.getTime();
-            DateFormat df = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+            final GregorianCalendar calendar = new GregorianCalendar();
+            final Date d = calendar.getTime();
+            final DateFormat df = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
             evolutionMap.put(df.format(d), evaList);
 
             return evolutionMap;
@@ -115,52 +117,49 @@ public final class BasicServiceExport {
         }
     }
 
-    public static String compressReport(String reportFile) {
-        String reportCompressFile = reportFile + ".gz";
-        FileOutputStream fos = null;
-        GZIPOutputStream gzos = null;
-        FileInputStream fin = null;
-        BufferedInputStream in = null;
-
-        try {
-            File file = new File(reportFile);
-            fos = new FileOutputStream(reportCompressFile);
-            gzos = new GZIPOutputStream(fos);
-            fin = new FileInputStream(file);
-            in = new BufferedInputStream(fin);
-            byte[] buffer = new byte[1024];
-            int i;
-            while ((i = in.read(buffer)) >= 0) {
-                gzos.write(buffer, 0, i);
-            }
-        } catch (Exception e) {
-            Logger.putLog("Excepción al comprimir el archivo " + reportFile, BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-            return reportFile;
-        } finally {
-            try {
-                in.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-            try {
-                gzos.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-            try {
-                fin.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-            try {
-                fos.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-            }
+    public static String compressReport(final String reportFile) {
+        final String reportCompressFile;
+        if (reportFile.endsWith(".pdf")) {
+            reportCompressFile = reportFile.substring(0, reportFile.length() - 4) + ".zip";
+        } else {
+            reportCompressFile = reportFile + ".zip";
         }
 
-        Logger.putLog("PDF comprimido en GZIP correctamente", BasicServiceExport.class, Logger.LOG_LEVEL_INFO);
+        final byte[] buffer = new byte[1024];
+        ZipOutputStream zos = null;
+        BufferedInputStream in = null;
+        try {
+            zos = new ZipOutputStream(new FileOutputStream(reportCompressFile));
+            in = new BufferedInputStream(new FileInputStream(reportFile));
 
+            ZipEntry ze = new ZipEntry(new File(reportFile).getName());
+            zos.putNextEntry(ze);
+
+            int len;
+            while ((len = in.read(buffer)) > 0) {
+                zos.write(buffer, 0, len);
+            }
+
+            zos.closeEntry();
+        } catch (Exception e) {
+            Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
+        } finally {
+            if ( in!=null ) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
+                }
+            }
+            if ( zos!=null ) {
+                try {
+                    zos.close();
+                } catch (IOException e) {
+                    Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
+                }
+            }
+        }
+        Logger.putLog("PDF comprimido a ZIP correctamente", BasicServiceExport.class, Logger.LOG_LEVEL_INFO);
         return reportCompressFile;
     }
 
@@ -197,7 +196,7 @@ public final class BasicServiceExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.subtitle"), ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
+            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.subtitle"),basicServiceForm.getReport(), ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
 
             int numChapter = 1;
             int countSections = 1;
@@ -241,11 +240,12 @@ public final class BasicServiceExport {
 
                 if (title != null) {
                     Font titleFont = title.length() > 50 ? ConstantsFont.descriptionFont : ConstantsFont.scoreFont;
-                    Phrase p3 = PDFUtils.createPhrase(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.title") + ": ", ConstantsFont.scoreBoldFont);
-                    Phrase p4 = PDFUtils.createPhrase(title, titleFont);
+                    Phrase p3 = PDFUtils.createPhrase(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.title") + ": "+ title, ConstantsFont.scoreBoldFont);
+                    //Phrase p4 = PDFUtils.createPhrase(title, titleFont);
+                    //p3.add(PDFUtils.createPhrase(title, titleFont));
                     Paragraph titleParagraph = new Paragraph();
                     titleParagraph.add(p3);
-                    titleParagraph.add(p4);
+                    //titleParagraph.add(p4);
                     chapter.add(titleParagraph);
                 }
 
@@ -299,8 +299,8 @@ public final class BasicServiceExport {
                                 if (StringUtils.isNotEmpty(problem.getRationale())) {
                                     PDFUtils.addParagraphRationale(Arrays.asList(CrawlerUtils.getResources(request).getMessage(problem.getRationale()).split("<p>|</p>")), subSection);
                                 }
-
-                                addSpecificProblems(request, subSection, problem.getSpecificProblems());
+Logger.putLog("createPDF - Check " + problem.getCheck(), BasicServiceExport.class, Logger.LOG_LEVEL_ERROR);
+                                addSpecificProblems(CrawlerUtils.getResources(request), subSection, problem.getSpecificProblems());
 
                                 if (problem.getCheck().equals(PMGR.getValue("check.properties", "doc.valida.especif")) ||
                                         problem.getCheck().equals(PMGR.getValue("check.properties", "css.valida.especif"))) {
@@ -703,20 +703,20 @@ public final class BasicServiceExport {
         }
     }
 
-    public static void addSpecificProblems(HttpServletRequest request, Section subSubSection, List<SpecificProblemForm> specificProblems) {
+    public static void addSpecificProblems(final MessageResources messageResources, final Section subSubSection, final List<SpecificProblemForm> specificProblems) {
         int maxNumErrors = Integer.parseInt(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"));
         for (SpecificProblemForm specificProblem : specificProblems) {
             maxNumErrors--;
             if (specificProblem.getCode() != null) {
-                if (specificProblem.getCode() != null) {
-                    StringBuilder code = new StringBuilder();
-                    for (int i = 0; i < specificProblem.getCode().size(); i++) {
-                        code.append(specificProblem.getCode().get(i)).append("\n");
-                    }
-                    PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
-                    PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(code.toString()), specificProblem.getMessage(), subSubSection);
-                }
+                final StringBuilder code = new StringBuilder();
+                for (int i = 0; i < specificProblem.getCode().size(); i++) {
+                    code.append(specificProblem.getCode().get(i)).append("\n");
 
+                }
+                if (!specificProblem.getLine().isEmpty() && !"-1".equalsIgnoreCase(specificProblem.getLine())) {
+                    PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
+                }
+                PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(code.toString()), specificProblem.getMessage(), subSubSection);
             } else if (specificProblem.getNote() != null) {
                 String linkCode = getMatch(specificProblem.getNote().get(0), "(<a.*?</a>)");
                 String paragraphText = specificProblem.getNote().get(0).replace(linkCode, "");
@@ -735,7 +735,7 @@ public final class BasicServiceExport {
                     String[] arguments = new String[2];
                     arguments[0] = PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number");
                     arguments[1] = String.valueOf(specificProblems.size());
-                    Paragraph p = new Paragraph(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
+                    Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
                     p.setAlignment(Paragraph.ALIGN_RIGHT);
                     subSubSection.add(p);
                 }
@@ -766,260 +766,5 @@ public final class BasicServiceExport {
         p.add(anchor);
         subSubSection.add(p);
     }
-
-	 /*private static Chapter evolutionChapter(HttpServletRequest request, String globalPath, IndexEvents index, String language,
-             String pathExports, HashMap<Long,List<Long>> evaluationIds, int numChapter, String entity) throws Exception{
-        
-		 if (generateEvolutionGraphics(request, globalPath, evaluationIds, entity, language) == 1){
-			 
-			Chunk chunk = new Chunk (CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.index.global.evolution"));
-			chunk.setLocalDestination(Constants.ANCLA_PDF + (numChapter - 1));
-	        Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleMPFont);
-	        cTitle.add(chunk);
-			cTitle.setSpacingAfter(20);
-	        Chapter chapterEv = new Chapter(cTitle, numChapter);
-	        chapterEv.setNumberDepth(0);
-	        cTitle.add(index.create(" ",CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.index.global.evolution")));
-	        
-	        try {
-	        	Image globalImgGpProblemsA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemA.title") + ".jpg");
-				globalImgGpProblemsA.setSpacingAfter(2*SPACE_LINE);
-				globalImgGpProblemsA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemA.title"));
-				
-				Image globalImgGpProblemsAA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemAA.title") + ".jpg");
-				globalImgGpProblemsAA.setSpacingAfter(2*SPACE_LINE);
-				globalImgGpProblemsAA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemAA.title"));
-				
-				Image globalImgGpWarningsA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningA.title") + ".jpg");
-				globalImgGpWarningsA.setSpacingAfter(2*SPACE_LINE);
-				globalImgGpWarningsA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningA.title"));
-				
-				Image globalImgGpWarningsAA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningAA.title") + ".jpg");
-				globalImgGpWarningsAA.setSpacingAfter(2*SPACE_LINE);
-				globalImgGpWarningsAA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningAA.title"));
-				
-				Image globalImgGpCannottellA = Image.getInstance(globalPath +CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellA.title") + ".jpg");
-				globalImgGpCannottellA.setSpacingAfter(2*SPACE_LINE);
-				globalImgGpCannottellA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellA.title"));
-				
-				Image globalImgGpCannottellAA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellAA.title") + ".jpg");
-				globalImgGpCannottellAA.setSpacingAfter(2*SPACE_LINE);
-				globalImgGpCannottellA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellAA.title"));
-				
-				chapterEv.add(globalImgGpProblemsA);
-				chapterEv.add(globalImgGpProblemsAA);
-		        chapterEv.add(globalImgGpWarningsA);
-		        chapterEv.add(globalImgGpWarningsAA);
-		        chapterEv.add(globalImgGpCannottellA);
-		        chapterEv.add(globalImgGpCannottellAA);
-		        
-		        chapterEv.newPage();
-	        
-	        } catch (Exception e) {
-				Logger.putLog("Exception", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-			}
-	        
-	        return chapterEv;
-		 }else{
-			 return null;
-		 }
-	}
-	 
-	 private static int generateEvolutionGraphics (HttpServletRequest request, String tempPath, HashMap<Long,List<Long>> evaluationIds, String entity, String language) throws Exception{	
-		 
-			HashMap<String, List<EvaluationForm>> evolutionMap = generateEvaluationMap(language, evaluationIds, entity);
-			
-			if (evolutionMap.size() > 1){
-				 createProblemsChart(request, tempPath, evolutionMap, X, Y, COLOR);
-				 createWarningsChart(request, tempPath, evolutionMap, X, Y, COLOR);
-				 createCannottellChart(request, tempPath, evolutionMap, X, Y, COLOR);
-				 
-				 return 1;
-			}else{
-				return 0;
-			}
-		} 
-	 
-	 private static HashMap<String, List<EvaluationForm>> generateEvaluationMap (String language , HashMap<Long,List<Long>> evaluationIds, String entity) throws Exception{	
-		 
-		 HashMap<String, List<EvaluationForm>> evolutionMap = new HashMap<String, List<EvaluationForm>>();
-		 
-		 Connection conn = null;
-		 try {
-			conn = DataBaseManager.getConnection(PMGR.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
-			
-			// Inicializamos el evaluador si hace falta
-			if (!EvaluatorUtility.isInitialized()) {
-				try {
-					EvaluatorUtility.initialize();
-				} catch (Exception e) {
-					Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-				}
-			}
-		 
-			for (Long idT : evaluationIds.keySet()){
-				 List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
-		         for(Long id : evaluationIds.get(idT)) {
-		         	Evaluator evaluator = new Evaluator();
-					Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), true);
-					EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, language);
-					evaList.add(evaluationForm);
-		         }
-		         
-		         String date = DiagnosisDAO.getAnalysisDate(conn, idT, entity);
-		         DateFormat df = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.complet.format"));
-			     Date d = df.parse(date);
-			     df = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
-		         evolutionMap.put(df.format(d), evaList);
-			}
-			
-			return evolutionMap;
-			
-		} catch (Exception e) {
-			Logger.putLog("Excepción genérica al generar el pdf", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		} finally {
-			DataBaseManager.closeConnection(conn);
-		}
-	 }
-	 
-	 private static void createProblemsChart(HttpServletRequest request, String tempPath,  
-				HashMap<String, List<EvaluationForm>> evolutionMap, int X, int Y, String COLOR){
-
-			try {
-				DefaultCategoryDataset dataSetA = new DefaultCategoryDataset();
-				DefaultCategoryDataset dataSetAA = new DefaultCategoryDataset();
-				
-				for (String date: evolutionMap.keySet()){
-					BigDecimal problemsA = new BigDecimal(0);
-					BigDecimal problemsAA = new BigDecimal(0);
-					
-					for (EvaluationForm evaluationForm : evolutionMap.get(date)){
-						for (PriorityForm priority : evaluationForm.getPriorities()){
-							if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.1.name")))){
-								problemsA = problemsA.add(new BigDecimal(priority.getNumProblems()));
-							}else if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.2.name")))){
-								problemsAA = problemsAA.add(new BigDecimal(priority.getNumProblems()));
-							}
-						}
-					}
-					
-					if (evolutionMap.get(date).size() != 0){
-						dataSetA.addValue(problemsA.divide(new BigDecimal(evolutionMap.get(date).size()), 2, BigDecimal.ROUND_HALF_UP), "", date);
-						dataSetAA.addValue(problemsAA.divide(new BigDecimal(evolutionMap.get(date).size()), 2,BigDecimal.ROUND_HALF_UP), "", date);
-					}else{
-						dataSetA.addValue(new BigDecimal(0), "", date);
-						dataSetAA.addValue(new BigDecimal(0), "", date);
-					}
-				}
-				
-				String rowTitle = CrawlerUtils.getResources(request).getMessage("chachart.intav.bs.evolution.problem.rowTitle");
-				String columnTitle = CrawlerUtils.getResources(request).getMessage("chart.intav.bs.evolution.columnTitle");
-			
-				ChartForm chartA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemA.title"), 
-						columnTitle, rowTitle, dataSetA, true, false, false, false, false, true, true, X, Y, COLOR_EV);
-				GraphicsUtils.createStandardBarChart(chartA,tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemA.title") + ".jpg", "", request, false);
-				
-				ChartForm chartAA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemAA.title"), 
-						columnTitle, rowTitle, dataSetAA, true, false, false, false, false, true, true, X, Y, COLOR_EV);
-				GraphicsUtils.createStandardBarChart(chartAA,tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.problemAA.title") + ".jpg", "", request, false);
-				
-					
-			} catch (Exception e) {
-				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-			}
-		}
-		
-		private static void createWarningsChart(HttpServletRequest request, String tempPath,  
-				HashMap<String, List<EvaluationForm>> evolutionMap, int X, int Y, String COLOR){
-
-			try {
-				DefaultCategoryDataset dataSetA = new DefaultCategoryDataset();
-				DefaultCategoryDataset dataSetAA = new DefaultCategoryDataset();
-				
-				for (String date: evolutionMap.keySet()){
-					BigDecimal warningsA = new BigDecimal(0);
-					BigDecimal warningsAA = new BigDecimal(0);
-					
-					for (EvaluationForm evaluationForm : evolutionMap.get(date)){
-						for (PriorityForm priority : evaluationForm.getPriorities()){
-							if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.1.name")))){
-								warningsA = warningsA.add( new BigDecimal(priority.getNumWarnings()));
-							}else if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.2.name")))){
-								warningsAA = warningsAA.add(new BigDecimal(priority.getNumWarnings()));
-							}
-						}
-					}
-					
-					if (evolutionMap.get(date).size() != 0){
-						dataSetA.addValue(warningsA.divide(new BigDecimal(evolutionMap.get(date).size()), 2, BigDecimal.ROUND_HALF_UP), "", date);
-						dataSetAA.addValue(warningsAA.divide(new BigDecimal(evolutionMap.get(date).size()), 2, BigDecimal.ROUND_HALF_UP), "", date);
-					}else{
-						dataSetA.addValue(new BigDecimal(0), "", date);
-						dataSetAA.addValue(new BigDecimal(0), "", date);
-					}
-				}
-				
-				String rowTitle = CrawlerUtils.getResources(request).getMessage("chart.intav.bs.evolution.warning.rowTitle");
-				String columnTitle =CrawlerUtils.getResources(request).getMessage("chart.intav.bs.evolution.columnTitle");
-				
-				ChartForm chartA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningA.title"), 
-						columnTitle, rowTitle, dataSetA, true, false, false, false, false, true, true, X, Y, COLOR_EV);
-				GraphicsUtils.createStandardBarChart(chartA, tempPath +CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningA.title") + ".jpg", "", request, false);
-				
-				ChartForm chartAA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningAA.title"), 
-						columnTitle, rowTitle, dataSetAA, true, false, false, false, false, true, true, X, Y, COLOR_EV);
-				GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.warningAA.title") + ".jpg", "", request, false);
-				
-			} catch (Exception e) {
-				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-			}
-		}
-		
-		private static void createCannottellChart(HttpServletRequest request, String tempPath, 
-				HashMap<String, List<EvaluationForm>> evolutionMap, int X, int Y, String COLOR){
-
-			try {
-				DefaultCategoryDataset dataSetA = new DefaultCategoryDataset();
-				DefaultCategoryDataset dataSetAA = new DefaultCategoryDataset();
-				
-				for (String date: evolutionMap.keySet()){
-					BigDecimal cannottellA = new BigDecimal(0);
-					BigDecimal cannottellAA = new BigDecimal(0);
-					
-					for (EvaluationForm evaluationForm : evolutionMap.get(date)){
-						for (PriorityForm priority : evaluationForm.getPriorities()){
-							if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.1.name")))){
-								cannottellA = cannottellA.add( new BigDecimal(priority.getNumInfos()));
-							}else if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.2.name")))){
-								cannottellAA = cannottellAA.add( new BigDecimal(priority.getNumInfos()));
-							}
-						}
-					}
-					
-					if (evolutionMap.get(date).size() != 0){
-						dataSetA.addValue(cannottellA.divide(new BigDecimal(evolutionMap.get(date).size()), 2, BigDecimal.ROUND_HALF_UP), "", date);
-						dataSetAA.addValue(cannottellAA.divide(new BigDecimal(evolutionMap.get(date).size()), 2, BigDecimal.ROUND_HALF_UP), "", date);
-					}else{
-						dataSetA.addValue(new BigDecimal(0), "", date);
-						dataSetAA.addValue(new BigDecimal(0), "", date);
-					}
-				}
-				
-				String rowTitle = CrawlerUtils.getResources(request).getMessage("chart.intav.bs.evolution.cannottell.rowTitle");
-				String columnTitle = CrawlerUtils.getResources(request).getMessage("chart.intav.bs.evolution.columnTitle");
-				
-				ChartForm chartA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellA.title"), 
-						columnTitle, rowTitle, dataSetA, true, false, false, false, false, true, true, X, Y, COLOR_EV);
-				GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellA.title") + ".jpg", "", request, false);
-				
-				ChartForm chartAA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellAA.title"), 
-						columnTitle, rowTitle, dataSetAA, true, false, false, false, false, true, true, X, Y, COLOR_EV);
-				GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.global.evolution.cannottellAA.title") + ".jpg", "", request, false); 
-				
-			} catch (Exception e) {
-				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-			}
-		}*/
 
 }

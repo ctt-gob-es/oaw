@@ -11,7 +11,7 @@ public class ObservatorySiteEvaluationForm {
     private BigDecimal score;
     private Long idSeed;
 
-    List<ObservatoryEvaluationForm> pages;
+    private List<ObservatoryEvaluationForm> pages;
 
     public String getLevel() {
         return level;
@@ -68,6 +68,5 @@ public class ObservatorySiteEvaluationForm {
     public void setIdSeed(Long idSeed) {
         this.idSeed = idSeed;
     }
-
 
 }

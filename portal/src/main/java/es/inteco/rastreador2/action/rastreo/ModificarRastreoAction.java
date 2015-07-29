@@ -53,7 +53,7 @@ public class ModificarRastreoAction extends Action {
                 try {
                     PropertiesManager pmgr = new PropertiesManager();
 
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
                     c = DataBaseManager.getConnection();
 
                     request.setAttribute(Constants.ID_RASTREO, id_rastreo);
@@ -151,8 +151,7 @@ public class ModificarRastreoAction extends Action {
 
                                 //Comprobamos que el rastreo usa caracteres correctos
                                 ComprobadorCaracteres cc = new ComprobadorCaracteres(insertarRastreoForm.getCodigo());
-                                boolean result = cc.comprueba();
-                                if (!result) {
+                                if (!cc.isNombreValido()) {
                                     errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                                     saveErrors(request, errors);
                                     return mapping.findForward(Constants.VOLVER);
@@ -167,8 +166,8 @@ public class ModificarRastreoAction extends Action {
                                     }
                                 }
                                 if (insertarRastreoForm.getCuenta_cliente() != null && insertarRastreoForm.getCuenta_cliente() != 0) {
-                                    insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Integer.parseInt(insertarRastreoForm.getCartucho())));
-                                    rastreo_antiguo += "-" + CartuchoDAO.getApplication(c, Integer.parseInt(insertarRastreoForm.getCartucho()));
+                                    insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho())));
+                                    rastreo_antiguo += "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho()));
                                 }
 
                                 //necesitamos los ids

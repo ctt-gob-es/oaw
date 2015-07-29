@@ -14,8 +14,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 /**
  * Clase InformesService.
  * Servicio de Informes
@@ -41,8 +39,7 @@ public class InformesService {
 
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.lenox"));
+            conn = DataBaseManager.getConnection();
 
             InformesDao dao = new InformesDao();
 
@@ -81,8 +78,7 @@ public class InformesService {
     public List<ResultsByUrlDto> getResultsByUrl(Long idRastreo, int pagina) throws BusinessException {
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.lenox"));
+            conn = DataBaseManager.getConnection();
 
             return new InformesDao().getResultsByUrl(conn, idRastreo, pagina);
         } catch (Exception e) {

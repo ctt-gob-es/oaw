@@ -77,7 +77,7 @@ public final class LenoxExport {
         Connection conn = null;
         Connection c = null;
         try {
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.lenox"));
+            conn = DataBaseManager.getConnection();
 
             //Recuperamos los resultados
             c = DataBaseManager.getConnection();

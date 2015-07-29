@@ -48,7 +48,7 @@ public class ModificarCuentaUsuarioAction extends Action {
 
                 try {
                     c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
 
                     String id_cuenta = null;
                     if (request.getParameter(Constants.DE_MENU) == null) {
@@ -105,8 +105,7 @@ public class ModificarCuentaUsuarioAction extends Action {
                                 //Comprobamos que el nombre usa caracteres correctos
                                 if (modificarCuentaUsuarioForm.getNombre() != null && !modificarCuentaUsuarioForm.getNombre().equals("")) {
                                     ComprobadorCaracteres cc = new ComprobadorCaracteres(modificarCuentaUsuarioForm.getNombre());
-                                    boolean result = cc.comprueba();
-                                    if (!result) {
+                                    if (!cc.isNombreValido()) {
                                         Logger.putLog("CARACTERES ILEGALES", ModificarCuentaUsuarioAction.class, Logger.LOG_LEVEL_INFO);
                                         errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                                         saveErrors(request, errors);

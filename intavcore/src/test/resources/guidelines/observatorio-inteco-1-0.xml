@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <guideline>
     <type>observatory</type>
-    <title abbr="OBSERVATORIO-INTECO" long-name="Pautas de verificación del Observatorio de INTECO">Observatorio INTECO
-        1.0
-    </title>
+    <title abbr="OBSERVATORIO-INTECO" long-name="Pautas de verificación del Observatorio de INTECO">Observatorio INTECO 1.0</title>
     <date>2009-06-18</date>
     <status>Estado del Observatorio</status>
     <earlid>URL donde están definidas las pautas</earlid>

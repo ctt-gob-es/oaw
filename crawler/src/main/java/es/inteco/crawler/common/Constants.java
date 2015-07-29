@@ -1,6 +1,6 @@
 package es.inteco.crawler.common;
 
-public class Constants {
+public interface Constants {
     public static final int STATUS_NOT_LAUNCHED = 1;
     public static final int STATUS_LAUNCHED = 2;
     public static final int STATUS_STOPPED = 3;

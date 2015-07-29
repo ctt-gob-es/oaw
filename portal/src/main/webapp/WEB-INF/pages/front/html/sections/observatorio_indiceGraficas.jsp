@@ -19,9 +19,9 @@
 	<bean:define id="initial" ><%= Constants.OBSERVATORY_GRAPHIC_INITIAL %></bean:define>
 	
 	<bean:define id="forward" value="" />
-	<logic:equal name="observatoryType" value="<%= idCartridgeIntav %>">
+
 		<bean:define id="forward" value="<%= Constants.OBSERVATORY_GRAPHIC_INTAV %>" />
-	</logic:equal>
+
 	<logic:equal name="observatoryType" value="<%= idCartridgeLenox %>">
 		<bean:define id="forward" value="<%= Constants.OBSERVATORY_GRAPHIC_LENOX %>" />
 	</logic:equal>

@@ -700,7 +700,7 @@ public final class CuentaUsuarioDAO {
             PropertiesManager pmgr = new PropertiesManager();
             boolean hasIntav = false;
             for (int i = 0; i < modificarCuentaUsuarioForm.getCartuchosSelected().length; i++) {
-                if (modificarCuentaUsuarioForm.getCartuchosSelected()[i].equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(modificarCuentaUsuarioForm.getCartuchosSelected()[i]))) {
                     hasIntav = true;
                 }
             }
@@ -853,7 +853,7 @@ public final class CuentaUsuarioDAO {
                     if (cartuchoSelected.equals(String.valueOf(cuentaCliente.getDatosRastreo().getId_cartucho()))) {
                         // Hay que editar el rastreo
                         if (!insertarRastreoForm.getCodigo().contains("-")) {
-                            insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Integer.parseInt(cartuchoSelected)));
+                            insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Long.valueOf(cartuchoSelected)));
                         }
                         RastreoDAO.modificarRastreo(c, false, insertarRastreoForm, (long) cuentaCliente.getDatosRastreo().getId_rastreo());
                         updated = true;
@@ -864,7 +864,7 @@ public final class CuentaUsuarioDAO {
                 if (!updated) {
                     // Si no se ha editado, es que el rastreo es nuevo y hay que añadirlo
                     if (!insertarRastreoForm.getCodigo().contains("-")) {
-                        insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Integer.parseInt(cartuchoSelected)));
+                        insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Long.valueOf(cartuchoSelected)));
                     }
                     insertarRastreoForm.setActive(true);
                     RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);

@@ -49,7 +49,7 @@ public class InsertarRastreoAction extends Action {
                 try {
 
                     PropertiesManager pmgr = new PropertiesManager();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
                     c = DataBaseManager.getConnection();
 
                     //Si se ha pulsado Cargar Semilla
@@ -110,8 +110,7 @@ public class InsertarRastreoAction extends Action {
                         if (errors == null || errors.isEmpty()) {
                             //Comprobamos que el rastreo usa caracteres correctos
                             ComprobadorCaracteres cc = new ComprobadorCaracteres(insertarRastreoForm.getCodigo());
-                            boolean result = cc.comprueba();
-                            if (!result) {
+                            if (!cc.isNombreValido()) {
                                 errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                                 saveErrors(request, errors);
                                 return mapping.findForward(Constants.VOLVER);

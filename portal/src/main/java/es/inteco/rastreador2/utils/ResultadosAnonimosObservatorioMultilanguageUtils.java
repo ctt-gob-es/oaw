@@ -172,8 +172,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
 
         try {
             c = DataBaseManager.getConnection();
-            PropertiesManager pmgr = new PropertiesManager();
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.multilanguage"));
+            conn = DataBaseManager.getConnection();
             List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), idCategory);
             if (listExecutionsIds != null && !listExecutionsIds.isEmpty()) {
                 Map<Long, List<AnalysisForm>> multilanguageResultList = AnalysisManager.getObservatoryAnalysis(conn, listExecutionsIds);

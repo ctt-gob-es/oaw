@@ -841,13 +841,11 @@ public class InformesDao extends BaseDao {
         ResultSet rs = null;
         List<ObservatoryLenoxForm> results = new ArrayList<ObservatoryLenoxForm>();
         try {
-            String ids = "(";
-            for (int i = 0; i < listExecutionsIds.size(); i++) {
-                ids += "?, ";
-            }
-            ids = ids.substring(0, (ids.length() - 2)) + ")";
+            final StringBuilder query = new StringBuilder("SELECT ID_RASTREO, COUNT(DISTINCT(ID_RESULTADO)) AS TERMINOSLOCALIZADOS FROM SEXISTA_RESULTADOS WHERE ID_RASTREO IN ");
+            query.append(buildParamValues(listExecutionsIds.size()));
+            query.append(" GROUP BY ID_RASTREO ");
 
-            ps = conn.prepareStatement("SELECT ID_RASTREO, COUNT(DISTINCT(ID_RESULTADO)) AS TERMINOSLOCALIZADOS FROM SEXISTA_RESULTADOS WHERE ID_RASTREO IN " + ids + " GROUP BY ID_RASTREO ");
+            ps = conn.prepareStatement(query.toString());
 
             int countParameters = 1;
             for (Long id : listExecutionsIds) {
@@ -869,6 +867,15 @@ public class InformesDao extends BaseDao {
         }
 
         return results;
+    }
+
+    private static StringBuilder buildParamValues(int size) {
+        final StringBuilder params = new StringBuilder("(");
+        for (int i = size-1; i>0; i--) {
+            params.append("?, ");
+        }
+        params.append("?)");
+        return params;
     }
 
     public static int countExecutionTermsByPriority(Connection conn, long idExecution, int priority) throws BusinessException {

@@ -82,7 +82,7 @@
 														<c:set target="${params2}" property="isPrimary" value="false"/>
 														<c:set target="${params2}" property="idExObs" value="${fulfilledObservatory.id}" />
 														<logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="1">
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>">
+															<%-- <logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>"> --%>
 																<li><html:link forward="<%= Constants.OBSERVATORY_GRAPHIC %>" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/></html:link></li>
 																<%-- <li><html:link forward="anonymousExportPdfAction" name="params" ><img src="../images/icono_pdf.gif" alt="<bean:message key="indice.rastreo.exportar.pdf" />"/></html:link></li>
 																<bean:define id="regeneratePDF"><%= Constants.EXPORT_PDF_REGENERATE %></bean:define>
@@ -90,7 +90,7 @@
 																<li><html:link forward="anonymousExportPdfAction" name="params" ><img src="../images/icono_regenerar_pdf.gif" alt="<bean:message key="indice.rastreo.exportar.pdf.regenerate" />"/></html:link></li>--%>
 																<li><html:link forward="anonymousExportHtmlAction" name="params" ><img src="../images/export_html.png" alt="<bean:message key="indice.rastreo.exportar.html" />"/></html:link></li>
 																<li><html:link forward="anonymousExportOpenOfficeAction" name="params" ><img src="../images/openoffice.png" alt="<bean:message key="indice.rastreo.exportar.openOffice" />"/></html:link></li>
-															</logic:equal>
+															<%-- </logic:equal> --%>
 															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeLenox%>">
 																<li><html:link forward="<%= Constants.OBSERVATORY_GRAPHIC %>" name="params"><img src="../images/transgender.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></html:link></li>
 															</logic:equal>

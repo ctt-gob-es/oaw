@@ -26,11 +26,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class ModificarObservatorioAction extends Action {
 
-    private Log log = LogFactory.getLog(ModificarObservatorioAction.class);
+//    private Log log = LogFactory.getLog(ModificarObservatorioAction.class);
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -109,11 +107,10 @@ public class ModificarObservatorioAction extends Action {
     private ModificarObservatorioForm loadData(ModificarObservatorioForm modificarObservatorioForm, HttpServletRequest request, boolean esPrimera, String id_observatorio) throws Exception {
         Connection c = null;
         Connection con = null;
-        PropertiesManager pmgr = new PropertiesManager();
 
         try {
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             if (id_observatorio != null) {
                 modificarObservatorioForm.setId_observatorio(id_observatorio);
@@ -142,7 +139,7 @@ public class ModificarObservatorioAction extends Action {
             modificarObservatorioForm.setNombre_antiguo(modificarObservatorioForm.getNombre());
             return modificarObservatorioForm;
         } catch (Exception e) {
-            log.error("Excepción genérica al modificar observatorio");
+            Logger.putLog("Excepción genérica al modificar observatorio", ModificarObservatorioAction.class,Logger.LOG_LEVEL_ERROR, e);
             throw new Exception(e);
         } finally {
             DataBaseManager.closeConnection(c);
@@ -205,7 +202,7 @@ public class ModificarObservatorioAction extends Action {
             return mapping.findForward(Constants.EXITO);
 
         } catch (Exception e) {
-            log.error("Excepción genérica al modificar observatorio");
+            Logger.putLog("Excepción genérica al modificar observatorio", ModificarObservatorioAction.class,Logger.LOG_LEVEL_ERROR, e);
             throw new Exception(e);
         } finally {
             DataBaseManager.closeConnection(c);

@@ -40,42 +40,23 @@ import java.util.Map;
 
 public class Evaluation {
 
-    /*class PairStrings {
-        private String frameSrc;
-        private String frameName;
-
-        public PairStrings(String src, String name) {
-            frameSrc = src;
-            frameName = name;
-        }
-
-        public String getSrc() {
-            return frameSrc;
-        }
-
-        public String getName() {
-            return frameName;
-        }
-    }*/
-
     private long tevaluation;
-    private long id_analisis;
+    private long idAnalisis;
     private long rastreo;
     private String filename;
     private String filenameEncoded;
-    private String acheckid;
     private String entidad;
     private String base;
     private String source;
 
     private List<Problem> vectorProblemsAll;
     private List<Problem> vectorProblemsUnresolved;
-    private List<Object> vectorProblemsUser; // unresolved problems for the user's guidelines
+    private List<Problem> vectorProblemsUser; // unresolved problems for the user's guidelines
     private List<Object> vectorGroupsHtml; // problems sorted into HTML groups
     private List<Object> vectorGroupsGuide; // problems sorted into guideline groups
     private Map<String, List<Problem>> hashCheckProblem; // problems sorted into individual checks groups
-    private List<Object> vectorGuidelines;
-    private List<Object> vectorChecksRun;
+    private List<String> vectorGuidelines;
+    private List<Integer> vectorChecksRun;
     private List<Problem> vectorProblemsSorted;
     private List<Integer> checksExecuted;
     private String checksExecutedStr;
@@ -84,26 +65,21 @@ public class Evaluation {
     private int sortOrderSummary;
 
     public Evaluation() {
-        initialize();
-    }
-
-    private void initialize() {
         entidad = "";
         filename = "";
         filenameEncoded = "";
-        acheckid = "";
         base = "";
         source = "";
         checksExecuted = new ArrayList<Integer>();
         checksExecutedStr = "";
         vectorProblemsAll = new ArrayList<Problem>();
         vectorProblemsUnresolved = new ArrayList<Problem>();
-        vectorProblemsUser = new ArrayList<Object>();
+        vectorProblemsUser = new ArrayList<Problem>();
         vectorGroupsHtml = new ArrayList<Object>();
         vectorGroupsGuide = new ArrayList<Object>();
         hashCheckProblem = new Hashtable<String, List<Problem>>();
-        vectorGuidelines = new ArrayList<Object>();
-        vectorChecksRun = new ArrayList<Object>();
+        vectorGuidelines = new ArrayList<String>();
+        vectorChecksRun = new ArrayList<Integer>();
         vectorProblemsSorted = new ArrayList<Problem>();
         docHtml = null;
     }
@@ -175,15 +151,11 @@ public class Evaluation {
         }
     }
 
-    public String getAcheckId() {
-        return acheckid;
-    }
-
     public List<Problem> getProblems() { // all unresolved problems
         return vectorProblemsUnresolved;
     }
 
-    public List<Object> getProblemsUser() { // all unresolved problems for the user's guideline
+    public List<Problem> getProblemsUser() { // all unresolved problems for the user's guideline
         return vectorProblemsUser;
     }
 
@@ -200,8 +172,7 @@ public class Evaluation {
     }
 
     public boolean hasRun(int idCheck) {
-        for (int x = 0; x < vectorChecksRun.size(); x++) {
-            Integer intRun = (Integer) vectorChecksRun.get(x);
+        for (Integer intRun : vectorChecksRun) {
             if (idCheck == intRun) {
                 return true;
             }
@@ -217,14 +188,6 @@ public class Evaluation {
         return sortOrderSummary;
     }
 
-    public List<Object> getVectorGroupsHtml() {
-        return vectorGroupsHtml;
-    }
-
-    public List<Object> getVectorGroupsGuide() {
-        return vectorGroupsGuide;
-    }
-
     public Map<String, List<Problem>> getHashCheckProblem() {
         return hashCheckProblem;
     }
@@ -232,14 +195,13 @@ public class Evaluation {
     // gives each problem an ID number
     public void setIdProblems() {
         for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+            Problem problem = vectorProblemsAll.get(x);
             problem.setId(x);
         }
     }
 
     public Problem getProblem(int idGiven) {
-        for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+        for (final Problem problem : vectorProblemsAll) {
             if (problem.getId() == idGiven) {
                 return problem;
             }
@@ -248,8 +210,7 @@ public class Evaluation {
     }
 
     public boolean failsCheck(int idCheck) {
-        for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+        for (final Problem problem : vectorProblemsAll) {
             if (problem.getCheck() != null) {
                 if (problem.getCheck().getId() == idCheck) {
                     return true;
@@ -261,9 +222,7 @@ public class Evaluation {
 
     public int countFails(int idCheck) {
         int count = 0;
-
-        for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+        for (Problem problem : vectorProblemsAll) {
             if (problem.getCheck().getId() == idCheck) {
                 count++;
             }
@@ -273,9 +232,8 @@ public class Evaluation {
     }
 
     public List<Integer> getChecksFailed() {
-        List<Integer> checksFailed = new ArrayList<Integer>();
-        for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+        final List<Integer> checksFailed = new ArrayList<Integer>();
+        for (Problem problem : vectorProblemsAll) {
             if (problem.getCheck() != null) {
                 if (!checksFailed.contains(problem.getCheck().getId())) {
                     checksFailed.add(problem.getCheck().getId());
@@ -289,7 +247,7 @@ public class Evaluation {
         vectorGuidelines.add(nameGuideline);
     }
 
-    public List<Object> getGuidelines() {
+    public List<String> getGuidelines() {
         return vectorGuidelines;
     }
 
@@ -330,24 +288,21 @@ public class Evaluation {
     // The list of problems is further sorted into groups by HTML and guideline.
     private void sortProblemsForGuidelines() {
         vectorProblemsUser.clear();
-        for (int x = 0; x < vectorProblemsUnresolved.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUnresolved.get(x);
+        for (Problem problem : vectorProblemsUnresolved) {
             if (problem.getCheck() != null) {
                 // does this problem belong to any of the user's guidelines?
-                for (int g = 0; g < vectorGuidelines.size(); g++) {
-                    String filenameGuideline = (String) vectorGuidelines.get(g);
-                    Guideline guideline = EvaluatorUtility.loadGuideline(filenameGuideline);
-                    //Guideline guideline = EvaluatorUtility.getGuideline ("wcag-1-0-aa.xml");
+                for (String filenameGuideline : vectorGuidelines) {
+                    final Guideline guideline = EvaluatorUtility.loadGuideline(filenameGuideline);
                     if (guideline != null) {
                         if (guideline.containsCheck(problem.getCheck().getId())) {
                             vectorProblemsUser.add(problem);
 
                             // add check and problem to the hash
-                            String subgroup = guideline.getSubgroupFromCheck(problem.getCheck().getId());
+                            final String subgroup = guideline.getSubgroupFromCheck(problem.getCheck().getId());
                             if (hashCheckProblem.get(subgroup) != null) {
                                 hashCheckProblem.get(subgroup).add(problem);
                             } else {
-                                List<Problem> vProblem = new ArrayList<Problem>();
+                                final List<Problem> vProblem = new ArrayList<Problem>();
                                 vProblem.add(problem);
                                 hashCheckProblem.put(subgroup, vProblem);
                             }
@@ -362,8 +317,7 @@ public class Evaluation {
     // Returns the number of known problems in the target guidelines.
     public int getCountKnownProblems() {
         int known = 0;
-        for (int x = 0; x < vectorProblemsUser.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUser.get(x);
+        for (Problem problem : vectorProblemsUser) {
             Check check = problem.getCheck();
             if (check.getConfidence() == CheckFunctionConstants.CONFIDENCE_HIGH) {
                 known++;
@@ -375,8 +329,7 @@ public class Evaluation {
     // Returns the number of likely problems in the target guidelines.
     public int getCountLikelyProblems() {
         int likely = 0;
-        for (int x = 0; x < vectorProblemsUser.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUser.get(x);
+        for (Problem problem : vectorProblemsUser) {
             Check check = problem.getCheck();
             if (check.getConfidence() == CheckFunctionConstants.CONFIDENCE_MEDIUM) {
                 likely++;
@@ -388,8 +341,7 @@ public class Evaluation {
     // Returns the number of potential problems in the target guidelines.
     public int getCountPotentialProblems() {
         int potential = 0;
-        for (int x = 0; x < vectorProblemsUser.size(); x++) {
-            Problem problem = (Problem) vectorProblemsUser.get(x);
+        for (Problem problem : vectorProblemsUser) {
             Check check = problem.getCheck();
             if (check.getConfidence() == CheckFunctionConstants.CONFIDENCE_CANNOTTELL) {
                 potential++;
@@ -400,8 +352,7 @@ public class Evaluation {
 
     // Calling app will tell us the offset line number of the chunk of HTML code.
     public void applyLineOffset(int lineOffset) {
-        for (int x = 0; x < vectorProblemsAll.size(); x++) {
-            Problem problem = (Problem) vectorProblemsAll.get(x);
+        for (Problem problem : vectorProblemsAll) {
             problem.setLineOffset(lineOffset);
         }
     }
@@ -483,12 +434,12 @@ public class Evaluation {
         return -1; // no other problems require a decision
     }
 
-    public long getId_analisis() {
-        return id_analisis;
+    public long getIdAnalisis() {
+        return idAnalisis;
     }
 
-    public void setId_analisis(long id_analisis) {
-        this.id_analisis = id_analisis;
+    public void setIdAnalisis(long idAnalisis) {
+        this.idAnalisis = idAnalisis;
     }
 
     public long getRastreo() {

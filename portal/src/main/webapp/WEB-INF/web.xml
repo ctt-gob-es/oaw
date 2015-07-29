@@ -5,7 +5,7 @@
 
     <display-name>OAW - Observatorio de Accesibilidad Web</display-name>
 
-    <!-- PARA LOS MENSAJES DE EXITO Y TAL Y CUAL -->
+    <!-- PARA LOS MENSAJES DE EXITO -->
     <context-param>
         <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
         <param-value>/oaw/properties/Mensajes</param-value>
@@ -109,13 +109,6 @@
         <load-on-startup>8</load-on-startup>
     </servlet>
 
-    <!-- Axis2 servlet -->
-    <!--<servlet>
-        <servlet-name>AxisServlet</servlet-name>
-        <display-name>Apache-Axis Servlet</display-name>
-        <servlet-class>org.apache.axis2.transport.http.AxisServlet</servlet-class>
-    </servlet>-->
-
     <!-- Reprogramar las peticiones al servicio básico -->
     <servlet>
         <servlet-name>ScheduleBasicServiceServlet</servlet-name>
@@ -128,18 +121,6 @@
         <servlet-name>action</servlet-name>
         <url-pattern>*.do</url-pattern>
     </servlet-mapping>
-<!--    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/servlet/AxisServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>*.jws</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>AxisServlet</servlet-name>
-        <url-pattern>/services/*</url-pattern>
-    </servlet-mapping>-->
 
     <!-- The Usual Welcome File List -->
     <welcome-file-list>
@@ -155,14 +136,6 @@
         <error-code>500</error-code>
         <location>/errorPage.jsp</location>
     </error-page>
-<!--    <error-page>
-        <error-code>404</error-code>
-        <location>/axis2-web/Error/error404.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/axis2-web/Error/error500.jsp</location>
-    </error-page>-->
 
     <!-- Struts Tag Library Descriptors -->
     <taglib>

@@ -9,22 +9,21 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.EvaluationForm;
 import es.inteco.intav.persistence.Analysis;
-import es.inteco.intav.persistence.SearchAnalysis;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-public class AnalisisDatos {
+public final class AnalisisDatos {
+
+    private AnalisisDatos(){
+    }
 
     public static int setAnalisis(Connection conn, Analysis analisis) {
         PreparedStatement pstmt = null;
@@ -32,7 +31,7 @@ public class AnalisisDatos {
 
         try {
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
-            pstmt.setString(1, analisis.getGuideline());
+            pstmt.setString(1, getGuideline(analisis.getGuideline()));
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
@@ -66,16 +65,33 @@ public class AnalisisDatos {
         }
     }
 
+    public static void updateChecksEjecutados(String updatedChecks, long idAnalisis) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        String query = " UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
+        try {
+            conn = DataBaseManager.getConnection();
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, updatedChecks);
+            pstmt.setLong(2, idAnalisis);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            Logger.putLog("SQLException: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
+        } finally {
+            close(conn, null, pstmt);
+        }
+    }
+
     public static void endAnalysisSuccess(Evaluation eval) {
         Connection conn = null;
         PreparedStatement pstmt = null;
         String query = " UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement(query);
             pstmt.setString(1, eval.getChecksExecutedStr());
             pstmt.setInt(2, IntavConstants.STATUS_SUCCESS);
-            pstmt.setLong(3, eval.getId_analisis());
+            pstmt.setLong(3, eval.getIdAnalisis());
             pstmt.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("SQLException: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
@@ -90,9 +106,9 @@ public class AnalisisDatos {
         ResultSet rs = null;
 
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
-            pstmt.setString(1, checkAccessibility.getGuidelineFile());
+            pstmt.setString(1, getGuideline(checkAccessibility.getGuidelineFile().replace("-nobroken","")) );
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
@@ -125,50 +141,6 @@ public class AnalisisDatos {
         }
     }
 
-    public static int countAnalysis(SearchAnalysis searchAnalysis) {
-        PropertiesManager pmgr = new PropertiesManager();
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String query = "SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = 0 ";
-        try {
-            conn = DBConnect.connect();
-            if (searchAnalysis.getEntity() != null && !searchAnalysis.getEntity().isEmpty()) {
-                query += " AND NOM_ENTIDAD = '" + searchAnalysis.getEntity() + "'";
-            }
-            if (searchAnalysis.getDomain() != null && searchAnalysis.getDomain().isEmpty()) {
-                query += " AND COD_URL LIKE '%" + searchAnalysis.getDomain() + "%'";
-            }
-            if (searchAnalysis.getDate() != null && searchAnalysis.getDate().isEmpty()) {
-                DateFormat dateF = new SimpleDateFormat(pmgr.getValue("intav.properties", "simple.date.format"));
-                Date date = dateF.parse(searchAnalysis.getDate());
-                query += " AND FEC_ANALISIS BETWEEN '" + new java.sql.Timestamp(date.getTime()) + "' AND '" + new java.sql.Timestamp(getFinalDate(date).getTime()) + "'";
-            }
-            pstmt = conn.prepareStatement(query);
-            rs = pstmt.executeQuery();
-            int numRes = 0;
-            if (rs.next()) {
-                numRes = rs.getInt(1);
-            }
-            return numRes;
-        } catch (Exception ex) {
-            Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-        } finally {
-            close(conn, rs, pstmt);
-        }
-        return 0;
-    }
-
-    private static Date getFinalDate(Date initialDate) {
-        Calendar cl1 = Calendar.getInstance();
-
-        cl1.setTime(initialDate);
-        cl1.add(Calendar.DATE, 1);
-        cl1.add(Calendar.SECOND, -1);
-
-        return cl1.getTime();
-    }
-
     public static Analysis getAnalisisFromId(Connection conn, long id) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -176,8 +148,8 @@ public class AnalisisDatos {
         try {
             Analysis analisis = new Analysis();
 
-            pstmt = conn.prepareStatement("SELECT * FROM tanalisis A INNER JOIN tguidelines G ON A.COD_GUIDELINE = G.COD_GUIDELINE " +
-                    "WHERE COD_ANALISIS = ?;");
+            pstmt = conn.prepareStatement("SELECT * FROM tanalisis A INNER JOIN tguidelines G ON A.cod_guideline = G.cod_guideline " +
+                    "WHERE cod_analisis = ?;");
             pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
 
@@ -211,7 +183,7 @@ public class AnalisisDatos {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             if (pagina == IntavConstants.NO_PAGINATION) {
                 pstmt = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ?");
             } else {
@@ -259,7 +231,7 @@ public class AnalisisDatos {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COUNT(*) FROM tanalisis WHERE cod_rastreo = ?");
             pstmt.setLong(1, idTracking);
             rs = pstmt.executeQuery();
@@ -291,7 +263,7 @@ public class AnalisisDatos {
             Logger.putLog("Error al cerrar el resultSet", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
         }
 
-        DBConnect.disconnect(conn);
+        DataBaseManager.closeConnection(conn);
     }
 
     private static List<Analysis> getAnalysisList(Connection conn, ResultSet rs, HttpServletRequest request) throws SQLException {
@@ -332,7 +304,7 @@ public class AnalisisDatos {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
-            conn = DBConnect.connect();
+            conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE COD_RASTREO = ? ORDER by cod_analisis");
             pstmt.setLong(1, idTracking);
             rs = pstmt.executeQuery();
@@ -350,29 +322,11 @@ public class AnalisisDatos {
         return evaluationIds;
     }
 
-    public static List<Long> getEvaluationIds(String entity) {
-        List<Long> evaluationIds = new ArrayList<Long>();
-
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            conn = DBConnect.connect();
-            pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE nom_entidad = ?");
-            pstmt.setString(1, entity);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                evaluationIds.add(rs.getLong(1));
-            }
-        } catch (Exception ex) {
-            Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return null;
-        } finally {
-            close(conn, rs, pstmt);
+    private static String getGuideline(final String guideline) {
+        if ( guideline.contains("-nobroken") ) {
+            return guideline.replace("-nobroken","");
+        } else {
+            return guideline;
         }
-
-        return evaluationIds;
     }
-
 }

@@ -70,14 +70,14 @@
 											</tr>
 										</logic:iterate>
 									</table>
-									<%-- %><strong><bean:message key="resultados.anonimos.porc.portales" /></strong>
+									<%-- <strong><bean:message key="resultados.anonimos.porc.portales" /></strong>
 									<ol>
 										<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG %>">
 											<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
 										</logic:iterate>
 									</ol> --%>
 								</div>
-								<img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_S %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%=segment %>"/>
+								<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_S %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%=segment %>"/></div>
 								
 								<h3><bean:message key="resultados.anonimos.puntuaciones.segmento.title" /></h3>
 								<div class="graphicInfo2">

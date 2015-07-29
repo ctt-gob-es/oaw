@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public final class IntavUtils {
 
     private IntavUtils() {
@@ -37,14 +35,13 @@ public final class IntavUtils {
     public static ScoreForm calculateScore(HttpServletRequest request, long idExecution) {
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
             // Inicializamos el evaluador
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();
             }
 
-            List<Long> listAnalysis = AnalisisDatos.getAnalysisIdsByTracking(conn, idExecution);
+            final List<Long> listAnalysis = AnalisisDatos.getAnalysisIdsByTracking(conn, idExecution);
 
             return generateScores(request, conn, listAnalysis);
         } catch (Exception e) {

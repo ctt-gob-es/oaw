@@ -6,8 +6,10 @@ import es.inteco.common.logging.Logger;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.w3c.dom.Element;
 
-public class SourceManager {
+public final class SourceManager {
 
+    private SourceManager() {
+    }
 
     /**
      * Obtiene el texto a partir de una etiqueta incluyendo, en algunos casos, los textos de etiquetas anidadas de un problema de accesibilidad
@@ -15,7 +17,7 @@ public class SourceManager {
      * @param problem el problema de accesibilidad Problem detectado durante el análisis
      * @return la cadena con el texto
      */
-    public static String getSourceInfo(Problem problem) {
+    public static String getSourceInfo(final Problem problem) {
         final Check check = problem.getCheck();
         final Element elementProblem = (Element) problem.getNode();
         final String nameProblemElement = check.getKeyElement();

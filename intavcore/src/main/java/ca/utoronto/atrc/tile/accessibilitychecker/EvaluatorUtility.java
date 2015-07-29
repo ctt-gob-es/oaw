@@ -33,11 +33,11 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.ValidationError;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.intav.iana.IanaLanguages;
 import es.inteco.intav.iana.IanaUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.intav.utils.StringUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
@@ -56,7 +56,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EvaluatorUtility {
+public final class EvaluatorUtility {
     // the evaluator
     private static Evaluator evaluator = null;
 
@@ -71,11 +71,14 @@ public class EvaluatorUtility {
 
     private static IanaLanguages ianaLanguages = new IanaLanguages();
 
+    private static int concurrentUsers = 0;
+
+    private EvaluatorUtility() {
+    }
+
     public static boolean isInitialized() {
         return initialized;
     }
-
-    private static int concurrentUsers = 0;
 
     public static int getConcurrentUsers() {
         return concurrentUsers;
@@ -120,7 +123,7 @@ public class EvaluatorUtility {
     }
 
     // Returns the link text for the given element.
-    public static String getLinkText(Node node) {
+    public static String getLinkText(final Node node) {
         // get child text
         String textChild = getElementText(node);
 
@@ -155,25 +158,25 @@ public class EvaluatorUtility {
         }
     }
 
-    public static String getElementText(Node node, boolean getOnlyInlineTagsText) {
+    public static String getElementText(final Node node, final boolean getOnlyInlineTagsText) {
         List<String> inlineTags = null;
         if (getOnlyInlineTagsText) {
             PropertiesManager pmgr = new PropertiesManager();
             inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").toUpperCase().split(";"));
         }
 
-        String text = getElementTextLoop(node, inlineTags);
+        final String text = getElementTextLoop(node, inlineTags);
 
         if (text.length() == 0) {
             return "";
         }
 
         // remove any tabs, lineends, multiple spaces, and leading/trailing whitespace
-        StringBuilder buffer2 = new StringBuilder(text.length());
+        final StringBuilder buffer2 = new StringBuilder(text.length());
         boolean space = false;
         for (int x = 0; x < text.length(); x++) {
-            if ((text.charAt(x) != '\t') &&
-                    (text.charAt(x) != '\n')) {
+
+            if (text.charAt(x) != '\t' && text.charAt(x) != '\n') {
                 if (text.charAt(x) == ' ') {
                     if (space) {
                         continue;
@@ -184,8 +187,19 @@ public class EvaluatorUtility {
                 }
                 buffer2.append(text.charAt(x));
             }
+//            if (Character.isWhitespace(text.charAt(x))) {
+//                if ( space ) {
+//                    continue;
+//                } else {
+//                    buffer2.append(text.charAt(x));
+//                }
+//                space = true;
+//            } else {
+//                space = false;
+//                buffer2.append(text.charAt(x));
+//            }
         }
-        return buffer2.toString().trim();
+        return buffer2.toString().replaceAll("\\s{2,}"," ").trim();
     }
 
     // returns the text that is contained by the given element
@@ -194,7 +208,7 @@ public class EvaluatorUtility {
     }
 
     // Recursive function that returns a string containing all the text within the node
-    public static String getElementTextLoop(Node node, List<String> inlineTags) {
+    private static String getElementTextLoop(Node node, List<String> inlineTags) {
         try {
             StringBuilder buffer = new StringBuilder();
 
@@ -209,15 +223,13 @@ public class EvaluatorUtility {
                     continue;
                 }
                 // comments within scripts are treated as 'text' nodes so ignore them
-                if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
-                        (nodeChild.getNodeName().equalsIgnoreCase("script"))) {
-                    continue;
+                if (nodeChild.getNodeType() == Node.ELEMENT_NODE) {
+                    if (nodeChild.getNodeName().equalsIgnoreCase("script")) {
+                        continue;
+                    }
                 }
                 if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                     buffer.append(nodeChild.getNodeValue());
-                    if (inlineTags == null) {
-                        buffer.append(" ");
-                    }
                 }
                 buffer.append(getElementTextLoop(nodeChild, inlineTags));
             }
@@ -229,18 +241,17 @@ public class EvaluatorUtility {
     }
 
     // returns the text that is contained by the given label element
-    public static String getLabelText(Node node) {
-        String text = getLabelTextLoop(node);
+    public static String getLabelText(final Node node) {
+        final String text = getLabelTextLoop(node);
         if (text.length() == 0) {
             return "";
         }
 
         // remove any tabs, lineends, multiple spaces, and leading/trailing whitespace
-        StringBuilder buffer2 = new StringBuilder(text.length());
+        final StringBuilder buffer2 = new StringBuilder(text.length());
         boolean space = false;
         for (int x = 0; x < text.length(); x++) {
-            if ((text.charAt(x) != '\t') &&
-                    (text.charAt(x) != '\n')) {
+            if ((text.charAt(x) != '\t') && (text.charAt(x) != '\n')) {
                 if (text.charAt(x) == ' ') {
                     if (space) {
                         continue;
@@ -257,12 +268,12 @@ public class EvaluatorUtility {
 
     // Recursive function that returns a string containing all the text within the node.
     // Any text within a 'select' element is ignored.
-    public static String getLabelTextLoop(Node node) {
-        StringBuilder buffer = new StringBuilder();
+    public static String getLabelTextLoop(final Node node) {
+        final StringBuilder buffer = new StringBuilder();
 
-        NodeList childNodes = node.getChildNodes();
+        final NodeList childNodes = node.getChildNodes();
         for (int x = 0; x < childNodes.getLength(); x++) {
-            Node nodeChild = childNodes.item(x);
+            final Node nodeChild = childNodes.item(x);
             // comments within scripts are treated as 'text' nodes so ignore them
             if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
                     (nodeChild.getNodeName().equalsIgnoreCase("script"))) {
@@ -271,6 +282,16 @@ public class EvaluatorUtility {
             if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
                     (nodeChild.getNodeName().equalsIgnoreCase("select"))) {
                 continue;
+            }
+            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
+                    (nodeChild.getNodeName().equalsIgnoreCase("abbr") || nodeChild.getNodeName().equalsIgnoreCase("input"))) {
+                buffer.append(((Element) nodeChild).getAttribute("title"));
+                buffer.append(" ");
+            }
+            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
+                    (nodeChild.getNodeName().equalsIgnoreCase("img"))) {
+                buffer.append(((Element) nodeChild).getAttribute("alt"));
+                buffer.append(" ");
             }
             if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                 buffer.append(nodeChild.getNodeValue());
@@ -283,8 +304,8 @@ public class EvaluatorUtility {
 
     // looks through the given node for first child instance of a given node
     // Returns the first instance of the node or null if not found.
-    public static Node findNode(Node parent, String nameNode) {
-        NodeList childNodes = parent.getChildNodes();
+    public static Node findNode(final Node parent, final String nameNode) {
+        final NodeList childNodes = parent.getChildNodes();
 
         for (int x = 0; x < childNodes.getLength(); x++) {
             if (childNodes.item(x).getNodeName().compareToIgnoreCase(nameNode) == 0) {
@@ -301,7 +322,7 @@ public class EvaluatorUtility {
 
     // Loads all the checks
     private static boolean loadAllChecks() throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
         // checks should only be loaded once but can be reloaded
         if (!allChecks.isEmpty()) {
             Logger.putLog("Note: Loading checks after they are already loaded.", EvaluatorUtility.class, Logger.LOG_LEVEL_INFO);
@@ -309,7 +330,7 @@ public class EvaluatorUtility {
             allChecks.clear();
         }
 
-        InputStream inputStream = EvaluatorUtility.class.getClassLoader().getResourceAsStream(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "check.path"));
+        final InputStream inputStream = EvaluatorUtility.class.getClassLoader().getResourceAsStream(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "check.path"));
         loadChecksFile(inputStream);
 
         checkPrerequisites();
@@ -320,20 +341,20 @@ public class EvaluatorUtility {
 
     private static void checkPrerequisites() {
         // check the prerequisites for each check to make sure they are OK
-        List<Check> checks = allChecks.getChecks();
+        final List<Check> checks = allChecks.getChecks();
         for (Check check : checks) {
-            List<Integer> prerequisites = check.getPrerequisites();
+            final List<Integer> prerequisites = check.getPrerequisites();
             for (Integer prerequisiteId : prerequisites) {
-                Check checkPrerequisite = allChecks.getCheck(prerequisiteId);
+                final Check checkPrerequisite = allChecks.getCheck(prerequisiteId);
                 if (checkPrerequisite == null) {
                     Logger.putLog("Warning: prerequisite check " + prerequisiteId + " on test " + check.getId() + " does not exist!", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                     continue;
                 }
-                String stringPrereqTrigger = checkPrerequisite.getTriggerElement();
+                final String stringPrereqTrigger = checkPrerequisite.getTriggerElement();
                 if (stringPrereqTrigger == null) {
                     continue;
                 }
-                String stringTrigger = check.getTriggerElement();
+                final String stringTrigger = check.getTriggerElement();
                 if (stringTrigger == null) {
                     continue;
                 }
@@ -342,18 +363,17 @@ public class EvaluatorUtility {
     }
 
     // load a file that contains accessibility checks
-
-    private static boolean loadChecksFile(InputStream inputStream) {
+    private static boolean loadChecksFile(final InputStream inputStream) {
         try {
             if (inputStream == null) {
                 Logger.putLog("Error: Can't open checks file", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                 return false;
             } else {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Document docAllChecks = builder.parse(inputStream);
+                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                final DocumentBuilder builder = factory.newDocumentBuilder();
+                final Document docAllChecks = builder.parse(inputStream);
 
-                Element nodeRoot = docAllChecks.getDocumentElement();
+                final Element nodeRoot = docAllChecks.getDocumentElement();
 
                 findChecksInMasterFile(nodeRoot);
             }
@@ -365,14 +385,14 @@ public class EvaluatorUtility {
     }
 
 
-    private static void findChecksInMasterFile(Element nodeRoot) {
+    private static void findChecksInMasterFile(final Element nodeRoot) {
         // find all the checks in the master file
-        NodeList childNodes = nodeRoot.getChildNodes();
+        final NodeList childNodes = nodeRoot.getChildNodes();
         for (int x = 0; x < childNodes.getLength(); x++) {
             if (childNodes.item(x).getNodeType() == Node.ELEMENT_NODE) {
                 if (childNodes.item(x).getNodeName().equals("check")) {
                     // get the check ID number
-                    String stringId = ((Element) childNodes.item(x)).getAttribute("id");
+                    final String stringId = ((Element) childNodes.item(x)).getAttribute("id");
                     if ((stringId == null) || (stringId.length() < 1)) {
                         Logger.putLog("Warning: Check has no ID in checks file ", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                         continue;
@@ -405,9 +425,9 @@ public class EvaluatorUtility {
     }
 
     private static boolean loadIanaLanguages() throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
         Logger.putLog("Cargando los códigos de lenguaje de IANA", EvaluatorUtility.class, Logger.LOG_LEVEL_INFO);
-        String ianaRegistries = IanaUtils.loadIanaRegistries(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "iana.lang.codes.url"));
+        final String ianaRegistries = IanaUtils.loadIanaRegistries(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "iana.lang.codes.url"));
         ianaLanguages.setLanguages(IanaUtils.getIanaList(ianaRegistries, pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "iana.language.type")));
         ianaLanguages.setRegions(IanaUtils.getIanaList(ianaRegistries, pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "iana.region.type")));
         ianaLanguages.setVariants(IanaUtils.getIanaList(ianaRegistries, pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "iana.variant.type")));
@@ -429,7 +449,7 @@ public class EvaluatorUtility {
         } else {
             //ClassLoader cl = ClassLoader.getSystemClassLoader();
             InputStream inputStream = null;
-            Guideline guideline = new Guideline();
+            final Guideline guideline = new Guideline();
             try {
                 inputStream = EvaluatorUtility.class.getClassLoader().getResourceAsStream("guidelines/" + filename);
                 if (!guideline.initialize(inputStream, filename)) {
@@ -455,7 +475,7 @@ public class EvaluatorUtility {
     }
 
     private static void setSystemProperties() {
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
         if (pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "http.proxy.active").equalsIgnoreCase(Boolean.TRUE.toString())) {
             System.setProperty("http.proxyHost", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "http.proxy.host"));
             System.setProperty("http.proxyPort", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "http.proxy.port"));
@@ -465,8 +485,8 @@ public class EvaluatorUtility {
     }
 
 
-    public static boolean isLanguageCode(String stringGiven) {
-        String[] langArray = stringGiven.split("-");
+    public static boolean isLanguageCode(final String stringGiven) {
+        final String[] langArray = stringGiven.split("-");
         if (StringUtils.isEmpty(langArray[0])) {
             // No ha especificado lenguaje
             return false;
@@ -490,8 +510,6 @@ public class EvaluatorUtility {
             URI srcUri = new URI(filename);
             URL srcUrl = srcUri.toURL();
 
-            HttpURLConnection httpConnection = EvaluatorUtils.getConnection(srcUrl.toString(), "GET", true);
-            httpConnection.connect();
             return srcUrl;
         } catch (Exception e) {
             Logger.putLog("Note: Can't open file: " + filename, EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
@@ -501,31 +519,31 @@ public class EvaluatorUtility {
 
     // Loads the file and returns a Document object. Returns null if file can't be loaded.
 
-    public static Document loadHtmlFile(CheckAccessibility checkAccessibility, boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, boolean fromCrawler) {
+    public static Document loadHtmlFile(final CheckAccessibility checkAccessibility, boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, boolean fromCrawler) {
         try {
-            HttpURLConnection connection = EvaluatorUtils.getConnection(checkAccessibility.getUrl(), "GET", true);
+            final HttpURLConnection connection = EvaluatorUtils.getConnection(checkAccessibility.getUrl(), "GET", true);
 
             try {
-                long inicio = System.currentTimeMillis();
+                final long inicio = System.currentTimeMillis();
                 // connect to the server
                 connection.connect();
-                InputStream content = (InputStream) connection.getInputStream();
+                final InputStream content = connection.getInputStream();
 
-                BufferedInputStream stream = new BufferedInputStream(content);
+                final BufferedInputStream stream = new BufferedInputStream(content);
 
                 // mark InputStream so we can restart it for validator
                 if (stream.markSupported()) {
                     stream.mark(Integer.MAX_VALUE);
                 }
 
-                String charset = EvaluatorUtils.getResponseCharset(connection, stream);
+                final String charset = EvaluatorUtils.getResponseCharset(connection, stream);
 
                 long tiempo = System.currentTimeMillis() - inicio;
                 // Registramos en el log el tiempo de la conexión
                 Logger.putLog("Tiempo tardado en cargar el HTML remoto: " + tiempo + " milisegundos", Evaluator.class, Logger.LOG_LEVEL_INFO);
                 return loadHtmlFile(stream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, fromCrawler, charset);
-
             } catch (Exception e) {
+                Logger.putLog("Exception: " + checkAccessibility.getUrl(), EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
                 return null;
             }
         } catch (Exception e) {
@@ -534,8 +552,7 @@ public class EvaluatorUtility {
         }
     }
 
-
-    private static void setFeature(CheckerParser parser, String feature, boolean value) {
+    private static void setFeature(final CheckerParser parser, final String feature, final boolean value) {
         try {
             parser.setFeature(feature, value);
         } catch (SAXNotRecognizedException e) {
@@ -545,7 +562,7 @@ public class EvaluatorUtility {
         }
     }
 
-    public static Document loadHtmlFile(InputStream inputStream, CheckAccessibility checkAccessibility,
+    public static Document loadHtmlFile(final InputStream inputStream, final CheckAccessibility checkAccessibility,
                                         boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, boolean fromCrawler, String charset) {
         try {
             // create a DOM of the HTML file
@@ -554,7 +571,8 @@ public class EvaluatorUtility {
             Element elementRoot = null;
 
             String inStr = StringUtils.getContentAsString(inputStream, charset);
-
+            // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+            inStr = inStr.replaceAll("(?i)<iframe [^>]*/>", "");
             for (int i = 0; i < 2 && (doc == null || elementRoot == null); i++) {
                 parser.setFilename(checkAccessibility.getUrl());
 
@@ -633,7 +651,7 @@ public class EvaluatorUtility {
                                     int additionalCols = Integer.parseInt(stringColspan);
                                     countCols += additionalCols - 1;
                                 } catch (NumberFormatException e) {
-                                    Logger.putLog("Exception colspan no válido", EvaluatorUtility.class, Logger.LOG_LEVEL_INFO);
+                                    Logger.putLog("Exception colspan no válido", EvaluatorUtility.class, Logger.LOG_LEVEL_DEBUG);
                                 }
                             }
                         }
@@ -653,7 +671,7 @@ public class EvaluatorUtility {
                 for (int x = 0; x < listMaps.getLength(); x++) {
                     Element elementMap = (Element) listMaps.item(x);
                     String stringNameMap = "#" + elementMap.getAttribute("name");
-                    if ((stringNameMap == null) || (stringNameMap.length() == 0)) {
+                    if ( stringNameMap.length() == 0) {
                         continue;
                     }
 
@@ -725,13 +743,13 @@ public class EvaluatorUtility {
     }
 
     private static String addFinalTags(String inStr) {
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
         final String regExpMatcher = pmgr.getValue("intav.properties", "incompleted.tags.reg.exp.matcher");
 
         final String[] tags = pmgr.getValue("intav.properties", "incompleted.tags").split(";");
         for (String tag : tags) {
-            Pattern pattern = Pattern.compile(regExpMatcher.replace("@", tag), Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-            Matcher matcher = pattern.matcher(inStr);
+            final Pattern pattern = Pattern.compile(regExpMatcher.replace("@", tag), Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+            final Matcher matcher = pattern.matcher(inStr);
             String matchedTag;
             while (matcher.find()) {
                 matchedTag = matcher.group(1);
@@ -742,16 +760,16 @@ public class EvaluatorUtility {
         return inStr;
     }
 
-    private static void validateCss(Document doc, CheckAccessibility checkAccessibility, String language) {
-        Element elementRoot = doc.getDocumentElement();
-        List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
+    private static void validateCss(final Document doc, final CheckAccessibility checkAccessibility, final String language) {
+        final Element elementRoot = doc.getDocumentElement();
+        final List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
         long time = System.currentTimeMillis();
         if (StringUtils.isNotEmpty(checkAccessibility.getUrl())) {
             cssValidationErrors.addAll(getCssValidationErrors(checkAccessibility.getUrl(), language));
         } else {
             cssValidationErrors.addAll(getCssValidationNotWorksMessage());
 
-            List<Element> styleSheets = getStyleSheets(doc);
+            final List<Element> styleSheets = getStyleSheets(doc);
             for (Element styleSheet : styleSheets) {
                 cssValidationErrors.addAll(getCssValidationErrors(styleSheet.getAttribute("href"), language));
             }
@@ -760,24 +778,24 @@ public class EvaluatorUtility {
         elementRoot.setUserData("cssValidationErrors", cssValidationErrors, null);
     }
 
-    private static void loadCss(Document doc) {
-        List<Element> styleSheets = getStyleSheets(doc);
+    private static void loadCss(final Document doc) {
+        final List<Element> styleSheets = getStyleSheets(doc);
 
-        Element elementRoot = doc.getDocumentElement();
+        final Element elementRoot = doc.getDocumentElement();
         for (Element styleSheet : styleSheets) {
             loadStyleSheet(styleSheet, (String) elementRoot.getUserData("url"));
         }
     }
 
-    private static void loadStyleSheet(Element styleSheet, String urlRoot) {
+    private static void loadStyleSheet(final Element styleSheet, final String urlRoot) {
         try {
-            URL cssUrl;
-            if (StringUtils.isNotEmpty(urlRoot)) {
+            final URL cssUrl;
+            if (StringUtils.isNotEmpty(urlRoot) && URI.create(urlRoot).isAbsolute()) {
                 cssUrl = new URL(new URL(urlRoot), styleSheet.getAttribute("href"));
             } else {
                 cssUrl = new URL(styleSheet.getAttribute("href"));
             }
-            HttpURLConnection connection = EvaluatorUtils.getConnection(cssUrl.toString(), "GET", true);
+            final HttpURLConnection connection = EvaluatorUtils.getConnection(cssUrl.toString(), "GET", true);
             connection.connect();
             int responseCode = connection.getResponseCode();
             if (responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
@@ -789,11 +807,11 @@ public class EvaluatorUtility {
         }
     }
 
-    private static List<Element> getStyleSheets(Document doc) {
-        List<Element> styleSheets = new ArrayList<Element>();
-        NodeList links = doc.getElementsByTagName("link");
+    private static List<Element> getStyleSheets(final Document doc) {
+        final List<Element> styleSheets = new ArrayList<Element>();
+        final NodeList links = doc.getElementsByTagName("link");
         for (int i = 0; i < links.getLength(); i++) {
-            Element link = (Element) links.item(i);
+            final Element link = (Element) links.item(i);
             if (link.hasAttribute("rel") && link.hasAttribute("type") &&
                     link.getAttribute("rel").equalsIgnoreCase("stylesheet") &&
                     link.getAttribute("type").equalsIgnoreCase("text/css")) {
@@ -804,11 +822,11 @@ public class EvaluatorUtility {
     }
 
     private static List<CssValidationError> getCssValidationNotWorksMessage() {
-        List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
-        CssValidationError cssValidationError = new CssValidationError();
-        PropertiesManager pmgr = new PropertiesManager();
-        String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator.human.submit.code");
-        String link = "<a href='" + urlHuman + "' title='Enlace externo'>Validador de hojas de estilo del W3C</a>";
+        final List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
+        final CssValidationError cssValidationError = new CssValidationError();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator.human.submit.code");
+        final String link = "<a href='" + urlHuman + "' title='Enlace externo'>Validador de hojas de estilo del W3C</a>";
         cssValidationError.setCode("En el modo de análisis de código fuente, la validación de las hojas de estilo solo funcionará si éstas se encuentran enlazadas desde algún servidor con acceso externo.");
         cssValidationError.setCode(cssValidationError.getCode() + " Si no dispone de esta posibilidad, puede validar su hoja de estilos mediante el  " + link);
         cssValidationError.setLine(1);
@@ -834,18 +852,17 @@ public class EvaluatorUtility {
                 contents = StringUtils.getContentAsString(inputStream, charset);
             }
 
-            Document document;
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            final Document document;
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder builder = factory.newDocumentBuilder();
             try {
-                PropertiesManager pmgr = new PropertiesManager();
-                HttpURLConnection connection = EvaluatorUtils.getConnection(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator"), "POST", true);
+                final PropertiesManager pmgr = new PropertiesManager();
+                final HttpURLConnection connection = EvaluatorUtils.getConnection(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator"), "POST", true);
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 connection.setDoOutput(true);
-                OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
+                final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 
-                URLCodec codec = new URLCodec();
+                final URLCodec codec = new URLCodec();
                 writer.write("fragment=" + codec.encode(HTMLEntities.unhtmlAmpersand(HTMLEntities.htmlentities(contents))) + "&output=soap12");
                 writer.flush();
                 writer.close();
@@ -858,13 +875,11 @@ public class EvaluatorUtility {
                 throw e;
             }
 
-            NodeList errorNodes = document.getElementsByTagName("m:error");
-
+            final NodeList errorNodes = document.getElementsByTagName("m:error");
             if (errorNodes.getLength() > 0) {
-                String[] lines = contents.split("\\n");
+                final String[] lines = contents.split("\\n");
                 for (int i = 0; i < errorNodes.getLength(); i++) {
-                    Node errorNode = errorNodes.item(i);
-
+                    final Node errorNode = errorNodes.item(i);
                     validationErrors.add(getValidationError(errorNode, lines, IntavConstants.VALIDATION_ERROR_TYPE_ERROR));
                 }
             }
@@ -883,11 +898,11 @@ public class EvaluatorUtility {
     }
 
 
-    private static void addValidationSummary(List<ValidationError> validationErrors, String filename) throws UnsupportedEncodingException {
-        ValidationError validationError = new ValidationError();
-        PropertiesManager pmgr = new PropertiesManager();
-        String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator.human").replace("{0}", URLEncoder.encode(filename, "UTF-8"));
-        String link = "<a href='" + urlHuman + "' title='Enlace externo'>Analizador sintáctico del W3C</a>";
+    private static void addValidationSummary(final List<ValidationError> validationErrors, final String filename) throws UnsupportedEncodingException {
+        final ValidationError validationError = new ValidationError();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator.human").replace("{0}", URLEncoder.encode(filename, "UTF-8"));
+        final String link = "<a href='" + urlHuman + "' title='Enlace externo'>Analizador sintáctico del W3C</a>";
 
         validationError.setCode("Se ha producido un error al tratar de validar el código del HTML. Utilice la siguiente URL para verificar la sintaxis: " + link);
         validationError.setLine(1);
@@ -900,15 +915,13 @@ public class EvaluatorUtility {
     }
 
     // Este método por ahora no se va a usar, pero puede que más tarde se trabaje en él (no borrar)
-    private static ValidationError getValidationError(Node errorNode, String[] lines, int type) {
-        ValidationError validationError = new ValidationError();
-
+    private static ValidationError getValidationError(final Node errorNode, final String[] lines, int type) {
+        final ValidationError validationError = new ValidationError();
         validationError.setType(type);
 
-        NodeList errorInfo = errorNode.getChildNodes();
-
+        final NodeList errorInfo = errorNode.getChildNodes();
         for (int j = 0; j < errorInfo.getLength(); j++) {
-            Node nInfo = errorInfo.item(j);
+            final Node nInfo = errorInfo.item(j);
             if (nInfo.getNodeName().equals(IntavConstants.TAG_COL)) {
                 try {
                     validationError.setColumn(Integer.parseInt(nInfo.getTextContent()));
@@ -940,23 +953,22 @@ public class EvaluatorUtility {
 
 
     // Devuelve los errores de validación del código Css
-    public static List<CssValidationError> getCssValidationErrors(String filename, String language) {
-        List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
-
-        PropertiesManager pmgr = new PropertiesManager();
+    public static List<CssValidationError> getCssValidationErrors(final String filename, final String language) {
+        final List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
+        final PropertiesManager pmgr = new PropertiesManager();
 
         if (StringUtils.isUrl(filename)) {
             try {
-                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 
-                DocumentBuilder builder = factory.newDocumentBuilder();
+                final DocumentBuilder builder = factory.newDocumentBuilder();
                 Document document;
                 try {
-                    String url = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator")
+                    final String url = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator")
                             .replace("{0}", URLEncoder.encode(filename, "UTF-8"))
                             .replace("{1}", pmgr.getValue("language.mapping", language));
 
-                    HttpURLConnection connection = EvaluatorUtils.getConnection(url, "GET", true);
+                    final HttpURLConnection connection = EvaluatorUtils.getConnection(url, "GET", true);
                     connection.connect();
 
                     document = builder.parse(StringUtils.fixBugInCssValidator(connection.getInputStream()));
@@ -965,17 +977,17 @@ public class EvaluatorUtility {
                     throw e;
                 }
 
-                NodeList errorNodes = document.getElementsByTagName(IntavConstants.TAG_ERROR_LIST);
+                final NodeList errorNodes = document.getElementsByTagName(IntavConstants.TAG_ERROR_LIST);
 
                 String lastUri = "";
 
                 for (int i = 0; i < errorNodes.getLength(); i++) {
-                    NodeList detailNodes = errorNodes.item(i).getChildNodes();
+                    final NodeList detailNodes = errorNodes.item(i).getChildNodes();
                     for (int j = 0; j < detailNodes.getLength(); j++) {
-                        if (detailNodes.item(j).getNodeName().equalsIgnoreCase(IntavConstants.TAG_URI)) {
+                        if (IntavConstants.TAG_URI.equalsIgnoreCase(detailNodes.item(j).getNodeName())) {
                             lastUri = detailNodes.item(j).getTextContent();
                         }
-                        if (detailNodes.item(j).getNodeName().equalsIgnoreCase(IntavConstants.TAG_ERROR)) {
+                        if (IntavConstants.TAG_ERROR.equalsIgnoreCase(detailNodes.item(j).getNodeName())) {
                             cssValidationErrors.add(getCssValidationError(detailNodes.item(j), lastUri));
                         }
                     }
@@ -989,18 +1001,18 @@ public class EvaluatorUtility {
         return cssValidationErrors;
     }
 
-    private static CssValidationError getCssValidationError(Node detailNode, String cssUri) {
-        CssValidationError cssValidationError = new CssValidationError();
+    private static CssValidationError getCssValidationError(final Node detailNode, final String cssUri) {
+        final CssValidationError cssValidationError = new CssValidationError();
 
-        NodeList detailNodeChilds = detailNode.getChildNodes();
+        final NodeList detailNodeChilds = detailNode.getChildNodes();
         for (int i = 0; i < detailNodeChilds.getLength(); i++) {
-            if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_LINE)) {
+            if (IntavConstants.TAG_LINE.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setLine(Integer.parseInt(detailNodeChilds.item(i).getTextContent().trim()));
-            } else if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_CONTEXT)) {
+            } else if (IntavConstants.TAG_CONTEXT.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setContext(detailNodeChilds.item(i).getTextContent().trim());
-            } else if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_SKIPPED_STRING)) {
+            } else if (IntavConstants.TAG_SKIPPED_STRING.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setSkippedString(detailNodeChilds.item(i).getTextContent().trim());
-            } else if (detailNodeChilds.item(i).getNodeName().equals(IntavConstants.TAG_MESSAGE)) {
+            } else if (IntavConstants.TAG_MESSAGE.equals(detailNodeChilds.item(i).getNodeName())) {
                 cssValidationError.setMessage(detailNodeChilds.item(i).getTextContent().trim());
             }
         }
@@ -1015,9 +1027,9 @@ public class EvaluatorUtility {
 
     // Returns the number of elements within the given element.
     // Ignores any elements of the same type that are children of the given element.
-    public static int countElements(Element elementParent, String nameElement, String nameElementIgnore, int childLevel) {
+    public static int countElements(final Element elementParent, final String nameElement, final String nameElementIgnore, int childLevel) {
         int count = 0;
-        NodeList listChildren = elementParent.getChildNodes();
+        final NodeList listChildren = elementParent.getChildNodes();
         for (int x = 0; x < listChildren.getLength(); x++) {
             if (listChildren.item(x).getNodeType() == Node.ELEMENT_NODE) {
                 // don't search through child elements that should be ignored
@@ -1037,24 +1049,26 @@ public class EvaluatorUtility {
         return count;
     }
 
-    private static void addCssValidationSummary(List<CssValidationError> cssValidationErrors, String filename, String language) throws Exception {
-        CssValidationError cssValidationError = new CssValidationError();
-        PropertiesManager pmgr = new PropertiesManager();
-        String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator.human")
-                .replace("{0}", URLEncoder.encode(filename, "UTF-8"))
-                .replace("{1}", pmgr.getValue("language.mapping", language));
-        String link = "<a href='" + urlHuman + "' title='Enlace externo'>Validador de hojas de estilo del W3C</a>";
-        cssValidationError.setCode("Se ha producido un error al intentar validar el código CSS de la página. Utilice la siguiente URL para verificar la sintaxis: " + link);
-        cssValidationError.setLine(1);
-        cssValidationError.setSummary(true);
+    private static void addCssValidationSummary(final List<CssValidationError> cssValidationErrors, final String filename, final String language) throws Exception {
+        if ( filename!=null && language!=null ) {
+            final CssValidationError cssValidationError = new CssValidationError();
+            final PropertiesManager pmgr = new PropertiesManager();
+            final String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator.human")
+                    .replace("{0}", URLEncoder.encode(filename, "UTF-8"))
+                    .replace("{1}", pmgr.getValue("language.mapping", language));
+            final String link = "<a href='" + urlHuman + "' title='Enlace externo'>Validador de hojas de estilo del W3C</a>";
+            cssValidationError.setCode("Se ha producido un error al intentar validar el código CSS de la página. Utilice la siguiente URL para verificar la sintaxis: " + link);
+            cssValidationError.setLine(1);
+            cssValidationError.setSummary(true);
 
-        cssValidationErrors.add(cssValidationError);
+            cssValidationErrors.add(cssValidationError);
+        }
     }
 
-    public static String getLanguage(HttpServletRequest inReq) {
+    public static String getLanguage(final HttpServletRequest inReq) {
         if (inReq.getSession().getAttribute(IntavConstants.LANGUAGE) == null) {
-            PropertiesManager pmgr = new PropertiesManager();
-            String language = pmgr.getValue(IntavConstants.LANGUAGE_MAPPING, inReq.getLocale().getLanguage());
+            final PropertiesManager pmgr = new PropertiesManager();
+            final String language = pmgr.getValue(IntavConstants.LANGUAGE_MAPPING, inReq.getLocale().getLanguage());
             if (language != null) {
                 inReq.getSession().setAttribute(IntavConstants.LANGUAGE, language);
             } else {
@@ -1065,7 +1079,7 @@ public class EvaluatorUtility {
         return (String) inReq.getSession().getAttribute(IntavConstants.LANGUAGE);
     }
 
-    private static String generateDoctypeSource(DocumentType docType) {
+    private static String generateDoctypeSource(final DocumentType docType) {
         String doctypeSource = null;
 
         if (docType != null) {
@@ -1084,7 +1098,7 @@ public class EvaluatorUtility {
         return doctypeSource;
     }
 
-    public static String getAbsolute(String stringRelative, String filenameURL) {
+    public static String getAbsolute(final String stringRelative, String filenameURL) {
         // make sure the URL ends with a '/' if appropriate
         int slashLast = filenameURL.lastIndexOf('/') + 1;
         if (slashLast < 9) {
@@ -1097,20 +1111,18 @@ public class EvaluatorUtility {
             }
         }
 
-        // make sure there is no whitespace at end of URL
-        stringRelative = stringRelative.trim();
-
         try {
-            return new URI(filenameURL).resolve(stringRelative).toString();
+            // trim stringRelative to make sure there is no whitespace at end of URL
+            return new URI(filenameURL).resolve(stringRelative.trim()).toString();
         } catch (Exception e) {
-            //Logger.putLog("Exception: ", EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Exception: ", EvaluatorUtility.class, Logger.LOG_LEVEL_DEBUG, e);
         }
         return "";
     }
 
     // Returns an attribute value that has been stripped of its session ID.
-    public static String getAttributeNoSession(Element element, String attributeName) {
-        String stringValue = element.getAttribute(attributeName);
+    public static String getAttributeNoSession(final Element element, final String attributeName) {
+        final String stringValue = element.getAttribute(attributeName);
         if (stringValue.length() == 0) {
             return "";
         }

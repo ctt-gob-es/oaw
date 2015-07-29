@@ -102,7 +102,7 @@ public final class UtilCalculateTerms {
             return termino;
         }
 
-        // Terminaciones en consonante, se a�ade una A al final
+        // Terminaciones en consonante, se añade una A al final
         return termino.concat(TerminationConstants.A);
     }
 
@@ -207,7 +207,7 @@ public final class UtilCalculateTerms {
     }
 
     /**
-     * Consultamos si el termino es de g�nero femenino.
+     * Consultamos si el termino es de genero femenino.
      *
      * @param term - Termino consultado
      * @return boolean - Respuesta a la pregunta (true/false)
@@ -221,7 +221,7 @@ public final class UtilCalculateTerms {
         if (term != null && term.length() > 0) {
             termino = term.trim().toUpperCase();
 
-            //�triz
+            //-triz
             if (termino.length() > 3) {
                 terminacion = termino.substring(termino.length() - 4);
 
@@ -230,7 +230,7 @@ public final class UtilCalculateTerms {
                 }
             }
 
-            //dad, -tad, -i�n, -sis
+            //dad, -tad, -ión, -sis
             if (termino.length() > 2) {
                 terminacion = termino.substring(termino.length() - 3);
 
@@ -256,7 +256,7 @@ public final class UtilCalculateTerms {
 
             }
 
-            //Estos t�rminos terminan en -a, pero son gen�ricos
+            //Estos terminos terminan en -a, pero son genericos
             if (termino.equals(TerminationConstants.EXCP_ARTISTA)
                     || termino.equals(TerminationConstants.EXCP_ASTRONAUTA)
                     || termino.equals(TerminationConstants.EXCP_ATLETA)
