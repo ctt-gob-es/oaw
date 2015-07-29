@@ -3,6 +3,7 @@ package es.inteco.intav.checks.une2012;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.EvaluateCheck;
+import es.inteco.intav.TestUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,6 +50,159 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     @Before
     public void setUp() throws Exception {
         checkAccessibility = getCheckAccessibility("observatorio-une-2012");
+    }
+
+    @Test
+    public void evaluateComplexForm() throws Exception {
+        checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /></form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><fieldset><legend>Lorem</legend><input id=\"control\" /><input id=\"control\" /></fieldset><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
+
+        checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+
+    @Test
+    public void evaluateLabelFor() throws Exception {
+        checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /></form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), LABEL_NO_FOR));
+
+        checkAccessibility.setContent("<label for=\"none\">Etiqueta</label><input id=\"control\" />");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), LABEL_NO_FOR));
+    }
+
+
+    @Test
+    public void evaluateInputLabelAssociation() throws Exception {
+        checkAccessibility.setContent("<label for=\"correo\">Correo</label><input id=\"correo\" type=\"email\"/>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<input title=\"Correo\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<input aria-label=\"Correo\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<span id=\"label_correo\">Correo</span><input aria-labelledby=\"label_correo\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<input type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<input aria-label=\"\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<input aria-label=\"&nbsp;\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<span>Correo</span><input aria-labelledby=\"label_correo\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<span id=\"label_correo\"></span><input aria-labelledby=\"label_correo\" type=\"email\"/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+    }
+
+    @Test
+    public void evaluateSelectLabelAssociation() throws Exception {
+        checkAccessibility.setContent("<label for=\"selector\">Selector</label><select id=\"selector\"><option>Opción 1</option></select>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<select title=\"Selector\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<select aria-label=\"Selector\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<span id=\"label_selector\">Selector</span><select aria-labelledby=\"label_selector\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<form><select id=\"selector\"><option>Opción 1</option></select></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<select aria-label=\"\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<select aria-label=\"&nbsp;\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<span>Selector</span><select aria-labelleby=\"label_selector\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<span id=\"label_selector\"></span><select aria-labelleby=\"label_selector\"><option>Opción 1</option></select>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+    }
+
+    @Test
+    public void evaluateTextAreaLabelAssociation() throws Exception {
+        checkAccessibility.setContent("<label for=\"texto\">Texto</label><textarea id=\"texto\">Lorem ipsum</textarea>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<textarea title=\"Texto\">Lorem ipsum</textarea>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<textarea aria-label=\"Texto\">Lorem ipsum</textarea>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<span id=\"label_texto\">Texto</span><textarea aria-labelledby=\"label_texto\">Lorem ipsum</textarea>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<form><textarea id=\"texto\">Lorem ipsum</textarea></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<textarea aria-label=\"\">Lorem ipsum</textarea>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<textarea aria-label=\"&nbsp;\">Lorem ipsum</textarea>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<form><span>Texto</span><textarea id=\"label_texto\">Lorem ipsum</textarea></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
+
+        checkAccessibility.setContent("<span id=\"label_texto\"></span><textarea aria-labelledby=\"label_texto\">Lorem ipsum</textarea>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
     }
 
     @Test
@@ -551,6 +705,42 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</fieldset>" +
                 "</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, LABEL_CSS_HIDDEN));
+    }
+
+
+    @Test
+    public void evaluateFormOneHeader() throws Exception {
+        checkAccessibility.setContent("<html><form>" +
+                "<h1>Foo</h1>" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\">" +
+                "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, HEADERS_AS_LEGEND));
+    }
+
+    @Test
+    public void evaluateFormTwoHeaders() throws Exception {
+        checkAccessibility.setContent("<html><form>" +
+                "<h2>Foo</h2>" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\">" +
+                "<h2>Bar</h2>" +
+                "<label for=\"id_2\">Ipsum*</label>" +
+                "<input id=\"id_2\">" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, HEADERS_AS_LEGEND));
+
+        checkAccessibility.setContent("<html><form>" +
+                "<fieldset><legend>Bogus</legend>" +
+                "<h2>Foo</h2>" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\">" +
+                "<h2>Bar</h2>" +
+                "<label for=\"id_2\">Ipsum*</label>" +
+                "<input id=\"id_2\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, HEADERS_AS_LEGEND));
     }
 
 }

@@ -83,17 +83,33 @@ public final class Check_1_1_6_PresentationTest {
     @Test
     public void evaluatePresentationTags() throws Exception {
         checkAccessibility.setContent("<html><head><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), PRESENTATION_ELEMENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6, TestUtils.OBS_VALUE_RED_ZERO);
 
+        checkAccessibility.setContent("<html><head><title>Lorem</title></head><body><p>Lorem <font>ipsum</font></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), PRESENTATION_ELEMENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><head><title>Lorem</title></head><body><center><p>Lorem ipsum</p></center></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), PRESENTATION_ELEMENTS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
     @Test
     public void evaluateCSSGeneratedContent() throws Exception {
-        checkAccessibility.setContent("<html><head><style>.main:before { content: \"Lorem: \";}</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        checkAccessibility.setContent("<html><head><style>.main:before { content: \"> \";}</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
 
+        checkAccessibility.setContent("<html><head><style>.main:before { content: \"Lorem: \";}</style><title>Lorem</title></head><body><p>Lorem <u>ipsum</u></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>.main:after { content: \"Ipsum \";}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
     }
 

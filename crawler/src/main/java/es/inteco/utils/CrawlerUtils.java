@@ -260,22 +260,6 @@ public final class CrawlerUtils {
 
         textContent = removeHtmlComments(textContent);
 
-        // Añadimos el código de los FRAMES
-        String framesSource = CrawlerDOMUtils.getFramesSource(connection.getURL().toString(), textContent);
-        if (StringUtils.isNotEmpty(framesSource)) {
-            textContent = CrawlerDOMUtils.appendFramesSource(textContent, framesSource);
-        }
-
-        // Añadimos el código de los IFRAMES
-        try {
-            String iframesSource = CrawlerDOMUtils.appendIframesSource(connection.getURL().toString(), textContent);
-            if (StringUtils.isNotEmpty(iframesSource)) {
-                textContent = iframesSource;
-            }
-        } catch (Exception e) {
-            Logger.putLog("Error al añadir el código fuente de los iframes", CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-        }
-
         return textContent;
     }
 

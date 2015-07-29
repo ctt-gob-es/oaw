@@ -3,7 +3,7 @@
     <type>observatory</type>
     <title abbr="observatorio-une-2012" long-name="Pautas de verificación del Observatorio v2.0">Observatorio MINHAP 2.0</title>
     <date>2014-09-18</date>
-    <status>Observatorio MinHAP v0.2</status>
+    <status>Observatorio MINHAP v2.0</status>
     <earlid>URL donde están definidas las pautas</earlid>
     <preamble>Comentario sobre el Observatorio</preamble>
 
@@ -127,6 +127,8 @@
                     <check id="243"/>
                     <!-- Uso del atributo scope (validando valores) -->
                     <check id="415"/>
+                    <!-- Uso de encabezados como caption de una tabla -->
+                    <check id="464"/>
                 </checks>
             </subgroup>
 
@@ -293,9 +295,9 @@
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
                     <check id="437" onlyWarning="true"/>
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
-                    <check id="31"/>
+                    <check id="31" relatedWith="32"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
-                    <check id="295"/>
+                    <check id="295" relatedWith="437"/>
                     <!-- Comprobar titulos distintos entre la muestra -->
                     <check id="462"/>
                 </checks>

@@ -67,6 +67,11 @@ public final class Check_2_1_7_CompatibilityTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//ES\" \"http://www.w3.org/TR/html4/strict.dtd\">" + System.lineSeparator() + "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
     @Test

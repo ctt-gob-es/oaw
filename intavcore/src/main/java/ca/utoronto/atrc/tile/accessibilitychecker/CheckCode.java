@@ -479,6 +479,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_TABLE_HEADING_BLANK;
             } else if ("title-not-contains".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS;
+            } else if ("previous-sibling-no-header".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD;
             } else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;

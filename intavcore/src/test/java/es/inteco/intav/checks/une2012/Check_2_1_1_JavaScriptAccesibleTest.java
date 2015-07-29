@@ -15,7 +15,7 @@ import org.junit.Test;
 public final class Check_2_1_1_JavaScriptAccesibleTest {
 
     private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1 = "minhap.observatory.2.0.subgroup.2.1.1";
-    private static final int DUPLICATED_EVENTS = 160;
+    private static final int DUPLICATED_DEPENDENT_EVENTS = 160;
     private static final int ELEMENTS_INTERACTIVE = 432;
 
     private CheckAccessibility checkAccessibility;
@@ -62,5 +62,50 @@ public final class Check_2_1_1_JavaScriptAccesibleTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
+    @Test
+    public void evaluateMouseOver() throws Exception {
+        checkAccessibility.setContent("<html><p><a onfocus=\"foo()\" onmouseover=\"bar()\">Lorem ipsum</a></p></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p><a onfocus=\"foo()\">Lorem ipsum</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p><a onmouseover=\"\">Lorem ipsum</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p><a onmouseover=\"bar()\">Lorem ipsum</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateMouseOut() throws Exception {
+        checkAccessibility.setContent("<html><p><a onblur=\"foo()\" onmouseout=\"bar()\">Lorem ipsum</a></p></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p><a onblur=\"foo()\">Lorem ipsum</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p><a onmouseout=\"\">Lorem ipsum</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p><a onmouseout=\"bar()\">Lorem ipsum</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
 }
 

@@ -114,10 +114,19 @@ public final class Check_2_2_2_FocusTest {
     @Test
     public void evaluateCSSOutline() throws Exception {
         checkAccessibility.setContent("<html><style>.main:focus { outline: 10px solid none }</style><p><a class=\"main\">Lorem</a></p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><style>.main:focus { outline: 10px solid none; border: 1px solid #000; }</style><p><a class=\"main\">Lorem</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><style>.main:focus { outline: 10px solid none; background-color: #000; }</style><p><a class=\"main\">Lorem</a></p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 }
 

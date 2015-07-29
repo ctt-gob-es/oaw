@@ -19,23 +19,25 @@ public final class Check_1_1_4_DataTableTest {
     private static final int HEADERS = 86;
 
     /*<!-- Encabezamientos de tabla correctos -->*/
-    private static final int  HEADERS_CORRECT = 116;
+    private static final int HEADERS_CORRECT = 116;
 
     /*<!-- Todas las tablas de datos contienen un elemento caption a menos que la tabla esté identificada en el documento. -->*/
-    private static final int  CAPTION_EXISTS = 151;
+    private static final int CAPTION_OR_SUMMARY_EXISTS = 151;
 
     /*<!-- Celdas únicas que ocupan el ancho completo de la tabla para simular encabezamientos -->*/
-    private static final int CELL_CAPTION =156;
+    private static final int CELL_CAPTION = 156;
 
     /*<!-- Ningún th está vacío. -->*/
-    private static final int TH_BLANK= 159;
+    private static final int TH_BLANK = 159;
     /*<!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar las celdas. -->*/
     private static final int MISSING_ID_HEADERS = 245;
     /*<!--Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.-->*/
     private static final int COMPLEX_TABLE_SUMMARY = 418;
     /*<!-- Summary y Caption diferentes. -->*/
     private static final int SAME_CAPTION_SUMMARY_CHECK = 243;
-    private  static final int MISSING_SCOPE_CHECK = 415;
+    private static final int MISSING_SCOPE_CHECK = 415;
+    // Encabezados simulando captions
+    private static final int HEADER_AS_CAPTION = 464;
 
     private CheckAccessibility checkAccessibility;
 
@@ -89,6 +91,18 @@ public final class Check_1_1_4_DataTableTest {
 
         Assert.assertEquals(1, numProblems);
     }
+
+    @Test
+    public void evaluateCellCaption() throws Exception {
+        checkAccessibility.setContent("<html><body><table summary=\"Same text\"><tr><th colspan=\"2\">Caption</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+
+        checkAccessibility.setContent("<html><body><table summary=\"Same text\"><tr><td colspan=\"2\">Caption</td></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+    }
+
 
     @Test
     public void evaluateTableComplexNoSummary() throws Exception {
@@ -154,92 +168,93 @@ public final class Check_1_1_4_DataTableTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
     @Test
     public void evaluateDataTableRowSpan() throws Exception {
         checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
-        checkAccessibility.setContent("<table id=\"caracteristicas\" summary=\"Características del servicio de monitorización según los diferentes perfiles de contratación\">\n"+
-                "\t\t\t\t<thead>\n"+
-                "\t\t\t\t\t<tr>\n"+
-                "\t\t\t\t\t\t<th>Característica</th>\n"+
-                "\t\t\t\t\t\t<th>Perfil Básico</th>\n"+
-                "\t\t\t\t\t\t<th>Perfil Medio</th>\n"+
-                "\t\t\t\t\t\t<th>Perfil Avanzado</th>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t</thead>\n"+
+        checkAccessibility.setContent("<table id=\"caracteristicas\" summary=\"Características del servicio de monitorización según los diferentes perfiles de contratación\">\n" +
+                "\t\t\t\t<thead>\n" +
+                "\t\t\t\t\t<tr>\n" +
+                "\t\t\t\t\t\t<th>Característica</th>\n" +
+                "\t\t\t\t\t\t<th>Perfil Básico</th>\n" +
+                "\t\t\t\t\t\t<th>Perfil Medio</th>\n" +
+                "\t\t\t\t\t\t<th>Perfil Avanzado</th>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t</thead>\n" +
                 "\t\t\t\t<tfoot>\n" +
                 "\t\t\t\t\t<tr>\n" +
                 "\t\t\t\t\t\t<th scope=\"row\">Más información</th>\n" +
                 "\t\t\t\t\t\t<td colspan=\"3\"><a href=\"/tawmonitor/es/inicio.xhtml?actionMethod=es%2Finicio.xhtml%3Acontacto.solicitarInformacionContratacion&amp;cid=6701\" id=\"j_id114\">Solicitar más información sobre el servicio</a></td>\t\t\t\t\t\t\n" +
                 "\t\t\t\t\t</tr>\n" +
-                "\t\t\t\t</tfoot>"+
-                "\t\t\t\t<tbody>\n"+
-                "\t\t\t\t\t<tr>\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de dominios</th>\n"+
-                "\t\t\t\t\t\t<td>1</td>\n"+
-                "\t\t\t\t\t\t<td>5</td>\n"+
-                "\t\t\t\t\t\t<td>10</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr class=\"fila_alterna\">\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de análisis</th>\n"+
-                "\t\t\t\t\t\t<td>1</td>\n"+
-                "\t\t\t\t\t\t<td>5</td>\n"+
-                "\t\t\t\t\t\t<td>10</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr>\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Periodo entre análisis</th>\n"+
-                "\t\t\t\t\t\t<td>Quincenal, Mensual</td>\n"+
-                "\t\t\t\t\t\t<td>Quincenal, Mensual</td>\n"+
-                "\t\t\t\t\t\t<td>Semanal, Quincenal, Mensual</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr class=\"fila_alterna\">\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de paginas</th>\n"+
-                "\t\t\t\t\t\t<td>100</td>\n"+
-                "\t\t\t\t\t\t<td>1000</td>\n"+
-                "\t\t\t\t\t\t<td>3000</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr>\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de niveles</th>\n"+
-                "\t\t\t\t\t\t<td>3</td>\n"+
-                "\t\t\t\t\t\t<td>5</td>\n"+
-                "\t\t\t\t\t\t<td>10</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr class=\"fila_alterna\">\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de dominios analizados</th>\n"+
-                "\t\t\t\t\t\t<td>1</td>\n"+
-                "\t\t\t\t\t\t<td>3</td>\n"+
-                "\t\t\t\t\t\t<td>5</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr>\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Análisis de subdominios</th>\n"+
-                "\t\t\t\t\t\t<td>No</td>\n"+
-                "\t\t\t\t\t\t\n"+
-                "\t\t\t\t\t\t<td>Sí</td>\n"+
-                "\t\t\t\t\t\t<td>Configurable por subdominio</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr class=\"fila_alterna\">\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de urls en análisis de muestra</th>\n"+
-                "\t\t\t\t\t\t<td>3</td>\n"+
-                "\t\t\t\t\t\t<td>10</td>\n"+
-                "\t\t\t\t\t\t<td>20</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr>\n"+
-                "\t\t\t\t\t\t<th scope=\"row\">Envío de informe por ejecución de análisis</th>\n"+
-                "\t\t\t\t\t\t<td>No</td>\n"+
-                "\t\t\t\t\t\t<td>Único destinatario</td>\n"+
-                "\t\t\t\t\t\t<td>Múltiples destinatarios</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t\t<tr class=\"fila_alterna\">\n"+
-                "\t\t\t\t\t\t<th>Envío de email de alarma</th>\n"+
-                "\t\t\t\t\t\t<td>No</td>\n"+
-                "\t\t\t\t\t\t<td>Sí</td>\n"+
-                "\t\t\t\t\t\t<td>Sí</td>\n"+
-                "\t\t\t\t\t</tr>\n"+
-                "\t\t\t\t</tbody>\n"+
+                "\t\t\t\t</tfoot>" +
+                "\t\t\t\t<tbody>\n" +
+                "\t\t\t\t\t<tr>\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de dominios</th>\n" +
+                "\t\t\t\t\t\t<td>1</td>\n" +
+                "\t\t\t\t\t\t<td>5</td>\n" +
+                "\t\t\t\t\t\t<td>10</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr class=\"fila_alterna\">\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de análisis</th>\n" +
+                "\t\t\t\t\t\t<td>1</td>\n" +
+                "\t\t\t\t\t\t<td>5</td>\n" +
+                "\t\t\t\t\t\t<td>10</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr>\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Periodo entre análisis</th>\n" +
+                "\t\t\t\t\t\t<td>Quincenal, Mensual</td>\n" +
+                "\t\t\t\t\t\t<td>Quincenal, Mensual</td>\n" +
+                "\t\t\t\t\t\t<td>Semanal, Quincenal, Mensual</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr class=\"fila_alterna\">\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de paginas</th>\n" +
+                "\t\t\t\t\t\t<td>100</td>\n" +
+                "\t\t\t\t\t\t<td>1000</td>\n" +
+                "\t\t\t\t\t\t<td>3000</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr>\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de niveles</th>\n" +
+                "\t\t\t\t\t\t<td>3</td>\n" +
+                "\t\t\t\t\t\t<td>5</td>\n" +
+                "\t\t\t\t\t\t<td>10</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr class=\"fila_alterna\">\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de dominios analizados</th>\n" +
+                "\t\t\t\t\t\t<td>1</td>\n" +
+                "\t\t\t\t\t\t<td>3</td>\n" +
+                "\t\t\t\t\t\t<td>5</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr>\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Análisis de subdominios</th>\n" +
+                "\t\t\t\t\t\t<td>No</td>\n" +
+                "\t\t\t\t\t\t\n" +
+                "\t\t\t\t\t\t<td>Sí</td>\n" +
+                "\t\t\t\t\t\t<td>Configurable por subdominio</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr class=\"fila_alterna\">\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Número máximo de urls en análisis de muestra</th>\n" +
+                "\t\t\t\t\t\t<td>3</td>\n" +
+                "\t\t\t\t\t\t<td>10</td>\n" +
+                "\t\t\t\t\t\t<td>20</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr>\n" +
+                "\t\t\t\t\t\t<th scope=\"row\">Envío de informe por ejecución de análisis</th>\n" +
+                "\t\t\t\t\t\t<td>No</td>\n" +
+                "\t\t\t\t\t\t<td>Único destinatario</td>\n" +
+                "\t\t\t\t\t\t<td>Múltiples destinatarios</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t\t<tr class=\"fila_alterna\">\n" +
+                "\t\t\t\t\t\t<th>Envío de email de alarma</th>\n" +
+                "\t\t\t\t\t\t<td>No</td>\n" +
+                "\t\t\t\t\t\t<td>Sí</td>\n" +
+                "\t\t\t\t\t\t<td>Sí</td>\n" +
+                "\t\t\t\t\t</tr>\n" +
+                "\t\t\t\t</tbody>\n" +
                 "\t\t\t</table>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
         //Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
@@ -254,7 +269,7 @@ public final class Check_1_1_4_DataTableTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
@@ -334,7 +349,7 @@ public final class Check_1_1_4_DataTableTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
@@ -377,7 +392,7 @@ public final class Check_1_1_4_DataTableTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
-        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
@@ -387,4 +402,231 @@ public final class Check_1_1_4_DataTableTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
+
+    @Test
+    public void evaluateHeaderLayoutTable() throws Exception {
+        checkAccessibility.setContent("<html>" +
+                "<h2>foo</h2>" +
+                "<table>\n" +
+                "   <tbody>\n" +
+                "       <tr>\n" +
+                "           <td>192</td>\n" +
+                "           <td>142</td>\n" +
+                "           <td>3.000€</td>\n" +
+                "       </tr>\n" +
+                "       <tr>\n" +
+                "           <td>139</td>\n" +
+                "           <td>34</td>\n" +
+                "           <td>5.000€</td>\n" +
+                "       </tr>\n" +
+                "<tr><table><tr><td>\n" +
+                "\n" +
+                "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vitae massa felis. Nam euismod ac dui vitae interdum. Aenean id nibh semper, venenatis velit nec, lacinia ex. Nunc condimentum arcu at dictum ultricies. Nullam sed fringilla eros, a iaculis purus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed ullamcorper lobortis pharetra. Donec a nunc non leo posuere fermentum ac non leo. Suspendisse porttitor dignissim suscipit. Vestibulum finibus nec ligula eu blandit.</p>\n" +
+                "\n" +
+                "<p>Donec fermentum laoreet lacinia. Donec placerat ultrices arcu, sed eleifend quam iaculis sit amet. Nulla fermentum pellentesque sodales. Praesent eget laoreet arcu. Curabitur facilisis quam sem, ac tincidunt augue porttitor ut. Nullam eget justo dui. Aliquam in sodales quam.</p>\n" +
+                "\n" +
+                "<p>Etiam fermentum accumsan dui, vulputate elementum diam aliquet eget. Nam efficitur dolor pretium tempor tincidunt. Mauris nulla arcu, sagittis at dignissim finibus, rutrum a mi. Aenean tincidunt felis ac rutrum ullamcorper. Quisque erat nibh, tristique eget semper eu, tempus ac quam. Vivamus vitae risus.</p></td></tr></table></tr>" +
+                "    </tbody>\n" +
+                "</table></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateHeaderDataTableWithCaption() throws Exception {
+        checkAccessibility.setContent("<html>" +
+                "<h2>foo</h2>" +
+                "<table>" +
+                "   <caption>Foo bar</caption>\n" +
+                "   <thead>\n" +
+                "       <tr>\n" +
+                "           <th scope=\"col\">Solicitudes totales registradas</th>\n" +
+                "           <th scope=\"col\">Proyectos concedidos</th>\n" +
+                "           <th scope=\"col\">Financiación concedida</th>\n" +
+                "       </tr>\n" +
+                "   </thead>\n" +
+                "   <tbody>\n" +
+                "       <tr>\n" +
+                "           <td>192</td>\n" +
+                "           <td>142</td>\n" +
+                "           <td>3.000€</td>\n" +
+                "       </tr>\n" +
+                "       <tr>\n" +
+                "           <td>139</td>\n" +
+                "           <td>34</td>\n" +
+                "           <td>5.000€</td>\n" +
+                "       </tr>\n" +
+                "    </tbody>\n" +
+                "</table></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateHeaderDataTableWithoutCaption() throws Exception {
+        final String dataTableWithoutCaption = "<table summary=\"Foo bar\">" +
+                "   <thead>\n" +
+                "       <tr>\n" +
+                "           <th scope=\"col\">Solicitudes totales registradas</th>\n" +
+                "           <th scope=\"col\">Proyectos concedidos</th>\n" +
+                "           <th scope=\"col\">Financiación concedida</th>\n" +
+                "       </tr>\n" +
+                "   </thead>\n" +
+                "   <tbody>\n" +
+                "       <tr>\n" +
+                "           <td>192</td>\n" +
+                "           <td>142</td>\n" +
+                "           <td>3.000€</td>\n" +
+                "       </tr>\n" +
+                "       <tr>\n" +
+                "           <td>139</td>\n" +
+                "           <td>34</td>\n" +
+                "           <td>5.000€</td>\n" +
+                "       </tr>\n" +
+                "    </tbody>\n" +
+                "</table>";
+
+        checkAccessibility.setContent("<h1>Foo</h1>" + dataTableWithoutCaption);
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<h2>Foo</h2>" + dataTableWithoutCaption);
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<h3>Foo</h3>" + dataTableWithoutCaption);
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<h4>Foo</h4>" + dataTableWithoutCaption);
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<h5>Foo</h5>" + dataTableWithoutCaption);
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<h6>Foo</h6>" + dataTableWithoutCaption);
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluateNoSiblingHeaderDataTableWithoutCaption() throws Exception {
+        checkAccessibility.setContent("<h1>Foo</h1>Lorem ipsum" + DATA_TABLE_WITHOUT_CAPTION_HTML);
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    public static final String DATA_TABLE_WITHOUT_CAPTION_HTML = "<table summary=\"Foo bar\">" +
+            "   <thead>\n" +
+            "       <tr>\n" +
+            "           <th scope=\"col\">Solicitudes totales registradas</th>\n" +
+            "           <th scope=\"col\">Proyectos concedidos</th>\n" +
+            "           <th scope=\"col\">Financiación concedida</th>\n" +
+            "       </tr>\n" +
+            "   </thead>\n" +
+            "   <tbody>\n" +
+            "       <tr>\n" +
+            "           <td>192</td>\n" +
+            "           <td>142</td>\n" +
+            "           <td>3.000€</td>\n" +
+            "       </tr>\n" +
+            "       <tr>\n" +
+            "           <td>139</td>\n" +
+            "           <td>34</td>\n" +
+            "           <td>5.000€</td>\n" +
+            "       </tr>\n" +
+            "    </tbody>\n" +
+            "</table>";
 }

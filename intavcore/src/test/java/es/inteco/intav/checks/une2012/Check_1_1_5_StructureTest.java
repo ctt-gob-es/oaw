@@ -102,6 +102,33 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
     }
 
     @Test
+    public void evaluatePBRs() throws Exception {
+        checkAccessibility.setContent("<html><p>" +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elit est, vulputate quis iaculis a, semper non quam. Pellentesque vulputate vestibulum dui sit amet volutpat. Phasellus at felis varius, vestibulum augue in, rutrum ipsum. Quisque ut massa hendrerit, commodo sem eu, pharetra turpis. Curabitur id sapien pulvinar, lobortis nibh vitae, vulputate erat. Nulla a felis facilisis, dictum metus sed, ullamcorper ligula. Sed odio ex, efficitur eget tempor vel, hendrerit ac tortor. Etiam iaculis sodales nulla. Nulla at augue euismod, ornare est sit amet, elementum quam. Nam id ornare lacus. Aliquam odio purus, dapibus quis vulputate ut, imperdiet posuere ligula. Donec ultrices faucibus mattis. Suspendisse vel neque et erat sollicitudin eleifend vitae eget massa. Nunc pellentesque lectus ut elit convallis, id interdum tellus bibendum." +
+                "</p></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 16));
+        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><p><br /><br />" +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam elit est, vulputate quis iaculis a, semper non quam. Pellentesque vulputate vestibulum dui sit amet volutpat. Phasellus at felis varius, vestibulum augue in, rutrum ipsum. Quisque ut massa hendrerit, commodo sem eu, pharetra turpis. Curabitur id sapien pulvinar, lobortis nibh vitae, vulputate erat. Nulla a felis facilisis, dictum metus sed, ullamcorper ligula. Sed odio ex, efficitur eget tempor vel, hendrerit ac tortor. Etiam iaculis sodales nulla. Nulla at augue euismod, ornare est sit amet, elementum quam. Nam id ornare lacus. Aliquam odio purus, dapibus quis vulputate ut, imperdiet posuere ligula. Donec ultrices faucibus mattis. Suspendisse vel neque et erat sollicitudin eleifend vitae eget massa. Nunc pellentesque lectus ut elit convallis, id interdum tellus bibendum." +
+                "</p></html>");
+         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 16));
+         oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><p>" +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. <br/><br/>Nullam elit est, vulputate quis iaculis a, semper non quam. Pellentesque vulputate vestibulum dui sit amet volutpat. Phasellus at felis varius, vestibulum augue in, rutrum ipsum. Quisque ut massa hendrerit, commodo sem eu, pharetra turpis. Curabitur id sapien pulvinar, lobortis nibh vitae, vulputate erat. Nulla a felis facilisis, dictum metus sed, ullamcorper ligula. Sed odio ex, efficitur eget tempor vel, hendrerit ac tortor. Etiam iaculis sodales nulla. Nulla at augue euismod, ornare est sit amet, elementum quam. Nam id ornare lacus. Aliquam odio purus, dapibus quis vulputate ut, imperdiet posuere ligula. Donec ultrices faucibus mattis. Suspendisse vel neque et erat sollicitudin eleifend vitae eget massa. Nunc pellentesque lectus ut elit convallis, id interdum tellus bibendum." +
+                "</p></html>");
+         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 16));
+         oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
     public void evaluate() throws Exception {
         checkAccessibility.setContent("<html><head><title>Foo</title></head><body>\n" +
                 "<div>\n" +

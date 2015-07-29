@@ -413,23 +413,23 @@ public final class Check_1_1_3_ListTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
 
-        checkAccessibility.setContent("<table><tr><td>Item 1</td></tr></table");
+        checkAccessibility.setContent("<table><tr><td>Item 1</td></tr></table>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
 
-        checkAccessibility.setContent("<table><tr><td>Item 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet laoreet sapien. Morbi ultricies erat elit, sit amet posuere velit posuere.</td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr></table");
+        checkAccessibility.setContent("<table><tr><td>Item 1 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet laoreet sapien. Morbi ultricies erat elit, sit amet posuere velit posuere.</td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr></table>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
 
-        checkAccessibility.setContent("<table><tr><td>Item 1</td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr></table");
+        checkAccessibility.setContent("<table><tr><td>Item 1</td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr></table>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
 
-        checkAccessibility.setContent("<table><tr><td>Item 1</td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr><tr><td>Item 4</td></tr></table");
+        checkAccessibility.setContent("<table><tr><td>Item 1</td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr><tr><td>Item 4</td></tr></table>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
 
-        checkAccessibility.setContent("<table><tr><td>Item 1 - <strong><em>Lorem ipsum</strong></em> <strong><em>Lorem ipsum</strong></em> <strong><em>Lorem ipsum</strong></em> <strong><em>Lorem ipsum</strong></em></td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr></table");
+        checkAccessibility.setContent("<table><tr><td>Item 1 - <strong><em>Lorem ipsum</strong></em> <strong><em>Lorem ipsum</strong></em> <strong><em>Lorem ipsum</strong></em> <strong><em>Lorem ipsum</strong></em></td></tr><tr><td>Item 2</td></tr><tr><td>Item 3</td></tr></table>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
     }

@@ -50,13 +50,13 @@ public class TestCrawl {
     @Test
     public void test() throws Exception {
         final CrawlerData crawlerData = new CrawlerData();
-        crawlerData.setUrls(Collections.singletonList("http://www.melilla.es/melillaPortal/index.jsp"));
-        crawlerData.setProfundidad(4);
-        crawlerData.setTopN(4);
+        crawlerData.setUrls(Collections.singletonList("http://www.controlastuenergia.gob.es/Paginas/contacto.aspx"));
+        crawlerData.setProfundidad(1);
+        crawlerData.setTopN(1);
         crawlerData.setPseudoaleatorio(true);
         crawlerData.setTest(true);
         crawlerData.setIdCrawling(-1);
-//        makeCrawl(crawlerData);
+        makeCrawl(crawlerData);
 //
 //        for (CrawledLink cl: crawlingDomains) {
 //            System.out.println(cl.getUrl());

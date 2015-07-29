@@ -31,8 +31,12 @@ public final class Check_2_1_6_ContextChangesTest {
     @Test
     public void evaluateChangeContextOnFocus() throws Exception {
         checkAccessibility.setContent("<html><input onfocus=\"javascript:window.location=http://www.google.es\">Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), ONFOCUS_ONBLUR_CHANGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_6, TestUtils.OBS_VALUE_RED_ZERO);
 
+        checkAccessibility.setContent("<html><input onblur=\"javascript:window.location=http://www.google.es\">Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), ONFOCUS_ONBLUR_CHANGE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_6, TestUtils.OBS_VALUE_RED_ZERO);
     }
