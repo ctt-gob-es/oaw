@@ -12,6 +12,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryBS;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.utils.CrawlerUtils;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -24,9 +25,13 @@ public final class IndexUtils {
     }
 
     public static void createIndex(PdfWriter writer, Document document, HttpServletRequest request, IndexEvents index, boolean alphOrder, Font titleFont) throws DocumentException {
+        createIndex(writer, document, CrawlerUtils.getResources(request), index, alphOrder, titleFont);
+    }
+
+    public static void createIndex(PdfWriter writer, Document document, final MessageResources resources, IndexEvents index, boolean alphOrder, Font titleFont) throws DocumentException {
         int beforeIndex = writer.getPageNumber();
         document.newPage();
-        Paragraph indexTitle = new Paragraph(CrawlerUtils.getResources(request).getMessage(request.getLocale(), "pdf.accessibility.index.title"), titleFont);
+        Paragraph indexTitle = new Paragraph(resources.getMessage("pdf.accessibility.index.title"), titleFont);
         indexTitle.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(indexTitle);
 

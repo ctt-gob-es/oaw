@@ -1,7 +1,7 @@
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import es.inteco.common.logging.Logger;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -14,30 +14,51 @@ public final class CheckTables {
     private CheckTables() {
     }
 
-    protected static boolean functionRowCountNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        int numLimit;
+    protected static boolean functionRowCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        int number;
         int rows;
         try {
-            numLimit = Integer.parseInt(checkCode.getFunctionNumber());
+            number = Integer.parseInt(checkCode.getFunctionNumber());
             rows = (Integer) elementGiven.getUserData("rows");
         } catch (Exception e) { // number could not be parsed
             return false;
         }
+        final String position = checkCode.getFunctionPosition().isEmpty() ? "not-equals" : checkCode.getFunctionPosition();
 
-        return rows != numLimit;
+        if ("equals".equalsIgnoreCase(position)) {
+            return rows == number;
+        } else if ("greater".equalsIgnoreCase(position)) {
+            return rows > number;
+        } else if ("lesser".equalsIgnoreCase(position)) {
+            return rows < number;
+        } else {
+            // Incluye tanto not-equals como cualquier otro valor
+            return rows != number;
+        }
     }
 
-    protected static boolean functionColumnCountNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        int numLimit = 0;
-        int cols = 0;
+    protected static boolean functionColumnCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        int number;
+        int cols;
         try {
-            numLimit = Integer.parseInt(checkCode.getFunctionNumber());
+            number = Integer.parseInt(checkCode.getFunctionNumber());
             cols = (Integer) elementGiven.getUserData("cols");
         } catch (Exception e) { // number could not be parsed
             return false;
         }
 
-        return cols != numLimit;
+        final String position = checkCode.getFunctionPosition().isEmpty() ? "not-equals" : checkCode.getFunctionPosition();
+
+        if ("equals".equalsIgnoreCase(position)) {
+            return cols == number;
+        } else if ("greater".equalsIgnoreCase(position)) {
+            return cols > number;
+        } else if ("lesser".equalsIgnoreCase(position)) {
+            return cols < number;
+        } else {
+            // Incluye tanto not-equals como cualquier otro valor
+            return cols != number;
+        }
     }
 
     // Checks if the given table is the given type.
@@ -119,19 +140,60 @@ public final class CheckTables {
         return false;
     }
 
+    protected static boolean functionTableHeadingBlank(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        //Creamos la matriz que representa la tabla
+        NodeList trList = elementGiven.getElementsByTagName("tr");
+        int maxCols = 0;
+        if (trList.item(0) != null && trList.item(0).getChildNodes() != null) {
+            maxCols = countLength(trList.item(0).getChildNodes());
+        }
+        int maxRows = trList.getLength();
+        final TableNode[][] table = createTable(trList, maxCols, maxRows);
+
+        final boolean isBidirectionalCheck = isBidirectionalHeading(table, maxCols, maxRows);
+        final int initialCounter = isBidirectionalCheck ? 1 : 0;
+        for (int col = 0; col < maxCols; col++) {
+            for (int row = initialCounter; row < maxRows; row++) {
+                if (table[row][col].isHeaderCell() && StringUtils.isEmpty(StringUtils.normalizeWhiteSpaces(table[row][col].getNode().getTextContent()))) {
+                    return true;
+                }
+            }
+        }
+        for (int row = initialCounter; row < maxRows; row++) {
+            try {
+                if (table[row][0].isHeaderCell() && StringUtils.isEmpty(StringUtils.normalizeWhiteSpaces(table[row][0].getNode().getTextContent()))) {
+                    return true;
+                }
+            } catch (Exception e) {
+                //Solución provisional, nos hemos encontrado con que hay tablas que dan un OutOfRange porque la primera
+                //fila es vacía y el resto no... en este caso suponemos que la tabla no es vertical ya que el primer
+                //encabezado vertical no existe.
+                return false;
+            }
+        }
+
+        return false;
+    }
+
     protected static boolean functionMissingIdHeaders(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        NodeList listRows = elementGiven.getElementsByTagName("tr");
+        final NodeList listRows = elementGiven.getElementsByTagName("tr");
         for (int i = 0; i < listRows.getLength(); i++) {
-            Element elementRow = (Element) listRows.item(i);
-            NodeList listTh = elementRow.getElementsByTagName("th");
-            NodeList listTd = elementRow.getElementsByTagName("td");
+            final Element elementRow = (Element) listRows.item(i);
+            final NodeList listTh = elementRow.getElementsByTagName("th");
+            final NodeList listTd = elementRow.getElementsByTagName("td");
             for (int j = 0; j < listTh.getLength(); j++) {
-                if (!((Element) listTh.item(j)).hasAttribute("id") || (StringUtils.isEmpty(((Element) listTh.item(j)).getAttribute("id")))) {
+                final Element th = (Element) listTh.item(j);
+                final String content = StringUtils.normalizeWhiteSpaces(th.getTextContent());
+                final boolean onlyWhiteChars = content.trim().isEmpty();
+                if (!onlyWhiteChars && !th.hasAttribute("id")) {
                     return true;
                 }
             }
             for (int j = 0; j < listTd.getLength(); j++) {
-                if (!((Element) listTd.item(j)).hasAttribute("headers") || (StringUtils.isEmpty(((Element) listTd.item(j)).getAttribute("headers")))) {
+                final Element td = (Element) listTd.item(j);
+                final String content = StringUtils.normalizeWhiteSpaces(td.getTextContent());
+                final boolean onlyWhiteChars = content.trim().isEmpty();
+                if (!onlyWhiteChars && (!td.hasAttribute("headers") || (StringUtils.isEmpty(td.getAttribute("headers"))))) {
                     return true;
                 }
             }
@@ -184,9 +246,9 @@ public final class CheckTables {
                 } else {
                     //Cmprobamos si la tabla es horizontal o vertical y si está bien formada
                     if (isCorrectHorizontalHeading(table, 0, x, false)) {
-                        return (isCorrectHorizontalTable(table, x, y));
+                        return isCorrectHorizontalTable(table, x, y);
                     } else if (isCorrectVerticalHeading(table, y, 0, false)) {
-                        return (isCorrectVerticalTable(table, x, y));
+                        return isCorrectVerticalTable(table, x, y);
                     } else {
                         //Si no es bidireccional ni horizontal ni vertical... ¿que es? --> ERROR
                         return false;
@@ -217,7 +279,9 @@ public final class CheckTables {
     //Le pasamos u nodo y nos dice si la primera celda es o no encabezado
     //Consideramos esta y solo esta (la 0,0) encabezado cuando es th(con o sin texto) o td vacío
     private static boolean isFirstHeaderCell(Node node) {
-        return !(node.getNodeName().equalsIgnoreCase("td") && StringUtils.isNotEmpty(node.getTextContent()));
+        final String content = StringUtils.normalizeWhiteSpaces(node.getTextContent());
+        final boolean onlyWhiteChars = content.trim().isEmpty();
+        return "th".equalsIgnoreCase(node.getNodeName()) || onlyWhiteChars;
     }
 
     //Recorremos la tabla, si encontramos una celda encabezado, comprobamos que o la fila o la columna o ambas,
@@ -339,6 +403,10 @@ public final class CheckTables {
                     if (table[i][j].getRowSpan() != 0) {
                         for (int z = 1; z < table[i][j].getRowSpan(); z++) {
                             TableNode node = new TableNode(true);
+                            if (isHeaderCell(nodeElementList.get(element - 1))) {
+                                //Es un th con texto, estamos seguros de que es encabezado
+                                tableNode.setHeaderCell(true);
+                            }
                             if (i + z < y) {
                                 table[i + z][j] = node;
                             }
@@ -347,6 +415,10 @@ public final class CheckTables {
                     if (table[i][j].getColSpan() != 0) {
                         for (int z = 1; z < table[i][j].getColSpan(); z++) {
                             TableNode node = new TableNode(true);
+                            if (isHeaderCell(nodeElementList.get(element - 1))) {
+                                //Es un th con texto, estamos seguros de que es encabezado
+                                tableNode.setHeaderCell(true);
+                            }
                             if (j + z < x) {
                                 table[i][j + z] = node;
                             }
@@ -373,8 +445,9 @@ public final class CheckTables {
         int counter = 0;
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                if (((Element) nodeList.item(i)).getAttribute("colspan") != null && StringUtils.isNotEmpty(((Element) nodeList.item(i)).getAttribute("colspan"))) {
-                    counter = counter + Integer.parseInt(((Element) nodeList.item(i)).getAttribute("colspan"));
+                final Element element = (Element) nodeList.item(i);
+                if (element.getAttribute("colspan") != null && StringUtils.isNotEmpty(element.getAttribute("colspan"))) {
+                    counter = counter + Integer.parseInt(element.getAttribute("colspan"));
                 } else {
                     counter++;
                 }

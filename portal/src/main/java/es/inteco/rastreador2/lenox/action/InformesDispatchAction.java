@@ -66,7 +66,6 @@ public class InformesDispatchAction extends Action {
     public ActionForward getResultsByUrl(ActionMapping mapping, ActionForm form,
                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        PropertiesManager pmgr = new PropertiesManager();
         Connection c = null;
 
         String Observatory = request.getParameter(Constants.ID_OBSERVATORIO);
@@ -75,7 +74,7 @@ public class InformesDispatchAction extends Action {
         }
 
         try {
-            c = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.lenox"));
+            c = DataBaseManager.getConnection();
 
             long idExecution = Long.parseLong(request.getParameter(Constants.ID));
 
@@ -108,7 +107,7 @@ public class InformesDispatchAction extends Action {
             c = DataBaseManager.getConnection();
 
 
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.lenox"));
+            conn = DataBaseManager.getConnection();
             long idExecution = Long.parseLong(request.getParameter(Constants.ID));
             String url = request.getParameter(Constants.URL);
 

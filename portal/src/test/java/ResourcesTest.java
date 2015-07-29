@@ -1,6 +1,8 @@
 import ca.utoronto.atrc.tile.accessibilitychecker.AllChecks;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import ca.utoronto.atrc.tile.accessibilitychecker.Guideline;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.intav.iana.IanaUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,6 +29,14 @@ public class ResourcesTest {
         Assert.assertEquals("observatory", guideline.getType());
 
         Assert.assertEquals(2, guideline.getGroups().size());
+    }
+
+    @Test
+    public void testLanguages() throws Exception {
+        final PropertiesManager prm = new PropertiesManager();
+        final String ianaRegistries = IanaUtils.loadIanaRegistries(prm.getValue("intav.properties", "iana.lang.codes.url"));
+        Assert.assertNotNull(ianaRegistries);
+        Assert.assertFalse(ianaRegistries.isEmpty());
     }
 
 }

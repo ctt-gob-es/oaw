@@ -26,7 +26,7 @@ public class CrawlerData {
     private List<String> domains;
     private List<String> exceptions;
     private List<String> crawlingList;
-    private long id_guideline;
+    private long idGuideline;
     private String ficheroNorma;
     private boolean exhaustive;
     private boolean test;
@@ -81,12 +81,12 @@ public class CrawlerData {
         this.crawlingList = crawlingList;
     }
 
-    public long getId_guideline() {
-        return id_guideline;
+    public long getIdGuideline() {
+        return idGuideline;
     }
 
-    public void setId_guideline(long id_guideline) {
-        this.id_guideline = id_guideline;
+    public void setIdGuideline(long idGuideline) {
+        this.idGuideline = idGuideline;
     }
 
     public CrawlerData() {

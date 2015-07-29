@@ -3,7 +3,7 @@ package es.inteco.rastreador2.dao.observatorio;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.observatorio.*;
@@ -11,6 +11,7 @@ import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
 import es.inteco.rastreador2.actionform.rastreo.ObservatoryTypeForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.login.CartuchoForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
@@ -349,6 +350,7 @@ public final class ObservatorioDAO {
             if (rs.next()) {
                 category.setId(String.valueOf(rs.getLong("id_categoria")));
                 category.setName(rs.getString("nombre"));
+                category.setOrden(rs.getInt("orden"));
             }
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -511,12 +513,12 @@ public final class ObservatorioDAO {
         return cargarObservatorioForm;
     }
 
-    public static void deleteListObservatoryAssociation(Connection c, long id_list, long id_observatory) throws Exception {
+    public static void deleteListObservatoryAssociation(Connection c, long id_list, long idObservatory) throws Exception {
         PreparedStatement ps = null;
 
         try {
             ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ? AND id_lista = ?");
-            ps.setLong(1, id_observatory);
+            ps.setLong(1, idObservatory);
             ps.setLong(2, id_list);
             ps.executeUpdate();
         } catch (Exception e) {
@@ -593,12 +595,10 @@ public final class ObservatorioDAO {
         }
     }
 
-    public static void deteleObservatory(Connection connR, long id_observatory) throws Exception {
+    public static void deteleObservatory(Connection connR, long idObservatory) throws Exception {
         final List<Connection> connections = DAOUtils.getCartridgeConnections();
 
         PreparedStatement ps = null;
-        ResultSet rs = null;
-
         try {
             connR.setAutoCommit(false);
             for (Connection conn : connections) {
@@ -606,7 +606,7 @@ public final class ObservatorioDAO {
             }
 
             //RECUPERAMOS LOS IDS DE LOS RASTREOS DEL OBSERVATORIO
-            List<Long> idsRastreos = getCrawlerIds(connR, id_observatory);
+            final List<Long> idsRastreos = getCrawlerIds(connR, idObservatory);
 
             //BORRAMOS RASTREOS Y RESULTADOS
             for (Long id_rastreo : idsRastreos) {
@@ -615,13 +615,13 @@ public final class ObservatorioDAO {
 
             //ELIMINAMOS LAS RELACIONES OBSERVATORIO_SEMILLA
             ps = connR.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?");
-            ps.setLong(1, id_observatory);
+            ps.setLong(1, idObservatory);
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
 
             //ELIMINAMOS EL OBSERVATORIO
             ps = connR.prepareStatement("DELETE FROM observatorio WHERE id_observatorio = ?");
-            ps.setLong(1, id_observatory);
+            ps.setLong(1, idObservatory);
             ps.executeUpdate();
 
             connR.commit();
@@ -647,7 +647,7 @@ public final class ObservatorioDAO {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
 
             for (Connection conn : connections) {
                 DataBaseManager.closeConnection(conn);
@@ -656,9 +656,7 @@ public final class ObservatorioDAO {
     }
 
     public static void deteleFulfilledObservatory(Connection connR, long idExecution) throws Exception {
-
         PreparedStatement ps = null;
-        ResultSet rs = null;
 
         final List<Connection> connections = DAOUtils.getCartridgeConnections();
 
@@ -700,14 +698,14 @@ public final class ObservatorioDAO {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
             for (Connection conn : connections) {
                 DataBaseManager.closeConnection(conn);
             }
         }
     }
 
-    public static void deteleAnalyse(Connection connI, Connection connR, long id_observatorio, List<Long> idsRastreosRealizados) throws Exception {
+    public static void deteleAnalyse(Connection connI, Connection connR, long idObservatorio, List<Long> idsRastreosRealizados) throws Exception {
         PreparedStatement ps = null;
 
         try {
@@ -735,7 +733,7 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static List<Long> getCrawlerIds(Connection connR, long id_observatorio) throws Exception {
+    private static List<Long> getCrawlerIds(Connection connR, long idObservatorio) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Long> crawlerIds = new ArrayList<Long>();
@@ -743,7 +741,7 @@ public final class ObservatorioDAO {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
             ps = connR.prepareStatement("SELECT id_rastreo FROM rastreo r " +
                     "WHERE id_observatorio = ?");
-            ps.setLong(1, id_observatorio);
+            ps.setLong(1, idObservatorio);
             rs = ps.executeQuery();
             while (rs.next()) {
                 crawlerIds.add(rs.getLong("id_rastreo"));
@@ -801,6 +799,7 @@ public final class ObservatorioDAO {
                 CategoriaForm category = new CategoriaForm();
                 category.setId(String.valueOf(rs.getLong("cl.id_categoria")));
                 category.setName(rs.getString("cl.nombre"));
+                category.setOrden(rs.getInt("cl.orden"));
                 seed.setCategoria(category);
                 fulfilledCrawling.setSeed(seed);
             }
@@ -827,8 +826,7 @@ public final class ObservatorioDAO {
             ps.setInt(3, Integer.parseInt(nuevoObservatorioForm.getProfundidad()));
             ps.setInt(4, Integer.parseInt(nuevoObservatorioForm.getAmplitud()));
             ps.setTimestamp(5, new Timestamp(nuevoObservatorioForm.getFecha().getTime()));
-
-            ps.setString(6, Constants.ID_OBSERVATORY_GUIDELINE);
+            ps.setLong(6, CartuchoDAO.getGuideline(c, nuevoObservatorioForm.getCartucho().getId()));
             ps.setBoolean(7, Boolean.valueOf(nuevoObservatorioForm.getPseudoAleatorio()));
             ps.setLong(8, nuevoObservatorioForm.getLenguaje());
             ps.setLong(9, nuevoObservatorioForm.getCartucho().getId());
@@ -1232,7 +1230,7 @@ public final class ObservatorioDAO {
         return 0;
     }
 
-    public static List<SemillaForm> getSeedsFromObservatory(Connection c, long id_observatorio) throws Exception {
+    public static List<SemillaForm> getSeedsFromObservatory(Connection c, long idObservatorio) throws Exception {
 
         List<SemillaForm> semillasFormList = new ArrayList<SemillaForm>();
         PreparedStatement ps = null;
@@ -1244,7 +1242,7 @@ public final class ObservatorioDAO {
                     "WHERE ol.id_observatorio = ? AND l.id_categoria IS NULL";
 
             ps = c.prepareStatement(query);
-            ps.setLong(1, id_observatorio);
+            ps.setLong(1, idObservatorio);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1263,7 +1261,7 @@ public final class ObservatorioDAO {
         return semillasFormList;
     }
 
-    private static List<SemillaForm> getSeedsNotObservatory(Connection c, long id_observatorio) throws Exception {
+    private static List<SemillaForm> getSeedsNotObservatory(Connection c, long idObservatorio) throws Exception {
 
         List<SemillaForm> semillasFormList = new ArrayList<SemillaForm>();
         PreparedStatement ps = null;
@@ -1277,7 +1275,7 @@ public final class ObservatorioDAO {
                     "WHERE ol.id_observatorio = ?)) ");
 
             ps.setLong(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-            ps.setLong(2, id_observatorio);
+            ps.setLong(2, idObservatorio);
             rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -1321,9 +1319,7 @@ public final class ObservatorioDAO {
     }
 
     public static ModificarObservatorioForm updateObservatory(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws Exception {
-
         PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
             c.setAutoCommit(false);
 
@@ -1341,7 +1337,7 @@ public final class ObservatorioDAO {
                     modificarObservatorioForm.getHoraInicio(), modificarObservatorioForm.getMinutoInicio()));
             ps.setTimestamp(5, new Timestamp(modificarObservatorioForm.getFecha().getTime()));
 
-            ps.setLong(6, Long.parseLong(modificarObservatorioForm.getNormaAnalisis()));
+            ps.setLong(6, CartuchoDAO.getGuideline(c, modificarObservatorioForm.getCartucho().getId()));
 
             ps.setBoolean(7, modificarObservatorioForm.isPseudoAleatorio());
             ps.setLong(8, modificarObservatorioForm.getLenguaje());
@@ -1353,13 +1349,13 @@ public final class ObservatorioDAO {
             ps.setLong(12, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
 
             // Rehacemos las asociaciones con las categorías
             ps = c.prepareStatement("DELETE FROM observatorio_categoria WHERE id_observatorio = ?");
             ps.setLong(1, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
 
             ps = c.prepareStatement("INSERT INTO observatorio_categoria VALUES (?,?)");
             if (modificarObservatorioForm.getCategoria() != null) {
@@ -1391,34 +1387,33 @@ public final class ObservatorioDAO {
             Logger.putLog("Error", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
         }
         return modificarObservatorioForm;
     }
 
     public static void putDataToInsert(InsertarRastreoForm insertarRastreoForm, ObservatorioForm observatorioForm) {
-        PropertiesManager pmgr = new PropertiesManager();
         insertarRastreoForm.setId_observatorio(observatorioForm.getId());
         insertarRastreoForm.setCartucho(observatorioForm.getCartucho().getId().toString());
-        insertarRastreoForm.setNormaAnalisis(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"));
+        insertarRastreoForm.setNormaAnalisis(String.valueOf(observatorioForm.getId_guideline()));
         insertarRastreoForm.setProfundidad(observatorioForm.getProfundidad());
         insertarRastreoForm.setTopN(observatorioForm.getAmplitud());
         insertarRastreoForm.setPseudoAleatorio(observatorioForm.isPseudoAleatorio());
         insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
     }
 
-    public static void insertNewCrawlers(Connection c, long id_observatory, List<SemillaForm> seeds) throws Exception {
+    public static void insertNewCrawlers(Connection c, long idObservatory, List<SemillaForm> seeds) throws Exception {
         InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
-        ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, id_observatory);
+        ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
         putDataToInsert(insertarRastreoForm, observatorioForm);
 
         if (seeds != null) {
             for (SemillaForm semillaForm : seeds) {
                 insertarRastreoForm.setCodigo(observatorioForm.getNombre() + "-" + SemillaDAO.getSeedById(c, semillaForm.getId()).getNombre());
                 insertarRastreoForm.setId_semilla(semillaForm.getId());
-                insertarRastreoForm.setId_observatorio(id_observatory);
+                insertarRastreoForm.setId_observatorio(idObservatory);
                 insertarRastreoForm.setInDirectory(semillaForm.isInDirectory());
-                Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, id_observatory, semillaForm.getId());
+                Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
                 if (idCrawler == -1) {
                     insertarRastreoForm.setActive(semillaForm.isActiva());
                     RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
@@ -1429,21 +1424,21 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String id_observatory) throws Exception {
+    private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String idObservatory) throws Exception {
         for (SemillaForm semillaForm : seeds) {
             //Desactivamos los rastreos de las semilla sque han sido desasignadas al observatorio
-            Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, Long.parseLong(id_observatory), semillaForm.getId());
+            Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, Long.parseLong(idObservatory), semillaForm.getId());
             if (idCrawler != -1) {
                 RastreoDAO.enableDisableCrawler(c, idCrawler, false);
             }
         }
     }
 
-    private static void deleteSeedAssociation(Connection c, long id_observatorio) throws Exception {
+    private static void deleteSeedAssociation(Connection c, long idObservatorio) throws Exception {
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?");
-            ps.setLong(1, id_observatorio);
+            ps.setLong(1, idObservatorio);
             ps.executeUpdate();
         } catch (Exception e) {
             try {
@@ -1482,8 +1477,7 @@ public final class ObservatorioDAO {
         }
     }
 
-    public static Map<Long, Date> getObservatoryExecutionIds(Connection c, long observatory_id, long execution_id, long cartridge_id) throws SQLException {
-
+    public static Map<Long, Date> getObservatoryExecutionIds(Connection c, long observatoryId, long executionId, long cartridgeId) throws SQLException {
         Map<Long, Date> observatoryExecutionIdsList = new HashMap<Long, Date>();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1494,9 +1488,9 @@ public final class ObservatorioDAO {
             ps = c.prepareStatement("SELECT id,fecha FROM observatorios_realizados" +
                     " WHERE id_observatorio = ? AND id_cartucho = ? AND fecha <= (SELECT fecha FROM observatorios_realizados WHERE id = ?)" +
                     " ORDER BY fecha DESC LIMIT ?;");
-            ps.setLong(1, observatory_id);
-            ps.setLong(2, cartridge_id);
-            ps.setLong(3, execution_id);
+            ps.setLong(1, observatoryId);
+            ps.setLong(2, cartridgeId);
+            ps.setLong(3, executionId);
             ps.setInt(4, Integer.parseInt(limit));
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -1528,6 +1522,7 @@ public final class ObservatorioDAO {
                 return rs.getLong("id_rastreo");
             }
         } catch (SQLException e) {
+            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DAOUtils.closeQueries(ps, null);
@@ -1568,6 +1563,7 @@ public final class ObservatorioDAO {
                 idCrawlerList.add(rs.getLong("id_rastreo"));
             }
         } catch (SQLException e) {
+            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DAOUtils.closeQueries(ps, rs);
@@ -1591,6 +1587,7 @@ public final class ObservatorioDAO {
                 idCrawlerList.add(rs.getLong("id_rastreo"));
             }
         } catch (SQLException e) {
+            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DAOUtils.closeQueries(ps, rs);
@@ -1616,7 +1613,7 @@ public final class ObservatorioDAO {
         }
     }
 
-    public static long getCartridgeFromExecutedObservatoryId(Connection c, Long observatory_id) throws Exception {
+    public static long getCartridgeFromExecutedObservatoryId(Connection c, Long observatoryId) throws Exception {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1624,7 +1621,7 @@ public final class ObservatorioDAO {
         try {
 
             ps = c.prepareStatement("SELECT id_cartucho FROM rastreos_realizados WHERE id = ?");
-            ps.setLong(1, observatory_id);
+            ps.setLong(1, observatoryId);
 
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -1632,6 +1629,7 @@ public final class ObservatorioDAO {
             }
 
         } catch (Exception e) {
+            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DAOUtils.closeQueries(ps, rs);
@@ -1639,7 +1637,7 @@ public final class ObservatorioDAO {
         return 0;
     }
 
-    public static List<Long> getSubsequentObservatoryExecutionIds(Connection c, Long observatory_id,
+    public static List<Long> getSubsequentObservatoryExecutionIds(Connection c, Long observatoryId,
                                                                   Long executionId, Long cartridgeId) throws Exception {
 
         List<Long> subsequentExecutionIds = new ArrayList<Long>();
@@ -1650,7 +1648,7 @@ public final class ObservatorioDAO {
 
             ps = c.prepareStatement("SELECT id FROM observatorios_realizados WHERE id_observatorio = ? AND " +
                     "id_cartucho = ? AND fecha > (SELECT fecha FROM observatorios_realizados WHERE id = ? )");
-            ps.setLong(1, observatory_id);
+            ps.setLong(1, observatoryId);
             ps.setLong(2, cartridgeId);
             ps.setLong(3, executionId);
 
@@ -1660,6 +1658,7 @@ public final class ObservatorioDAO {
             }
 
         } catch (Exception e) {
+            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DAOUtils.closeQueries(ps, rs);
@@ -1713,7 +1712,7 @@ public final class ObservatorioDAO {
 
             ps = c.prepareStatement("SELECT * FROM observatorio_categoria oc " +
                     "JOIN categorias_lista cl ON (cl.id_categoria = oc.id_categoria) " +
-                    "WHERE id_observatorio = ?");
+                    "WHERE id_observatorio = ? ORDER BY cl.nombre");
             ps.setLong(1, idObservatory);
             rs = ps.executeQuery();
 
@@ -1722,6 +1721,7 @@ public final class ObservatorioDAO {
                 CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("oc.id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
+                categoriaForm.setOrden(rs.getInt("cl.orden"));
                 results.add(categoriaForm);
             }
 
@@ -1735,24 +1735,25 @@ public final class ObservatorioDAO {
     }
 
     public static List<CategoriaForm> getExecutionObservatoryCategories(Connection c, Long idExecutionObservatory) throws SQLException {
-        List<CategoriaForm> results = new ArrayList<CategoriaForm>();
+        final List<CategoriaForm> results = new ArrayList<CategoriaForm>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
 
-            ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria FROM rastreos_realizados rr " +
+            ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " +
                     "JOIN lista l ON (l.id_lista = rr.id_lista) " +
                     "JOIN observatorio_categoria oc ON (l.id_categoria = oc.id_categoria) " +
                     "JOIN categorias_lista cl ON (oc.id_categoria = cl.id_categoria) " +
-                    "WHERE rr.id_obs_realizado = ? GROUP BY cl.id_categoria;");
+                    "WHERE rr.id_obs_realizado = ? GROUP BY cl.id_categoria ORDER BY cl.orden, cl.nombre;");
             ps.setLong(1, idExecutionObservatory);
             rs = ps.executeQuery();
 
             while (rs.next()) {
                 // return rs.getBoolean("estado");
-                CategoriaForm categoriaForm = new CategoriaForm();
+                final CategoriaForm categoriaForm = new CategoriaForm();
                 categoriaForm.setId(rs.getString("cl.id_categoria"));
                 categoriaForm.setName(rs.getString("cl.nombre"));
+                categoriaForm.setOrden(rs.getInt("cl.orden"));
                 results.add(categoriaForm);
             }
 

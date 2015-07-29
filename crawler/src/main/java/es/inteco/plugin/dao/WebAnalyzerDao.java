@@ -10,7 +10,11 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WebAnalyzerDao {
+public final class WebAnalyzerDao {
+
+    private WebAnalyzerDao() {
+    }
+
     public static List<Termino> getTerms(Connection conn) {
         List<Termino> terms = new ArrayList<Termino>();
         PreparedStatement pstmt = null;

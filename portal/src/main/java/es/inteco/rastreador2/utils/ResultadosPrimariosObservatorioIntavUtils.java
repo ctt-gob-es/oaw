@@ -51,13 +51,13 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
         }
     }
 
-    public static Map<String, Integer> getResultsByLevel(List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        Map<String, Integer> globalResult = new HashMap<String, Integer>();
+    public static Map<String, Integer> getResultsByLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
+        final Map<String, Integer> globalResult = new HashMap<String, Integer>();
         globalResult.put(Constants.OBS_NV, 0);
         globalResult.put(Constants.OBS_A, 0);
         globalResult.put(Constants.OBS_AA, 0);
 
-        Map<String, List<ObservatoryEvaluationForm>> tempResult = ResultadosAnonimosObservatorioIntavUtils.getPagesByType(observatoryEvaluationList);
+        final Map<String, List<ObservatoryEvaluationForm>> tempResult = ResultadosAnonimosObservatorioIntavUtils.getPagesByType(observatoryEvaluationList);
         for (Map.Entry<String, List<ObservatoryEvaluationForm>> tempResultEntry : tempResult.entrySet()) {
             globalResult.put(tempResultEntry.getKey(), tempResultEntry.getValue().size());
         }

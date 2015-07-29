@@ -190,6 +190,9 @@ public interface Constants {
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION = "1.1.2";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION = "1.1.3";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION = "1.1.4";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION = "1.1.5";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION = "1.1.6";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION = "1.1.7";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION = "1.2.1";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION = "1.2.2";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION = "1.2.3";
@@ -200,6 +203,9 @@ public interface Constants {
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION = "2.1.2";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION = "2.1.3";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION = "2.1.4";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION = "2.1.5";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION = "2.1.6";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION = "2.1.7";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION = "2.2.1";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION = "2.2.2";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION = "2.2.3";
@@ -233,6 +239,9 @@ public interface Constants {
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112 = "evolutionDataList112";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113 = "evolutionDataList113";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114 = "evolutionDataList114";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115 = "evolutionDataList115";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116 = "evolutionDataList116";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117 = "evolutionDataList117";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121 = "evolutionDataList121";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122 = "evolutionDataList122";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123 = "evolutionDataList123";
@@ -243,6 +252,9 @@ public interface Constants {
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212 = "evolutionDataList212";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213 = "evolutionDataList213";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214 = "evolutionDataList214";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215 = "evolutionDataList215";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216 = "evolutionDataList216";
+    public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217 = "evolutionDataList217";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221 = "evolutionDataList221";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222 = "evolutionDataList222";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223 = "evolutionDataList223";
@@ -569,6 +581,7 @@ public interface Constants {
     public static final String MENU_CLIENT = "menuClient";
     public static final String MENU_CARTRIDGES = "menuCartridges";
     public static final String MENU_INTECO_OBS = "menuObservatory";
+    public static final String MENU_SERVICIO_DIAGNOSTICO = "menuServicioDiagnostico";
     public static final String MENU_CATEGORIES = "menuCategories";
     public static final String MENU_CRAWLINGS = "menuCrawlings";
     public static final String MENU_SEEDS = "menuSeeds";
@@ -770,6 +783,7 @@ public interface Constants {
     public static final String OBS_A = "A";
     public static final String OBS_AA = "AA";
     public static final String OBS_NV = "NV";
+    public static final String OBS_PARCIAL = "PARCIAL";
     public static final String OBS_A_LABEL = "Nivel A";
     public static final String OBS_AA_LABEL = "Nivel AA";
     public static final String OBS_NV_LABEL = "No Válido";
@@ -821,7 +835,10 @@ public interface Constants {
     public static final String PARAM_CONTENT = "content";
     public static final String PARAM_IN_DIRECTORY = "inDirectory";
     public static final String EXECUTE = "execute";
-    public static final String REPORT_OBSERVATORY = "observatorio";
+    public static final String REPORT_OBSERVATORY = "observatorio-1";
+    public static final String REPORT_OBSERVATORY_1_NOBROKEN = "observatorio-1-nobroken";
+    public static final String REPORT_OBSERVATORY_2 = "observatorio-2";
+    public static final String REPORT_OBSERVATORY_2_NOBROKEN = "observatorio-2-nobroken";
     public static final String REPORT_UNE = "une";
     public static final String REPORT_OBSERVATORY_FILE = "observatorio-inteco-1-0";
     public static final String REPORT_UNE_FILE = "une-139803";

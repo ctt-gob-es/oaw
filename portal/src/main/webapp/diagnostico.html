@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+	<title>RASTREADOR WEB - Servicio de diagnóstico</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />	
+	<meta name="keywords" content="inteco,malware,rastreador" />
+    <meta name="version" content="2.0.3" />
+	<link rel="stylesheet" type="text/css" href="styles/estilo.css" /> 
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+</head>
+
+<body>
+<div id="cabeza">
+	<a href="http://www.minhap.gob.es/es-ES/Paginas/Home.aspx">
+		<img src="images/escudo.png" alt="MINHAP - Ministerio de Hacienda y Administraciones Públicas" />
+	</a>
+</div>
+<div class="language">
+			<a href="languageLogin.do?log=t&amp;lang=es">Español</a>
+			<a href="languageLogin.do?log=t&amp;lang=en">English</a>
+</div>
+	<div id="migas">
+		<p class="oculto">Esta usted en: </p> <p>Servicio de diagnóstico</p>
+	</div>
+	
+	<div id="cuerpo">
+		<div id="cIzq">&nbsp;</div>
+		<div id="contenido">
+			<div id="main">
+				<h1 class="diagnostico">Servicio de diagnóstico</h1>
+				<div id="cuerpoprincipal">
+					<div id="cajaformularios_diagnostico">
+						<form action="/oaw/basicServiceAction.do" method="post">
+                            <p>El servicio on-line de diagn&oacute;stico de la Accesibilidad web remitir&aacute; en diferido, al correo electr&oacute;nico indicado, el informe de la web o c&oacute;digo fuente analizado. Las peticiones son encoladas y procesadas progresivamente.</p>
+
+                            <p>Puede realizar el an&aacute;lisis de una p&aacute;gina web p&uacute;blica en Internet, o del c&oacute;digo fuente de una p&aacute;gina interna a la que el analizador no pueda acceder (por ejemplo una Intranet o una p&aacute;gina que requiera autenticaci&oacute;n previa mediante certificado electr&oacute;nico).</p>
+
+                            <p><strong>Nota:</strong> En caso de que rellene los campos URL y c&oacute;digo, se analizar&aacute; unicamente la URL.</p>
+                            <p>
+                                <label for="url">
+                                    <span style="font-weight: bold">URL del portal o p&aacute;gina a analizar:</span>
+                                    <br/>
+                                </label> <input id="url" name="url" size="50" type="text"/>
+                            </p>
+
+                            <p>
+                                <label for="content">
+                                    <span style="font-weight: bold">C&oacute;digo fuente a analizar:</span>
+                                    <br/>
+                                </label> <textarea cols="50" id="content" name="content" rows="10" size="30" type="text"> </textarea>
+                            </p>
+
+                            <p>
+                                <label for="correo">
+                                    <span style="font-weight: bold">Correo eletr&oacute;nico:</span>
+                                </label>
+                                <br/>
+                                <input id="correo" name="correo" size="50" type="text"/>
+                            </p>
+
+                            <fieldset style="border-bottom: #ccc 1px solid; border-left: #ccc 1px solid; margin: 0px; border-top: #ccc 1px solid; border-right: #ccc 1px solid">
+                                <legend>Opciones de rastreo</legend>
+
+                                <p>La profundidad y la amplitud determinan cuantas p&aacute;ginas se analizar&aacute;n en el informe (profundidad*amplitud) y c&oacute;mo se hace la selecci&oacute;n aleatoria de &eacute;stas. Si se desea analizar una p&aacute;gina en concreto se puede indicar su URL y especificar profundidad=1 y amplitud=1</p>
+
+                                <p>
+                                    <strong>Nota:</strong> En el an&aacute;lisis de c&oacute;digo fuente no es posible realizar un rastreo de p&aacute;ginas, por lo que en ese caso los campos de amplitud y profundidad ser&aacute;n ignorados.</p>
+
+                                <p>
+                                    <label for="profundidad">
+                                        <span style="font-weight: bold">Profundidad:</span>
+                                    </label>
+                                    <select id="profundidad" name="profundidad">
+                                        <option selected="selected" value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </p>
+
+                                <p>
+                                    <label for="amplitud">
+                                        <span style="font-weight: bold">Amplitud:</span>
+                                    </label>
+                                    <select id="amplitud" name="amplitud">
+                                        <option selected="selected" value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                </select>
+                                </p>
+
+                                <p>Si desea que la selecci&oacute;n aleatoria de p&aacute;ginas se realice dentro del &uacute;ltimo &quot;directorio&quot; (hasta la &uacute;ltima &quot;/&quot;) indicado en la URL (por ejemplo http://www.dominio.com/directorio/pagina), marque la siguiente opci&oacute;n.</p>
+
+                                <p>
+                                    <label for="inDirectory">
+                                        <input id="inDirectory" name="inDirectory" type="checkbox" value="true"/>
+                                    </label> <strong>
+                                    <label for="inDirectory">No rastrear fuera del directorio</label>
+                                </strong>
+                                </p>
+                            </fieldset>
+
+                            <p>El servicio de diagnóstico permite generar varios informes distintos:</p>
+                            <ul>
+                                <li>El informe <strong>"Observatorio UNE 2004"</strong> genera un informe conforme a la <a href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2004">metodología del Observatorio de Accesibilidad, basada en la UNE 139803:2004</a>, con el detalle de todos los errores producidos.</li>
+                                <li>El informe <strong>"Observatorio UNE 2012"</strong> genera un informe conforme a la <a href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012">metodología del Observatorio de Accesibilidad, basada en la UNE 139803:2012</a>, con el detalle de todos los errores producidos.</li>
+                                <li>Las versiones <strong>"sin enlaces rotos"</strong> permiten una ejecución más rápida del servicio de diagnóstico ya que no realizan la verificación de todos los enlaces existentes en la página analizada.</li>
+                            </ul>
+
+                            <fieldset>
+                                <legend style="font-weight: bold">Informe:</legend>
+                                <ul>
+                                    <li><input id="informe-obs-2-nobroken" name="informe" type="radio" value="observatorio-2-nobroken" checked="checked"/> <label for="informe-obs-2-nobroken">Observatorio UNE 2012 <em>(sin enlaces rotos)</em></label></li>
+                                    <li><input id="informe-obs-2" name="informe" type="radio" value="observatorio-2"/> <label for="informe-obs-2">Observatorio UNE 2012</label></li>
+                                    <li><input id="informe-obs-nobroken" name="informe" type="radio" value="observatorio-1-nobroken"/> <label for="informe-obs-nobroken">Observatorio UNE 2004 <em>(sin enlaces rotos)</em></label></li>
+                                    <li><input id="informe-obs" name="informe" type="radio" value="observatorio-1"/> <label for="informe-obs">Observatorio UNE 2004</label></li>
+                                </ul>
+                            </fieldset>
+
+                            <p>
+                                <input id="usuario" name="usuario" type="hidden" value="diagnostico"/> <input name="submit" type="submit" value="Solicitar informe"/>
+                            </p>
+                        </form>
+<script type="text/javascript">
+var userr=document.getElementById("usuario");
+userr.value=readCookie('Jesi_Template_Username');
+</script>	
+					</div><!-- fin cajaformularios_login -->
+				</div><!-- fin CUERPO PRINCIPAL -->
+			</div>
+		</div>
+	</div>  
+
+<!-- Pie -->
+	<div id="pie">
+		<div id="pIzq">&nbsp;</div>
+		<div id="creditos">
+			Copyright © 2014 - <span class="negrita"> Ministerio de Hacienda y Administraciones Públicas</span>
+		</div>
+	</div>
+</body>
+
+</html>

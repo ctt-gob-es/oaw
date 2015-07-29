@@ -50,8 +50,8 @@ public class EliminarRastreoAction extends Action {
                 Connection con = null;
                 String confeli = request.getParameter(Constants.CONFIRMACION);
                 try {
-                    c = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.system"));
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    c = DataBaseManager.getConnection();
+                    con = DataBaseManager.getConnection();
 
                     String user = (String) request.getSession().getAttribute(Constants.USER);
                     long idRastreo = 0;

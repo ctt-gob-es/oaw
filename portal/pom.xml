@@ -3,15 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>portal</artifactId>
-    <version>1.0</version>
+    <version>2.0.4</version>
     <packaging>war</packaging>
 
     <name>oaw-portal</name>
 
+    <properties>
+          <oaw.version>2.0.4</oaw.version>
+    </properties>
+
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>1.0</version>
+        <version>2.0.4</version>
         <relativePath>../oaw/pom.xml</relativePath>
     </parent>
 
@@ -25,6 +29,7 @@
                     <include>*</include>
                     <include>checks/*</include>
                     <include>guidelines/*</include>
+                    <include>languages/**</include>
                 </includes>
             </resource>
             <resource>
@@ -43,16 +48,16 @@
                     hay que usar ruta absoluta (usando la variable ${basedir}) -->
                 <targetPath>${basedir}/target/oaw/META-INF</targetPath>
             </resource>
-            <resource>
-                <directory>profiles/${profile.name}</directory>
-                <includes>
-                    <include>tiles-defs.xml</include>
-                </includes>
-                <filtering>true</filtering>
-                <!-- Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources)
-                    hay que usar ruta absoluta (usando la variable ${basedir}) -->
-                <targetPath>${basedir}/target/oaw/WEB-INF</targetPath>
-            </resource>
+            <!--<resource>-->
+                <!--<directory>profiles/${profile.name}</directory>-->
+                <!--<includes>-->
+                    <!--<include>tiles-defs.xml</include>-->
+                <!--</includes>-->
+                <!--<filtering>true</filtering>-->
+                <!--&lt;!&ndash; Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources)-->
+                    <!--hay que usar ruta absoluta (usando la variable ${basedir}) &ndash;&gt;-->
+                <!--<targetPath>${basedir}/target/oaw/WEB-INF</targetPath>-->
+            <!--</resource>-->
         </resources>
     </build>
 
@@ -60,22 +65,22 @@
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>intav-core</artifactId>
-            <version>1.0</version>
+            <version>${oaw.version}</version>
         </dependency>
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>lenox</artifactId>
-            <version>1.0</version>
+            <version>${oaw.version}</version>
         </dependency>
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>crawler</artifactId>
-            <version>1.0</version>
+            <version>${oaw.version}</version>
         </dependency>
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>multilanguage</artifactId>
-            <version>1.0</version>
+            <version>${oaw.version}</version>
         </dependency>
 
         <dependency>
@@ -103,6 +108,11 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.31</version>
         </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>3.2</version>
+        </dependency>
 
         <!-- STRUTS -->
         <!-- Es obligatorio añadir la dependencia a la versión 1.2.8 porque usa API que está eliminada en versiones posteriores -->
@@ -123,6 +133,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
+        </dependency>
+
+        <!-- Test -->
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock</artifactId>
+            <version>2.6.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

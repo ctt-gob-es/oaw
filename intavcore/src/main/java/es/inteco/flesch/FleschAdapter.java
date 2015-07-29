@@ -1,6 +1,10 @@
 package es.inteco.flesch;
 
-public class FleschAdapter {
+public final class FleschAdapter {
+
+    private FleschAdapter() {
+    }
+
     public static FleschAnalyzer getFleschAnalyzer(String language) throws Exception {
         if (language != null && language.toLowerCase().startsWith("es")) {
             return FleschAnalyzerFactory.getFleschAnalyzer(FleschAnalyzer.SPANISH);

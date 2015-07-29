@@ -142,11 +142,9 @@ public final class DAOUtils {
     }
 
     public static List<Connection> getCartridgeConnections() {
-        List<Connection> results = new ArrayList<Connection>();
+        final List<Connection> results = new ArrayList<Connection>();
 
-        PropertiesManager pmgr = new PropertiesManager();
-
-        List<String> datasources = new ArrayList<String>();
+        final List<String> datasources = new ArrayList<String>();
         datasources.add("datasource.name.intav");
         datasources.add("datasource.name.malware");
         datasources.add("datasource.name.lenox");
@@ -154,7 +152,7 @@ public final class DAOUtils {
 
         for (String datasource : datasources) {
             try {
-                Connection connection = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, datasource));
+                Connection connection = DataBaseManager.getConnection();
                 if (connection != null) {
                     results.add(connection);
                 }

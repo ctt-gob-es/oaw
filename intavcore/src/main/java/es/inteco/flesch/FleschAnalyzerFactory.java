@@ -1,6 +1,9 @@
 package es.inteco.flesch;
 
-public class FleschAnalyzerFactory {
+public final class FleschAnalyzerFactory {
+
+    private FleschAnalyzerFactory() {
+    }
 
     /**
      * Devuelve un analizador para el lenguaje pedido
@@ -12,8 +15,7 @@ public class FleschAnalyzerFactory {
     public static FleschAnalyzer getFleschAnalyzer(int language) throws FleschException {
         if (language == FleschAnalyzer.SPANISH) {
             return new FleschSpanishAnalyzer();
-        }
-        if (language == FleschAnalyzer.ENGLISH) {
+        } else if (language == FleschAnalyzer.ENGLISH) {
             return new FleschEnglishAnalyzer();
         } else {
             throw new FleschException("Analyzer not found for that language");

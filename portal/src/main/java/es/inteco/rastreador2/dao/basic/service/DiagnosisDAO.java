@@ -1,20 +1,20 @@
 package es.inteco.rastreador2.dao.basic.service;
 
+import com.opencsv.CSVWriter;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
+import java.io.StringWriter;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import java.sql.Date;
+import java.util.*;
 
 public final class DiagnosisDAO {
 
@@ -27,7 +27,7 @@ public final class DiagnosisDAO {
             ps = conn.prepareStatement("UPDATE basic_service SET status = ?, send_date = ? WHERE id = ?");
             ps.setString(1, status);
             if (status.equals(Constants.BASIC_SERVICE_STATUS_FINISHED)) {
-                ps.setTimestamp(2, new Timestamp(new Date().getTime()));
+                ps.setTimestamp(2, new Timestamp(new java.util.Date().getTime()));
             } else {
                 ps.setTimestamp(2, null);
             }
@@ -58,7 +58,7 @@ public final class DiagnosisDAO {
             ps.setString(5, bsForm.getProfundidad());
             ps.setString(6, bsForm.getAmplitud());
             ps.setString(7, bsForm.getReport());
-            ps.setTimestamp(8, new Timestamp(new Date().getTime()));
+            ps.setTimestamp(8, new Timestamp(new java.util.Date().getTime()));
             ps.setString(9, status);
             if (bsForm.getSchedulingDate() != null) {
                 ps.setTimestamp(10, new Timestamp(bsForm.getSchedulingDate().getTime()));
@@ -67,7 +67,7 @@ public final class DiagnosisDAO {
             }
             ps.setBoolean(12, bsForm.isInDirectory());
             ps.executeUpdate();
-            close(rs, ps);
+            close(null, ps);
             ps = conn.prepareStatement("SELECT max(id) FROM basic_service WHERE usr = ? AND domain = ?");
             ps.setString(1, bsForm.getUser());
             ps.setString(2, bsForm.isContentAnalysis() ? BasicServiceUtils.getTitleFromContent(bsForm.getContent()) : bsForm.getDomain());
@@ -114,6 +114,30 @@ public final class DiagnosisDAO {
         return results;
     }
 
+    public static String getBasicServiceRequestCSV(final Connection conn, final java.util.Date startDate, final java.util.Date endDate) {
+        if ( conn!=null ) {
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            try {
+                ps = conn.prepareStatement("SELECT * FROM basic_service WHERE date BETWEEN ? AND ?");
+                ps.setDate(1, new Date(startDate.getTime()));
+                ps.setDate(2, new Date(endDate.getTime()));
+                rs = ps.executeQuery();
+                Locale.setDefault(new Locale("es", "es"));
+                final StringWriter stringWriter = new StringWriter();
+                final CSVWriter writer = new CSVWriter(stringWriter, ';');
+                writer.writeAll(rs, true);
+                writer.close();
+                return stringWriter.toString();
+            } catch (Exception e) {
+                Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            } finally {
+                close(rs, ps);
+            }
+        }
+        return "";
+    }
+
     public static void deleteAnalysis(Connection conn, String entity, long idCrawler) throws Exception {
         PreparedStatement ps = null;
 
@@ -131,14 +155,13 @@ public final class DiagnosisDAO {
     }
 
     public static List<Long> getEvaluationIds(Long idCrawling) throws Exception {
-        List<Long> analysisIds = new ArrayList<Long>();
-        PropertiesManager pmgr = new PropertiesManager();
+        final List<Long> analysisIds = new ArrayList<Long>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
 
             ps = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ?");
             ps.setLong(1, idCrawling);
@@ -195,6 +218,7 @@ public final class DiagnosisDAO {
             }
             return null;
         } catch (SQLException e) {
+            Logger.putLog("Exception: ", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             close(rs, ps);

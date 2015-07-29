@@ -7,6 +7,7 @@
 <bean:parameter id="observatorio" name="observatorio"/>
 <bean:parameter id="id_observatorio" name="id_observatorio"/>
 <bean:parameter id="code" name="code"/>
+<bean:parameter id="idCartucho" name="idCartucho"/>
 
 <jsp:useBean id="paramsVolver" class="java.util.HashMap" />
 <c:set target="${paramsVolver}" property="idrastreo" value="${idrastreo}" />
@@ -17,6 +18,7 @@
 <c:set target="${paramsVolverAFC}" property="observatorio" value="${observatorio}" />
 <c:set target="${paramsVolverAFC}" property="id" value="${id}" />
 <c:set target="${paramsVolverAFC}" property="id_observatorio" value="${id_observatorio}" />
+<c:set target="${paramsVolverAFC}" property="idCartucho" value="${idCartucho}" />
 
 <html:xhtml/>
 	
@@ -27,7 +29,7 @@
 		/ <html:link forward="resultadosObservatorioSemillas" paramId="<%= Constants.OBSERVATORY_ID %>" paramName="<%= Constants.OBSERVATORY_ID %>"><bean:message key="migas.resultado.observatorio" /></html:link>
 		/ <html:link forward="resultadosObservatorioSemillasLista" name="paramsVolver"><bean:message key="migas.resultado.rastreos.realizados.observatorio" /></html:link>
 		/ <html:link forward="showTracking" name="paramsVolverAFC"><bean:message key="migas.rastreos.realizados.url.analizadas" /></html:link>
-		/ <bean:message key="migas.resultados.observatorio.puntuación" />
+		/ <bean:message key="migas.resultados.observatorio.puntuaciï¿½n" />
 	</p>
 </div>
 

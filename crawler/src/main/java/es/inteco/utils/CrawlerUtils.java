@@ -2,15 +2,16 @@ package es.inteco.utils;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.ignored.links.IgnoredLink;
-import es.inteco.crawler.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 import org.mozilla.universalchardet.UniversalDetector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
@@ -214,22 +215,6 @@ public final class CrawlerUtils {
             // found = false;
         }
 
-
-        // Si no lo hemos encontrado en las cabeceras, intentaremos buscarlo en la etiqueta <meta> correspondiente
-        /*if(!found) {
-            String regexp = "<meta.*charset=(.*?)\"";
-			Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-				
-			Matcher matcher = pattern.matcher(StringUtils.getContentAsString(markableInputStream));
-			if(matcher.find()) {
-				charset = matcher.group(1);
-				found = true;
-			}
-			
-			// Reseteamos el InputStream para poder leerlo de nuevo más tarde
-			markableInputStream.reset();
-		}*/
-
         if (!found || !isValidCharset(charset)) {
             charset = getCharsetWithUniversalDetector(markableInputStream);
             markableInputStream.reset();
@@ -271,22 +256,9 @@ public final class CrawlerUtils {
     }
 
     public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws Exception {
-        String textContent = FileUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
+        String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 
         textContent = removeHtmlComments(textContent);
-
-        // Añadimos el código de los FRAMES
-        String framesSource = CrawlerDOMUtils.getFramesSource(connection.getURL().toString(), textContent);
-        if (StringUtils.isNotEmpty(framesSource)) {
-            textContent = CrawlerDOMUtils.appendFramesSource(textContent, framesSource);
-        }
-
-        // Añadimos el código de los IFRAMES
-        try {
-            textContent = CrawlerDOMUtils.appendIframesSource(connection.getURL().toString(), textContent);
-        } catch (Exception e) {
-            Logger.putLog("Error al añadir el código fuente de los iframes", CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-        }
 
         return textContent;
     }
@@ -306,6 +278,9 @@ public final class CrawlerUtils {
     public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        if (connection instanceof HttpsURLConnection) {
+            ((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
+        }
         connection.setInstanceFollowRedirects(followRedirects);
         connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
         connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
@@ -316,6 +291,33 @@ public final class CrawlerUtils {
             connection.addRequestProperty("Referer", refererUrl);
         }
         return connection;
+    }
+
+    private static SSLSocketFactory getNaiveSSLSocketFactory() {
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return null;
+                    }
+
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            return sc.getSocketFactory();
+        } catch (Exception e) {
+            Logger.putLog("Excepción: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+        return null;
     }
 
 

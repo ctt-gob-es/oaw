@@ -26,7 +26,6 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ResultadosObservatorioAction extends Action {
@@ -219,7 +218,7 @@ public class ResultadosObservatorioAction extends Action {
 
         dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) dcrForm.getId_rastreo()));
 
-        if (dcrForm.getId_cartucho() == Integer.parseInt(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "cartridge.intav.id"))) {
+        if (CartuchoDAO.isCartuchoAccesibilidad(c, dcrForm.getId_cartucho())) {
             dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
         }
 

@@ -56,15 +56,11 @@ public class NuevaCategoriaAction extends Action {
 
                 //Comprobamos que el término usa caracteres correctos
                 ComprobadorCaracteres cc1 = new ComprobadorCaracteres(nuevaCategoriaForm.getTermino1());
-                boolean result1 = cc1.comprueba();
                 ComprobadorCaracteres cc2 = new ComprobadorCaracteres(nuevaCategoriaForm.getTermino2());
-                boolean result2 = cc2.comprueba();
                 ComprobadorCaracteres cc3 = new ComprobadorCaracteres(nuevaCategoriaForm.getTermino3());
-                boolean result3 = cc3.comprueba();
                 ComprobadorCaracteres cc4 = new ComprobadorCaracteres(nuevaCategoriaForm.getTermino4());
-                boolean result4 = cc4.comprueba();
 
-                if (!result1 || !result2 || !result3 || !result4) {
+                if (!cc1.isNombreValido() || !cc2.isNombreValido() || !cc3.isNombreValido() || !cc4.isNombreValido()) {
                     errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                     saveErrors(request, errors);
                     return mapping.findForward(Constants.VOLVER);
@@ -72,8 +68,7 @@ public class NuevaCategoriaAction extends Action {
 
                 //Comprobamos que la categoría usa caracteres correctos
                 ComprobadorCaracteres cc = new ComprobadorCaracteres(nuevaCategoriaForm.getNombre());
-                boolean result = cc.comprueba();
-                if (!result) {
+                if (!cc.isNombreValido()) {
                     errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));
                     saveErrors(request, errors);
                     return mapping.findForward(Constants.VOLVER);

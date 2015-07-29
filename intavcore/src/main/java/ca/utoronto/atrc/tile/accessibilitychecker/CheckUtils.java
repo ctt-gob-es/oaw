@@ -3,10 +3,10 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.intav.utils.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,64 +18,67 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.*;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CheckUtils {
-    public static List<Element> getSectionLink(NodeList links, String sectionRegExp) {
-        List<Element> linksFound = new ArrayList<Element>();
+public final class CheckUtils {
+
+    private CheckUtils() {
+    }
+
+    public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
+        final Set<String> includedLinks = new HashSet<String>();
+        final List<Element> linksFound = new ArrayList<Element>();
         for (int i = 0; i < links.getLength(); i++) {
-            Element link = (Element) links.item(i);
-            if (link.hasAttribute("href")) {
+            final Element link = (Element) links.item(i);
+            final String href = link.getAttribute("href").toLowerCase();
+            if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
                 if (StringUtils.isNotEmpty(link.getTextContent())) {
-                    if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp)) {
+                    if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp) && includedLinks.add(href)) {
                         linksFound.add(link);
                     }
                 }
 
                 if (link.hasAttribute("title")) {
-                    if (StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp)) {
+                    if (StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp) && includedLinks.add(href)) {
                         linksFound.add(link);
                     }
                 }
 
-                NodeList imgs = link.getElementsByTagName("img");
+                final NodeList imgs = link.getElementsByTagName("img");
                 for (int j = 0; j < imgs.getLength(); j++) {
-                    Element img = (Element) imgs.item(j);
+                    final Element img = (Element) imgs.item(j);
                     if (img.hasAttribute("alt")) {
-                        if (StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp)) {
+                        if (StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp) && includedLinks.add(href)) {
                             linksFound.add(link);
                         }
                     }
                 }
             }
         }
+
         return linksFound;
     }
 
-    public static boolean hasContact(Document document, String contactRegExp, String emailRegExp) throws Exception {
+    public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) throws Exception {
         // Texto de correo electrónico en el texto normal
-        Pattern pattern = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(getDocumentText(document));
+        final Pattern pattern = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = pattern.matcher(getDocumentText(document));
         if (matcher.find()) {
             // Hemos encontrado una dirección de correo electrónico en la página
             return true;
         }
 
         // Enlaces a la sección de contacto
-        List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
-        NodeList links = document.getElementsByTagName("a");
+        final List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
+        final NodeList links = document.getElementsByTagName("a");
 
         for (int i = 0; i < links.getLength(); i++) {
-            Element link = (Element) links.item(i);
-            String linkText = link.getTextContent().toLowerCase().trim();
-            String linkTitle = link.getAttribute("title").toLowerCase().trim();
+            final Element link = (Element) links.item(i);
+            final String linkText = link.getTextContent().toLowerCase().trim();
+            final String linkTitle = link.getAttribute("title").toLowerCase().trim();
             for (String contactText : contactTexts) {
                 if (linkText.toUpperCase().contains(contactText.toUpperCase()) || linkTitle.toUpperCase().contains(contactText.toUpperCase())) {
                     return true;
@@ -86,10 +89,10 @@ public class CheckUtils {
         return false;
     }
 
-    public static boolean hasRevisionDate(Document document, String dateRegExp) throws Exception {
+    public static boolean hasRevisionDate(final Document document, final String dateRegExp) throws Exception {
         // Texto de correo electrónico en el texto normal
-        Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(getDocumentText(document));
+        final Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher(getDocumentText(document));
 
         // Hemos encontrado una dirección de correo electrónico en la página
         return matcher.find();
@@ -107,21 +110,25 @@ public class CheckUtils {
         return documentText.toString();
     }
 
-    public static Document getRemoteDocument(String documentUrlStr, String remoteUrlStr) throws Exception {
-        HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
-        connection.setRequestProperty("referer", documentUrlStr);
-        connection.connect();
-        int responseCode = connection.getResponseCode();
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            DOMParser parser = new DOMParser(new HTMLConfiguration());
-            parser.parse(new InputSource(connection.getInputStream()));
-            return parser.getDocument();
-        } else {
+    public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws Exception {
+        try {
+            final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
+            connection.setRequestProperty("referer", documentUrlStr);
+            connection.connect();
+            final int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                final DOMParser parser = new DOMParser(new HTMLConfiguration());
+                parser.parse(new InputSource(connection.getInputStream()));
+                return parser.getDocument();
+            } else {
+                return null;
+            }
+        } catch (RuntimeException t) {
             return null;
         }
     }
 
-    public static String getElementText(Node checkedNode, boolean backward, List<String> inlineTags) {
+    public static String getElementText(Node checkedNode, boolean backward, final List<String> inlineTags) {
         String text = "";
 
         while (checkedNode != null && (StringUtils.isEmpty(text) || StringUtils.isOnlyBlanks(text))) {
@@ -152,18 +159,18 @@ public class CheckUtils {
      * @param backward
      * @return
      */
-    public static boolean isFalseBrNode(Element checkedElement, List<String> inlineTags, Pattern pattern, boolean backward) {
-        String text = getElementText(checkedElement, backward, inlineTags);
+    public static boolean isFalseBrNode(final Element checkedElement, final List<String> inlineTags, final Pattern pattern, boolean backward) {
+        final String text = getElementText(checkedElement, backward, inlineTags);
 
-        Matcher matcher = pattern.matcher(text);
+        final Matcher matcher = pattern.matcher(text);
         return matcher.find();
     }
 
-    public static String getBaseUrl(Element documentElement) {
-        NodeList bases = documentElement.getElementsByTagName("base");
+    public static String getBaseUrl(final Element documentElement) {
+        final NodeList bases = documentElement.getElementsByTagName("base");
 
         for (int i = bases.getLength() - 1; i >= 0; i--) {
-            Element base = (Element) bases.item(i);
+            final Element base = (Element) bases.item(i);
             if (base.hasAttribute("href") && StringUtils.isNotEmpty(base.getAttribute("href"))) {
                 return base.getAttribute("href");
             }
@@ -172,7 +179,7 @@ public class CheckUtils {
         return null;
     }
 
-    public static boolean isValidUrl(Element elementRoot, Node nodeNode) {
+    public static boolean isValidUrl(final Element elementRoot, final Node nodeNode) {
         URL remoteUrl = null;
         URL documentUrl = null;
         CheckedLinks checkedLinks = null;
@@ -184,8 +191,16 @@ public class CheckUtils {
                 remoteUrl = new URL(encodeUrl(nodeNode.getTextContent().trim()));
             }
 
-            PropertiesManager pmgr = new PropertiesManager();
-            List<String> allowedPorts = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "broken.links.allowed.ports").split(";"));
+            if (!remoteUrl.getProtocol().startsWith("http")) {
+                return true;
+            }
+
+            if ("jigsaw.w3.org".equals(remoteUrl.getHost()) || "validator.w3.org".equals(remoteUrl.getHost())) {
+                return true;
+            }
+
+            final PropertiesManager pmgr = new PropertiesManager();
+            final List<String> allowedPorts = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "broken.links.allowed.ports").split(";"));
 
             if (allowedPorts.contains(String.valueOf(remoteUrl.getPort()))) {
                 checkedLinks = (CheckedLinks) elementRoot.getUserData("checkedLinks");
@@ -194,16 +209,16 @@ public class CheckUtils {
                     return true;
                 } else if (checkedLinks == null ||
                         (!checkedLinks.getBrokenLinks().contains(remoteUrl.toString()) && !checkedLinks.getAvailablelinks().contains(remoteUrl.toString()))) {
-                    Logger.putLog("Verificando que existe la URL " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_INFO);
-                    HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrl.toString(), "GET", true);
+                    Logger.putLog("Verificando que existe la URL " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
+                    final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrl.toString(), "GET", true);
                     if (documentUrl != null) {
                         connection.setRequestProperty("referer", documentUrl.toString());
                     }
                     connection.connect();
-                    int responseCode = connection.getResponseCode();
+                    final int responseCode = connection.getResponseCode();
                     if (responseCode == HttpURLConnection.HTTP_NOT_FOUND) {
                         checkedLinks.getBrokenLinks().add(remoteUrl.toString());
-                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_INFO);
+                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                         return false;
                     } else {
                         if (checkedLinks != null) {
@@ -213,7 +228,7 @@ public class CheckUtils {
                     }
                 } else {
                     if (checkedLinks.getBrokenLinks().contains(remoteUrl.toString())) {
-                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_INFO);
+                        Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                         return false;
                     } else if (checkedLinks.getAvailablelinks().contains(remoteUrl.toString())) {
                         return true;
@@ -222,18 +237,21 @@ public class CheckUtils {
                     }
                 }
             }
+        } catch (UnknownHostException e) {
+            // Si no se puede conectar porque no se reconoce el Host la url no es válida
+            return false;
         } catch (Exception e) {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
+            return false;
         } finally {
             if (checkedLinks != null && remoteUrl != null) {
                 checkedLinks.getCheckedLinks().add(remoteUrl.toString());
             }
         }
-
         return true;
     }
 
-    private static boolean isAbsolute(String url) {
+    private static boolean isAbsolute(final String url) {
         return url.startsWith("http");
     }
 
@@ -247,9 +265,9 @@ public class CheckUtils {
         return path;
     }
 
-    public static boolean hasContent(Node node) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "content.tags").split(";"));
+    public static boolean hasContent(final Node node) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "content.tags").split(";"));
         if (node.getNodeType() == Node.TEXT_NODE && StringUtils.isNotEmpty(node.getTextContent()) && !StringUtils.isOnlyBlanks(node.getTextContent())) {
             return true;
         } else if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -260,7 +278,7 @@ public class CheckUtils {
         return false;
     }
 
-    private static boolean isPreviousHeader(String str1, String str2) {
+    private static boolean isPreviousHeader(final String str1, final String str2) {
         try {
             if (!str2.substring(0, 1).equalsIgnoreCase("h")) {
                 return false;
@@ -273,21 +291,21 @@ public class CheckUtils {
         return false;
     }
 
-    public static int isEmptyDescendentContent(Node nextSimbling, Element elementGiven) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> noContentTags = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
-        while (nextSimbling != null) {
-            if (!nextSimbling.getNodeName().equalsIgnoreCase(elementGiven.getNodeName()) && !isPreviousHeader(nextSimbling.getNodeName(), elementGiven.getNodeName())) {
+    public static int isEmptyDescendentContent(Node node, Element elementGiven) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> noContentTags = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
+        while (node != null) {
+            if (!node.getNodeName().equalsIgnoreCase(elementGiven.getNodeName()) && !isPreviousHeader(node.getNodeName(), elementGiven.getNodeName())) {
                 //Si tiene contenido devuelves false
-                if (nextSimbling.getNodeType() == Node.TEXT_NODE) {
-                    if (StringUtils.isNotEmpty(nextSimbling.getTextContent()) && !StringUtils.isOnlyBlanks(nextSimbling.getTextContent())) {
+                if (node.getNodeType() == Node.TEXT_NODE) {
+                    if (StringUtils.isNotEmpty(node.getTextContent()) && !StringUtils.isOnlyBlanks(node.getTextContent())) {
                         return IntavConstants.IS_NOT_EMPTY;
                     }
-                } else if (!noContentTags.contains(nextSimbling.getNodeName().toUpperCase())) {
-                    if (CheckUtils.hasContent(nextSimbling)) {
+                } else if (!noContentTags.contains(node.getNodeName().toUpperCase())) {
+                    if (CheckUtils.hasContent(node)) {
                         return IntavConstants.IS_NOT_EMPTY;
                     } else {
-                        int hasChildContent = CheckUtils.hasChildContent(nextSimbling, elementGiven);
+                        int hasChildContent = CheckUtils.hasChildContent(node, elementGiven);
                         if (hasChildContent == IntavConstants.HAS_CONTENT) {
                             return IntavConstants.IS_NOT_EMPTY;
                         } else if (hasChildContent == IntavConstants.EQUAL_HEADER_TAG) {
@@ -298,15 +316,15 @@ public class CheckUtils {
             } else {
                 return IntavConstants.EQUAL_HEADER_TAG;
             }
-            nextSimbling = nextSimbling.getNextSibling();
+            node = node.getNextSibling();
         }
         return IntavConstants.IS_EMPTY;
     }
 
-    public static int hasChildContent(Node node, Element elementGiven) {
-        NodeList nodeList = node.getChildNodes();
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
+    public static int hasChildContent(final Node node, final Element elementGiven) {
+        final NodeList nodeList = node.getChildNodes();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
         if (node.getNodeName().equalsIgnoreCase(elementGiven.getNodeName()) && isPreviousHeader(node.getNodeName(), elementGiven.getNodeName())) {
             return IntavConstants.EQUAL_HEADER_TAG;
         }
@@ -329,18 +347,18 @@ public class CheckUtils {
         return IntavConstants.HAS_NOT_CONTENT;
     }
 
-    public static ImageReader getImageReader(Element img, URL url) throws Exception {
+    public static ImageReader getImageReader(final Element img, final URL url) throws Exception {
         if (img.getUserData(IntavConstants.GIF_VERIFICATED) == null && img.getUserData(IntavConstants.GIF_READER) == null) {
             img.setUserData(IntavConstants.GIF_VERIFICATED, Boolean.TRUE, null);
 
             Logger.putLog("Descargando la imagen " + url + " para analizar su contenido", CheckUtils.class, Logger.LOG_LEVEL_INFO);
-            HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", true);
-            PropertiesManager pmgr = new PropertiesManager();
+            final HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", true);
+            final PropertiesManager pmgr = new PropertiesManager();
             connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "gif.connection.timeout")));
             connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "gif.connection.timeout")));
             ImageInputStream imageInputStream = new MemoryCacheImageInputStream(connection.getInputStream());
 
-            java.util.Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
+            final java.util.Iterator<ImageReader> readers = ImageIO.getImageReaders(imageInputStream);
             if (readers.hasNext()) {
                 ImageReader reader = readers.next();
                 reader.setInput(imageInputStream);
@@ -353,4 +371,178 @@ public class CheckUtils {
             return (ImageReader) img.getUserData(IntavConstants.GIF_READER);
         }
     }
+
+    /**
+     * Método para determinar si un enlace pertenece al mismo dominio o no que la página.
+     * Se realiza una comprobación básica sobre la sintaxis de la url. No se comprueba si mediante redirección se sale o no del dominio
+     *
+     * @param url  la url de la página
+     * @param link atributo href no vacío de un enlace (etiqueta a)
+     * @return true si el enlace link pertenece al mismo dominio que el enlace url false en caso contrario
+     */
+    public static boolean checkLinkInDomain(final String url, final String link) throws MalformedURLException {
+        String domain = new URL(url).getHost();
+        int index = domain.lastIndexOf('.');
+        if (index != -1) {
+            // Comprobamos si la url tiene dominios superiores a nivel 2
+            // (ej http://www.algo.es o sólo http://algo.es)
+            if ((index = domain.lastIndexOf('.', index - 1)) != -1) {
+                domain = domain.substring(index);
+            } else {
+                // Si la url comenzó directamente con el dominio de 2º nivel
+                // http://algo.es le anteponemos el caracter '.' para indicar
+                // comienzo de dominio
+                domain = "." + domain;
+            }
+        }
+
+        String newHost;
+        if (URI.create(link).isAbsolute()) {
+            newHost = new URL(link).getHost();
+        } else {
+            newHost = new URL(new URL(url), link).getHost();
+        }
+
+        index = newHost.lastIndexOf('.');
+
+        if (index != -1) {
+            if ((index = newHost.lastIndexOf('.', index - 1)) != -1) {
+                newHost = newHost.substring(index);
+            } else {
+                newHost = "." + newHost;
+            }
+        }
+        return newHost.equalsIgnoreCase(domain);
+    }
+
+    /**
+     * Comprueba si un documento HTML tiene declaración de conformidad de accesibilidad aplicando una serie de patrones sobre los enlaces e imagenes
+     *
+     * @param document documento HTML sobre el que buscar la declaración de conformidad de accesibilidad
+     * @return true si se ha detectado una declaración de conformidad, false en caso contrario
+     */
+    public static boolean hasConformanceLevel(final Document document) {
+        /*
+        “Nivel .* A”, “Nivel .* AA”, “Nivel .* AAA” (.* por si se incluye algún texto adicional como “Nivel de Accesibilidad AA”, “Nivel de Conformidad AA”, etc.).-->
+        Un texto con los patrones “doble A”, “triple AAA”, “prioridad X” (con x = 1, 2 o 3).
+        Iconos de conformidad del W3C identificándolos buscando patrones similares a los anteriores en su texto alternativo o, en caso de ser enlaces, reconociendo las URLs de las páginas de conformidad del W3C.
+         */
+        final NodeList enlaces = document.getElementsByTagName("a");
+        for (int i = 0; i < enlaces.getLength(); i++) {
+            final Element tag = (Element) enlaces.item(i);
+            if (tag.getAttribute("href") != null) {
+                final String href = tag.getAttribute("href");
+                if (WCAG1A.equalsIgnoreCase(href) || WCAG2A.equalsIgnoreCase(href)) {
+                    return true;
+                } else if (WCAG1AA.equalsIgnoreCase(href) || WCAG2AA.equalsIgnoreCase(href)) {
+                    return true;
+                } else if (WCAG1AAA.equalsIgnoreCase(href) || WCAG2AAA.equalsIgnoreCase(href)) {
+                    return true;
+                }
+            }
+        }
+        final NodeList images = document.getElementsByTagName("img");
+        for (int i = 0; i < images.getLength(); i++) {
+            final Element tag = (Element) images.item(i);
+
+            if (tag.getAttribute("src") != null) {
+                final String src = tag.getAttribute("src");
+                if (src.contains(SRC1AAA) || src.contains(TAW1AAA) || src.contains(TAW2AAA) || src.contains(SRC2AAA)) {
+                    return true;
+                } else if (src.contains(SRC1AA) || src.contains(TAW1AA) || src.contains(TAW2AA) || src.contains(SRC2AA)) {
+                    return true;
+                } else if (src.contains(SRC1A) || src.contains(TAW1A) || src.contains(TAW2A) || src.contains(SRC2A)) {
+                    return true;
+                }
+            }
+            if (tag.getAttribute("alt") != null) {
+                final String alt = tag.getAttribute("alt");
+                for (Pattern pattern : altA) {
+                    if (pattern.matcher(alt).find()) {
+                        return true;
+                    }
+                }
+                for (Pattern pattern : altAA) {
+                    if (pattern.matcher(alt).find()) {
+                        return true;
+                    }
+                }
+                for (Pattern pattern : altAAA) {
+                    if (pattern.matcher(alt).find()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        final String text = getDocumentText(document);
+        for (Pattern pattern : altA) {
+            if (pattern.matcher(text).find()) {
+                return true;
+            }
+        }
+        for (Pattern pattern : altAA) {
+            if (pattern.matcher(text).find()) {
+                return true;
+            }
+        }
+        for (Pattern pattern : altAAA) {
+            if (pattern.matcher(text).find()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Patrones usados para la función hasConformanceLevel
+    private static final String WCAG1A = "http://www.w3.org/WAI/WCAG1A-Conformance";
+    private static final String WCAG1AA = "http://www.w3.org/WAI/WCAG1AA-Conformance";
+    private static final String WCAG1AAA = "http://www.w3.org/WAI/WCAG1AAA-Conformance";
+
+    private static final String WCAG2A = "http://www.w3.org/WAI/WCAG2A-Conformance";
+    private static final String WCAG2AA = "http://www.w3.org/WAI/WCAG2AA-Conformance";
+    private static final String WCAG2AAA = "http://www.w3.org/WAI/WCAG2AAA-Conformance";
+
+    private static final String TAW1A = "taw_1_A.png";
+    private static final String TAW2A = "taw_2_A.png";
+    private static final String TAW1AA = "taw_1_AA.png";
+    private static final String TAW2AA = "taw_2_AA.png";
+    private static final String TAW1AAA = "taw_1_AAA.png";
+    private static final String TAW2AAA = "taw_2_AAA.png";
+
+    private static final String SRC1A = "wcag1A";
+    private static final String SRC1AA = "wcag1AA";
+    private static final String SRC1AAA = "wcag1AAA";
+
+    private static final String SRC2A = "wcag2A";
+    private static final String SRC2AA = "wcag2AA";
+    private static final String SRC2AAA = "wcag2AAA";
+
+    private static final Pattern[] altA = new Pattern[]{
+            Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+    };
+
+    private static final Pattern[] altAA = new Pattern[]{
+            Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+    };
+
+    private static final Pattern[] altAAA = new Pattern[]{
+            Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivel\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+    };
 }

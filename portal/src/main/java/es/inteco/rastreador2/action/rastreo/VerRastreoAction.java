@@ -39,7 +39,7 @@ public class VerRastreoAction extends Action {
                 Connection con = null;
                 try {
                     c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
                     String user = (String) request.getSession().getAttribute(Constants.USER);
                     long idRastreo = 0;
                     if (request.getParameter(Constants.ID_RASTREO) != null) {

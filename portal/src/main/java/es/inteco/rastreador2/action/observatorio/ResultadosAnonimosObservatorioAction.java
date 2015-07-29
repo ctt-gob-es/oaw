@@ -5,8 +5,10 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.SubirConclusionesForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.*;
 import es.inteco.utils.FileUtils;
@@ -132,13 +134,19 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         PropertiesManager pmgr = new PropertiesManager();
         String filePath = "";
         if (Integer.valueOf(request.getParameter(Constants.TYPE_OBSERVATORY)) != null) {
-            if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
-                filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.intav.files") + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
-            } else if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
-                filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.lenox.files") + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
-            } else if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
-                filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.multilanguage.files") + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
+            final Connection c = DataBaseManager.getConnection();
+            try {
+                if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(request.getParameter(Constants.TYPE_OBSERVATORY)))) {
+                    filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.intav.files") + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
+                } else if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
+                    filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.lenox.files") + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
+                } else if (request.getParameter(Constants.TYPE_OBSERVATORY).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
+                    filePath = pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.multilanguage.files") + observatory_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
+                }
+            } catch (Exception e) {
+                Logger.putLog("Error al recuperar el path de los ficheros temporales.", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             }
+            DataBaseManager.closeConnection(c);
         }
         return filePath;
     }
@@ -197,16 +205,28 @@ public class ResultadosAnonimosObservatorioAction extends Action {
     }
 
     public ActionForward getGlobalGraphic(HttpServletRequest request, ActionMapping mapping, String filePath, int observatoryType, List<CategoriaForm> categories) throws Exception {
-
         PropertiesManager pmgr = new PropertiesManager();
         filePath += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
         int have_results = 0;
-        if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
-            have_results = ResultadosAnonimosObservatorioIntavUtils.generateGlobalGraphics(request, filePath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
-        } else if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
-            have_results = ResultadosAnonimosObservatorioLenoxUtils.generateGlobalGraphics(request, filePath);
-        } else if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
-            have_results = ResultadosAnonimosObservatorioMultilanguageUtils.generateGlobalGraphics(request, filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+        final Connection c = DataBaseManager.getConnection();
+        try {
+            if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(request.getParameter(Constants.TYPE_OBSERVATORY)))) {
+                final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+                final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
+                if ("UNE-2012".equalsIgnoreCase(application)) {
+                    have_results = ResultadosAnonimosObservatorioUNE2012Utils.generateGlobalGraphics(request, filePath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                } else {
+                    have_results = ResultadosAnonimosObservatorioIntavUtils.generateGlobalGraphics(request, filePath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                }
+            } else if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
+                have_results = ResultadosAnonimosObservatorioLenoxUtils.generateGlobalGraphics(request, filePath);
+            } else if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
+                have_results = ResultadosAnonimosObservatorioMultilanguageUtils.generateGlobalGraphics(request, filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al generar los gráficos globales del Observatorio.", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+        } finally {
+            DataBaseManager.closeConnection(c);
         }
         if (have_results == Constants.OBSERVATORY_NOT_HAVE_RESULTS) {
             ActionErrors errors = new ActionErrors();
@@ -228,11 +248,16 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         PropertiesManager pmgr = new PropertiesManager();
         filePath += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + idCategory + File.separator;
         int have_results = 0;
-        if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
-            Connection c = null;
+        final Connection c = DataBaseManager.getConnection();
+        if (CartuchoDAO.isCartuchoAccesibilidad(c, observatoryType)) {
             try {
-                c = DataBaseManager.getConnection();
-                have_results = ResultadosAnonimosObservatorioIntavUtils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+                final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
+                if ("UNE-2012".equalsIgnoreCase(application)) {
+                    have_results = ResultadosAnonimosObservatorioUNE2012Utils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                } else {
+                    have_results = ResultadosAnonimosObservatorioIntavUtils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                }
             } catch (Exception e) {
                 Logger.putLog("Error al cargar la categoria del observatorio.", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
             } finally {
@@ -256,20 +281,31 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         } else {
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.SI);
         }
+        DataBaseManager.closeConnection(c);
         return mapping.findForward(Constants.OBSERVATORY_GRAPHIC_SEGMENT_FORWARD);
     }
 
-    public ActionForward getEvolutionGraphic(HttpServletRequest request, ActionMapping mapping, String filePath, int observatoryType) throws Exception {
+    public ActionForward getEvolutionGraphic(final HttpServletRequest request, final ActionMapping mapping, final String filePath, final int observatoryType) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
-        filePath += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.evolution") + File.separator;
+        final String fileEvolutionPath = filePath + pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.evolution") + File.separator;
         int have_results = 0;
-        if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
-            have_results = ResultadosAnonimosObservatorioIntavUtils.generateEvolutionGraphics(request, filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);
+        final Connection c = DataBaseManager.getConnection();
+        String forward = Constants.OBSERVATORY_GRAPHIC_EVOLUTION_FORWARD;
+        if (CartuchoDAO.isCartuchoAccesibilidad(c, observatoryType)) {
+            final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+            final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
+            if ("UNE-2012".equalsIgnoreCase(application)) {
+                have_results = ResultadosAnonimosObservatorioUNE2012Utils.generateEvolutionGraphics(request, fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);
+                forward = "getEvolutionGraphicsUNE2102";
+            } else {
+                have_results = ResultadosAnonimosObservatorioIntavUtils.generateEvolutionGraphics(request, fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);
+            }
         } else if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.lenox.id"))) {
-            have_results = ResultadosAnonimosObservatorioLenoxUtils.generateEvolutionGraphics(request, filePath);
+            have_results = ResultadosAnonimosObservatorioLenoxUtils.generateEvolutionGraphics(request, fileEvolutionPath);
         } else if (observatoryType == Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
-            ResultadosAnonimosObservatorioMultilanguageUtils.generateEvolutionGraphics(request, filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+            ResultadosAnonimosObservatorioMultilanguageUtils.generateEvolutionGraphics(request, fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
         }
+        DataBaseManager.closeConnection(c);
 
         if (have_results == Constants.OBSERVATORY_NOT_HAVE_RESULTS) {
             ActionErrors errors = new ActionErrors();
@@ -284,20 +320,19 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         } else {
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.SI);
         }
-        return mapping.findForward(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_FORWARD);
+        return mapping.findForward(forward);
     }
 
     public ActionForward getFulfilledObservatories(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
-        //Long observatoryId = Long.valueOf(request.getParameter(Constants.OBSERVATORY_ID));
-        Long observatoryId = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+        final Long observatoryId = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 
         Connection c = null;
         //Para mostrar todos los Rastreos del Sistema
         try {
             c = DataBaseManager.getConnection();
 
-            int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
-            int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+            final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
+            final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 
             request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null));
             request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));

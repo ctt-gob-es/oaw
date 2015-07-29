@@ -13,6 +13,8 @@ public class CategoriaForm extends ValidatorForm {
     private String name;
     private FormFile fileSeeds;
     private List<SemillaForm> seeds;
+    private int orden;
+
 
     public String getId() {
         return id;
@@ -44,6 +46,14 @@ public class CategoriaForm extends ValidatorForm {
 
     public void setSeeds(List<SemillaForm> seeds) {
         this.seeds = seeds;
+    }
+
+    public int getOrden() {
+        return orden;
+    }
+
+    public void setOrden(int orden) {
+        this.orden = orden;
     }
 
     @Override

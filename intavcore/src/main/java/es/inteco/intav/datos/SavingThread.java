@@ -3,6 +3,7 @@ package es.inteco.intav.datos;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.comun.Incidencia;
+import es.inteco.plugin.dao.DataBaseManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,7 +22,7 @@ public class SavingThread extends Thread {
         PreparedStatement pstmt = null;
         try {
             synchronized (this) {
-                conn = DBConnect.connect();
+                conn = DataBaseManager.getConnection();
 
                 conn.setAutoCommit(false);
 
@@ -52,19 +53,13 @@ public class SavingThread extends Thread {
             Logger.putLog("Exception: ", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
         } finally {
             try {
-                if (conn != null) {
-                    DBConnect.disconnect(conn);
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error al cerrar la conexión a base de datos", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-            try {
                 if (pstmt != null) {
                     pstmt.close();
                 }
             } catch (Exception e) {
                 Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, e);
             }
+            DataBaseManager.closeConnection(conn);
         }
     }
 }

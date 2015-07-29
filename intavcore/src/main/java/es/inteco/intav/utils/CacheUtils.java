@@ -7,8 +7,11 @@ import com.opensymphony.oscache.web.filter.ExpiresRefreshPolicy;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.properties.PropertiesManager;
 
-public class CacheUtils {
+public final class CacheUtils {
     private static GeneralCacheAdministrator gca = null;
+
+    private CacheUtils() {
+    }
 
     public static GeneralCacheAdministrator getCacheAdministratorInstance() {
         if (gca == null) {

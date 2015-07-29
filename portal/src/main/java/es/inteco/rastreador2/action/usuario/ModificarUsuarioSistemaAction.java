@@ -130,7 +130,7 @@ public class ModificarUsuarioSistemaAction extends Action {
                 try {
                     //Comprobamos que el nombre usa caracteres correctos
                     ComprobadorCaracteres cc = new ComprobadorCaracteres(modificarUsuarioSistemaForm.getNombre());
-                    boolean result = cc.comprueba();
+                    boolean result = cc.isNombreValido();
                     if (!result) {
                         Logger.putLog("CARACTERES ILEGALES", ModificarUsuarioSistemaAction.class, Logger.LOG_LEVEL_INFO);
                         errors.add("usuarioDuplicado", new ActionMessage("caracteres.prohibidos"));

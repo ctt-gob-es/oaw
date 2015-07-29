@@ -13,15 +13,15 @@ public class DeleteTempDirServlet extends GenericServlet {
     private Scheduler scheduler;
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(final ServletConfig config) throws ServletException {
         super.init(config);
 
         try {
-            SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+            final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
             scheduler = schedulerFactory.getScheduler();
 
-            CronTrigger cronTrigger = new CronTrigger("DeleteFilesJob", "DeleteFilesJobGroup", getInitParameter("cronExpression"));
-            JobDetail jobDetail = new JobDetail("DeleteFilesJob", "DeleteFilesJobGroup", DeleteTempDirJob.class);
+            final CronTrigger cronTrigger = new CronTrigger("DeleteFilesJob", "DeleteFilesJobGroup", getInitParameter("cronExpression"));
+            final JobDetail jobDetail = new JobDetail("DeleteFilesJob", "DeleteFilesJobGroup", DeleteTempDirJob.class);
             scheduler.scheduleJob(jobDetail, cronTrigger);
             scheduler.start();
             Logger.putLog("Se ha programado el job para el borrado de directorios temporales", DeleteTempDirServlet.class, Logger.LOG_LEVEL_INFO);
@@ -35,15 +35,13 @@ public class DeleteTempDirServlet extends GenericServlet {
         try {
             scheduler.shutdown();
         } catch (SchedulerException e) {
-            Logger.putLog("Exception intentado finalizar los Jobs", DeleteTempDirServlet.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("FALLO al finalizar los Jobs (puede producir fallos de memoria)", DeleteTempDirServlet.class, Logger.LOG_LEVEL_ERROR, e);
         }
         super.destroy();
     }
 
     @Override
-    public void service(ServletRequest request, ServletResponse response)
-            throws ServletException, IOException {
-
+    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
     }
 
 }

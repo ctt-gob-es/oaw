@@ -26,8 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.Locale;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class AnalysisFromCrawlerAction extends Action {
 
     @Override
@@ -57,9 +55,8 @@ public class AnalysisFromCrawlerAction extends Action {
         Connection c = null;
         Connection conn = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
-            conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            conn = DataBaseManager.getConnection();
             // Inicializamos el evaluador
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();
@@ -227,8 +224,7 @@ public class AnalysisFromCrawlerAction extends Action {
             if (request.getParameter(Constants.CODE) != null) {
                 long id = Long.parseLong(request.getParameter(Constants.CODE));
 
-                PropertiesManager pmgr = new PropertiesManager();
-                conn = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                conn = DataBaseManager.getConnection();
                 Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
                 CrawlerUtils.returnText(new String(analysis.getSource().getBytes(CrawlerUtils.getCharset(analysis.getSource()))), response, true);

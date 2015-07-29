@@ -15,6 +15,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -132,10 +133,10 @@ public final class AnonymousResultExportPdfSection4 {
 
         //Los textos variables para esta seccion ya no tienen mucho sentido
         //AnonymousResultExportPdfVariableText.createVTextS43(request, res, section);
-
+        final MessageResources resources = CrawlerUtils.getResources(request);
         for (CategoriaForm category : categories) {
-            PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.tableTitle", category.getName()), section, 300);
-            java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(request, res.get(category));
+            PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.43.tableTitle", category.getName()), section, 300);
+            java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(resources, res.get(category));
             java.util.List<String> headers = new ArrayList<String>();
             headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.level"));
             headers.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.resT"));

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guideline>
+    <type>observatory</type>
+    <title abbr="observatorio-une-2012" long-name="Pautas de verificación del Observatorio v2.0">Observatorio MINHAP 2.0</title>
+    <date>2014-09-18</date>
+    <status>Observatorio MINHAP v2.0</status>
+    <earlid>URL donde están definidas las pautas</earlid>
+    <preamble>Comentario sobre el Observatorio</preamble>
+
+    <!-- Accesibilidad del contenido -->
+    <group>
+        <name>Accesibilidad del contenido</name>
+
+        <!-- Nivel A -->
+        <suitability>
+            <name>A</name>
+            <subgroup aspect="observatory.aspect.alternatives">
+                <name>minhap.observatory.2_0.subgroup.1.1.1</name>
+                <checks>
+                    <!-- Imágenes con atributo alt -->
+                    <check id="1"/>
+                    <!-- Elementos area con atributo alt (puede ser vacío) -->
+                    <check id="64"/>
+                    <!-- Imágenes con atributo alt sospechoso -->
+                    <check id="100"/>
+                    <!-- Elementos area pinchables con atributo alt no vacío-->
+                    <check id="157"/>
+                    <!-- Longdesc válido** Mod check original-->
+                    <check id="278"/>
+                    <!-- Input type image con alternativas -->
+                    <check id="306"/>
+                    <!-- Imágenes decorativas (alt blank) sin atributo title -->
+                    <check id="413"/>
+                    <!-- Applets sin alternativas (atributo alt o descripción en el cuerpo applet) -->
+                    <check id="414"/>
+                    <!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, role=presentation) -->
+                    <check id="426"/>
+                </checks>
+            </subgroup>
+            <subgroup aspect="observatory.aspect.structure">
+                <!-- Uso de encabezados -->
+                <name>minhap.observatory.2_0.subgroup.1.1.2</name>
+                <checks>
+                    <!-- Anidación correcta de encabezados -->
+                    <check id="37"/>
+                    <!-- Existencia de encabezado H1 -->
+                    <check id="421" onlyWarning="true"/>
+                    <!-- Existencia de encabezados -->
+                    <check id="38"/>
+                    <!-- Encabezados vacios -->
+                    <check id="395"/>
+                    <!-- Encabezados mismo nivel con mismo texto -->
+                    <!--<check id="141"/>-->
+                    <!-- Encabezados mismo nivel seguidos sin contenido-->
+                    <check id="422"/>
+                    <!-- Más de un encabezado si hay más de 15 párrafos -->
+                    <check id="433"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.structure">
+                <!-- Uso de listas -->
+                <name>minhap.observatory.2_0.subgroup.1.1.3</name>
+                <checks>
+                    <!-- Listas ordenadas mal creadas con elementos p -->
+                    <check id="101" noExecutedMark="true"/>
+                    <!-- Listas no ordenadas mal creadas con elementos p-->
+                    <check id="120" noExecutedMark="true"/>
+                    <!-- Listas no ordeandas mal creadas con elementos br -->
+                    <check id="121" noExecutedMark="true"/>
+                    <!-- Listas ordenadas mal creadas con elementos br -->
+                    <check id="410" noExecutedMark="true"/>
+                    <!-- Elemento de lista (li) fuera de contenedor (ul, ol) -->
+                    <check id="311"/>
+                    <!-- Lista de definicion (dl) mal construida -->
+                    <check id="427"/>
+                    <!-- Elemento de lista de definicion (dt) fuera de contenedor (dl) -->
+                    <check id="313"/>
+                    <!-- Elemento de lista de definicion (dd) fuera de contenedor (dl) -->
+                    <check id="314"/>
+                    <!-- Lista anidada directamente en lista ordenada (ol), no dentro de li -->
+                    <check id="317"/>
+                    <!-- Lista anidada directamente en lista no ordenada (ul), no dentro de li -->
+                    <check id="318"/>
+                    <!-- Lista ordenada mal construida -->
+                    <check id="319"/>
+                    <!-- Lista no ordenada mal construida-->
+                    <check id="320"/>
+                    <!-- Lista ordenada vacía (sin ítems li) -->
+                    <check id="423"/>
+                    <!-- Lista no ordenada vacía (sin ítems li) -->
+                    <check id="424"/>
+                    <!-- Lista de definición ordenada vacía (sin ítems dt, dd) -->
+                    <check id="425"/>
+                    <!-- Lista ordenada simulada con lista no ordenada -->
+                    <check id="416"/>
+                    <!-- 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
+                    <check id="445"/>
+                    <!-- 3 o más líneas separadas por BR que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).-->
+                    <check id="459"/>
+                    <!-- Tablas formadas por una única columna y 3 o más filas y que las celdas no superen los X caracteres (Heurístico X=150) -->
+                    <check id="431"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.structure">
+                <!-- Uso de Tablas -->
+                <name>minhap.observatory.2_0.subgroup.1.1.4</name>
+                <checks>
+                    <!-- Tabla de datos sin encabezados -->
+                    <check id="7" noExecutedMark="true"/>
+                    <!-- Tabla de datos sin encabezados -->
+                    <check id="86"/>
+                    <!-- Encabezamientos de tabla correctos -->
+                    <check id="116"/>
+                    <!-- Todas las tablas de datos contienen un elemento caption a menos que la tabla esté identificada en el documento. -->
+                    <check id="151"/>
+                    <!-- Celdas únicas que ocupan el ancho completo de la tabla para simular encabezamientos -->
+                    <check id="156"/>
+                    <!-- Ningún th está vacío. -->
+                    <check id="159"/>
+                    <!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar las celdas. -->
+                    <check id="245"/>
+                    <!--Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.-->
+                    <check id="418"/>
+                    <!-- Summary y Caption diferentes. -->
+                    <check id="243"/>
+                    <!-- Uso del atributo scope (validando valores) -->
+                    <check id="415"/>
+                    <!-- Uso de encabezados como caption de una tabla -->
+                    <check id="464"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.structure">
+                <!-- Agrupación estructural -->
+                <name>minhap.observatory.2_0.subgroup.1.1.5</name>
+                <checks>
+                    <!-- Utilizar br para simular párrafos -->
+                    <!-- TODO: Comprobar que se buscan dos o más br SEGUIDOS-->
+                    <check id="16"/>
+                    <!-- Utilizar div para simular un párrafo -->
+                    <check id="33"/>
+                    <!-- No se utilizan más de 10 brs en la página -->
+                    <check id="436"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.presentation">
+                <!-- Separación contenido y presentación -->
+                <name>minhap.observatory.2_0.subgroup.1.1.6</name>
+                <checks>
+                    <!-- Utilizar en tablas de maquetación elementos de tablas de datos (th, caption, summary,...) -->
+                    <!-- TODO: Comprobar todas las opciones descritas en la metodología -->
+                    <check id="45"/>
+                    <!-- Uso de elementos HTML de presentación desaconsejados (basefont, font, center, s, strike, u) -->
+                    <check id="345" noExecutedMark="true"/>
+                    <!-- Contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres alfanuméricos (Heurístico X=2).-->
+                    <check id="447"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.general">
+                <!-- Identificación del idioma principal -->
+                <name>minhap.observatory.2_0.subgroup.1.1.7</name>
+                <checks>
+                    <!-- Documento con atributos lang/xml:lang adecuados al tipo de documento (html/xhtml) -->
+                    <check id="48"/>
+                    <check id="49" relatedWith="48"/>
+                    <!-- Comprobar que el idioma de la página coincide con el declarado -->
+                    <check id="442"/>
+                </checks>
+            </subgroup>
+        </suitability>
+
+        <!-- Nivel AA -->
+        <suitability>
+            <name>AA</name>
+
+            <subgroup aspect="observatory.aspect.general">
+                <!-- Identificación de cambios de idioma -->
+                <name>minhap.observatory.2_0.subgroup.1.2.1</name>
+                <checks>
+                    <!-- Elementos (*todos*) con código de idioma no válido -->
+                    <check id="161"/>
+                    <!-- Cambios de idioma más comunes (enlaces de cambio de idioma) -->
+                    <check id="93"/>
+                    <!-- Términos en otros idiomas -->
+                    <check id="460"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.presentation">
+                <!-- Contraste mínimo -->
+                <name>minhap.observatory.2_0.subgroup.1.2.2</name>
+                <checks>
+                    <!-- Se verifica que las combinaciones de color de primer plano y de color de fondo en una misma regla de las hojas de estilo tiene el contraste suficiente. -->
+                    <check id="448" />
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.general" type="goodpractice">
+                <!-- Sección de accesibilidad -->
+                <name>minhap.observatory.2_0.subgroup.1.2.3</name>
+                <checks>
+                    <check id="126"/>
+                    <check id="148" onlyWarning="true" relatedWith="126" noExecutedMark="true"/>
+                    <check id="149" onlyWarning="true" relatedWith="126" noExecutedMark="true"/>
+                    <!-- Se comprueba si en la página de accesibilidad se proporciona información sobre el nivel de conformidad.-->
+                    <check id="463" onlyWarning="true" relatedWith="126" noExecutedMark="true"/>
+                </checks>
+            </subgroup>
+        </suitability>
+    </group>
+
+    <!-- Accesibilidad de la interacción -->
+    <group>
+        <name>Accesibilidad de la interacción</name>
+
+        <!-- Nivel A-->
+        <suitability>
+        <name>A</name>
+            <subgroup aspect="observatory.aspect.navigation">
+            <!-- Navegación con Javascript accesible -->
+            <name>minhap.observatory.2_0.subgroup.2.1.1</name>
+                <checks>
+                    <!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
+                    <check id="160"/>
+                    <!-- Elementos con “onclick” u “onkeypress” son nativos de interacción (enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado -->
+                    <check id="432"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.navigation">
+                <!-- Control del usuario -->
+                <name>minhap.observatory.2_0.subgroup.2.1.2</name>
+                <checks>
+                    <!-- Se verifica que no se use la etiqueta "blink" o “marquee” -->
+                    <check id="130"/>
+                    <!-- No se debe redigir automáticamente con el elemento "meta" y el atributo "http-equiv" (con tiempo > 0) -->
+                    <check id="71"/>
+                    <!-- No se refresca la página con el elemento "meta" y el atributo "http-equiv" (independientemente del tiempo definido) -->
+                    <check id="72"/>
+                    <!-- No se emplea la propiedad de CSS 'text-decoration: blink' -->
+                    <check id="449"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.structure">
+                <!-- Formularios -->
+                <name>minhap.observatory.2_0.subgroup.2.1.3</name>
+                <checks>
+                    <!-- Nota: Se considera etiqueta asociada a <label> (con texto) asociado explícitamente; “aria-labelledby” con un “id” correspondiente a un elemento con contenido textual; “aria-label” o “títle” con contenido. -->
+                    <!-- Elementos input tienen una etiqueta explícitamente asociada -->
+                    <check id="57"/>
+                    <!-- Elementos label no asociados controla que exista for con un id válido (a un control) -->
+                    <check id="67"/>
+                    <!-- Elementos select tienen una etiqueta explícitamente asociada -->
+                    <check id="91"/>
+                    <!-- Elementos textarea tienen una etiqueta explícitamente asociada -->
+                    <check id="95"/>
+                    <!-- Se verifica que todos los elementos “label” que están asociados explícitamente y son la única etiqueta asociada a un control (título, aria-label, etc.) no están ocultos con CSS.-->
+                    <check id="461"/>
+                    <!-- Tres o más de botones de radio y/o casillas de verificación agrupadas (mismo name) se agrupan bajo un fieldset.-->
+                    <check id="443"/>
+                    <!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
+                    <check id="429"/>
+                    <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
+                    <check id="430"/>
+                    <!-- Se verifica que  los “fieldsets” tengan un único elemento “legend” con contenido (primer elemento semántico hijo).-->
+                    <check id="444"/>
+                    <!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->
+                    <check id="406"/>
+                    <!-- Elementos select con opciones que comiencen por sucesiones de 3 o más caracteres repetidos no alfanuméricos (P. ej: “___”, “***”, “......”, etc.).-->
+                    <check id="417"/>
+                    <!-- Elementos optgroup tienen un atributo “label” con contenido -->
+                    <check id="407"/>
+                    <!-- Se identifican los campos obligatorios en los formularios con más de N campos de introducción de texto (se busca la presencia de los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes dentro del formulario <form>). (N = 4) -->
+                    <check id="446"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.general">
+                <!-- Títulos de página y marcos descriptivos -->
+                <name>minhap.observatory.2_0.subgroup.2.1.4</name>
+                <checks>
+                    <!-- Existencia de title -->
+                    <check id="50"/>
+                    <!-- Title NO vacío -->
+                    <check id="51"/>
+                    <!-- Title sospechoso (no title, sin título...) -->
+                    <check id="53"/>
+                    <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
+                    <check id="32" onlyWarning="true"/>
+                    <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
+                    <check id="437" onlyWarning="true"/>
+                    <!-- Frames tienen atributo title no vacío ni sospechoso -->
+                    <check id="31" relatedWith="32"/>
+                    <!-- Iframes tienen atributo title no vacío ni sospechoso -->
+                    <check id="295" relatedWith="437"/>
+                    <!-- Comprobar titulos distintos entre la muestra -->
+                    <check id="462"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.navigation">
+                <!-- Enlaces descriptivos -->
+                <name>minhap.observatory.2_0.subgroup.2.1.5</name>
+                <checks>
+                    <!-- Enlaces con solo una imagen que no tenga atributo alt -->
+                    <check id="69"/>
+                    <!-- Enlaces con textos demasiado largos, excepto si el texto del enlace es el nombre de una ley -->
+                    <check id="181"/>
+                    <!-- Enlaces no descriptivos (pincha aqui, haz click...) -->
+                    <check id="79"/>
+                    <!-- Enlace con texto vacío (se comprueba que haya imagen con alt (pero no si es vacio) -->
+                    <check id="142"/>
+                    <!-- Enlace de texto con imagen que repite el texto del enlace como alternativa -->
+                    <check id="428"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.navigation">
+                <!-- Cambios de contexto -->
+                <!-- Se entiende por cambio de contexto una nueva página, ventana, pestaña o aplicación, o cambio de foco (window.location, window.history, window.open, window.focus, etc.).-->
+                <name>minhap.observatory.2_0.subgroup.2.1.6</name>
+                <checks>
+                    <!-- No se produce ningún cambio de contexto en los eventos “onfocus” u “onblur” -->
+                    <check id="452" />
+                    <!-- No se produce ningún cambio de contexto nada más cargarse la página (onload) -->
+                    <check id="453" />
+                    <!-- No se produce ningún cambio de contexto en el evento “onchange” de los elementos “select” -->
+                    <check id="454" />
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.general">
+                <!-- Compatibilidad -->
+                <name>minhap.observatory.2_0.subgroup.2.1.7</name>
+                <checks>
+                    <!-- Documento tenga un DTD válido -->
+                    <check id="323"/>
+                    <!--&lt;!&ndash; Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) &ndash;&gt;
+                    <check id="440"/>
+                    &lt;!&ndash; Se verifica que no se repite el mismo atributo con diferente valor en el mismo elemento &ndash;&gt;
+                    <check id="441"/>
+                    &lt;!&ndash; Se verifica que los valores de los atributos están entrecomillados &ndash;&gt;
+                    <check id="439"/>
+                    &lt;!&ndash; Se verifica que el valor de los atributos que deben tener un valor único por página (“id”, “accesskey”) efectivamente tienen un valor único &ndash;&gt;
+                    <check id="438"/>-->
+
+                    <!-- Se verifica que el código CSS es parseable (bien formado, sin errores de sintaxis) -->
+                    <check id="450"/>
+                </checks>
+            </subgroup>
+        </suitability>
+
+        <!-- Nivel AA -->
+        <suitability>
+            <name>AA</name>
+            <subgroup aspect="observatory.aspect.navigation">
+                <!-- Multiples Ways -->
+                <name>minhap.observatory.2_0.subgroup.2.2.1</name>
+                <checks>
+                    <!-- Se proporciona un mapa del sitio o una función de búsqueda dentro del sitio web. -->
+                    <check id="419"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.general">
+                <!-- Foco Visible -->
+                <name>minhap.observatory.2_0.subgroup.2.2.2</name>
+                <checks>
+                    <!-- Se verifica que en las hojas de estilo no se emplee la propiedad “outline” con valor “0” o “none” en elementos de interacción.-->
+                    <check id="451"/>
+                    <!-- Se verifica que no se estén empleando más de 3 atributos “tabindex” en la página (0 - PASA) -->
+                    <check id="434" onlyWarning="true"/>
+                    <!-- Se verifica que no se estén empleando más de 10 atributos “tabindex” en la página (0- FALLA)-->
+                    <check id="435" relatedWith="434"/>
+                </checks>
+            </subgroup>
+
+            <subgroup aspect="observatory.aspect.navigation">
+                <!-- Navegación Consistente -->
+                <name>minhap.observatory.2_0.subgroup.2.2.3</name>
+                <checks>
+                    <!-- NO se analizan enlaces rotos -->
+                    <!-- Enlaces adyacentes al mismo recurso deben estar combinados -->
+                    <check id="180"/>
+                </checks>
+            </subgroup>
+        </suitability>
+    </group>
+
+</guideline>

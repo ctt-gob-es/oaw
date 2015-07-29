@@ -8,6 +8,7 @@ import es.inteco.rastreador2.actionform.cuentausuario.CargarCuentasUsuarioForm;
 import es.inteco.rastreador2.actionform.cuentausuario.NuevaCuentaUsuarioForm;
 import es.inteco.rastreador2.actionform.cuentausuario.RastreoClienteForm;
 import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
@@ -20,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 public class RastreoClienteAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
@@ -29,7 +28,7 @@ public class RastreoClienteAction extends Action {
         try {
             if (CrawlerUtils.hasAccess(request, "new.crawler")) {
                 if (isCancelled(request)) {
-                    return (mapping.findForward(Constants.VOLVER_CARGA));
+                    return mapping.findForward(Constants.VOLVER_CARGA);
                 }
 
                 PropertiesManager pmgr = new PropertiesManager();
@@ -41,7 +40,7 @@ public class RastreoClienteAction extends Action {
                 Connection con = null;
                 try {
                     c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+                    con = DataBaseManager.getConnection();
 
                     CargarCuentasUsuarioForm cargarCuentasUsuarioForm = new CargarCuentasUsuarioForm();
                     // Cargamos las cuentas de cliente
@@ -70,7 +69,7 @@ public class RastreoClienteAction extends Action {
                             InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
                             insertarRastreoForm.setCuenta_cliente(Long.valueOf(rastreoClienteForm.getIdCuenta()));
                             insertarRastreoForm.setCartucho(rastreoClienteForm.getCartucho());
-                            if (insertarRastreoForm.getCartucho().equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id"))) {
+                            if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(insertarRastreoForm.getCartucho()))) {
                                 insertarRastreoForm.setNormaAnalisis(rastreoClienteForm.getNormaAnalisis());
                             }
                             insertarRastreoForm.setCodigo(rastreoClienteForm.getNombre());
@@ -86,13 +85,12 @@ public class RastreoClienteAction extends Action {
                             request.setAttribute("mensajeExito", mensaje);
                             request.setAttribute("accionVolver", volver);
                             return mapping.findForward(Constants.EXITO);
-
                         } else {
                             ActionForward forward = new ActionForward();
                             forward.setPath(mapping.getInput());
                             forward.setRedirect(true);
                             saveErrors(request.getSession(), errors);
-                            return (forward);
+                            return forward;
                         }
                     }
                 } catch (Exception e) {

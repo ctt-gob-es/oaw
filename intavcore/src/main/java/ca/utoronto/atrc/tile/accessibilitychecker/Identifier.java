@@ -16,9 +16,9 @@ public class Identifier {
     private Map<String, String> hashtableAttributes;
     private String nameElement;
     private String stringIdentifier;
-    private int idCheck;
+    //private int idCheck;
     private int line; // line number of key element
-    private int column; // column number of key element
+    //private int column; // column number of key element
 
     public String getNameElement() {
         return nameElement;
@@ -32,9 +32,9 @@ public class Identifier {
         return hashtableAttributes;
     }
 
-    public int getCheckId() {
+   /* public int getCheckId() {
         return idCheck;
-    }
+    }*/
 
     public int getLine() {
         return line;
@@ -44,9 +44,9 @@ public class Identifier {
         line = newLine;
     }
 
-    public int getColumn() {
+/*    public int getColumn() {
         return column;
-    }
+    }*/
 
     // Constructor using the parameters given in a request
     public Identifier(HttpServletRequest inReq) {
@@ -60,11 +60,11 @@ public class Identifier {
 
         Enumeration<Object> enu = inReq.getParameterNames();
         while (enu.hasMoreElements()) {
-            String nameParam = (String) enu.nextElement();
+            final String nameParam = (String) enu.nextElement();
 
             // ignore some of the attribute values
-            if ((nameParam.equals(IntavConstants.FILE) == false) &&
-                    (nameParam.equals(IntavConstants.ELEMENT) == false)) {
+            if (!nameParam.equals(IntavConstants.FILE) &&
+                    !nameParam.equals(IntavConstants.ELEMENT)) {
 
                 hashtableAttributes.put(nameParam, inReq.getParameter(nameParam));
             }
@@ -102,7 +102,7 @@ public class Identifier {
         return stringValue.equalsIgnoreCase(valueAttribute);
     }
 
-    public void AddToDoc(Document doc, Element elementParent) {
+    public void addToDoc(Document doc, Element elementParent) {
         // name of the element
         elementParent.setAttribute("element", nameElement);
 

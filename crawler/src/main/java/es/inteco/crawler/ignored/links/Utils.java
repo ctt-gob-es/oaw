@@ -8,7 +8,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Utils {
+public final class Utils {
+
+    private Utils() {
+    }
+
     public static List<IgnoredLink> getIgnoredLinks() throws Exception {
         InputStream inputStream = null;
         try {
@@ -25,6 +29,7 @@ public class Utils {
 
             return (List<IgnoredLink>) digester.parse(inputStream);
         } catch (Exception e) {
+            Logger.putLog("Error al obtener los enlaces que se ignoran", Utils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             if (inputStream != null) {
@@ -36,4 +41,5 @@ public class Utils {
             }
         }
     }
+
 }

@@ -8,6 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import java.util.List;
 
 public class DatabaseExportDAO extends BaseDAO {
+
     public static Observatory getObservatory(Session session, Long idExecution) {
         Criteria criteria = session.createCriteria(Observatory.class);
         criteria.add(Restrictions.eq("idExecution", idExecution));

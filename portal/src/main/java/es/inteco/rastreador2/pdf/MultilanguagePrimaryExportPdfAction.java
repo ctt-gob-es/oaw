@@ -3,7 +3,7 @@ package es.inteco.rastreador2.pdf;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.multilanguage.form.AnalysisForm;
 import es.inteco.multilanguage.manager.AnalysisManager;
 import es.inteco.plugin.dao.DataBaseManager;

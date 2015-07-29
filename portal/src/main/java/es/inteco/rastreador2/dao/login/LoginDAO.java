@@ -49,7 +49,6 @@ public final class LoginDAO {
                 user.setLogin(rs.getString("Usuario"));
                 user.setEmail(rs.getString("Email"));
                 user.setDepartment(rs.getString("Departamento"));
-                //usuario.setCartridge(listaFromString(rs.getString("grupo")));
                 return user;
             } else {
                 return null;
@@ -62,7 +61,7 @@ public final class LoginDAO {
         }
     }
 
-    public static int getUserRolType(Connection c, Long id_user) throws Exception {
+    public static int getUserRolType(Connection c, Long idUser) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -71,7 +70,7 @@ public final class LoginDAO {
                     "JOIN usuario_rol ur ON (ur.id_rol = r.id_rol) " +
                     "JOIN usuario u ON (ur.usuario = u.id_usuario) " +
                     "WHERE u.id_usuario = ?");
-            ps.setLong(1, id_user);
+            ps.setLong(1, idUser);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt("id_tipo");
@@ -274,11 +273,11 @@ public final class LoginDAO {
         }
     }
 
-    public static void deleteUsers(String id_cartridge, Connection c) throws Exception {
+    public static void deleteUsers(String idCartridge, Connection c) throws Exception {
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("DELETE FROM usuario WHERE Id_Cartucho = ?");
-            ps.setString(1, id_cartridge);
+            ps.setString(1, idCartridge);
             ps.executeUpdate();
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -349,7 +348,7 @@ public final class LoginDAO {
         return userList;
     }
 
-    public static EliminarUsuarioSistemaForm getDeleteUser(Connection c, Long id_user, EliminarUsuarioSistemaForm eliminarUsuarioSistemaForm) throws Exception {
+    public static EliminarUsuarioSistemaForm getDeleteUser(Connection c, Long idUser, EliminarUsuarioSistemaForm eliminarUsuarioSistemaForm) throws Exception {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -359,7 +358,7 @@ public final class LoginDAO {
                     "LEFT JOIN cuenta_cliente_usuario ccu ON (ccu.id_usuario = u.id_usuario) " +
                     "LEFT JOIN cuenta_cliente cc ON (ccu.id_cuenta = cc.id_cuenta) " +
                     "WHERE u.id_usuario = ? GROUP BY u.id_usuario;");
-            ps.setLong(1, id_user);
+            ps.setLong(1, idUser);
             rs = ps.executeQuery();
             while (rs.next()) {
                 eliminarUsuarioSistemaForm.setNombre(rs.getString("nombre"));
@@ -399,12 +398,12 @@ public final class LoginDAO {
 
     }
 
-    public static boolean existUserWithKey(Connection c, String passwold, Long id_user) throws SQLException {
+    public static boolean existUserWithKey(Connection c, String passwold, Long idUser) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = c.prepareStatement("SELECT * from usuario where id_usuario = ? AND password = md5(?);");
-            ps.setLong(1, id_user);
+            ps.setLong(1, idUser);
             ps.setString(2, passwold);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -419,12 +418,12 @@ public final class LoginDAO {
         return false;
     }
 
-    public static void updatePassword(Connection c, ModificarUsuarioPassForm modificarUsuarioPassForm, Long id_user) throws Exception {
+    public static void updatePassword(Connection c, ModificarUsuarioPassForm modificarUsuarioPassForm, Long idUser) throws Exception {
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("UPDATE usuario SET Password = md5(?) where id_usuario = ?;");
             ps.setString(1, modificarUsuarioPassForm.getPassword());
-            ps.setLong(2, id_user);
+            ps.setLong(2, idUser);
             ps.executeUpdate();
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -435,9 +434,9 @@ public final class LoginDAO {
 
     }
 
-    public static void getUserDatesToUpdate(Connection c, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, Long id_user, int userRolType) throws Exception {
+    public static void getUserDatesToUpdate(Connection c, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, Long idUser, int userRolType) throws Exception {
         try {
-            DatosForm dataForm = getUserData(c, id_user);
+            DatosForm dataForm = getUserData(c, idUser);
             modificarUsuarioSistemaForm.setNombre2(dataForm.getNombre());
             modificarUsuarioSistemaForm.setApellidos(dataForm.getApellidos());
             modificarUsuarioSistemaForm.setDepartamento(dataForm.getDepartamento());
@@ -473,9 +472,9 @@ public final class LoginDAO {
         }
     }
 
-    public static void getUserDataToSee(Connection c, VerUsuarioSistemaForm verUsuarioSistemaForm, Long id_user) throws Exception {
+    public static void getUserDataToSee(Connection c, VerUsuarioSistemaForm verUsuarioSistemaForm, Long idUser) throws Exception {
         try {
-            DatosForm dataForm = getUserData(c, id_user);
+            DatosForm dataForm = getUserData(c, idUser);
             verUsuarioSistemaForm.setNombre(dataForm.getNombre());
             verUsuarioSistemaForm.setUsuario(dataForm.getUsuario());
             verUsuarioSistemaForm.setApellidos(dataForm.getApellidos());
@@ -491,7 +490,7 @@ public final class LoginDAO {
         }
     }
 
-    public static DatosForm getUserData(Connection c, Long id_user) throws Exception {
+    public static DatosForm getUserData(Connection c, Long idUser) throws Exception {
 
         DatosForm dataForm = new DatosForm();
         PreparedStatement ps = null;
@@ -499,7 +498,7 @@ public final class LoginDAO {
 
         try {
             ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.id_usuario = ?");
-            ps.setLong(1, id_user);
+            ps.setLong(1, idUser);
             rs = ps.executeQuery();
             while (rs.next()) {
                 dataForm.setNombre(rs.getString("Nombre").trim());

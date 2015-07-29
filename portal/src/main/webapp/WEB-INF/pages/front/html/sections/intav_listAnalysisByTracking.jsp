@@ -15,12 +15,16 @@
 	<logic:present parameter="<%= Constants.ID_EX_OBS %>">
 		<bean:parameter id="idExObs" name="<%= Constants.ID_EX_OBS %>"/>
 	</logic:present>
+	<logic:present parameter="<%= Constants.ID_EX_OBS %>">
+    	<bean:parameter id="idCartucho" name="<%= Constants.ID_CARTUCHO %>"/>
+    </logic:present>
 	
 	<jsp:useBean id="paramsVolver" class="java.util.HashMap" />
 	<c:set target="${paramsVolver}" property="idrastreo" value="${idrastreo}" />
 	<c:set target="${paramsVolver}" property="id_observatorio" value="${id_observatorio}" />
 	<c:set target="${paramsVolver}" property="id" value="${id}" />
 	<c:set target="${paramsVolver}" property="idExObs" value="${idExObs}" />
+	<c:set target="${paramsVolver}" property="idCartucho" value="${idCartucho}"/>
 	
 	<jsp:useBean id="paramsVolverFC" class="java.util.HashMap" />
 	<c:set target="${paramsVolverFC}" property="idrastreo" value="${idrastreo}" />
@@ -29,6 +33,7 @@
 	<jsp:useBean id="params" class="java.util.HashMap" />
 	<c:set target="${params}" property="idrastreo" value="${idrastreo}" />
 	<c:set target="${params}" property="id" value="${id}" />
+	<c:set target="${params}" property="idCartucho" value="${idCartucho}"/>
 	<logic:present parameter="isCliente">
 		<c:set target="${params}" property="isCliente" value="true" />
 	</logic:present>

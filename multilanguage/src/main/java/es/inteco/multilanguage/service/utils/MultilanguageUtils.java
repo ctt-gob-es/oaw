@@ -3,6 +3,7 @@ package es.inteco.multilanguage.service.utils;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.multilanguage.bean.AnalysisConfiguration;
 import es.inteco.multilanguage.bean.UrlConfiguration;
 import es.inteco.multilanguage.common.Constants;

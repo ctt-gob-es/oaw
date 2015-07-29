@@ -1,6 +1,6 @@
 package es.inteco.common;
 
-public class CheckFunctionConstants {
+public interface CheckFunctionConstants {
 
     public static final int CODE_TYPE_NOTSET = 0;
     public static final int CODE_TYPE_CONDITION = 1;
@@ -39,8 +39,8 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_NOSCRIPT_MISSING = 26;
     public static final int FUNCTION_NOEMBED_MISSING = 27;
     public static final int FUNCTION_ALTLINKSAME = 28;
-    public static final int FUNCTION_ROW_COUNT_NOT_EQUALS = 29;
-    public static final int FUNCTION_COL_COUNT_NOT_EQUALS = 30;
+    public static final int FUNCTION_ROW_COUNT = 29;
+    public static final int FUNCTION_COL_COUNT = 30;
     public static final int FUNCTION_ELEMENT_PREVIOUS = 31;
     public static final int FUNCTION_TARGETS_SAME = 32;
     public static final int FUNCTION_HTML_CONTENT_NOT = 33;
@@ -48,7 +48,7 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_NOT_VALID_LANGUAGE = 35;
     public static final int FUNCTION_MULTIRADIO_NOFIELDSET = 36;
     public static final int FUNCTION_MULTICHECKBOX_NOFIELDSET = 37;
-    public static final int FUNCTION_LUMONISOTY_CONTRAST_RATIO = 38;
+    public static final int FUNCTION_LUMINOSITY_CONTRAST_RATIO = 38;
     public static final int FUNCTION_ERT_COLOR_ALGORITHM = 39;
     public static final int FUNCTION_DOCTYPE_ATTRIBUTE_NOT_EQUAL = 40;
     public static final int FUNCTION_VALIDATE = 41;
@@ -65,7 +65,7 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_NOFRAME_MISSING = 54;
     public static final int FUNCTION_IFRAME_HAS_NOT_ALTERNATIVE = 55;
     public static final int FUNCTION_GRAMMAR_LANG = 56;
-    public static final int FUNCTION_CORRECT_DOCUMENT_STRUCTURE = 57;
+    public static final int FUNCTION_INCORRECT_HEADING_STRUCTURE = 57;
     public static final int FUNCTION_NO_CORRECT_DOCUMENT_STRUCTURE = 58;
     public static final int FUNCTION_HEADERS_MISSING = 59;
     public static final int FUNCTION_HEADERS_EXIST = 60;
@@ -118,6 +118,7 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_ELEMENT_PERCENTAGE = 109;
     public static final int FUNCTION_CORRECT_LINKS = 110;
     public static final int FUNCTION_CHILD_ELEMENT_CHARS_GREATER = 111;
+    public static final int FUNCTION_CHILD_ELEMENT_CHARS_LESSER = 136;
     public static final int FUNCTION_LAYOUT_TABLE = 112;
     public static final int FUNCTION_LAYOUT_TABLE_NUMBER = 113;
     public static final int FUNCTION_NOT_LAYOUT_TABLE = 114;
@@ -137,6 +138,32 @@ public class CheckFunctionConstants {
     public static final int FUNCTION_IS_ANIMATED_GIF = 128;
     public static final int FUNCTION_APPLET_HAS_ALTERNATIVE = 129;
     public static final int FUNCTION_ATTRIBUTE_ELEMENT_TEXT_NOT_MATCH = 130;
+    public static final int FUNCTION_FOLLOWING_HEADERS_WITHOUT_CONTENT = 131;
+    public static final int FUNCTION_IMG_DIMENSIONS_LESS_THAN = 132;
+    public static final int FUNCTION_REDUNDANT_IMG_ALT = 133;
+    public static final int FUNCTION_TABLE_COLUMNS = 134;
+    public static final int FUNCTION_TABLE_ROWS = 135;
+    public static final int FUNCTION_HAS_VALIDATION_ERRORS = 137;
+    public static final int FUNCTION_GUESS_LANGUAGE = 138;
+    public static final int FUNCTION_GROUPED_SELECTION_BUTTONS = 139;
+    public static final int FUNCTION_NOT_FIRST_CHILD = 140;
+    public static final int FUNCTION_REQUIRED_CONTROLS = 141;
+    public static final int FUNCTION_CSS_GENERATED_CONTENT = 142;
+    public static final int FUNCTION_CSS_COLOR_CONTRAST = 143;
+    public static final int FUNCTION_CSS_BLINK = 144;
+    public static final int FUNCTION_CSS_PARSEABLE = 145;
+    public static final int FUNCTION_CSS_OUTLINE = 146;
+    public static final int FUNCTION_FALSE_BR_IMAGE_LIST = 147;
+    public static final int FUNCTION_OTHER_LANGUAGE = 148;
+    public static final int FUNCTION_CSS_LABEL_HIDDEN = 149;
+    public static final int FUNCTION_CURRENT_LANGUAGE = 150;
+    public static final int FUNCTION_INVALID_SCOPE = 151;
+    public static final int FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONFORMANCE_LEVEL = 152;
+    public static final int FUNCTION_TABINDEX_EXCESSIVE_USAGE = 153;
+    public static final int FUNCTION_LINK_CHARS_GREATER = 154;
+    public static final int FUNCTION_TABLE_HEADING_BLANK = 155;
+    public static final int FUNCTION_TITLE_NOT_CONTAINS = 156;
+
 
     // check codes
     public static final int CHECK_STATUS_OK = 1;

@@ -173,7 +173,6 @@ public class RastreoService {
                 rastreoDto.setIdRastreo(analisisDto.getIdRastreo());
                 rastreoDto.setUsuario(analisisDto.getUsuario());
                 rastreoDto.setFecha(analisisDto.getFecha());
-                // rastreoDto.setTiempo(crono.getTime());
 
                 //Insertamos el rastreoDto
                 insertRastreo(rastreoDto, conn);

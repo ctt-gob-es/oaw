@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<lista>
+    <semilla>
+        <nombre>Casa Real</nombre>
+        <activa>true</activa>
+        <url>http://www.casareal.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de la Casa Real y Presidencia del Gobierno</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Presidencia del Gobierno</nombre>
+        <activa>true</activa>
+        <url>http://www.lamoncloa.gob.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de la Casa Real y Presidencia del Gobierno</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Congreso de los Diputados</nombre>
+        <activa>true</activa>
+        <url>http://www.congreso.es/portal/page/portal/Congreso/Congreso</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Legislativo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Senado de España</nombre>
+        <activa>true</activa>
+        <url>http://www.senado.es/web/index.html</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Legislativo</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Juzgados y tribunales</nombre>
+        <activa>true</activa>
+        <url>http://www.poderjudicial.es/cgpj/es/Servicios/Directorio/Directorio_de_Organos_Judiciales</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Judicial</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Tribunal Supremo</nombre>
+        <activa>true</activa>
+        <url>http://www.poderjudicial.es/eversuite/GetRecords?Template=cgpj/ts/principal.htm</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Judicial</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Ministerio Fiscal</nombre>
+        <activa>true</activa>
+        <url>http://www.fiscal.es</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Judicial</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo General del Poder Judicial</nombre>
+        <activa>true</activa>
+        <url>http://www.poderjudicial.es/eversuite/GetRecords?Template=cgpj/cgpj/principal.htm</url>
+        <acronimo/>
+        <depende_de>Webs públicas del Poder Judicial</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Tribunal de Cuentas</nombre>
+        <activa>true</activa>
+        <url>http://www.tcu.es/tribunal-de-cuentas/es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Tribunal Constitucional</nombre>
+        <activa>true</activa>
+        <url>http://www.tribunalconstitucional.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Defensor del Pueblo</nombre>
+        <activa>true</activa>
+        <url>http://www.defensordelpueblo.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo Económico y Social</nombre>
+        <activa>true</activa>
+        <url>http://www.ces.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo de Seguridad Nuclear</nombre>
+        <activa>true</activa>
+        <url>http://www.csn.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Consejo de Estado</nombre>
+        <activa>true</activa>
+        <url>http://www.consejo-estado.es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Agencia Española de Protección de Datos</nombre>
+        <activa>true</activa>
+        <url>https://www.agpd.es/portalwebAGPD/index-ides-idphp.php</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+        <nombre>Banco de España</nombre>
+        <activa>true</activa>
+        <url>http://www.bde.es/bde/es/</url>
+        <acronimo/>
+        <depende_de>Webs públicas de otros Organismos del Estado</depende_de>
+        <en_directorio>false</en_directorio>
+    </semilla>
+    <semilla>
+	<url>http://www.museodelprado.es/</url>
+	<nombre>Museo Nacional del Prado</nombre>
+	<depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+	<url>http://www.museoreinasofia.es/</url>
+	<nombre>Museo Nacional Centro de Arte Reina Sofía</nombre>
+	<depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://man.mcu.es/</url>
+        <nombre>Museo Arqueologico Nacional</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museodealtamira.mcu.es/</url>
+        <nombre>Museo de Altamira</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museoarqua.mcu.es/</url>
+        <nombre>Museo Nacional de Arqueologia Subacuatica</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museodeltraje.mcu.es/</url>
+        <nombre>Museo del Traje</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://mnartesdecorativas.mcu.es/</url>
+        <nombre>Museo Nacional de Artes Decorativas</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://mnceramica.mcu.es/</url>
+        <nombre>Museo Nacional de Ceramica y Artes Suntuarias</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museosangregorio.mcu.es/</url>
+        <nombre>Museo San Gregorio</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museocasacervantes.mcu.es/</url>
+        <nombre>Museo Casa de Cervantes</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museoarteromano.mcu.es/</url>
+        <nombre>Museo Nacional de Arte Romano</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museosorolla.mcu.es/</url>
+        <nombre>Museo Sorolla</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://mnantropologia.mcu.es/</url>
+        <nombre>Museo Nacional de Antropologia</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museocerralbo.mcu.es/</url>
+        <nombre>Museo Cerralbo</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museoromanticismo.mcu.es/</url>
+        <nombre>Museo Nacional del Romanticismo</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museodeamerica.mcu.es/</url>
+        <nombre>Museo de America</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://museoteatro.mcu.es/</url>
+        <nombre>Museo del Teatro</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://www.flg.es/museo/museo.htm</url>
+        <nombre>Museo Lázaro Galdiano</nombre>
+        <depende_de>Ministerio de Educación, Cultura y Deporte</depende_de>
+    </semilla>
+    <semilla>
+        <url>http://www.muncyt.es/</url>
+        <nombre>Museo Nacional de Ciencia y Tecnología</nombre>
+        <depende_de>Ministerio de Economía y Competitividad</depende_de>
+    </semilla>
+</lista>

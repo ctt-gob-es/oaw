@@ -25,15 +25,9 @@ public class BrokenLinksAction extends Action {
             Connection c = null;
             try {
                 c = DataBaseManager.getConnection();
-                String user = (String) request.getSession().getAttribute(Constants.USER);
-                long idExecution = 0;
-                if (request.getParameter(Constants.ID) != null) {
-                    idExecution = Long.parseLong(request.getParameter(Constants.ID));
-                }
-                long idRastreo = 0;
-                if (request.getParameter(Constants.ID_RASTREO) != null) {
-                    idRastreo = Long.parseLong(request.getParameter(Constants.ID_RASTREO));
-                }
+                final String user = (String) request.getSession().getAttribute(Constants.USER);
+                final long idExecution = request.getParameter(Constants.ID) != null ? Long.parseLong(request.getParameter(Constants.ID)) : 0;
+                final long idRastreo = request.getParameter(Constants.ID_RASTREO) != null ? Long.parseLong(request.getParameter(Constants.ID_RASTREO)) : 0;
 
                 //Comprobamos que el usuario esta asociado con los resultados de los rastreos que quiere recuperar
                 if (RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user)) {

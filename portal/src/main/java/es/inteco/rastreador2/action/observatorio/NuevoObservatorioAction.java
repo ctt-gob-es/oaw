@@ -30,7 +30,6 @@ public class NuevoObservatorioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
-
         try {
             if (CrawlerUtils.hasAccess(request, "new.observatory")) {
                 String esPrimera = request.getParameter(Constants.ES_PRIMERA);
@@ -131,15 +130,14 @@ public class NuevoObservatorioAction extends Action {
     private NuevoObservatorioForm inicializeData(NuevoObservatorioForm nuevoObservatorioForm, HttpServletRequest request) throws Exception {
         Connection c = null;
         Connection con = null;
-        PropertiesManager pmgr = new PropertiesManager();
 
         try {
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             nuevoObservatorioForm.setPeriodicidadVector(DAOUtils.getRecurrence(c));
 
-            List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);
+            final List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);
             nuevoObservatorioForm.setLenguajeVector(new ArrayList<LenguajeForm>());
             for (LenguajeForm lenguajeForm : lenguajeFormList) {
                 lenguajeForm.setName(getResources(request).getMessage(getLocale(request), lenguajeForm.getKeyName()));
@@ -177,7 +175,7 @@ public class NuevoObservatorioAction extends Action {
             }
 
             c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection(pmgr.getValue(CRAWLER_PROPERTIES, "datasource.name.intav"));
+            con = DataBaseManager.getConnection();
 
             ActionErrors errors = nuevoObservatorioForm.validate(mapping, request);
 
