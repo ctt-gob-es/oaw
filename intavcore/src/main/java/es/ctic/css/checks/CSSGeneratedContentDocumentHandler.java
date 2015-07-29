@@ -1,6 +1,5 @@
 package es.ctic.css.checks;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
 import com.helger.css.ECSSVersion;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CascadingStyleSheet;
@@ -14,7 +13,6 @@ import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
 import es.inteco.common.logging.Logger;
 import org.dom4j.Document;
-import org.w3c.dom.Node;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -26,8 +24,10 @@ public class CSSGeneratedContentDocumentHandler extends OAWCSSVisitor {
 
     private static final String CONTENT_PROPERTY = "content";
 
-    public CSSGeneratedContentDocumentHandler(final CheckCode checkCode) {
-        super(checkCode);
+    private final int allowedChars;
+
+    public CSSGeneratedContentDocumentHandler(final int allowedChars) {
+        this.allowedChars = allowedChars;
     }
 
     @Override
@@ -36,7 +36,7 @@ public class CSSGeneratedContentDocumentHandler extends OAWCSSVisitor {
             try {
                 resource = cssResource;
                 final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30, new CollectingCSSParseErrorHandler());
-                if ( aCSS!=null ) {
+                if (aCSS != null) {
                     CSSVisitor.visitCSS(aCSS, this);
                 }
             } catch (Exception e) {
@@ -50,8 +50,7 @@ public class CSSGeneratedContentDocumentHandler extends OAWCSSVisitor {
     public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
         if (isValidMedia() && isPseudoClass() && CONTENT_PROPERTY.equals(cssDeclaration.getProperty())) {
             final String value = CSSSACUtils.parseLexicalValue(getValue(cssDeclaration));
-            if ( !"none".equalsIgnoreCase(value) && !value.trim().isEmpty() ) {
-                final int allowedChars = Integer.parseInt(getCheckCode().getFunctionNumber());
+            if (!"none".equalsIgnoreCase(value) && !value.trim().isEmpty()) {
                 if (value.length() > allowedChars) {
                     getProblems().add(createCSSProblem("", cssDeclaration));
                 }

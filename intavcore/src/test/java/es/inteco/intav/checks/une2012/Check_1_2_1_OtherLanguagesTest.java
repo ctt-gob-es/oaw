@@ -46,7 +46,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 
     @Test
     public void evaluateLangNoValid() throws Exception {
-        checkAccessibility.setContent("<html><body><p>Lorem <strong lang=\"no_existe\">ipsum</strong></p></body></html>");
+        checkAccessibility.setContent("<html><body><p>Lorem <strong lang=\"no-existe\">ipsum</strong></p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE_ELEMENT));

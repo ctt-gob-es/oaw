@@ -191,6 +191,15 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     }
 
     @Test
+    public void evaluateFalseEN_USLang() throws Exception {
+        checkAccessibility.setContent("<html lang='en-US'><body><p>Fundación CTIC es una de las entidades que participan y apoyan la  Feria Internacional del Ocio Interactivo, Gamelab, que celebrará su quinta edición los próximos días 1, 2 y 3 de julio en Gijón (Teatro de la Laboral). El Ministerio de Cultura, el Gobierno del Principado de Asturias, a través de la Consejerías de Cultura y de Administraciones Públicas, el Ayuntamiento de Gijón y las principales empresas y asociaciones nacionales e internacionales del sector del Videojuego colaboran con esta iniciativa, ya consolidada, una de las más importantes de Europa.</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
     public void evaluateFRLang() throws Exception {
         checkAccessibility.setContent("<html lang='fr'><body><p>La mission du W3C est d’amener le Web à son plein potentiel, en développant des protocoles et des directives permettant une croissance à long terme du Web.</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -270,7 +279,7 @@ public final class Check_1_1_7_PrimaryLanguageTest {
 //    @Test
 //    public void testURL() throws Exception {
 //        // Test para comprobar rápidamente el resultado que genera la comprobacion de detección de idioma para una página 'real'
-//        checkAccessibility.setUrl("http://www.mineco.gob.es/portal/site/mineco/menuitem.d288f4af5ced702fafb0240e026041a0/?vgnextoid=532925d4d394c310VgnVCM1000001d04140aRCRD");
+//        checkAccessibility.setUrl("http://www.controlastuenergia.gob.es/Paginas/contacto.aspx");
 //        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
 //        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
 //        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);

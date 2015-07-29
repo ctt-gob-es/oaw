@@ -1,6 +1,5 @@
 package es.ctic.css;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
 import com.helger.css.ECSSVersion;
 import com.helger.css.decl.*;
 import com.helger.css.decl.visit.CSSVisitor;
@@ -27,15 +26,13 @@ import java.util.*;
 public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
     private final Stack<Boolean> currentMedia = new Stack<Boolean>();
-    private CheckCode checkCode;
     protected CSSStyleRule currentStyleRule;
     protected final List<CSSProblem> problems = new ArrayList<CSSProblem>();
     protected CSSResource resource;
     private Document document;
 
-    public OAWCSSVisitor(final CheckCode checkCode) {
+    public OAWCSSVisitor() {
         super();
-        this.checkCode = checkCode;
         currentMedia.push(true);
     }
 
@@ -94,7 +91,6 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
     protected void cleanupResources() {
         // Aseguramos que se liberan las referencias a objetos manejados por otras librerias
-        checkCode = null;
         currentStyleRule = null;
         document = null;
         currentMedia.clear();
@@ -103,10 +99,6 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
     public List<CSSProblem> getProblems() {
         return problems;
-    }
-
-    public CheckCode getCheckCode() {
-        return checkCode;
     }
 
     protected boolean isValidMedia() {

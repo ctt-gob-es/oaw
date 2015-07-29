@@ -131,15 +131,15 @@ public final class CSSUtils {
     private static CSSAnalyzer getCSSAnalyzer(final Node node, final CheckCode checkCode) throws InstantiationException {
         switch (checkCode.getFunctionId()) {
             case CheckFunctionConstants.FUNCTION_CSS_GENERATED_CONTENT:
-                return new CSSGeneratedContentDocumentHandler(checkCode);
+                return new CSSGeneratedContentDocumentHandler(!checkCode.getFunctionNumber().isEmpty()?Integer.parseInt(checkCode.getFunctionNumber()):1);
             case CheckFunctionConstants.FUNCTION_CSS_COLOR_CONTRAST:
-                return new CSSColorContrastDocumentHandler(checkCode);
+                return new CSSColorContrastDocumentHandler();
             case CheckFunctionConstants.FUNCTION_CSS_BLINK:
-                return new CSSBlinkDocumentHandler(checkCode);
+                return new CSSBlinkDocumentHandler();
             case CheckFunctionConstants.FUNCTION_CSS_PARSEABLE:
-                return new CSSParseableDocumentHandler(checkCode);
+                return new CSSParseableDocumentHandler();
             case CheckFunctionConstants.FUNCTION_CSS_OUTLINE:
-                return new CSSOutlineDocumentHandler(checkCode);
+                return new CSSOutlineDocumentHandler();
             case CheckFunctionConstants.FUNCTION_CSS_LABEL_HIDDEN:
                 return new CSSLabelHiddenStyleParser(node.getOwnerDocument());
             default:

@@ -1,6 +1,5 @@
 package es.ctic.css.checks;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.CheckCode;
 import ca.utoronto.atrc.tile.accessibilitychecker.ColorValues;
 import com.helger.css.decl.CSSDeclaration;
 import com.helger.css.decl.CSSStyleRule;
@@ -22,10 +21,6 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
     private LexicalUnit foregroundProperty;
     private LexicalUnit fontSizeProperty;
     private LexicalUnit fontWeightProperty;
-
-    public CSSColorContrastDocumentHandler(final CheckCode checkCode) {
-        super(checkCode);
-    }
 
     @Override
     public void onEndStyleRule(@Nonnull final CSSStyleRule cssStyleRule) {
@@ -108,7 +103,7 @@ public class CSSColorContrastDocumentHandler extends OAWCSSVisitor {
                 }
             }
         } catch (Exception e) {
-            Logger.putLog("Error al comprobar CSSColorContrastDocumentHandler: " +e.getMessage(), CSSColorContrastDocumentHandler.class, Logger.LOG_LEVEL_WARNING);
+            Logger.putLog("Error al comprobar CSSColorContrastDocumentHandler: " + e.getMessage(), CSSColorContrastDocumentHandler.class, Logger.LOG_LEVEL_WARNING);
         }
     }
 

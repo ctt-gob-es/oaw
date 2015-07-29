@@ -877,6 +877,7 @@ public class Check {
                 if (!"hidden".equals(element.getAttribute("type"))
                         && !"button".equals(element.getAttribute("type"))
                         && !"submit".equals(element.getAttribute("type"))) {
+                    // TODO: ¿Filtrar los input de botón (radio y checkbox)?
                     filteredControls++;
                 }
             }
@@ -932,9 +933,9 @@ public class Check {
         final NodeList listInputs = elementGiven.getElementsByTagName("input");
         // Extraemos todos los input tipo radio y los guardamos agrupados en el map radioGroups (key es el name de los controles)
         for (int i = 0; i < listInputs.getLength(); i++) {
-            Element elementInput = (Element) listInputs.item(i);
+            final Element elementInput = (Element) listInputs.item(i);
             if (elementInput.getAttribute("type").equalsIgnoreCase(checkCode.getFunctionValue())) {
-                String stringName = elementInput.getAttribute("name");
+                final String stringName = elementInput.getAttribute("name");
                 if (!radioGroups.containsKey(stringName)) {
                     final List<Node> lista = new ArrayList<Node>();
                     radioGroups.put(stringName, lista);
@@ -955,7 +956,7 @@ public class Check {
                 }
             }
         }
-        return false;  //To change body of created methods use File | Settings | File Templates.
+        return false;
     }
 
     private Node getAncestor(Node node, List<String> stopTags) {
@@ -970,10 +971,10 @@ public class Check {
     }
 
     private boolean functionGuessLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        final String expectedLanguage = getLanguage(elementGiven, false);
         final Document document = elementGiven.getOwnerDocument();
-        if (expectedLanguage != null && !expectedLanguage.isEmpty()) {
-            final ExtractTextHandler extractTextHandler = new ExtractTextHandler(expectedLanguage);
+        final String languageCode = extractLanguageCode(getLanguage(elementGiven, false));
+        if (!languageCode.isEmpty()) {
+            final ExtractTextHandler extractTextHandler = new ExtractTextHandler(languageCode);
             try {
                 TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
                 final String extractedText = extractTextHandler.getExtractedText();
@@ -981,7 +982,7 @@ public class Check {
                 if (extractedText.length() < 50) {
                     return false;
                 }
-                final LanguageChecker languageChecker = new LanguageChecker(expectedLanguage);
+                final LanguageChecker languageChecker = new LanguageChecker(languageCode);
                 // Si son distintos hay que devolver true para indicar que es fallo
                 return !languageChecker.isExpectedLanguage(extractedText);
             } catch (TransformerException e) {
@@ -993,8 +994,24 @@ public class Check {
         }
     }
 
+    /**
+     * Eliminamos las variantes idiomáticas para quedarnos únicamente con el idioma base (ej. en-us pasa a en)
+     *
+     * @param lang la cadena que representa el idioma completo con las variantes
+     * @return una cadena que representa el idioma base
+     */
+    private String extractLanguageCode(final String lang) {
+        if ( lang==null ) {
+            return "";
+        } else if (lang.contains("-")) {
+            return lang.substring(0, lang.indexOf('-'));
+        } else {
+            return lang;
+        }
+    }
+
     private boolean functionOtherLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        final String expectedLanguage = getLanguage(elementGiven, false);
+        final String expectedLanguage = extractLanguageCode(getLanguage(elementGiven, false));
         final Document document = elementGiven.getOwnerDocument();
         if (expectedLanguage != null && !expectedLanguage.isEmpty()) {
             int maxNumber;
@@ -1569,13 +1586,11 @@ public class Check {
         for (int j = 0; j < nodeList.getLength(); j++) {
             Element node1 = (Element) nodeList.item(j);
             if (node1 != elementGiven) {
-                /*if (elementGiven.getTextContent() != null && node1.getTextContent() != null) {
-                    if (elementGiven.getTextContent().equals(node1.getTextContent())) {*/
                 if (elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL) != null) {
-                    String previousHeaderLevel = getPreviousLevelHeaderNode(elementGiven.getNodeName());
+                    final String previousHeaderLevel = getPreviousLevelHeaderNode(elementGiven.getNodeName());
                     //buscamos el "padre" de cada elemento a comparar
-                    Node previousElementGivenNode = getPreviousLevelNode(elementGiven, previousHeaderLevel);
-                    Node previousNode1Node = getPreviousLevelNode(node1, previousHeaderLevel);
+                    final Node previousElementGivenNode = getPreviousLevelNode(elementGiven, previousHeaderLevel);
+                    final Node previousNode1Node = getPreviousLevelNode(node1, previousHeaderLevel);
                     //Miramos si es el mismo
                     if ((previousElementGivenNode != null) && (previousNode1Node != null) &&
                             (previousElementGivenNode == previousNode1Node)) {
@@ -1585,8 +1600,6 @@ public class Check {
                     return true;
                 }
             }
-                /*}
-            }*/
         }
 
         return false;
@@ -1712,7 +1725,7 @@ public class Check {
     //Comprueba si el documento tiene o no encabezados
     private boolean functionHeadersMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         for (int i = 1; i < 7; i++) {
-            if (EvaluatorUtils.getElementsByTagName(elementGiven, "h" + i).size() != 0) {
+            if (!EvaluatorUtils.getElementsByTagName(elementGiven, "h" + i).isEmpty()) {
                 return false;
             }
         }
@@ -1724,7 +1737,6 @@ public class Check {
         for (int i = 1; i < 7; i++) {
             final NodeList headers = elementGiven.getElementsByTagName("h" + i);
             if (headers != null && headers.getLength() > 0) {
-                //if (EvaluatorUtils.getElementsByTagName(elementGiven, "h" + i).size() != 0) {
                 return false;
             }
         }
@@ -1746,14 +1758,25 @@ public class Check {
     // Returns true if there is no label associated with the control.
     private boolean functionLabelNotAssociated(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         // check if the control has a title attribute
-        if (elementGiven.hasAttribute("title") && !elementGiven.getAttribute("title").trim().isEmpty()) {
+        if (elementGiven.hasAttribute("title") && !StringUtils.normalizeWhiteSpaces(elementGiven.getAttribute("title")).trim().isEmpty()) {
             return false;
+        }
+
+        if (elementGiven.hasAttribute("aria-label") && !StringUtils.normalizeWhiteSpaces(elementGiven.getAttribute("aria-label")).trim().isEmpty()) {
+            return false;
+        }
+
+        if (elementGiven.hasAttribute("aria-labelledby")) {
+            final Element labelledBy = elementGiven.getOwnerDocument().getElementById(elementGiven.getAttribute("aria-labelledby"));
+            if (labelledBy!=null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
+                return false;
+            }
         }
 
         // check if the input element is contained by a label element
         Element elementParent = DOMUtil.getParent(elementGiven);
         while (elementParent != null) {
-            if (elementParent.getNodeName().equalsIgnoreCase("label")) {
+            if ("label".equalsIgnoreCase(elementParent.getNodeName())) {
                 return false;
             }
             elementParent = DOMUtil.getParent(elementParent);
@@ -1770,7 +1793,7 @@ public class Check {
         // Buscamos al formulario padre
         Element formParent = DOMUtil.getParent(elementGiven);
         while (formParent != null) {
-            if (formParent.getNodeName().equalsIgnoreCase("form")) {
+            if ("form".equalsIgnoreCase(formParent.getNodeName())) {
                 break;
             }
             formParent = DOMUtil.getParent(formParent);
@@ -1782,7 +1805,8 @@ public class Check {
             // look for a label that has a 'for' attribute value matching the control's id
             int cont = 0;
             for (int x = 0; x < listLabels.getLength(); x++) {
-                if (((Element) listLabels.item(x)).getAttribute("for").equalsIgnoreCase(stringId)) {
+                final Element element = (Element) listLabels.item(x);
+                if (element.getAttribute("for").equalsIgnoreCase(stringId) && !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
                     // found an associated label
                     cont++;
                 }
@@ -1809,7 +1833,7 @@ public class Check {
         // check if the input element is contained by a label element
         Element elementParent = DOMUtil.getParent(elementGiven);
         while (elementParent != null) {
-            if (elementParent.getNodeName().equalsIgnoreCase("label")) {
+            if ("label".equalsIgnoreCase(elementParent.getNodeName())) {
                 String stringLabelText = EvaluatorUtility.getLabelText(elementParent);
                 if (stringLabelText.length() > 0) {
                     return false;
@@ -2103,15 +2127,15 @@ public class Check {
             return false;
         }
 
-        String nameTargetChild1 = checkCode.getFunctionAttribute1();
-        String nameTargetChild2 = checkCode.getFunctionAttribute2();
+        final String nameTargetChild1 = checkCode.getFunctionAttribute1();
+        final String nameTargetChild2 = checkCode.getFunctionAttribute2();
         if (nameTargetChild1.length() == 0 || nameTargetChild2.length() == 0) {
             Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
             return false;
         }
 
         // check for any child
-        NodeList nodeList = elementGiven.getChildNodes();
+        final NodeList nodeList = elementGiven.getChildNodes();
         if (nodeList != null && nodeList.getLength() > 0) {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -2142,7 +2166,7 @@ public class Check {
             brother = brother.getNextSibling();
         }
         String element = "li";
-        if (elementGiven.getTagName().equalsIgnoreCase("dl")) {
+        if ("dl".equalsIgnoreCase(elementGiven.getTagName())) {
             element = "dt";
         }
         if ((brother != null) && (brother.getNodeName().equalsIgnoreCase(elementGiven.getTagName()))) {
@@ -2183,9 +2207,9 @@ public class Check {
 
     private boolean functionNumberCompare(CheckCode checkCode, Node nodeNode, Element elementGiven, int compType) {
         // special case the image elements because width and height are set in parser
-        if (elementGiven.getNodeName().equalsIgnoreCase("img")) {
+        if ("img".equalsIgnoreCase(elementGiven.getNodeName())) {
             String stringNodeAttribute = checkCode.getNodeRelation();
-            if (stringNodeAttribute.equalsIgnoreCase("@width")) {
+            if ("@width".equalsIgnoreCase(stringNodeAttribute)) {
                 Dimension dimension = (Dimension) elementGiven.getUserData("dimension");
                 if (dimension != null) {
                     try {
@@ -2200,7 +2224,7 @@ public class Check {
                         return false;
                     }
                 }
-            } else if (stringNodeAttribute.equalsIgnoreCase("@height")) {
+            } else if ("@height".equalsIgnoreCase(stringNodeAttribute)) {
                 Dimension dimension = (Dimension) elementGiven.getUserData("dimension");
                 if (dimension != null) {
                     try {
@@ -2230,7 +2254,7 @@ public class Check {
 
         try {
             int number1;
-            if (checkCode.getNodeRelation().equalsIgnoreCase("@content")) {
+            if ("@content".equalsIgnoreCase(checkCode.getNodeRelation())) {
                 number1 = Integer.parseInt(string.split(";")[0]);
             } else {
                 number1 = Integer.parseInt(string);
@@ -2264,7 +2288,7 @@ public class Check {
         try {
             int number = Integer.parseInt(checkCode.getFunctionValue());
             int numCharacters = 0;
-            if (StringUtils.isNotEmpty(checkCode.getFunctionAttribute1()) && checkCode.getFunctionAttribute1().equalsIgnoreCase("true")) {
+            if (StringUtils.isNotEmpty(checkCode.getFunctionAttribute1()) && "true".equalsIgnoreCase(checkCode.getFunctionAttribute1())) {
                 numCharacters = countCharacters(nodeNode, true);
             } else {
                 numCharacters = countCharacters(nodeNode);
@@ -2647,14 +2671,14 @@ public class Check {
         }
 
         // position of compare string
-        String stringPosition = checkCode.getFunctionPosition();
+        final String stringPosition = checkCode.getFunctionPosition();
         if (stringPosition.isEmpty()) {
             return string1.equalsIgnoreCase(string2);
-        } else if (stringPosition.equalsIgnoreCase("anywhere")) {
+        } else if ("anywhere".equalsIgnoreCase(stringPosition)) {
             return string2.contains(string1);
-        } else if (stringPosition.equalsIgnoreCase("end")) {
+        } else if ("end".equalsIgnoreCase(stringPosition)) {
             return string2.endsWith(string1);
-        } else if (stringPosition.equalsIgnoreCase("start")) {
+        } else if ("start".equalsIgnoreCase(stringPosition)) {
             return string2.startsWith(string1);
         } else {
             Logger.putLog("Warning: check " + id + " has invalid 'position' attribute: " + stringPosition, Check.class, Logger.LOG_LEVEL_WARNING);
@@ -2738,23 +2762,7 @@ public class Check {
         // Form does not contain both fieldset and legend.
         // Check for radio buttons (input element with type attribute value of 'radio') 
         // that have the same 'name' attribute value.
-        NodeList listInputs = elementGiven.getElementsByTagName("input");
-        for (int x = 0; x < listInputs.getLength(); x++) {
-            Element elementInput = (Element) listInputs.item(x);
-            if (elementInput.getAttribute("type").equalsIgnoreCase("radio")) {
-                String stringName = elementInput.getAttribute("name");
-                for (int y = x + 1; y < listInputs.getLength(); y++) {
-
-                    Element elementInput2 = (Element) listInputs.item(y);
-                    if (elementInput2.getAttribute("type").equalsIgnoreCase("radio")) {
-                        if (elementInput.getAttribute("name").equalsIgnoreCase(stringName)) {
-                            return true; // found radio buttons with same name
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+        return existsMultipleSelectionButtons(elementGiven, "radio");
     }
 
     private boolean functionMultiCheckboxNoFieldset(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -2771,17 +2779,22 @@ public class Check {
         // Form does not contain both fieldset and legend.
         // Check for checkbox buttons (input element with type attribute value of 'checkbox') 
         // that have the same 'name' attribute value.
-        NodeList listInputs = elementGiven.getElementsByTagName("input");
-        for (int x = 0; x < listInputs.getLength(); x++) {
-            Element elementInput = (Element) listInputs.item(x);
-            if (elementInput.getAttribute("type").equalsIgnoreCase("checkbox")) {
-                String stringName = elementInput.getAttribute("name");
-                for (int y = x + 1; y < listInputs.getLength(); y++) {
+        return existsMultipleSelectionButtons(elementGiven, "checkbox");
+    }
 
-                    Element elementInput2 = (Element) listInputs.item(y);
-                    if (elementInput2.getAttribute("type").equalsIgnoreCase("checkbox")) {
-                        if (elementInput.getAttribute("name").equalsIgnoreCase(stringName)) {
-                            return true; // found checkbox buttons with same name
+    private boolean existsMultipleSelectionButtons(final Element element, final String type) {
+        if (type != null) {
+            final NodeList listInputs = element.getElementsByTagName("input");
+            for (int x = 0; x < listInputs.getLength(); x++) {
+                final Element elementInput = (Element) listInputs.item(x);
+                if (type.equalsIgnoreCase(elementInput.getAttribute("type"))) {
+                    final String stringName = elementInput.getAttribute("name");
+                    for (int y = x + 1; y < listInputs.getLength(); y++) {
+                        final Element elementInput2 = (Element) listInputs.item(y);
+                        if (type.equalsIgnoreCase(elementInput2.getAttribute("type"))) {
+                            if (elementInput.getAttribute("name").equalsIgnoreCase(stringName)) {
+                                return true; // found input buttons with same name
+                            }
                         }
                     }
                 }
@@ -2790,7 +2803,7 @@ public class Check {
         return false;
     }
 
-    public static boolean isHtmlContent(String string) {
+    public static boolean isHtmlContent(final String string) {
         if (string.endsWith(".html")) {
             return true;
         } else if (string.endsWith(".htm")) {
@@ -2864,7 +2877,7 @@ public class Check {
         // Shift the decimal the correct number of places back to the left.
         float ratio2 = (float) tmp / factor;
 
-        return (ratio2 < 4.99);
+        return ratio2 < 4.99;
     }
 
     // Checks if the colors pass the WAI ERT color contrast threshold.
@@ -2932,7 +2945,7 @@ public class Check {
             difference += colorValue2.getBlue() - colorValue1.getBlue();
         }
 
-        return (difference <= 499);
+        return difference <= 499;
     }
 
     // Checks if there is a doctype declaration and it is strict.
@@ -3011,8 +3024,7 @@ public class Check {
 
             // check if there are SCOPE attributes on all of the TH elements
             for (int c = 0; c < listTh.getLength(); c++) {
-                Element elementTh = (Element) listTh.item(c);
-                // FIXME: Check for valid values of scope attribute
+                final Element elementTh = (Element) listTh.item(c);
                 if (elementTh.hasAttribute("scope")) {
                     final String scope = elementTh.getAttribute("scope");
                     if ("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope) || "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope)) {
@@ -3027,7 +3039,7 @@ public class Check {
             }
         }
 
-        if ((countThRow == 1) && thCol) {
+        if (countThRow == 1 && thCol) {
             // has 1 row and 1 column of headers
             return !(bUsesScope && !bMissingScope);
         }
@@ -3086,11 +3098,11 @@ public class Check {
         } else {
             String stringConfidence = nodeXml.getAttribute("confidence");
 
-            if (stringConfidence.equalsIgnoreCase("medium")) {
+            if ("medium".equalsIgnoreCase(stringConfidence)) {
                 confidence = CheckFunctionConstants.CONFIDENCE_MEDIUM;
-            } else if (stringConfidence.equalsIgnoreCase("high")) {
+            } else if ("high".equalsIgnoreCase(stringConfidence)) {
                 confidence = CheckFunctionConstants.CONFIDENCE_HIGH;
-            } else if (stringConfidence.equalsIgnoreCase("cannottell")) {
+            } else if ("cannottell".equalsIgnoreCase(stringConfidence)) {
                 confidence = CheckFunctionConstants.CONFIDENCE_CANNOTTELL;
             } else {
                 Logger.putLog("Warning: Check has invalid confidence: " + stringConfidence, Check.class, Logger.LOG_LEVEL_WARNING);
@@ -3229,8 +3241,6 @@ public class Check {
                 }
             }
             return false;
-
-            //return validDoctypes.contains(doctypeSource);
         } else {
             // Comprobación específica para HTML5
             final DocumentType docType = elementGiven.getOwnerDocument().getDoctype();
@@ -3287,7 +3297,7 @@ public class Check {
 
     private int getNumDataInputs(Element form) {
         final NodeList inputs = form.getElementsByTagName("input");
-        final List<String> dataInputs = Arrays.asList("checkbox", "file", "password", "radio", "text");
+        final List<String> dataInputs = Arrays.asList("checkbox", "file", "password", "radio", "text", "");
 
         int cont = 0;
         for (int i = 0; i < inputs.getLength(); i++) {
@@ -3476,25 +3486,13 @@ public class Check {
         } else {
             for (Element accessibilityLink : accessibilityLinks) {
                 try {
-                    Document document = null;
-                    final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                    String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                    if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                        Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                        document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                        ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                    } else {
-                        document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
-                    }
+                    final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
                     if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
                         found = true;
-                        break;
-                    } else {
-                        Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica forma de contactar con los administradores.", Check.class, Logger.LOG_LEVEL_INFO);
+                        return !found;
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                    return false;
                 }
             }
 
@@ -3524,27 +3522,13 @@ public class Check {
         } else {
             for (Element accessibilityLink : accessibilityLinks) {
                 try {
-                    Document document = null;
-                    final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                    String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                    if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                        Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                        document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                        ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                    } else {
-                        document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
-                    }
-                    if (document != null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
+                    final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+                    if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
                         found = true;
-                        break;
-                    } else {
-                        if (checkCode.getFunctionPosition() != null && checkCode.getFunctionPosition().equals("end")) {
-                            Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica fecha de última revisión.", Check.class, Logger.LOG_LEVEL_INFO);
-                        }
+                        return !found;
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                    return false;
                 }
             }
 
@@ -3584,31 +3568,33 @@ public class Check {
             for (Element accessibilityLink : accessibilityLinks) {
                 if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
                     try {
-                        Document document = null;
-                        final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
-                        String remoteUrlStr = new URL(documentUrl, accessibilityLink.getAttribute("href")).toString();
-                        if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
-                            Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
-                            document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-                            ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
-                        } else {
-                            document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
-                        }
-                        if (document != null && CheckUtils.hasConformanceLevel(document)) {
+                        final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+                        if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
                             found = true;
-                            break;
-                        } else {
-                            Logger.putLog("La declaración de accesibilidad localizada en " + remoteUrlStr + " no especifica el nivel de conformidad.", Check.class, Logger.LOG_LEVEL_INFO);
+                            return !found;
                         }
                     } catch (Exception e) {
                         Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
-                        //return false;
                     }
                 }
             }
 
             return !found;
         }
+    }
+
+    private Document getAccesibilityDocument(final Element elementRoot, final String href) throws Exception {
+        final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+        final String remoteUrlStr = new URL(documentUrl, href).toString();
+        final Document document;
+        if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
+            Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
+            document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
+            ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
+        } else {
+            document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+        }
+        return document;
     }
 
     private boolean functionFalseParagraphList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -3625,7 +3611,7 @@ public class Check {
                 final Matcher matcher = pattern.matcher(text);
                 if (!matcher.find()) {
                     return false;
-                } else if (checkCode.getFunctionAttribute1().equals("sorted")) {
+                } else if ("sorted".equals(checkCode.getFunctionAttribute1())) {
                     final String match = matcher.group(1);
                     if (!first) {
                         // Para verificar si la lista es ordenada, se comprueba que, a partir del
@@ -3635,7 +3621,6 @@ public class Check {
                             if (match.charAt(0) - previousMatch.charAt(0) != 1) {
                                 return false;
                             }
-                            // TODO: ¿Hacer un caso especial para números romanos?
                         } else {
                             int order = Integer.parseInt(match);
                             int oldOrder = Integer.parseInt(previousMatch);
@@ -3756,7 +3741,6 @@ public class Check {
         int brs = 1;
         if (checkedElement != null) {
             for (int i = 0; i < number; i++) {
-                // TODO: Comprobar que además de la imagen hay un texto
                 if (!checkBrImage(checkCode, checkedElement)) {
                     return false;
                 } else {

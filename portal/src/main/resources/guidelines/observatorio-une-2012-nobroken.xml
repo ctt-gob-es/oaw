@@ -3,7 +3,7 @@
     <type>observatory</type>
     <title abbr="observatorio-une-2012" long-name="Pautas de verificación del Observatorio v2.0">Observatorio MINHAP 2.0</title>
     <date>2014-09-18</date>
-    <status>Observatorio MinHAP v0.2</status>
+    <status>Observatorio MINHAP v2.0</status>
     <earlid>URL donde están definidas las pautas</earlid>
     <preamble>Comentario sobre el Observatorio</preamble>
 
@@ -127,6 +127,8 @@
                     <check id="243"/>
                     <!-- Uso del atributo scope (validando valores) -->
                     <check id="415"/>
+                    <!-- Uso de encabezados como caption de una tabla -->
+                    <check id="464"/>
                 </checks>
             </subgroup>
 
@@ -264,7 +266,9 @@
                     <!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
                     <check id="429"/>
                     <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
-                    <check id="430"/>
+                    <check id="430" relatedWith="430"/>
+                    <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=8) 0-PASA -->
+                    <check id="465" onlyWarning="true"/>
                     <!-- Se verifica que  los “fieldsets” tengan un único elemento “legend” con contenido (primer elemento semántico hijo).-->
                     <check id="444"/>
                     <!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->

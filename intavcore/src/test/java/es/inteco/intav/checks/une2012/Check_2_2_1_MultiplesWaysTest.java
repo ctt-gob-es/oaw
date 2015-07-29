@@ -61,5 +61,14 @@ public final class Check_2_2_1_MultiplesWaysTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
+    @Test
+    public void evaluatePageSiteMap() throws Exception {
+        checkAccessibility.setContent("<html><head><title>Mapa web</title></head><body><p>Lorem ipsum</p><p><span>Mapa web</span></p></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MULTIPLES_WAYS_ID));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
 }
 

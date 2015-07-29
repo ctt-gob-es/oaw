@@ -38,8 +38,8 @@ public final class CheckTables {
     }
 
     protected static boolean functionColumnCount(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        int number = 0;
-        int cols = 0;
+        int number;
+        int cols;
         try {
             number = Integer.parseInt(checkCode.getFunctionNumber());
             cols = (Integer) elementGiven.getUserData("cols");

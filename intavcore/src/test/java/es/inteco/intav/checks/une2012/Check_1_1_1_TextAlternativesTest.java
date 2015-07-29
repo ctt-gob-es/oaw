@@ -113,6 +113,18 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
     }
 
     @Test
+    public void evaluateImgWithAltWhiteSpaces() throws Exception {
+        checkAccessibility.setContent("<img src=\" \" alt=\"\">");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_ALT_ID));
+        checkAccessibility.setContent("<img src=\"   \" alt=\"\">");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_ALT_ID));
+        checkAccessibility.setContent("<img src=\"&nbsp;\" alt=\"\">");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_ALT_ID));
+        checkAccessibility.setContent("<img src=\"&x0A\" alt=\"\">");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_ALT_ID));
+    }
+
+    @Test
     public void evaluateImgWithAlt() throws Exception {
         checkAccessibility.setContent("<img src=\"\" alt=\"Lorem ipsum\">");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_ALT_ID));
@@ -121,7 +133,7 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
     @Test
     public void evaluateDecorativeNoAlt() throws Exception {
         checkAccessibility.setContent("<img src=\"\">, <img src=\"\">");
-        // Las imágenes sin alternativa no se comprueban
+        // Las imágenes sin alternativa no se comprueban fallan por la comprobacion IMG_ALT_ID y se evita dar doble fallo por un único elemento
         Assert.assertEquals(0, getNumProblems(checkAccessibility, IMG_DECORATIVE_NO_TITLE_ID));
     }
 
