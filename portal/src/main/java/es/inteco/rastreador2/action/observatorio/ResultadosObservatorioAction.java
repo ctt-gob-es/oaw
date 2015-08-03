@@ -29,6 +29,7 @@ import java.util.List;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ResultadosObservatorioAction extends Action {
+
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
@@ -39,7 +40,7 @@ public class ResultadosObservatorioAction extends Action {
                 if (action != null) {
                     if (action.equalsIgnoreCase(Constants.GET_SEEDS)) {
                         request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
-                        return getSeeds(mapping, form, request, response);
+                        return getSeeds(mapping, form, request);
                     } else if (action.equals(Constants.ACCION_BORRAR)) {
                         return deleteCrawlerSeed(mapping, request);
                     } else if (action.equals(Constants.ACCION_LANZAR_EJECUCION)) {
@@ -75,7 +76,7 @@ public class ResultadosObservatorioAction extends Action {
             RastreoDAO.borrarRastreoRealizado(c, Long.parseLong(request.getParameter(Constants.ID)));
             PropertiesManager pmgr = new PropertiesManager();
             String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.ejecutada.eliminada");
-            String volver = pmgr.getValue("returnPaths.properties", "volver.lista.observatorios.realizados.primarios.seeds").replace("{0}", request.getParameter(Constants.ID_OBSERVATORIO).toString()).replace("{1}", request.getParameter(Constants.ID_EX_OBS).toString()).replace("{2}", request.getParameter(Constants.ID_CARTUCHO));
+            String volver = pmgr.getValue("returnPaths.properties", "volver.lista.observatorios.realizados.primarios.seeds").replace("{0}", request.getParameter(Constants.ID_OBSERVATORIO)).replace("{1}", request.getParameter(Constants.ID_EX_OBS)).replace("{2}", request.getParameter(Constants.ID_CARTUCHO));
             request.setAttribute("mensajeExito", mensaje);
             request.setAttribute("accionVolver", volver);
             return mapping.findForward(Constants.EXITO2);
@@ -108,9 +109,9 @@ public class ResultadosObservatorioAction extends Action {
             if (request.getParameter(Constants.OBSERVATORY_ID) != null) {
                 request.setAttribute(Constants.OBSERVATORY_ID, request.getParameter(Constants.OBSERVATORY_ID));
             }
-            String idSemilla = (String) request.getParameter(Constants.SEMILLA);
+            final String idSemilla = request.getParameter(Constants.SEMILLA);
             c = DataBaseManager.getConnection();
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
+            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -230,7 +231,7 @@ public class ResultadosObservatorioAction extends Action {
         crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
     }
 
-    public ActionForward getSeeds(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ActionForward getSeeds(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
         SemillaForm semillaForm = (SemillaForm) form;
 
         Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
@@ -283,15 +284,15 @@ public class ResultadosObservatorioAction extends Action {
 
     public ActionForward getAnnexes(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
-            Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+            final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 
-            Long idOperation = System.currentTimeMillis();
+            final Long idOperation = System.currentTimeMillis();
 
             AnnexUtils.createAnnex(request, idObsExecution, idOperation);
-            AnnexUtils.createAnnex2Ev(request, idObsExecution, idOperation);
+            AnnexUtils.createAnnex2Ev(CrawlerUtils.getResources(request), idObsExecution, idOperation);
 
-            PropertiesManager pmgr = new PropertiesManager();
-            String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
+            final PropertiesManager pmgr = new PropertiesManager();
+            final String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
             ZipUtils.generateZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation.toString(), zipPath, true);
 
             CrawlerUtils.returnFile(zipPath, response, "application/zip", true);

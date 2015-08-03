@@ -159,7 +159,7 @@ public final class ObservatoryUtils {
         }
     }
 
-    public static String getValidationLevel(HttpServletRequest request, String level) {
+    public static String getValidationLevel(final HttpServletRequest request, final String level) {
         if (level.equals(Constants.OBS_AA)) {
             return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa");
         } else if (level.equals(Constants.OBS_NV)) {

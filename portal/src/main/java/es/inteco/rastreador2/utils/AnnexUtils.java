@@ -24,6 +24,7 @@ import es.inteco.rastreador2.export.database.form.PageForm;
 import es.inteco.rastreador2.export.database.form.SiteForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.manager.ObservatoryExportManager;
+import org.apache.struts.util.MessageResources;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -65,47 +66,62 @@ public final class AnnexUtils {
             hd.startElement("", "", "resultados", null);
 
             for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
-                for (SiteForm siteForm : categoryForm.getSiteFormList()) {
-                    hd.startElement("", "", "portal", null);
+                if (categoryForm != null) {
+                    for (SiteForm siteForm : categoryForm.getSiteFormList()) {
+                        if (siteForm != null) {
+                            hd.startElement("", "", "portal", null);
 
-                    hd.startElement("", "", "nombre", null);
-                    hd.characters(siteForm.getName().toCharArray(), 0, siteForm.getName().length());
-                    hd.endElement("", "", "nombre");
+                            hd.startElement("", "", "nombre", null);
+                            if (siteForm.getName() != null) {
+                                hd.characters(siteForm.getName().toCharArray(), 0, siteForm.getName().length());
+                            }
+                            hd.endElement("", "", "nombre");
 
-                    SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
+                            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
+                            hd.startElement("", "", "categoria", null);
+                            if (semillaForm.getCategoria() != null) {
+                                hd.characters(semillaForm.getCategoria().getName().toCharArray(), 0, semillaForm.getCategoria().getName().length());
+                            }
+                            hd.endElement("", "", "categoria");
 
-                    hd.startElement("", "", "categoria", null);
-                    hd.characters(semillaForm.getCategoria().getName().toCharArray(), 0, semillaForm.getCategoria().getName().length());
-                    hd.endElement("", "", "categoria");
+                            hd.startElement("", "", "depende_de", null);
+                            if (semillaForm.getDependencia() != null) {
+                                hd.characters(semillaForm.getDependencia().toCharArray(), 0, semillaForm.getDependencia().length());
+                            }
+                            hd.endElement("", "", "depende_de");
 
-                    hd.startElement("", "", "depende_de", null);
-                    if (semillaForm.getDependencia() != null) {
-                        hd.characters(semillaForm.getDependencia().toCharArray(), 0, semillaForm.getDependencia().length());
+                            hd.startElement("", "", "paginas", null);
+
+                            for (PageForm pageForm : siteForm.getPageList()) {
+                                if (pageForm != null) {
+                                    hd.startElement("", "", "pagina", null);
+
+                                    hd.startElement("", "", "url", null);
+                                    if (pageForm.getUrl() != null) {
+                                        hd.characters(pageForm.getUrl().toCharArray(), 0, pageForm.getUrl().length());
+                                    }
+                                    hd.endElement("", "", "url");
+
+                                    hd.startElement("", "", "puntuacion", null);
+                                    if (pageForm.getScore() != null) {
+                                        hd.characters(pageForm.getScore().toCharArray(), 0, pageForm.getScore().length());
+                                    }
+                                    hd.endElement("", "", "puntuacion");
+
+                                    hd.startElement("", "", "adecuacion", null);
+                                    if (pageForm.getLevel() != null) {
+                                        hd.characters(ObservatoryUtils.getValidationLevel(request, pageForm.getLevel()).toCharArray(), 0, ObservatoryUtils.getValidationLevel(request, pageForm.getLevel()).length());
+                                    }
+                                    hd.endElement("", "", "adecuacion");
+
+                                    hd.endElement("", "", "pagina");
+                                }
+                            }
+                            hd.endElement("", "", "paginas");
+
+                            hd.endElement("", "", "portal");
+                        }
                     }
-                    hd.endElement("", "", "depende_de");
-
-                    hd.startElement("", "", "paginas", null);
-
-                    for (PageForm pageForm : siteForm.getPageList()) {
-                        hd.startElement("", "", "pagina", null);
-
-                        hd.startElement("", "", "url", null);
-                        hd.characters(pageForm.getUrl().toCharArray(), 0, pageForm.getUrl().length());
-                        hd.endElement("", "", "url");
-
-                        hd.startElement("", "", "puntuacion", null);
-                        hd.characters(pageForm.getScore().toCharArray(), 0, pageForm.getScore().length());
-                        hd.endElement("", "", "puntuacion");
-
-                        hd.startElement("", "", "adecuacion", null);
-                        hd.characters(ObservatoryUtils.getValidationLevel(request, pageForm.getLevel()).toCharArray(), 0, ObservatoryUtils.getValidationLevel(request, pageForm.getLevel()).length());
-                        hd.endElement("", "", "adecuacion");
-
-                        hd.endElement("", "", "pagina");
-                    }
-                    hd.endElement("", "", "paginas");
-
-                    hd.endElement("", "", "portal");
                 }
             }
 
@@ -115,9 +131,13 @@ public final class AnnexUtils {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         } catch (SAXException e) {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        } catch (Exception e) {
+            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
             try {
-                writer.close();
+                if (writer != null) {
+                    writer.close();
+                }
             } catch (Exception e) {
                 Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -125,7 +145,7 @@ public final class AnnexUtils {
         }
     }
 
-    public static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(HttpServletRequest request, Long idObsExecution) {
+    public static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
         final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<Long, TreeMap<String, ScoreForm>>();
         Connection c = null;
 
@@ -143,10 +163,10 @@ public final class AnnexUtils {
             for (ObservatoryForm observatory : observatoryFormList) {
                 for (CategoryForm category : observatory.getCategoryFormList()) {
                     for (SiteForm siteForm : category.getSiteFormList()) {
-                        TreeMap<String, ScoreForm> seedInfo = new TreeMap<String, ScoreForm>();
                         final ScoreForm scoreForm = new ScoreForm();
                         scoreForm.setLevel(siteForm.getLevel());
                         scoreForm.setTotalScore(new BigDecimal(siteForm.getScore()));
+                        TreeMap<String, ScoreForm> seedInfo = new TreeMap<String, ScoreForm>();
                         if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) {
                             seedInfo = seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed()));
                         }
@@ -165,39 +185,34 @@ public final class AnnexUtils {
         return seedMap;
     }
 
-    private static String changeLevelName(String name, HttpServletRequest request) {
-        if (name.equalsIgnoreCase(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa.old"))) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa");
-        } else if (name.equalsIgnoreCase(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.nv.old"))) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.nv");
-        } else if (name.equalsIgnoreCase(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a.old"))) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a");
+    private static String changeLevelName(final String name, final MessageResources messageResources) {
+        if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.aa.old"))) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.aa");
+        } else if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.nv.old"))) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.nv");
+        } else if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.a.old"))) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.a");
         } else {
             return "";
         }
     }
 
-    public static void createAnnex2Ev(HttpServletRequest request, Long idObsExecution, Long idOperation) throws Exception {
-
-        FileWriter writer = null;
-
-        OutputFormat of = new OutputFormat("XML", "UTF-8", true);
-
-        PropertiesManager pmgr = new PropertiesManager();
-        File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_portales.xml");
+    public static void createAnnex2Ev(MessageResources request, Long idObsExecution, Long idOperation) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_portales.xml");
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
         }
-        writer = new FileWriter(file);
-
-        XMLSerializer serializer = new XMLSerializer(writer, of);
-        ContentHandler hd = serializer.asContentHandler();
+        final FileWriter writer = new FileWriter(file);
+        final OutputFormat of = new OutputFormat("XML", "UTF-8", true);
+        final XMLSerializer serializer = new XMLSerializer(writer, of);
+        final ContentHandler hd = serializer.asContentHandler();
         hd.startDocument();
         hd.startElement("", "", "resultados", null);
 
         Connection c = null;
         try {
-            Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(request, idObsExecution);
+            final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
             c = DataBaseManager.getConnection();
             for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
                 SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
@@ -223,7 +238,7 @@ public final class AnnexUtils {
                     hd.endElement("", "", "semilla");
 
                     for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-                        String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+                        final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
                         hd.startElement("", "", "puntuacion_" + executionDateAux, null);
                         hd.characters(entry.getValue().getTotalScore().toString().toCharArray(), 0, entry.getValue().getTotalScore().toString().length());
                         hd.endElement("", "", "puntuacion_" + executionDateAux);
@@ -270,7 +285,6 @@ public final class AnnexUtils {
         }
     }
 
-
     private static void createMultilanguagePageAnnex(Connection conn, Long idObsExecution, Long idOperation) {
         FileWriter writer = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -279,8 +293,8 @@ public final class AnnexUtils {
 
             File file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_paginas_multilanguage_completo.xml");
 
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
+            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+                Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
             }
             writer = new FileWriter(file);
 
@@ -392,15 +406,15 @@ public final class AnnexUtils {
         try {
             OutputFormat of = new OutputFormat("XML", "UTF-8", true);
 
-            File file = null;
+            final File file;
             if (!complet) {
                 file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_portales_multilanguage.xml");
             } else {
                 file = new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexo_portales_multilanguage_completo.xml");
             }
 
-            if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
+            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+                Logger.putLog("No se ha podido crear los directorios al exportar los anexos", AnnexUtils.class, Logger.LOG_LEVEL_ERROR);
             }
             writer = new FileWriter(file);
 

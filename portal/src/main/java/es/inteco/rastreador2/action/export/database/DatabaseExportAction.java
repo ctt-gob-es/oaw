@@ -6,7 +6,6 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.multilanguage.database.export.ExportMultilanguageUtils;
 import es.inteco.multilanguage.manager.ObservatoryManager;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
@@ -37,16 +36,14 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class DatabaseExportAction extends Action {
 
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
-                                 HttpServletRequest request, HttpServletResponse response) {
-
+    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         if (CrawlerUtils.hasAccess(request, "export.observatory.results")) {
             try {
                 if (request.getParameter(Constants.ACTION) != null) {
                     if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
-                        return export(mapping, form, request, response);
+                        return export(mapping, request);
                     } else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
-                        return confirm(mapping, form, request, response);
+                        return confirm(mapping, request);
                     }
                 }
             } catch (Exception e) {
@@ -60,16 +57,16 @@ public class DatabaseExportAction extends Action {
         return null;
     }
 
-    public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+    public ActionForward export(ActionMapping mapping, HttpServletRequest request) throws Exception {
+        final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
         Connection c = null;
         try {
             c = DataBaseManager.getConnection();
 
-            List<ObservatorioRealizadoForm> fulfilledObservatories = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, null);
+            final List<ObservatorioRealizadoForm> fulfilledObservatories = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, null);
 
             for (ObservatorioRealizadoForm fulfilledObservatory : fulfilledObservatories) {
-                PropertiesManager pmgr = new PropertiesManager();
+                final PropertiesManager pmgr = new PropertiesManager();
 
                 if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
                     Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
@@ -132,13 +129,13 @@ public class DatabaseExportAction extends Action {
         return mapping.findForward(Constants.EXITO);
     }
 
-    public ActionForward confirm(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+    public ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
+        final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 
         Connection c = null;
         try {
             c = DataBaseManager.getConnection();
-            ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+            final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
         } catch (Exception e) {
             throw e;
@@ -148,4 +145,5 @@ public class DatabaseExportAction extends Action {
 
         return mapping.findForward(Constants.CONFIRM);
     }
+
 }
