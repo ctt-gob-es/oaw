@@ -14,6 +14,7 @@ import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -159,13 +160,13 @@ public final class ObservatoryUtils {
         }
     }
 
-    public static String getValidationLevel(final HttpServletRequest request, final String level) {
-        if (level.equals(Constants.OBS_AA)) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa");
-        } else if (level.equals(Constants.OBS_NV)) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.nv");
-        } else if (level.equals(Constants.OBS_A)) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a");
+    public static String getValidationLevel(final MessageResources messageResources, final String level) {
+        if (Constants.OBS_AA.equals(level)) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.aa");
+        } else if (Constants.OBS_A.equals(level)) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.a");
+        } else if (Constants.OBS_NV.equals(level)) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.nv");
         } else {
             return "";
         }
