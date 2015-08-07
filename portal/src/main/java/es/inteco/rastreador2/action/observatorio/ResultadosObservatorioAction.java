@@ -285,10 +285,9 @@ public class ResultadosObservatorioAction extends Action {
     public ActionForward getAnnexes(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
             final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
-
             final Long idOperation = System.currentTimeMillis();
 
-            AnnexUtils.createAnnex(request, idObsExecution, idOperation);
+            AnnexUtils.createAnnex(CrawlerUtils.getResources(request), idObsExecution, idOperation);
             AnnexUtils.createAnnex2Ev(CrawlerUtils.getResources(request), idObsExecution, idOperation);
 
             final PropertiesManager pmgr = new PropertiesManager();

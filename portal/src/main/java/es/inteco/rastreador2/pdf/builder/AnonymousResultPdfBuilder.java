@@ -659,7 +659,7 @@ public abstract class AnonymousResultPdfBuilder {
         for (ObservatoryEvaluationForm evaluationForm : evaList) {
             table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.score.by.page.label", ++pageCounter), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(String.valueOf(evaluationForm.getScore().setScale(evaluationForm.getScore().scale() - 1)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(ObservatoryUtils.getValidationLevel(request, ObservatoryUtils.pageSuitabilityLevel(evaluationForm)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(ObservatoryUtils.getValidationLevel(CrawlerUtils.getResources(request), ObservatoryUtils.pageSuitabilityLevel(evaluationForm)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
 
         table.setSpacingBefore(ConstantsFont.SPACE_LINE);
