@@ -88,7 +88,7 @@
 																<bean:define id="regeneratePDF"><%= Constants.EXPORT_PDF_REGENERATE %></bean:define>
 																<c:set target="${params}" property="${regeneratePDF}" value="true" />
 																<li><html:link forward="anonymousExportPdfAction" name="params" ><img src="../images/icono_regenerar_pdf.gif" alt="<bean:message key="indice.rastreo.exportar.pdf.regenerate" />"/></html:link></li>--%>
-																<li><html:link forward="anonymousExportHtmlAction" name="params" ><img src="../images/export_html.png" alt="<bean:message key="indice.rastreo.exportar.html" />"/></html:link></li>
+																<%--<li><html:link forward="anonymousExportHtmlAction" name="params" ><img src="../images/export_html.png" alt="<bean:message key="indice.rastreo.exportar.html" />"/></html:link></li> --%>
 																<li><html:link forward="anonymousExportOpenOfficeAction" name="params" ><img src="../images/openoffice.png" alt="<bean:message key="indice.rastreo.exportar.openOffice" />"/></html:link></li>
 															<%-- </logic:equal> --%>
 															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeLenox%>">
