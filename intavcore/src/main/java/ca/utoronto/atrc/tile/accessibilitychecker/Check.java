@@ -1738,7 +1738,7 @@ public class Check {
     // Note: The actual check for missing d-link happens in the parser so that it can be
     // done before the DOM structure is created.
     private boolean functionDLinkMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        String stringDlinkStatus = (String) elementGiven.getUserData("dlink");
+        final String stringDlinkStatus = (String) elementGiven.getUserData("dlink");
         if (stringDlinkStatus == null) {
             return true;
         }
@@ -1776,23 +1776,16 @@ public class Check {
 
         // check if the control has an associated label using 'for' and 'id' attributes
         // get the 'id' attribute of the control
-        String stringId = elementGiven.getAttribute("id");
+        final String stringId = elementGiven.getAttribute("id");
         if (stringId.length() == 0) {
             // control has no 'id' attribute so can't have an associated label
             return true;
         }
 
-        // Buscamos al formulario padre
-        Element formParent = DOMUtil.getParent(elementGiven);
-        while (formParent != null) {
-            if ("form".equalsIgnoreCase(formParent.getNodeName())) {
-                break;
-            }
-            formParent = DOMUtil.getParent(formParent);
-        }
+        final Document document = elementGiven.getOwnerDocument();
 
-        if (formParent != null) {
-            NodeList listLabels = formParent.getElementsByTagName("label");
+        if (document != null) {
+            final NodeList listLabels = document.getElementsByTagName("label");
 
             // look for a label that has a 'for' attribute value matching the control's id
             int cont = 0;
@@ -1816,7 +1809,7 @@ public class Check {
         // check if the control has a title attribute
         if (elementGiven.hasAttribute("title")) {
             // check if the title contains text
-            String stringTitle = elementGiven.getAttribute("title");
+            final String stringTitle = elementGiven.getAttribute("title");
             if (stringTitle.trim().length() > 0) {
                 return false;
             }
@@ -1826,7 +1819,7 @@ public class Check {
         Element elementParent = DOMUtil.getParent(elementGiven);
         while (elementParent != null) {
             if ("label".equalsIgnoreCase(elementParent.getNodeName())) {
-                String stringLabelText = EvaluatorUtility.getLabelText(elementParent);
+                final String stringLabelText = EvaluatorUtility.getLabelText(elementParent);
                 if (stringLabelText.length() > 0) {
                     return false;
                 }
@@ -1837,7 +1830,7 @@ public class Check {
 
         // check if the control has an associated label using 'for' and 'id' attributes
         // get the 'id' attribute of the control
-        String stringId = elementGiven.getAttribute("id");
+        final String stringId = elementGiven.getAttribute("id");
         if (stringId.length() == 0) {
             // control has no 'id' attribute so can't have an associated label
             return true;
@@ -3304,23 +3297,19 @@ public class Check {
     private boolean functionLabelIncorrectlyAssociated(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final String attributeFor = elementGiven.getAttribute("for");
 
-        // Buscamos al formulario padre
-        Element formParent = DOMUtil.getParent(elementGiven);
-        while (formParent != null) {
-            if (formParent.getNodeName().equalsIgnoreCase("form")) {
-                break;
-            }
-            formParent = DOMUtil.getParent(formParent);
-        }
+        final Document document = elementGiven.getOwnerDocument();
 
-        if (formParent != null) {
-            if (controlsNumIds(formParent.getElementsByTagName("input"), attributeFor) +
-                    controlsNumIds(formParent.getElementsByTagName("select"), attributeFor) +
-                    controlsNumIds(formParent.getElementsByTagName("textarea"), attributeFor) == 1) {
+        if (document!= null) {
+            if (controlsNumIds(document.getElementsByTagName("input"), attributeFor) +
+                    controlsNumIds(document.getElementsByTagName("select"), attributeFor) +
+                    controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) == 1) {
                 return false;
+            } else {
+                return true;
             }
+        } else {
+            return false;
         }
-        return true;
     }
 
     private int controlsNumIds(NodeList controls, String attributeFor) {
