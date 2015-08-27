@@ -33,7 +33,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     private static final int HEADERS_AS_LEGEND = 429;
     /* En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) */
     private static final int COMPLEX_FORMS = 430;
-    /* Se verifica que todo “fieldset” tenga un único elemento “legend” con contenido (primer elemento semántico hijo).*/
+    /* Se verifica que todos los “fieldset” tengan un único elemento “legend” con contenido (primer elemento semántico hijo).*/
     private static final int LEGEND_FIRST_CHILD = 444;
     /* Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) */
     private static final int OPTGROUP = 406;
@@ -43,7 +43,6 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     private static final int OPTGROUP_LABEL = 407;
     /* Se identifican los campos obligatorios en formularios con más de N campos de texto (se busca los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes dentro del formulario <form>). (N = 4) */
     private static final int REQUIRED_CONTROLS = 446;
-    /*TODO: No se emplea la propiedad de CSS 'text-decoration: blink'*/
 
     private CheckAccessibility checkAccessibility;
 
@@ -377,6 +376,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     @Test
     public void evaluateManyOptions() throws Exception {
         checkAccessibility.setContent("<select>" +
+                "<option>Seleccione ----</option>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
                 "<option>Opción  3</option>" +
@@ -400,7 +400,40 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "<option>Opción 21</option>" +
                 "<option>Opción 22</option>" +
                 "<option>Opción 23</option>" +
+                "<option>Opción 24</option>" +
                 "</select>");
+        // 25 opciones pasa
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, OPTGROUP));
+
+        checkAccessibility.setContent("<select>" +
+                "<option>Seleccione ----</option>" +
+                "<option>Opción  1</option>" +
+                "<option>Opción  2</option>" +
+                "<option>Opción  3</option>" +
+                "<option>Opción  4</option>" +
+                "<option>Opción  5</option>" +
+                "<option>Opción  6</option>" +
+                "<option>Opción  7</option>" +
+                "<option>Opción  8</option>" +
+                "<option>Opción  9</option>" +
+                "<option>Opción 10</option>" +
+                "<option>Opción 11</option>" +
+                "<option>Opción 12</option>" +
+                "<option>Opción 13</option>" +
+                "<option>Opción 14</option>" +
+                "<option>Opción 15</option>" +
+                "<option>Opción 16</option>" +
+                "<option>Opción 17</option>" +
+                "<option>Opción 18</option>" +
+                "<option>Opción 19</option>" +
+                "<option>Opción 20</option>" +
+                "<option>Opción 21</option>" +
+                "<option>Opción 22</option>" +
+                "<option>Opción 23</option>" +
+                "<option>Opción 24</option>" +
+                "<option>Opción 25</option>" +
+                "</select>");
+        // 26 opciones falla
         Assert.assertEquals(1, getNumProblems(checkAccessibility, OPTGROUP));
     }
 
