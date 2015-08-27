@@ -133,6 +133,35 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
 
+        checkAccessibility.setContent("<form><label for=\"_selector_\">Selector</label><select id=\"_selector_\" name=\"otra_cosa\"><option>Opción 1</option></select></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<span class=\"aui-field-content\">\n" +
+                "\n" +
+                "\t\t\t<label class=\"aui-field-label-inline-label\"\n" +
+                "                   for=\"_101_INSTANCE_HQbMoL5bmHVo_ocerSearchContainerPageIterator_page\">\n" +
+                "                Página\n" +
+                "                <span class=\"aui-helper-hidden-accessible\">(Cambiar el valor de este campo provocará que se recargue la página.)</span>\n" +
+                "            </label>\n" +
+                "\n" +
+                "\t\t<span class='aui-field-element '>\n" +
+                "\t\t\t<select class=\"aui-field-input aui-field-input-select aui-field-input-menu\"\n" +
+                "                    id=\"_101_INSTANCE_HQbMoL5bmHVo_ocerSearchContainerPageIterator_page\"\n" +
+                "                    name=\"_101_INSTANCE_HQbMoL5bmHVo_page\" onchange=\"_101_INSTANCE_HQbMoL5bmHVo_curupdateCur(this);\">\n" +
+                "                <option selected value=\"1\">1</option>\n" +
+                "                <option value=\"2\">2</option>\n" +
+                "                <option value=\"3\">3</option>\n" +
+                "            </select>\n" +
+                "\t\t</span>\n" +
+                "\n" +
+                "\t\t\t<span class=\"aui-suffix\">\n" +
+                "\t\t\t\tde 8\n" +
+                "\t\t\t</span>\n" +
+                "</span>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
         checkAccessibility.setContent("<select title=\"Selector\"><option>Opción 1</option></select>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
@@ -518,6 +547,22 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</div></fieldset>" +
                 "</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+
+        checkAccessibility.setContent("<form>" +
+                "<fieldset><div>Lorem ipsum</div><legend>Grupo</legend>" +
+                "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
+                "</fieldset></form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+    }
+
+    @Test
+    public void evaluateLegendDoubleChildDiv() throws Exception {
+        checkAccessibility.setContent("<form>" +
+                "<fieldset><div>Lorem</div><div>Ipsum</div><legend>Grupo</legend>" +
+                "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
+                "</div></fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
     }
 
     @Test
@@ -544,10 +589,21 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     @Test
     public void evaluateLegendFirstChildText() throws Exception {
         checkAccessibility.setContent("<form>" +
-                "<fieldset>Lorem<legend>Grupo</legend>" +
+                "<fieldset><legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
                 "</fieldset>" +
                 "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+    }
+
+    @Test
+    public void evaluateLegendSpanText() throws Exception {
+        checkAccessibility.setContent("\t\t\t<form action=\"busqueda.asp\" method=\"get\" name=\"busqueda\" id=\"formBuscadores\">\n" +
+                "\t\t\t<div><input type=\"hidden\" name=\"idioma\" value=\"1\"></div>\n" +
+                "\t\t\t<fieldset>\n" +
+                "\t\t\t<legend><span class=\"legend_buscador\">Buscador</span></legend>\n" +
+                "\t\t\t</fieldset>\n" +
+                "\t\t\t</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
     }
 

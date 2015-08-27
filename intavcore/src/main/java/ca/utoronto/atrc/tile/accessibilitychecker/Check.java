@@ -903,28 +903,20 @@ public class Check {
         if (firstChild == null) {
             return true;
         } else {
-            if (checkCode.getFunctionValue().equalsIgnoreCase(firstChild.getNodeName())) {
-                return false;
-            } else if (firstChild.getNodeType() == Node.ELEMENT_NODE) {
+            Node currentNode = firstChild;
+            while (currentNode.getNodeType() == Node.TEXT_NODE && currentNode.getTextContent().trim().isEmpty()) {
+                    currentNode = currentNode.getNextSibling();
+            }
+            if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                 final List allowedTags = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
-                if (allowedTags.contains(firstChild.getNodeName().toLowerCase())) {
-                    return functionNotFirstChild(checkCode, nodeNode, (Element) firstChild);
-                } else {
-                    return true;
-                }
-            } else if (firstChild.getNodeType() == Node.TEXT_NODE) {
-                Node currentNode = firstChild;
-                while (currentNode.getNodeType() == Node.TEXT_NODE && currentNode.getTextContent().trim().isEmpty()) {
+                if (allowedTags.contains(currentNode.getNodeName().toLowerCase())) {
                     currentNode = currentNode.getNextSibling();
                 }
-                if (currentNode instanceof Element) {
-                    return functionNotFirstChild(checkCode, nodeNode, (Element) currentNode);
-                } else {
+                if (checkCode.getFunctionValue().equalsIgnoreCase(currentNode.getNodeName())) {
                     return false;
                 }
-            } else {
-                return true;
             }
+            return true;
         }
     }
 
