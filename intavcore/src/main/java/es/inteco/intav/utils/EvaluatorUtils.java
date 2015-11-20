@@ -1069,14 +1069,14 @@ public final class EvaluatorUtils {
         return true;
     }
 
-    public static HttpURLConnection getConnection(String url, String method, boolean followRedirects) throws Exception {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+    public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects) throws Exception {
+        final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setInstanceFollowRedirects(followRedirects);
         connection.setRequestMethod(method);
-        PropertiesManager pmgr = new PropertiesManager();
         if (connection instanceof HttpsURLConnection) {
             ((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
         }
+        final PropertiesManager pmgr = new PropertiesManager();
         connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
         connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
         connection.addRequestProperty("Accept", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.header"));
@@ -1087,7 +1087,7 @@ public final class EvaluatorUtils {
 
     private static SSLSocketFactory getNaiveSSLSocketFactory() {
         // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[] {
+        final TrustManager[] trustAllCerts = new TrustManager[] {
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
@@ -1103,7 +1103,7 @@ public final class EvaluatorUtils {
 
         // Install the all-trusting trust manager
         try {
-            SSLContext sc = SSLContext.getInstance("SSL");
+            final SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             return sc.getSocketFactory();
         } catch (Exception e) {
@@ -1112,13 +1112,13 @@ public final class EvaluatorUtils {
         return null;
     }
 
-    public static String getResponseCharset(HttpURLConnection connection, InputStream markableInputStream) throws Exception {
+    public static String getResponseCharset(final HttpURLConnection connection, final InputStream markableInputStream) throws Exception {
         String charset = IntavConstants.DEFAULT_ENCODING;
         boolean found = false;
 
         // Buscamos primero en las cabeceras de la respuesta
         try {
-            String header = connection.getHeaderField("Content-type");
+            final String header = connection.getHeaderField("Content-type");
             String charsetValue = header.substring(header.indexOf("charset"));
             charsetValue = charsetValue.substring(charsetValue.indexOf('=') + 1);
             if (StringUtils.isNotEmpty(charsetValue)) {
@@ -1129,13 +1129,12 @@ public final class EvaluatorUtils {
             // found = false;
         }
 
-
         // Si no lo hemos encontrado en las cabeceras, intentaremos buscarlo en la etiqueta <meta> correspondiente
         if (!found) {
-            String regexp = "<meta.*charset=(.*?)\"";
-            Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            final String regexp = "<meta.*charset=(.*?)\"";
+            final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-            Matcher matcher = pattern.matcher(StringUtils.getContentAsString(markableInputStream));
+            final Matcher matcher = pattern.matcher(StringUtils.getContentAsString(markableInputStream));
             if (matcher.find()) {
                 charset = matcher.group(1);
                 found = true;
@@ -1152,7 +1151,7 @@ public final class EvaluatorUtils {
         return charset;
     }
 
-    private static boolean isValidCharset(String charset) {
+    private static boolean isValidCharset(final String charset) {
         try {
             byte[] test = new byte[10];
             new String(test, charset);
@@ -1162,21 +1161,19 @@ public final class EvaluatorUtils {
         }
     }
 
-    public static String getLinkText(Element link) {
-        StringBuilder linkText = new StringBuilder();
+    public static String getLinkText(final Element link) {
+        final StringBuilder linkText = new StringBuilder();
         if (StringUtils.isNotEmpty(link.getTextContent())) {
             linkText.append(link.getTextContent().trim());
         }
 
-        NodeList imgs = link.getElementsByTagName("img");
+        final NodeList imgs = link.getElementsByTagName("img");
         for (int i = 0; i < imgs.getLength(); i++) {
-            Element img = (Element) imgs.item(i);
+            final Element img = (Element) imgs.item(i);
             if (img.hasAttribute("alt")) {
                 linkText.append(" ").append(img.getAttribute("alt"));
             }
         }
-
-
         return linkText.toString();
     }
 

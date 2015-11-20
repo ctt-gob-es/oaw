@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public final class Check_1_1_7_PrimaryLanguageTest {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7 = "minhap.observatory.2.0.subgroup.1.1.7";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7 = "minhap.observatory.2_0.subgroup.1.1.7";
 
     private static final int HAS_LANGUAGE = 48;
     private static final int VALID_LANGUAGE = 49;
@@ -131,7 +131,7 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
     @Test
@@ -231,8 +231,9 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         checkAccessibility.setContent("<html lang='va'><body><p>L'Acadèmia Valenciana de la Llengua ha introduït en el seu web una sèrie de canvis i novetats amb l’objectiu d’actualitzar al màxim la pàgina d’informació permanent als usuaris. L’activitat de la institució normativa ha augmentat amb el pas dels anys i l'increment es veu reflectit en el contingut dels diferents apartats del web.</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
     @Test
@@ -263,7 +264,7 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         checkAccessibility.setContent("<html lang='es'><body><p>L'asturianu ye una llingua romance propia d'Asturies, perteneciente al subgrupu asturllionés.</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_RED_ZERO);
 
         checkAccessibility.setContent("<html lang='ast'><body><p>L'Academia de la Llingua Asturiana (A.Ll.A.) ye una institución del Principáu d'Asturies que se creó en 1980 por Decretu del Conseyu Rexonal d'Asturies 33/1980 de 15 d'avientu y con Estatutos aprobaos pol mesmu muérganu por Decretu 9/1981, modificaos el 12 d'abril de 1995 (BOPA nu 136 de 14.6.1995). L'Academia tien anguaño 23 miembros de númberu, 19 miembros correspondientes y 15 académicos d'honor. Los académicos nun perciben nenguna retribución nin pola so condición de tales nin polos cargos que desempeñen na Academia.</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -273,13 +274,13 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         checkAccessibility.setContent("<html lang='en'><body><p>L'Academia de la Llingua Asturiana (A.Ll.A.) ye una institución del Principáu d'Asturies que se creó en 1980 por Decretu del Conseyu Rexonal d'Asturies 33/1980 de 15 d'avientu y con Estatutos aprobaos pol mesmu muérganu por Decretu 9/1981, modificaos el 12 d'abril de 1995 (BOPA nu 136 de 14.6.1995). L'Academia tien anguaño 23 miembros de númberu, 19 miembros correspondientes y 15 académicos d'honor. Los académicos nun perciben nenguna retribución nin pola so condición de tales nin polos cargos que desempeñen na Academia.</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
 //    @Test
 //    public void testURL() throws Exception {
 //        // Test para comprobar rápidamente el resultado que genera la comprobacion de detección de idioma para una página 'real'
-//        checkAccessibility.setUrl("http://www.controlastuenergia.gob.es/Paginas/contacto.aspx");
+//        checkAccessibility.setUrl("http://www.igae.pap.meh.es/sitios/igae/en-GB/rcf/Paginas/RCFyFE.aspx");
 //        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
 //        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
 //        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);

@@ -109,7 +109,7 @@ public final class IntavExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "", ConstantsFont.documentTitleFont, ConstantsFont.documentSubtitleFont);
+            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "", ConstantsFont.documentTitleFont);
 
             //Se crea el capítulo de introdución
             Chapter chapter = globalChapter(evaList, request, globalPath, null, fechaInforme);
@@ -213,7 +213,7 @@ public final class IntavExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "", ConstantsFont.documentTitleFont, ConstantsFont.documentSubtitleFont);
+            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "", ConstantsFont.documentTitleFont);
 
             Chapter chapter1 = globalChapter(evaList, request, globalPath, index, fechaInforme);
 
@@ -579,7 +579,7 @@ public final class IntavExport {
             String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "chart.intav.rowTitle");
             ChartForm chart = new ChartForm(tableName, "", rowTitle,
                     priorityDataSet, true, true, false, false, true, false, false, x, y, color);
-            GraphicsUtils.createSeriesBarChart(chart, tempPath + tableName + ".jpg", "", request, false);
+            GraphicsUtils.createSeriesBarChart(chart, tempPath + tableName + ".jpg", "", CrawlerUtils.getResources(request), false);
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
         }
@@ -850,11 +850,11 @@ public final class IntavExport {
 
             ChartForm chartA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemA.title"),
                     columnTitle, rowTitle, dataSetA, true, false, false, false, false, true, true, x, y, colorEv);
-            GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemA.title") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemA.title") + ".jpg", "", CrawlerUtils.getResources(request), false);
 
             ChartForm chartAA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemAA.title"),
                     columnTitle, rowTitle, dataSetAA, true, false, false, false, false, true, true, x, y, colorEv);
-            GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemAA.title") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemAA.title") + ".jpg", "", CrawlerUtils.getResources(request), false);
 
 
         } catch (Exception e) {
@@ -896,11 +896,11 @@ public final class IntavExport {
 
             ChartForm chartA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningA.title"),
                     columnTitle, rowTitle, dataSetA, true, false, false, false, false, true, true, x, y, colorEv);
-            GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningA.title") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningA.title") + ".jpg", "", CrawlerUtils.getResources(request), false);
 
             ChartForm chartAA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningAA.title"),
                     columnTitle, rowTitle, dataSetAA, true, false, false, false, false, true, true, x, y, colorEv);
-            GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningAA.title") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningAA.title") + ".jpg", "", CrawlerUtils.getResources(request), false);
 
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -941,11 +941,11 @@ public final class IntavExport {
 
             ChartForm chartA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellA.title"),
                     columnTitle, rowTitle, dataSetA, true, false, false, false, false, true, true, x, y, colorEv);
-            GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellA.title") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(chartA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellA.title") + ".jpg", "", CrawlerUtils.getResources(request), false);
 
             ChartForm chartAA = new ChartForm(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellAA.title"),
                     columnTitle, rowTitle, dataSetAA, true, false, false, false, false, true, true, x, y, colorEv);
-            GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellAA.title") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(chartAA, tempPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellAA.title") + ".jpg", "", CrawlerUtils.getResources(request), false);
 
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);

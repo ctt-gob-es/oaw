@@ -200,32 +200,38 @@ public final class BasicServiceUtils {
     }
 
     public static String getTitleDocFromContent(final String content, final boolean isCompleted) {
+        if ( content==null ) {
+            return "";
+        }
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-            Matcher matcher = pattern.matcher(content);
+            final PropertiesManager pmgr = new PropertiesManager();
+            final Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+            final Matcher matcher = pattern.matcher(content);
 
             if (matcher.find()) {
-                if (matcher.group(1).length() <= Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length"))) {
-                    return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(matcher.group(1)));
+                final String title = matcher.group(1).replaceAll("\\s{2,}"," ");
+                final int titleMaxLength = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length"));
+                if (title.length() <= titleMaxLength) {
+                    return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));
                 } else {
                     //si el titulo es muy grande
-                    String title = matcher.group(1);
                     //si es un lugar del documento donde no tiene que salir entero el titulo
                     if (!isCompleted) {
                         //	cortamos el title e insertamos '...'
-                        title = title.substring(0, Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length")) - 3);
-                        title = title.substring(0, title.lastIndexOf(' '));
-                        title = title + "...";
+                        String trunkTitle = title.substring(0, titleMaxLength - 3);
+                        trunkTitle = trunkTitle.substring(0, trunkTitle.lastIndexOf(' '));
+                        trunkTitle = trunkTitle + "...";
+                        return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(trunkTitle));
+                    } else {
+                        return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));
                     }
-                    return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));
                 }
             } else {
-                return null;
+                return "";
             }
         } catch (Exception e) {
             Logger.putLog("Error al acceder al extraer el título del contenido HTML", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-            return null;
+            return "";
         }
     }
 }

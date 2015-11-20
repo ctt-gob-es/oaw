@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public final class Check_2_1_6_ContextChangesTest {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_6 = "minhap.observatory.2.0.subgroup.2.1.6";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_6 = "minhap.observatory.2_0.subgroup.2.1.6";
 
     private static final int ONFOCUS_ONBLUR_CHANGE = 452;
     private static final int ONLOAD_CONTEXT_CHANGE = 453;

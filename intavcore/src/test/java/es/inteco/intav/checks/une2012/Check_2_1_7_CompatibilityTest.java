@@ -14,11 +14,12 @@ import org.junit.Test;
  */
 public final class Check_2_1_7_CompatibilityTest {
 
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7 = "minhap.observatory.2.0.subgroup.2.1.7";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7 = "minhap.observatory.2_0.subgroup.2.1.7";
 
     /* Documento tenga un DTD válido */
     private static final int DOCTYPE_VALID = 323;
     /* Código HTML sea parseable (apertura y cierre de etiquetas y anidamiento correcto de elementos) */
+    private static final int HTML_PARSEABLE = 440;
     /* Se verifica que no se repite el mismo atributo con diferente valor en el mismo elemento */
     private static final int DUPLICATED_ATTRIBUTES = 441;
     /* Se verifica que los valores de los atributos están entrecomillados */
@@ -50,12 +51,12 @@ public final class Check_2_1_7_CompatibilityTest {
 
     @Test
     public void evaluateValidDoctype() throws Exception {
-        checkAccessibility.setContent(DOCTYPE_HTML4 + "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        checkAccessibility.setContent(DOCTYPE_HTML4 + "<html><body><p id=\"lorem\">Lorem ipsum</p><p>Lorem ipsum</p></body></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
 
-        checkAccessibility.setContent(DOCTYPE_HTML5 + "<html><body><p id=\"lorem\">Lorem ipsum</p><p id=\"lorem\">Lorem ipsum</p></body></html>");
+        checkAccessibility.setContent(DOCTYPE_HTML5 + "<html><body><p id=\"lorem\">Lorem ipsum</p><p>Lorem ipsum</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
@@ -169,6 +170,7 @@ public final class Check_2_1_7_CompatibilityTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HTML_PARSEABLE));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), IDS_UNIQUES));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_ATTRIBUTES));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), QUOTED_ATTRIBUTES));
@@ -182,14 +184,18 @@ public final class Check_2_1_7_CompatibilityTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
     public void evaluateCSS404() throws Exception {
-        checkAccessibility.setContent("<html lang=\"es\"><head><title>Foo</title><link href=\"http://www.noexiste.no/css/no_existe.css\" rel=\"stylesheet\" type=\"text/css\"/></head><body><p>Lorem</p></body></html>");
+        checkAccessibility.setContent(DOCTYPE_HTML4 + "<html lang=\"es\"><head><title>Foo</title><link href=\"http://www.noexiste.no/css/no_existe.css\" rel=\"stylesheet\" type=\"text/css\"/></head><body><p>Lorem</p></body></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HTML_PARSEABLE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), IDS_UNIQUES));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_ATTRIBUTES));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), QUOTED_ATTRIBUTES));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
     }

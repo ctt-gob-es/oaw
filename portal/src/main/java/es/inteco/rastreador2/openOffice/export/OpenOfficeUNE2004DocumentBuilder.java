@@ -43,22 +43,22 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
 
         replaceText(odt, odfFileContent, "[fecha]", date);
         replaceText(odt, odfStyles, "[fecha]", date, "text:span");
-
-        replaceSection41(request, odt, odfFileContent, graphicPath, pageExecutionList);
-        replaceSection42(request, odt, odfFileContent, graphicPath, categories, pageExecutionList);
-        replaceSection43(request, odt, odfFileContent, graphicPath, categories, pageExecutionList);
-        replaceSection441(request, odt, odfFileContent, graphicPath, pageExecutionList);
-        replaceSection442(request, odt, odfFileContent, graphicPath, pageExecutionList);
-        replaceSection451(request, odt, odfFileContent, graphicPath, pageExecutionList);
-        replaceSection452(request, odt, odfFileContent, graphicPath, pageExecutionList);
-        replaceSection46(request, odt, odfFileContent, graphicPath, pageExecutionList);
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        replaceSection41(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+        replaceSection42(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
+        replaceSection43(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
+        replaceSection441(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+        replaceSection442(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+        replaceSection451(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+        replaceSection452(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+        replaceSection46(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 
         for (CategoriaForm category : categories) {
             List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList);
             replaceSectionCat1(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
             replaceSectionCat2(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
-            replaceSectionCat31(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
-            replaceSectionCat32(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
+            replaceSectionCat31(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
+            replaceSectionCat32(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
             replaceSectionCat41(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
             replaceSectionCat42(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
             replaceSectionCat5(request, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
@@ -69,7 +69,7 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
             Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioIntavUtils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId));
             Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
             for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-                resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, entry.getValue()));
+                resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), entry.getValue()));
             }
             replaceSectionEv1(request, odt, odfFileContent, graphicPath, pageObservatoryMap);
             replaceSectionEv2(request, odt, odfFileContent, graphicPath, pageObservatoryMap);
@@ -85,11 +85,11 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return OpenOfficeUNE2004ImageUtils.getEmbededIdImage(tipoObservatorio, name);
     }
 
-    private int replaceSection41(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg", "image/jpeg");
+    private int replaceSection41(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg", "image/jpeg");
         numImg++;
-        Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
-        List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(request, result);
+        final Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
+        final List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(messageResources, result);
         replaceText(odt, odfFileContent, "-41.t1.b2-", labelValueBean.get(0).getPercentageP());
         replaceText(odt, odfFileContent, "-41.t1.b3-", labelValueBean.get(1).getPercentageP());
         replaceText(odt, odfFileContent, "-41.t1.b4-", labelValueBean.get(2).getPercentageP());
@@ -100,16 +100,16 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection42(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<CategoriaForm> categories, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioIntavUtils.createGraphicsMap(categories);
+    private int replaceSection42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioIntavUtils.createGraphicsMap(categories);
         for (Integer i : resultLists.keySet()) {
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + i + ".jpg", "image/jpeg");
+            replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + i + ".jpg", "image/jpeg");
             numImg++;
         }
-        Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, categories);
+        final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, categories);
         int tableNum = 1;
         for (CategoriaForm category : categories) {
-            java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegment(request, res.get(category));
+            java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegment(messageResources, res.get(category));
             replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b2-", results.get(0).getValue() + "%");
             replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b3-", results.get(1).getValue() + "%");
             replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b4-", results.get(2).getValue() + "%");
@@ -119,9 +119,8 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection43(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<CategoriaForm> categories, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+    private int replaceSection43(final MessageResources resources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioIntavUtils.createGraphicsMap(categories);
-        final MessageResources resources = CrawlerUtils.getResources(request);
         for (Integer i : resultLists.keySet()) {
             replaceImg(odt, graphicPath + resources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + i + ".jpg", "image/jpeg");
             numImg++;
@@ -139,12 +138,12 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection441(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg", "image/jpeg");
+    private int replaceSection441(final MessageResources messageResources, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg", "image/jpeg");
         numImg++;
 
         Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
-        List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(request, resultL1);
+        List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
 
         replaceText(odt, odfFileContent, "-441.t1.b2-", labelsL1.get(0).getValue());
         replaceText(odt, odfFileContent, "-441.t1.b3-", labelsL1.get(1).getValue());
@@ -160,12 +159,12 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection442(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", "image/jpeg");
+    private int replaceSection442(final MessageResources messageResources, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", "image/jpeg");
         numImg++;
 
         Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
-        List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(request, resultL2);
+        List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
 
         replaceText(odt, odfFileContent, "-442.t1.b2-", labelsL2.get(0).getValue());
         replaceText(odt, odfFileContent, "-442.t1.b3-", labelsL2.get(1).getValue());
@@ -181,8 +180,8 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection451(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", "image/jpeg");
+    private int replaceSection451(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", "image/jpeg");
         numImg++;
 
         Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
@@ -212,12 +211,12 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection452(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
+    private int replaceSection452(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        replaceImg(odt, graphicPath +messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
         numImg++;
 
-        Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
-        List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2);
+        final Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
+        final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2);
 
         replaceText(odt, odfFileContent, "-452.t1.b2-", res.get(0).getGreenPercentage());
         replaceText(odt, odfFileContent, "-452.t1.c2-", res.get(0).getRedPercentage());
@@ -243,12 +242,12 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSection46(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-        replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspect.mid.name") + ".jpg", "image/jpeg");
+    private int replaceSection46(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+        replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + ".jpg", "image/jpeg");
         numImg++;
 
-        Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, pageExecutionList);
-        List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(request, result);
+        final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
+        final List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(messageResources, result);
 
         replaceText(odt, odfFileContent, "-46.t1.b2-", labels.get(0).getValue());
         replaceText(odt, odfFileContent, "-46.t1.b3-", labels.get(1).getValue());
@@ -260,10 +259,9 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
     }
 
     private int replaceSectionCat1(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
-            java.util.List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(request, resultsMap);
+            java.util.List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(CrawlerUtils.getResources(request), resultsMap);
 
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg", "image/jpeg");
             numImg++;
@@ -296,13 +294,13 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSectionCat31(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+    private int replaceSectionCat31(final MessageResources messageResources, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
 
         if (!pageExecutionList.isEmpty()) {
-            List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(request, resultL1);
+            List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
 
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg", "image/jpeg");
+            replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "31.t1.b2-", labelsL1.get(0).getValue());
             replaceText(odt, odfFileContent, "-" + numSection + "31.t1.b3-", labelsL1.get(1).getValue());
@@ -323,13 +321,13 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
-    private int replaceSectionCat32(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+    private int replaceSectionCat32(final MessageResources messageResources, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
 
         if (!pageExecutionList.isEmpty()) {
-            List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(request, resultL2);
+            List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
 
-            replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg", "image/jpeg");
+            replaceImg(odt, graphicPath +messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg", "image/jpeg");
             numImg++;
             replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b2-", labelsL2.get(0).getValue());
             replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b3-", labelsL2.get(1).getValue());
@@ -622,7 +620,7 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
 
     private int replaceSectionCat5(HttpServletRequest request, OdfTextDocument odt, OdfFileDom odfFileContent, String graphicPath, CategoriaForm category, List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-            Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, pageExecutionList);
+            Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
             List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(request, result);
 
             replaceImg(odt, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg", "image/jpeg");

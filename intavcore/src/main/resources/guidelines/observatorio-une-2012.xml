@@ -3,7 +3,7 @@
     <type>observatory</type>
     <title abbr="observatorio-une-2012" long-name="Pautas de verificación del Observatorio v2.0">Observatorio MINHAP 2.0</title>
     <date>2014-09-18</date>
-    <status>Observatorio MinHAP v0.2</status>
+    <status>Observatorio MINHAP v2.0</status>
     <earlid>URL donde están definidas las pautas</earlid>
     <preamble>Comentario sobre el Observatorio</preamble>
 
@@ -265,6 +265,8 @@
                     <check id="443"/>
                     <!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
                     <check id="429"/>
+                    <!-- Modificación especial de la comprobación 429 para Sharepoint -->
+                    <check id="466" onlyWarning="true"/>
                     <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
                     <check id="430" relatedWith="430"/>
                     <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=8) 0-PASA -->
@@ -295,11 +297,11 @@
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
                     <check id="32" onlyWarning="true"/>
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
-                    <check id="437" onlyWarning="true"/>
+                    <!-- <check id="437" onlyWarning="true"/>      -->
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
                     <check id="31" relatedWith="32"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
-                    <check id="295" relatedWith="437"/>
+                    <check id="295"/>
                     <!-- Comprobar titulos distintos entre la muestra -->
                     <check id="462"/>
                 </checks>

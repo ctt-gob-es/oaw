@@ -711,97 +711,98 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     protected void createSection343(HttpServletRequest request, Section section) {
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p1"), ConstantsFont.paragraphFont, section);
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p1"), ConstantsFont.paragraphFont, section);
 
         List list = new List();
 
-        ArrayList<String> boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p2"));
-        ListItem item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        final ArrayList<String> boldWords = new ArrayList<String>();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p2"));
+        ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p8"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p8"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p6"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p6"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p10"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p10"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p4"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p4"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p15"), ConstantsFont.paragraphFont, section);
-        PdfPTable table = createVerificationTable(request);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p15"), ConstantsFont.paragraphFont, section);
+        PdfPTable table = createVerificationTable(messageResources);
         table.setSpacingBefore(3 * ConstantsFont.SPACE_LINE);
         section.add(table);
         section.newPage();
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p16"), ConstantsFont.paragraphFont, section);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p17"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p16"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p17"), ConstantsFont.paragraphFont, section);
 
         Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
-        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p18.bold"), CrawlerUtils.getResources(request).getMessage("anchor.PMPA"), true, ConstantsFont.paragraphBoldFont);
+        SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.46.p18.bold"), messageResources.getMessage("anchor.PMPA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
-        section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p18"), anchorMap, ConstantsFont.paragraphFont));
+        section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.46.p18"), anchorMap, ConstantsFont.paragraphFont));
 
         PropertiesManager pmgr = new PropertiesManager();
         PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.images") + "PMAP.png", "PMAP = SPMVA/VA", 75);
 
         list = new List();
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p19.bold"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p19"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p19.bold"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p19"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p20.bold"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p20"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p20.bold"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p20"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p21.bold"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p21"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p21.bold"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p21"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
         list.add(item);
 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
         anchorMap = new HashMap<Integer, SpecialChunk>();
-        anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p22.bold"), CrawlerUtils.getResources(request).getMessage("anchor.PMA"), true, ConstantsFont.paragraphBoldFont);
+        anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.46.p22.bold"), messageResources.getMessage("anchor.PMA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
-        section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p22"), anchorMap, ConstantsFont.paragraphFont));
+        section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.46.p22"), anchorMap, ConstantsFont.paragraphFont));
 
         PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.images") + "PMA.png", "PMA = SPMA/NP", 75);
 
         list = new List();
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p23.bold"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p23.bold"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p24.bold"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p24.bold"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
-        boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p25.bold"));
-        item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p25"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
+        boldWords.clear();
+        boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p25.bold"));
+        item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p25"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
         list.add(item);
 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
@@ -825,7 +826,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     @Override
-    public ScoreForm generateScores(final HttpServletRequest request, final java.util.List<ObservatoryEvaluationForm> evaList) throws Exception {
+    public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) throws Exception {
         final ScoreForm scoreForm = new ScoreForm();
 
         int suitabilityGroups = 0;
@@ -859,8 +860,8 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 
         final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
         final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
-        final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(request, resultL1);
-        final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(request, resultL2);
+        final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
+        final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
         scoreForm.setVerifications1(labelsL1);
         scoreForm.setVerifications2(labelsL2);
 
@@ -874,7 +875,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         }
 
         // El nivel de validación del portal
-        scoreForm.setLevel(getValidationLevel(scoreForm, request));
+        scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
 
         return scoreForm;
     }

@@ -40,7 +40,7 @@ public final class DiagnosisDAO {
         }
     }
 
-    public static long insertBasicServices(Connection conn, BasicServiceForm bsForm, String status) {
+    public static long insertBasicServices(final Connection conn, final BasicServiceForm bsForm, final String status) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -163,7 +163,7 @@ public final class DiagnosisDAO {
         try {
             conn = DataBaseManager.getConnection();
 
-            ps = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ?");
+            ps = conn.prepareStatement("SELECT cod_analisis FROM tanalisis WHERE cod_rastreo = ?");
             ps.setLong(1, idCrawling);
             rs = ps.executeQuery();
 
@@ -209,7 +209,7 @@ public final class DiagnosisDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = conn.prepareStatement("SELECT fec_analisis FROM tanalisis WHERE cod_rastreo = ? AND nom_entidad = ?");
+            ps = conn.prepareStatement("SELECT fec_analisis FROM tanalisis WHERE nom_entidad = ? AND cod_rastreo = ?");
             ps.setLong(1, id);
             ps.setString(2, entity);
             rs = ps.executeQuery();

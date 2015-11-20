@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public final class Check_1_1_6_PresentationTest {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6 = "minhap.observatory.2.0.subgroup.1.1.6";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_6 = "minhap.observatory.2_0.subgroup.1.1.6";
 
     private static final int DATA_ELEMENTS_ON_LAYOUT_TABLES = 45;
     private static final int PRESENTATION_ELEMENTS = 345;

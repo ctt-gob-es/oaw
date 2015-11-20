@@ -62,20 +62,21 @@ public final class DAOUtils {
             ps = conn.prepareStatement("SELECT * FROM tguidelines;");
             rs = ps.executeQuery();
             while (rs.next()) {
-                if (rs.getLong("cod_guideline") != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"))) {
+                final long codGuideline = rs.getLong("cod_guideline");
+                if (codGuideline != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"))) {
                     if (!enlacesRotos) {
-                        if (rs.getLong("cod_guideline") != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.aux.id")) &&
-                                rs.getLong("cod_guideline") != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.aux.id"))) {
+                        if (codGuideline != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.aux.id")) &&
+                                codGuideline != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.aux.id"))) {
                             NormaForm normaForm = new NormaForm();
-                            normaForm.setId(rs.getLong("cod_guideline"));
+                            normaForm.setId(codGuideline);
                             normaForm.setName(rs.getString("des_guideline").substring(0, rs.getString("des_guideline").length() - 4).toUpperCase());
                             normas.add(normaForm);
                         }
                     } else {
-                        if (rs.getLong("cod_guideline") == Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.aux")) &&
-                                rs.getLong("cod_guideline") == Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.aux"))) {
+                        if (codGuideline == Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.aux")) &&
+                                codGuideline == Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.aux"))) {
                             NormaForm normaForm = new NormaForm();
-                            normaForm.setId(rs.getLong("cod_guideline"));
+                            normaForm.setId(codGuideline);
                             normaForm.setName(rs.getString("des_guideline").substring(0, rs.getString("des_guideline").length() - 4).toUpperCase());
                             normas.add(normaForm);
                         }

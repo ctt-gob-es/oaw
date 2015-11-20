@@ -148,7 +148,7 @@ public class SemillasObservatorioAction extends Action {
                 semillaForm.setId(Long.parseLong(idSemilla));
                 boolean existSeed = SemillaDAO.existSeed(c, semillaForm.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 
-                if (existSeed && !semillaForm.getNombre().equals((String) request.getParameter(Constants.NOMBRE_ANTIGUO))) {
+                if (existSeed && !semillaForm.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
                     errors.add("semillaDuplicada", new ActionMessage("mensaje.error.nombre.semilla.duplicado"));
                     saveErrors(request.getSession(), errors);
                     return mapping.findForward(Constants.EDIT_SEED);

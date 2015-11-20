@@ -57,7 +57,7 @@ public class DatabaseExportAction extends Action {
         return null;
     }
 
-    public ActionForward export(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward export(ActionMapping mapping, HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
         Connection c = null;
         try {
@@ -72,7 +72,7 @@ public class DatabaseExportAction extends Action {
                     Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
                     if (observatory == null) {
                         // Información general de la ejecución del Observatorio
-                        observatory = DatabaseExportUtils.getObservatoryInfo(request, fulfilledObservatory.getId());
+                        observatory = DatabaseExportUtils.getObservatoryInfo(CrawlerUtils.getResources(request), fulfilledObservatory.getId());
 
                         List<CategoriaForm> categories = ObservatorioDAO.getObservatoryCategories(c, idObservatory);
                         for (CategoriaForm categoriaForm : categories) {
@@ -129,7 +129,7 @@ public class DatabaseExportAction extends Action {
         return mapping.findForward(Constants.EXITO);
     }
 
-    public ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 
         Connection c = null;

@@ -48,7 +48,6 @@ public class GraficasObservatorioAction extends Action {
     }
 
     private ActionForward getIntavGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
         String graphic = request.getParameter(Constants.GRAPHIC);
         String graphicType = request.getParameter(Constants.GRAPHIC_TYPE);
         String execution_id = request.getParameter(Constants.ID);

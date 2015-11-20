@@ -32,7 +32,6 @@ public class GraficasRastreoAction extends Action {
     }
 
     private ActionForward getGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
         String graphic = request.getParameter(Constants.GRAPHIC);
         String execution_id = request.getParameter(Constants.ID);
         String crawler_id = request.getParameter(Constants.ID_RASTREO);

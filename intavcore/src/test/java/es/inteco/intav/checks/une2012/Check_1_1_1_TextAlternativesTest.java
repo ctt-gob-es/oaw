@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_1 = "minhap.observatory.2.0.subgroup.1.1.1";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_1 = "minhap.observatory.2_0.subgroup.1.1.1";
 
     private static final int IMG_ALT_ID = 1;
     private static final int IMG_SUSPICIOUS_ALT = 100;
