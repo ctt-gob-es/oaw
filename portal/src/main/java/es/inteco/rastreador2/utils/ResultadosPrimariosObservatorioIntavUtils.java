@@ -4,6 +4,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts.util.MessageResources;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,22 +31,22 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
     private ResultadosPrimariosObservatorioIntavUtils() {
     }
 
-    public static void getGlobalAccessibilityLevelAllocationSegmentGraphic(HttpServletRequest request,
-                                                                           List<ObservatoryEvaluationForm> pageExecutionList, String title, String filePath, String noDataMess) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        File file = new File(filePath);
+    public static void getGlobalAccessibilityLevelAllocationSegmentGraphic(final MessageResources messageResources,
+                                                                           final List<ObservatoryEvaluationForm> pageExecutionList, final String title, final String filePath, final String noDataMess) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final File file = new File(filePath);
 
-        Map<String, Integer> result = getResultsByLevel(pageExecutionList);
+        final Map<String, Integer> result = getResultsByLevel(pageExecutionList);
 
         if (!file.exists()) {
-            GraphicsUtils.totalPageStr = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.page.number");
+            GraphicsUtils.totalPageStr = messageResources.getMessage("observatory.graphic.page.number");
             GraphicsUtils.totalPage = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
 
-            DefaultPieDataset dataSet = new DefaultPieDataset();
+            final DefaultPieDataset dataSet = new DefaultPieDataset();
 
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_NV, request), result.get(Constants.OBS_NV));
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, request), result.get(Constants.OBS_A));
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, request), result.get(Constants.OBS_AA));
+            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_NV, messageResources), result.get(Constants.OBS_NV));
+            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
+            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
 
             GraphicsUtils.createPieChart(dataSet, title, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
         }
@@ -65,13 +66,12 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
         return globalResult;
     }
 
-    public static void getScoreByPageGraphic(HttpServletRequest request,
-                                             List<ObservatoryEvaluationForm> pageExecutionList, String title, String filePath, String noDataMess) throws Exception {
-        File file = new File(filePath);
+    public static void getScoreByPageGraphic(final MessageResources request,
+                                             final List<ObservatoryEvaluationForm> pageExecutionList, final String title, final String filePath, final String noDataMess) throws Exception {
+        final File file = new File(filePath);
         //Si no existe la gráfica, la creamos
         if (!file.exists()) {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
-            GraphicsUtils.createBarPageByLevelChart(pageExecutionList, title, rowTitle, "", filePath, noDataMess, request, x, y);
+            GraphicsUtils.createBarPageByLevelChart(pageExecutionList, title, request.getMessage("observatory.graphic.mid.puntuation"), "", filePath, noDataMess, request, x, y);
         }
     }
 

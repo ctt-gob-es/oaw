@@ -55,6 +55,15 @@ Telephone: (416) 978-4360
                     <function call="text-match" node="@alt" value="\w+"/>
                     <function call="text-match" node="@role" value="^\s*presentation\s*$"/>
                 </condition>
+                <condition type="and">
+                    <function call="attribute-exists" node="." value="alt"/>
+                    <condition type="or">
+                        <function call="characters-less-than" node="@alt" value="1"/>
+                        <function call="is-only-blanks" node="@alt"/>
+                    </condition>
+                    <function call="attribute-exists" node="." value="role"/>
+                    <function call="text-not-match" node="@role" value="\s*presentation\s*"/>
+                </condition>
             </condition>
         </machine>
     </check>
@@ -1875,10 +1884,10 @@ Telephone: (416) 978-4360
             <condition type="and">
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
-                          attribute1="\D(\d{1,2}/\d{1,2}/\d{4}\D"/>
+                          attribute1="\D(\d{1,2}/\d{1,2}/\d{4})\D"/>
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
-                          attribute1="\D(\d{4}/\d{1,2}/\d{1,2}\D"/>
+                          attribute1="\D(\d{4}/\d{1,2}/\d{1,2})\D"/>
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
                           attribute1="(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) +del{0,1} +(19|20)\d{2}\D"/>
@@ -4654,9 +4663,9 @@ Telephone: (416) 978-4360
             <trigger element="html"/>
             <condition type="and">
                 <function call="title-not-contains" node="."
-                          value="\b(mapa web|mapa|gunearen mapa|webgunearen mapa|site map|plan du site|mapa del sitio|mapa del web|mapa do sitio|web mapa|plan de site web|map|map of the website|plan|mapa de la web|mapa de web$|contenido de la web|visualizar mapa del web|mapa del portal|web map|sitemap|mapa de la sede|mapa da web|mapa del lloc|carte web|Mapa Web: Toda la información a un clic|Mapa Web \(Tecla de acceso 3\)|Webaren mapa|Mapa do portal)\b" />
+                          value="\b(mapa del sitio web|mapa web|mapa|gunearen mapa|webgunearen mapa|site map|plan du site|mapa del sitio|mapa del web|mapa do sitio|web mapa|plan de site web|map|map of the website|plan|mapa de la web|mapa de web$|contenido de la web|visualizar mapa del web|mapa del portal|web map|sitemap|mapa de la sede|mapa da web|mapa del lloc|carte web|Mapa Web: Toda la información a un clic|Mapa Web \(Tecla de acceso 3\)|Webaren mapa|Mapa do portal)\b" />
                 <function call="has-not-section-link" node="."
-                          value="^mapa web$|^mapa$|^gunearen mapa$|^webgunearen mapa$|^site map$|^plan du site$|^mapa del sitio$|^mapa del web$|^mapa do sitio$|^web mapa$|^plan de site web$|^map$|^map of the website$|^plan$|^mapa de la web$|^mapa de web$|^contenido de la web$|^visualizar mapa del web$|^mapa del portal$|^web map$|^sitemap$|^mapa de la sede$|^mapa da web$|^mapa del lloc$|^carte web$|^Mapa Web: Toda la información a un clic$|^Mapa Web \(Tecla de acceso 3\)$|^Webaren mapa$|^Mapa do portal$"/>
+                          value="^mapa del sitio web$|^mapa web$|^mapa$|^gunearen mapa$|^webgunearen mapa$|^site map$|^plan du site$|^mapa del sitio$|^mapa del web$|^mapa do sitio$|^web mapa$|^plan de site web$|^map$|^map of the website$|^plan$|^mapa de la web$|^mapa de web$|^contenido de la web$|^visualizar mapa del web$|^mapa del portal$|^web map$|^sitemap$|^mapa de la sede$|^mapa da web$|^mapa del lloc$|^carte web$|^Mapa Web: Toda la información a un clic$|^Mapa Web \(Tecla de acceso 3\)$|^Webaren mapa$|^Mapa do portal$"/>
                 <function call="attribute-element-text-not-match" node="." element="form" attribute1="role" value="search"/>
                 <function call="attribute-element-text-not-match" node="." element="div" attribute1="role" value="search"/>
                 <function call="attribute-element-text-not-match" node="." element="input" attribute1="value"
@@ -4791,7 +4800,13 @@ Telephone: (416) 978-4360
         <rationale>check.429.rationale</rationale>
         <machine>
             <trigger element="form"/>
-            <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1"/>
+            <condition type="and">
+                <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1"/>
+                <condition type="and">
+                    <function call="text-not-match" node="@id" value="aspnetForm"/>
+                    <function call="text-not-match" node="@name" value="aspnetForm"/>
+                </condition>
+            </condition>
         </machine>
     </check>
 
@@ -5022,8 +5037,8 @@ Telephone: (416) 978-4360
         <rationale>check.446.rationale</rationale>
         <machine>
             <trigger element="form" />
-            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bobligado\b|\bexigido\b|\bpreciso\b|\brequerido\b|\bnecesario\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatory\b|\bobliged\b|\bmandatory\b|\bcompulsory\b|\brequisite\b|\brequired\b|\brequested\b|\bnecessary\b|\bneeded\b|\bindispensable\b|\bessential\b|\bimperative\b|\boptional\b|\bvoluntary\b"/>
+            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bobligado\b|\bexigido\b|\bpreciso\b|\brequeridos?\b|\bnecesarios?\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b|\bopcionales\b|\bblanco\b"/>
+            <function call="required-controls" node="." number="4" value="\bobligatory\b|\bobliged\b|\bmandatory\b|\bcompulsory\b|\brequisite\b|\brequired\b|\brequested\b|\bnecessary\b|\bneeded\b|\bindispensable\b|\bessential\b|\bimperative\b|\boptional\b|\bvoluntary\b|\bblank\b"/>
             <function call="required-controls" node="." number="4" value="\bobligatoire\b|\bexigé\b|\bprécis\b|\brequis\b|\bnécessaire\b|\bindispoensable\b|\bessential\b|\bimpératif\b|\boption\b|\bbénévoles\b"/>
             <function call="required-controls" node="." number="4" value="\bobligatori\b|\bobligat\b|\bexigit\b|\brequerit\b|\bnecessari\b|\bindispensable\b|\bimprescindible\b|\bimperatiu\b|\bopcional\b|\bvoluntari\b"/>
             <function call="required-controls" node="." number="4" value="\bobrigatorio\b|\bobrigado\b|\besixido\b|\bpreciso\b|\brequirido\b|\bnecesario\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b"/>
@@ -5252,6 +5267,22 @@ Telephone: (416) 978-4360
                 <function call="num-more-controls" node="." number="8"/>
                 <function call="element-count-less-than" node="." value="fieldset" number="1"/>
                 <function call="element-count-less-than" node="." value="legend" number="1"/>
+            </condition>
+        </machine>
+    </check>
+
+    <check id="466" key="form" confidence="medium">
+        <name>Uso de más de 1 encabezado dentro de un formulario</name>
+        <error>check.429.error</error>
+        <rationale>check.429.rationale</rationale>
+        <machine>
+            <trigger element="form"/>
+            <condition type="and">
+                <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1"/>
+                <condition type="or">
+                    <function call="text-match" node="@id" value="aspnetForm"/>
+                    <function call="text-match" node="@name" value="aspnetForm"/>
+                </condition>
             </condition>
         </machine>
     </check>

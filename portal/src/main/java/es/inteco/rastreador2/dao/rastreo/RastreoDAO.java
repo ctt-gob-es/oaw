@@ -68,7 +68,7 @@ public final class RastreoDAO {
         ResultSet rs = null;
 
         try {
-            ps = c.prepareStatement("SELECT * FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
+            ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
                     "WHERE u.usuario = ? AND uc.id_cartucho = ?");
             ps.setString(1, userLogin);
             ps.setLong(2, cartuchoID);
@@ -90,7 +90,7 @@ public final class RastreoDAO {
         ResultSet rs = null;
 
         try {
-            ps = c.prepareStatement("SELECT * FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
+            ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
                     "JOIN cartucho_rastreo cr ON (uc.id_cartucho = cr.id_cartucho) WHERE u.usuario = ? AND cr.id_rastreo = ?");
             ps.setString(1, userLogin);
             ps.setLong(2, idCrawling);
@@ -112,7 +112,7 @@ public final class RastreoDAO {
         ResultSet rs = null;
 
         try {
-            ps = c.prepareStatement("SELECT * FROM usuario u JOIN cuenta_cliente_usuario ccu ON (u.id_usuario = ccu.id_usuario) " +
+            ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN cuenta_cliente_usuario ccu ON (u.id_usuario = ccu.id_usuario) " +
                     "JOIN rastreo r ON (r.id_cuenta = ccu.id_cuenta) " +
                     "WHERE u.usuario = ? AND r.id_rastreo = ?");
             ps.setString(1, clientLogin);
@@ -248,27 +248,6 @@ public final class RastreoDAO {
         }
     }
 
-    /*public static String getCrawlingSeedsPath(Connection c, Long idCrawling) throws Exception {
-        ResultSet rst = null;
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = c.prepareStatement("SELECT semillas FROM rastreo WHERE id_rastreo = ?");
-            pstmt.setLong(1, idCrawling);
-            rst = pstmt.executeQuery();
-
-            if (rst.next()) {
-                return rst.getString("semillas");
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            Logger.putLog("Error al obtener los datos de la lista de rastreos", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(pstmt, rst);
-        }
-    }  //*/
-
     /**
      * Devuelve el listado de rastreos a los que puede acceder un usuario
      *
@@ -393,7 +372,7 @@ public final class RastreoDAO {
         ResultSet rs = null;
 
         try {
-            ps = c.prepareStatement("SELECT * FROM rastreo WHERE id_rastreo = ?");
+            ps = c.prepareStatement("SELECT id_cuenta FROM rastreo WHERE id_rastreo = ?");
             ps.setLong(1, id_rastreo);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -629,7 +608,7 @@ public final class RastreoDAO {
         List<Long> executedCrawlerIds = new ArrayList<Long>();
         PropertiesManager pmgr = new PropertiesManager();
         try {
-            ps = connR.prepareStatement("SELECT * FROM rastreos_realizados r WHERE id_rastreo = ? AND " +
+            ps = connR.prepareStatement("SELECT rr.id FROM rastreos_realizados r WHERE id_rastreo = ? AND " +
                     "fecha <= (SELECT fecha FROM rastreos_realizados rr WHERE id = ?) AND " +
                     "id_cartucho = ? " +
                     "ORDER BY fecha DESC LIMIT ?");
@@ -713,22 +692,6 @@ public final class RastreoDAO {
             }
         }
     }
-
-    /*public static void borrarRastreos(String id_cartucho, Connection c) throws SQLException {
-
-        PreparedStatement pstmt = null;
-        ResultSet rst = null;
-        try {
-            pstmt = c.prepareStatement("DELETE FROM cartucho_rastreo WHERE Id_Cartucho=?;");
-            pstmt.setString(1, id_cartucho);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(pstmt, rst);
-        }
-    }*/
 
     public static DatosCartuchoRastreoForm cargarDatosCartuchoRastreo(Connection c, String nombreRastreo) throws SQLException {
 
@@ -821,7 +784,7 @@ public final class RastreoDAO {
         ResultSet rs = null;
         String f = "";
         try {
-            ps = c.prepareStatement("SELECT * FROM rastreo WHERE nombre_rastreo = ?");
+            ps = c.prepareStatement("SELECT fecha_lanzado FROM rastreo WHERE nombre_rastreo = ?");
             ps.setString(1, nombreRastreo);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -840,7 +803,6 @@ public final class RastreoDAO {
             throw e;
         } finally {
             DAOUtils.closeQueries(ps, rs);
-
         }
         return f;
     }
@@ -849,7 +811,7 @@ public final class RastreoDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT * FROM rastreo WHERE nombre_rastreo = ?");
+            ps = c.prepareStatement("SELECT 1 FROM rastreo WHERE nombre_rastreo = ?");
             ps.setString(1, nombreRastreo);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -869,7 +831,7 @@ public final class RastreoDAO {
         PreparedStatement pes = null;
         ResultSet res = null;
         try {
-            pes = c.prepareStatement("SELECT * FROM rastreo WHERE id_rastreo = ?;");
+            pes = c.prepareStatement("SELECT nombre_rastreo FROM rastreo WHERE id_rastreo = ?;");
             pes.setLong(1, idCrawling);
             res = pes.executeQuery();
             if (res.next()) {
@@ -1092,7 +1054,6 @@ public final class RastreoDAO {
                     } else {
                         ps.setString(17, insertarRastreoForm.getNormaAnalisis());
                     }
-
                 } else {
                     ps.setString(17, insertarRastreoForm.getNormaAnalisis());
                 }
@@ -1183,9 +1144,8 @@ public final class RastreoDAO {
         return false;
     }
 
-    private static InsertarRastreoForm updateLists(Connection c, InsertarRastreoForm insertarRastreoForm) throws Exception {
-
-        UpdateListDataForm updateListDataForm = new UpdateListDataForm();
+    private static InsertarRastreoForm updateLists(final Connection c, final InsertarRastreoForm insertarRastreoForm) throws Exception {
+        final UpdateListDataForm updateListDataForm = new UpdateListDataForm();
 
         updateListDataForm.setListaRastreable(insertarRastreoForm.getListaRastreable());
         updateListDataForm.setIdListaRastreable(insertarRastreoForm.getId_lista_rastreable());
@@ -1215,8 +1175,7 @@ public final class RastreoDAO {
         SemillaDAO.removeLists(c, updateListDataForm);
     }
 
-    public static void updateRastreo(InsertarRastreoForm insertarRastreoForm) throws Exception {
-
+    public static void updateRastreo(final InsertarRastreoForm insertarRastreoForm) throws Exception {
         Connection c = null;
         // Editamos los rastreos asociados
         try {
@@ -1848,12 +1807,12 @@ public final class RastreoDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT * FROM rastreos_realizados rr WHERE id_rastreo = ? AND id_lista = ? ORDER BY id DESC");
+            ps = c.prepareStatement("SELECT rr.id, rr.fecha, rr.id_rastreo, rr.id_cartucho FROM rastreos_realizados rr WHERE id_rastreo = ? AND id_lista = ? ORDER BY id DESC");
             ps.setLong(1, idCrawling);
             ps.setLong(2, idSeed);
             rs = ps.executeQuery();
             if (rs.next()) {
-                FulfilledCrawlingForm form = new FulfilledCrawlingForm();
+                final FulfilledCrawlingForm form = new FulfilledCrawlingForm();
                 form.setId(rs.getString("id"));
                 form.setDate(CrawlerUtils.formatDate(rs.getDate("fecha")));
                 form.setIdCrawling(String.valueOf(rs.getLong("id_rastreo")));

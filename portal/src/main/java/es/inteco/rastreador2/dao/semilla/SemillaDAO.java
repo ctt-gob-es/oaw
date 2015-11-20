@@ -37,9 +37,9 @@ public final class SemillaDAO {
 
         try {
             if (type == -1) {
-                ps = c.prepareStatement("SELECT * FROM lista WHERE nombre = ?");
+                ps = c.prepareStatement("SELECT 1 FROM lista WHERE nombre = ?");
             } else {
-                ps = c.prepareStatement("SELECT * FROM lista WHERE nombre = ? AND id_tipo_lista = ?");
+                ps = c.prepareStatement("SELECT 1 FROM lista WHERE nombre = ? AND id_tipo_lista = ?");
                 ps.setLong(2, type);
             }
             ps.setString(1, nombreSemilla);
@@ -568,7 +568,7 @@ public final class SemillaDAO {
         }
     }
 
-    public static UpdateListDataForm updateLists(Connection c, UpdateListDataForm updateListDataForm) throws Exception {
+    public static UpdateListDataForm updateLists(final Connection c, final UpdateListDataForm updateListDataForm) throws Exception {
         // Si no habia lista rastreable y ahora se incluye, se crea
         if (updateListDataForm.getListaRastreable() != null && !updateListDataForm.getListaRastreable().isEmpty()) {
             if (updateListDataForm.getIdListaRastreable() == 0) {
@@ -619,8 +619,7 @@ public final class SemillaDAO {
             }
 
             //Se recupera el id del rastreo asociado a la semilla
-            ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r " +
-                    "WHERE id_observatorio = ? AND semillas = ? ");
+            ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ? AND semillas = ? ");
             ps.setLong(2, id_seed);
             ps.setLong(1, id_observatory);
             rs = ps.executeQuery();
@@ -879,8 +878,7 @@ public final class SemillaDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT id_observatorio FROM " +
-                    "observatorio_categoria WHERE id_categoria = ?");
+            ps = c.prepareStatement("SELECT id_observatorio FROM observatorio_categoria WHERE id_categoria = ?");
             ps.setLong(1, idCategory);
             rs = ps.executeQuery();
 
@@ -900,7 +898,7 @@ public final class SemillaDAO {
 
     public static void deleteCategorySeed(Connection c, String idSemilla) throws Exception {
         try {
-            List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
+            final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
             deleteObservatorySeed(c, Long.parseLong(idSemilla), observatoryFormList);
         } catch (Exception e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);

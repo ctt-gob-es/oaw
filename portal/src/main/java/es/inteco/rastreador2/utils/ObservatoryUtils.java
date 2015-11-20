@@ -172,11 +172,11 @@ public final class ObservatoryUtils {
         }
     }
 
-    public static List<ResultadoSemillaForm> setAvgScore(Connection c, List<ResultadoSemillaForm> seedsResults, Long idFulfilledObservatory) throws Exception {
-        List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
-        Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults, idFulfilledObservatory);
+    public static List<ResultadoSemillaForm> setAvgScore(final Connection c, final List<ResultadoSemillaForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+        final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
+        final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults, idFulfilledObservatory);
         for (ResultadoSemillaForm seedResult : seedsResults) {
-            List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
+            final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
                 int cont = 0;
                 BigDecimal avgScore = BigDecimal.ZERO;
@@ -187,7 +187,7 @@ public final class ObservatoryUtils {
                     }
                 }
                 if (cont != 0) {
-                    seedResult.setScore(avgScore.divide(new BigDecimal(cont), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+                    seedResult.setScore(avgScore.divide(BigDecimal.valueOf(cont), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
                 }
             }
         }

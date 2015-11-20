@@ -326,8 +326,8 @@ public class CrawlerJob implements InterruptableJob {
     private void analyze(final List<CrawledLink> crawlingDomains, final CrawlerData crawlerData, final String cookie) throws Exception {
         final WebAnalayzer webAnalayzer = new WebAnalayzer();
 
-        PropertiesManager pmgr = new PropertiesManager();
-        DateFormat df = new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format"));
 
         int cont = 0;
         for (CrawledLink crawledLink : crawlingDomains) {

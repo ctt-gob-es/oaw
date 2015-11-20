@@ -3,7 +3,6 @@ package es.inteco.rastreador2.intav.utils;
 import ca.utoronto.atrc.tile.accessibilitychecker.*;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
@@ -18,6 +17,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -109,13 +109,13 @@ public final class IntavUtils {
         }
 
         // El nivel de validación del portal
-        scoreForm.setLevel(getValidationLevel(scoreForm, request));
+        scoreForm.setLevel(getValidationLevel(scoreForm, CrawlerUtils.getResources(request)));
 
         return scoreForm;
     }
 
-    public static ScoreForm generateScores(HttpServletRequest request, List<ObservatoryEvaluationForm> evaList) throws Exception {
-        ScoreForm scoreForm = new ScoreForm();
+    public static ScoreForm generateScores(final MessageResources messageResources, List<ObservatoryEvaluationForm> evaList) throws Exception {
+        final ScoreForm scoreForm = new ScoreForm();
 
         int suitabilityGroups = 0;
 
@@ -148,8 +148,9 @@ public final class IntavUtils {
 
         Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
         Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
-        List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(request, resultL1);
-        List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(request, resultL2);
+
+        List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
+        List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
         scoreForm.setVerifications1(labelsL1);
         scoreForm.setVerifications2(labelsL2);
 
@@ -163,7 +164,7 @@ public final class IntavUtils {
         }
 
         // El nivel de validación del portal
-        scoreForm.setLevel(getValidationLevel(scoreForm, request));
+        scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
 
         return scoreForm;
     }
@@ -211,13 +212,13 @@ public final class IntavUtils {
         return false;
     }
 
-    public static String getValidationLevel(ScoreForm scoreForm, HttpServletRequest request) {
+    public static String getValidationLevel(final ScoreForm scoreForm, final MessageResources messageResources) {
         if (scoreForm.getSuitabilityScore().compareTo(new BigDecimal(8)) >= 0) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa");
+            return messageResources.getMessage("resultados.anonimos.num.portales.aa");
         } else if (scoreForm.getSuitabilityScore().compareTo(new BigDecimal("3.5")) <= 0) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.nv");
+            return messageResources.getMessage("resultados.anonimos.num.portales.nv");
         } else {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a");
+            return messageResources.getMessage("resultados.anonimos.num.portales.a");
         }
     }
 

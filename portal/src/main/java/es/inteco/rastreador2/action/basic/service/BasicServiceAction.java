@@ -44,10 +44,9 @@ public class BasicServiceAction extends Action {
     @Override
     public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
-
         final String action = request.getParameter(Constants.ACTION);
 
-        if (!StringUtils.isEmpty(action) && action.equalsIgnoreCase(Constants.EXECUTE)) {
+        if (Constants.EXECUTE.equalsIgnoreCase(action)) {
             executeCrawling(form, request);
         } else {
             launchCrawling(mapping, form, request, response);
@@ -162,8 +161,12 @@ public class BasicServiceAction extends Action {
 
                 // Comprimimos el fichero
                 pdfPath = BasicServiceExport.compressReport(pdfPath);
-                //Borramos el análisis
-                DiagnosisDAO.deleteAnalysis(conn, basicServiceForm.getName(), idCrawling);
+                try {
+                    //Borramos el análisis
+                    DiagnosisDAO.deleteAnalysis(conn, basicServiceForm.getName(), idCrawling);
+                } catch (Exception e) {
+                    Logger.putLog("Excepcion: ", BasicServiceAction.class, Logger.LOG_LEVEL_WARNING, e);
+                }
 
                 //Lo enviamos por correo electrónico
                 final String subject = getMailSubject(basicServiceForm.getReport());

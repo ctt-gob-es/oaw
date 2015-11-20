@@ -64,7 +64,7 @@ public final class RastreoDAO {
         java.sql.PreparedStatement pst = null;
         ResultSet rs = null;
         try {
-            pst = c.prepareStatement("SELECT * FROM rastreo WHERE estado = ?");
+            pst = c.prepareStatement("SELECT id_rastreo FROM rastreo WHERE estado = ?");
             pst.setInt(1, Constants.STATUS_LAUNCHED);
             rs = pst.executeQuery();
             return rs.next();
@@ -160,12 +160,13 @@ public final class RastreoDAO {
         ResultSet res1 = null;
         int id_cartucho = -1;
         try {
-            pes1 = c.prepareStatement("SELECT * FROM cartucho_rastreo WHERE id_rastreo = ?");
+            pes1 = c.prepareStatement("SELECT id_cartucho FROM cartucho_rastreo WHERE id_rastreo = ?");
             pes1.setLong(1, idRastreo);
             res1 = pes1.executeQuery();
             if (res1.next()) {
                 id_cartucho = res1.getInt(1);
             }
+            return id_cartucho;
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
@@ -182,14 +183,13 @@ public final class RastreoDAO {
                 throw e;
             }
         }
-        return id_cartucho;
     }
 
     public static Long recuperarIdNorma(Connection c, long idRastreo) throws Exception {
         PreparedStatement pes = null;
         ResultSet res = null;
         try {
-            pes = c.prepareStatement("SELECT * FROM rastreo WHERE id_rastreo = ?");
+            pes = c.prepareStatement("SELECT id_guideline FROM rastreo WHERE id_rastreo = ?");
             pes.setLong(1, idRastreo);
             res = pes.executeQuery();
             if (res.next()) {

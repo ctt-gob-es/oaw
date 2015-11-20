@@ -34,13 +34,12 @@ public class LanguageChecker {
      * @return una cadena con el código del idioma detectado para el contenido o el idioma esperado si no se puede detectar ese idioma
      */
     protected String getLanguage(final String content) {
-        if (GuessLanguage.isSupportedLanguage(expectedLanguage)) {
-            final GuessLanguage guessLanguage = new GuessLanguage();
-            return guessLanguage.guessLanguage(content);
-        } else
         if (LanguageIdentifier.getSupportedLanguages().contains(expectedLanguage)) {
             final LanguageIdentifier languageIdentifier = new LanguageIdentifier(content);
             return languageIdentifier.getLanguage();
+        } else if (GuessLanguage.isSupportedLanguage(expectedLanguage)) {
+            final GuessLanguage guessLanguage = new GuessLanguage();
+            return guessLanguage.guessLanguage(content);
         }
         return expectedLanguage;
     }

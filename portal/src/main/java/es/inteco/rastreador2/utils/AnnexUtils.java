@@ -48,7 +48,7 @@ public final class AnnexUtils {
         FileWriter writer = null;
         final Connection c = DataBaseManager.getConnection();
         try {
-            writer = getFileWriter(idOperation, "");
+            writer = getFileWriter(idOperation, "anexo_paginas.xml");
             final ContentHandler hd = getContentHandler(writer);
             hd.startDocument();
             hd.startElement("", "", "resultados", null);

@@ -26,7 +26,6 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileWriter;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.text.DateFormat;
@@ -80,37 +79,38 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, Constants.COMPLEXITY_SEGMENT_NONE, null);
 
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-            String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
+            final MessageResources messageResources = CrawlerUtils.getResources(request);
+            String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
 
-            String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.title");
-            String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.name") + ".jpg";
+            String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.title");
+            String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.name") + ".jpg";
             getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, title, file, noDataMess, regenerate);
 
-            title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.title");
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
+            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.title");
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
             getGlobalMarkBySegmentGraphic(request, pageExecutionList, title, file, noDataMess, categories);
 
-            title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.title");
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
+            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.title");
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
             getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
-            title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.title");
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + ".jpg";
+            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.title");
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + ".jpg";
             getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
             getGlobalMarkBySegmentsGroupGraphic(request, file, noDataMess, pageExecutionList, categories, regenerate);
 
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + ".jpg";
-            title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.title");
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + ".jpg";
+            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.title");
             getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, title, regenerate);
 
-            title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.title");
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
+            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.title");
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
             getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
 
-            title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.title");
-            file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg";
+            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.title");
+            file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg";
             getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 
             return Constants.OBSERVATORY_HAVE_RESULTS;
@@ -120,44 +120,43 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static int generateCategoryGraphics(HttpServletRequest request, CategoriaForm category, String filePath, String color, boolean regenerate) throws Exception {
-
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
 
-            String idExecution = request.getParameter(Constants.ID);
-            String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
-
-            List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(category.getId()), null);
+            final String idExecution = request.getParameter(Constants.ID);
+            final MessageResources messageResources = CrawlerUtils.getResources(request);
+            final String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
+            final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(category.getId()), null);
 
             if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-                String title = CrawlerUtils.getResources(request).getMessage("observatory.graphic.accessibility.level.allocation.segment.title", category.getName());
-                String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg";
+                String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", category.getName());
+                String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg";
                 getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, title, file, noDataMess, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.title", category.getName());
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg";
+                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.title", category.getName());
+                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg";
                 List<ObservatorySiteEvaluationForm> result = getSitesListByLevel(pageExecutionList);
                 getMarkAllocationLevelSegmentGraphic(request, title, file, noDataMess, result, false, regenerate);
 
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg";
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.segment.aspect.mid.title", category.getName());
+                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg";
+                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.segment.aspect.mid.title", category.getName());
                 getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, title, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.cat.title", category.getName());
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg";
+                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.cat.title", category.getName());
+                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg";
                 getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.cat.title", category.getName());
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg";
+                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.cat.title", category.getName());
+                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg";
                 getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.category.title", category.getName());
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg";
+                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.category.title", category.getName());
+                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg";
                 getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.category.title", category.getName());
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg";
+                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.category.title", category.getName());
+                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg";
                 getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
                 return Constants.OBSERVATORY_HAVE_RESULTS;
@@ -179,21 +178,22 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
         if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
             if (pageObservatoryMap.size() != 1) {
-                String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
+                final MessageResources messageResources = CrawlerUtils.getResources(request);
+                String noDataMess = messageResources.getMessage("grafica.sin.datos");
 
-                String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.evolution.approval.A.title");
-                String file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accesibility.evolution.approval.A.name") + ".jpg";
+                String title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.A.title");
+                String file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + ".jpg";
                 getApprovalLevelEvolutionGraphic(request, Constants.OBS_A, title, file, noDataMess, pageObservatoryMap, color, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.evolution.approval.AA.title");
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg";
+                title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.AA.title");
+                file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg";
                 getApprovalLevelEvolutionGraphic(request, Constants.OBS_AA, title, file, noDataMess, pageObservatoryMap, color, regenerate);
 
-                title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.evolution.approval.NV.title");
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accesibility.evolution.approval.NV.name") + ".jpg";
+                title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.NV.title");
+                file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + ".jpg";
                 getApprovalLevelEvolutionGraphic(request, Constants.OBS_NV, title, file, noDataMess, pageObservatoryMap, color, regenerate);
 
-                file = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.mid.puntuation.name") + ".jpg";
+                file = filePath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + ".jpg";
                 getMidMarkEvolutionGraphic(request, noDataMess, file, pageObservatoryMap, color, regenerate);
 
                 getMidMarkVerificationEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color, regenerate);
@@ -219,7 +219,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
                 Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
                 for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-                    resultsByAspect.put(entry.getKey(), aspectMidsPuntuationGraphicData(request, entry.getValue()));
+                    resultsByAspect.put(entry.getKey(), aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), entry.getValue()));
                 }
                 getMidMarkAspectEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
                 getMidMarkAspectEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID, noDataMess, filePath, resultsByAspect, color, regenerate);
@@ -236,17 +236,10 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         }
     }
 
-    public static List<GraphicData> infoGlobalAccessibilityLevel(HttpServletRequest request,
-                                                                 Map<String, Integer> result) throws Exception {
-        return infoGlobalAccessibilityLevel(CrawlerUtils.getResources(request), result);
-    }
-
     public static List<GraphicData> infoGlobalAccessibilityLevel(final MessageResources resources,
-                                                                 Map<String, Integer> result) throws Exception {
-
-        List<GraphicData> labelValueList = new ArrayList<GraphicData>();
-
-        int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
+                                                                 final Map<String, Integer> result) throws Exception {
+        final List<GraphicData> labelValueList = new ArrayList<GraphicData>();
+        final int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
         GraphicData labelValue;
 
         labelValue = new GraphicData();
@@ -274,11 +267,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         labelValueList.add(labelValue);
 
         return labelValueList;
-    }
-
-    public static List<LabelValueBean> infoComparisonBySegment(HttpServletRequest request,
-                                                               Map<String, BigDecimal> category) throws Exception {
-        return infoComparisonBySegment(CrawlerUtils.getResources(request), category);
     }
 
     public static List<LabelValueBean> infoComparisonBySegment(final MessageResources resources,
@@ -434,11 +422,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     }
 
-    public static List<LabelValueBean> infoLevelIVerificationMidsComparison(HttpServletRequest request,
-                                                                            Map<String, BigDecimal> result) throws Exception {
-        return infoLevelIVerificationMidsComparison(CrawlerUtils.getResources(request), result);
-    }
-
     public static List<LabelValueBean> infoLevelIVerificationMidsComparison(final MessageResources resources,
                                                                             Map<String, BigDecimal> result) throws Exception {
 
@@ -567,14 +550,9 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         return labelValueList;
     }
 
-    public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(HttpServletRequest request,
-                                                                             Map<String, BigDecimal> result) throws Exception {
-        return infoLevelIIVerificationMidsComparison(CrawlerUtils.getResources(request), result);
-    }
-
     public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(final MessageResources resources,
-                                                                             Map<String, BigDecimal> result) throws Exception {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+                                                                             final Map<String, BigDecimal> result) throws Exception {
+        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(resources.getMessage("inteco.observatory.subgroup.2.1.1"));
@@ -700,27 +678,20 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<LabelValueBean> infoLevelEvolutionGraphic(final Map<String, BigDecimal> resultData) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
-
-        LabelValueBean labelValue;
-        for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
-            labelValue = new LabelValueBean();
-            labelValue.setLabel(entry.getKey());
-            labelValue.setValue(String.valueOf(entry.getValue()).replace(".00", "") + "%");
-            labelValueList.add(labelValue);
-        }
-
-        return labelValueList;
+        return infoEvolutionGraphic(resultData, "%");
     }
 
     public static List<LabelValueBean> infoMidMarkEvolutionGraphic(final Map<String, BigDecimal> resultData) {
+        return infoEvolutionGraphic(resultData, "");
+    }
+
+    private static List<LabelValueBean> infoEvolutionGraphic(final Map<String, BigDecimal> resultData, final String suffix) {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
-        LabelValueBean labelValue;
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
-            labelValue = new LabelValueBean();
+            final LabelValueBean labelValue = new LabelValueBean();
             labelValue.setLabel(entry.getKey());
-            labelValue.setValue(String.valueOf(entry.getValue()).replace(".00", ""));
+            labelValue.setValue(String.valueOf(entry.getValue()).replace(".00", "") + suffix);
             labelValueList.add(labelValue);
         }
 
@@ -731,25 +702,23 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static void getMidsComparationByVerificationLevelGraphic(HttpServletRequest request,
                                                                     String level, String title, String filePath, String noDataMess, List<ObservatoryEvaluationForm> pageExecutionList, String color, boolean regenerate) throws Exception {
-
-        File file = new File(filePath);
-
-        Map<String, BigDecimal> result = getVerificationResultsByPoint(pageExecutionList, level);
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        final File file = new File(filePath);
+        final Map<String, BigDecimal> result = getVerificationResultsByPoint(pageExecutionList, level);
 
         //Incluimos los resultados en la request
         if (level.equals(Constants.OBS_PRIORITY_1)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVI, infoLevelIVerificationMidsComparison(request, result));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVI, infoLevelIVerificationMidsComparison(messageResources, result));
         } else if (level.equals(Constants.OBS_PRIORITY_2)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVII, infoLevelIIVerificationMidsComparison(request, result));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVII, infoLevelIIVerificationMidsComparison(messageResources, result));
         }
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
-            String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.points");
-            GraphicsUtils.createBarChart(result, title, rowTitle, columnTitle, color, false, false, false, filePath, noDataMess, request, x, y);
+            final String rowTitle = messageResources.getMessage("observatory.graphic.mid.puntuation");
+            final String columnTitle = messageResources.getMessage("observatory.graphic.verification.points");
+            GraphicsUtils.createBarChart(result, title, rowTitle, columnTitle, color, false, false, false, filePath, noDataMess, messageResources, x, y);
         }
-
     }
 
     public static void getModalityByVerificationLevelGraphic(HttpServletRequest request, List<ObservatoryEvaluationForm> pageExecutionList, String title, String filePath, String noDataMess, String level, boolean regenerate) throws Exception {
@@ -757,7 +726,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
         Map<String, BigDecimal> results = getVerificationResultsByPointAndModality(pageExecutionList, level);
 
-        DefaultCategoryDataset dataSet = createStackedBarDataSetForModality(results, request);
+        DefaultCategoryDataset dataSet = createStackedBarDataSetForModality(results, CrawlerUtils.getResources(request));
 
         //Incluimos los resultados en la request
         if (level.equals(Constants.OBS_PRIORITY_1)) {
@@ -817,7 +786,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         for (int i = 1; i <= resultLists.size(); i++) {
             final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
             final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
-            final DefaultCategoryDataset dataSet = createDataSet(resultsBySegment, request);
+            final DefaultCategoryDataset dataSet = createDataSet(resultsBySegment, CrawlerUtils.getResources(request));
             final PropertiesManager pmgr = new PropertiesManager();
             //Si la gráfica no existe, la creamos
             if (!file.exists() || regenerate) {
@@ -839,24 +808,24 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         request.setAttribute(Constants.OBSERVATORY_NUM_CPS_GRAPH, resultLists.size());
     }
 
-    private static DefaultCategoryDataset createDataSet(Map<CategoriaForm, Map<String, BigDecimal>> result, HttpServletRequest request) {
+    private static DefaultCategoryDataset createDataSet(final Map<CategoriaForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<CategoriaForm, Map<String, BigDecimal>> entry : result.entrySet()) {
-            dataSet.addValue(entry.getValue().get(Constants.OBS_NV), GraphicsUtils.parseLevelLabel(Constants.OBS_NV, request), entry.getKey().getName());
-            dataSet.addValue(entry.getValue().get(Constants.OBS_A), GraphicsUtils.parseLevelLabel(Constants.OBS_A, request), entry.getKey().getName());
-            dataSet.addValue(entry.getValue().get(Constants.OBS_AA), GraphicsUtils.parseLevelLabel(Constants.OBS_AA, request), entry.getKey().getName());
+            dataSet.addValue(entry.getValue().get(Constants.OBS_NV), GraphicsUtils.parseLevelLabel(Constants.OBS_NV, messageResources), entry.getKey().getName());
+            dataSet.addValue(entry.getValue().get(Constants.OBS_A), GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), entry.getKey().getName());
+            dataSet.addValue(entry.getValue().get(Constants.OBS_AA), GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), entry.getKey().getName());
         }
 
         return dataSet;
     }
 
-    private static DefaultCategoryDataset createStackedBarDataSetForModality(Map<String, BigDecimal> results, HttpServletRequest request) {
+    private static DefaultCategoryDataset createStackedBarDataSetForModality(final Map<String, BigDecimal> results, final MessageResources messageResources) {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<String, BigDecimal> entry : results.entrySet()) {
             if (entry.getKey().contains(Constants.OBS_VALUE_RED_SUFFIX)) {
-                dataSet.addValue(entry.getValue(), CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.red"), entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").length() - 5));
+                dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.red"), entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").length() - 5));
             } else if (entry.getKey().contains(Constants.OBS_VALUE_GREEN_SUFFIX)) {
-                dataSet.addValue(entry.getValue(), CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.green"), entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").length() - 5));
+                dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.green"), entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").length() - 5));
             }
         }
 
@@ -865,50 +834,52 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static void getMidMarkAspectEvolutionGraphic(HttpServletRequest request, String aspect, String noDataMess,
                                                         String filePath, Map<Date, Map<String, BigDecimal>> resultsByAspect, String color, boolean regenerate) throws Exception {
-        final String fileName = filePath + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.aspect.mid.puntuation.name", aspect) + ".jpg";
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        final String fileName = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.aspect.mid.puntuation.name", aspect) + ".jpg";
         File file = new File(fileName);
 
         String aspectStr = "";
         if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID)) {
-            aspectStr = CrawlerUtils.getResources(request).getMessage("observatory.aspect.general");
+            aspectStr = messageResources.getMessage("observatory.aspect.general");
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID)) {
-            aspectStr = CrawlerUtils.getResources(request).getMessage("observatory.aspect.alternatives");
+            aspectStr = messageResources.getMessage("observatory.aspect.alternatives");
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID)) {
-            aspectStr = CrawlerUtils.getResources(request).getMessage("observatory.aspect.structure");
+            aspectStr = messageResources.getMessage("observatory.aspect.structure");
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID)) {
-            aspectStr = CrawlerUtils.getResources(request).getMessage("observatory.aspect.navigation");
+            aspectStr = messageResources.getMessage("observatory.aspect.navigation");
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID)) {
-            aspectStr = CrawlerUtils.getResources(request).getMessage("observatory.aspect.presentation");
+            aspectStr = messageResources.getMessage("observatory.aspect.presentation");
         }
 
         //Recuperamos los resultados
         final Map<String, BigDecimal> resultData = calculateAspectEvolutionPuntuationDataSet(aspectStr, resultsByAspect);
         //Incluimos los resultados en la request
         if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG, infoMidMarkAspectEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL, infoMidMarkAspectEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE, infoMidMarkAspectEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN, infoMidMarkAspectEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         } else if (aspect.equals(Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP, infoMidMarkAspectEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP, infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         }
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
-            String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
-            String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.aspect.mid.puntuation", aspectStr);
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, fileName, noDataMess, request, x, y);
+            String rowTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
+            String columnTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
+            String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.aspect.mid.puntuation", aspectStr);
+            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, fileName, noDataMess, messageResources, x, y);
         }
     }
 
     public static void getMidMarkVerificationEvolutionGraphic(HttpServletRequest request, String verification, String noDataMess,
                                                               String filePath, Map<Date, List<ObservatoryEvaluationForm>> result, String color, boolean regenerate) throws Exception {
 
-        String fileName = filePath + File.separator + CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.verification.mid.puntuation.name", verification) + ".jpg";
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        String fileName = filePath + File.separator + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.verification.mid.puntuation.name", verification) + ".jpg";
         File file = new File(fileName);
 
         //Recuperamos los resultados
@@ -916,53 +887,53 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
         //Los incluimos en la request
         if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V124, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V124, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V125, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V125, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V126, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V126, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V224, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V224, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V225, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V225, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         } else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION)) {
-            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V226, infoMidMarkVerificationEvolutionGraphic(request, resultData));
+            request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V226, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         }
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
-            String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
-            String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.verification.mid.puntuation", verification);
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, fileName, noDataMess, request, x, y);
+            String rowTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
+            String columnTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
+            String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.verification.mid.puntuation", verification);
+            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, fileName, noDataMess, messageResources, x, y);
         }
     }
 
@@ -980,7 +951,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
             String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
             String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.mid.puntuation");
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, filePath, noDataMess, request, x, y);
+            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
     }
 
@@ -988,7 +959,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                                                         String noDataMess, Map<Date, List<ObservatoryEvaluationForm>> observatoryResult, String color, boolean regenerate) throws Exception {
         File file = new File(filePath);
 
-        Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(request, observatoryResult);
+        Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(request.getParameter(Constants.ID_OBSERVATORIO), request.getParameter(Constants.ID), observatoryResult);
         Map<String, BigDecimal> resultData = calculatePercentageApprovalSiteLevel(result, type);
 
         //Los incluimos en la request
@@ -1005,7 +976,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         if (!file.exists() || regenerate) {
             String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.pages");
             String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, true, true, filePath, noDataMess, request, x, y);
+            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, true, true, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
 
     }
@@ -1025,13 +996,13 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         if (!file.exists() || regenerate) {
             String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.puntuation");
             String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.portales");
-            GraphicsUtils.createBar1PxChart(result2, title, rowTitle, columnTitle, filePath, noDataMess, request, x, y, showColLab);
+            GraphicsUtils.createBar1PxChart(result2, title, rowTitle, columnTitle, filePath, noDataMess, CrawlerUtils.getResources(request), x, y, showColLab);
         }
     }
 
     public static void getAspectMidsGraphic(HttpServletRequest request, String filePath, String noDataMess,
                                             List<ObservatoryEvaluationForm> pageExecutionList, String color, String title, boolean regenerate) throws Exception {
-        final Map<String, BigDecimal> result = aspectMidsPuntuationGraphicData(request, pageExecutionList);
+        final Map<String, BigDecimal> result = aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
 
         //Los incluimos en la request
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMA, infoAspectMidsComparison(request, result));
@@ -1041,13 +1012,8 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         if (!file.exists() || regenerate) {
             String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.puntuation");
             String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspects");
-            GraphicsUtils.createBarChart(result, title, rowTitle, columnTitle, color, false, false, false, filePath, noDataMess, request, x, y);
+            GraphicsUtils.createBarChart(result, title, rowTitle, columnTitle, color, false, false, false, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
-    }
-
-    public static List<LabelValueBean> infoMidMarkVerificationEvolutionGraphic(HttpServletRequest request,
-                                                                               Map<String, BigDecimal> resultData) {
-        return infoMidMarkVerificationEvolutionGraphic(CrawlerUtils.getResources(request), resultData);
     }
 
     public static List<LabelValueBean> infoMidMarkVerificationEvolutionGraphic(final MessageResources resources,
@@ -1069,11 +1035,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         }
 
         return labelValueList;
-    }
-
-    public static List<LabelValueBean> infoMidMarkAspectEvolutionGraphic(HttpServletRequest request,
-                                                                         Map<String, BigDecimal> resultData) {
-        return infoMidMarkAspectEvolutionGraphic(CrawlerUtils.getResources(request), resultData);
     }
 
     public static List<LabelValueBean> infoMidMarkAspectEvolutionGraphic(final MessageResources resources,
@@ -1324,25 +1285,18 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         return percentagesMap;
     }
 
-    public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(HttpServletRequest request,
-                                                                                                  Map<Date, List<ObservatoryEvaluationForm>> result) {
-        return getEvolutionObservatoriesSitesByType(request.getParameter(Constants.ID_OBSERVATORIO),request.getParameter(Constants.ID),result);
-    }
-
     public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(String observatoryId, String executionId,
                                                                                                   Map<Date, List<ObservatoryEvaluationForm>> result) {
-        Connection c = null;
         final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<Date, Map<Long, Map<String, Integer>>>();
-
+        Connection c = null;
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
-
-            Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId), Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id")));
+            final PropertiesManager pmgr = new PropertiesManager();
+            final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId), Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.intav.id")));
 
             for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
-                List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
-                Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
+                final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
+                final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
                 resultData.put(longDateEntry.getValue(), sites);
             }
 
@@ -1376,9 +1330,9 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         return resultData;
     }
 
-    private static Map<String, BigDecimal> calculatePercentage(Map<String, Integer> values) {
+    private static Map<String, BigDecimal> calculatePercentage(final Map<String, Integer> values) {
         int total = 0;
-        Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
+        final Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
         for (Map.Entry<String, Integer> stringIntegerEntry : values.entrySet()) {
             total += stringIntegerEntry.getValue();
         }
@@ -1439,11 +1393,10 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         return siteList;
     }
 
-    private static String siteLevel(Map<Long, Map<String, Integer>> portalInformation, Long idSite) {
-        Map<String, Integer> pageType = portalInformation.get(idSite);
-        Integer numPages = pageType.get(Constants.OBS_A) + pageType.get(Constants.OBS_AA) + pageType.get(Constants.OBS_NV);
-
-        BigDecimal value = ((new BigDecimal(pageType.get(Constants.OBS_A)).multiply(new BigDecimal(5))).add(
+    private static String siteLevel(final Map<Long, Map<String, Integer>> portalInformation, final Long idSite) {
+        final Map<String, Integer> pageType = portalInformation.get(idSite);
+        final Integer numPages = pageType.get(Constants.OBS_A) + pageType.get(Constants.OBS_AA) + pageType.get(Constants.OBS_NV);
+        final BigDecimal value = ((new BigDecimal(pageType.get(Constants.OBS_A)).multiply(new BigDecimal(5))).add(
                 new BigDecimal(pageType.get(Constants.OBS_AA)).multiply(BigDecimal.TEN))).divide(
                 new BigDecimal(numPages), 2, BigDecimal.ROUND_HALF_UP);
 
@@ -1463,19 +1416,20 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
         Map<String, Integer> result = getResultsBySiteLevel(pageExecutionList);
 
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
         if (!file.exists() || regenerate) {
-            GraphicsUtils.totalPageStr = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.site.number");
+            GraphicsUtils.totalPageStr = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.site.number");
             GraphicsUtils.totalPage = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
 
             DefaultPieDataset dataSet = new DefaultPieDataset();
 
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_NV, request), result.get(Constants.OBS_NV));
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, request), result.get(Constants.OBS_A));
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, request), result.get(Constants.OBS_AA));
+            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_NV, messageResources), result.get(Constants.OBS_NV));
+            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
+            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
 
             GraphicsUtils.createPieChart(dataSet, title, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
         }
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(request, result));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(messageResources, result));
     }
 
     public static Map<Integer, List<CategoriaForm>> createGraphicsMap(final List<CategoriaForm> categories) {
@@ -1509,11 +1463,11 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
             if (!file.exists()) {
                 String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.puntuation");
-                ChartForm observatoryGraphicsForm = new ChartForm(title, "", rowTitle, createDataSet(resultDataBySegment, request), true, true, false, false, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
-                GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg", noDataMess, request, true);
+                ChartForm observatoryGraphicsForm = new ChartForm(title, "", rowTitle, createDataSet(resultDataBySegment, CrawlerUtils.getResources(request)), true, true, false, false, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+                GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg", noDataMess, CrawlerUtils.getResources(request), true);
             }
             for (CategoriaForm category : resultLists.get(i)) {
-                CategoryViewListForm categoryView = new CategoryViewListForm(category, infoComparisonBySegment(request, resultDataBySegment.get(category)));
+                CategoryViewListForm categoryView = new CategoryViewListForm(category, infoComparisonBySegment(CrawlerUtils.getResources(request), resultDataBySegment.get(category)));
                 categoriesLabels.add(categoryView);
             }
         }
@@ -1545,10 +1499,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         }
 
         return globalResult;
-    }
-
-    public static Map<String, BigDecimal> aspectMidsPuntuationGraphicData(HttpServletRequest request, List<ObservatoryEvaluationForm> resultData) {
-        return aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), resultData);
     }
 
     public static Map<String, BigDecimal> aspectMidsPuntuationGraphicData(final MessageResources resources, List<ObservatoryEvaluationForm> resultData) {
@@ -1813,17 +1763,16 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                 }
             }
 
-            // TODO: Simplificar
             if (isA && isAA) {
-                List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_AA);
+                final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_AA);
                 globalResult2.add(observatoryEvaluationForm);
                 globalResult.put(Constants.OBS_AA, globalResult2);
             } else if (isA) {
-                List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_A);
+                final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_A);
                 globalResult2.add(observatoryEvaluationForm);
                 globalResult.put(Constants.OBS_A, globalResult2);
             } else {
-                List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_NV);
+                final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_NV);
                 globalResult2.add(observatoryEvaluationForm);
                 globalResult.put(Constants.OBS_NV, globalResult2);
             }
@@ -1865,40 +1814,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         }
 
         return sitesByType;
-    }
-
-    public static void debugChecks(HttpServletRequest request, List<ObservatoryEvaluationForm> pageExecutionList) {
-        FileWriter writer = null;
-        try {
-            Map<Integer, Integer> statistics = new HashMap<Integer, Integer>();
-            for (ObservatoryEvaluationForm evaluationForm : pageExecutionList) {
-                for (Integer idCheckFailed : evaluationForm.getChecksFailed()) {
-                    if (statistics.containsKey(idCheckFailed)) {
-                        statistics.put(idCheckFailed, statistics.get(idCheckFailed) + 1);
-                    } else {
-                        statistics.put(idCheckFailed, 0);
-                    }
-                }
-            }
-            PropertiesManager pmgr = new PropertiesManager();
-            writer = new FileWriter(pmgr.getValue(CRAWLER_PROPERTIES, "debug.checks.file"));
-            writer.append("Check;Descripción;Páginas en que falla\n");
-            for (Map.Entry<Integer, Integer> entry : statistics.entrySet()) {
-                String key = "check.{0}.error".replace("{0}", entry.getKey().toString());
-                writer.append(entry.getKey().toString()).append(";").append(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), key)).append(";").append(entry.getValue().toString()).append("\n");
-            }
-
-        } catch (Exception e) {
-            Logger.putLog("Error al depurar los checks que más fallan en el Observatorio", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_WARNING);
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_WARNING);
-            }
-        }
     }
 
     //Cálculo de resultados

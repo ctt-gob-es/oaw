@@ -224,7 +224,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
             LabelValueBean labelValueBean;
             for (LanguageForm key : languages) {
                 BigDecimal value = resultData.get(key.getName()).divide(new BigDecimal(analysisList.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
-                dataSet.addValue(value, "", GraphicsUtils.parseLevelLabel(key.getName(), request));
+                dataSet.addValue(value, "", GraphicsUtils.parseLevelLabel(key.getName(), CrawlerUtils.getResources(request)));
                 labelValueBean = new LabelValueBean();
                 labelValueBean.setLabel(key.getName());
                 labelValueBean.setValue(value.toString().replace(".00", "") + "%");
@@ -236,7 +236,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
         if (!file.exists()) {
             String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mult.row");
             String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.language");
-            GraphicsUtils.createBarChart(dataSet, title, rowTitle, columnTitle, colors, false, true, true, filePath, "No hay resultados", request, x, y);
+            GraphicsUtils.createBarChart(dataSet, title, rowTitle, columnTitle, colors, false, true, true, filePath, "No hay resultados", CrawlerUtils.getResources(request), x, y);
         }
         return results;
     }
