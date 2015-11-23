@@ -155,6 +155,15 @@ public final class Check_1_1_7_PrimaryLanguageTest {
     }
 
     @Test
+    public void evaluateESLangFewText() throws Exception {
+        checkAccessibility.setContent("<html lang='es'><body><p>Fundación CTIC es una de las entidades que participan y apoyan la  Feria Internacional del Ocio Interactivo, Gamelab.</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
     public void evaluateES_ESLang() throws Exception {
         checkAccessibility.setContent("<html lang='es-ES'><body><p>Fundación CTIC es una de las entidades que participan y apoyan la  Feria Internacional del Ocio Interactivo, Gamelab, que celebrará su quinta edición los próximos días 1, 2 y 3 de julio en Gijón (Teatro de la Laboral). El Ministerio de Cultura, el Gobierno del Principado de Asturias, a través de la Consejerías de Cultura y de Administraciones Públicas, el Ayuntamiento de Gijón y las principales empresas y asociaciones nacionales e internacionales del sector del Videojuego colaboran con esta iniciativa, ya consolidada, una de las más importantes de Europa.</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -277,13 +286,28 @@ public final class Check_1_1_7_PrimaryLanguageTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
-//    @Test
-//    public void testURL() throws Exception {
-//        // Test para comprobar rápidamente el resultado que genera la comprobacion de detección de idioma para una página 'real'
-//        checkAccessibility.setUrl("http://www.igae.pap.meh.es/sitios/igae/en-GB/rcf/Paginas/RCFyFE.aspx");
-//        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
-//        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
-//    }
+    @Test
+    public void testURL() throws Exception {
+        // Test para comprobar rápidamente el resultado que genera la comprobacion de detección de idioma para una página 'real'
+        checkAccessibility.setUrl("http://www.normadoc.gob.es/es-es/mapa-web.aspx");
+        Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setUrl("http://www.normadoc.gob.es/es-es/diarios-oficiales-autonomicos.aspx");
+        evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setUrl("http://www.normadoc.gob.es/es-es/boletines-oficiales-provinciales.aspx");
+        evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setUrl("http://www.zonafrancavigo.com/red/index.php?option=com_content&task=view&id=652&Itemid=273");
+        evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), GUESSED_LANGUAGE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 
 }
