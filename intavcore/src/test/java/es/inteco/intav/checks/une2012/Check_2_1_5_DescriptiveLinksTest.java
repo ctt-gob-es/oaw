@@ -151,5 +151,14 @@ public final class Check_2_1_5_DescriptiveLinksTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
+    @Test
+    public void evaluateExcepcionTextoReglamentoCE() throws Exception {
+        //http://www.idi.mineco.gob.es/portal/site/MICINN/menuitem.7eeac5cd345b4f34f09dfd1001432ea0/?vgnextoid=ccdc6e8c792b9210VgnVCM1000001d04140aRCRD
+        checkAccessibility.setContent("<a href=\"http://google.com\">Reglamento (CE) Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies ante eget lobortis vestibulum. Maecenas quis mollis metus. Nullam pulvinar nisl eu lorem consequat accumsan. Praesent vel nulla mollis, convallis tellus sit amet, facilisis magna amet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies ante eget lobortis vestibulum. Maecenas quis mollis metus. Nullam pulvinar nisl eu lorem consequat accumsan. Praesent vel nulla mollis, convallis tellus sit amet, facilisis magna amet</a>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TOO_MUCH_TEXT_LINKS));
+    }
+
+
 }
 
