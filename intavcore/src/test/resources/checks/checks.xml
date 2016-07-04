@@ -2343,6 +2343,7 @@ Telephone: (416) 978-4360
                     <function call="text-not-equals" node="." value="RDL" position="start"/>
                     <function call="text-not-equals" node="." value="R.D" position="start"/>
                     <function call="text-not-equals" node="." value="Artículo" position="start"/>
+                    <function call="text-not-equals" node="." value="Reglamento (CE)" position="start"/>
                 </condition>
             </condition>
         </machine>
