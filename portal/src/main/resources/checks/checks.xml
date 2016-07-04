@@ -1884,10 +1884,10 @@ Telephone: (416) 978-4360
             <condition type="and">
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
-                          attribute1="\D(\d{1,2}/\d{1,2}/\d{4})\D"/>
+                          attribute1="\D(\d{1,2}[/\.-]\d{1,2}[/\.-]\d{4})\D"/>
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
-                          attribute1="\D(\d{4}/\d{1,2}/\d{1,2})\D"/>
+                          attribute1="\D(\d{4}[/\.-]\d{1,2}[/\.-]\d{1,2})\D"/>
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
                           attribute1="(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre) +del{0,1} +(19|20)\d{2}\D"/>
@@ -2343,6 +2343,7 @@ Telephone: (416) 978-4360
                     <function call="text-not-equals" node="." value="RDL" position="start"/>
                     <function call="text-not-equals" node="." value="R.D" position="start"/>
                     <function call="text-not-equals" node="." value="Artículo" position="start"/>
+                    <function call="text-not-equals" node="." value="Reglamento (CE)" position="start"/>
                 </condition>
             </condition>
         </machine>
