@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public final class Check_2_2_3_NavigationTest {
 
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3 = "minhap.observatory.2.0.subgroup.2.2.3";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3 = "minhap.observatory.2_0.subgroup.2.2.3";
 
     private static final int BROKEN_DOMAIN_LINKS_WARNING = 455;
     private static final int MORE_THAN_ONE_BROKEN_DOMAIN_LINKS = 456;
@@ -40,7 +40,7 @@ public final class Check_2_2_3_NavigationTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMBINED_ADJACENT_LINKS));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_NOT_SCORE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
@@ -152,7 +152,26 @@ public final class Check_2_2_3_NavigationTest {
         Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
         Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMBINED_ADJACENT_LINKS));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_RED_ZERO);
     }
+
+    /*@Test
+    public void evaluateRealPage() throws Exception {
+        connection.addRequestProperty("Cookie", "_ga=GA1.3.1484412100.1434467914; ASP.NET_SessionId=fm5nehixj2k3ssiaqjbbzct4");
+        // Este enlace necesita la cookie anterior para conectarse si no redirecciona y se queda en un bucle infinito
+        checkAccessibility.setContent("<html><p>" +
+                "<a href=\"https://serviciostelematicos.minhap.gob.es/apps/virtuallib/publica/Pestanias/Filtro.aspx?Pestania=34\">enlace</a>"+
+                "</p></html>");
+
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        TestUtils.printProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING);
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_EXTERNAL_LINKS_WARNING));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_TWO_BROKEN_EXTERNAL_LINKS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BROKEN_DOMAIN_LINKS_WARNING));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_THAN_ONE_BROKEN_DOMAIN_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
+    } //*/
 
 }

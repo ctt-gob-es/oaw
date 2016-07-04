@@ -72,7 +72,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.multilanguage.title") + " " + seed.toUpperCase(), "", ConstantsFont.documentTitleMPFont, ConstantsFont.documentSubtitleMPFont);
+            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.multilanguage.title") + " " + seed.toUpperCase(), "", ConstantsFont.documentTitleMPFont);
 
             int numChapter = 1;
             int countSections = 1;

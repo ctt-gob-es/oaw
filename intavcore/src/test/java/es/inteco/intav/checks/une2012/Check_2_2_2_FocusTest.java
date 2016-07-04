@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public final class Check_2_2_2_FocusTest {
 
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2 = "minhap.observatory.2.0.subgroup.2.2.2";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2 = "minhap.observatory.2_0.subgroup.2.2.2";
 
     private static final int TABINDEX_USSAGE_LOW = 434;
     private static final int TABINDEX_USSAGE_EXCESSIVE = 435;

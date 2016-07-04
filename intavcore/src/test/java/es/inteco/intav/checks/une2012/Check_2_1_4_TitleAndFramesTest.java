@@ -14,13 +14,15 @@ import org.junit.Test;
  */
 public final class Check_2_1_4_TitleAndFramesTest {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4 = "minhap.observatory.2.0.subgroup.2.1.4";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4 = "minhap.observatory.2_0.subgroup.2.1.4";
 
     private static int TITLE_EXISTS = 50;
     private static int TITLE_BLANK = 51;
     private static int TITLE_SUSPICIOUS = 53;
     private static int FRAME_TITLE = 31;
+    private static int FRAME_EXISTS = 32;
     private static int IFRAME_TITLE = 295;
+    private static int TITLE_REPEATED = 462;
 
     private CheckAccessibility checkAccessibility;
 
@@ -103,6 +105,7 @@ public final class Check_2_1_4_TitleAndFramesTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_SUSPICIOUS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_TITLE));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_EXISTS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4, TestUtils.OBS_VALUE_GREEN_ZERO);
     }
 
@@ -115,6 +118,7 @@ public final class Check_2_1_4_TitleAndFramesTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_SUSPICIOUS));
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_TITLE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_EXISTS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4, TestUtils.OBS_VALUE_RED_ZERO);
 
         checkAccessibility.setContent("<html><head><title>Lorem</title></head><p>Lorem ipsum</p>" +
@@ -124,6 +128,7 @@ public final class Check_2_1_4_TitleAndFramesTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_SUSPICIOUS));
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_TITLE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_EXISTS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
@@ -137,7 +142,9 @@ public final class Check_2_1_4_TitleAndFramesTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_BLANK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TITLE_SUSPICIOUS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), IFRAME_TITLE));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4, TestUtils.OBS_VALUE_GREEN_ZERO);
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_TITLE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), FRAME_EXISTS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test

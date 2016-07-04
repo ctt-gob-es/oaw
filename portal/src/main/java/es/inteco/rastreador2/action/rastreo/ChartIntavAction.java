@@ -219,7 +219,7 @@ public class ChartIntavAction extends Action {
         if (regenerate || !f1.exists()) {
             ChartForm globalChart = new ChartForm(getResources(request).getMessage(getLocale(request), "chart.intav.priority.warnings"), cTitle, rTitle,
                     globalPriorityDataset, true, true, false, false, true, false, false, x, y, color);
-            GraphicsUtils.createSeriesBarChart(globalChart, chartsPath + getResources(request).getMessage(getLocale(request), "chart.intav.priority.warnings") + ".jpg", "", request, false);
+            GraphicsUtils.createSeriesBarChart(globalChart, chartsPath + getResources(request).getMessage(getLocale(request), "chart.intav.priority.warnings") + ".jpg", "", CrawlerUtils.getResources(request), false);
         }
 
         for (Map.Entry<String, BigDecimal> totalDataEntry : totalDataMap.entrySet()) {
@@ -230,7 +230,7 @@ public class ChartIntavAction extends Action {
         if (regenerate || !f2.exists()) {
             ChartForm totalChart = new ChartForm(getResources(request).getMessage(getLocale(request), "chart.intav.total.results"), cTitle, rTitle,
                     totalPriorityDataset, true, false, false, false, true, false, false, x, y, color);
-            GraphicsUtils.createStandardBarChart(totalChart, chartsPath + getResources(request).getMessage(getLocale(request), "chart.intav.total.results") + ".jpg", "", request, false);
+            GraphicsUtils.createStandardBarChart(totalChart, chartsPath + getResources(request).getMessage("chart.intav.total.results") + ".jpg", "", getResources(request), false);
         }
     }
 

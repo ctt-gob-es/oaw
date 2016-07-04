@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3 = "minhap.observatory.2.0.subgroup.2.1.3";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3 = "minhap.observatory.2_0.subgroup.2.1.3";
 
     /* Nota: Se considera etiqueta asociada a <label> (con texto) asociado explícitamente; “aria-labelledby” con un “id” correspondiente a un elemento con contenido textual; “aria-label” o “títle” con contenido. */
     /* Elementos input tienen una etiqueta explícitamente asociada */
@@ -31,9 +31,10 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     private static final int GROUPED_SELECTION_BUTTONS = 443;
     /* Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) */
     private static final int HEADERS_AS_LEGEND = 429;
+    private static final int HEADERS_AS_LEGEND_SHAREPOINT = 466;
     /* En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) */
     private static final int COMPLEX_FORMS = 430;
-    /* Se verifica que todo “fieldset” tenga un único elemento “legend” con contenido (primer elemento semántico hijo).*/
+    /* Se verifica que todos los “fieldset” tengan un único elemento “legend” con contenido (primer elemento semántico hijo).*/
     private static final int LEGEND_FIRST_CHILD = 444;
     /* Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) */
     private static final int OPTGROUP = 406;
@@ -43,7 +44,6 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     private static final int OPTGROUP_LABEL = 407;
     /* Se identifican los campos obligatorios en formularios con más de N campos de texto (se busca los términos “obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas o títulos presentes dentro del formulario <form>). (N = 4) */
     private static final int REQUIRED_CONTROLS = 446;
-    /*TODO: No se emplea la propiedad de CSS 'text-decoration: blink'*/
 
     private CheckAccessibility checkAccessibility;
 
@@ -62,12 +62,10 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
         checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><fieldset><legend>Lorem</legend><input id=\"control\" /><input id=\"control\" /></fieldset><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /></form>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ONE);
 
         checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /></form>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
 
         checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /><input id=\"control\" /></form>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -131,6 +129,35 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     public void evaluateSelectLabelAssociation() throws Exception {
         checkAccessibility.setContent("<label for=\"selector\">Selector</label><select id=\"selector\"><option>Opción 1</option></select>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<form><label for=\"_selector_\">Selector</label><select id=\"_selector_\" name=\"otra_cosa\"><option>Opción 1</option></select></form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
+
+        checkAccessibility.setContent("<span class=\"aui-field-content\">\n" +
+                "\n" +
+                "\t\t\t<label class=\"aui-field-label-inline-label\"\n" +
+                "                   for=\"_101_INSTANCE_HQbMoL5bmHVo_ocerSearchContainerPageIterator_page\">\n" +
+                "                Página\n" +
+                "                <span class=\"aui-helper-hidden-accessible\">(Cambiar el valor de este campo provocará que se recargue la página.)</span>\n" +
+                "            </label>\n" +
+                "\n" +
+                "\t\t<span class='aui-field-element '>\n" +
+                "\t\t\t<select class=\"aui-field-input aui-field-input-select aui-field-input-menu\"\n" +
+                "                    id=\"_101_INSTANCE_HQbMoL5bmHVo_ocerSearchContainerPageIterator_page\"\n" +
+                "                    name=\"_101_INSTANCE_HQbMoL5bmHVo_page\" onchange=\"_101_INSTANCE_HQbMoL5bmHVo_curupdateCur(this);\">\n" +
+                "                <option selected value=\"1\">1</option>\n" +
+                "                <option value=\"2\">2</option>\n" +
+                "                <option value=\"3\">3</option>\n" +
+                "            </select>\n" +
+                "\t\t</span>\n" +
+                "\n" +
+                "\t\t\t<span class=\"aui-suffix\">\n" +
+                "\t\t\t\tde 8\n" +
+                "\t\t\t</span>\n" +
+                "</span>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
 
         checkAccessibility.setContent("<select title=\"Selector\"><option>Opción 1</option></select>");
@@ -348,6 +375,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     @Test
     public void evaluateManyOptions() throws Exception {
         checkAccessibility.setContent("<select>" +
+                "<option>Seleccione ----</option>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
                 "<option>Opción  3</option>" +
@@ -371,7 +399,40 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "<option>Opción 21</option>" +
                 "<option>Opción 22</option>" +
                 "<option>Opción 23</option>" +
+                "<option>Opción 24</option>" +
                 "</select>");
+        // 25 opciones pasa
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, OPTGROUP));
+
+        checkAccessibility.setContent("<select>" +
+                "<option>Seleccione ----</option>" +
+                "<option>Opción  1</option>" +
+                "<option>Opción  2</option>" +
+                "<option>Opción  3</option>" +
+                "<option>Opción  4</option>" +
+                "<option>Opción  5</option>" +
+                "<option>Opción  6</option>" +
+                "<option>Opción  7</option>" +
+                "<option>Opción  8</option>" +
+                "<option>Opción  9</option>" +
+                "<option>Opción 10</option>" +
+                "<option>Opción 11</option>" +
+                "<option>Opción 12</option>" +
+                "<option>Opción 13</option>" +
+                "<option>Opción 14</option>" +
+                "<option>Opción 15</option>" +
+                "<option>Opción 16</option>" +
+                "<option>Opción 17</option>" +
+                "<option>Opción 18</option>" +
+                "<option>Opción 19</option>" +
+                "<option>Opción 20</option>" +
+                "<option>Opción 21</option>" +
+                "<option>Opción 22</option>" +
+                "<option>Opción 23</option>" +
+                "<option>Opción 24</option>" +
+                "<option>Opción 25</option>" +
+                "</select>");
+        // 26 opciones falla
         Assert.assertEquals(1, getNumProblems(checkAccessibility, OPTGROUP));
     }
 
@@ -518,6 +579,22 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</div></fieldset>" +
                 "</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+
+        checkAccessibility.setContent("<form>" +
+                "<fieldset><div>Lorem ipsum</div><legend>Grupo</legend>" +
+                "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
+                "</fieldset></form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+    }
+
+    @Test
+    public void evaluateLegendDoubleChildDiv() throws Exception {
+        checkAccessibility.setContent("<form>" +
+                "<fieldset><div>Lorem</div><div>Ipsum</div><legend>Grupo</legend>" +
+                "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
+                "</div></fieldset>" +
+                "</form>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
     }
 
     @Test
@@ -539,15 +616,33 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</div></fieldset>" +
                 "</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+
+        checkAccessibility.setContent("<form>" +
+                "<fieldset>  " + System.lineSeparator() + "  <div> " + System.lineSeparator() + "  <legend>Grupo</legend>" +
+                "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
+                "</div></fieldset>" +
+                "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
     }
 
     @Test
     public void evaluateLegendFirstChildText() throws Exception {
         checkAccessibility.setContent("<form>" +
-                "<fieldset>Lorem<legend>Grupo</legend>" +
+                "<fieldset><legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
                 "</fieldset>" +
                 "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
+    }
+
+    @Test
+    public void evaluateLegendSpanText() throws Exception {
+        checkAccessibility.setContent("\t\t\t<form action=\"busqueda.asp\" method=\"get\" name=\"busqueda\" id=\"formBuscadores\">\n" +
+                "\t\t\t<div><input type=\"hidden\" name=\"idioma\" value=\"1\"></div>\n" +
+                "\t\t\t<fieldset>\n" +
+                "\t\t\t<legend><span class=\"legend_buscador\">Buscador</span></legend>\n" +
+                "\t\t\t</fieldset>\n" +
+                "\t\t\t</form>");
         Assert.assertEquals(0, getNumProblems(checkAccessibility, LEGEND_FIRST_CHILD));
     }
 
@@ -742,5 +837,59 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
                 "</form>");
         Assert.assertEquals(1, getNumProblems(checkAccessibility, HEADERS_AS_LEGEND));
     }
+
+    @Test
+    public void evaluateSharepointFormName() throws Exception {
+        checkAccessibility.setContent("<html><form name=\"aspnetForm\">" +
+                "<h1>Foo</h1>" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\">" +
+                "<h2>Blah</h2>" +
+                "<p>Lorem ipsum</p>" +
+                "</form>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND_SHAREPOINT));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
+    }
+
+    @Test
+    public void evaluateSharepointFormId() throws Exception {
+        checkAccessibility.setContent("<html><form id=\"aspnetForm\">" +
+                "<h1>Foo</h1>" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\">" +
+                "<h2>Blah</h2>" +
+                "<p>Lorem ipsum</p>" +
+                "</form>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND_SHAREPOINT));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
+    }
+
+    @Test
+    public void evaluateSharepointFormIdAndName() throws Exception {
+        checkAccessibility.setContent("<html><form id=\"aspnetForm\" method=\"post\" name=\"aspnetForm\">" +
+                "<h1>Foo</h1>" +
+                "<label for=\"id_1\">Lorem*</label>" +
+                "<input id=\"id_1\">" +
+                "<h2>Blah</h2>" +
+                "<p>Lorem ipsum</p>" +
+                "</form>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND_SHAREPOINT));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
+    }
+
+//    @Test
+//    public void evaluateURL() throws Exception {
+//        checkAccessibility.setUrl("http://www.exteriores.gob.es/Portal/es/Paginas/inicio.aspx");
+//        final Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND));
+//        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND_SHAREPOINT));
+//        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
+//    }
 
 }

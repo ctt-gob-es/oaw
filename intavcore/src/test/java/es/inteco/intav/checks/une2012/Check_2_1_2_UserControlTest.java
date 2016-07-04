@@ -15,7 +15,7 @@ import org.junit.Test;
  */
 public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2 = "minhap.observatory.2.0.subgroup.2.1.2";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2 = "minhap.observatory.2_0.subgroup.2.1.2";
 
     private static final int BLINK_MARQUEE = 130;
     private static final int META_REDIRECT = 71;

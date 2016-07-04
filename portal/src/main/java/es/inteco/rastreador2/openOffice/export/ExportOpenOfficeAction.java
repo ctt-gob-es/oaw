@@ -26,7 +26,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ExportOpenOfficeAction extends Action {
 
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response) {
         long idExecution = 0;
         if (request.getParameter(Constants.ID) != null) {
             idExecution = Long.parseLong(request.getParameter(Constants.ID));
@@ -38,21 +38,20 @@ public class ExportOpenOfficeAction extends Action {
         }
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final String basePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office")
-                + idObservatory + File.separator + idExecution + File.separator;
+        final String basePath = pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office") + idObservatory + File.separator + idExecution + File.separator;
 
         String filePath = null;
 
         Connection c = null;
         try {
             c = DataBaseManager.getConnection();
-            ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
-            SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
-            ObservatorioRealizadoForm observatoryFFForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
+            final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+            final SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+            final ObservatorioRealizadoForm observatoryFFForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
 
             filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
-            String graphicPath = basePath + "temp" + File.separator;
-            int numObs = ObservatorioDAO.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha()).size();
+            final String graphicPath = basePath + "temp" + File.separator;
+            final int numObs = ObservatorioDAO.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha()).size();
             ExportOpenOfficeUtils.createOpenOfficeDocument(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), numObs);
             FileUtils.deleteDir(new File(graphicPath));
         } catch (Exception e) {

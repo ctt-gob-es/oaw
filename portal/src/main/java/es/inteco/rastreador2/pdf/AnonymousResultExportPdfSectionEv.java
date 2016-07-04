@@ -10,6 +10,7 @@ import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -27,10 +28,10 @@ public final class AnonymousResultExportPdfSectionEv {
     //RESULTADOS: EVOLUCIÓN
     //**************************************************************************************************
 
-    protected static void createChapterEvolution(HttpServletRequest request, Chapter chapter) {
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.p1"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.p2"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.p3"), ConstantsFont.paragraphFont, chapter);
+    protected static void createChapterEvolution(final MessageResources messageResources, Chapter chapter) {
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p1"), ConstantsFont.paragraphFont, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p2"), ConstantsFont.paragraphFont, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p3"), ConstantsFont.paragraphFont, chapter);
     }
 
     protected static void createSectionEv1(HttpServletRequest request, Section section, String graphicPath, Map<String, BigDecimal> resultData) throws BadElementException, IOException {
@@ -86,192 +87,192 @@ public final class AnonymousResultExportPdfSectionEv {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev5.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev5.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION);
     }
 
     protected static void createSectionEv6(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev6.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev6.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION);
     }
 
     protected static void createSectionEv7(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev7.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev7.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION);
     }
 
     protected static void createSectionEv8(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev8.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev8.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION);
     }
 
     protected static void createSectionEv9(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev9.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev9.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION);
     }
 
     protected static void createSectionEv10(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev10.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev10.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION);
     }
 
     protected static void createSectionEv11(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev11.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev11.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION);
     }
 
     protected static void createSectionEv12(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev12.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev12.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION);
     }
 
     protected static void createSectionEv13(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev13.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev13.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION);
     }
 
     protected static void createSectionEv14(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev14.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev14.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION);
     }
 
     protected static void createSectionEv15(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev15.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev15.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION);
     }
 
     protected static void createSectionEv16(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev16.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev16.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION);
     }
 
     protected static void createSectionEv17(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev17.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev17.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION);
     }
 
     protected static void createSectionEv18(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev18.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev18.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION);
     }
 
     protected static void createSectionEv19(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev19.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev19.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION);
     }
 
     protected static void createSectionEv20(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev20.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev20.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION);
     }
 
     protected static void createSectionEv21(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev21.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev21.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION);
     }
 
     protected static void createSectionEv22(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev22.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev22.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
     }
 
     protected static void createSectionEv23(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev23.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev23.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION);
     }
 
     protected static void createSectionEv24(HttpServletRequest request, Section section, String graphicPath, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev24.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev24.ob.tableTitle"), section, 420);
-        createVerificationResults(request, section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION);
+        createVerificationResults(CrawlerUtils.getResources(request), section, pageObservatoryMap, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION);
     }
 
     protected static void createSectionEv25(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev25.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.asp.tableTible", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev25.ob.tableTitle")), section, 420);
-        createAspectResults(request, section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID);
+        createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID);
     }
 
     protected static void createSectionEv26(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev26.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.asp.tableTible", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev26.ob.tableTitle")), section, 420);
-        createAspectResults(request, section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID);
+        createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID);
     }
 
     protected static void createSectionEv27(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev27.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.asp.tableTible", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev27.ob.tableTitle")), section, 420);
-        createAspectResults(request, section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID);
+        createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID);
     }
 
     protected static void createSectionEv28(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev28.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.asp.tableTible", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev28.ob.tableTitle")), section, 420);
-        createAspectResults(request, section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID);
+        createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID);
     }
 
     protected static void createSectionEv29(HttpServletRequest request, Section section, String graphicPath, Map<Date, Map<String, BigDecimal>> resultsByAspect) throws BadElementException, IOException {
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev29.img.alt"), 80);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev.asp.tableTible", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev29.ob.tableTitle")), section, 420);
-        createAspectResults(request, section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID);
+        createAspectResults(CrawlerUtils.getResources(request), section, resultsByAspect, Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID);
     }
 
-    private static void createVerificationResults(HttpServletRequest request, Section section, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap, String verification) {
-        Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(verification, pageObservatoryMap);
-        java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData);
-        java.util.List<String> headers = new ArrayList<String>();
-        headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.date"));
-        headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punt.media"));
+    private static void createVerificationResults(final MessageResources messageResources, Section section, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap, String verification) {
+        final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(verification, pageObservatoryMap);
+        final java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData);
+        final java.util.List<String> headers = new ArrayList<String>();
+        headers.add(messageResources.getMessage("resultados.anonimos.date"));
+        headers.add(messageResources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
     }
 
-    private static void createAspectResults(HttpServletRequest request, Section section, Map<Date, Map<String, BigDecimal>> resultsByAspect, String aspect) {
-        Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(aspect, resultsByAspect);
-        java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(request, resultData);
-        java.util.List<String> headers = new ArrayList<String>();
-        headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.date"));
-        headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punt.media"));
+    private static void createAspectResults(final MessageResources messageResources, Section section, Map<Date, Map<String, BigDecimal>> resultsByAspect, String aspect) {
+        final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(aspect, resultsByAspect);
+        final java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData);
+        final java.util.List<String> headers = new ArrayList<String>();
+        headers.add(messageResources.getMessage("resultados.anonimos.date"));
+        headers.add(messageResources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
     }
 

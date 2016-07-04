@@ -35,9 +35,7 @@ public abstract class BaseManager {
             }
             throw new HibernateException(e);
         } finally {
-            if (session.isOpen()) {
-                session.close();
-            }
+            session.close();
         }
 
         return object;
@@ -64,9 +62,7 @@ public abstract class BaseManager {
             }
             throw new HibernateException(e);
         } finally {
-            if (session.isOpen()) {
-                session.close();
-            }
+            session.close();
         }
 
         return object;
@@ -93,9 +89,7 @@ public abstract class BaseManager {
             }
             throw new HibernateException(e);
         } finally {
-            if (session.isOpen()) {
-                session.close();
-            }
+            session.close();
         }
 
         return object;

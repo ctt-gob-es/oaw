@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public final class Check_2_1_5_DescriptiveLinksTest {
 
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5 = "minhap.observatory.2.0.subgroup.2.1.5";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5 = "minhap.observatory.2_0.subgroup.2.1.5";
 
     private final int IMG_ALT_BLANK_LINKS = 69;
     private final int TOO_MUCH_TEXT_LINKS = 181;
@@ -104,7 +104,7 @@ public final class Check_2_1_5_DescriptiveLinksTest {
         checkAccessibility.setContent("<html><body><a><img alt=\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies ante eget lobortis vestibulum. Maecenas quis mollis metus. Nullam pulvinar nisl eu lorem consequat accumsan. Praesent vel nulla mollis, convallis tellus sit amet, facilisis magna amet.\"/> </a></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TOO_MUCH_TEXT_LINKS));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5, TestUtils.OBS_VALUE_RED_ZERO);
     }
 
     @Test

@@ -18,6 +18,10 @@ public class RankingInfo {
         this.globalRank = globalRank;
     }
 
+    public void incrementGlobalRank() {
+        this.globalRank++;
+    }
+
     public int getGlobalSeedsNumber() {
         return globalSeedsNumber;
     }
@@ -32,6 +36,10 @@ public class RankingInfo {
 
     public void setCategoryRank(int categoryRank) {
         this.categoryRank = categoryRank;
+    }
+
+    public void incrementCategoryRank() {
+        this.categoryRank++;
     }
 
     public int getCategorySeedsNumber() {

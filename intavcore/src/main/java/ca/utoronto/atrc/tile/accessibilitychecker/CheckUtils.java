@@ -62,6 +62,15 @@ public final class CheckUtils {
         return linksFound;
     }
 
+    /**
+     * Comprueba si un documento HTML tiene forma de contacto en la página de declaración de accesibilidad aplicando una serie de patrones sobre los enlaces y texto.
+     *
+     * @param document documento HTML en formato DOM a analizar
+     * @param contactRegExp expresión regular para detectar enlaces a sección de contacto (contactar,contacte,...)
+     * @param emailRegExp expresión regular para detectar si se incluye una dirección de correo directamente en el contenido (contacto@portal.es)
+     * @return true si se ha detectado una forma de contacto, false en caso contrario
+     * @throws Exception
+     */
     public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) throws Exception {
         // Texto de correo electrónico en el texto normal
         final Pattern pattern = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
@@ -89,12 +98,18 @@ public final class CheckUtils {
         return false;
     }
 
+    /**
+     * Comprueba si un documento HTML tiene la fecha de la última revisión en la página de declaración de accesibilidad aplicando una serie de patrones de fecha sobre el texto.
+     *
+     * @param document documento DOM HTML sobre el que buscar la fecha de la última revisión
+     * @param dateRegExp expresión regular que identifica un formato de fecha
+     * @return true si se ha detectado la fecha de la última revisión, false en caso contrario
+     * @throws Exception
+     */
     public static boolean hasRevisionDate(final Document document, final String dateRegExp) throws Exception {
-        // Texto de correo electrónico en el texto normal
         final Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
         final Matcher matcher = pattern.matcher(getDocumentText(document));
 
-        // Hemos encontrado una dirección de correo electrónico en la página
         return matcher.find();
     }
 
@@ -195,7 +210,18 @@ public final class CheckUtils {
                 return true;
             }
 
-            if ("jigsaw.w3.org".equals(remoteUrl.getHost()) || "validator.w3.org".equals(remoteUrl.getHost())) {
+            // Consideramos que cualquier enlace a W3C (Internacional o España) o al portal TAW funcionan siempre además
+            // de enlaces a las redes sociales más famosas (twitter, faceboo, flickr, tuenti,...).
+            if ("jigsaw.w3.org".equals(remoteUrl.getHost())
+                    || "validator.w3.org".equals(remoteUrl.getHost())
+                    || "www.w3.org".equals(remoteUrl.getHost())
+                    || "www.w3c.es".equals(remoteUrl.getHost())
+                    || "www.tawdis.net".equals(remoteUrl.getHost())
+                    || "twitter.com".equals(remoteUrl.getHost())
+                    || "www.facebook.com".equals(remoteUrl.getHost())
+                    || "www.flickr.com".equals(remoteUrl.getHost())
+                    || "www.tuenti.com".equals(remoteUrl.getHost())
+                    || "plus.google.com".equals(remoteUrl.getHost())) {
                 return true;
             }
 
@@ -291,7 +317,7 @@ public final class CheckUtils {
         return false;
     }
 
-    public static int isEmptyDescendentContent(Node node, Element elementGiven) {
+    public static int isEmptyDescendentContent(Node node, final Element elementGiven) {
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> noContentTags = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
         while (node != null) {
@@ -524,6 +550,7 @@ public final class CheckUtils {
             Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
     private static final Pattern[] altAA = new Pattern[]{
@@ -534,6 +561,8 @@ public final class CheckUtils {
             Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformidad\\s+doble\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
     private static final Pattern[] altAAA = new Pattern[]{
@@ -544,5 +573,7 @@ public final class CheckUtils {
             Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformidad\\s+triple\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 }

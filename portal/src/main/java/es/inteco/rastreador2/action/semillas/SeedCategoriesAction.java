@@ -231,23 +231,23 @@ public class SeedCategoriesAction extends Action {
         if (!isCancelled(request)) {
             Connection c = null;
 
-            CategoriaForm categoriaForm = (CategoriaForm) form;
+            final CategoriaForm categoriaForm = (CategoriaForm) form;
 
             try {
-                PropertiesManager pmgr = new PropertiesManager();
+                final PropertiesManager pmgr = new PropertiesManager();
                 c = DataBaseManager.getConnection();
 
                 SemillaDAO.updateSeedCategory(c, categoriaForm);
 
                 String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.editada", categoriaForm.getName());
-                String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
+                final String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
 
                 if (categoriaForm.getFileSeeds().getFileData().length > 0) {
                     try {
                         //Semillas que recuperamos del fichero
-                        List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(categoriaForm.getFileSeeds().getInputStream());
+                        final List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(categoriaForm.getFileSeeds().getInputStream());
                         //Semillas de la categoria
-                        List<SemillaForm> oldSeeds = SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoriaForm.getId()), Constants.NO_PAGINACION, new SemillaForm());
+                        final List<SemillaForm> oldSeeds = SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoriaForm.getId()), Constants.NO_PAGINACION, new SemillaForm());
                         //Comparamos las semillas (x url)
                         compareSeeds(c, categoriaForm.getId(), seeds, oldSeeds);
                     } catch (Exception e) {
@@ -269,10 +269,9 @@ public class SeedCategoriesAction extends Action {
         }
     }
 
-    private static void compareSeeds(Connection c, String idCategory, List<SemillaForm> newSeeds, List<SemillaForm> oldList) throws Exception {
-
-        List<SemillaForm> repitSeeds = new ArrayList<SemillaForm>();
-        List<SemillaForm> insertSeeds = new ArrayList<SemillaForm>();
+    private static void compareSeeds(final Connection c, final String idCategory, final List<SemillaForm> newSeeds, final List<SemillaForm> oldList) throws Exception {
+        final List<SemillaForm> repitSeeds = new ArrayList<SemillaForm>();
+        final List<SemillaForm> insertSeeds = new ArrayList<SemillaForm>();
 
         for (SemillaForm newSemillaForm : newSeeds) {
             boolean found = false;
@@ -290,7 +289,7 @@ public class SeedCategoriesAction extends Action {
                 insertSeeds.add(newSemillaForm);
             }
         }
-        List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromCategory(c, idCategory);
+        final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromCategory(c, idCategory);
         //Añadimos las nuevas Semillas y los nuevos rastreos a los observatorios que correspondan
         insertSeedsFromXml(c, insertSeeds, idCategory, observatoryFormList);
         //Modificamos las que han cambiado
@@ -299,13 +298,13 @@ public class SeedCategoriesAction extends Action {
         deleteSeedsFromXml(c, oldList);
     }
 
-    private static void insertSeedsFromXml(Connection c, List<SemillaForm> insertSeeds, String idCategory, List<ObservatorioForm> observatoryFormList) throws Exception {
+    private static void insertSeedsFromXml(final Connection c, final List<SemillaForm> insertSeeds, final String idCategory, final List<ObservatorioForm> observatoryFormList) throws Exception {
         if (insertSeeds != null && !insertSeeds.isEmpty()) {
             SemillaDAO.saveSeedsCategory(c, insertSeeds, idCategory);
             for (SemillaForm semillaForm : insertSeeds) {
                 for (ObservatorioForm observatorioForm : observatoryFormList) {
                     if (observatorioForm.getCategoria() != null && Arrays.asList(observatorioForm.getCategoria()).contains(idCategory)) {
-                        InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
+                        final InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
                         ObservatorioDAO.putDataToInsert(insertarRastreoForm, observatorioForm);
                         insertarRastreoForm.setCodigo(observatorioForm.getNombre() + "-" + semillaForm.getNombre());
                         insertarRastreoForm.setId_semilla(SemillaDAO.getIdList(c, semillaForm.getNombre(), Long.parseLong(idCategory)));
@@ -318,19 +317,19 @@ public class SeedCategoriesAction extends Action {
         }
     }
 
-    private static void updateSeedsFromXml(Connection c, List<SemillaForm> repitSeeds, List<ObservatorioForm> observatoryFormList) throws Exception {
+    private static void updateSeedsFromXml(final Connection c, final List<SemillaForm> repitSeeds, final List<ObservatorioForm> observatoryFormList) throws Exception {
         if (repitSeeds != null && !repitSeeds.isEmpty()) {
             SemillaDAO.updateCategorySeeds(c, repitSeeds);
             for (SemillaForm semillaForm : repitSeeds) {
                 for (ObservatorioForm observatorioForm : observatoryFormList) {
-                    Long crawlerId = RastreoDAO.getCrawlerFromSeedAndObservatory(c, semillaForm.getId(), observatorioForm.getId());
+                    final Long crawlerId = RastreoDAO.getCrawlerFromSeedAndObservatory(c, semillaForm.getId(), observatorioForm.getId());
                     RastreoDAO.updateCrawlerName(c, observatorioForm.getNombre() + "-" + semillaForm.getNombre(), crawlerId);
                 }
             }
         }
     }
 
-    private static void deleteSeedsFromXml(Connection c, List<SemillaForm> oldList) throws Exception {
+    private static void deleteSeedsFromXml(final Connection c, final List<SemillaForm> oldList) throws Exception {
         if (oldList != null && !oldList.isEmpty()) {
             for (SemillaForm semillaForm : oldList) {
                 //Al borrar la semilla ya se eliminan automáticamente los rastreos asociados y los resultados
@@ -339,19 +338,19 @@ public class SeedCategoriesAction extends Action {
         }
     }
 
-    private ActionForward viewSeedCategory(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
+    private ActionForward viewSeedCategory(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
         Connection c = null;
 
-        SemillaForm searchForm = (SemillaForm) form;
+        final SemillaForm searchForm = (SemillaForm) form;
 
         try {
             c = DataBaseManager.getConnection();
             if (request.getParameter(Constants.ID_CATEGORIA) != null) {
-                Long idCategory = Long.parseLong(request.getParameter(Constants.ID_CATEGORIA));
-                CategoriaForm categoriaForm = SemillaDAO.getSeedCategory(c, idCategory);
+                final Long idCategory = Long.parseLong(request.getParameter(Constants.ID_CATEGORIA));
+                final CategoriaForm categoriaForm = SemillaDAO.getSeedCategory(c, idCategory);
 
-                int numResult = SemillaDAO.countSeedsByCategory(c, idCategory, searchForm);
-                int page = Pagination.getPage(request, Constants.PAG_PARAM);
+                final int numResult = SemillaDAO.countSeedsByCategory(c, idCategory, searchForm);
+                final int page = Pagination.getPage(request, Constants.PAG_PARAM);
 
                 categoriaForm.setSeeds(SemillaDAO.getSeedsByCategory(c, idCategory, page - 1, searchForm));
                 request.setAttribute(Constants.CATEGORIA_FORM, categoriaForm);
@@ -366,17 +365,19 @@ public class SeedCategoriesAction extends Action {
         return mapping.findForward(Constants.VIEW_SEED_CATEGORY);
     }
 
-    private ActionForward deleteSeedConfirmation(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward deleteSeedConfirmation(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         Connection c = null;
         try {
-            String idSemilla = request.getParameter(Constants.ID_SEMILLA);
+            final String idSemilla = request.getParameter(Constants.ID_SEMILLA);
             c = DataBaseManager.getConnection();
-            List<ObservatorioForm> observatoryFormList = new ArrayList<ObservatorioForm>();
+            final List<ObservatorioForm> observatoryFormList;
             if (idSemilla != null) {
                 observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
+            } else {
+                observatoryFormList = new ArrayList<ObservatorioForm>();
             }
             request.setAttribute(Constants.OBSERVATORY_SEED_LIST, observatoryFormList);
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
+            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -387,22 +388,22 @@ public class SeedCategoriesAction extends Action {
         return mapping.findForward(Constants.DELETE_CATEGORY_SEED_CONFIRMATION);
     }
 
-    private ActionForward deleteSeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward deleteSeed(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         Connection c = null;
         Connection conn = null;
         try {
 
-            PropertiesManager pmgr = new PropertiesManager();
+            final PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
             conn = DataBaseManager.getConnection();
 
-            String idCategory = request.getParameter(Constants.ID_CATEGORIA);
-            String idSemilla = request.getParameter(Constants.ID_SEMILLA);
+            final String idCategory = request.getParameter(Constants.ID_CATEGORIA);
+            final String idSemilla = request.getParameter(Constants.ID_SEMILLA);
 
             SemillaDAO.deleteCategorySeed(c, idSemilla);
 
-            String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.borrada");
-            String volver = pmgr.getValue("returnPaths.properties", "volver.editar.categoria.semilla").replace("{0}", idCategory);
+            final String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.borrada");
+            final String volver = pmgr.getValue("returnPaths.properties", "volver.editar.categoria.semilla").replace("{0}", idCategory);
             request.setAttribute("mensajeExito", mensaje);
             request.setAttribute("accionVolver", volver);
             return mapping.findForward(Constants.EXITO);
@@ -421,7 +422,7 @@ public class SeedCategoriesAction extends Action {
         }
     }
 
-    private ActionForward newCategorySeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward newCategorySeed(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         Connection c = null;
 
         try {
@@ -438,7 +439,7 @@ public class SeedCategoriesAction extends Action {
         }
     }
 
-    private ActionForward editCategorySeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward editCategorySeed(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         Connection c = null;
 
         if (isCancelled(request)) {
@@ -448,8 +449,8 @@ public class SeedCategoriesAction extends Action {
         try {
             c = DataBaseManager.getConnection();
 
-            String idSeed = request.getParameter(Constants.ID_SEMILLA);
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSeed));
+            final String idSeed = request.getParameter(Constants.ID_SEMILLA);
+            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSeed));
             semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace(";", "\r\n"));
             request.setAttribute(Constants.SEMILLA_FORM, semillaForm);
 
@@ -463,23 +464,23 @@ public class SeedCategoriesAction extends Action {
         }
     }
 
-    private ActionForward addCategorySeed(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-        SemillaForm semillaForm = (SemillaForm) form;
+    private ActionForward addCategorySeed(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+        final SemillaForm semillaForm = (SemillaForm) form;
 
         if (!isCancelled(request)) {
             Connection c = null;
 
             try {
-                PropertiesManager pmgr = new PropertiesManager();
+                final PropertiesManager pmgr = new PropertiesManager();
                 c = DataBaseManager.getConnection();
 
                 semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace("\r\n", ";"));
-                Long idSeed = SemillaDAO.insertList(c, 4, semillaForm.getNombre(), semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), semillaForm.getAcronimo(), semillaForm.getDependencia());
+                final Long idSeed = SemillaDAO.insertList(c, 4, semillaForm.getNombre(), semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), semillaForm.getAcronimo(), semillaForm.getDependencia());
 
-                List<ObservatorioForm> observatoryIds = ObservatorioDAO.getObservatoriesFromCategory(c, semillaForm.getCategoria().getId());
+                final List<ObservatorioForm> observatoryIds = ObservatorioDAO.getObservatoriesFromCategory(c, semillaForm.getCategoria().getId());
                 for (ObservatorioForm observatorioForm : observatoryIds) {
                     if (observatorioForm.getCategoria() != null && Arrays.asList(observatorioForm.getCategoria()).contains(semillaForm.getCategoria().getId())) {
-                        InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
+                        final InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
                         ObservatorioDAO.putDataToInsert(insertarRastreoForm, observatorioForm);
                         insertarRastreoForm.setCodigo(observatorioForm.getNombre() + "-" + semillaForm.getNombre());
                         insertarRastreoForm.setId_semilla(idSeed);
@@ -489,8 +490,8 @@ public class SeedCategoriesAction extends Action {
                     }
                 }
 
-                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.semilla");
-                String volver = pmgr.getValue("returnPaths.properties", "volver.editar.categoria.semilla").replace("{0}", semillaForm.getCategoria().getId());
+                final String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.semilla");
+                final String volver = pmgr.getValue("returnPaths.properties", "volver.editar.categoria.semilla").replace("{0}", semillaForm.getCategoria().getId());
                 request.setAttribute("mensajeExito", mensaje);
                 request.setAttribute("accionVolver", volver);
                 return mapping.findForward(Constants.EXITO);
@@ -500,28 +501,28 @@ public class SeedCategoriesAction extends Action {
                 DataBaseManager.closeConnection(c);
             }
         } else {
-            ActionForward forward = new ActionForward(mapping.findForward(Constants.EDIT_SEED_CATEGORY));
+            final ActionForward forward = new ActionForward(mapping.findForward(Constants.EDIT_SEED_CATEGORY));
             forward.setPath(forward.getPath() + "&" + Constants.ID_CATEGORIA + "=" + semillaForm.getCategoria().getId());
             forward.setRedirect(true);
             return forward;
         }
     }
 
-    private ActionForward updateCategorySeed(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-        SemillaForm semillaForm = (SemillaForm) form;
+    private ActionForward updateCategorySeed(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+        final SemillaForm semillaForm = (SemillaForm) form;
 
         if (!isCancelled(request)) {
             Connection c = null;
 
             try {
-                PropertiesManager pmgr = new PropertiesManager();
+                final PropertiesManager pmgr = new PropertiesManager();
                 c = DataBaseManager.getConnection();
 
                 semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace("\r\n", ";"));
                 SemillaDAO.editSeed(c, semillaForm);
 
-                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.editada.semilla");
-                String volver = pmgr.getValue("returnPaths.properties", "volver.editar.categoria.semilla").replace("{0}", semillaForm.getCategoria().getId());
+                final String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.editada.semilla");
+                final String volver = pmgr.getValue("returnPaths.properties", "volver.editar.categoria.semilla").replace("{0}", semillaForm.getCategoria().getId());
                 request.setAttribute("mensajeExito", mensaje);
                 request.setAttribute("accionVolver", volver);
                 return mapping.findForward(Constants.EXITO);
@@ -531,7 +532,7 @@ public class SeedCategoriesAction extends Action {
                 DataBaseManager.closeConnection(c);
             }
         } else {
-            ActionForward forward = new ActionForward(mapping.findForward(Constants.EDIT_SEED_CATEGORY));
+            final ActionForward forward = new ActionForward(mapping.findForward(Constants.EDIT_SEED_CATEGORY));
             forward.setPath(forward.getPath() + "&" + Constants.ID_CATEGORIA + "=" + semillaForm.getCategoria().getId());
             forward.setRedirect(true);
             return forward;

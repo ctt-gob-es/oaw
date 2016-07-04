@@ -204,10 +204,10 @@
                 <name>minhap.observatory.2_0.subgroup.1.2.3</name>
                 <checks>
                     <check id="126"/>
-                    <check id="148" onlyWarning="true" relatedWith="126" noExecutedMark="true"/>
-                    <check id="149" onlyWarning="true" relatedWith="126" noExecutedMark="true"/>
+                    <check id="148" onlyWarning="true" relatedWith="126"/>
+                    <check id="149" onlyWarning="true" relatedWith="126"/>
                     <!-- Se comprueba si en la página de accesibilidad se proporciona información sobre el nivel de conformidad.-->
-                    <check id="463" onlyWarning="true" relatedWith="126" noExecutedMark="true"/>
+                    <check id="463" onlyWarning="true" relatedWith="126"/>
                 </checks>
             </subgroup>
         </suitability>
@@ -265,8 +265,12 @@
                     <check id="443"/>
                     <!-- Se verifica que no existan dos o más elementos de encabezado dentro de un elemento <form> (en lugar de usar “fieldset”) -->
                     <check id="429"/>
+                    <!-- Modificación especial de la comprobación 429 para Sharepoint -->
+                    <check id="466" onlyWarning="true"/>
                     <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=10) -->
-                    <check id="430"/>
+                    <check id="430" relatedWith="430"/>
+                    <!-- En formularios con X o más campos (text, file, password, select, textarea) debe existir al menos un fieldset y un legend (Heuristico X=8) 0-PASA -->
+                    <check id="465" onlyWarning="true"/>
                     <!-- Se verifica que  los “fieldsets” tengan un único elemento “legend” con contenido (primer elemento semántico hijo).-->
                     <check id="444"/>
                     <!-- Elementos select con más de X opciones sin agrupar bajo elementos “optgroup”. (X=20) -->
@@ -293,11 +297,11 @@
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan frames -->
                     <check id="32" onlyWarning="true"/>
                     <!-- Comprobación para fijar como máximo resultado GREEN_ZERO si se usan iframes -->
-                    <check id="437" onlyWarning="true"/>
+                    <!-- <check id="437" onlyWarning="true"/>      -->
                     <!-- Frames tienen atributo title no vacío ni sospechoso -->
                     <check id="31" relatedWith="32"/>
                     <!-- Iframes tienen atributo title no vacío ni sospechoso -->
-                    <check id="295" relatedWith="437"/>
+                    <check id="295"/>
                     <!-- Comprobar titulos distintos entre la muestra -->
                     <check id="462"/>
                 </checks>

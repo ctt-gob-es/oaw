@@ -29,6 +29,7 @@ import java.util.List;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ResultadosObservatorioAction extends Action {
+
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
@@ -39,7 +40,7 @@ public class ResultadosObservatorioAction extends Action {
                 if (action != null) {
                     if (action.equalsIgnoreCase(Constants.GET_SEEDS)) {
                         request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
-                        return getSeeds(mapping, form, request, response);
+                        return getSeeds(mapping, form, request);
                     } else if (action.equals(Constants.ACCION_BORRAR)) {
                         return deleteCrawlerSeed(mapping, request);
                     } else if (action.equals(Constants.ACCION_LANZAR_EJECUCION)) {
@@ -75,7 +76,7 @@ public class ResultadosObservatorioAction extends Action {
             RastreoDAO.borrarRastreoRealizado(c, Long.parseLong(request.getParameter(Constants.ID)));
             PropertiesManager pmgr = new PropertiesManager();
             String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.ejecutada.eliminada");
-            String volver = pmgr.getValue("returnPaths.properties", "volver.lista.observatorios.realizados.primarios.seeds").replace("{0}", request.getParameter(Constants.ID_OBSERVATORIO).toString()).replace("{1}", request.getParameter(Constants.ID_EX_OBS).toString()).replace("{2}", request.getParameter(Constants.ID_CARTUCHO));
+            String volver = pmgr.getValue("returnPaths.properties", "volver.lista.observatorios.realizados.primarios.seeds").replace("{0}", request.getParameter(Constants.ID_OBSERVATORIO)).replace("{1}", request.getParameter(Constants.ID_EX_OBS)).replace("{2}", request.getParameter(Constants.ID_CARTUCHO));
             request.setAttribute("mensajeExito", mensaje);
             request.setAttribute("accionVolver", volver);
             return mapping.findForward(Constants.EXITO2);
@@ -108,9 +109,9 @@ public class ResultadosObservatorioAction extends Action {
             if (request.getParameter(Constants.OBSERVATORY_ID) != null) {
                 request.setAttribute(Constants.OBSERVATORY_ID, request.getParameter(Constants.OBSERVATORY_ID));
             }
-            String idSemilla = (String) request.getParameter(Constants.SEMILLA);
+            final String idSemilla = request.getParameter(Constants.SEMILLA);
             c = DataBaseManager.getConnection();
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
+            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -203,13 +204,13 @@ public class ResultadosObservatorioAction extends Action {
         return forward;
     }
 
-    private void lanzarRastreo(Connection c, String idCrawling) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, idCrawling);
+    private void lanzarRastreo(final Connection c, final String idCrawling) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, idCrawling);
         dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
 
         // Cargamos los dominios introducidos en el archivo de semillas
-        int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
+        final int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
         dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, false));
 
         dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, true));
@@ -222,28 +223,29 @@ public class ResultadosObservatorioAction extends Action {
             dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
         }
 
-        DatosForm userData = LoginDAO.getUserData(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
+        final DatosForm userData = LoginDAO.getUserData(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 
-        Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, null, Long.valueOf(userData.getId()));
+        final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, null, Long.valueOf(userData.getId()));
 
-        CrawlerJob crawlerJob = new CrawlerJob();
+        final CrawlerJob crawlerJob = new CrawlerJob();
         crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
     }
 
-    public ActionForward getSeeds(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        SemillaForm semillaForm = (SemillaForm) form;
+    public ActionForward getSeeds(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+        final SemillaForm semillaForm = (SemillaForm) form;
 
-        Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
+        final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 
         Connection c = null;
         try {
             c = DataBaseManager.getConnection();
-            PropertiesManager pmgr = new PropertiesManager();
+            final PropertiesManager pmgr = new PropertiesManager();
 
-            int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
-            int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-
-            List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE, pagina - 1);
+            final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
+            final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+            // Obtenemos las semillas de esa página del listado
+            final List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE, pagina - 1);
+            // Calculamos la puntuación media de cada semilla y la guardamos en sesion
             request.setAttribute(Constants.OBSERVATORY_SEED_LIST, ObservatoryUtils.setAvgScore(c, seedsResults, idObservatoryExecution));
             request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResultA, pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"), pagina, Constants.PAG_PARAM));
         } catch (Exception e) {
@@ -257,17 +259,16 @@ public class ResultadosObservatorioAction extends Action {
     }
 
 
-    public ActionForward getFulfilledObservatories(ActionMapping mapping, HttpServletRequest request) throws Exception {
-
-        Long observatoryId = Long.valueOf(request.getParameter(Constants.OBSERVATORY_ID));
+    public ActionForward getFulfilledObservatories(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
+        final Long observatoryId = Long.valueOf(request.getParameter(Constants.OBSERVATORY_ID));
 
         Connection c = null;
         //Para mostrar todos los Rastreos del Sistema
         try {
             c = DataBaseManager.getConnection();
 
-            int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
-            int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+            final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
+            final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 
             request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(c, observatoryId, (pagina - 1), null));
             request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
@@ -281,17 +282,16 @@ public class ResultadosObservatorioAction extends Action {
         return mapping.findForward(Constants.GET_FULFILLED_OBSERVATORIES);
     }
 
-    public ActionForward getAnnexes(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         try {
-            Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+            final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+            final Long idOperation = System.currentTimeMillis();
 
-            Long idOperation = System.currentTimeMillis();
+            AnnexUtils.createAnnex(CrawlerUtils.getResources(request), idObsExecution, idOperation);
+            AnnexUtils.createAnnex2Ev(CrawlerUtils.getResources(request), idObsExecution, idOperation);
 
-            AnnexUtils.createAnnex(request, idObsExecution, idOperation);
-            AnnexUtils.createAnnex2Ev(request, idObsExecution, idOperation);
-
-            PropertiesManager pmgr = new PropertiesManager();
-            String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
+            final PropertiesManager pmgr = new PropertiesManager();
+            final String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
             ZipUtils.generateZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation.toString(), zipPath, true);
 
             CrawlerUtils.returnFile(zipPath, response, "application/zip", true);

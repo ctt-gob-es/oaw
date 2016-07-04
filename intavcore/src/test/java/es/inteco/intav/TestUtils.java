@@ -6,7 +6,13 @@ import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.form.*;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
+import org.w3c.dom.Document;
 
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Map;
 
@@ -114,4 +120,25 @@ public final class TestUtils {
         }
     }
 
+    public static void printHtml(final Document document) {
+        final TransformerFactory tf = TransformerFactory.newInstance();
+        final Transformer transformer;
+        try {
+            transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+            transformer.transform(new DOMSource(document), new StreamResult(new OutputStreamWriter(System.out, "UTF-8")));
+        } catch (TransformerConfigurationException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        }
+
+    }
 }

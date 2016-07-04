@@ -185,7 +185,7 @@ public class MultilanguagePrimaryExportPdfAction extends Action {
                 urlConnection.disconnect();
             }
 
-            return ZipUtils.pdfsZip(mapping, response, fulfilledCrawlings, idObservatory, idExecutionOb, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.multilanguage"));
+            return ZipUtils.pdfsZip(mapping, response, idObservatory, idExecutionOb, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.multilanguage"));
         } catch (Exception e) {
             Logger.putLog("Exception: ", MultilanguagePrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR);
