@@ -7,6 +7,7 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatorySiteEvaluationForm;
 import es.inteco.rastreador2.action.rastreo.ChartIntavAction;
 import org.apache.commons.lang.StringUtils;
+import org.apache.struts.util.MessageResources;
 import org.jfree.chart.*;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
@@ -29,7 +30,6 @@ import org.jfree.data.general.PieDataset;
 import org.jfree.ui.TextAnchor;
 import org.jfree.util.Rotation;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -102,33 +102,33 @@ public final class GraphicsUtils {
     //labelPosition true 45 grados false normal
     public static void createBarChart(DefaultCategoryDataset dataSet, String title, String rowTitle, String columnTitle,
                                       String color, boolean withLegend, boolean percentage, boolean labelPosition,
-                                      String filePath, String noDataMess, HttpServletRequest request, int x, int y) throws Exception {
+                                      String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
 
         ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelPosition, false, x, y, color);
-        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, request, true);
+        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
     //labelPosition true 45 grados false normal
     public static void createBarChart(Map<String, BigDecimal> result, String title, String rowTitle, String columnTitle,
                                       String color, boolean withLegend, boolean percentage, boolean labelPosition,
-                                      String filePath, String noDataMess, HttpServletRequest request, int x, int y) throws Exception {
+                                      String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<String, BigDecimal> entry : result.entrySet()) {
             BigDecimal value = entry.getValue();
-            dataSet.addValue(value, "", parseLevelLabel(entry.getKey(), request));
+            dataSet.addValue(value, "", parseLevelLabel(entry.getKey(), messageResources));
         }
 
         ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelPosition, false, x, y, color);
-        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, request, true);
+        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
     public static void createSeriesBarChart(ChartForm observatoryGraphicsForm,
-                                            String filePath, String noDataMess, HttpServletRequest request, boolean withRange) throws Exception {
-        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, request, withRange);
+                                            String filePath, String noDataMess, final MessageResources messageResources, boolean withRange) throws Exception {
+        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, withRange);
     }
 
     public static void createBar1PxChart(List<ObservatorySiteEvaluationForm> result, String title, String rowTitle, String columnTitle,
-                                         String filePath, String noDataMess, HttpServletRequest request, int x, int y, boolean showColLab) throws Exception {
+                                         String filePath, String noDataMess, final MessageResources messageResources, int x, int y, boolean showColLab) throws Exception {
 
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         PropertiesManager pmgr = new PropertiesManager();
@@ -155,11 +155,11 @@ public final class GraphicsUtils {
         observatoryGraphicsForm.setFixedColorBars(true);
         observatoryGraphicsForm.setFixedLegend(true);
         observatoryGraphicsForm.setShowColumsLabels(showColLab);
-        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, request, true);
+        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
     public static void createBarPageByLevelChart(List<ObservatoryEvaluationForm> result, String title, String rowTitle, String columnTitle,
-                                                 String filePath, String noDataMess, HttpServletRequest request, int x, int y) throws Exception {
+                                                 String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
 
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         PropertiesManager pmgr = new PropertiesManager();
@@ -176,13 +176,13 @@ public final class GraphicsUtils {
                 colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.green.color")).append(",");
             }
 
-            dataSet.addValue(observatoryEvaluationForm.getScore().setScale(observatoryEvaluationForm.getScore().scale() - 1), "", CrawlerUtils.getResources(request).getMessage("observatory.graphic.score.by.page.label", i++));
+            dataSet.addValue(observatoryEvaluationForm.getScore().setScale(observatoryEvaluationForm.getScore().scale() - 1), "", messageResources.getMessage("observatory.graphic.score.by.page.label", i++));
         }
 
         ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, false, true, true, true, x, y, colors.toString());
         observatoryGraphicsForm.setFixedLegend(true);
         observatoryGraphicsForm.setFixedColorBars(true);
-        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, request, true);
+        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
     public static void createStackedBarChart(ChartForm chartForm, String noDataMess, String filePath) throws Exception {
@@ -254,7 +254,7 @@ public final class GraphicsUtils {
     }
 
     public static void createStandardBarChart(ChartForm observatoryGraphicsForm,
-                                              String filePath, String noDataMess, HttpServletRequest request, boolean withRange) throws Exception {
+                                              String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws Exception {
 
         JFreeChart chart;
 
@@ -276,7 +276,7 @@ public final class GraphicsUtils {
         //Elimina la transparencia de las gráficas
         plot.setForegroundAlpha(1.0f);
 
-        defineBarColor(plot, observatoryGraphicsForm, request);
+        defineBarColor(plot, observatoryGraphicsForm, messageResources);
 
         NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
         valueAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
@@ -298,15 +298,15 @@ public final class GraphicsUtils {
         printChart(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
     }
 
-    public static String parseLevelLabel(String key, HttpServletRequest request) {
+    public static String parseLevelLabel(final String key, final MessageResources messageResources) {
         if (key.equals(Constants.OBS_A)) {
-            return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.A");
+            return messageResources.getMessage("observatory.graphics.level.A");
         } else if (key.equals(Constants.OBS_AA)) {
-            return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.AA");
+            return messageResources.getMessage("observatory.graphics.level.AA");
         } else if (key.equals(Constants.OBS_NV)) {
-            return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.NV");
+            return messageResources.getMessage("observatory.graphics.level.NV");
         } else if (key.equals(Constants.OBS_PARCIAL)) {
-            return CrawlerUtils.getResources(request).getMessage("observatory.graphics.level.Parcial");
+            return messageResources.getMessage("observatory.graphics.level.Parcial");
         } else {
             return key;
         }
@@ -360,8 +360,7 @@ public final class GraphicsUtils {
         domainAxis.setLowerMargin(0.01);
     }
 
-    private static void defineBarColor(CategoryPlot plot, ChartForm chartForm, HttpServletRequest request) {
-
+    private static void defineBarColor(final CategoryPlot plot, final ChartForm chartForm, final MessageResources messageResources) {
         plot.setBackgroundPaint(Color.white);
         if (chartForm.isGridline()) {
             plot.setRangeGridlinePaint(Color.black);
@@ -377,12 +376,12 @@ public final class GraphicsUtils {
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
         if (chartForm.isLegend()) {
             if (chartForm.isFixedLegend()) {
-                plot.setFixedLegendItems(generateOnePixelLegend(request));
+                plot.setFixedLegendItems(generateOnePixelLegend(messageResources));
             } else {
                 if (!chartForm.isOnePixelGraph()) {
                     plot.setFixedLegendItems(generateLegend(colors, plot));
                 } else {
-                    plot.setFixedLegendItems(generateOnePixelLegend(request));
+                    plot.setFixedLegendItems(generateOnePixelLegend(messageResources));
                 }
             }
         }
@@ -432,10 +431,10 @@ public final class GraphicsUtils {
         return newLegend;
     }
 
-    private static LegendItemCollection generateOnePixelLegend(HttpServletRequest request) {
+    private static LegendItemCollection generateOnePixelLegend(final MessageResources messageResources) {
 
         PropertiesManager pmgr = new PropertiesManager();
-        String[] labels = {parseLevelLabel(Constants.OBS_NV, request), parseLevelLabel(Constants.OBS_A, request), parseLevelLabel(Constants.OBS_AA, request)};
+        String[] labels = {parseLevelLabel(Constants.OBS_NV, messageResources), parseLevelLabel(Constants.OBS_A, messageResources), parseLevelLabel(Constants.OBS_AA, messageResources)};
         List<Paint> colors = getColors(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 
         //Se crea una leyenda fija

@@ -16,7 +16,7 @@ import org.junit.Test;
  */
 public final class Check_1_1_2_HeadersTest {
 
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_2 = "minhap.observatory.2.0.subgroup.1.1.2";
+    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_2 = "minhap.observatory.2_0.subgroup.1.1.2";
 
     private static final int HEADERS_NESTING_ID = 37;
     private static final int EXISTS_HEADERS_ID = 38;
@@ -42,7 +42,7 @@ public final class Check_1_1_2_HeadersTest {
         checkAccessibility.setContent("<html><body><h1>Lorem</h1><p>Ipsum</p><h2>Sic semper</h2><p>Foo</p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_2, TestUtils.OBS_VALUE_GREEN_ZERO);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test

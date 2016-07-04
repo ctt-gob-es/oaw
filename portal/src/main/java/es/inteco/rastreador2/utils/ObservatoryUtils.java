@@ -14,6 +14,7 @@ import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -159,23 +160,23 @@ public final class ObservatoryUtils {
         }
     }
 
-    public static String getValidationLevel(HttpServletRequest request, String level) {
-        if (level.equals(Constants.OBS_AA)) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.aa");
-        } else if (level.equals(Constants.OBS_NV)) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.nv");
-        } else if (level.equals(Constants.OBS_A)) {
-            return CrawlerUtils.getResources(request).getMessage("resultados.anonimos.num.portales.a");
+    public static String getValidationLevel(final MessageResources messageResources, final String level) {
+        if (Constants.OBS_AA.equals(level)) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.aa");
+        } else if (Constants.OBS_A.equals(level)) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.a");
+        } else if (Constants.OBS_NV.equals(level)) {
+            return messageResources.getMessage("resultados.anonimos.num.portales.nv");
         } else {
             return "";
         }
     }
 
-    public static List<ResultadoSemillaForm> setAvgScore(Connection c, List<ResultadoSemillaForm> seedsResults, Long idFulfilledObservatory) throws Exception {
-        List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
-        Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults, idFulfilledObservatory);
+    public static List<ResultadoSemillaForm> setAvgScore(final Connection c, final List<ResultadoSemillaForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+        final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
+        final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults, idFulfilledObservatory);
         for (ResultadoSemillaForm seedResult : seedsResults) {
-            List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
+            final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
                 int cont = 0;
                 BigDecimal avgScore = BigDecimal.ZERO;
@@ -186,7 +187,7 @@ public final class ObservatoryUtils {
                     }
                 }
                 if (cont != 0) {
-                    seedResult.setScore(avgScore.divide(new BigDecimal(cont), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+                    seedResult.setScore(avgScore.divide(BigDecimal.valueOf(cont), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
                 }
             }
         }

@@ -14,7 +14,7 @@ import org.junit.Test;
  */
 public final class Check_2_1_1_JavaScriptAccesibleTest {
 
-    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1 = "minhap.observatory.2.0.subgroup.2.1.1";
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1 = "minhap.observatory.2_0.subgroup.2.1.1";
     private static final int DUPLICATED_DEPENDENT_EVENTS = 160;
     private static final int ELEMENTS_INTERACTIVE = 432;
 
@@ -106,6 +106,22 @@ public final class Check_2_1_1_JavaScriptAccesibleTest {
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void evaluteMixedCode() throws Exception {
+        checkAccessibility.setContent("<li class=\" submenu\" id=\"menu104\"" +
+                "        onblur=\"clearTimeout(del04)\"\n" +
+                "        onclick=\"despliegaMenu(menu104,2,2)\"\n" +
+                "        onfocus=\"del04=setTimeout(function(){despliegaMenu(menu104,2,2)},400);\"\n" +
+                "        onkeypress=\"despliegaMenu(menu104,2,2)\"\n" +
+                "        onmouseout=\"clearTimeout(del04)\"\n" +
+                "        onmouseover=\"del04=setTimeout(function(){despliegaMenu(menu104,2,2)},400);\"\n" +
+                "        role=\"menuitem\" tabindex=\"-1\">foo</li>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ELEMENTS_INTERACTIVE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 }
 

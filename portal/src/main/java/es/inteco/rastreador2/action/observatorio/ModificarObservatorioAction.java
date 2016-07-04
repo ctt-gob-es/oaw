@@ -70,8 +70,8 @@ public class ModificarObservatorioAction extends Action {
                                 modificarObservatorioForm = (ModificarObservatorioForm) request.getSession().getAttribute(Constants.MODIFICAR_OBSERVATORIO_FORM);
                                 return editObservatory(mapping, modificarObservatorioForm, request);
                             } else {
-                                String id_seed = request.getParameter(Constants.SEMILLA);
-                                String action = (String) request.getParameter(Constants.ACTION);
+                                final String id_seed = request.getParameter(Constants.SEMILLA);
+                                final String action = request.getParameter(Constants.ACTION);
 
                                 if ((action != null) && (action.equals(Constants.ACCION_SEPARATE_SEED))) {
                                     return ObservatoryUtils.separeSeedToObservatory(request, mapping, id_seed, true, addSeeds, otherObservSeedList);

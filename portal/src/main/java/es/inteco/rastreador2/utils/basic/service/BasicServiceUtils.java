@@ -4,10 +4,11 @@ import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
+import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.ws.CrawlerWS;
 import es.inteco.rastreador2.ws.CrawlerWSJob;
 import es.inteco.utils.FileUtils;
@@ -15,11 +16,11 @@ import es.inteco.utils.MailUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
-import org.apache.struts.util.MessageResources;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.net.IDN;
 import java.net.URL;
 import java.sql.Connection;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class BasicServiceUtils {
@@ -35,7 +37,7 @@ public final class BasicServiceUtils {
     private BasicServiceUtils() {
     }
 
-    public static long saveRequestData(BasicServiceForm basicServiceForm, String status) {
+    public static long saveRequestData(final BasicServiceForm basicServiceForm, final String status) {
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
@@ -48,7 +50,7 @@ public final class BasicServiceUtils {
         return 0;
     }
 
-    public static void updateRequestStatus(BasicServiceForm basicServiceForm, String status) {
+    public static void updateRequestStatus(final BasicServiceForm basicServiceForm, final String status) {
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
@@ -60,16 +62,16 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static void somethingWasWrongMessage(MessageResources messageResources, BasicServiceForm basicServiceForm, String message) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        String subject = messageResources.getMessage("basic.service.mail.error.subject");
-        ArrayList<String> mailTo = new ArrayList<String>();
+    public static void somethingWasWrongMessage(final HttpServletRequest request, final BasicServiceForm basicServiceForm, final String message) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String subject = CrawlerUtils.getResources(request).getMessage("basic.service.mail.error.subject");
+        final ArrayList<String> mailTo = new ArrayList<String>();
         mailTo.add(basicServiceForm.getEmail());
-        MailUtils.sendMail(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.address"), pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.name"),
-                mailTo, subject, message, null, null, null, null, true);
+        final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
+        MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", mailTo, subject, message, null, null, null, null, true);
     }
 
-    public static List<BasicServiceForm> getBasicServiceRequestByStatus(String status) {
+    public static List<BasicServiceForm> getBasicServiceRequestByStatus(final String status) {
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();
@@ -82,7 +84,7 @@ public final class BasicServiceUtils {
         return null;
     }
 
-    public static BasicServiceForm getBasicServiceForm(BasicServiceForm basicServiceForm, HttpServletRequest request) throws Exception {
+    public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) throws Exception {
         basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
         basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
         basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
@@ -102,19 +104,20 @@ public final class BasicServiceUtils {
         return basicServiceForm;
     }
 
-    public static ActionErrors validateReport(BasicServiceForm basicServiceForm) {
-        ActionErrors errors = new ActionErrors();
-
-        if (!basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_OBSERVATORY)
-                && !basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE)) {
+    public static ActionErrors validateReport(final BasicServiceForm basicServiceForm) {
+        final ActionErrors errors = new ActionErrors();
+        final String report = basicServiceForm.getReport();
+        if (!report.equalsIgnoreCase(Constants.REPORT_UNE) &&
+                !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) && !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_1_NOBROKEN) &&
+                !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_2) && !report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
             errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.report.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
         }
 
         return errors;
     }
 
-    public static ActionErrors validateUrlOrContent(BasicServiceForm basicServiceForm) {
-        ActionErrors errors = new ActionErrors();
+    public static ActionErrors validateUrlOrContent(final BasicServiceForm basicServiceForm) {
+        final ActionErrors errors = new ActionErrors();
 
         if (StringUtils.isEmpty(basicServiceForm.getDomain()) && StringUtils.isEmpty(basicServiceForm.getContent())) {
             errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.url.or.content"));
@@ -123,18 +126,22 @@ public final class BasicServiceUtils {
         return errors;
     }
 
-    public static String checkIDN(String url) {
-        try {
-            return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
-        } catch (Exception e) {
-            Logger.putLog("Error al verificar el dominio internacionalidazo", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+    public static String checkIDN(final String url) {
+        if ( url!=null && !url.isEmpty()){
+            try {
+                return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
+            } catch (Exception e) {
+                Logger.putLog("Error al verificar el dominio internacionalizado", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+                return url;
+            }
+        } else {
             return url;
         }
     }
 
-    public static Long getGuideline(String report) {
-        PropertiesManager pmgr = new PropertiesManager();
-        if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE)) {
+    public static Long getGuideline(final String report) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE) || report.equals(Constants.REPORT_OBSERVATORY_1_NOBROKEN)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"));
         } else if (report.equals(Constants.REPORT_UNE) || report.equalsIgnoreCase(Constants.REPORT_UNE_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.une.intav.id"));
@@ -142,32 +149,34 @@ public final class BasicServiceUtils {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag1.intav.id"));
         } else if (report.equals(Constants.REPORT_WCAG_2_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag2.intav.id"));
+        } else if (report.equals(Constants.REPORT_OBSERVATORY_2) || report.equals(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
+            return 7l;
         } else {
             return null;
         }
     }
 
-    public static void scheduleBasicServiceJob(BasicServiceForm basicServiceForm) throws Exception {
+    public static void scheduleBasicServiceJob(final BasicServiceForm basicServiceForm) throws Exception {
         Logger.putLog("Programando el rastreo con la fecha: " + basicServiceForm.getSchedulingDate(), CrawlerWS.class, Logger.LOG_LEVEL_INFO);
-        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-        Scheduler scheduler = schedulerFactory.getScheduler();
+        final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+        final Scheduler scheduler = schedulerFactory.getScheduler();
         scheduler.start();
 
-        JobDetail jobDetail = new JobDetail("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
+        final JobDetail jobDetail = new JobDetail("CrawlerWSJob_" + System.currentTimeMillis(), "CrawlerWSJob", CrawlerWSJob.class);
 
         if (basicServiceForm.getId() == 0) {
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, es.inteco.common.Constants.BASIC_SERVICE_STATUS_SCHEDULED));
         }
 
-        JobDataMap jobDataMap = new JobDataMap();
+        final JobDataMap jobDataMap = new JobDataMap();
         jobDataMap.put(es.inteco.rastreador2.ws.commons.Constants.BASIC_SERVICE_FORM, basicServiceForm);
         jobDetail.setJobDataMap(jobDataMap);
 
-        Trigger trigger = new SimpleTrigger("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
+        final Trigger trigger = new SimpleTrigger("CrawlerWSTrigger", "CrawlerWSGroup", basicServiceForm.getSchedulingDate());
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
-    public static String getTitleFromContent(String content) {
+    public static String getTitleFromContent(final String content) {
         String result;
         PropertiesManager pmgr = new PropertiesManager();
         Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
@@ -190,33 +199,39 @@ public final class BasicServiceUtils {
         return FileUtils.normalizeFileName(result);
     }
 
-    public static String getTitleDocFromContent(String content, boolean isCompleted) {
+    public static String getTitleDocFromContent(final String content, final boolean isCompleted) {
+        if ( content==null ) {
+            return "";
+        }
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-            Matcher matcher = pattern.matcher(content);
+            final PropertiesManager pmgr = new PropertiesManager();
+            final Pattern pattern = Pattern.compile("<title>(.*?)</title>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+            final Matcher matcher = pattern.matcher(content);
 
             if (matcher.find()) {
-                if (matcher.group(1).length() <= Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length"))) {
-                    return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(matcher.group(1)));
+                final String title = matcher.group(1).replaceAll("\\s{2,}"," ");
+                final int titleMaxLength = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length"));
+                if (title.length() <= titleMaxLength) {
+                    return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));
                 } else {
                     //si el titulo es muy grande
-                    String title = matcher.group(1);
                     //si es un lugar del documento donde no tiene que salir entero el titulo
                     if (!isCompleted) {
                         //	cortamos el title e insertamos '...'
-                        title = title.substring(0, Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length")) - 3);
-                        title = title.substring(0, title.lastIndexOf(' '));
-                        title = title + "...";
+                        String trunkTitle = title.substring(0, titleMaxLength - 3);
+                        trunkTitle = trunkTitle.substring(0, trunkTitle.lastIndexOf(' '));
+                        trunkTitle = trunkTitle + "...";
+                        return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(trunkTitle));
+                    } else {
+                        return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));
                     }
-                    return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));
                 }
             } else {
-                return null;
+                return "";
             }
         } catch (Exception e) {
             Logger.putLog("Error al acceder al extraer el título del contenido HTML", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
-            return null;
+            return "";
         }
     }
 }

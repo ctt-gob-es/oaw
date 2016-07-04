@@ -148,7 +148,7 @@ public final class RastreoDao {
             //Mostramos en el log la sql a ejecutar
             Logger.putLog(sb, RastreoDao.class, Logger.LOG_LEVEL_INFO);
 
-            ps = (PreparedStatement) con.prepareStatement(sb);
+            ps = con.prepareStatement(sb);
 
             ps.setLong(1, rastreoDto.getIdRastreo());
             ps.setTimestamp(2, new Timestamp(sdf.parse(rastreoDto.getFecha()).getTime()));
@@ -201,7 +201,7 @@ public final class RastreoDao {
             //Mostramos en el log la sql a ejecutar
             Logger.putLog(sql, RastreoDao.class, Logger.LOG_LEVEL_INFO);
 
-            ps = (PreparedStatement) con.prepareStatement(sql);
+            ps = con.prepareStatement(sql);
 
             ps.setLong(1, rastreoDto.getIdRastreo());
 
@@ -248,7 +248,7 @@ public final class RastreoDao {
             //Mostramos en el log la sql a ejecutar
             Logger.putLog(sql, RastreoDao.class, Logger.LOG_LEVEL_INFO);
 
-            ps = (PreparedStatement) con.prepareStatement(sql);
+            ps = con.prepareStatement(sql);
 
             ps.setLong(1, dto.getTiempo());
             ps.setLong(2, dto.getIdRastreo());

@@ -30,7 +30,7 @@ public final class CategoriasDAO {
         ResultSet rs = null;
 
         try {
-            ps = c.prepareStatement("SELECT COUNT(*) FROM categoria ");
+            ps = c.prepareStatement("SELECT COUNT(id_categoria) FROM categoria ");
             rs = ps.executeQuery();
             int numRes = 0;
             if (rs.next()) {
@@ -50,7 +50,7 @@ public final class CategoriasDAO {
         ResultSet rs = null;
 
         try {
-            ps = c.prepareStatement("SELECT COUNT(*) FROM categoria_termino WHERE id_categoria = ? ");
+            ps = c.prepareStatement("SELECT COUNT(id_termino) FROM categoria_termino WHERE id_categoria = ? ");
             ps.setInt(1, idCategory);
             rs = ps.executeQuery();
             int numRes = 0;

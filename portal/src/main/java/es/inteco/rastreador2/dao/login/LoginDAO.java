@@ -181,7 +181,7 @@ public final class LoginDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT * FROM usuario_cartucho uc " +
+            ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM usuario_cartucho uc " +
                     "JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) WHERE uc.id_usuario = ? AND c.instalado = true");
             ps.setLong(1, idUser);
             rs = ps.executeQuery();
@@ -227,15 +227,15 @@ public final class LoginDAO {
     }
 
     public static List<CartuchoForm> getAllUserCartridge(Connection c) throws Exception {
-        List<CartuchoForm> cartridgeList = new ArrayList<CartuchoForm>();
+        final List<CartuchoForm> cartridgeList = new ArrayList<CartuchoForm>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT * FROM cartucho");
+            ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM cartucho c");
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                CartuchoForm cartucho = new CartuchoForm();
+                final CartuchoForm cartucho = new CartuchoForm();
                 cartucho.setId(rs.getLong("id_cartucho"));
                 cartucho.setName(rs.getString("aplicacion"));
                 cartridgeList.add(cartucho);
@@ -402,7 +402,7 @@ public final class LoginDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT * from usuario where id_usuario = ? AND password = md5(?);");
+            ps = c.prepareStatement("SELECT 1 from usuario where id_usuario = ? AND password = md5(?);");
             ps.setLong(1, idUser);
             ps.setString(2, passwold);
             rs = ps.executeQuery();
@@ -549,7 +549,7 @@ public final class LoginDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT * FROM usuario WHERE Usuario = ?");
+            ps = c.prepareStatement("SELECT 1 FROM usuario WHERE usuario = ?");
             ps.setString(1, name);
             rs = ps.executeQuery();
             return rs.next();
@@ -741,7 +741,7 @@ public final class LoginDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            ps = c.prepareStatement("SELECT Id_Cartucho, Password,Tipo FROM usuario WHERE Usuario = ?");
+            ps = c.prepareStatement("SELECT id_cartucho, password, tipo FROM usuario WHERE usuario = ?");
             ps.setString(1, user);
             rs = ps.executeQuery();
             while (rs.next()) {

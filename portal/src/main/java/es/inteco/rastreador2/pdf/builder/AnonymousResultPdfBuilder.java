@@ -1,9 +1,5 @@
 package es.inteco.rastreador2.pdf.builder;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
-import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import ca.utoronto.atrc.tile.accessibilitychecker.Guideline;
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
@@ -14,24 +10,22 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
-import es.inteco.intav.form.*;
-import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatoryLevelForm;
+import es.inteco.intav.form.ObservatorySubgroupForm;
+import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
-import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
-import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
-import es.inteco.rastreador2.pdf.*;
+import es.inteco.rastreador2.pdf.AnonymousResultExportPdfAction;
+import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection3;
+import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.RankingInfo;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.*;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
@@ -41,7 +35,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.*;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
@@ -78,7 +71,7 @@ public abstract class AnonymousResultPdfBuilder {
     public abstract void generateGraphics(HttpServletRequest request, String filePath) throws Exception;
 
     public void buildDocument(final MessageResources resources, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList, String graphicPath, String idObservatory, String idExecution, java.util.List<CategoriaForm> categories, boolean includeEvolution) throws Exception {
-        Logger.putLog("Creando informe PDF", AnonymousResultPdfBuilder.class,Logger.LOG_LEVEL_INFO);
+        Logger.putLog("Creando informe PDF", AnonymousResultPdfBuilder.class, Logger.LOG_LEVEL_INFO);
         final Font titleFont = ConstantsFont.chapterTitleMPFont;
         titleFont.setStyle(Font.BOLD);
         document.open();
@@ -462,55 +455,56 @@ public abstract class AnonymousResultPdfBuilder {
     }
 
     protected int addObservatoryScoreSummary(HttpServletRequest request, Document document, IndexEvents index, java.util.List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections, File file, RankingInfo rankingInfo) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        final Chapter chapter = PDFUtils.addChapterTitle(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWord = new ArrayList<String>();
 
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
 
         boldWord = new ArrayList<String>();
-        boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2.bold1"));
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2.bold1"));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
 
         boldWord = new ArrayList<String>();
-        boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3.bold1"));
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3.bold1"));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
 
-        ScoreForm scoreForm = IntavUtils.generateScores(request, evaList);
+        ScoreForm scoreForm = IntavUtils.generateScores(messageResources, evaList);
 
         boldWord = new ArrayList<String>();
-        boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.nivel.adecuacion") + ": ");
+        boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.nivel.adecuacion") + ": ");
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + scoreForm.getLevel(), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, true));
         boldWord = new ArrayList<String>();
-        boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.total") + ": ");
+        boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.total") + ": ");
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + scoreForm.getTotalScore(), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
         if (rankingInfo != null && rankingInfo.getGlobalSeedsNumber() > 1) {
             boldWord = new ArrayList<String>();
-            boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.posicion.global") + ": ");
-            chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + rankingInfo.getGlobalRank() + " " + CrawlerUtils.getResources(request).getMessage("de.text", rankingInfo.getGlobalSeedsNumber()), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
+            boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.posicion.global") + ": ");
+            chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + rankingInfo.getGlobalRank() + " " + messageResources.getMessage("de.text", rankingInfo.getGlobalSeedsNumber()), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
 
             boldWord = new ArrayList<String>();
-            boldWord.add(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.posicion.segmento", rankingInfo.getCategoria().getName()) + ": ");
-            chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + rankingInfo.getCategoryRank() + " " + CrawlerUtils.getResources(request).getMessage("de.text", rankingInfo.getCategorySeedsNumber()), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
+            boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.posicion.segmento", rankingInfo.getCategoria().getName()) + ": ");
+            chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + rankingInfo.getCategoryRank() + " " + messageResources.getMessage("de.text", rankingInfo.getCategorySeedsNumber()), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
 
             chapter.add(Chunk.NEWLINE);
         }
 
-        String noDataMess = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
-        addLevelAllocationResultsSummary(request, chapter, file, evaList, noDataMess);
+        String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
+        addLevelAllocationResultsSummary(messageResources, chapter, file, evaList, noDataMess);
 
-        Section section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.41.p1"), ConstantsFont.paragraphFont, section);
+        Section section = PDFUtils.addSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.paragraphFont, section);
         addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_1);
-        section.add(createGlobalTable(request, scoreForm, Constants.OBS_PRIORITY_1));
+        section.add(createGlobalTable(CrawlerUtils.getResources(request), scoreForm, Constants.OBS_PRIORITY_1));
 
-        section = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.42.p1"), ConstantsFont.paragraphFont, section);
+        section = PDFUtils.addSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.paragraphFont, section);
         addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_2);
-        section.add(createGlobalTable(request, scoreForm, Constants.OBS_PRIORITY_2));
+        section.add(createGlobalTable(CrawlerUtils.getResources(request), scoreForm, Constants.OBS_PRIORITY_2));
 
-        PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-        addResultsByPage(request, chapter, file, evaList, noDataMess);
+        PDFUtils.addSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        addResultsByPage(CrawlerUtils.getResources(request), chapter, file, evaList, noDataMess);
 
         document.add(chapter);
         return countSections;
@@ -591,27 +585,27 @@ public abstract class AnonymousResultPdfBuilder {
         return table;
     }
 
-    protected PdfPTable createGlobalTable(HttpServletRequest request, ScoreForm scoreForm, String level) {
+    protected PdfPTable createGlobalTable(final MessageResources messageResources, final ScoreForm scoreForm, final String level) {
         float[] widths = {0.7f, 0.3f};
         PdfPTable table = new PdfPTable(widths);
         int margin = 10;
 
-        table.addCell(PDFUtils.createTableCell(request, "resultados.observatorio.vista.primaria.verificacion", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(request, "resultados.observatorio.vista.primaria.puntuacion.media", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources, "resultados.observatorio.vista.primaria.verificacion", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources, "resultados.observatorio.vista.primaria.puntuacion.media", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
         if (level.equals(Constants.OBS_PRIORITY_1)) {
             for (LabelValueBean label : scoreForm.getVerifications1()) {
                 table.addCell(PDFUtils.createTableCell(label.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
                 table.addCell(PDFUtils.createTableCell(label.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             }
-            table.addCell(PDFUtils.createTableCell(request, "observatorio.puntuacion.nivel.1", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(messageResources, "observatorio.puntuacion.nivel.1", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(scoreForm.getScoreLevel1().toString(), Constants.NARANJA_MP, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         } else if (level.equals(Constants.OBS_PRIORITY_2)) {
             for (LabelValueBean label : scoreForm.getVerifications2()) {
                 table.addCell(PDFUtils.createTableCell(label.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
                 table.addCell(PDFUtils.createTableCell(label.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             }
-            table.addCell(PDFUtils.createTableCell(request, "observatorio.puntuacion.nivel.2", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(messageResources, "observatorio.puntuacion.nivel.2", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(scoreForm.getScoreLevel2().toString(), Constants.NARANJA_MP, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
 
@@ -620,71 +614,60 @@ public abstract class AnonymousResultPdfBuilder {
         return table;
     }
 
-    protected String getPriorityName(HttpServletRequest request, String name) {
-        PropertiesManager pmgr = new PropertiesManager();
-        if (name.equals(pmgr.getValue("intav.properties", "priority.1"))) {
-            return CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.nivel.analisis.1");
-        } else if (name.equals(pmgr.getValue("intav.properties", "priority.2"))) {
-            return CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.nivel.analisis.2");
-        } else {
-            return null;
-        }
-    }
-
-    protected void addResultsByPage(HttpServletRequest request, Chapter chapter, File file, java.util.List<ObservatoryEvaluationForm> evaList, String noDataMess) throws Exception {
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
-        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("resultados.primarios.43.p1.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMP"), false, ConstantsFont.paragraphAnchorFont);
+    protected void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final java.util.List<ObservatoryEvaluationForm> evaList, final String noDataMess) throws Exception {
+        final Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
-        chapter.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.paragraphFont));
+        chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.paragraphFont));
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.43.p2"), ConstantsFont.paragraphFont, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p2"), ConstantsFont.paragraphFont, chapter);
 
         chapter.add(Chunk.NEWLINE);
 
-        String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.score.by.page.title");
-        String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test4.jpg";
-        ResultadosPrimariosObservatorioIntavUtils.getScoreByPageGraphic(request, evaList, title, filePath, noDataMess);
+        final String title = messageResources.getMessage("observatory.graphic.score.by.page.title");
+        final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test4.jpg";
+        ResultadosPrimariosObservatorioIntavUtils.getScoreByPageGraphic(messageResources, evaList, title, filePath, noDataMess);
 
-        Image image = PDFUtils.createImage(filePath, null);
+        final Image image = PDFUtils.createImage(filePath, null);
         image.scalePercent(80);
         image.setAlignment(Element.ALIGN_CENTER);
         chapter.add(image);
 
-        float[] widths = {33f, 33f, 33f};
-        PdfPTable table = new PdfPTable(widths);
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punt.media"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.level"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        final float[] widths = {33f, 33f, 33f};
+        final PdfPTable table = new PdfPTable(widths);
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.anonimos.punt.media"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.anonimos.level"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         int pageCounter = 0;
         for (ObservatoryEvaluationForm evaluationForm : evaList) {
-            table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.score.by.page.label", ++pageCounter), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatory.graphic.score.by.page.label", ++pageCounter), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(String.valueOf(evaluationForm.getScore().setScale(evaluationForm.getScore().scale() - 1)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(ObservatoryUtils.getValidationLevel(request, ObservatoryUtils.pageSuitabilityLevel(evaluationForm)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
 
         table.setSpacingBefore(ConstantsFont.SPACE_LINE);
         chapter.add(table);
     }
 
-    private static void addLevelAllocationResultsSummary(HttpServletRequest request, Section section,
-                                                         File file, java.util.List<ObservatoryEvaluationForm> evaList, String noDataMess) throws Exception {
+    private static void addLevelAllocationResultsSummary(final MessageResources messageResources, final Section section,
+                                                         final File file, final java.util.List<ObservatoryEvaluationForm> evaList, final String noDataMess) throws Exception {
+        final Map<String, Integer> result = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(evaList);
+        final java.util.List<GraphicData> labelValueBeanList = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(messageResources, result);
 
-        Map<String, Integer> result = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(evaList);
-        java.util.List<GraphicData> labelValueBeanList = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(request, result);
+        final String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
 
-        String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
-        String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.by.page.title");
-        ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(request, evaList, title, filePath, noDataMess);
-        Image image = PDFUtils.createImage(filePath, null);
+        final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
+        ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, evaList, title, filePath, noDataMess);
+        final Image image = PDFUtils.createImage(filePath, null);
         image.scalePercent(60);
         image.setAlignment(Element.ALIGN_CENTER);
         section.add(image);
 
-        float[] widths = {33f, 33f, 33f};
-        PdfPTable table = new PdfPTable(widths);
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.level"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.primarios.porc.paginas"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.primarios.num.paginas"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        final float[] widths = {33f, 33f, 33f};
+        final PdfPTable table = new PdfPTable(widths);
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.anonimos.level"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.porc.paginas"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.num.paginas"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         for (GraphicData label : labelValueBeanList) {
             table.addCell(PDFUtils.createTableCell(label.getAdecuationLevel(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(label.getPercentageP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));

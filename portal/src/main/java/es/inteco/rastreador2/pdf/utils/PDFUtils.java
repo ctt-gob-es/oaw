@@ -11,12 +11,13 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.utils.StringUtils;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSectionEv;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSections;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
@@ -29,18 +30,17 @@ public final class PDFUtils {
     private PDFUtils() {
     }
 
-    public static void addTitlePage(Document document, String titleText, String subtitleText, Font titleFont, Font subtitleFont) throws DocumentException {
 
+    public static void addTitlePage(final Document document, final String titleText, final String subtitleText, final Font titleFont) throws DocumentException {
         document.add(Chunk.NEWLINE);
-        Paragraph title = new Paragraph(titleText, titleFont);
+        final Paragraph title = new Paragraph(titleText, titleFont);
         title.setSpacingBefore(ConstantsFont.SPACE_TITLE_LINE);
         title.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(title);
 
         if (!subtitleText.equals("")) {
-            Paragraph subtitle = new Paragraph(subtitleText, subtitleFont);
+            final Paragraph subtitle = new Paragraph(subtitleText, titleFont);
             subtitle.setAlignment(Paragraph.ALIGN_CENTER);
-            subtitle.setSpacingBefore(ConstantsFont.SPACE_SUBTITLE_LINE);
             document.add(subtitle);
         }
     }
@@ -263,7 +263,7 @@ public final class PDFUtils {
     public static Paragraph createParagraphWithDiferentFormatWord(String text, java.util.List<String> boldWords, Font fontB, Font font, boolean spaceBefore, int alignment) {
         Paragraph p = new Paragraph();
         p.setAlignment(alignment);
-        if (text != null) {
+        if (text != null && text.contains("{0}")) {
             int count = 0;
             int textLength = text.length();
             try {
@@ -285,8 +285,10 @@ public final class PDFUtils {
                 }
                 return p;
             } catch (Exception e) {
-                Logger.putLog("Error, faltan parámetros en el texto. ", PDFUtils.class, Logger.LOG_LEVEL_ERROR, e);
+                Logger.putLog("FALLO faltan parámetros en el texto al generar informe PDF. ", PDFUtils.class, Logger.LOG_LEVEL_ERROR, e);
             }
+        } else if (text != null) {
+            p.add(new Phrase(text, font));
         }
         return p;
     }
@@ -333,25 +335,9 @@ public final class PDFUtils {
         return item;
     }
 
-    /*public static void addListItem(String text, String url, List list, Font font, boolean spaceBefore, boolean withSymbol) {
-
-        Anchor anchor = new Anchor(text);
-        anchor.setReference(url);
-
-        Paragraph p = new Paragraph(anchor);
-        if (spaceBefore) {
-            p.setSpacingBefore(ConstantsFont.SPACE_LINE);
-        }
-        ListItem item = new ListItem(p);
-        if (!withSymbol) {
-            item.setListSymbol(new Chunk(""));
-        }
-        list.add(item);
-    }*/
-
-    public static Image createImage(final String path, final String alt) {
+    public static Image createImage(String path, String alt) {
         try {
-            final Image image = Image.getInstance(path);
+            Image image = Image.getInstance(path);
             image.setAlt(alt);
             image.setAlignment(Element.ALIGN_CENTER);
             return image;
@@ -361,16 +347,16 @@ public final class PDFUtils {
         return null;
     }
 
-    public static PdfPCell createTableCell(HttpServletRequest request, String text, Color backgroundColor, Font font, int align, int margin) {
-        return createTableCell(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), text), backgroundColor, font, align, margin);
+    public static PdfPCell createTableCell(final MessageResources resources, final String key, final Color backgroundColor, final Font font, final int align, final int margin) {
+        return createTableCell(resources.getMessage(key), backgroundColor, font, align, margin);
     }
 
-    public static PdfPCell createTableCell(String text, Color backgroundColor, Font font, int align, int margin) {
+    public static PdfPCell createTableCell(final String text, final Color backgroundColor, final Font font, final int align, final int margin) {
         return createTableCell(text, backgroundColor, font, align, margin, 17f);
     }
 
-    public static PdfPCell createTableCell(String text, Color backgroundColor, Font font, int align, int margin, float height) {
-        PdfPCell labelCell = new PdfPCell(new Paragraph(text, font));
+    public static PdfPCell createTableCell(final String text, final Color backgroundColor, final Font font, final int align, final int margin, final float height) {
+        final PdfPCell labelCell = new PdfPCell(new Paragraph(text, font));
         labelCell.setBackgroundColor(backgroundColor);
         labelCell.setHorizontalAlignment(align);
         labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -381,8 +367,8 @@ public final class PDFUtils {
         return labelCell;
     }
 
-    public static PdfPCell createListTableCell(List list, Color backgroundColor, int align, int margin) {
-        PdfPCell labelCell = new PdfPCell();
+    public static PdfPCell createListTableCell(final List list, final Color backgroundColor, final int align, final int margin) {
+        final PdfPCell labelCell = new PdfPCell();
         labelCell.addElement(list);
         labelCell.setBackgroundColor(backgroundColor);
         labelCell.setHorizontalAlignment(align);
@@ -391,8 +377,8 @@ public final class PDFUtils {
         return labelCell;
     }
 
-    public static PdfPCell createColSpanTableCell(HttpServletRequest request, String text, Color backgroundColor, Font font, int colSpan, int align) {
-        return createColSpanTableCell(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), text), backgroundColor, font, colSpan, align);
+    public static PdfPCell createColSpanTableCell(final MessageResources resources, String text, Color backgroundColor, Font font, int colSpan, int align) {
+        return createColSpanTableCell(resources.getMessage(text), backgroundColor, font, colSpan, align);
     }
 
     public static PdfPCell createColSpanTableCell(String text, Color backgroundColor, Font font, int colSpan, int align) {
@@ -404,24 +390,6 @@ public final class PDFUtils {
         labelCell.setColspan(colSpan);
         return labelCell;
     }
-
-    /*public static List addResultsList(java.util.List<LabelValueBean> results, String text1) {
-        List list = new List();
-        boolean first = true;
-        for (LabelValueBean label : results) {
-            String text = text1 + " {0} : " + label.getValue();
-            ArrayList<String> words = new ArrayList<String>();
-            words.add(label.getLabel());
-            ListItem item = PDFUtils.addMixFormatListItem(text, words, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, false);
-            if (first) {
-                item.setSpacingBefore(ConstantsFont.SPACE_LINE);
-                first = false;
-            }
-            list.add(item);
-        }
-        list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-        return list;
-    }*/
 
     public static PdfPTable createResultTable(java.util.List<LabelValueBean> results, java.util.List<String> headers) {
         float[] widths = {50f, 50f};
@@ -440,13 +408,9 @@ public final class PDFUtils {
         return table;
     }
 
-/*    public static PdfPTable createResultTable(java.util.List<LabelValueBean> results, java.util.List<String> headers) {
-        return createResultTable(results, headers, Element.ALIGN_CENTER);
-    }//*/
-
-    public static void createTitleTable(String text, Section section, float scaleX) throws BadElementException, IOException {
-        PropertiesManager pmgr = new PropertiesManager();
-        Image img = Image.getInstance(pmgr.getValue("pdf.properties", "path.images") + pmgr.getValue("pdf.properties", "name.table.line.roja.image"));
+    public static void createTitleTable(final String text, final Section section, final float scaleX) throws BadElementException, IOException {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final Image img = Image.getInstance(pmgr.getValue("pdf.properties", "path.images") + pmgr.getValue("pdf.properties", "name.table.line.roja.image"));
         img.setAlt("");
         img.scaleAbsolute(scaleX, img.getHeight() / 2);
         img.setAlignment(Element.ALIGN_CENTER);
@@ -457,14 +421,18 @@ public final class PDFUtils {
     }
 
     public static PdfPTable createTableMod(HttpServletRequest request, java.util.List<ModalityComparisonForm> result) {
-        float[] widths = {50f, 25f, 25f};
-        PdfPTable table = new PdfPTable(widths);
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.puntuacion.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.pasa"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.falla"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        return createTableMod(CrawlerUtils.getResources(request), result);
+    }
+
+    public static PdfPTable createTableMod(final MessageResources resources, java.util.List<ModalityComparisonForm> result) {
+        final float[] widths = {50f, 25f, 25f};
+        final PdfPTable table = new PdfPTable(widths);
+        table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.puntuacion.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.porc.pasa"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.porc.falla"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
         for (ModalityComparisonForm form : result) {
-            table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage(form.getVerification()), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 5));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage(form.getVerification()), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 5));
             table.addCell(PDFUtils.createTableCell(form.getGreenPercentage(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(form.getRedPercentage(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
@@ -473,43 +441,41 @@ public final class PDFUtils {
         return table;
     }
 
-    public static String replaceAccent(String phrase) {
-        phrase = phrase.replace('á', 'a');
-        phrase = phrase.replace('à', 'a');
-        phrase = phrase.replace('â', 'a');
-        phrase = phrase.replace('ã', 'a');
-        phrase = phrase.replace('ä', 'a');
-        phrase = phrase.replace('å', 'a');
-        phrase = phrase.replace('é', 'e');
-        phrase = phrase.replace('è', 'e');
-        phrase = phrase.replace('ê', 'e');
-        phrase = phrase.replace('ë', 'e');
-        phrase = phrase.replace('í', 'i');
-        phrase = phrase.replace('ì', 'i');
-        phrase = phrase.replace('ï', 'i');
-        phrase = phrase.replace('î', 'i');
-        phrase = phrase.replace('ó', 'o');
-        phrase = phrase.replace('ò', 'o');
-        phrase = phrase.replace('ô', 'o');
-        phrase = phrase.replace('ö', 'o');
-        phrase = phrase.replace('õ', 'o');
-        phrase = phrase.replace('ú', 'u');
-        phrase = phrase.replace('ù', 'u');
-        phrase = phrase.replace('ü', 'u');
-        phrase = phrase.replace('û', 'u');
-        phrase = phrase.replace('ý', 'y');
-        phrase = phrase.replace('ÿ', 'y');
-        phrase = phrase.replace('ñ', 'n');
-        phrase = phrase.replace('ç', 'c');
-        phrase = phrase.replaceAll("ª", "a.");
-        phrase = phrase.replaceAll("º", "o.");
-        return phrase;
+    public static String replaceAccent(final String phrase) {
+        return phrase.replace('á', 'a')
+                .replace('à', 'a')
+                .replace('â', 'a')
+                .replace('ã', 'a')
+                .replace('ä', 'a')
+                .replace('å', 'a')
+                .replace('é', 'e')
+                .replace('è', 'e')
+                .replace('ê', 'e')
+                .replace('ë', 'e')
+                .replace('í', 'i')
+                .replace('ì', 'i')
+                .replace('ï', 'i')
+                .replace('î', 'i')
+                .replace('ó', 'o')
+                .replace('ò', 'o')
+                .replace('ô', 'o')
+                .replace('ö', 'o')
+                .replace('õ', 'o')
+                .replace('ú', 'u')
+                .replace('ù', 'u')
+                .replace('ü', 'u')
+                .replace('û', 'u')
+                .replace('ý', 'y')
+                .replace('ÿ', 'y')
+                .replace('ñ', 'n')
+                .replace('ç', 'c')
+                .replace("ª", "a.")
+                .replace("º", "o.");
     }
 
-
-    public static String formatSeedName(String seedName) {
+    public static String formatSeedName(final String seedName) {
         if (seedName != null) {
-            seedName = replaceAccent(seedName.trim()).replace(" ", "_").toLowerCase();
+            return replaceAccent(seedName.trim()).replaceAll("[\\s,.]+", "_").toLowerCase();
         }
         return seedName;
     }
@@ -523,4 +489,5 @@ public final class PDFUtils {
             Logger.putLog("Error al crear imagen en la exportación anónima de resultados", AnonymousResultExportPdfSectionEv.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
+
 }

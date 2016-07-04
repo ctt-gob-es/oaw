@@ -10,6 +10,7 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.lenox.dao.InformesDao;
 import es.inteco.rastreador2.lenox.form.ObservatoryLenoxForm;
 import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
@@ -145,6 +146,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
     }
 
     private static void getEvolutionTermPriorityGraphic(HttpServletRequest request, Map<Date, List<ObservatoryLenoxForm>> pageObservatoryMap, String title, String filePath, String noDataMess, int type) throws Exception {
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
         Map<String, BigDecimal> resultData = getResultEvolutionData(pageObservatoryMap, type);
         File file = new File(filePath);
 
@@ -157,14 +159,12 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
         PropertiesManager pmgr = new PropertiesManager();
         //Si no existe la gráfica, la creamos
         if (!file.exists()) {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.anonimos.porcentaje.terminos");
-            String columnTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
+            String rowTitle = messageResources.getMessage("resultados.anonimos.porcentaje.terminos");
+            String columnTitle = messageResources.getMessage("observatory.graphic.date");
 
             ChartForm chart = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, false, false, true, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"));
-            GraphicsUtils.createStandardBarChart(chart, filePath, noDataMess, request, false);
-
+            GraphicsUtils.createStandardBarChart(chart, filePath, noDataMess, messageResources, false);
         }
-
         //Los incluimos en la request
         if (type == Constants.HIGH_LENOX_PRIORITY) {
             request.setAttribute(Constants.OBSERVATORY_LENOX_GRAPHIC_EVOLUTION_HIGH_TERMS, infoLevelEvolutionGraphic(resultData));
@@ -313,7 +313,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
 
         if (!file.exists()) {
             ChartForm observatoryGraphicsForm = new ChartForm(title, "", "", createGlobalSeriesDataSet(resultDataBySegment), true, true, false, false, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.lenox.graphic.colors"));
-            GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath, noDataMess, request, false);
+            GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath, noDataMess, CrawlerUtils.getResources(request), false);
         }
 
         request.setAttribute(Constants.OBSERVATORY_LENOX_GRAPHIC_GLOBAL_NUMBER_SEG_TERMS_1, infoNumberPrioritySegmentTerms(request, resultDataBySegment.get(Constants.COMPLEXITY_SEGMENT_NAME_1)));

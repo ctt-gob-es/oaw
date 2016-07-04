@@ -37,8 +37,7 @@ public class LanguageChecker {
         if (GuessLanguage.isSupportedLanguage(expectedLanguage)) {
             final GuessLanguage guessLanguage = new GuessLanguage();
             return guessLanguage.guessLanguage(content);
-        } else
-        if (LanguageIdentifier.getSupportedLanguages().contains(expectedLanguage)) {
+        } else if (LanguageIdentifier.getSupportedLanguages().contains(expectedLanguage)) {
             final LanguageIdentifier languageIdentifier = new LanguageIdentifier(content);
             return languageIdentifier.getLanguage();
         }

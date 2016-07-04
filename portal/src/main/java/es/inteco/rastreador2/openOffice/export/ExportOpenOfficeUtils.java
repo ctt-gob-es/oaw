@@ -27,7 +27,7 @@ public final class ExportOpenOfficeUtils {
     private ExportOpenOfficeUtils() {
     }
 
-    public static void createOpenOfficeDocument(HttpServletRequest request, String filePath, String graphicPath, String date, Long tipoObservatorio, int numObs) {
+    public static void createOpenOfficeDocument(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio, int numObs) {
         long idObservatory = 0;
         if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
             idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
@@ -65,11 +65,11 @@ public final class ExportOpenOfficeUtils {
         return numObs >= Integer.parseInt(pmgr.getValue(PDF_PROPERTIES, "pdf.anonymous.results.pdf.min.obser"));
     }
 
-    private static void removeAttributeFromFile(String doc, String xmlFile, String node, String attribute, String mymeType) throws Exception {
-        OdfPackage odfPackageNew = OdfPackage.loadPackage(doc);
-        Document packageDocument = odfPackageNew.getDom(xmlFile);
+    private static void removeAttributeFromFile(final String doc, final String xmlFile, final String node, final String attribute, final String mymeType) throws Exception {
+        final OdfPackage odfPackageNew = OdfPackage.loadPackage(doc);
+        final Document packageDocument = odfPackageNew.getDom(xmlFile);
 
-        NodeList nodeList = packageDocument.getElementsByTagName(node);
+        final NodeList nodeList = packageDocument.getElementsByTagName(node);
         for (int i = 0; i < nodeList.getLength(); i++) {
             ((Element) nodeList.item(i)).removeAttribute(attribute);
         }

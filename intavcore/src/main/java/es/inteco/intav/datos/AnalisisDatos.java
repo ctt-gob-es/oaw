@@ -13,10 +13,7 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,20 +22,20 @@ public final class AnalisisDatos {
     private AnalisisDatos(){
     }
 
-    public static int setAnalisis(Connection conn, Analysis analisis) {
+    public static int setAnalisis(final Connection conn, final Analysis analisis) {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
-            pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
+            pstmt = conn.prepareStatement("SELECT cod_guideline FROM tguidelines WHERE des_guideline = ?;");
             pstmt.setString(1, getGuideline(analisis.getGuideline()));
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
                 codGuideline = rs.getInt("COD_GUIDELINE");
             }
-            pstmt = conn.prepareStatement("INSERT INTO tanalisis (FEC_ANALISIS, COD_URL, NUM_DURACION, NOM_ENTIDAD, COD_RASTREO, COD_GUIDELINE, ESTADO, COD_FUENTE)" +
-                    " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?);");
+            pstmt = conn.prepareStatement("INSERT INTO tanalisis (fec_analisis, cod_url, num_duracion, nom_entidad, cod_rastreo, cod_guideline, estado, cod_fuente)" +
+                    " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, analisis.getUrl());
             pstmt.setLong(2, analisis.getTime());
             pstmt.setString(3, analisis.getEntity());
@@ -48,12 +45,11 @@ public final class AnalisisDatos {
             pstmt.setString(7, analisis.getSource());
             pstmt.executeUpdate();
 
-            pstmt = conn.prepareStatement("SELECT MAX(COD_ANALISIS) FROM tanalisis");
-            rs = pstmt.executeQuery();
-
-            int codigoAnalisis = 0;
-            while (rs.next()) {
-                codigoAnalisis = rs.getInt(1);
+            pstmt.getGeneratedKeys();
+            int codigoAnalisis =0 ;
+            rs = pstmt.getGeneratedKeys();
+            if (rs.next()){
+                codigoAnalisis=rs.getInt(1);
             }
 
             return codigoAnalisis;
@@ -65,10 +61,10 @@ public final class AnalisisDatos {
         }
     }
 
-    public static void updateChecksEjecutados(String updatedChecks, long idAnalisis) {
+    public static void updateChecksEjecutados(final String updatedChecks, final long idAnalisis) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String query = " UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
+        String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
         try {
             conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement(query);
@@ -85,7 +81,7 @@ public final class AnalisisDatos {
     public static void endAnalysisSuccess(Evaluation eval) {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        String query = " UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
+        String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
         try {
             conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement(query);
@@ -115,7 +111,7 @@ public final class AnalisisDatos {
                 codGuideline = rs.getInt("COD_GUIDELINE");
             }
             pstmt = conn.prepareStatement("INSERT INTO tanalisis (FEC_ANALISIS, COD_URL, NUM_DURACION, NOM_ENTIDAD, COD_RASTREO, COD_GUIDELINE, ESTADO)" +
-                    " VALUES (NOW(), ?, ?, ?, ?, ?, ?);");
+                    " VALUES (NOW(), ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
             pstmt.setString(1, checkAccessibility.getUrl());
             pstmt.setLong(2, 0);
             pstmt.setString(3, checkAccessibility.getEntity());
@@ -124,12 +120,11 @@ public final class AnalisisDatos {
             pstmt.setInt(6, IntavConstants.STATUS_ERROR);
             pstmt.executeUpdate();
 
-            pstmt = conn.prepareStatement("SELECT MAX(COD_ANALISIS) FROM tanalisis");
-            rs = pstmt.executeQuery();
-
-            int codigoAnalisis = 0;
-            while (rs.next()) {
-                codigoAnalisis = rs.getInt(1);
+            pstmt.getGeneratedKeys();
+            int codigoAnalisis = 0 ;
+            rs = pstmt.getGeneratedKeys();
+            if (rs.next()){
+                codigoAnalisis=rs.getInt(1);
             }
 
             return codigoAnalisis;
@@ -185,16 +180,16 @@ public final class AnalisisDatos {
         try {
             conn = DataBaseManager.getConnection();
             if (pagina == IntavConstants.NO_PAGINATION) {
-                pstmt = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ?");
+                pstmt = conn.prepareStatement("SELECT cod_analisis, fec_analisis, cod_url, nom_entidad, cod_rastreo, estado FROM tanalisis WHERE cod_rastreo = ?");
             } else {
-                pstmt = conn.prepareStatement("SELECT * FROM tanalisis WHERE cod_rastreo = ? ORDER BY FEC_ANALISIS ASC LIMIT ? OFFSET ?");
+                pstmt = conn.prepareStatement("SELECT cod_analisis, fec_analisis, cod_url, nom_entidad, cod_rastreo, estado FROM tanalisis WHERE cod_rastreo = ? ORDER BY FEC_ANALISIS ASC LIMIT ? OFFSET ?");
                 pstmt.setInt(2, pagSize);
                 pstmt.setInt(3, resultFrom);
             }
             pstmt.setLong(1, idTracking);
             rs = pstmt.executeQuery();
 
-            return getAnalysisList(conn, rs, request);
+            return getAnalysisList(conn, rs, EvaluatorUtility.getLanguage(request));
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
             return null;
@@ -266,22 +261,22 @@ public final class AnalisisDatos {
         DataBaseManager.closeConnection(conn);
     }
 
-    private static List<Analysis> getAnalysisList(Connection conn, ResultSet rs, HttpServletRequest request) throws SQLException {
-        List<Analysis> listAnalysis = new ArrayList<Analysis>();
+    private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language) throws SQLException {
+        final List<Analysis> listAnalysis = new ArrayList<Analysis>();
         while (rs.next()) {
-            Analysis analysis = new Analysis();
-            analysis.setCode(rs.getInt("COD_ANALISIS"));
-            analysis.setDate(rs.getTimestamp("FEC_ANALISIS"));
-            analysis.setUrl(rs.getString("COD_URL"));
-            analysis.setEntity(rs.getString("NOM_ENTIDAD"));
-            analysis.setTracker(rs.getInt("COD_RASTREO"));
-            analysis.setStatus(rs.getInt("ESTADO"));
+            final Analysis analysis = new Analysis();
+            analysis.setCode(rs.getInt("cod_analisis"));
+            analysis.setDate(rs.getTimestamp("fec_analisis"));
+            analysis.setUrl(rs.getString("cod_url"));
+            analysis.setEntity(rs.getString("nom_entidad"));
+            analysis.setTracker(rs.getInt("cod_rastreo"));
+            analysis.setStatus(rs.getInt("estado"));
 
             if (analysis.getStatus() == IntavConstants.STATUS_SUCCESS) {
-                Evaluator evaluator = new Evaluator();
+                final Evaluator evaluator = new Evaluator();
                 try {
-                    Evaluation evaluation = evaluator.getAnalisisDB(conn, analysis.getCode(), EvaluatorUtils.getDocList(), true);
-                    EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, EvaluatorUtility.getLanguage(request));
+                    final Evaluation evaluation = evaluator.getAnalisisDB(conn, analysis.getCode(), EvaluatorUtils.getDocList(), true);
+                    final EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, language);
                     for (int i = 0; i < evaluationForm.getPriorities().size(); i++) {
                         analysis.setProblems(analysis.getProblems() + evaluationForm.getPriorities().get(i).getNumProblems());
                         analysis.setWarnings(analysis.getWarnings() + evaluationForm.getPriorities().get(i).getNumWarnings());
@@ -305,7 +300,7 @@ public final class AnalisisDatos {
         ResultSet rs = null;
         try {
             conn = DataBaseManager.getConnection();
-            pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE COD_RASTREO = ? ORDER by cod_analisis");
+            pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE cod_rastreo = ? ORDER by cod_analisis");
             pstmt.setLong(1, idTracking);
             rs = pstmt.executeQuery();
 

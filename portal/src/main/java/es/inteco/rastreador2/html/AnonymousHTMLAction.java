@@ -16,6 +16,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -326,7 +327,7 @@ public class AnonymousHTMLAction extends Action {
 
     private ActionForward createSegmentResults1(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
         Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(request, resultsMap));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(CrawlerUtils.getResources(request), resultsMap));
         request.setAttribute(Constants.HTML_SUBMENU, Constants.HTML_MENU_SEGMENT_RESULTS_1);
         request.setAttribute(Constants.HTML_MENU, Constants.HTML_MENU_SEGMENT_RESULTS);
         request.setAttribute(Constants.CATEGORY_NAME, categoryName);
@@ -343,8 +344,8 @@ public class AnonymousHTMLAction extends Action {
     private ActionForward createSegmentResults3(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
         Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
         Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVI, ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(request, resultL1));
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVII, ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(request, resultL2));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVI, ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(CrawlerUtils.getResources(request), resultL1));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVII, ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(CrawlerUtils.getResources(request), resultL2));
         request.setAttribute(Constants.HTML_SUBMENU, Constants.HTML_MENU_SEGMENT_RESULTS_3);
         request.setAttribute(Constants.HTML_MENU, Constants.HTML_MENU_SEGMENT_RESULTS);
         request.setAttribute(Constants.CATEGORY_NAME, categoryName);
@@ -364,7 +365,7 @@ public class AnonymousHTMLAction extends Action {
     }
 
     private ActionForward createSegmentResults5(HttpServletRequest request, ActionMapping mapping, java.util.List<ObservatoryEvaluationForm> pageExecutionList, String categoryName) throws Exception {
-        Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, pageExecutionList);
+        Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMA, ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(request, result));
         request.setAttribute(Constants.HTML_SUBMENU, Constants.HTML_MENU_SEGMENT_RESULTS_5);
         request.setAttribute(Constants.HTML_MENU, Constants.HTML_MENU_SEGMENT_RESULTS);
@@ -374,7 +375,7 @@ public class AnonymousHTMLAction extends Action {
     }
 
     private ActionForward createEvolutionResults1(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
-        Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioIntavUtils.getEvolutionObservatoriesSitesByType(request, pageObservatoryMap);
+        Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioIntavUtils.getEvolutionObservatoriesSitesByType(request.getParameter(Constants.ID_OBSERVATORIO), request.getParameter(Constants.ID), pageObservatoryMap);
         Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A);
         Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA);
         Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV);
@@ -396,45 +397,46 @@ public class AnonymousHTMLAction extends Action {
 
     private ActionForward createEvolutionResults3(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V124, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V124, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_125_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V125, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V125, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V126, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V126, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V224, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V224, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V225, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V225, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION, pageObservatoryMap);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V226, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V226, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
 
         request.setAttribute(Constants.HTML_SUBMENU, Constants.HTML_MENU_EVOLUTION_RESULTS_3);
         request.setAttribute(Constants.HTML_MENU, Constants.HTML_MENU_EVOLUTION);
@@ -444,18 +446,19 @@ public class AnonymousHTMLAction extends Action {
     private ActionForward createEvolutionResults4(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-            resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, entry.getValue()));
+            resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), entry.getValue()));
         }
         Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL, resultsByAspect);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(request, resultData));
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE, resultsByAspect);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION, resultsByAspect);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE, resultsByAspect);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION, resultsByAspect);
-        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(request, resultData));
+        request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN, ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData));
         request.setAttribute(Constants.HTML_SUBMENU, Constants.HTML_MENU_EVOLUTION_RESULTS_4);
         request.setAttribute(Constants.HTML_MENU, Constants.HTML_MENU_EVOLUTION);
         return mapping.findForward(Constants.EVOLUTION_RESULTS_FORWARD4);

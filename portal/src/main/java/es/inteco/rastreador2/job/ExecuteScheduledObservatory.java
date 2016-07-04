@@ -122,11 +122,11 @@ public class ExecuteScheduledObservatory implements StatefulJob {
         MailUtils.sendSimpleMail(alertFromAddress, alertFromName, adminMails, alertSubject, alertText);
     }
 
-    private void createNewCrawlings(Connection conn, long observatoryId) {
+    private void createNewCrawlings(final Connection conn, final long observatoryId) {
         try {
-            ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(conn, observatoryId);
+            final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(conn, observatoryId);
 
-            List<SemillaForm> totalSeedsAdded = new ArrayList<SemillaForm>();
+            final List<SemillaForm> totalSeedsAdded = new ArrayList<SemillaForm>();
             if (observatorioForm.getCategoria() != null) {
                 for (String categoria : observatorioForm.getCategoria()) {
                     totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(conn, Long.parseLong(categoria), es.inteco.common.Constants.NO_PAGINACION, new SemillaForm()));

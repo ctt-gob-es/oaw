@@ -14,6 +14,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -31,15 +32,15 @@ public final class DatabaseExportUtils {
     private DatabaseExportUtils() {
     }
 
-    public static Observatory getObservatoryInfo(HttpServletRequest request, Long idExecution) throws Exception {
-        Observatory observatory = new Observatory();
+    public static Observatory getObservatoryInfo(final MessageResources messageResources, final Long idExecution) throws Exception {
+        final Observatory observatory = new Observatory();
 
         observatory.setIdExecution(idExecution);
 
-        List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null);
+        final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null);
 
         // Número de portales por modalidad
-        Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
+        final Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
         for (String key : result.keySet()) {
             if (key.equals(Constants.OBS_AA)) {
                 observatory.setNumAA(result.get(Constants.OBS_AA));
@@ -51,7 +52,7 @@ public final class DatabaseExportUtils {
         }
 
         // Porcentajes de cada modalidad en cada verificación
-        Map<String, BigDecimal> verificationAndModality = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_NONE);
+        final Map<String, BigDecimal> verificationAndModality = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_NONE);
         for (String key : verificationAndModality.keySet()) {
             if (!observatory.getVerificationModalityList().contains(new VerificationModality(key.replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""))) &&
                     !observatory.getVerificationModalityList().contains(new VerificationModality(key.replace(Constants.OBS_VALUE_RED_SUFFIX, "")))) {
@@ -79,7 +80,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuación de cada verificación
-        Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_NONE);
+        final Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_NONE);
         for (String key : verificationAndScore.keySet()) {
             VerificationScore verificationScore = new VerificationScore();
             verificationScore.setVerification(getVerificationId(key));
@@ -91,7 +92,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuaciones por aspectos
-        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, pageExecutionList);
+        final Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
         for (String key : aspectAndScore.keySet()) {
             AspectScore aspectScore = new AspectScore();
             aspectScore.setAspect(key);
@@ -165,7 +166,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuaciones por aspectos
-        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, pageExecutionList);
+        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
         for (String key : aspectAndScore.keySet()) {
             AspectScore aspectScore = new AspectScore();
             aspectScore.setAspect(key);
@@ -192,7 +193,7 @@ public final class DatabaseExportUtils {
         try {
             List<ObservatorySiteEvaluationForm> observatorySiteEvaluations = ResultadosAnonimosObservatorioIntavUtils.getSitesListByLevel(pageExecutionList);
             for (ObservatorySiteEvaluationForm observatorySiteEvaluationForm : observatorySiteEvaluations) {
-                Site site = getSiteInfo(request, observatorySiteEvaluationForm, category);
+                Site site = getSiteInfo(CrawlerUtils.getResources(request), observatorySiteEvaluationForm, category);
                 category.getSiteList().add(site);
             }
         } catch (Exception e) {
@@ -206,8 +207,8 @@ public final class DatabaseExportUtils {
         return category;
     }
 
-    public static Site getSiteInfo(HttpServletRequest request, ObservatorySiteEvaluationForm observatorySiteEvaluationForm, Category category) throws Exception {
-        Site site = new Site();
+    public static Site getSiteInfo(final MessageResources messagesResources, ObservatorySiteEvaluationForm observatorySiteEvaluationForm, Category category) throws Exception {
+        final Site site = new Site();
 
         site.setCategory(category);
         site.setName(observatorySiteEvaluationForm.getName());
@@ -215,11 +216,12 @@ public final class DatabaseExportUtils {
         site.setLevel(observatorySiteEvaluationForm.getLevel());
         site.setIdCrawlerSeed(observatorySiteEvaluationForm.getIdSeed());
 
-        ScoreForm scoreForm = IntavUtils.generateScores(request, observatorySiteEvaluationForm.getPages());
+
+        final ScoreForm scoreForm = IntavUtils.generateScores(messagesResources, observatorySiteEvaluationForm.getPages());
         site.setScoreLevel1(scoreForm.getScoreLevel1());
         site.setScoreLevel2(scoreForm.getScoreLevel2());
 
-        Map<String, Integer> resultsByLevel = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(observatorySiteEvaluationForm.getPages());
+        final Map<String, Integer> resultsByLevel = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(observatorySiteEvaluationForm.getPages());
         for (String key : resultsByLevel.keySet()) {
             if (key.equals(Constants.OBS_AA)) {
                 site.setNumAA(resultsByLevel.get(Constants.OBS_AA));
@@ -231,7 +233,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuación de cada verificación
-        Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(observatorySiteEvaluationForm.getPages(), Constants.OBS_PRIORITY_NONE);
+        final Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(observatorySiteEvaluationForm.getPages(), Constants.OBS_PRIORITY_NONE);
         for (String key : verificationAndScore.keySet()) {
             VerificationScore verificationScore = new VerificationScore();
             verificationScore.setVerification(getVerificationId(key));
@@ -243,7 +245,7 @@ public final class DatabaseExportUtils {
         }
 
         // Porcentajes de cada modalidad en cada verificación
-        Map<String, BigDecimal> verificationAndModality = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(observatorySiteEvaluationForm.getPages(), Constants.OBS_PRIORITY_NONE);
+        final Map<String, BigDecimal> verificationAndModality = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(observatorySiteEvaluationForm.getPages(), Constants.OBS_PRIORITY_NONE);
         for (String key : verificationAndModality.keySet()) {
             if (!site.getVerificationModalityList().contains(new VerificationModality(key.replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""))) &&
                     !site.getVerificationModalityList().contains(new VerificationModality(key.replace(Constants.OBS_VALUE_RED_SUFFIX, "")))) {
@@ -271,7 +273,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuaciones por aspectos
-        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(request, observatorySiteEvaluationForm.getPages());
+        final Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(messagesResources, observatorySiteEvaluationForm.getPages());
         for (String key : aspectAndScore.keySet()) {
             AspectScore aspectScore = new AspectScore();
             aspectScore.setAspect(key);
@@ -281,14 +283,14 @@ public final class DatabaseExportUtils {
         }
 
         for (ObservatoryEvaluationForm observatoryEvaluationForm : observatorySiteEvaluationForm.getPages()) {
-            Page page = getPageInfo(request, observatoryEvaluationForm, site);
+            Page page = getPageInfo(messagesResources, observatoryEvaluationForm, site);
             site.getPageList().add(page);
         }
 
         return site;
     }
 
-    public static Page getPageInfo(HttpServletRequest request, ObservatoryEvaluationForm observatoryEvaluationForm, Site site) {
+    public static Page getPageInfo(final MessageResources messageResources, ObservatoryEvaluationForm observatoryEvaluationForm, Site site) {
         Page page = new Page();
 
         page.setSite(site);
@@ -333,7 +335,7 @@ public final class DatabaseExportUtils {
 
         for (AspectScoreForm aspectScoreForm : observatoryEvaluationForm.getAspects()) {
             AspectScore aspectScore = new AspectScore();
-            aspectScore.setAspect(CrawlerUtils.getResources(request).getMessage(aspectScoreForm.getName()));
+            aspectScore.setAspect(messageResources.getMessage(aspectScoreForm.getName()));
             aspectScore.setScore(aspectScoreForm.getScore());
             aspectScore.setPage(page);
             page.getAspectScoreList().add(aspectScore);
@@ -342,10 +344,10 @@ public final class DatabaseExportUtils {
         return page;
     }
 
-    private static String getVerificationId(String verification) {
-        PropertiesManager pmgr = new PropertiesManager();
-        Pattern pattern = Pattern.compile(pmgr.getValue(CRAWLER_PROPERTIES, "verification.id.reg.exp"), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(verification);
+    private static String getVerificationId(final String verification) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final Pattern pattern = Pattern.compile(pmgr.getValue(CRAWLER_PROPERTIES, "verification.id.reg.exp"), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher(verification);
 
         if (matcher.find()) {
             return matcher.group(1);

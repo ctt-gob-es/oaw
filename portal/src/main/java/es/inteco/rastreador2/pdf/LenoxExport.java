@@ -96,7 +96,7 @@ public final class LenoxExport {
             document.open();
 
             PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.lenox.title"),
-                    detailAnalyseList.get(0).getRastreo().getEntidad(), ConstantsFont.documentTitleFont, ConstantsFont.documentSubtitleFont);
+                    detailAnalyseList.get(0).getRastreo().getEntidad(), ConstantsFont.documentTitleFont);
 
             Chapter chapter1 = globalLenoxChapter(detailAnalyseList, request, index, globalPath);
             document.add(chapter1);
