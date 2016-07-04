@@ -223,4 +223,34 @@ public final class Check_2_1_7_CompatibilityTest {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_PARSEABLE));
         TestUtils.printProblems(evaluation.getProblems(), CSS_PARSEABLE);
     }
+
+    @Test
+    public void evaluateScapingStyleContent() throws Exception {
+        checkAccessibility.setContent("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\" \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\">" + System.lineSeparator() +
+                "<html><head><title>Foo</title></head><style type=\"text/css\" media=\"all\">\n" +
+                "<!--/*--><![CDATA[/*><!--*/\n" +
+                "\n" +
+                "/*]]>*/-->\n" +
+                "</style><body><p>Lorem</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HTML_PARSEABLE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), IDS_UNIQUES));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_ATTRIBUTES));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), QUOTED_ATTRIBUTES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateURL() throws Exception {
+        checkAccessibility.setUrl("http://sepes.es/");
+        final Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
+        TestUtils.printHtml(evaluation.getHtmlDoc());
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DOCTYPE_VALID));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HTML_PARSEABLE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), IDS_UNIQUES));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_ATTRIBUTES));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), QUOTED_ATTRIBUTES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_7, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 }

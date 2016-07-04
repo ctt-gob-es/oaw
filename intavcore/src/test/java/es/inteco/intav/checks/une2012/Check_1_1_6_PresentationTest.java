@@ -111,6 +111,18 @@ public final class Check_1_1_6_PresentationTest {
         checkAccessibility.setContent("<html><head><style>.main:after { content: \"Ipsum \";}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>.main:after { content: open-quote;}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>.main:after { content: open-quote;}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>.main:after { content: url(/img/image.png);}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
     }
 
 
@@ -129,6 +141,4 @@ public final class Check_1_1_6_PresentationTest {
             CSS_GENERATED_CONTENT= 447;
 
         */
-
-
 }
