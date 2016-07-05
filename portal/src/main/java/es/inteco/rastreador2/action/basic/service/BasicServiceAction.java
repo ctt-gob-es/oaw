@@ -147,7 +147,7 @@ public class BasicServiceAction extends Action {
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE_FILE) ||
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_1_FILE) ||
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_2_FILE)) {
-                    BasicServiceExport.generatePDF(request, basicServiceForm, evaluationIds, idCrawling, pdfPath);
+                    BasicServiceExport.generatePDF(CrawlerUtils.getResources(request), basicServiceForm, evaluationIds, idCrawling, pdfPath);
                 } else if (basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY) ||
                         basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_FILE) || basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_1_NOBROKEN)) {
                     Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);

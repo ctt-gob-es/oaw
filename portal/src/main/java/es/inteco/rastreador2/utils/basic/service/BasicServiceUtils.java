@@ -16,6 +16,7 @@ import es.inteco.utils.MailUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
+import org.apache.struts.util.MessageResources;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -62,9 +63,9 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static void somethingWasWrongMessage(final HttpServletRequest request, final BasicServiceForm basicServiceForm, final String message) throws Exception {
+    public static void somethingWasWrongMessage(final MessageResources messageResources, final BasicServiceForm basicServiceForm, final String message) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
-        final String subject = CrawlerUtils.getResources(request).getMessage("basic.service.mail.error.subject");
+        final String subject = messageResources.getMessage("basic.service.mail.error.subject");
         final ArrayList<String> mailTo = new ArrayList<String>();
         mailTo.add(basicServiceForm.getEmail());
         final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
