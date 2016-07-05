@@ -50,11 +50,34 @@ public class CSSGeneratedContentDocumentHandler extends OAWCSSVisitor {
     public void onDeclaration(@Nonnull final CSSDeclaration cssDeclaration) {
         if (isValidMedia() && isPseudoClass() && CONTENT_PROPERTY.equals(cssDeclaration.getProperty())) {
             final String value = CSSSACUtils.parseLexicalValue(getValue(cssDeclaration));
-            if (!"none".equalsIgnoreCase(value) && !value.trim().isEmpty()) {
+            if (cssValueGenerateContent(value)) {
                 if (value.length() > allowedChars) {
                     getProblems().add(createCSSProblem("", cssDeclaration));
                 }
             }
+        }
+    }
+
+    private boolean cssValueGenerateContent(final String cssValue) {
+        if (cssValue == null || cssValue.trim().isEmpty()) {
+            return false;
+        } else {
+            final String loweredCaseValue = cssValue.toLowerCase();
+            if ("none".equals(loweredCaseValue)) {
+                return false;
+            } else if ("open-quote".equals(loweredCaseValue)
+                    || "close-quote".equals(loweredCaseValue)
+                    || "no-open-quote".equals(loweredCaseValue)
+                    || "no-close-quote".equals(loweredCaseValue)) {
+                return false;
+            } else if (loweredCaseValue.startsWith("url")) {
+                return false;
+            } else if (loweredCaseValue.startsWith("counter")) {
+                return false;
+            } else if (loweredCaseValue.startsWith("leader")) {
+                return false;
+            }
+            return true;
         }
     }
 

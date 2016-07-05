@@ -112,15 +112,27 @@ public final class Check_1_1_6_PresentationTest {
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
 
-        checkAccessibility.setContent("<html><head><style>.main:after { content: open-quote;}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        checkAccessibility.setContent("<html><head><style>.main:after { content: OPEN-quote;}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
 
-        checkAccessibility.setContent("<html><head><style>.main:after { content: open-quote;}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        checkAccessibility.setContent("<html><head><style>.main:after { content: close-QUOTE;}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
 
         checkAccessibility.setContent("<html><head><style>.main:after { content: url(/img/image.png);}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>.main:after { content: leader('.') target-counter(attr(href), page);}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>.main:after { content: counter(li, decimal);}</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
+
+        checkAccessibility.setContent("<html><head><style>li::marker { content: '(' counters(list-item,'.') ') '; }</style><title>Lorem</title></head><body><p>Lorem</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_GENERATED_CONTENT));
     }
