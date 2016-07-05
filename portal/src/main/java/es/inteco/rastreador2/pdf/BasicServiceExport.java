@@ -66,10 +66,10 @@ public final class BasicServiceExport {
     private BasicServiceExport() {
     }
 
-    public static void generatePDF(HttpServletRequest request, BasicServiceForm basicServiceForm, List<Long> evaluationIds, Long idCrawling, String pdfPath) throws Exception {
+    public static void generatePDF(final MessageResources messageResources, BasicServiceForm basicServiceForm, List<Long> evaluationIds, Long idCrawling, String pdfPath) throws Exception {
         try {
             if (evaluationIds != null && !evaluationIds.isEmpty()) {
-                createPdf(request, evaluationIds, basicServiceForm, idCrawling, pdfPath);
+                createPdf(messageResources, evaluationIds, basicServiceForm, idCrawling, pdfPath);
             } else {
                 Logger.putLog("No existen analisis en la base de datos de INTAV para la entidad: " + basicServiceForm.getName(), BasicServiceExport.class, Logger.LOG_LEVEL_WARNING);
             }
@@ -163,7 +163,7 @@ public final class BasicServiceExport {
         return reportCompressFile;
     }
 
-    public static void createPdf(HttpServletRequest request, List<Long> evaluationIds, BasicServiceForm basicServiceForm, Long idCrawling, String pdfPath) throws Exception {
+    public static void createPdf(final MessageResources messageResources, List<Long> evaluationIds, BasicServiceForm basicServiceForm, Long idCrawling, String pdfPath) throws Exception {
         final Map<String, List<EvaluationForm>> resultData = getResultData(evaluationIds, basicServiceForm.getLanguage());
 
         File file = new File(pdfPath);
@@ -181,7 +181,7 @@ public final class BasicServiceExport {
         final Document document = new Document(PageSize.A4, 50, 50, 120, 72);
         final String chartsTempPath = new File(pdfPath).getParent() + File.separator + "temp" + File.separator;
         final SimpleDateFormat sdf = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
-        final MessageResources messageResources = CrawlerUtils.getResources(request);
+//        final MessageResources messageResources = CrawlerUtils.getResources(request);
 
         try {
             final FileOutputStream fileOut = new FileOutputStream(file);
@@ -196,7 +196,7 @@ public final class BasicServiceExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, messageResources.getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), messageResources.getMessage("pdf.accessibility.bs.subtitle"), ConstantsFont.documentTitleMPFont);
+            PDFUtils.addTitlePage(document, messageResources.getMessage("pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), messageResources.getMessage("pdf.accessibility.bs.subtitle"), ConstantsFont.documentTitleMPFont);
 
             int numChapter = 1;
             int countSections = 1;
@@ -204,7 +204,7 @@ public final class BasicServiceExport {
             countSections = createIntroductionChapter(messageResources, document, evaList, index, numChapter, countSections);
             numChapter++;
 
-            countSections = createGlobalChapter(request, document, evaList, chartsTempPath, index, fechaInforme, numChapter, countSections);
+            countSections = createGlobalChapter(messageResources, document, evaList, chartsTempPath, index, fechaInforme, numChapter, countSections);
             numChapter++;
 
             Image imgProblemA = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.problem"));
@@ -248,7 +248,7 @@ public final class BasicServiceExport {
                 com.lowagie.text.List summaryPriorities1 = addSummary(messageResources, evaluationForm.getPriorities());
                 chapter.add(summaryPriorities1);
 
-                generateGraphic(request, evaluationForm.getPriorities(), messageResources.getMessage("pdf.accessibility.bs.priority.incidence"), chartsTempPath);
+                generateGraphic(messageResources, evaluationForm.getPriorities(), messageResources.getMessage("pdf.accessibility.bs.priority.incidence"), chartsTempPath);
                 Image imgGp = PDFUtils.createImage(chartsTempPath + messageResources.getMessage("pdf.accessibility.bs.priority.incidence") + ".jpg", messageResources.getMessage("pdf.accessibility.bs.priority.incidence"));
 
                 if (imgGp != null) {
@@ -261,7 +261,7 @@ public final class BasicServiceExport {
                     totalProblems = priority.getNumInfos() + priority.getNumProblems() + priority.getNumWarnings();
                 }
                 if (totalProblems > 0) {
-                    chapter.add(createProblemsIndex(request, evaluationForm.getPriorities()));
+                    chapter.add(createProblemsIndex(messageResources, evaluationForm.getPriorities()));
                 }
 
                 chapter.newPage();
@@ -312,10 +312,10 @@ public final class BasicServiceExport {
 
             if (basicServiceForm.isContentAnalysis()) {
                 // Añadir el código fuente analizado
-                createContentChapter(request, document, basicServiceForm.getContent(), index, numChapter, countSections);
+                createContentChapter(messageResources, document, basicServiceForm.getContent(), index, numChapter, countSections);
             }
 
-            IndexUtils.createIndex(writer, document, request, index, false, ConstantsFont.chapterTitleMPFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, false, ConstantsFont.chapterTitleMPFont);
             ExportPageEventsObservatoryBS.setLastPage(false);
 
             FileUtils.removeFile(chartsTempPath);
@@ -362,7 +362,7 @@ public final class BasicServiceExport {
         return prioList;
     }
 
-    private static com.lowagie.text.List createProblemsIndex(HttpServletRequest request, List<PriorityForm> priorityList) throws BadElementException, IOException {
+    private static com.lowagie.text.List createProblemsIndex(final MessageResources messageResources, List<PriorityForm> priorityList) throws BadElementException, IOException {
         final com.lowagie.text.List priorityTextList = new com.lowagie.text.List(false, 10);
         for (PriorityForm priority : priorityList) {
             final com.lowagie.text.List problemList = new com.lowagie.text.List(false, 10);
@@ -375,29 +375,29 @@ public final class BasicServiceExport {
                 for (PautaForm pautaForm : guideline.getPautas()) {
                     for (ProblemForm problemForm : pautaForm.getProblems()) {
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high")) && !hasProblem) {
-                            problemList.add(PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
+                            problemList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
                             hasProblem = true;
                         }
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium")) && !hasWarning) {
-                            warningList.add(PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
+                            warningList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
                             hasWarning = true;
                         }
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell")) && !hasInfos) {
-                            infoList.add(PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
+                            infoList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
                             hasInfos = true;
                         }
                     }
                 }
             }
 
-            final ListItem priorityItem = PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage(priority.getPriorityName().replace(" ", "").toLowerCase() + ".bs"), ConstantsFont.paragraphBoldTitleFont, ConstantsFont.listSymbol1, true);
-            priorityItem.add(createProblemList(request, problemList, warningList, infoList, priority));
+            final ListItem priorityItem = PDFUtils.createListItem(messageResources.getMessage(priority.getPriorityName().replace(" ", "").toLowerCase() + ".bs"), ConstantsFont.paragraphBoldTitleFont, ConstantsFont.listSymbol1, true);
+            priorityItem.add(createProblemList(messageResources, problemList, warningList, infoList, priority));
             priorityTextList.add(priorityItem);
         }
         return priorityTextList;
     }
 
-    private static com.lowagie.text.List createProblemList(HttpServletRequest request, com.lowagie.text.List problemList, com.lowagie.text.List warningList, com.lowagie.text.List infoList, PriorityForm priority) throws BadElementException, IOException {
+    private static com.lowagie.text.List createProblemList(final MessageResources messageResources, com.lowagie.text.List problemList, com.lowagie.text.List warningList, com.lowagie.text.List infoList, PriorityForm priority) throws BadElementException, IOException {
         com.lowagie.text.List pwiList = new com.lowagie.text.List();
 
         Image imgProblemA = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.problem"));
@@ -412,9 +412,9 @@ public final class BasicServiceExport {
         imgWarnings.scalePercent(60);
         imgInfos.scalePercent(60);
 
-        ListItem problemItem = PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems() + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.ver.point", problemList.size()), ConstantsFont.problemFont, new Chunk(imgProblemA, 0, 0), false);
-        ListItem warningItem = PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings() + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.ver.point", warningList.size()), ConstantsFont.warningFont, new Chunk(imgWarnings, 0, 0), false);
-        ListItem infoItem = PDFUtils.createListItem(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.infos") + ": " + priority.getNumInfos() + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.bs.ver.point", infoList.size()), ConstantsFont.cannottellFont, new Chunk(imgInfos, 0, 0), false);
+        ListItem problemItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems() + messageResources.getMessage("pdf.accessibility.bs.ver.point", problemList.size()), ConstantsFont.problemFont, new Chunk(imgProblemA, 0, 0), false);
+        ListItem warningItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings() + messageResources.getMessage("pdf.accessibility.bs.ver.point", warningList.size()), ConstantsFont.warningFont, new Chunk(imgWarnings, 0, 0), false);
+        ListItem infoItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.infos") + ": " + priority.getNumInfos() + messageResources.getMessage("pdf.accessibility.bs.ver.point", infoList.size()), ConstantsFont.cannottellFont, new Chunk(imgInfos, 0, 0), false);
 
         problemItem.setSpacingBefore(8);
         warningItem.setSpacingBefore(8);
@@ -559,10 +559,9 @@ public final class BasicServiceExport {
         return numSection;
     }
 
-    private static int createGlobalChapter(HttpServletRequest request, Document d, List<EvaluationForm> evaList,
+    private static int createGlobalChapter(final MessageResources messageResources, Document d, List<EvaluationForm> evaList,
                                            String globalPath, IndexEvents index, String fechaInforme, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        final MessageResources messageResources = CrawlerUtils.getResources(request);
         Chapter chapter1 = PDFUtils.addChapterTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWords = new ArrayList<String>();
@@ -580,7 +579,7 @@ public final class BasicServiceExport {
         com.lowagie.text.List summaryPriorities = addSummary(messageResources, prioList);
         chapter1.add(summaryPriorities);
 
-        generateGraphic(request, prioList, messageResources.getMessage("pdf.accessibility.bs.global.priority.incidence"), globalPath);
+        generateGraphic(messageResources, prioList, messageResources.getMessage("pdf.accessibility.bs.global.priority.incidence"), globalPath);
         Image globalImgGp = PDFUtils.createImage(globalPath + messageResources.getMessage("pdf.accessibility.bs.global.priority.incidence") + ".jpg", messageResources.getMessage("pdf.accessibility.bs.global.priority.incidence"));
         if (globalImgGp != null) {
             chapter1.add(globalImgGp);
@@ -591,11 +590,11 @@ public final class BasicServiceExport {
         return numSections;
     }
 
-    private static int createContentChapter(HttpServletRequest request, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
+    private static int createContentChapter(final MessageResources messageResources, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.addChapterTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("basic.service.content.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, true);
+        PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
         d.add(chapter);
 
@@ -662,34 +661,34 @@ public final class BasicServiceExport {
         }
     }
 
-    private static void generateGraphic(HttpServletRequest request, List<PriorityForm> priorityFormList, String tableName, String tempPath) {
-        DefaultCategoryDataset priorityDataSet = new DefaultCategoryDataset();
+    private static void generateGraphic(final MessageResources messageResources, List<PriorityForm> priorityFormList, String tableName, String tempPath) {
+        final DefaultCategoryDataset priorityDataSet = new DefaultCategoryDataset();
 
         for (PriorityForm priority : priorityFormList) {
             if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.1.name")))) {
                 if ((priority.getNumProblems() != 0) || (priority.getNumWarnings() != 0) || (priority.getNumInfos() != 0)) {
-                    priorityDataSet.addValue(priority.getNumProblems(), CrawlerUtils.getResources(request).getMessage("chart.problems.bs"), CrawlerUtils.getResources(request).getMessage("first.level.incidents.export.bs"));
-                    priorityDataSet.addValue(priority.getNumWarnings(), CrawlerUtils.getResources(request).getMessage("chart.warnings.bs"), CrawlerUtils.getResources(request).getMessage("first.level.incidents.export.bs"));
-                    priorityDataSet.addValue(priority.getNumInfos(), CrawlerUtils.getResources(request).getMessage("chart.infos.bs"), CrawlerUtils.getResources(request).getMessage("first.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumProblems(), messageResources.getMessage("chart.problems.bs"), messageResources.getMessage("first.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumWarnings(), messageResources.getMessage("chart.warnings.bs"), messageResources.getMessage("first.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumInfos(), messageResources.getMessage("chart.infos.bs"), messageResources.getMessage("first.level.incidents.export.bs"));
                 }
             } else if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.2.name")))) {
                 if ((priority.getNumProblems() != 0) || (priority.getNumWarnings() != 0) || (priority.getNumInfos() != 0)) {
-                    priorityDataSet.addValue(priority.getNumProblems(), CrawlerUtils.getResources(request).getMessage("chart.problems.bs"), CrawlerUtils.getResources(request).getMessage("second.level.incidents.export.bs"));
-                    priorityDataSet.addValue(priority.getNumWarnings(), CrawlerUtils.getResources(request).getMessage("chart.warnings.bs"), CrawlerUtils.getResources(request).getMessage("second.level.incidents.export.bs"));
-                    priorityDataSet.addValue(priority.getNumInfos(), CrawlerUtils.getResources(request).getMessage("chart.infos.bs"), CrawlerUtils.getResources(request).getMessage("second.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumProblems(), messageResources.getMessage("chart.problems.bs"), messageResources.getMessage("second.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumWarnings(), messageResources.getMessage("chart.warnings.bs"), messageResources.getMessage("second.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumInfos(), messageResources.getMessage("chart.infos.bs"), messageResources.getMessage("second.level.incidents.export.bs"));
                 }
             } else if (priority.getPriorityName().equals(PMGR.getValue("intav.properties", ("priority.3.name")))) {
                 if ((priority.getNumProblems() != 0) || (priority.getNumWarnings() != 0) || (priority.getNumInfos() != 0)) {
-                    priorityDataSet.addValue(priority.getNumProblems(), CrawlerUtils.getResources(request).getMessage("chart.problems.bs"), CrawlerUtils.getResources(request).getMessage("third.level.incidents.export.bs"));
-                    priorityDataSet.addValue(priority.getNumWarnings(), CrawlerUtils.getResources(request).getMessage("chart.warnings.bs"), CrawlerUtils.getResources(request).getMessage("third.level.incidents.export.bs"));
-                    priorityDataSet.addValue(priority.getNumInfos(), CrawlerUtils.getResources(request).getMessage("chart.infos.bs"), CrawlerUtils.getResources(request).getMessage("third.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumProblems(), messageResources.getMessage("chart.problems.bs"), messageResources.getMessage("third.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumWarnings(), messageResources.getMessage("chart.warnings.bs"), messageResources.getMessage("third.level.incidents.export.bs"));
+                    priorityDataSet.addValue(priority.getNumInfos(), messageResources.getMessage("chart.infos.bs"), messageResources.getMessage("third.level.incidents.export.bs"));
                 }
             }
         }
         try {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage("chart.intav.bs.rowTitle");
-            ChartForm chart = new ChartForm(tableName, "", rowTitle, priorityDataSet, true, true, false, false, true, false, false, X, Y, COLOR);
-            GraphicsUtils.createSeriesBarChart(chart, tempPath + tableName + ".jpg", "", CrawlerUtils.getResources(request), false);
+            final String rowTitle = messageResources.getMessage("chart.intav.bs.rowTitle");
+            final ChartForm chart = new ChartForm(tableName, "", rowTitle, priorityDataSet, true, true, false, false, true, false, false, X, Y, COLOR);
+            GraphicsUtils.createSeriesBarChart(chart, tempPath + tableName + ".jpg", "", messageResources, false);
         } catch (Exception e) {
             Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
         }
