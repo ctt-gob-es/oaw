@@ -266,6 +266,9 @@ public final class CheckUtils {
         } catch (UnknownHostException e) {
             // Si no se puede conectar porque no se reconoce el Host la url no es válida
             return false;
+        } catch (MalformedURLException e) {
+            // Si la url no está bien formada porque usa protocolos no http (javascript:, tel:, mailto:...) se considera igualmente válida
+            return true;
         } catch (Exception e) {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
             return false;
