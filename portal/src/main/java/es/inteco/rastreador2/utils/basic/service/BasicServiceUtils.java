@@ -210,7 +210,7 @@ public final class BasicServiceUtils {
             final Matcher matcher = pattern.matcher(content);
 
             if (matcher.find()) {
-                final String title = matcher.group(1).replaceAll("\\s{2,}"," ");
+                final String title = matcher.group(1).replaceAll("\\s{2,}"," ").trim();
                 final int titleMaxLength = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length"));
                 if (title.length() <= titleMaxLength) {
                     return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));

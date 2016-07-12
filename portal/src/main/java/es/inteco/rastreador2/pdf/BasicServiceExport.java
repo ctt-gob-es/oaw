@@ -24,14 +24,12 @@ import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryBS;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.ChartForm;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
 import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.*;
 import java.sql.Connection;
@@ -181,7 +179,6 @@ public final class BasicServiceExport {
         final Document document = new Document(PageSize.A4, 50, 50, 120, 72);
         final String chartsTempPath = new File(pdfPath).getParent() + File.separator + "temp" + File.separator;
         final SimpleDateFormat sdf = new SimpleDateFormat(PMGR.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
-//        final MessageResources messageResources = CrawlerUtils.getResources(request);
 
         try {
             final FileOutputStream fileOut = new FileOutputStream(file);
@@ -201,7 +198,20 @@ public final class BasicServiceExport {
             int numChapter = 1;
             int countSections = 1;
 
-            countSections = createIntroductionChapter(messageResources, document, evaList, index, numChapter, countSections);
+            final Chapter introChapter = PDFUtils.addChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.introduction"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+
+//            PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p1"), ConstantsFont.paragraphFont, introChapter);
+//            PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p2"), ConstantsFont.paragraphFont, introChapter);
+//            PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p3"), ConstantsFont.paragraphFont, introChapter);
+
+            countSections = createSection11(messageResources, index, introChapter, countSections, evaList);
+            countSections++;
+/*            countSections = createSection12(messageResources, index, introChapter, countSections);
+            countSections++;
+            countSections = createSection13(messageResources, index, introChapter, countSections);
+            countSections++;//*/
+
+            document.add(introChapter);
             numChapter++;
 
             countSections = createGlobalChapter(messageResources, document, evaList, chartsTempPath, index, fechaInforme, numChapter, countSections);
@@ -222,7 +232,7 @@ public final class BasicServiceExport {
             int counter = 1;
             for (EvaluationForm evaluationForm : evaList) {
                 final String chapterTitle = messageResources.getMessage("basic.service.url.title", counter++);
-                final Chapter chapter = PDFUtils.addChapterTitle(chapterTitle.toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont, false);
+                final Chapter chapter = PDFUtils.addChapterWithTitle(chapterTitle.toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont, false);
 
                 final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
                 final String url = evaluationForm.getUrl();
@@ -432,27 +442,6 @@ public final class BasicServiceExport {
         return pwiList;
     }
 
-    private static int createIntroductionChapter(final MessageResources messageResources, final Document document, final List<EvaluationForm> evaList, final IndexEvents index, final int numChapter, final int countSections) throws Exception {
-        int numSections = countSections;
-
-        final Chapter chapter = PDFUtils.addChapterTitle(messageResources.getMessage("pdf.accessibility.bs.index.introduction"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
-
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p1"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p2"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p3"), ConstantsFont.paragraphFont, chapter);
-
-        numSections = createSection11(messageResources, index, chapter, numSections, evaList);
-        numSections++;
-        numSections = createSection12(messageResources, index, chapter, numSections);
-        numSections++;
-        numSections = createSection13(messageResources, index, chapter, numSections);
-        numSections++;
-
-        document.add(chapter);
-        return numSections;
-
-    }
-
     private static int createSection11(final MessageResources messageResources, final IndexEvents index, final Chapter chapter, final int countSections, final List<EvaluationForm> evalFormList) throws Exception {
         final Section section = PDFUtils.addSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
 
@@ -562,7 +551,7 @@ public final class BasicServiceExport {
     private static int createGlobalChapter(final MessageResources messageResources, Document d, List<EvaluationForm> evaList,
                                            String globalPath, IndexEvents index, String fechaInforme, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter1 = PDFUtils.addChapterTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter1 = PDFUtils.addChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(messageResources.getMessage("pdf.accessibility.bs.entity"));
@@ -592,7 +581,7 @@ public final class BasicServiceExport {
 
     private static int createContentChapter(final MessageResources messageResources, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter = PDFUtils.addChapterTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
@@ -695,6 +684,14 @@ public final class BasicServiceExport {
     }
 
     public static void addSpecificProblems(final MessageResources messageResources, final Section subSubSection, final List<SpecificProblemForm> specificProblems) {
+        float[] widths = {8f, 10f, 82f};
+        PdfPTable table = new PdfPTable(widths);
+        table.setWidthPercentage(100);
+        table.setSpacingBefore(ConstantsFont.SPACE_LINE / 3);
+        table.setSpacingAfter(ConstantsFont.SPACE_LINE / 2);
+        table.addCell(PDFUtils.createTableCell("Linea", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 5));
+        table.addCell(PDFUtils.createTableCell("Columna", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 5));
+        table.addCell(PDFUtils.createTableCell("Código", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 5));
         int maxNumErrors = Integer.parseInt(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"));
         for (SpecificProblemForm specificProblem : specificProblems) {
             maxNumErrors--;
@@ -705,9 +702,36 @@ public final class BasicServiceExport {
 
                 }
                 if (!specificProblem.getLine().isEmpty() && !"-1".equalsIgnoreCase(specificProblem.getLine())) {
-                    PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
+                    table.addCell(PDFUtils.createTableCell(specificProblem.getLine(), Color.WHITE, ConstantsFont.codeCellFont,    Element.ALIGN_RIGHT, 5));
+                    table.addCell(PDFUtils.createTableCell(specificProblem.getColumn(), Color.WHITE, ConstantsFont.codeCellFont,    Element.ALIGN_RIGHT, 5));
+                    //PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
+//                    final String localizacion = messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn());
+//                    final Paragraph p;
+//                    if (specificProblem.getMessage()!=null && !specificProblem.getMessage().isEmpty()) {
+//                        p = new Paragraph(localizacion + ": " + specificProblem.getMessage(), ConstantsFont.codeCellFont);
+//                    } else {
+//                        p = new Paragraph(localizacion, ConstantsFont.codeCellFont);
+//                    }
+//                    p.setSpacingBefore(ConstantsFont.SPACE_LINE/2);
+//                    p.setSpacingAfter(0);
+//                    p.setAlignment(Element.ALIGN_LEFT);
+//                    subSubSection.add(p);
                 }
-                PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(code.toString()), specificProblem.getMessage(), subSubSection);
+//                PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(code.toString()), specificProblem.getMessage(), subSubSection);
+                String text = HTMLEntities.unhtmlAngleBrackets(code.toString());
+                String message =specificProblem.getMessage();
+
+                java.util.List<String> boldWords = new ArrayList<String>();
+                if (!StringUtils.isEmpty(message)) {
+                    text = "{0} \n\n" + text.trim();
+                    boldWords.add(message);
+                }
+
+                PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.noteCellFont, ConstantsFont.noteCellFont, false));
+                labelCell.setBackgroundColor(new Color(255, 244, 223));
+                labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                labelCell.setPadding(5f);
+                table.addCell(labelCell);
             } else if (specificProblem.getNote() != null) {
                 String linkCode = getMatch(specificProblem.getNote().get(0), "(<a.*?</a>)");
                 String paragraphText = specificProblem.getNote().get(0).replace(linkCode, "");
@@ -734,6 +758,7 @@ public final class BasicServiceExport {
                 break;
             }
         }
+        subSubSection.add(table);
     }
 
     private static String getMatch(String text, String regexp) {

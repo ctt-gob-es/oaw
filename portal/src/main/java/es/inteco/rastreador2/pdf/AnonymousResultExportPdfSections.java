@@ -26,7 +26,7 @@ public final class AnonymousResultExportPdfSections {
     }
 
     public static int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
         AnonymousResultExportPdfSection1.createChapter1(request, chapter);
 
         Section section1 = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter11.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
@@ -38,7 +38,7 @@ public final class AnonymousResultExportPdfSections {
     }
 
     public static int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, long observatoryType) throws DocumentException {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
         AnonymousResultExportPdfSection2.createChapter2(request, chapter, observatoryType);
         document.add(chapter);
 
@@ -46,7 +46,7 @@ public final class AnonymousResultExportPdfSections {
     }
 
     public static int createMethodologyChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
 
         AnonymousResultExportPdfSection3.createChapter3(request, chapter);
         if (!isBasicService) {
@@ -88,7 +88,7 @@ public final class AnonymousResultExportPdfSections {
     }
 
     public static int createContentChapter(HttpServletRequest request, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("basic.service.content.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
@@ -102,7 +102,7 @@ public final class AnonymousResultExportPdfSections {
         java.util.List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Constants.COMPLEXITY_SEGMENT_NONE, null);
         Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
 
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter4.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter4.title"), index, countSections++, numChapter, titleFont);
         AnonymousResultExportPdfSection4.createChapter4(request, chapter);
         chapter.newPage();
 
@@ -139,7 +139,7 @@ public final class AnonymousResultExportPdfSections {
     protected static int createCategoryResultsChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont,
                                                       String graphicPath, String execution_id, Connection conn, Long idObservatory, CategoriaForm category, long observatoryType) throws Exception {
         java.util.List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Long.parseLong(category.getId()), null);
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapterCat.title") + " " + category.getName().toUpperCase(), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapterCat.title") + " " + category.getName().toUpperCase(), index, countSections++, numChapter, titleFont);
 
         AnonymousResultExportPdfSectionCat.createSectionCat(request, chapter, category);
 
@@ -175,7 +175,7 @@ public final class AnonymousResultExportPdfSections {
         Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV);
 
         final MessageResources messageResources = CrawlerUtils.getResources(request);
-        Chapter chapter = PDFUtils.addChapterTitle(messageResources.getMessage("ob.resAnon.intav.report.chapterEv.title"), index, countSections, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(messageResources.getMessage("ob.resAnon.intav.report.chapterEv.title"), index, countSections, numChapter, titleFont);
         AnonymousResultExportPdfSectionEv.createChapterEvolution(messageResources, chapter);
         chapter.newPage();
 
@@ -289,7 +289,7 @@ public final class AnonymousResultExportPdfSections {
     }
 
     protected static int createSummaryChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.summary.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.summary.title"), index, countSections++, numChapter, titleFont);
         //Incluir las conclusiones
         document.add(chapter);
 

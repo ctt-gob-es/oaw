@@ -15,11 +15,9 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSectionEv;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSections;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,11 +43,11 @@ public final class PDFUtils {
         }
     }
 
-    public static Chapter addChapterTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont) {
-        return addChapterTitle(title, index, countSections, numChapter, titleFont, true);
+    public static Chapter addChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont) {
+        return addChapterWithTitle(title, index, countSections, numChapter, titleFont, true);
     }
 
-    public static Chapter addChapterTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont, boolean upperCase) {
+    public static Chapter addChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont, boolean upperCase) {
         if (upperCase) {
             title = title.toUpperCase();
         }
@@ -58,6 +56,20 @@ public final class PDFUtils {
         Paragraph paragraph = new Paragraph("", titleFont);
         paragraph.add(chunk);
         Chapter chapter = new Chapter(paragraph, numChapter);
+        if (index != null) {
+            paragraph.add(index.create(" ", countSections + "@&" + title));
+        }
+        return chapter;
+    }
+
+    public static Chapter addChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont, boolean upperCase, final String anchor) {
+        if (upperCase) {
+            title = title.toUpperCase();
+        }
+        final Chunk chunk = new Chunk(title, titleFont);
+        chunk.setLocalDestination(anchor);
+        final Paragraph paragraph = new Paragraph(chunk);
+        final Chapter chapter = new Chapter(paragraph, numChapter);
         if (index != null) {
             paragraph.add(index.create(" ", countSections + "@&" + title));
         }
@@ -121,21 +133,22 @@ public final class PDFUtils {
             boldWords.add(message);
         }
 
-        PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.strongNoteCellFont, ConstantsFont.noteCellFont, false));
+        PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.noteCellFont, ConstantsFont.noteCellFont, false));
         labelCell.setBackgroundColor(new Color(255, 244, 223));
         labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         labelCell.setPadding(5f);
         table.addCell(labelCell);
         table.setSpacingBefore(ConstantsFont.SPACE_LINE / 3);
+        table.setSpacingAfter(ConstantsFont.SPACE_LINE / 2);
         section.add(table);
     }
 
     public static void addParagraphRationale(java.util.List<String> text, Section section) {
-        float[] widths = {95f};
-        PdfPTable table = new PdfPTable(widths);
+        final float[] widths = {95f};
+        final PdfPTable table = new PdfPTable(widths);
         table.setWidthPercentage(95);
 
-        Paragraph paragraph = new Paragraph();
+        final Paragraph paragraph = new Paragraph();
         boolean isFirst = true;
         for (String phraseText : text) {
             if (isFirst) {
@@ -351,6 +364,10 @@ public final class PDFUtils {
         return createTableCell(resources.getMessage(key), backgroundColor, font, align, margin);
     }
 
+    public static PdfPCell createTableCell(final MessageResources resources, final String key, final Color backgroundColor, final Font font, final int align, final int margin, final float height) {
+        return createTableCell(resources.getMessage(key), backgroundColor, font, align, margin, height);
+    }
+
     public static PdfPCell createTableCell(final String text, final Color backgroundColor, final Font font, final int align, final int margin) {
         return createTableCell(text, backgroundColor, font, align, margin, 17f);
     }
@@ -367,26 +384,38 @@ public final class PDFUtils {
         return labelCell;
     }
 
-    public static PdfPCell createListTableCell(final List list, final Color backgroundColor, final int align, final int margin) {
-        final PdfPCell labelCell = new PdfPCell();
-        labelCell.addElement(list);
+    public static PdfPCell createTableCell(final String text, final Color backgroundColor, final Font font, final int align, final int margin, final String anchorId) {
+        final Chunk chunk = new Chunk(text, font);
+        chunk.setLocalGoto(anchorId);
+        final PdfPCell labelCell = new PdfPCell(new Paragraph(chunk));
         labelCell.setBackgroundColor(backgroundColor);
         labelCell.setHorizontalAlignment(align);
         labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
         labelCell.setPaddingLeft(margin);
+        labelCell.setFixedHeight(17f);
+
         return labelCell;
     }
 
-    public static PdfPCell createColSpanTableCell(final MessageResources resources, String text, Color backgroundColor, Font font, int colSpan, int align) {
-        return createColSpanTableCell(resources.getMessage(text), backgroundColor, font, colSpan, align);
+
+    public static PdfPCell createListTableCell(final List list, final Color backgroundColor, final int horizontalAlign, final int margin) {
+        return createListTableCell(list, backgroundColor, horizontalAlign, Element.ALIGN_MIDDLE, margin);
     }
 
-    public static PdfPCell createColSpanTableCell(String text, Color backgroundColor, Font font, int colSpan, int align) {
-        int margin = 0;
-        if (align == Element.ALIGN_LEFT) {
-            margin = 5;
-        }
-        PdfPCell labelCell = createTableCell(text, backgroundColor, font, align, margin);
+    public static PdfPCell createListTableCell(final List list, final Color backgroundColor, final int horizontalAlign, final int verticalAlign, final int margin) {
+        final PdfPCell labelCell = new PdfPCell();
+        labelCell.addElement(list);
+        labelCell.setBackgroundColor(backgroundColor);
+        labelCell.setHorizontalAlignment(horizontalAlign);
+        labelCell.setVerticalAlignment(verticalAlign);
+        labelCell.setPaddingLeft(margin);
+        return labelCell;
+    }
+
+    public static PdfPCell createColSpanTableCell(final String text, final Color backgroundColor, final Font font, final int colSpan, final int align) {
+        final int margin = (align == Element.ALIGN_LEFT) ? 5 : 0;
+
+        final PdfPCell labelCell = createTableCell(text, backgroundColor, font, align, margin);
         labelCell.setColspan(colSpan);
         return labelCell;
     }
@@ -420,11 +449,7 @@ public final class PDFUtils {
         section.add(img);
     }
 
-    public static PdfPTable createTableMod(HttpServletRequest request, java.util.List<ModalityComparisonForm> result) {
-        return createTableMod(CrawlerUtils.getResources(request), result);
-    }
-
-    public static PdfPTable createTableMod(final MessageResources resources, java.util.List<ModalityComparisonForm> result) {
+    public static PdfPTable createTableMod(final MessageResources resources, final java.util.List<ModalityComparisonForm> result) {
         final float[] widths = {50f, 25f, 25f};
         final PdfPTable table = new PdfPTable(widths);
         table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.anonimos.puntuacion.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -475,7 +500,7 @@ public final class PDFUtils {
 
     public static String formatSeedName(final String seedName) {
         if (seedName != null) {
-            return replaceAccent(seedName.trim()).replaceAll("[\\s,.]+", "_").toLowerCase();
+            return replaceAccent(seedName.trim().toLowerCase()).replaceAll("[\\s,.]+", "_");
         }
         return seedName;
     }

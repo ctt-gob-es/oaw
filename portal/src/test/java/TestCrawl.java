@@ -1,5 +1,6 @@
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
+import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -9,16 +10,22 @@ import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.utils.ChartForm;
+import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 import es.inteco.utils.MailUtils;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.struts.util.MessageResources;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.DOMWriter;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -29,11 +36,14 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
  * Created by mikunis on 26/11/14.
@@ -50,19 +60,82 @@ public class TestCrawl {
     @Test
     public void test() throws Exception {
         final CrawlerData crawlerData = new CrawlerData();
-        crawlerData.setUrls(Collections.singletonList("http://www.controlastuenergia.gob.es/Paginas/contacto.aspx"));
-        crawlerData.setProfundidad(1);
-        crawlerData.setTopN(1);
+//        crawlerData.setUrls(Collections.singletonList("http://www.mjusticia.gob.es/cs/Satellite/Portal/es/inicio"));
+//        crawlerData.setUrls(Collections.singletonList("http://www.aytoalamedasagra.com/"));
+        crawlerData.setUrls(Collections.singletonList("http://www.ayuntamientodeoyon.com/es/"));
+        crawlerData.setProfundidad(4);
+        crawlerData.setTopN(4);
         crawlerData.setPseudoaleatorio(true);
         crawlerData.setTest(true);
         crawlerData.setIdCrawling(-1);
         makeCrawl(crawlerData);
-//
-//        for (CrawledLink cl: crawlingDomains) {
-//            System.out.println(cl.getUrl());
-//        }
-//        Assert.assertEquals(17, crawlingDomains.size());
+
+        for (CrawledLink cl: crawlingDomains) {
+            System.out.println(cl.getUrl());
+        }
+        Assert.assertEquals(17, crawlingDomains.size());
     }
+
+//    @Test
+//    public void testGraphicsUtils() throws Exception {
+//        GraphicsUtils.totalPageStr = "N\u00BA Portales: ";
+//        GraphicsUtils.totalPage = 18;
+//        final DefaultPieDataset dataSet = new DefaultPieDataset();
+//
+//        dataSet.setValue("Parcial", Integer.valueOf(3));
+//        dataSet.setValue("Prioridad 1", Integer.valueOf(3));
+//        dataSet.setValue("Prioridad 1 y 2", Integer.valueOf(12));
+//
+//        final PropertiesManager pmgr = new PropertiesManager();
+//        GraphicsUtils.createPieChart(dataSet, "Distribución del Nivel de Accesibilidad. Segmento I: Principales", "/home/mikunis/na_seg_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
+//    }
+//
+//    @Test
+//    public void testGraphicsPsieChart() throws Exception {
+//        GraphicsUtils.totalPageStr = "N\u00BA Portales: ";
+//        GraphicsUtils.totalPage = 35+112+14;
+//        final DefaultPieDataset dataSet = new DefaultPieDataset();
+//
+//        dataSet.setValue("Emperoran", Integer.valueOf(35));
+//        dataSet.setValue("Se mantienen", Integer.valueOf(112));
+//        dataSet.setValue("Mejoran", Integer.valueOf(14));
+//
+//
+//        final PropertiesManager pmgr = new PropertiesManager();
+//        GraphicsUtils.createPieChart(dataSet, "Distribución según evolución de la puntuación", "/home/mikunis/evol_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
+//    }
+//
+//    @Test
+//    public void testComparacionSegmento() throws Exception {
+//        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+//        dataSet.addValue(17, "No Válido", "Segmento I: Principales");
+//        dataSet.addValue(42, "No Válido", "Segmento II: Organismos");
+//        dataSet.addValue(52, "No Válido", "Segmento III: Temáticos");
+//        dataSet.addValue(57, "No Válido" ,"Segmento IV: Otros");
+//        dataSet.addValue(40, "No Válido", "Segmento V: Sedes");
+//
+//        dataSet.addValue(17, "Prioridad 1","Segmento I: Principales");
+//        dataSet.addValue(27, "Prioridad 1","Segmento II: Organismos");
+//        dataSet.addValue(14, "Prioridad 1","Segmento III: Temáticos");
+//        dataSet.addValue(20, "Prioridad 1","Segmento IV: Otros");
+//        dataSet.addValue(21, "Prioridad 1","Segmento V: Sedes");
+//
+//        dataSet.addValue(66, "Prioridad 1 y 2","Segmento I: Principales");
+//        dataSet.addValue(31, "Prioridad 1 y 2","Segmento II: Organismos");
+//        dataSet.addValue(34, "Prioridad 1 y 2","Segmento III: Temáticos");
+//        dataSet.addValue(23, "Prioridad 1 y 2","Segmento IV: Otros");
+//        dataSet.addValue(39, "Prioridad 1 y 2","Segmento V: Sedes");
+//
+//        final PropertiesManager pmgr = new PropertiesManager();
+//        final String title = "Comparaci\u00F3n de Adecuaci\u00F3n por Segmento";
+//        final String rowTitle = "Puntuaci\u00F3n";
+//        final String noDataMess = "noData";
+//
+//        final ChartForm chartForm = new ChartForm(title, "", rowTitle, dataSet, true, false, false, true, true, false, false, 765, 554, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+//        GraphicsUtils.createStackedBarChart(chartForm, noDataMess, "/home/mikunis/adecuacion_seg.jpg");
+//    }
+//
+//
 
     private void makeCrawl(CrawlerData crawlerData) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();

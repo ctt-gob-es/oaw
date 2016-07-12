@@ -9,6 +9,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
@@ -27,9 +28,11 @@ import java.util.List;
  */
 public abstract class AnonymousResultExportPdf {
 
-    public abstract int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, boolean isBasicService) throws Exception;
+    protected boolean basicService = false;
 
-    public abstract int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, long observatoryType) throws DocumentException;
+    public abstract int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception;
+
+    public abstract int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<ObservatoryEvaluationForm> evaList, long observatoryType) throws DocumentException;
 
     public abstract int createMethodologyChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception;
 
@@ -40,6 +43,14 @@ public abstract class AnonymousResultExportPdf {
     public abstract ScoreForm generateScores(MessageResources messageResources, List<ObservatoryEvaluationForm> evaList) throws Exception;
 
     public abstract String getTitle();
+
+    public boolean isBasicService() {
+        return basicService;
+    }
+
+    public void setBasicService(boolean basicService) {
+        this.basicService = basicService;
+    }
 
     /**
      * Métodos de utilidad
@@ -54,7 +65,7 @@ public abstract class AnonymousResultExportPdf {
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.header2", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.header3", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
-            table.addCell(PDFUtils.createColSpanTableCell(messageResources, "ob.resAnon.intav.report.46.table.2header1", Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
+            table.addCell(PDFUtils.createColSpanTableCell(messageResources.getMessage("ob.resAnon.intav.report.46.table.2header1"), Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
 
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.verification111", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.verification111.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
@@ -87,7 +98,7 @@ public abstract class AnonymousResultExportPdf {
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.verification126.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
 
-            table.addCell(PDFUtils.createColSpanTableCell(messageResources, "ob.resAnon.intav.report.46.table.2header2", Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
+            table.addCell(PDFUtils.createColSpanTableCell(messageResources.getMessage("ob.resAnon.intav.report.46.table.2header2"), Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
 
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.verification211", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(messageResources, "ob.resAnon.intav.report.46.table.verification211.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
@@ -185,18 +196,19 @@ public abstract class AnonymousResultExportPdf {
         return PDFlist;
     }
 
-    protected PdfPTable addURLTable(final HttpServletRequest request, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList) {
+    protected PdfPTable addURLTable(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList) {
         final float[] widths = {30f, 70f};
         final PdfPTable table = new PdfPTable(widths);
         table.setSpacingBefore(ConstantsFont.SPACE_LINE);
         table.setWidthPercentage(100);
 
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
         int i = 1;
         for (ObservatoryEvaluationForm page : primaryReportPageList) {
-            table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("observatory.graphic.score.by.page.label", i++), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
+
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(i++), 2, ' ')), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
             PdfPCell url = new PdfPCell(PDFUtils.addLinkParagraph(page.getUrl(), page.getUrl(), ConstantsFont.noteCellFont));
             table.addCell(url);
         }

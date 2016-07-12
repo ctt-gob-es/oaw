@@ -361,7 +361,7 @@ public abstract class AnonymousResultPdfBuilder {
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.header2", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.header3", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
-            table.addCell(PDFUtils.createColSpanTableCell(resources, "ob.resAnon.intav.report.46.table.2header1", Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
+            table.addCell(PDFUtils.createColSpanTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.2header1"), Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
 
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification111", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification111.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
@@ -394,7 +394,7 @@ public abstract class AnonymousResultPdfBuilder {
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification126.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
 
-            table.addCell(PDFUtils.createColSpanTableCell(resources, "ob.resAnon.intav.report.46.table.2header2", Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
+            table.addCell(PDFUtils.createColSpanTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.2header2"), Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
 
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification211", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification211.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
@@ -456,7 +456,7 @@ public abstract class AnonymousResultPdfBuilder {
 
     protected int addObservatoryScoreSummary(HttpServletRequest request, Document document, IndexEvents index, java.util.List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections, File file, RankingInfo rankingInfo) throws Exception {
         final MessageResources messageResources = CrawlerUtils.getResources(request);
-        final Chapter chapter = PDFUtils.addChapterTitle(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        final Chapter chapter = PDFUtils.addChapterWithTitle(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWord = new ArrayList<String>();
 
@@ -511,7 +511,7 @@ public abstract class AnonymousResultPdfBuilder {
     }
 
     protected int addObservatoryResultsSummary(HttpServletRequest request, Document document, IndexEvents index, java.util.List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, false);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p2"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, false);
         countSections = addResultsByVerification(request, chapter, evaList, countSections, index);

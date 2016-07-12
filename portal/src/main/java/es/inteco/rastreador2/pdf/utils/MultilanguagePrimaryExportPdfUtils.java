@@ -34,8 +34,6 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
-import java.util.List;
-
 public final class MultilanguagePrimaryExportPdfUtils {
 
     private MultilanguagePrimaryExportPdfUtils() {
@@ -90,7 +88,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
             int counter = 1;
             for (AnalysisForm analysisForm : analysisList) {
                 String evaluationTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.score.by.page.label", counter);
-                Chapter chapter = PDFUtils.addChapterTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+                Chapter chapter = PDFUtils.addChapterWithTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
                 Phrase p1 = PDFUtils.createPhrase(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.url") + ": ", ConstantsFont.scoreBoldFont);
                 Phrase p2 = PDFUtils.createPhraseLink(analysisForm.getUrl(), analysisForm.getUrl(), ConstantsFont.scoreFont);
@@ -181,7 +179,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
     private static int addObservatoryScoreSummary(HttpServletRequest request, Document document, IndexEvents index, List<AnalysisForm> analysisList, int numChapter, int countSections, File file) throws Exception {
         List<SiteTranslationInformationForm> infoFormList = MultilanguageUtils.getPortalTraductionInformation(analysisList, true);
         PropertiesManager pmgr = new PropertiesManager();
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
         chapter.add(Chunk.NEWLINE);
 
         String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.multilanguage.global");

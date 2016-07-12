@@ -41,7 +41,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
     }
 
     protected void createIntroductionChapter(final MessageResources resources, final Font titleFont) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
         createChapter1(resources, chapter);
 
         Section section1 = PDFUtils.addSection(resources.getMessage("ob.resAnon.intav.report.chapter11.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
@@ -68,7 +68,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
     @Override
     protected void createObjetiveChapter(final MessageResources resources, final Font titleFont) throws DocumentException {
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
@@ -89,7 +89,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
     @Override
     protected void createMethodologyChapter(final MessageResources resources, final Font titleFont, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList, final boolean isBasicService) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
 
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.3.p1.bold"));
@@ -613,7 +613,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         java.util.List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Constants.COMPLEXITY_SEGMENT_NONE, null);
         Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
 
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapter4.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter4.title"), index, countSections++, numChapter, titleFont);
         createChapter4(resources, chapter);
         chapter.newPage();
 
@@ -826,7 +826,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
     @Override
     protected void createCategoryResultsChapter(final MessageResources resources, Font titleFont, String graphicPath, String execution_id, CategoriaForm category) throws Exception {
         java.util.List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Long.parseLong(category.getId()), null);
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapterCat.title") + " " + category.getName().toUpperCase(), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapterCat.title") + " " + category.getName().toUpperCase(), index, countSections++, numChapter, titleFont);
 
         createSectionCat(resources, chapter, category);
 
@@ -996,7 +996,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA);
         final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioIntavUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV);
 
-        final Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapterEv.title"), index, countSections, numChapter, titleFont);
+        final Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapterEv.title"), index, countSections, numChapter, titleFont);
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.Ev.p1"), ConstantsFont.paragraphFont, chapter);
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.Ev.p2"), ConstantsFont.paragraphFont, chapter);
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.Ev.p3"), ConstantsFont.paragraphFont, chapter);
@@ -1209,7 +1209,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
     @Override
     protected void createSummaryChapter(final MessageResources resources, final Font titleFont) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.summary.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.summary.title"), index, countSections++, numChapter, titleFont);
         //Incluir las conclusiones
         document.add(chapter);
     }
