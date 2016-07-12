@@ -37,9 +37,9 @@ import java.util.Map;
 public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 
     @Override
-    public int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, boolean isBasicService) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
-        createChapter1(request, chapter, isBasicService);
+    public int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception {
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
+        createChapter1(request, chapter);
 
         Section section1 = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter11.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         createSection11(request, section1);
@@ -49,7 +49,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         return countSections;
     }
 
-    protected void createChapter1(HttpServletRequest request, Chapter chapter, boolean isBasicService) {
+    protected void createChapter1(HttpServletRequest request, Chapter chapter) {
         final MessageResources resources = CrawlerUtils.getResources(request);
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.1.p1.bold"));
@@ -63,7 +63,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         boldWords = new ArrayList<String>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.1.p3.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.1.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-        if ( isBasicService ) {
+        if ( isBasicService() ) {
             PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.1.p4"), ConstantsFont.paragraphFont, chapter);
         }
         //PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.1.p5"), ConstantsFont.paragraphFont, chapter);
@@ -81,8 +81,8 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     @Override
-    public int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, long observatoryType) throws DocumentException {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
+    public int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, java.util.List<ObservatoryEvaluationForm> evaList, long observatoryType) throws DocumentException {
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
         createChapter2(request, chapter, observatoryType);
         document.add(chapter);
 
@@ -105,7 +105,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     @Override
     public int createMethodologyChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, java.util.List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception {
         final MessageResources resources = CrawlerUtils.getResources(request);
-        Chapter chapter = PDFUtils.addChapterTitle(resources.getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
 
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.3.p1"), Collections.singletonList(resources.getMessage("ob.resAnon.intav.report.3.p1.bold")), ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
 
@@ -223,7 +223,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         section.newPage();
         if (primaryReportPageList != null) {
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p9"), ConstantsFont.paragraphFont, section);
-            section.add(addURLTable(request, primaryReportPageList));
+            section.add(addURLTable(CrawlerUtils.getResources(request), primaryReportPageList));
             section.newPage();
         }
     }
@@ -811,7 +811,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 
     @Override
     public int createContentChapter(HttpServletRequest request, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("basic.service.content.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);

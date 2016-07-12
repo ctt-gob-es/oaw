@@ -18,7 +18,7 @@ public final class MultilanguageAnonymousResultExportPdfSections {
     }
 
     public static int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws DocumentException, IOException {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
 
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.1.p1.bold"));
@@ -32,14 +32,14 @@ public final class MultilanguageAnonymousResultExportPdfSections {
     }
 
     public static int createObjetiveChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, long observatoryType) throws DocumentException {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
         document.add(chapter);
 
         return countSections;
     }
 
     public static int createMethodologyChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<AnalysisForm> analysisList, long observatoryType, boolean isBasicService) throws Exception {
-        Chapter chapter = PDFUtils.addChapterTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
+        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
 
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.3.p1"), ConstantsFont.paragraphFont, chapter);
 

@@ -19,6 +19,7 @@ public class PDFUtilsTest {
         Assert.assertEquals("prueba_espacio",PDFUtils.formatSeedName("PrUeBa, esPaCio"));
         Assert.assertEquals("prueba_espacio_",PDFUtils.formatSeedName("PrUeBa, esPaCio."));
         Assert.assertEquals("prueba-guion",PDFUtils.formatSeedName("PrUeBa-Guión"));
+        Assert.assertEquals("prueba-guion",PDFUtils.formatSeedName("PRUEBA-GUIÓN"));
     }
 
 }

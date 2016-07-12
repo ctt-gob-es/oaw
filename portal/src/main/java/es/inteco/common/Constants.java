@@ -344,6 +344,10 @@ public interface Constants {
     public static final Color VERDE_O_MP = new Color(106, 130, 54);
     public static final Color VERDE_C_MP = new Color(126, 154, 64);
 
+    public static final Color COLOR_RESULTADO_0_FALLA = new Color(255, 205, 205);
+    public static final Color COLOR_RESULTADO_0_PASA = new Color(245, 225, 100);
+    public static final Color COLOR_RESULTADO_1_PASA = Color.WHITE;
+
     //ATRIBUTES
 
     public static final String NO_DEPENDENCE = "no_dependence";

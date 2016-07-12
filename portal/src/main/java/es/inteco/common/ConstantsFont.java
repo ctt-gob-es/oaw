@@ -69,7 +69,7 @@ public final class ConstantsFont {
     public static final Font descriptionFont = new Font(arial, 10, Font.NORMAL);
     public static final Font strongDescriptionFont = new Font(arial, 10, Font.BOLD);
     public static final Font descriptionFontGreen = new Font(arial, 10, Font.NORMAL, Constants.VERDE_O_MP);
-    public static final Font descriptionFontRed = new Font(arial, 10, Font.NORMAL, Constants.ROJO_INTECO);
+    public static final Font descriptionFontRed = new Font(arial, 10, Font.BOLD, Constants.ROJO_INTECO);
     public static final Font guidelineDescFont = new Font(arial, 12, Font.NORMAL, Constants.ROJO_INTECO);
     public static final Font guidelineDescMPFont = new Font(arial, 12, Font.NORMAL, Constants.ROJO_INTECO);
     public static final Font labelCellFont = new Font(arial, 10, Font.NORMAL, Color.WHITE);

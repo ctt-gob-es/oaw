@@ -178,23 +178,24 @@ public final class AnonymousResultExportPdfSection4 {
         Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
         Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.p1"), ConstantsFont.paragraphFont, section);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.p2"), ConstantsFont.paragraphFont, section);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.p3"), ConstantsFont.paragraphFont, section);
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.45.p1"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.45.p2"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.45.p3"), ConstantsFont.paragraphFont, section);
 
         section.newPage();
-        Section subSection = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
-        PDFUtils.addImageToSection(subSection, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.img1.alt"), 75);
+        Section subSection = PDFUtils.addSection(messageResources.getMessage("ob.resAnon.intav.report.45.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        PDFUtils.addImageToSection(subSection, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.45.img1.alt"), 75);
 
-        PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.tableTitle1"), subSection, 380);
-        section.add(PDFUtils.createTableMod(request, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results1)));
+        PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.45.tableTitle1"), subSection, 380);
+        section.add(PDFUtils.createTableMod(messageResources, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results1)));
 
         section.newPage();
-        Section subSection2 = PDFUtils.addSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
-        PDFUtils.addImageToSection(subSection2, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.img2.alt"), 75);
+        Section subSection2 = PDFUtils.addSection(messageResources.getMessage("ob.resAnon.intav.report.45.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        PDFUtils.addImageToSection(subSection2, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.45.img2.alt"), 75);
 
-        PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.45.tableTitle2"), subSection2, 380);
-        section.add(PDFUtils.createTableMod(request, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2)));
+        PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.45.tableTitle2"), subSection2, 380);
+        section.add(PDFUtils.createTableMod(messageResources, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results2)));
     }
 
     protected static void createSection46(HttpServletRequest request, Section section, String graphicPath, java.util.List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
