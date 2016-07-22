@@ -329,19 +329,15 @@ public final class SemillaDAO {
         ResultSet rs = null;
 
         try {
-            String query = "SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
-                    "SELECT DISTINCT(dominio) FROM cuenta_cliente) ";
-
             if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND nombre like ? ";
-            }
-
-            ps = c.prepareStatement(query);
-
-            ps.setLong(1, type);
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+                ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
+                        "SELECT DISTINCT(dominio) FROM cuenta_cliente)  AND nombre like ?");
                 ps.setString(2, "%" + searchForm.getNombre() + "%");
+            } else {
+                ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
+                        "SELECT DISTINCT(dominio) FROM cuenta_cliente)");
             }
+            ps.setLong(1, type);
 
             rs = ps.executeQuery();
 
@@ -998,7 +994,7 @@ public final class SemillaDAO {
                 ps = c.prepareStatement("UPDATE lista SET nombre = ? WHERE id_lista = ?");
                 for (SemillaForm semillaForm : semillas) {
                     ps.setString(1, semillaForm.getNombre());
-                    ps.setLong(3, semillaForm.getId());
+                    ps.setLong(2, semillaForm.getId());
                     ps.addBatch();
                 }
 

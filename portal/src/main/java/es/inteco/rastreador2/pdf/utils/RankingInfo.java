@@ -2,13 +2,26 @@ package es.inteco.rastreador2.pdf.utils;
 
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 
+import java.math.BigDecimal;
+
 public class RankingInfo {
 
+    private BigDecimal score;
     private int globalRank;
     private int globalSeedsNumber;
     private int categoryRank;
     private int categorySeedsNumber;
     private CategoriaForm categoria;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    private String date;
 
     public int getGlobalRank() {
         return globalRank;
@@ -56,5 +69,13 @@ public class RankingInfo {
 
     public void setCategoria(CategoriaForm categoria) {
         this.categoria = categoria;
+    }
+
+    public BigDecimal getScore() {
+        return score;
+    }
+
+    public void setScore(BigDecimal score) {
+        this.score = score;
     }
 }

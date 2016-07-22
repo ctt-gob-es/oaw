@@ -292,7 +292,7 @@ public final class AnalisisDatos {
         return listAnalysis;
     }
 
-    public static List<Long> getEvaluationIds(long idTracking) {
+    public static List<Long> getEvaluationIdsFromRastreoRealizado(long idRastreoRealizado) {
         List<Long> evaluationIds = new ArrayList<Long>();
 
         Connection conn = null;
@@ -301,7 +301,7 @@ public final class AnalisisDatos {
         try {
             conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE cod_rastreo = ? ORDER by cod_analisis");
-            pstmt.setLong(1, idTracking);
+            pstmt.setLong(1, idRastreoRealizado);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {

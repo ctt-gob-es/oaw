@@ -23,21 +23,22 @@ import java.awt.*;
  */
 public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
 
-    private boolean basicService = false;
-    private static boolean lastPage = false;
-    private String footText = "";
-    private String date = "";
+    private static boolean printFooter = false;
+
+    private final boolean basicService;
+    private final String footText;
+    private final String date;
 
     /**
      * Marks the last page of the document if it is true.
      *
-     * @param lastPageParam Boolean variable that marks the last page.
+     * @param printFooter Boolean variable that marks the last page.
      */
-    public static void setLastPage(final boolean lastPageParam) {
-        lastPage = lastPageParam;
+    public static void setPrintFooter(final boolean printFooter) {
+        ExportPageEventsObservatoryMP.printFooter = printFooter;
     }
 
-    public ExportPageEventsObservatoryMP(String footText, String date, boolean basicService) {
+    public ExportPageEventsObservatoryMP(final String footText, final String date, boolean basicService) {
         this.footText = footText;
         this.date = date;
         this.basicService = basicService;
@@ -53,18 +54,18 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
 
     public final void onEndPage(final PdfWriter w, final Document d) {
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            PdfContentByte cb = w.getDirectContent();
-            BaseFont texto = BaseFont.createFont(pmgr.getValue(Constants.PDF_PROPERTIES, "path.pdf.font"), BaseFont.CP1252, BaseFont.EMBEDDED);
+            final PropertiesManager pmgr = new PropertiesManager();
+            final PdfContentByte cb = w.getDirectContent();
+            final BaseFont baseFont = BaseFont.createFont(pmgr.getValue(Constants.PDF_PROPERTIES, "path.pdf.font"), BaseFont.CP1252, BaseFont.EMBEDDED);
 
             if (!basicService) {
-                createHeader(cb, texto, d);
+                createHeader(cb, baseFont, d);
             } else {
-                createBasicServiceHeader(cb, texto, d);
+                createBasicServiceHeader(cb, baseFont, d);
             }
 
-            if (!lastPage) {
-                createFooter(cb, w, texto, d);
+            if (printFooter) {
+                createFooter(cb, w, baseFont, d);
             }
 
         } catch (Exception e) {
@@ -111,13 +112,6 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
             cb.addImage(logoObservatorio);
             cb.endMarkedContentSequence();
         }
-
-        /*Image logoINTECO = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.inteco.logo"), 70, 45, "Informe de Accesibilidad. Logotipo INTECO.");
-        if (logoINTECO != null) {
-            logoINTECO.setAbsolutePosition(d.getPageSize().getWidth() - logoINTECO.getScaledWidth() - posX, posY);
-            cb.addImage(logoINTECO);
-            cb.endMarkedContentSequence();
-        } //*/
     }
 
     private void createFooter(PdfContentByte cb, PdfWriter w, BaseFont texto, Document d) throws DocumentException {
@@ -129,7 +123,7 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
 
             Image observatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.titlePage.MP"), 600, 98, "Imagen logo Observatorio");
             if (observatorio != null) {
-                observatorio.setAbsolutePosition(0, 180);
+                observatorio.setAbsolutePosition(0, 150);
                 cb.addImage(observatorio);
                 cb.endMarkedContentSequence();
             }

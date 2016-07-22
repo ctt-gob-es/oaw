@@ -1,5 +1,4 @@
-<%@ taglib uri="/tld/inteco.tld" prefix="inteco" %>  
-<%@ include file="/common/taglibs.jsp" %>   
+<%@ include file="/common/taglibs.jsp" %>
 <%@page import="es.inteco.common.Constants"%>
 
 <div id="cabeza">

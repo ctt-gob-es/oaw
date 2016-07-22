@@ -35,7 +35,7 @@ public final class ObservatorioDAO {
     private ObservatorioDAO() {
     }
 
-    public static ObservatorioRealizadoForm getFulfilledObservatory(Connection c, long idObservatory, long idExecution) throws Exception {
+    public static ObservatorioRealizadoForm getFulfilledObservatory(Connection c, long idObservatory, long idObservatoryExecution) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
@@ -49,7 +49,7 @@ public final class ObservatorioDAO {
                     "JOIN observatorio o ON (oreal.id_observatorio = o.id_observatorio) " +
                     "WHERE oreal.id_observatorio = ? AND oreal.id = ?");
             ps.setLong(1, idObservatory);
-            ps.setLong(2, idExecution);
+            ps.setLong(2, idObservatoryExecution);
 
             rs = ps.executeQuery();
 
@@ -997,7 +997,7 @@ public final class ObservatorioDAO {
 
         try {
             ps = c.prepareStatement("SELECT * FROM observatorio o JOIN observatorios_realizados ore " +
-                    "ON (o.id_observatorio = ore.id_observatorio) WHERE id = ?;");
+                    "ON (o.id_observatorio = ore.id_observatorio) WHERE ore.id = ?;");
             ps.setLong(1, idObservatorioExecution);
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -1587,7 +1587,7 @@ public final class ObservatorioDAO {
         insertarRastreoForm.setLenguaje(modificarObservatorioForm.getLenguaje());
         List<Long> idCrawlerList = getCrawlerFromObservatory(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
         for (Long idCrawler : idCrawlerList) {
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, RastreoDAO.getSeedByCrawler(c, idCrawler));
+            SemillaForm semillaForm = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idCrawler));
             insertarRastreoForm.setInDirectory(semillaForm.isInDirectory());
             insertarRastreoForm.setCodigo(modificarObservatorioForm.getNombre() + "-" + semillaForm.getNombre());
             insertarRastreoForm.setId_semilla(semillaForm.getId());
@@ -1825,4 +1825,37 @@ public final class ObservatorioDAO {
         }
     }
 
+    /**
+     * Dada una ejecución de un observatorio obtiene el identificador de la ejecución inmediatemante previa del mismo observatorio
+     *
+     * @param c                      Conexión a la base de datos
+     * @param idObservatoryExecution Identificador de la iteración (ejecución) de un observatorio
+     * @return El identificador de la iteración anterior de ese observatorio o null si no existe
+     * @throws Exception
+     */
+    public static Long getPreviousObservatoryExecution(final Connection c, final Long idObservatoryExecution) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            final long idObservatory = getObservatoryFormFromExecution(c, idObservatoryExecution).getId();
+            ps = c.prepareStatement("SELECT id FROM observatorios_realizados " +
+                    "WHERE id_observatorio = ? " +
+                    "AND id<>? " +
+                    "AND estado=0 " +
+                    "ORDER BY fecha DESC");
+            ps.setLong(1, idObservatory);
+            ps.setLong(2, idObservatoryExecution);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                Logger.putLog("getPreviousObservatoryExecution: " + rs.getLong("id") + " (" + idObservatoryExecution +")", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR);
+                return rs.getLong("id");
+            }
+        } catch (Exception e) {
+            Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+        } finally {
+            DAOUtils.closeQueries(ps, rs);
+        }
+        Logger.putLog("getPreviousObservatoryExecution: null (" + idObservatoryExecution +")", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR);
+        return null;
+    }
 }

@@ -1,9 +1,12 @@
 package es.inteco.rastreador2.utils;
 
+import java.math.BigDecimal;
+
 public class GraphicData {
 
     private String adecuationLevel;
     private String percentageP;
+    private BigDecimal rawPercentage = BigDecimal.ZERO;
     private String numberP;
 
     public String getAdecuationLevel() {
@@ -28,5 +31,13 @@ public class GraphicData {
 
     public void setNumberP(String numberP) {
         this.numberP = numberP;
+    }
+
+    public BigDecimal getRawPercentage() {
+        return rawPercentage;
+    }
+
+    public void setRawPercentage(BigDecimal rawPercentage) {
+        this.rawPercentage = rawPercentage;
     }
 }

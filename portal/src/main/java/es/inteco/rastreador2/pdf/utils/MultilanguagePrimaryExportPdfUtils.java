@@ -70,7 +70,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.multilanguage.title") + " " + seed.toUpperCase(), "", ConstantsFont.documentTitleMPFont);
+            PDFUtils.addCoverPage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.multilanguage.title") + " " + seed.toUpperCase(), "");
 
             int numChapter = 1;
             int countSections = 1;
@@ -88,14 +88,14 @@ public final class MultilanguagePrimaryExportPdfUtils {
             int counter = 1;
             for (AnalysisForm analysisForm : analysisList) {
                 String evaluationTitle = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.score.by.page.label", counter);
-                Chapter chapter = PDFUtils.addChapterWithTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+                Chapter chapter = PDFUtils.createChapterWithTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
                 Phrase p1 = PDFUtils.createPhrase(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.url") + ": ", ConstantsFont.scoreBoldFont);
                 Phrase p2 = PDFUtils.createPhraseLink(analysisForm.getUrl(), analysisForm.getUrl(), ConstantsFont.scoreFont);
                 Paragraph p = new Paragraph();
                 p.add(p1);
                 p.add(p2);
-                p.setSpacingBefore(ConstantsFont.SPACE_LINE);
+                p.setSpacingBefore(ConstantsFont.LINE_SPACE);
                 chapter.add(p);
 
                 chapter.add(createTable(analysisForm));
@@ -106,7 +106,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
             }
 
             //Ponemos la variable a true para que no se escriba el footer en el índice
-            IndexUtils.createIndex(writer, document, request, index, false, ConstantsFont.chapterTitleMPFont);
+            IndexUtils.createIndex(writer, document, request, index, ConstantsFont.chapterTitleMPFont);
             ExportPageEventsObservatoryMultilanguage.setLastPage(false);
         } catch (DocumentException e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -142,9 +142,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
 
         for (LanguageFoundForm languageFoundForm : analysisForm.getLanguagesFound()) {
             table.addCell(PDFUtils.createTableCell(languageFoundForm.getLanguage().getName(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
-
-            PdfPCell url = new PdfPCell(PDFUtils.addLinkParagraph(languageFoundForm.getHref(), languageFoundForm.getHref(), ConstantsFont.noteCellFont));
-            table.addCell(url);
+            table.addCell(PDFUtils.createLinkedTableCell(languageFoundForm.getHref(), languageFoundForm.getHref(),Color.WHITE, Element.ALIGN_LEFT, 0));
 
             table.addCell(PDFUtils.createTableCell(languageFoundForm.getDeclarationLang(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
             if (languageFoundForm.getLanguageSuspected() != null) {
@@ -179,41 +177,41 @@ public final class MultilanguagePrimaryExportPdfUtils {
     private static int addObservatoryScoreSummary(HttpServletRequest request, Document document, IndexEvents index, List<AnalysisForm> analysisList, int numChapter, int countSections, File file) throws Exception {
         List<SiteTranslationInformationForm> infoFormList = MultilanguageUtils.getPortalTraductionInformation(analysisList, true);
         PropertiesManager pmgr = new PropertiesManager();
-        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
         chapter.add(Chunk.NEWLINE);
 
         String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.multilanguage.global");
-        Section section1 = PDFUtils.addSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section1 = PDFUtils.createSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         String filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test.jpg";
         List<LabelValueBean> languagesGraphicResults = ResultadosAnonimosObservatorioMultilanguageUtils.getLanguagesGraphic(request, title, filePath, analysisList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
         Image image = PDFUtils.createImage(filePath, null);
         image.scalePercent(60);
         image.setAlignment(Element.ALIGN_CENTER);
-        image.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        image.setSpacingBefore(ConstantsFont.LINE_SPACE);
         section1.add(image);
         section1.add(createResultsTable2Columns(request, languagesGraphicResults));
         section1.newPage();
 
         title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.multilanguage.global.stacked");
-        Section section2 = PDFUtils.addSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section2 = PDFUtils.createSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test2.jpg";
         List<ValidationLanguageForm> languagesValidity = ResultadosAnonimosObservatorioMultilanguageUtils.getLanguagesValidityGraphic(request, title, filePath, infoFormList, Constants.MULTILANGUAGE_TOTAL_VALIDATION);
         image = PDFUtils.createImage(filePath, null);
         image.scalePercent(60);
         image.setAlignment(Element.ALIGN_CENTER);
-        image.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        image.setSpacingBefore(ConstantsFont.LINE_SPACE);
         section2.add(image);
         section2.add(createResultsTable3Columns(request, languagesValidity));
         section2.newPage();
 
         title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.multilanguage.global.stacked.declaration");
-        Section section3 = PDFUtils.addSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section3 = PDFUtils.createSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test3.jpg";
         languagesValidity = ResultadosAnonimosObservatorioMultilanguageUtils.getLanguagesValidityGraphic(request, title, filePath, infoFormList, Constants.MULTILANGUAGE_DECLARATION_VALIDATION);
         image = PDFUtils.createImage(filePath, null);
         image.scalePercent(60);
         image.setAlignment(Element.ALIGN_CENTER);
-        image.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        image.setSpacingBefore(ConstantsFont.LINE_SPACE);
         section3.add(image);
         section3.add(createResultsTable3Columns(request, languagesValidity));
         section3.newPage();
@@ -221,12 +219,12 @@ public final class MultilanguagePrimaryExportPdfUtils {
         title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.multilanguage.global.stacked.translation");
 
         filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test4.jpg";
-        Section section4 = PDFUtils.addSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section4 = PDFUtils.createSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         languagesValidity = ResultadosAnonimosObservatorioMultilanguageUtils.getLanguagesValidityGraphic(request, title, filePath, infoFormList, Constants.MULTILANGUAGE_TRANSLATION_VALIDATION);
         image = PDFUtils.createImage(filePath, null);
         image.scalePercent(60);
         image.setAlignment(Element.ALIGN_CENTER);
-        image.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        image.setSpacingBefore(ConstantsFont.LINE_SPACE);
         section4.add(image);
         section4.add(createResultsTable3Columns(request, languagesValidity));
         section4.newPage();
@@ -246,7 +244,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
             table.addCell(PDFUtils.createTableCell(validity.getGreenPercentage(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(validity.getRedPercentage(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
 
         return table;
     }
@@ -260,7 +258,7 @@ public final class MultilanguagePrimaryExportPdfUtils {
             table.addCell(PDFUtils.createTableCell(lvb.getLabel(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(lvb.getValue(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
 
         return table;
     }

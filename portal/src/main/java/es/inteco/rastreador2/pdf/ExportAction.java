@@ -122,7 +122,7 @@ public class ExportAction extends Action {
             checkFile = new File(path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.file.intav.name"));
         }
 
-        List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idTracking);
+        List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idTracking);
         if (evaluationIds != null && !evaluationIds.isEmpty()) {
             // Si el pdf no ha sido creado lo creamos
             if (request.getParameter(Constants.EXPORT_PDF_REGENERATE) != null || !checkFile.exists()) {
@@ -161,7 +161,7 @@ public class ExportAction extends Action {
             final List<Long> trackingsIds = RastreoDAO.getEvolutionExecutedCrawlerIds(c, idRastreo, idTracking, vrf.getId_cartucho());
             final Map<Long, List<Long>> evaluationIdsMap = new HashMap<Long, List<Long>>();
             for (Long idTrack : trackingsIds) {
-                List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idTrack);
+                List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idTrack);
                 evaluationIdsMap.put(idTrack, evaluationIds);
             }
 

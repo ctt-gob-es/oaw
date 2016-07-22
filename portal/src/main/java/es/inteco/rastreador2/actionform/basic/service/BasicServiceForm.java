@@ -1,5 +1,6 @@
 package es.inteco.rastreador2.actionform.basic.service;
 
+import es.inteco.common.Constants;
 import es.inteco.common.utils.StringUtils;
 import org.apache.struts.validator.ValidatorForm;
 
@@ -117,5 +118,19 @@ public class BasicServiceForm extends ValidatorForm {
 
     public boolean isContentAnalysis() {
         return StringUtils.isEmpty(this.domain) && StringUtils.isNotEmpty(this.content);
+    }
+
+    public String reportToString() {
+        if (Constants.REPORT_OBSERVATORY.equals(report) || Constants.REPORT_OBSERVATORY_FILE.equals(report)) {
+            return "Observatorio UNE 2004";
+        } else if (Constants.REPORT_OBSERVATORY_2.equals(report)) {
+            return "Observatorio UNE 2012";
+        } else if ("observatorio-1-nobroken".equals(report)) {
+            return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
+        } else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(report)) {
+            return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
+        } else {
+            return report;
+        }
     }
 }

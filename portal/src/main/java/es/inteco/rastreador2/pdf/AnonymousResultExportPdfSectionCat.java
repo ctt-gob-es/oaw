@@ -31,8 +31,8 @@ public final class AnonymousResultExportPdfSectionCat {
     }
 
     protected static void createChapter4(HttpServletRequest request, Chapter chapter) {
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p1"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p2"), ConstantsFont.paragraphFont, chapter);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p1"), ConstantsFont.PARAGRAPH, chapter);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.4.p2"), ConstantsFont.PARAGRAPH, chapter);
     }
 
     //**************************************************************************************************
@@ -41,12 +41,12 @@ public final class AnonymousResultExportPdfSectionCat {
 
 
     protected static void createSectionCat(HttpServletRequest request, Section section, CategoriaForm category) {
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat.p1", category.getName()), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat.p1", category.getName()), ConstantsFont.PARAGRAPH, section);
     }
 
     protected static void createSectionCat1(HttpServletRequest request, Section section, String graphicPath, String execution_id, CategoriaForm category) throws Exception {
         try {
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat1.p1"), ConstantsFont.paragraphFont, section);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat1.p1"), ConstantsFont.PARAGRAPH, section);
 
             List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(execution_id, Long.parseLong(category.getId()), null);
             Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
@@ -66,7 +66,7 @@ public final class AnonymousResultExportPdfSectionCat {
                 table.addCell(PDFUtils.createTableCell(label.getPercentageP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
                 table.addCell(PDFUtils.createTableCell(label.getNumberP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             }
-            table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+            table.setSpacingBefore(ConstantsFont.LINE_SPACE);
             section.add(table);
 
             //AnonymousResultExportPdfVariableText.createVTextCat1(request, labels, section);
@@ -77,14 +77,14 @@ public final class AnonymousResultExportPdfSectionCat {
 
     protected static void createSectionCat2(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category) throws Exception {
         try {
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p1"), ConstantsFont.paragraphFont, section);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p1"), ConstantsFont.PARAGRAPH, section);
 
             Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
             SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p12.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
             anchorMap.put(1, anchor);
-            section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p12"), anchorMap, ConstantsFont.paragraphFont));
+            section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p12"), anchorMap, ConstantsFont.PARAGRAPH));
 
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p13"), ConstantsFont.paragraphFont, section);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p13"), ConstantsFont.PARAGRAPH, section);
 
             PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.mark.allocation.segment.name", category.getId()) + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.img.alt" + category.getName()), 85);
 
@@ -104,7 +104,7 @@ public final class AnonymousResultExportPdfSectionCat {
 					table.addCell(PDFUtils.createTableCell(siteForm.getLevel(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
 				}
 				
-				table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+				table.setSpacingBefore(ConstantsFont.LINE_SPACE);
 				section.add(table);
 				
 				section.newPage();
@@ -114,10 +114,10 @@ public final class AnonymousResultExportPdfSectionCat {
             Logger.putLog("Fallo al crear la sección cat2 de la categoría: " + category.getId(), AnonymousResultExportPdfSectionCat.class, Logger.LOG_LEVEL_ERROR, e);
         }
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p15"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p16"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p17"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p18"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p15"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p16"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p17"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat2.p18"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
         //java.util.List<ObservatorySiteEvaluationForm> result = ResultadosAnonimosObservatorioIntavUtils.getSitesListByLevel(conn, pageExecutionList, idObservatory);
         //java.util.List<ObservatorySiteEvaluationForm> result2 = ResultadosAnonimosObservatorioIntavUtils.createOrderFormLevel(result);
 
@@ -133,16 +133,16 @@ public final class AnonymousResultExportPdfSectionCat {
             ArrayList<String> boldWords = new ArrayList<String>();
 
             boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.Cat.segment") + " " + category.getName());
-            section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.Cat3.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+            section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.Cat3.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
             Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
             SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.Cat3.p2.anchor"), messageResources.getMessage("anchor.PMV"), false, ConstantsFont.paragraphAnchorFont);
             anchorMap.put(1, anchor);
-            section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.Cat3.p2"), anchorMap, ConstantsFont.paragraphFont));
+            section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.Cat3.p2"), anchorMap, ConstantsFont.PARAGRAPH));
 
             section.newPage();
 
-            Section subSection = PDFUtils.addSection(messageResources.getMessage("ob.resAnon.intav.report.Cat3.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+            Section subSection = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.Cat3.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
             PDFUtils.addImageToSection(subSection, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getId() + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.Cat3.img.alt", category.getName()), 75);
 
             java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
@@ -154,7 +154,7 @@ public final class AnonymousResultExportPdfSectionCat {
             PdfPTable table = PDFUtils.createResultTable(labelsL1, headers);
             subSection.add(table);
 
-            Section subSection2 = PDFUtils.addSection(messageResources.getMessage("ob.resAnon.intav.report.Cat3.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+            Section subSection2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.Cat3.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
             PDFUtils.addImageToSection(subSection2, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getId() + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.Cat3.img.alt.2", category.getName()), 75);
 
             java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
@@ -167,16 +167,16 @@ public final class AnonymousResultExportPdfSectionCat {
 
     protected static void createSectionCat4(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category) throws Exception {
         final MessageResources messageResources = CrawlerUtils.getResources(request);
-        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Cat4.p1"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
-        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Cat4.p2"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
-        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Cat4.p3"), ConstantsFont.paragraphFont, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Cat4.p1"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Cat4.p2"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Cat4.p3"), ConstantsFont.PARAGRAPH, section, Element.ALIGN_JUSTIFIED, true, false);
 
         section.newPage();
 
         Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
         Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
 
-        Section subSection = PDFUtils.addSection(messageResources.getMessage("ob.resAnon.intav.report.Cat4.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        Section subSection = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.Cat4.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
         PDFUtils.addImageToSection(subSection, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + category.getId() + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.Cat4.img1.alt", category.getName()), 70);
 
         PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.Cat4.tableTitle1", category.getName()), subSection, 420);
@@ -184,7 +184,7 @@ public final class AnonymousResultExportPdfSectionCat {
         section.add(PDFUtils.createTableMod(messageResources, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results1)));
         section.newPage();
 
-        Section subSection2 = PDFUtils.addSection(messageResources.getMessage("ob.resAnon.intav.report.Cat4.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        Section subSection2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.Cat4.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
         PDFUtils.addImageToSection(subSection2, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + category.getId() + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.Cat4.img2.alt", category.getName()), 70);
 
         PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.Cat4.tableTitle2", category.getName()), subSection2, 420);
@@ -194,8 +194,8 @@ public final class AnonymousResultExportPdfSectionCat {
     protected static void createSectionCat5(HttpServletRequest request, Section section, String graphicPath, List<ObservatoryEvaluationForm> pageExecutionList, CategoriaForm category) throws Exception {
         Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
 
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat5.p1"), ConstantsFont.paragraphFont, section);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat5.p2"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat5.p1"), ConstantsFont.PARAGRAPH, section);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat5.p2"), ConstantsFont.PARAGRAPH, section);
 
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspect.mid.name") + category.getId() + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Cat5.img.alt", category.getName()), 75);
 

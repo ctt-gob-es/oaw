@@ -178,16 +178,16 @@ public final class ObservatoryUtils {
         for (ResultadoSemillaForm seedResult : seedsResults) {
             final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
-                int cont = 0;
+                int numPages = 0;
                 BigDecimal avgScore = BigDecimal.ZERO;
                 for (ObservatoryEvaluationForm observatory : observatories) {
                     if (observatory.getCrawlerExecutionId() == seedFulfilledCrawlings.get(0).getId()) {
-                        cont++;
+                        numPages++;
                         avgScore = avgScore.add(observatory.getScore());
                     }
                 }
-                if (cont != 0) {
-                    seedResult.setScore(avgScore.divide(BigDecimal.valueOf(cont), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+                if (numPages != 0) {
+                    seedResult.setScore(avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
                 }
             }
         }

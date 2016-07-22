@@ -17,23 +17,23 @@ public final class AnonymousResultExportPdfSection2 {
     protected static void createChapter2(HttpServletRequest request, Chapter chapter, long observatoryType) {
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1.bold"));
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         if (observatoryType == Constants.OBSERVATORY_TYPE_PRENSA) {
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2.PRENSA"), ConstantsFont.paragraphFont, chapter);
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3.PRENSA"), ConstantsFont.paragraphFont, chapter);
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.PRENSA"), ConstantsFont.paragraphFont, chapter);
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
-            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.PRENSA"), ConstantsFont.paragraphFont, chapter);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2.PRENSA"), ConstantsFont.PARAGRAPH, chapter);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3.PRENSA"), ConstantsFont.PARAGRAPH, chapter);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.PRENSA"), ConstantsFont.PARAGRAPH, chapter);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.PARAGRAPH, chapter);
+            PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.PRENSA"), ConstantsFont.PARAGRAPH, chapter);
         } else {
-            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2"), ConstantsFont.paragraphFont, chapter);
-            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.paragraphFont, chapter);
+            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p2"), ConstantsFont.PARAGRAPH, chapter);
+            //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p3"), ConstantsFont.PARAGRAPH, chapter);
 
             if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-                //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.paragraphFont, chapter);
-                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.paragraphFont, chapter);
+                //PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.AGE"), ConstantsFont.PARAGRAPH, chapter);
+                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.PARAGRAPH, chapter);
             } else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
-                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.paragraphFont, chapter);
-                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.CCAA"), ConstantsFont.paragraphFont, chapter);
+                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.PARAGRAPH, chapter);
+                PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p5.CCAA"), ConstantsFont.PARAGRAPH, chapter);
             }
         }
     }

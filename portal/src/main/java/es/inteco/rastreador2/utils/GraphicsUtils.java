@@ -265,6 +265,8 @@ public final class GraphicsUtils {
             chart = ChartFactory.createBarChart(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
                     observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isLegend(), true, false);
         }
+//        chart = ChartFactory.createLineChart(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(),observatoryGraphicsForm.getRowTitle(),
+//                observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isLegend(), true, false);
 
         formatLegend(chart);
 
@@ -373,7 +375,7 @@ public final class GraphicsUtils {
             colors = getColors("chart.observatory.graphic.intav.colors");
         }
 
-        BarRenderer renderer = (BarRenderer) plot.getRenderer();
+        CategoryItemRenderer renderer = plot.getRenderer();
         if (chartForm.isLegend()) {
             if (chartForm.isFixedLegend()) {
                 plot.setFixedLegendItems(generateOnePixelLegend(messageResources));

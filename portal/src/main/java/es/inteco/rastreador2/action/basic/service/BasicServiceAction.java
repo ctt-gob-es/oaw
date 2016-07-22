@@ -156,7 +156,7 @@ public class BasicServiceAction extends Action {
                 } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
                     Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
                     final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
-                    PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
+                    PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(basicServiceForm), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
                 }
 
                 // Comprimimos el fichero

@@ -245,7 +245,8 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         labelValue = new GraphicData();
         labelValue.setAdecuationLevel(resources.getMessage("resultados.anonimos.porc.portales.aa"));
         if (totalPort > 0) {
-            labelValue.setPercentageP(String.valueOf((new BigDecimal(result.get(Constants.OBS_AA)).multiply(new BigDecimal(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP))).replace(".00", "") + "%");
+            labelValue.setRawPercentage(new BigDecimal(result.get(Constants.OBS_AA)).multiply(new BigDecimal(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP));
+            labelValue.setPercentageP(String.valueOf(labelValue.getRawPercentage()).replace(".00", "") + "%");
         }
         labelValue.setNumberP(String.valueOf((new BigDecimal(result.get(Constants.OBS_AA)))));
         labelValueList.add(labelValue);
@@ -253,7 +254,8 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         labelValue = new GraphicData();
         labelValue.setAdecuationLevel(resources.getMessage("resultados.anonimos.porc.portales.a"));
         if (totalPort > 0) {
-            labelValue.setPercentageP(String.valueOf((new BigDecimal(result.get(Constants.OBS_A)).multiply(new BigDecimal(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP))).replace(".00", "") + "%");
+            labelValue.setRawPercentage(new BigDecimal(result.get(Constants.OBS_A)).multiply(new BigDecimal(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP));
+            labelValue.setPercentageP(String.valueOf(labelValue.getRawPercentage()).replace(".00", "") + "%");
         }
         labelValue.setNumberP(String.valueOf((new BigDecimal(result.get(Constants.OBS_A)))));
         labelValueList.add(labelValue);
@@ -261,7 +263,8 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         labelValue = new GraphicData();
         labelValue.setAdecuationLevel(resources.getMessage("resultados.anonimos.porc.portales.nv"));
         if (totalPort > 0) {
-            labelValue.setPercentageP(String.valueOf((new BigDecimal(result.get(Constants.OBS_NV)).multiply(new BigDecimal(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP))).replace(".00", "") + "%");
+            labelValue.setRawPercentage(new BigDecimal(result.get(Constants.OBS_NV)).multiply(new BigDecimal(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP));
+            labelValue.setPercentageP(String.valueOf(labelValue.getRawPercentage()).replace(".00", "") + "%");
         }
         labelValue.setNumberP(String.valueOf((new BigDecimal(result.get(Constants.OBS_NV)))));
         labelValueList.add(labelValue);
@@ -423,7 +426,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<LabelValueBean> infoLevelIVerificationMidsComparison(final MessageResources resources,
-                                                                            Map<String, BigDecimal> result) throws Exception {
+                                                                            final Map<String, BigDecimal> result) {
 
         List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
@@ -551,7 +554,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(final MessageResources resources,
-                                                                             final Map<String, BigDecimal> result) throws Exception {
+                                                                             final Map<String, BigDecimal> result) {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
         LabelValueBean labelValue = new LabelValueBean();

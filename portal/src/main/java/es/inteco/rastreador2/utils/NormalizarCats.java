@@ -42,16 +42,8 @@ public final class NormalizarCats {
         } catch (SQLException e) {
             Logger.putLog("EXCEPCIÓN accediendo a la BD: " + e.getMessage(), NormalizarCats.class, Logger.LOG_LEVEL_ERROR);
         } finally {
-            try {
-                DAOUtils.closeQueries(s, rs);
-            } catch (SQLException e) {
-                Logger.putLog("EXCEPCIÓN accediendo a la BD: " + e.getMessage(), NormalizarCats.class, Logger.LOG_LEVEL_ERROR);
-            }
-            try {
-                DAOUtils.closeQueries(s2, null);
-            } catch (SQLException e) {
-                Logger.putLog("EXCEPCIÓN accediendo a la BD: " + e.getMessage(), NormalizarCats.class, Logger.LOG_LEVEL_ERROR);
-            }
+            DAOUtils.closeQueries(s, rs);
+            DAOUtils.closeQueries(s2, null);
             DataBaseManager.closeConnection(c);
         }
     }

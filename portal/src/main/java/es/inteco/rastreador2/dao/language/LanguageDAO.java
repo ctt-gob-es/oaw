@@ -36,11 +36,7 @@ public final class LanguageDAO {
         } catch (Exception e) {
             Logger.putLog("Exception: ", LanguageDAO.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
-            try {
-                DAOUtils.closeQueries(ps, rs);
-            } catch (SQLException e) {
-                Logger.putLog("Exception: ", LanguageDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            }
+            DAOUtils.closeQueries(ps, rs);
         }
 
         return lenguajeFormList;

@@ -344,9 +344,12 @@ public interface Constants {
     public static final Color VERDE_O_MP = new Color(106, 130, 54);
     public static final Color VERDE_C_MP = new Color(126, 154, 64);
 
-    public static final Color COLOR_RESULTADO_0_FALLA = new Color(255, 205, 205);
-    public static final Color COLOR_RESULTADO_0_PASA = new Color(245, 225, 100);
+    public static final Color COLOR_RESULTADO_0_FALLA = new Color(225, 18, 13);
+    //public static final Color COLOR_RESULTADO_0_PASA = new Color(247, 150, 70);
+    public static final Color COLOR_RESULTADO_0_PASA = NARANJA_MP;// ConstantsFont.WARNING_COLOR;
     public static final Color COLOR_RESULTADO_1_PASA = Color.WHITE;
+
+    Color GRIS_MUY_CLARO = new Color(245, 245, 245);
 
     //ATRIBUTES
 

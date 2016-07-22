@@ -43,6 +43,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
 
 public final class BasicServiceExport {
 
@@ -161,7 +162,7 @@ public final class BasicServiceExport {
         return reportCompressFile;
     }
 
-    public static void createPdf(final MessageResources messageResources, List<Long> evaluationIds, BasicServiceForm basicServiceForm, Long idCrawling, String pdfPath) throws Exception {
+    private static void createPdf(final MessageResources messageResources, List<Long> evaluationIds, BasicServiceForm basicServiceForm, Long idCrawling, String pdfPath) throws Exception {
         final Map<String, List<EvaluationForm>> resultData = getResultData(evaluationIds, basicServiceForm.getLanguage());
 
         File file = new File(pdfPath);
@@ -193,23 +194,15 @@ public final class BasicServiceExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, messageResources.getMessage("pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), messageResources.getMessage("pdf.accessibility.bs.subtitle"), ConstantsFont.documentTitleMPFont);
+            PDFUtils.addCoverPage(document, messageResources.getMessage("pdf.accessibility.bs.title") + basicServiceForm.getName().toUpperCase(), messageResources.getMessage("pdf.accessibility.bs.subtitle"));
 
             int numChapter = 1;
             int countSections = 1;
 
-            final Chapter introChapter = PDFUtils.addChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.introduction"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
-
-//            PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p1"), ConstantsFont.paragraphFont, introChapter);
-//            PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p2"), ConstantsFont.paragraphFont, introChapter);
-//            PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.p3"), ConstantsFont.paragraphFont, introChapter);
+            final Chapter introChapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.introduction"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
             countSections = createSection11(messageResources, index, introChapter, countSections, evaList);
             countSections++;
-/*            countSections = createSection12(messageResources, index, introChapter, countSections);
-            countSections++;
-            countSections = createSection13(messageResources, index, introChapter, countSections);
-            countSections++;//*/
 
             document.add(introChapter);
             numChapter++;
@@ -232,7 +225,7 @@ public final class BasicServiceExport {
             int counter = 1;
             for (EvaluationForm evaluationForm : evaList) {
                 final String chapterTitle = messageResources.getMessage("basic.service.url.title", counter++);
-                final Chapter chapter = PDFUtils.addChapterWithTitle(chapterTitle.toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont, false);
+                final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle.toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont, false);
 
                 final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
                 final String url = evaluationForm.getUrl();
@@ -245,7 +238,7 @@ public final class BasicServiceExport {
                     urlParagraph.add(p1);
                     urlParagraph.add(p2);
                 }
-                urlParagraph.setSpacingBefore(ConstantsFont.SPACE_LINE);
+                urlParagraph.setSpacingBefore(ConstantsFont.LINE_SPACE);
                 chapter.add(urlParagraph);
 
                 if (title != null) {
@@ -277,10 +270,10 @@ public final class BasicServiceExport {
                 chapter.newPage();
 
                 for (PriorityForm priority : evaluationForm.getPriorities()) {
-                    Section section = PDFUtils.addSection(getPriorityName(messageResources, priority), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+                    Section section = PDFUtils.createSection(getPriorityName(messageResources, priority), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
                     for (GuidelineForm guideline : priority.getGuidelines()) {
                         for (PautaForm pautaForm : guideline.getPautas()) {
-                            Section subSection = PDFUtils.addSection(messageResources.getMessage(pautaForm.getName()), null, ConstantsFont.guidelineDescMPFont, section, -1, 1);
+                            Section subSection = PDFUtils.createSection(messageResources.getMessage(pautaForm.getName()), null, ConstantsFont.guidelineDescMPFont, section, -1, 1);
                             subSection.setNumberDepth(0);
                             for (ProblemForm problem : pautaForm.getProblems()) {
                                 String description = "";
@@ -325,7 +318,7 @@ public final class BasicServiceExport {
                 createContentChapter(messageResources, document, basicServiceForm.getContent(), index, numChapter, countSections);
             }
 
-            IndexUtils.createIndex(writer, document, messageResources, index, false, ConstantsFont.chapterTitleMPFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleMPFont);
             ExportPageEventsObservatoryBS.setLastPage(false);
 
             FileUtils.removeFile(chartsTempPath);
@@ -385,15 +378,15 @@ public final class BasicServiceExport {
                 for (PautaForm pautaForm : guideline.getPautas()) {
                     for (ProblemForm problemForm : pautaForm.getProblems()) {
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high")) && !hasProblem) {
-                            problemList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
+                            problemList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.listSymbol2, false));
                             hasProblem = true;
                         }
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium")) && !hasWarning) {
-                            warningList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
+                            warningList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.listSymbol2, false));
                             hasWarning = true;
                         }
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell")) && !hasInfos) {
-                            infoList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.paragraphFont, ConstantsFont.listSymbol2, false));
+                            infoList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.listSymbol2, false));
                             hasInfos = true;
                         }
                     }
@@ -443,23 +436,23 @@ public final class BasicServiceExport {
     }
 
     private static int createSection11(final MessageResources messageResources, final IndexEvents index, final Chapter chapter, final int countSections, final List<EvaluationForm> evalFormList) throws Exception {
-        final Section section = PDFUtils.addSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
+        final Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
 
         final ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(messageResources.getMessage("basic.service.introduction.1.p1.bold"));
-        section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("basic.service.introduction.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("basic.service.introduction.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.1.p2"), ConstantsFont.paragraphFont, section);
+        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.1.p2"), ConstantsFont.PARAGRAPH, section);
 
         section.add(addURLTable(messageResources, evalFormList));
 
         return countSections;
     }
 
-    public static PdfPTable addURLTable(final MessageResources messageResources, final java.util.List<EvaluationForm> primaryReportPageList) {
+    private static PdfPTable addURLTable(final MessageResources messageResources, final java.util.List<EvaluationForm> primaryReportPageList) {
         final float[] widths = {30f, 70f};
         final PdfPTable table = new PdfPTable(widths);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
         table.setWidthPercentage(100);
 
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("basic.service.introduction.1.table.header1"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -468,90 +461,16 @@ public final class BasicServiceExport {
         int i = 1;
         for (EvaluationForm page : primaryReportPageList) {
             table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatory.graphic.score.by.page.label", i++), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
-            final PdfPCell url = new PdfPCell(PDFUtils.addLinkParagraph(page.getUrl(), page.getUrl(), ConstantsFont.noteCellFont));
-            table.addCell(url);
+            table.addCell(PDFUtils.createLinkedTableCell(page.getUrl(), page.getUrl(),Color.WHITE, Element.ALIGN_LEFT, 0));
         }
 
         return table;
     }
 
-    private static int createSection12(final MessageResources messageResources, final IndexEvents index, final Chapter chapter, final int countSections) throws Exception {
-        final Section section = PDFUtils.addSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
-
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.2.p1"), ConstantsFont.paragraphFont, section);
-
-        final com.lowagie.text.List list = new com.lowagie.text.List();
-
-        final ArrayList<String> boldWords = new ArrayList<String>();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.2.p2.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.2.p2"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.2.p3.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.2.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.2.p4.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.2.p4"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-        section.add(list);
-
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.2.p5"), ConstantsFont.paragraphFont, section);
-
-        return countSections;
-    }
-
-    private static int createSection13(final MessageResources messageResources, final IndexEvents index, final Chapter chapter, final int countSections) throws Exception {
-        int numSection = countSections;
-        final Section section = PDFUtils.addSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.3"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
-
-        final ArrayList<String> boldWords = new ArrayList<String>(3);
-        boldWords.add(messageResources.getMessage("basic.service.introduction.3.p1.bold1"));
-        boldWords.add(messageResources.getMessage("basic.service.introduction.3.p1.bold2"));
-        section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("basic.service.introduction.3.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        Section section1 = PDFUtils.addSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.31"), index, ConstantsFont.chapterTitleMPFont3L, section, countSections, 2);
-        numSection++;
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.31.p1"), ConstantsFont.paragraphFont, section1);
-
-        Section section2 = PDFUtils.addSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.32"), index, ConstantsFont.chapterTitleMPFont3L, section, countSections, 2);
-        numSection++;
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.32.p2"), ConstantsFont.paragraphFont, section2);
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.introduction.32.p3"), ConstantsFont.paragraphFont, section2);
-
-        com.lowagie.text.List list = new com.lowagie.text.List();
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.32.p4.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.32.p4"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.32.p5.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.32.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.32.p6.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.32.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.32.p7.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.32.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        boldWords.clear();
-        boldWords.add(messageResources.getMessage("basic.service.introduction.32.p8.bold"));
-        list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("basic.service.introduction.32.p8"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
-
-        list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-        section.add(list);
-
-        return numSection;
-    }
-
     private static int createGlobalChapter(final MessageResources messageResources, Document d, List<EvaluationForm> evaList,
                                            String globalPath, IndexEvents index, String fechaInforme, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter1 = PDFUtils.addChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter1 = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWords = new ArrayList<String>();
         boldWords.add(messageResources.getMessage("pdf.accessibility.bs.entity"));
@@ -581,9 +500,9 @@ public final class BasicServiceExport {
 
     private static int createContentChapter(final MessageResources messageResources, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter = PDFUtils.addChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
-        PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, true);
+        PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
         d.add(chapter);
 
@@ -684,14 +603,17 @@ public final class BasicServiceExport {
     }
 
     public static void addSpecificProblems(final MessageResources messageResources, final Section subSubSection, final List<SpecificProblemForm> specificProblems) {
-        float[] widths = {8f, 10f, 82f};
+        float[] widths = {8f, 12f, 80f};
         PdfPTable table = new PdfPTable(widths);
-        table.setWidthPercentage(100);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE / 3);
-        table.setSpacingAfter(ConstantsFont.SPACE_LINE / 2);
-        table.addCell(PDFUtils.createTableCell("Linea", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 5));
-        table.addCell(PDFUtils.createTableCell("Columna", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 5));
-        table.addCell(PDFUtils.createTableCell("Código", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 5));
+        table.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        table.setWidthPercentage(86);
+        table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
+        table.setSpacingAfter(ConstantsFont.HALF_LINE_SPACE);
+        table.addCell(PDFUtils.createTableCell("Linea", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        table.addCell(PDFUtils.createTableCell("Columna", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        table.addCell(PDFUtils.createTableCell("Código", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        // Indicamos que la primera fila es de  encabezados para que la repita si la tabla se parte en varias páginas.
+        table.setHeaderRows(1);
         int maxNumErrors = Integer.parseInt(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"));
         for (SpecificProblemForm specificProblem : specificProblems) {
             maxNumErrors--;
@@ -702,22 +624,9 @@ public final class BasicServiceExport {
 
                 }
                 if (!specificProblem.getLine().isEmpty() && !"-1".equalsIgnoreCase(specificProblem.getLine())) {
-                    table.addCell(PDFUtils.createTableCell(specificProblem.getLine(), Color.WHITE, ConstantsFont.codeCellFont,    Element.ALIGN_RIGHT, 5));
-                    table.addCell(PDFUtils.createTableCell(specificProblem.getColumn(), Color.WHITE, ConstantsFont.codeCellFont,    Element.ALIGN_RIGHT, 5));
-                    //PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn()), ConstantsFont.codeCellFont, subSubSection, Element.ALIGN_LEFT, true, false);
-//                    final String localizacion = messageResources.getMessage("pdf.accessibility.bs.line", specificProblem.getLine(), specificProblem.getColumn());
-//                    final Paragraph p;
-//                    if (specificProblem.getMessage()!=null && !specificProblem.getMessage().isEmpty()) {
-//                        p = new Paragraph(localizacion + ": " + specificProblem.getMessage(), ConstantsFont.codeCellFont);
-//                    } else {
-//                        p = new Paragraph(localizacion, ConstantsFont.codeCellFont);
-//                    }
-//                    p.setSpacingBefore(ConstantsFont.SPACE_LINE/2);
-//                    p.setSpacingAfter(0);
-//                    p.setAlignment(Element.ALIGN_LEFT);
-//                    subSubSection.add(p);
+                    table.addCell(PDFUtils.createTableCell(specificProblem.getLine(), Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
+                    table.addCell(PDFUtils.createTableCell(specificProblem.getColumn(), Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
                 }
-//                PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(code.toString()), specificProblem.getMessage(), subSubSection);
                 String text = HTMLEntities.unhtmlAngleBrackets(code.toString());
                 String message =specificProblem.getMessage();
 
@@ -727,10 +636,11 @@ public final class BasicServiceExport {
                     boldWords.add(message);
                 }
 
-                PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.noteCellFont, ConstantsFont.noteCellFont, false));
+                PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.codeCellFont, ConstantsFont.codeCellFont, false));
+                labelCell.setPadding(0);
                 labelCell.setBackgroundColor(new Color(255, 244, 223));
                 labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                labelCell.setPadding(5f);
+                labelCell.setPadding(DEFAULT_PADDING);
                 table.addCell(labelCell);
             } else if (specificProblem.getNote() != null) {
                 String linkCode = getMatch(specificProblem.getNote().get(0), "(<a.*?</a>)");
