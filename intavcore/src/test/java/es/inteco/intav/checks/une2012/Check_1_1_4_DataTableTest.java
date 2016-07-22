@@ -1,5 +1,7 @@
 package es.inteco.intav.checks.une2012;
 
+import ca.utoronto.atrc.tile.accessibilitychecker.CheckTables;
+import ca.utoronto.atrc.tile.accessibilitychecker.CheckUtils;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
@@ -595,6 +597,46 @@ public final class Check_1_1_4_DataTableTest {
     public void evaluateNoSiblingHeaderDataTableWithoutCaption() throws Exception {
         checkAccessibility.setContent("<h1>Foo</h1>Lorem ipsum" + DATA_TABLE_WITHOUT_CAPTION_HTML);
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateNestedTables() throws Exception {
+        final String tablas = "<table id='externa'>\n" +
+                "  <tr>\n" +
+                "    <td>Lorem ipsum 1</td>\n" +
+                "     <td>Lorem ipsum 2</td>\n" +
+                "  </tr>\n" +
+                "  <tr>\n" +
+                "    <td>Lorem ipsum\n" +
+                "            <table id='interna' summary='summary'>\n" +
+                "              <tr><th>Header One</th><th>Header Two</th></tr>\n"+
+                "              <tr>\n" +
+                "                    <td>Lorem ipsum a</td>\n" +
+                "                    <td>Lorem ipsum b</td>\n" +
+                "               </tr>\n" +
+                "          <tr>\n" +
+                "            <td>Lorem ipsum I</td>\n" +
+                "            <td>Lorem ipsum II</td>\n" +
+                "          </tr>\n" +
+                "        </table>\n" +
+                "    </td>\n" +
+                "    <td>Lorem ipsum æ</td>\n" +
+                "  </tr>\n" +
+                "</table>";
+        checkAccessibility.setContent(tablas);
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        TestUtils.printProblems(evaluation.getProblems(), HEADERS);
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));

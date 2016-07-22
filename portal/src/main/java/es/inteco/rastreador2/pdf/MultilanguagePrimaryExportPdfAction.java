@@ -91,7 +91,7 @@ public class MultilanguagePrimaryExportPdfAction extends Action {
                 c = DataBaseManager.getConnection();
                 //Comprobamos que el usuario esta asociado con el rastreo que quiere exportar
                 if (user == null || RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user)) {
-                    SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getSeedByCrawler(c, idRastreo));
+                    SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
                     path += File.separator + PDFUtils.formatSeedName(seed.getDependencia());
                     checkFile = new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
                     // Si el pdf no ha sido creado lo creamos

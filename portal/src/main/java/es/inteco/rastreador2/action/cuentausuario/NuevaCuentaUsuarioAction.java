@@ -67,7 +67,7 @@ public class NuevaCuentaUsuarioAction extends Action {
                     } else {
                         ActionErrors errors = nuevaCuentaUsuarioForm.validate(mapping, request);
 
-                        if (errors == null || errors.isEmpty()) {
+                        if (errors.isEmpty()) {
                             if (CuentaUsuarioDAO.existAccount(c, nuevaCuentaUsuarioForm.getNombre())) {
                                 errors.add(Constants.USUARIO_DUPLICADO, new ActionMessage("cuenta.cliente.duplicada"));
                                 saveErrors(request, errors);

@@ -754,6 +754,7 @@ public final class CuentaUsuarioDAO {
                 ps.setLong(13, Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta()));
 
                 ps.executeUpdate();
+                DAOUtils.closeQueries(ps, null);
             }
 
 

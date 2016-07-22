@@ -26,6 +26,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -36,6 +37,8 @@ import java.util.*;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class ResultadosAnonimosObservatorioUNE2012Utils {
+
+    public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
 
     private ResultadosAnonimosObservatorioUNE2012Utils() {
     }
@@ -51,14 +54,12 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static void generateGraphics(final HttpServletRequest request, final String filePath, final String type, final boolean regenerate) throws Exception {
-        Connection c = null;
-        try {
+        try (Connection c = DataBaseManager.getConnection()) {
             final PropertiesManager pmgr = new PropertiesManager();
             String color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors");
             if (type != null && type.equals(Constants.MINISTERIO_P)) {
                 color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color");
             }
-            c = DataBaseManager.getConnection();
             //recuperamos las categorias del observatorio
             final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, Long.valueOf(request.getParameter(Constants.ID)));
             generateGlobalGraphics(request, filePath, categories, color, regenerate);
@@ -70,8 +71,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         } catch (Exception e) {
             Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -121,11 +120,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static int generateCategoryGraphics(HttpServletRequest request, CategoriaForm category, String filePath, String color, boolean regenerate) throws Exception {
-
-        Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection();
-
             final String idExecution = request.getParameter(Constants.ID);
             final MessageResources messageResources = CrawlerUtils.getResources(request);
             final String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
@@ -172,8 +167,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         } catch (Exception e) {
             Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
             return Constants.OBSERVATORY_NOT_HAVE_RESULTS;
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
     }
 
@@ -258,7 +251,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         final GraphicData labelValue = new GraphicData();
         labelValue.setAdecuationLevel(title);
         if (totalPort > 0) {
-            labelValue.setPercentageP(String.valueOf((new BigDecimal(result).multiply(BigDecimal.valueOf(100)).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP))).replace(".00", "") + "%");
+            labelValue.setPercentageP(String.valueOf((new BigDecimal(result).multiply(BIG_DECIMAL_HUNDRED).divide(new BigDecimal(totalPort), 2, BigDecimal.ROUND_HALF_UP))).replace(".00", "") + "%");
         }
         labelValue.setNumberP(String.valueOf(new BigDecimal(result)));
         return labelValue;
@@ -268,38 +261,17 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                                                                final Map<String, BigDecimal> category) throws Exception {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
-        LabelValueBean labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.punt.portales.aa"));
-        if (category.get(Constants.OBS_AA) != null && category.get(Constants.OBS_AA).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(category.get(Constants.OBS_AA)).replace(".00", ""));
-        } else if (category.get(Constants.OBS_AA) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.punt.portales.aa"),
+                category.get(Constants.OBS_AA)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.punt.portales.a"));
-        if (category.get(Constants.OBS_A) != null && category.get(Constants.OBS_A).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(category.get(Constants.OBS_A)).replace(".00", ""));
-        } else if (category.get(Constants.OBS_A) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.punt.portales.a"),
+                category.get(Constants.OBS_A)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.punt.portales.parcial"));
-        if (category.get(Constants.OBS_NV) != null && category.get(Constants.OBS_NV).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(category.get(Constants.OBS_NV)).replace(".00", ""));
-        } else if (category.get(Constants.OBS_NV) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.punt.portales.parcial"),
+                category.get(Constants.OBS_NV)));
 
         return labelValueList;
     }
@@ -307,9 +279,9 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static List<LabelValueBean> infoComparisonBySegmentPuntuation(final MessageResources messageResources,
                                                                          final Map<String, BigDecimal> result) throws Exception {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
-        labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.aa"),String.valueOf(result.get(Constants.OBS_AA)).replace(".00", "")));
-        labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.a"),String.valueOf(result.get(Constants.OBS_A)).replace(".00", "")));
-        labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.parcial"),String.valueOf(result.get(Constants.OBS_NV)).replace(".00", "")));
+        labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.aa"), String.valueOf(result.get(Constants.OBS_AA)).replace(".00", "")));
+        labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.a"), String.valueOf(result.get(Constants.OBS_A)).replace(".00", "")));
+        labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.parcial"), String.valueOf(result.get(Constants.OBS_NV)).replace(".00", "")));
 
         return labelValueList;
     }
@@ -317,69 +289,51 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static List<LabelValueBean> infoAspectMidsComparison(final MessageResources messageResources, final Map<String, BigDecimal> result) throws Exception {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
-        LabelValueBean labelValue = new LabelValueBean();
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.general"),
+                result.get(messageResources.getMessage("observatory.aspect.general"))));
 
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.general"));
-        if (result.get(messageResources.getMessage("observatory.aspect.general")) != null &&
-                result.get(messageResources.getMessage("observatory.aspect.general")).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(messageResources.getMessage("observatory.aspect.general"))).replace(".00", ""));
-        } else if (result.get(messageResources.getMessage("observatory.aspect.general")) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("esultados.anonimos.presentacion"),
+                result.get(messageResources.getMessage("observatory.aspect.presentation"))));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.presentacion"));
-        if (result.get(messageResources.getMessage("observatory.aspect.presentation")) != null &&
-                result.get(messageResources.getMessage("observatory.aspect.presentation")).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(messageResources.getMessage("observatory.aspect.presentation"))).replace(".00", ""));
-        } else if (result.get(messageResources.getMessage("observatory.aspect.presentation")) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.estructura"),
+                result.get(messageResources.getMessage("observatory.aspect.structure"))));
 
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.navegacion"),
+                result.get(messageResources.getMessage("observatory.aspect.navigation"))));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.estructura"));
-        if (result.get(messageResources.getMessage("observatory.aspect.structure")) != null &&
-                result.get(messageResources.getMessage("observatory.aspect.structure")).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(messageResources.getMessage("observatory.aspect.structure"))).replace(".00", ""));
-        } else if (result.get(messageResources.getMessage("observatory.aspect.structure")) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
-
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.navegacion"));
-        if (result.get(messageResources.getMessage("observatory.aspect.navigation")) != null &&
-                result.get(messageResources.getMessage("observatory.aspect.navigation")).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(messageResources.getMessage("observatory.aspect.navigation"))).replace(".00", ""));
-        } else if (result.get(messageResources.getMessage("observatory.aspect.navigation")) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
-
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("resultados.anonimos.alternativa"));
-        if (result.get(messageResources.getMessage("observatory.aspect.alternatives")) != null &&
-                result.get(messageResources.getMessage("observatory.aspect.alternatives")).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(messageResources.getMessage("observatory.aspect.alternatives"))).replace(".00", ""));
-        } else if (result.get(messageResources.getMessage("observatory.aspect.alternatives")) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("resultados.anonimos.alternativa"),
+                result.get(messageResources.getMessage("observatory.aspect.alternatives"))));
 
         return labelValueList;
+    }
+
+    /**
+     * Devuelve para un bean formado por la pareja cadena:valor. Donde valor es una cadena que representa un número
+     * (la puntuación alcanzada) o las cadenas especiales para "no puntua" o no "hay resultado"
+     *
+     * @param messageResources
+     * @param label
+     * @param result
+     * @return
+     */
+    private static LabelValueBean createLabelValueScore(final MessageResources messageResources, final String label, final BigDecimal result) {
+        final LabelValueBean labelValue = new LabelValueBean();
+
+        labelValue.setLabel(label);
+        if (result != null && result.compareTo(new BigDecimal(-1)) != 0) {
+            labelValue.setValue(String.valueOf(result).replace(".00", ""));
+        } else if (result == null) {
+            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
+        } else {
+            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
+        }
+
+        return labelValue;
     }
 
     public static List<LabelValueBean> infoMarkAllocationLevelSegment(final List<ObservatorySiteEvaluationForm> siteList) {
@@ -400,255 +354,95 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static List<LabelValueBean> infoLevelIVerificationMidsComparison(final MessageResources messageResources,
-                                                                            final Map<String, BigDecimal> result) throws Exception {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+                                                                            final Map<String, BigDecimal> result) {
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
-        LabelValueBean labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.1"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.1"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.2"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.2"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.3"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.3"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.4"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.4"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.5"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.5"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.6"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.6"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.7"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.7"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.1"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.1"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.2"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.2"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.3"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.3"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)));
 
         return labelValueList;
     }
 
     public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(final MessageResources messageResources,
-                                                                             final Map<String, BigDecimal> result) throws Exception {
+                                                                             final Map<String, BigDecimal> result) {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
 
-        LabelValueBean labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.1"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.1"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.2"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.2"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.3"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.3"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.4"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.4"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.5"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.5"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.6"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.6"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.7"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.7"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.1"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.1"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.2"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.2"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)));
 
-        labelValue = new LabelValueBean();
-        labelValue.setLabel(messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.3"));
-        if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION) != null &&
-                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION).compareTo(new BigDecimal(-1)) != 0) {
-            labelValue.setValue(String.valueOf(result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)).replace(".00", ""));
-        } else if (result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION) == null) {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-        } else {
-            labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-        }
-        labelValueList.add(labelValue);
+        labelValueList.add(createLabelValueScore(messageResources,
+                messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.3"),
+                result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)));
 
         return labelValueList;
     }
@@ -1005,21 +799,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static List<LabelValueBean> infoMidMarkVerificationEvolutionGraphic(final MessageResources messageResources,
                                                                                final Map<String, BigDecimal> resultData) {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
-        LabelValueBean labelValue;
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
-            labelValue = new LabelValueBean();
-            labelValue.setLabel(entry.getKey());
-            if (entry.getValue() != null && entry.getValue().compareTo(new BigDecimal(-1)) != 0) {
-                labelValue.setValue(String.valueOf(entry.getValue()));
-            } else {
-                if (entry.getValue() == null) {
-                    labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-                } else {
-                    labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-                }
-            }
-            labelValueList.add(labelValue);
+            labelValueList.add(createLabelValueScore(messageResources,
+                    entry.getKey(),
+                    entry.getValue()));
         }
 
         return labelValueList;
@@ -1028,21 +812,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static List<LabelValueBean> infoMidMarkAspectEvolutionGraphic(final MessageResources messageResources,
                                                                          final Map<String, BigDecimal> resultData) {
         final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
-        LabelValueBean labelValue;
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
-            labelValue = new LabelValueBean();
-            labelValue.setLabel(entry.getKey());
-            if (entry.getValue() != null && entry.getValue().compareTo(new BigDecimal(-1)) != 0) {
-                labelValue.setValue(String.valueOf(entry.getValue()));
-            } else {
-                if (entry.getValue() == null) {
-                    labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noResultado"));
-                } else {
-                    labelValue.setValue(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"));
-                }
-            }
-            labelValueList.add(labelValue);
+            labelValueList.add(createLabelValueScore(messageResources,
+                    entry.getKey(),
+                    entry.getValue()));
         }
 
         return labelValueList;
@@ -1054,18 +828,14 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler) throws Exception {
         List<ObservatoryEvaluationForm> observatoryEvaluationList = null;
-        Connection c = null;
-        Connection conn = null;
         try {
             observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
         } catch (NeedsRefreshException nre) {
             Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_INFO);
-            try {
+            try (Connection c = DataBaseManager.getConnection()){
                 observatoryEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
                 final List<Long> listAnalysis = new ArrayList<Long>();
 
-                c = DataBaseManager.getConnection();
-                conn = DataBaseManager.getConnection();
                 List<Long> listExecutionsIds = new ArrayList<Long>();
                 if (idCrawler == null) {
                     listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
@@ -1074,7 +844,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 }
                 if (pageExecutionList == null) {
                     for (Long idExecution : listExecutionsIds) {
-                        listAnalysis.addAll(AnalisisDatos.getAnalysisIdsByTracking(conn, idExecution));
+                        listAnalysis.addAll(AnalisisDatos.getAnalysisIdsByTracking(c, idExecution));
                     }
 
                     // Inicializamos el evaluador
@@ -1084,7 +854,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
                     final Evaluator evaluator = new Evaluator();
                     for (Long idAnalysis : listAnalysis) {
-                        final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList());
+                        final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(c, idAnalysis, EvaluatorUtils.getDocList());
                         final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
                         final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
                         evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
@@ -1110,9 +880,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             } catch (Exception e) {
                 Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
                 throw e;
-            } finally {
-                DataBaseManager.closeConnection(c);
-                DataBaseManager.closeConnection(conn);
             }
             CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
         }
@@ -1126,9 +893,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             return observatoryEvaluationList;
         } else {
             final List<ObservatoryEvaluationForm> results = new ArrayList<ObservatoryEvaluationForm>();
-            Connection conn = null;
-            try {
-                conn = DataBaseManager.getConnection();
+            try (Connection conn = DataBaseManager.getConnection()) {
                 final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, executionId, categoryId);
                 for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
                     if (listExecutionsIds.contains(observatoryEvaluationForm.getCrawlerExecutionId())) {
@@ -1138,8 +903,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             } catch (Exception e) {
                 Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
                 throw e;
-            } finally {
-                DataBaseManager.closeConnection(conn);
             }
             return results;
         }
@@ -1266,7 +1029,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             BigDecimal percentage = BigDecimal.ZERO;
             if (numSitesType != 0) {
                 final int numSites = dateMapEntry.getValue().size();
-                percentage = (new BigDecimal(numSitesType)).divide(new BigDecimal(numSites), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
+                percentage = (new BigDecimal(numSitesType)).divide(new BigDecimal(numSites), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED);
             }
             percentagesMap.put(df.format(dateMapEntry.getKey()), percentage);
         }
@@ -1281,9 +1044,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(final String observatoryId, final String executionId, final Map<Date, List<ObservatoryEvaluationForm>> result) {
         final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<Date, Map<Long, Map<String, Integer>>>();
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(observatoryId));
             final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId), observatoryForm.getCartucho().getId());
 
@@ -1294,8 +1055,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
         } catch (Exception e) {
             Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return resultData;
     }
@@ -1303,9 +1062,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId) {
         final Map<Date, List<ObservatoryEvaluationForm>> resultData = new HashMap<Date, List<ObservatoryEvaluationForm>>();
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
             final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
             for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
@@ -1314,8 +1071,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
         } catch (Exception e) {
             Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return resultData;
@@ -1331,7 +1086,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         String fitResultKey = "";
         for (Map.Entry<String, Integer> entry : values.entrySet()) {
             if (total != 0) {
-                result.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(new BigDecimal(total), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+                result.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(new BigDecimal(total), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
             } else {
                 result.put(entry.getKey(), (BigDecimal.ZERO));
             }
@@ -1339,8 +1094,8 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             fitResultKey = entry.getKey();
         }
         //ajustamos el resultado por si se pasa de 100 a causa del redondeo
-        if (totalPercentage.compareTo(BigDecimal.valueOf(100)) != 0) {
-            result.put(fitResultKey, result.get(fitResultKey).subtract(totalPercentage.subtract(BigDecimal.valueOf(100))));
+        if (totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) != 0) {
+            result.put(fitResultKey, result.get(fitResultKey).subtract(totalPercentage.subtract(BIG_DECIMAL_HUNDRED)));
         }
 
         return result;
@@ -1691,7 +1446,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
 
         for (Map.Entry<String, BigDecimal> stringBigDecimalEntry : results.entrySet()) {
-            results.put(stringBigDecimalEntry.getKey(), stringBigDecimalEntry.getValue().divide(new BigDecimal(resultData.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100)));
+            results.put(stringBigDecimalEntry.getKey(), stringBigDecimalEntry.getValue().divide(new BigDecimal(resultData.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
         }
 
         return results;
@@ -1825,10 +1580,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<CategoriaForm, Map<String, BigDecimal>> calculateMidPuntuationResultsBySegmentMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
-        Connection conn = null;
         try {
-            conn = DataBaseManager.getConnection();
-
             final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<CategoriaForm, Map<String, BigDecimal>>(new Comparator<CategoriaForm>() {
                 @Override
                 public int compare(CategoriaForm o1, CategoriaForm o2) {
@@ -1844,8 +1596,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         } catch (Exception e) {
             Logger.putLog("Error al recuperar datos de la BBDD.", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
     }
 

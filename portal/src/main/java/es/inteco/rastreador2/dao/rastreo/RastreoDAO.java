@@ -63,6 +63,31 @@ public final class RastreoDAO {
         }
     }
 
+    public static long getIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(Connection c, long idRastreo, long idObservatoryExecution) throws Exception {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            String query = "SELECT id FROM rastreos_realizados rr " +
+                    "WHERE id_rastreo = ? AND " +
+                    "id_obs_realizado = ?";
+            ps = c.prepareStatement(query);
+            ps.setLong(1, idRastreo);
+            ps.setLong(2, idObservatoryExecution);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getLong("id");
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        } finally {
+            DAOUtils.closeQueries(ps, rs);
+        }
+        return 0;
+    }
+
     public static boolean crawlerCanBeThrow(Connection c, String userLogin, int cartuchoID) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -603,19 +628,30 @@ public final class RastreoDAO {
     }
 
     public static List<Long> getEvolutionExecutedCrawlerIds(Connection connR, long id_rastreo, long idTracking, long id_cartucho) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        int limit;
+        try {
+            limit = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "intav.evolution.limit"));
+        } catch (NumberFormatException nfe) {
+            limit = 4;
+        }
+        return getEvolutionExecutedCrawlerIds(connR, id_rastreo, idTracking, id_cartucho, limit);
+    }
+
+    public static List<Long> getEvolutionExecutedCrawlerIds(final Connection connection, long idRastreo, long idRastreoRealizado, long idCartucho, int limit) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<Long>();
-        PropertiesManager pmgr = new PropertiesManager();
+        final List<Long> executedCrawlerIds = new ArrayList<Long>();
         try {
-            ps = connR.prepareStatement("SELECT rr.id FROM rastreos_realizados r WHERE id_rastreo = ? AND " +
+            ps = connection.prepareStatement("SELECT r.id FROM rastreos_realizados r " +
+                    "WHERE id_rastreo = ? AND " +
                     "fecha <= (SELECT fecha FROM rastreos_realizados rr WHERE id = ?) AND " +
                     "id_cartucho = ? " +
                     "ORDER BY fecha DESC LIMIT ?");
-            ps.setLong(1, id_rastreo);
-            ps.setLong(2, idTracking);
-            ps.setLong(3, id_cartucho);
-            ps.setLong(4, Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "intav.evolution.limit")));
+            ps.setLong(1, idRastreo);
+            ps.setLong(2, idRastreoRealizado);
+            ps.setLong(3, idCartucho);
+            ps.setInt(4, limit);
 
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -1636,12 +1672,12 @@ public final class RastreoDAO {
         }
     }
 
-    public static long getSeedByCrawler(Connection c, long idCrawler) throws Exception {
+    public static long getIdSeedByIdRastreo(Connection c, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = c.prepareStatement("SELECT semillas FROM rastreo WHERE id_rastreo = ?");
-            ps.setLong(1, idCrawler);
+            ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
 
             if (rs.next()) {

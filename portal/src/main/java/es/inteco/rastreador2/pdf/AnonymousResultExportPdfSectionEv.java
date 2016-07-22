@@ -29,9 +29,9 @@ public final class AnonymousResultExportPdfSectionEv {
     //**************************************************************************************************
 
     protected static void createChapterEvolution(final MessageResources messageResources, Chapter chapter) {
-        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p1"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p2"), ConstantsFont.paragraphFont, chapter);
-        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p3"), ConstantsFont.paragraphFont, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p1"), ConstantsFont.PARAGRAPH, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p2"), ConstantsFont.PARAGRAPH, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.Ev.p3"), ConstantsFont.PARAGRAPH, chapter);
     }
 
     protected static void createSectionEv1(HttpServletRequest request, Section section, String graphicPath, Map<String, BigDecimal> resultData) throws BadElementException, IOException {

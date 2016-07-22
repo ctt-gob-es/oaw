@@ -42,9 +42,7 @@ public class ExportOpenOfficeAction extends Action {
 
         String filePath = null;
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()){
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             final SimpleDateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
             final ObservatorioRealizadoForm observatoryFFForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
@@ -57,8 +55,6 @@ public class ExportOpenOfficeAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR_PAGE);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         try {

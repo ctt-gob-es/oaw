@@ -21,13 +21,12 @@ public final class DAOUtils {
     private DAOUtils() {
     }
 
-    public static void closeQueries(Statement st, ResultSet rs) throws SQLException {
+    public static void closeQueries(final Statement st, final ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
             } catch (SQLException e) {
                 Logger.putLog("Exception al cerrar el resultset: ", DAOUtils.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
             }
         }
         if (st != null) {
@@ -35,7 +34,6 @@ public final class DAOUtils {
                 st.close();
             } catch (SQLException e) {
                 Logger.putLog("Exception al cerrar el statement: ", DAOUtils.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
             }
         }
     }

@@ -95,8 +95,8 @@ public final class LenoxExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.lenox.title"),
-                    detailAnalyseList.get(0).getRastreo().getEntidad(), ConstantsFont.documentTitleFont);
+            PDFUtils.addCoverPage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.lenox.title"),
+                    detailAnalyseList.get(0).getRastreo().getEntidad());
 
             Chapter chapter1 = globalLenoxChapter(detailAnalyseList, request, index, globalPath);
             document.add(chapter1);
@@ -111,7 +111,7 @@ public final class LenoxExport {
                     chunk.setLocalDestination(Constants.ANCLA_PDF + (numChapter - 1));
                     Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleFont);
                     cTitle.add(chunk);
-                    cTitle.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                    cTitle.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                     Chapter chapter = new Chapter(cTitle, numChapter);
                     chapter.setNumberDepth(0);
                     cTitle.add(index.create(" ", analyse.getUrl().toUpperCase()));
@@ -132,9 +132,9 @@ public final class LenoxExport {
                         Paragraph value = new Paragraph(termino.getNombre(), ConstantsFont.valueLenoxFont);
                         Paragraph p = new Paragraph(head);
                         p.add(value);
-                        p.setSpacingAfter(ConstantsFont.SPACE_LINE);
+                        p.setSpacingAfter(ConstantsFont.LINE_SPACE);
                         if (spaceTerms) {
-                            p.setSpacingBefore(3 * ConstantsFont.SPACE_LINE);
+                            p.setSpacingBefore(3 * ConstantsFont.LINE_SPACE);
                         }
                         spaceTerms = true;
 
@@ -147,7 +147,7 @@ public final class LenoxExport {
                         }
                         p = new Paragraph(head);
                         p.add(value);
-                        p.setSpacingAfter(ConstantsFont.SPACE_LINE);
+                        p.setSpacingAfter(ConstantsFont.LINE_SPACE);
                         chapter.add(p);
 
                         addLenoxContext(chapter, termino.getContextos(), request);
@@ -167,7 +167,7 @@ public final class LenoxExport {
             FileUtils.removeFile(globalPath);
 
             ExportPageEvents.setLastPage(true);
-            IndexUtils.createIndex(writer, document, request, index, false, ConstantsFont.chapterTitleFont);
+            IndexUtils.createIndex(writer, document, request, index, ConstantsFont.chapterTitleFont);
             ExportPageEvents.setLastPage(false);
 
         } catch (DocumentException e) {
@@ -196,7 +196,7 @@ public final class LenoxExport {
         chunk.setLocalDestination(Constants.ANCLA_PDF + (numChapter - 1));
         Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleFont);
         cTitle.add(chunk);
-        cTitle.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+        cTitle.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
         Chapter chapter = new Chapter(cTitle, numChapter);
         chapter.setNumberDepth(0);
         cTitle.add(index.create(" ", CrawlerUtils.getResources(request).getMessage("pdf.lenox.unlocated.url.terms").toUpperCase()));
@@ -253,14 +253,14 @@ public final class LenoxExport {
         chunkCh1.setLocalDestination(Constants.ANCLA_PDF + "0");
         Paragraph cTitleCh1 = new Paragraph("", new Font(arial, 18, Font.UNDERLINE, Constants.ROJO_INTECO));
         cTitleCh1.add(chunkCh1);
-        cTitleCh1.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+        cTitleCh1.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
 
         Chapter chapter1 = new Chapter(cTitleCh1, 1);
         chapter1.setNumberDepth(0);
         cTitleCh1.add(index.create(" ", CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.index.global.summary")));
 
         Paragraph entity = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.entity") + detailAnalyseList.get(0).getRastreo().getEntidad(), new Font(arial, 16, Font.BOLD, Color.black));
-        entity.setSpacingAfter(ConstantsFont.SPACE_LINE);
+        entity.setSpacingAfter(ConstantsFont.LINE_SPACE);
         chapter1.add(entity);
 
         int locatedTerm = 0;
@@ -403,7 +403,7 @@ public final class LenoxExport {
         highPriorityTerms.setListSymbol(new Chunk(img, -5, 0));
         mediumPriorityTerms.setListSymbol(new Chunk(img, -5, 0));
         lowPriorityTerms.setListSymbol(new Chunk(img, -5, 0));
-        lowPriorityTerms.setSpacingAfter(3 * ConstantsFont.SPACE_LINE);
+        lowPriorityTerms.setSpacingAfter(3 * ConstantsFont.LINE_SPACE);
 
         summary.add(locatedTerms);
         summary.add(totalTerms);
@@ -421,7 +421,7 @@ public final class LenoxExport {
 
         float[] widths = {0.15f, 0.85f};
         PdfPTable table = new PdfPTable(widths);
-        table.setSpacingAfter(ConstantsFont.SPACE_LINE);
+        table.setSpacingAfter(ConstantsFont.LINE_SPACE);
         PdfPCell labelCell = new PdfPCell(new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.lenox.priority"), ConstantsFont.labelCellFont));
         labelCell.setBackgroundColor(Constants.ROJO_INTECO);
         table.addCell(labelCell);
@@ -471,7 +471,7 @@ public final class LenoxExport {
 
         Paragraph head = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.lenox.suggestions") + ": ", ConstantsFont.titleLenoxFont);
         Paragraph p = new Paragraph(head);
-        p.setSpacingAfter(ConstantsFont.SPACE_LINE);
+        p.setSpacingAfter(ConstantsFont.LINE_SPACE);
         chapter.add(p);
 
         com.lowagie.text.List summary = new com.lowagie.text.List();

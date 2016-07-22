@@ -42,16 +42,8 @@ public final class BorradorTerminos {
         } catch (SQLException e) {
             Logger.putLog("EXCEPCIÓN accediendo a la BD: " + e.getMessage(), BorradorTerminos.class, Logger.LOG_LEVEL_ERROR);
         } finally {
-            try {
-                DAOUtils.closeQueries(s, rs);
-            } catch (SQLException e) {
-                Logger.putLog("EXCEPCIÓN cerrando las consultas: " + e.getMessage(), BorradorTerminos.class, Logger.LOG_LEVEL_ERROR);
-            }
-            try {
-                DAOUtils.closeQueries(s2, rs2);
-            } catch (SQLException e) {
-                Logger.putLog("EXCEPCIÓN cerrando las consultas: " + e.getMessage(), BorradorTerminos.class, Logger.LOG_LEVEL_ERROR);
-            }
+            DAOUtils.closeQueries(s, rs);
+            DAOUtils.closeQueries(s2, rs2);
             DataBaseManager.closeConnection(c);
         }
     }

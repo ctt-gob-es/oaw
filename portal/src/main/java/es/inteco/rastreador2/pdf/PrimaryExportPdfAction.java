@@ -53,10 +53,10 @@ public class PrimaryExportPdfAction extends Action {
         if (userHasAccess(user, idRastreo)) {
             final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
             final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
-            final long idExecution = request.getParameter(Constants.ID) != null ? Long.parseLong(request.getParameter(Constants.ID)) : 0;
+            final long idRastreoRealizado = request.getParameter(Constants.ID) != null ? Long.parseLong(request.getParameter(Constants.ID)) : 0;
             final boolean regenerate = Boolean.parseBoolean(request.getParameter(Constants.EXPORT_PDF_REGENERATE));
 
-            final File pdfFile = buildPdf(idObservatory, idExecutionOb, idExecution, idRastreo, regenerate, request);
+            final File pdfFile = buildPdf(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo, regenerate, request);
             try {
                 CrawlerUtils.returnFile(pdfFile.getPath(), response, "application/pdf", false);
             } catch (Exception e) {
@@ -82,15 +82,13 @@ public class PrimaryExportPdfAction extends Action {
         }
     }
 
-    private File buildPdf(long idObservatory, long idExecutionOb, long idExecution, long idRastreo, boolean regenerate, final HttpServletRequest request) {
+    private File buildPdf(long idObservatory, long idExecutionOb, long idRastreoRealizado, long idRastreo, boolean regenerate, final HttpServletRequest request) {
         final PropertiesManager pmgr = new PropertiesManager();
-        final List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idExecution);
+        final int countAnalisis = AnalisisDatos.countAnalysisByTracking(idRastreoRealizado);
 
-        Connection c = null;
-        if (evaluationIds != null && !evaluationIds.isEmpty()) {
-            try {
-                c = DataBaseManager.getConnection();
-                final SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getSeedByCrawler(c, idRastreo));
+        if (countAnalisis > 0) {
+            try (Connection c = DataBaseManager.getConnection()) {
+                final SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
                 String dependOn = PDFUtils.formatSeedName(seed.getDependencia());
                 if (dependOn == null || dependOn.isEmpty()) {
                     dependOn = Constants.NO_DEPENDENCE;
@@ -100,14 +98,12 @@ public class PrimaryExportPdfAction extends Action {
                 // Si el pdf no ha sido creado lo creamos
                 if (regenerate || !pdfFile.exists()) {
                     final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
-                    PrimaryExportPdfUtils.exportToPdf(idExecution, evaluationIds, request, pdfFile.getPath(), seed.getNombre(), null, idExecutionOb, observatoryType);
+                    PrimaryExportPdfUtils.exportToPdf(idRastreo, idRastreoRealizado, request, pdfFile.getPath(), seed.getNombre(), null, idExecutionOb, observatoryType);
                     FileUtils.deleteDir(new File(path + File.separator + "temp"));
                 }
                 return pdfFile;
             } catch (Exception e) {
                 Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
-            } finally {
-                DataBaseManager.closeConnection(c);
             }
         }
         return null;

@@ -95,8 +95,8 @@ public abstract class AnonymousResultPdfBuilder {
         createSummaryChapter(resources, titleFont);
 
         //Creamos el index
-        IndexUtils.createIndex(writer, document, resources, index, false, ConstantsFont.chapterTitleMPFont);
-        ExportPageEventsObservatoryMP.setLastPage(false);
+        IndexUtils.createIndex(writer, document, resources, index, ConstantsFont.chapterTitleMPFont);
+        ExportPageEventsObservatoryMP.setPrintFooter(true);
 
         if (document.isOpen()) {
             try {
@@ -158,7 +158,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected PdfPTable addURLTable(MessageResources resources, java.util.List<ObservatoryEvaluationForm> primaryReportPageList) {
         float[] widths = {30f, 70f};
         PdfPTable table = new PdfPTable(widths);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
         table.setWidthPercentage(100);
 
         table.addCell(PDFUtils.createTableCell(resources.getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -167,8 +167,7 @@ public abstract class AnonymousResultPdfBuilder {
         int i = 1;
         for (ObservatoryEvaluationForm page : primaryReportPageList) {
             table.addCell(PDFUtils.createTableCell(resources.getMessage("observatory.graphic.score.by.page.label", i++), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
-            PdfPCell url = new PdfPCell(PDFUtils.addLinkParagraph(page.getUrl(), page.getUrl(), ConstantsFont.noteCellFont));
-            table.addCell(url);
+            table.addCell(PDFUtils.createLinkedTableCell(page.getUrl(), page.getUrl(),Color.WHITE, Element.ALIGN_LEFT, ConstantsFont.DEFAULT_PADDING));
         }
 
         return table;
@@ -177,7 +176,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected PdfPTable createMethodologyTable1(final MessageResources resources) {
         float[] widths = {10f, 30f, 45f, 25f, 15f, 15f};
         PdfPTable table = new PdfPTable(widths);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE / 3);
+        table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
         table.setWidthPercentage(100);
 
         try {
@@ -216,7 +215,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected PdfPTable createMethodologyTable2(final MessageResources resources) {
         float[] widths = {10f, 30f, 45f, 25f, 15f, 15f};
         PdfPTable table = new PdfPTable(widths);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE / 3);
+        table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
         table.setWidthPercentage(100);
 
         try {
@@ -311,7 +310,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected PdfPTable create331Table(MessageResources resources) {
         float[] widths = {40f, 30f, 30f};
         PdfPTable table = new PdfPTable(widths);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE / 3);
+        table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
         table.setWidthPercentage(100);
         create331HaderTable(resources, table);
         create331TableRow(resources, table, "inteco.observatory.subgroup.1.1.1", createTextList(resources, "ob.resAnon.intav.report.331.table.req.111"), createTextList(resources, "ob.resAnon.intav.report.331.table.verP.111"));
@@ -357,77 +356,77 @@ public abstract class AnonymousResultPdfBuilder {
             PdfPTable table = new PdfPTable(widths);
             int margin = 10;
 
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.header1", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.header2", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.header3", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.header1"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.header2"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.header3"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
             table.addCell(PDFUtils.createColSpanTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.2header1"), Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
 
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification111", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification111.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.alt", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification112", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification112.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.alt", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification113", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification113.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.alt", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification114", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification114.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification121", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification121.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.gen", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification122", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification122.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.pre", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification123", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification123.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.est", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification124", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification124.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.gen", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification125", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification125.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.est", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification126", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification126.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification111"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification111.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.alt"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification112"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification112.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.alt"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification113"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification113.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.alt"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification114"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification114.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.nav"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification121"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification121.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.gen"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification122"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification122.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.pre"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification123"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification123.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.est"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification124"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification124.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.gen"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification125"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification125.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.est"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification126"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification126.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.nav"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
 
             table.addCell(PDFUtils.createColSpanTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.2header2"), Color.GRAY, ConstantsFont.labelCellFont, 3, Element.ALIGN_CENTER));
 
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification211", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification211.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.est", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification212", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification212.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.gen", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification213", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification213.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification214", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification214.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.gen", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification221", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification221.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.est", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification222", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification222.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.pre", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification223", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification223.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.gen", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification224", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification224.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification225", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification225.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.nav", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification226", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.verification226.name", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
-            table.addCell(PDFUtils.createTableCell(resources, "ob.resAnon.intav.report.46.table.aspect.est", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification211"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification211.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.est"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification212"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification212.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.gen"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification213"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification213.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.nav"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification214"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification214.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.gen"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification221"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification221.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.est"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification222"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification222.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.pre"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification223"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification223.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.gen"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification224"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification224.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.nav"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification225"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification225.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.nav"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification226"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.verification226.name"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
+            table.addCell(PDFUtils.createTableCell(resources.getMessage("ob.resAnon.intav.report.46.table.aspect.est"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
 
-            table.setSpacingAfter(ConstantsFont.SPACE_LINE);
+            table.setSpacingAfter(ConstantsFont.LINE_SPACE);
 
             return table;
         } catch (Exception e) {
@@ -456,19 +455,19 @@ public abstract class AnonymousResultPdfBuilder {
 
     protected int addObservatoryScoreSummary(HttpServletRequest request, Document document, IndexEvents index, java.util.List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections, File file, RankingInfo rankingInfo) throws Exception {
         final MessageResources messageResources = CrawlerUtils.getResources(request);
-        final Chapter chapter = PDFUtils.addChapterWithTitle(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
         ArrayList<String> boldWord = new ArrayList<String>();
 
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         boldWord = new ArrayList<String>();
         boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2.bold1"));
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         boldWord = new ArrayList<String>();
         boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3.bold1"));
-        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.paragraphFont, true));
+        chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         ScoreForm scoreForm = IntavUtils.generateScores(messageResources, evaList);
 
@@ -493,17 +492,17 @@ public abstract class AnonymousResultPdfBuilder {
         String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
         addLevelAllocationResultsSummary(messageResources, chapter, file, evaList, noDataMess);
 
-        Section section = PDFUtils.addSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.paragraphFont, section);
+        Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createGlobalTable(CrawlerUtils.getResources(request), scoreForm, Constants.OBS_PRIORITY_1));
 
-        section = PDFUtils.addSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.paragraphFont, section);
+        section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(request, section, file, evaList, noDataMess, Constants.OBS_PRIORITY_2);
         section.add(createGlobalTable(CrawlerUtils.getResources(request), scoreForm, Constants.OBS_PRIORITY_2));
 
-        PDFUtils.addSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         addResultsByPage(CrawlerUtils.getResources(request), chapter, file, evaList, noDataMess);
 
         document.add(chapter);
@@ -511,9 +510,9 @@ public abstract class AnonymousResultPdfBuilder {
     }
 
     protected int addObservatoryResultsSummary(HttpServletRequest request, Document document, IndexEvents index, java.util.List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections) throws Exception {
-        Chapter chapter = PDFUtils.addChapterWithTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p1"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, false);
-        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p2"), ConstantsFont.paragraphFont, chapter, Element.ALIGN_JUSTIFIED, true, false);
+        Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
+        PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
         countSections = addResultsByVerification(request, chapter, evaList, countSections, index);
         document.add(chapter);
 
@@ -544,7 +543,7 @@ public abstract class AnonymousResultPdfBuilder {
         for (Map.Entry<String, java.util.List<LabelValueBean>> entry : results.entrySet()) {
             String id = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), entry.getKey()).substring(0, 5);
             String title = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), entry.getKey()).substring(6) + " (" + id + ")";
-            Section section = PDFUtils.addSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+            Section section = PDFUtils.createSection(title, index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
             section.add(createVerificationTable(request, entry.getValue()));
             chapter.newPage();
         }
@@ -555,7 +554,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected PdfPTable createVerificationTable(HttpServletRequest request, java.util.List<LabelValueBean> results) {
         float[] widths = {0.50f, 0.25f, 0.25f};
         PdfPTable table = new PdfPTable(widths);
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
         table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.modalidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -590,27 +589,27 @@ public abstract class AnonymousResultPdfBuilder {
         PdfPTable table = new PdfPTable(widths);
         int margin = 10;
 
-        table.addCell(PDFUtils.createTableCell(messageResources, "resultados.observatorio.vista.primaria.verificacion", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-        table.addCell(PDFUtils.createTableCell(messageResources, "resultados.observatorio.vista.primaria.puntuacion.media", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.puntuacion.media"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 
         if (level.equals(Constants.OBS_PRIORITY_1)) {
             for (LabelValueBean label : scoreForm.getVerifications1()) {
                 table.addCell(PDFUtils.createTableCell(label.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
                 table.addCell(PDFUtils.createTableCell(label.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             }
-            table.addCell(PDFUtils.createTableCell(messageResources, "observatorio.puntuacion.nivel.1", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.puntuacion.nivel.1"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(scoreForm.getScoreLevel1().toString(), Constants.NARANJA_MP, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         } else if (level.equals(Constants.OBS_PRIORITY_2)) {
             for (LabelValueBean label : scoreForm.getVerifications2()) {
                 table.addCell(PDFUtils.createTableCell(label.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, margin));
                 table.addCell(PDFUtils.createTableCell(label.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             }
-            table.addCell(PDFUtils.createTableCell(messageResources, "observatorio.puntuacion.nivel.2", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.puntuacion.nivel.2"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(scoreForm.getScoreLevel2().toString(), Constants.NARANJA_MP, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
 
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
-        table.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
+        table.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
         return table;
     }
 
@@ -618,9 +617,9 @@ public abstract class AnonymousResultPdfBuilder {
         final Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
         final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
-        chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.paragraphFont));
+        chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.PARAGRAPH));
 
-        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p2"), ConstantsFont.paragraphFont, chapter);
+        PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p2"), ConstantsFont.PARAGRAPH, chapter);
 
         chapter.add(Chunk.NEWLINE);
 
@@ -645,7 +644,7 @@ public abstract class AnonymousResultPdfBuilder {
             table.addCell(PDFUtils.createTableCell(ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm)), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
 
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
         chapter.add(table);
     }
 
@@ -673,7 +672,7 @@ public abstract class AnonymousResultPdfBuilder {
             table.addCell(PDFUtils.createTableCell(label.getPercentageP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             table.addCell(PDFUtils.createTableCell(label.getNumberP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
         }
-        table.setSpacingBefore(ConstantsFont.SPACE_LINE);
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
         section.add(table);
     }
 

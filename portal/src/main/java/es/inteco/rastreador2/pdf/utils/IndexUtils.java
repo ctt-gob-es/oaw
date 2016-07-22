@@ -24,18 +24,18 @@ public final class IndexUtils {
     private IndexUtils() {
     }
 
-    public static void createIndex(PdfWriter writer, Document document, HttpServletRequest request, IndexEvents index, boolean alphOrder, Font titleFont) throws DocumentException {
-        createIndex(writer, document, CrawlerUtils.getResources(request), index, alphOrder, titleFont);
+    public static void createIndex(final PdfWriter writer, final Document document, final HttpServletRequest request, final IndexEvents index, final Font titleFont) throws DocumentException {
+        createIndex(writer, document, CrawlerUtils.getResources(request), index, titleFont);
     }
 
-    public static void createIndex(PdfWriter writer, Document document, final MessageResources resources, IndexEvents index, boolean alphOrder, Font titleFont) throws DocumentException {
+    public static void createIndex(final PdfWriter writer, final Document document, final MessageResources resources, final IndexEvents index, final Font titleFont) throws DocumentException {
         int beforeIndex = writer.getPageNumber();
         document.newPage();
         Paragraph indexTitle = new Paragraph(resources.getMessage("pdf.accessibility.index.title"), titleFont);
         indexTitle.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(indexTitle);
 
-        PdfPTable indexTable = createIndexTable(index, alphOrder);
+        PdfPTable indexTable = createIndexTable(index);
         document.add(indexTable);
 
         try {
@@ -71,8 +71,8 @@ public final class IndexUtils {
         }
     }
 
-    private static PdfPTable createIndexTable(IndexEvents index, boolean alphOrder) {
-        ExportPageEventsObservatoryMP.setLastPage(true);
+    private static PdfPTable createIndexTable(IndexEvents index) {
+        ExportPageEventsObservatoryMP.setPrintFooter(false);
         ExportPageEventsObservatoryBS.setLastPage(true);
 
         float[] tamTabla = {30f, 3f};
@@ -83,49 +83,42 @@ public final class IndexUtils {
         index.setComparator(entryComparator);
         java.util.List<Entry> list = index.getSortedEntries();
 
-        if (alphOrder) {
-            Collections.sort(list, new Comparator<Entry>() {
-                @Override
-                public int compare(Entry o1, Entry o2) {
-                    return o1.getKey().compareTo(o2.getKey());
-                }
-            });
-        } else {
-            try {
-                if (list.get(0).getIn1().contains("@&") || list.get(0).getIn1().contains("@1&") || list.get(0).getIn1().contains("@2&")) {
-                    Collections.sort(list, new Comparator<Entry>() {
-                        @Override
-                        public int compare(Entry o1, Entry o2) {
-                            int o1Num;
-                            if (o1.getKey().contains("@&")) {
-                                o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@&")));
-                            } else if (o1.getKey().contains("@1&")) {
-                                o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@1&")));
-                            } else {
-                                o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@2&")));
-                            }
 
-                            int o2Num;
-                            if (o2.getKey().contains("@&")) {
-                                o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@&")));
-                            } else if (o2.getKey().contains("@1&")) {
-                                o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@1&")));
-                            } else {
-                                o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@2&")));
-                            }
-
-                            if (o1Num < o2Num) {
-                                return -1;
-                            } else {
-                                return 1;
-                            }
+        try {
+            if (list.get(0).getIn1().contains("@&") || list.get(0).getIn1().contains("@1&") || list.get(0).getIn1().contains("@2&")) {
+                Collections.sort(list, new Comparator<Entry>() {
+                    @Override
+                    public int compare(Entry o1, Entry o2) {
+                        int o1Num;
+                        if (o1.getKey().contains("@&")) {
+                            o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@&")));
+                        } else if (o1.getKey().contains("@1&")) {
+                            o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@1&")));
+                        } else {
+                            o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@2&")));
                         }
-                    });
-                }
-            } catch (Exception e) {
-                Logger.putLog("Excepción al crear el índice", IndexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+
+                        int o2Num;
+                        if (o2.getKey().contains("@&")) {
+                            o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@&")));
+                        } else if (o2.getKey().contains("@1&")) {
+                            o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@1&")));
+                        } else {
+                            o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@2&")));
+                        }
+
+                        if (o1Num < o2Num) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    }
+                });
             }
+        } catch (Exception e) {
+            Logger.putLog("Excepción al crear el índice", IndexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
+
 
         int chapter = 1;
         int sectionL1 = 1;

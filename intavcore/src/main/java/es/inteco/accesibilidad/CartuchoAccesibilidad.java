@@ -55,7 +55,7 @@ public class CartuchoAccesibilidad extends Cartucho {
                 final long idRastreo = (Long) datos.get("idFulfilledCrawling");
                 final Connection connection = DataBaseManager.getConnection();
                 final Set<String> distribucionTitulos = new HashSet<String>();
-                final List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idRastreo);
+                final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreo);
                 for (Long evaluationId : evaluationIds) {
                     final List<Incidencia> incidencias = IncidenciaDatos.getIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462l);
                     for (Incidencia incidencia : incidencias) {

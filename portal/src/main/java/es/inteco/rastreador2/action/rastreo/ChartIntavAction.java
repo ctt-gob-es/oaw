@@ -95,7 +95,7 @@ public class ChartIntavAction extends Action {
 
     private int createChart(Long idExecution, String chartsPath, HttpServletRequest request, boolean regenerate) throws Exception {
 
-        List<Long> evaluationIds = AnalisisDatos.getEvaluationIds(idExecution);
+        List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idExecution);
         Map<String, Map<String, BigDecimal>> globalDataMap = new HashMap<String, Map<String, BigDecimal>>();
         Map<String, BigDecimal> totalDataMap = new HashMap<String, BigDecimal>();
 

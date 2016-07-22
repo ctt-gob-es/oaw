@@ -109,7 +109,7 @@ public final class IntavExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "", ConstantsFont.documentTitleFont);
+            PDFUtils.addCoverPage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "");
 
             //Se crea el capítulo de introdución
             Chapter chapter = globalChapter(evaList, request, globalPath, null, fechaInforme);
@@ -213,7 +213,7 @@ public final class IntavExport {
 
             document.open();
 
-            PDFUtils.addTitlePage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "", ConstantsFont.documentTitleFont);
+            PDFUtils.addCoverPage(document, CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.title") + EvaluatorUtils.getEntityName(evaList).toUpperCase(), "");
 
             Chapter chapter1 = globalChapter(evaList, request, globalPath, index, fechaInforme);
 
@@ -304,7 +304,7 @@ public final class IntavExport {
             }
 
             ExportPageEvents.setLastPage(true);
-            IndexUtils.createIndex(writer, document, request, index, false, ConstantsFont.chapterTitleFont);
+            IndexUtils.createIndex(writer, document, request, index, ConstantsFont.chapterTitleFont);
             ExportPageEvents.setLastPage(false);
 
             FileUtils.removeFile(globalPath);
@@ -753,12 +753,12 @@ public final class IntavExport {
 
             try {
                 Image globalImgGpProblemsA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemA.title") + ".jpg");
-                globalImgGpProblemsA.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                globalImgGpProblemsA.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                 globalImgGpProblemsA.scalePercent(60);
                 globalImgGpProblemsA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemA.title"));
 
                 Image globalImgGpProblemsAA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemAA.title") + ".jpg");
-                globalImgGpProblemsAA.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                globalImgGpProblemsAA.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                 globalImgGpProblemsAA.scalePercent(60);
                 globalImgGpProblemsAA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.problemAA.title"));
 
@@ -767,22 +767,22 @@ public final class IntavExport {
 
                 if (!onlyProblems) {
                     Image globalImgGpWarningsA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningA.title") + ".jpg");
-                    globalImgGpWarningsA.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                    globalImgGpWarningsA.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                     globalImgGpWarningsA.scalePercent(60);
                     globalImgGpWarningsA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningA.title"));
 
                     Image globalImgGpWarningsAA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningAA.title") + ".jpg");
-                    globalImgGpWarningsAA.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                    globalImgGpWarningsAA.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                     globalImgGpWarningsAA.scalePercent(60);
                     globalImgGpWarningsAA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.warningAA.title"));
 
                     Image globalImgGpCannottellA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellA.title") + ".jpg");
-                    globalImgGpCannottellA.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                    globalImgGpCannottellA.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                     globalImgGpCannottellA.scalePercent(60);
                     globalImgGpCannottellA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellA.title"));
 
                     Image globalImgGpCannottellAA = Image.getInstance(globalPath + CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellAA.title") + ".jpg");
-                    globalImgGpCannottellAA.setSpacingAfter(2 * ConstantsFont.SPACE_LINE);
+                    globalImgGpCannottellAA.setSpacingAfter(2 * ConstantsFont.LINE_SPACE);
                     globalImgGpCannottellAA.scalePercent(60);
                     globalImgGpCannottellA.setAlt(CrawlerUtils.getResources(request).getMessage("pdf.accessibility.global.evolution.cannottellAA.title"));
 
