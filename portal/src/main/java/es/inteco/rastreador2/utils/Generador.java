@@ -22,7 +22,7 @@ public class Generador {
     }
 
     public Set<String> genera() {
-        final Set<String> result = new HashSet<String>();
+        final Set<String> result = new HashSet<>();
 
         result.add(String.format("%d.%d.%d.%d", ipo[0], ipo[1], ipo[2], ipo[3]));
 

@@ -84,7 +84,7 @@ public final class DiagnosisDAO {
     }
 
     public static List<BasicServiceForm> getBasicServiceRequestByStatus(Connection conn, String status) {
-        List<BasicServiceForm> results = new ArrayList<BasicServiceForm>();
+        List<BasicServiceForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -155,7 +155,7 @@ public final class DiagnosisDAO {
     }
 
     public static List<Long> getEvaluationIds(Long idCrawling) throws Exception {
-        final List<Long> analysisIds = new ArrayList<Long>();
+        final List<Long> analysisIds = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -182,7 +182,7 @@ public final class DiagnosisDAO {
     }
 
     public static List<Long> getEvolutionExecutedCrawlerIds(Connection conn, String entity, Long idCrawling) {
-        List<Long> evaluationIds = new ArrayList<Long>();
+        List<Long> evaluationIds = new ArrayList<>();
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;

@@ -28,23 +28,23 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
 
         List list = new List();
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p2.AGE"));
         ListItem item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p3.AGE"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p4.AGE"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p5.AGE"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p6.AGE"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p7.AGE"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p8.AGE"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p9.AGE"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p10.AGE"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.31.p11.AGE"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -54,7 +54,7 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
     }
 
     protected static void createSection32(HttpServletRequest request, Section section, java.util.List<AnalysisForm> analysisList, long observatoryType, boolean isBasicService) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         if (!isBasicService) {
             boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p1.bold"));
             section.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -67,11 +67,11 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p4"), ConstantsFont.PARAGRAPH, section);
 
         List list = new List();
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p5.bold"));
         list.add(PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p6.bold"));
         list.add(PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.32.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -115,7 +115,7 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
     }
 
     protected static void createSection331(HttpServletRequest request, Section section) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p1.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -127,31 +127,31 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
 
         List list = new List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p5.bold"));
         ListItem item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p6.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p7.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p8.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p8"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p9.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p10.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p10"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p11.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.331.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -165,7 +165,7 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
     }
 
     protected static void createSection332(HttpServletRequest request, Section section) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p1.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -173,31 +173,31 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
 
         List list = new List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p3.bold"));
         ListItem item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p4.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p4"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p5.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p6.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p7.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p8.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p8"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p9.bold"));
         item = PDFUtils.addMixFormatListItem(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -213,7 +213,7 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk("http://www.rfc-editor.org/rfc/bcp/bcp47.txt", "http://www.rfc-editor.org/rfc/bcp/bcp47.txt", true, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.332.p13"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -226,7 +226,7 @@ public final class MultilanguageAnonymousResultExportPdfSection3 {
     }
 
     protected static void createSection333(HttpServletRequest request, Section section) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.333.p1.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.333.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 

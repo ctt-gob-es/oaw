@@ -22,11 +22,16 @@ public class ChartForm {
     private int x;
     private int y;
 
+    public ChartForm(DefaultCategoryDataset dataSet, boolean isTridimensional, boolean isSeriesChart,
+                     boolean isOnePixelGraph, boolean percentage, boolean printLegend, boolean roundLabelPosition,
+                     boolean gridline, int x, int y, String color) {
+        this("", "", "", dataSet, isTridimensional, isSeriesChart, isOnePixelGraph, percentage, printLegend, roundLabelPosition, gridline, x, y, color);
+    }
+
     public ChartForm(String title, String columnTitle, String rowTitle,
                      DefaultCategoryDataset dataSet, boolean isTridimensional, boolean isSeriesChart,
                      boolean isOnePixelGraph, boolean percentage, boolean printLegend, boolean roundLabelPosition,
                      boolean gridline, int x, int y, String color) {
-        super();
         this.title = title;
         this.columnTitle = columnTitle;
         this.rowTitle = rowTitle;
@@ -42,16 +47,11 @@ public class ChartForm {
         this.x = x;
         this.y = y;
         this.isFixedColorBars = false;
-        if (isOnePixelGraph) {
-            this.showColumsLabels = false;
-        } else {
-            this.showColumsLabels = true;
-        }
+        this.showColumsLabels = !isOnePixelGraph;
     }
 
     public String getTitle() {
-        //return title;
-        return "";
+        return title;
     }
 
     public void setTitle(String title) {
@@ -59,8 +59,7 @@ public class ChartForm {
     }
 
     public String getColumnTitle() {
-//        return columnTitle;
-        return "";
+        return columnTitle;
     }
 
     public void setColumnTitle(String columnTitle) {
@@ -68,8 +67,7 @@ public class ChartForm {
     }
 
     public String getRowTitle() {
-//        return rowTitle;
-        return "";
+        return rowTitle;
     }
 
     public void setRowTitle(String rowTitle) {
@@ -118,6 +116,10 @@ public class ChartForm {
 
     public String getColor() {
         return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public void setOneColor(String color) {
@@ -178,10 +180,6 @@ public class ChartForm {
 
     public void setFixedColorBars(boolean isFixedColorBars) {
         this.isFixedColorBars = isFixedColorBars;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public boolean isShowColumsLabels() {

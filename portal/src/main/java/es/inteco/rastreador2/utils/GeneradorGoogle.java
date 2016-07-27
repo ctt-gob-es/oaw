@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class GeneradorGoogle {
 
-    Set<String> hs = new HashSet<String>();
+    Set<String> hs = new HashSet<>();
 
     public Set<String> busca(String query, int pagina) {
 

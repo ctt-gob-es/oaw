@@ -56,7 +56,7 @@ public class HeuristicFilterExcepcion extends BaseFilterExcepcion implements
         // Listados
         List<String> lstBeforeTerms;
         List<String> lstAfterTerms;
-        List<Integer> lstAuxPosition = new ArrayList<Integer>();
+        List<Integer> lstAuxPosition = new ArrayList<>();
 
         // PARA CADA posicion en la que se encuentre el termino.
         for (Integer position : terminoDto.getPositions()) {
@@ -335,7 +335,7 @@ public class HeuristicFilterExcepcion extends BaseFilterExcepcion implements
     private List<String> getBeforeTerminos(int position, List<String> context) {
 
         // Listado
-        List<String> lstBeforeTerms = new ArrayList<String>();
+        List<String> lstBeforeTerms = new ArrayList<>();
 
         // Recuperamos la primera posicion
         int beforePosition = this.getBeforePosition(position);
@@ -359,7 +359,7 @@ public class HeuristicFilterExcepcion extends BaseFilterExcepcion implements
     private List<String> getAfterTerminos(int position, List<String> context) {
 
         // Listado
-        List<String> lstAfterTerms = new ArrayList<String>();
+        List<String> lstAfterTerms = new ArrayList<>();
 
         // Retornamos la ultima posicion posterior al termino
         int afterPosition = this.getAfterPosition(context, position);
@@ -381,7 +381,7 @@ public class HeuristicFilterExcepcion extends BaseFilterExcepcion implements
      */
     private int getBeforePosition(Integer position) {
         // Analizamos la posicion del termino por la parte anterior del texto
-        int pos = (position.intValue() - SALTOS_CONTEXTO);
+        int pos = (position - SALTOS_CONTEXTO);
         // Retornamos la posicion anterior
         return (pos >= 0) ? pos : 0;
     }
@@ -395,7 +395,7 @@ public class HeuristicFilterExcepcion extends BaseFilterExcepcion implements
      */
     private int getAfterPosition(List<String> lstTerminos, Integer position) {
         // Analizamos la posicion del termino por la parte posterior del texto
-        int pos = (position.intValue() + SALTOS_CONTEXTO);
+        int pos = (position + SALTOS_CONTEXTO);
         // Retornamos la posicion posterior
         return (pos < lstTerminos.size()) ? pos : lstTerminos.size();
     }

@@ -14,7 +14,7 @@ public class SectionForm {
     private String type;
 
     public SectionForm() {
-        this.objectList = new ArrayList<Object>();
+        this.objectList = new ArrayList<>();
         this.title = "";
         this.type = Constants.OBJECT_TYPE_SECTION;
     }

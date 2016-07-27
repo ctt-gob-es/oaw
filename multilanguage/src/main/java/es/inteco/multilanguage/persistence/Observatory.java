@@ -36,8 +36,8 @@ public class Observatory implements Serializable {
 
     public Observatory(Long id) {
         this.id = id;
-        results = new ArrayList<Results>();
-        categories = new ArrayList<Category>();
+        results = new ArrayList<>();
+        categories = new ArrayList<>();
     }
 
     public Long getId() {

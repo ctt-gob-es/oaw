@@ -34,7 +34,7 @@ public class Page implements Serializable {
     public Page(Long id_page, String name) {
         this.id_page = id_page;
         this.name = name;
-        results = new ArrayList<PageResult>();
+        results = new ArrayList<>();
     }
 
     public Long getId() {

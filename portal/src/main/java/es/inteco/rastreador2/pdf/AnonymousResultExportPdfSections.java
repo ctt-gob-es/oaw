@@ -261,7 +261,7 @@ public final class AnonymousResultExportPdfSections {
         AnonymousResultExportPdfSectionEv.createSectionEv24(request, section24, graphicPath, pageObservatoryMap);
         section3L1.newPage();
 
-        Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
+        Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> pageObservatoryEntry : pageObservatoryMap.entrySet()) {
             resultsByAspect.put(pageObservatoryEntry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageObservatoryEntry.getValue()));
         }

@@ -25,9 +25,9 @@ import java.util.*;
  */
 public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
-    private final Stack<Boolean> currentMedia = new Stack<Boolean>();
+    private final Stack<Boolean> currentMedia = new Stack<>();
     protected CSSStyleRule currentStyleRule;
-    protected final List<CSSProblem> problems = new ArrayList<CSSProblem>();
+    protected final List<CSSProblem> problems = new ArrayList<>();
     protected CSSResource resource;
     private Document document;
 
@@ -37,7 +37,7 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     }
 
     public List<CSSProblem> evaluate(final Document document, final List<CSSResource> cssResources) {
-        final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
+        final List<CSSProblem> cssProblems = new ArrayList<>();
         for (CSSResource cssResource : cssResources) {
             cssProblems.addAll(evaluate(document, cssResource));
         }

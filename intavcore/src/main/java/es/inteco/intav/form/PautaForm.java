@@ -10,7 +10,7 @@ public class PautaForm implements Serializable {
     private List<ProblemForm> problems;
 
     public PautaForm() {
-        problems = new ArrayList<ProblemForm>();
+        problems = new ArrayList<>();
     }
 
     public String getName() {

@@ -61,7 +61,7 @@ public final class EvaluatorUtility {
     private static Evaluator evaluator = null;
 
     //guideline
-    private static Map<String, Guideline> guidelineMap = new HashMap<String, Guideline>();
+    private static Map<String, Guideline> guidelineMap = new HashMap<>();
 
     // initialization flag
     private static boolean initialized = false;
@@ -604,7 +604,7 @@ public final class EvaluatorUtility {
                 doc.getElementsByTagName("html").item(0).setUserData("realHtml", "false", null);
             }
 
-            List<Node> nodeList = new ArrayList<Node>();
+            List<Node> nodeList = new ArrayList<>();
             EvaluatorUtils.generateNodeList(elementRoot, nodeList, 1000);
 
             if (parser.hasDoctype()) {
@@ -762,7 +762,7 @@ public final class EvaluatorUtility {
 
     private static void validateCss(final Document doc, final CheckAccessibility checkAccessibility, final String language) {
         final Element elementRoot = doc.getDocumentElement();
-        final List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
+        final List<CssValidationError> cssValidationErrors = new ArrayList<>();
         long time = System.currentTimeMillis();
         if (StringUtils.isNotEmpty(checkAccessibility.getUrl())) {
             cssValidationErrors.addAll(getCssValidationErrors(checkAccessibility.getUrl(), language));
@@ -808,7 +808,7 @@ public final class EvaluatorUtility {
     }
 
     private static List<Element> getStyleSheets(final Document doc) {
-        final List<Element> styleSheets = new ArrayList<Element>();
+        final List<Element> styleSheets = new ArrayList<>();
         final NodeList links = doc.getElementsByTagName("link");
         for (int i = 0; i < links.getLength(); i++) {
             final Element link = (Element) links.item(i);
@@ -822,7 +822,7 @@ public final class EvaluatorUtility {
     }
 
     private static List<CssValidationError> getCssValidationNotWorksMessage() {
-        final List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
+        final List<CssValidationError> cssValidationErrors = new ArrayList<>();
         final CssValidationError cssValidationError = new CssValidationError();
         final PropertiesManager pmgr = new PropertiesManager();
         final String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator.human.submit.code");
@@ -839,7 +839,7 @@ public final class EvaluatorUtility {
 
     // Devuelve los errores de validación del código HTML
     public static List<ValidationError> getValidationErrors(CheckAccessibility checkAccessibility, InputStream inputStream, String charset) {
-        List<ValidationError> validationErrors = new ArrayList<ValidationError>();
+        List<ValidationError> validationErrors = new ArrayList<>();
 
         try {
             // Reseteamos el inputStream a su estado inicial para poder convertirlo a texto
@@ -954,7 +954,7 @@ public final class EvaluatorUtility {
 
     // Devuelve los errores de validación del código Css
     public static List<CssValidationError> getCssValidationErrors(final String filename, final String language) {
-        final List<CssValidationError> cssValidationErrors = new ArrayList<CssValidationError>();
+        final List<CssValidationError> cssValidationErrors = new ArrayList<>();
         final PropertiesManager pmgr = new PropertiesManager();
 
         if (StringUtils.isUrl(filename)) {

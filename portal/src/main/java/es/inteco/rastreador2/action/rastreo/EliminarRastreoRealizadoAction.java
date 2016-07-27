@@ -34,7 +34,7 @@ public class EliminarRastreoRealizadoAction extends Action {
                     c = DataBaseManager.getConnection();
                     if (request.getParameter(Constants.CONFIRMACION) == null) {
                         if (errors == null || errors.isEmpty()) {
-                            List<RastreoEjecutadoForm> rastreoFormList = new ArrayList<RastreoEjecutadoForm>();
+                            List<RastreoEjecutadoForm> rastreoFormList = new ArrayList<>();
                             for (int i = 0; i < rastreosSeleccionados.getSelect().length; i++) {
                                 rastreoFormList.add(RastreoDAO.cargarRastreoEjecutado(c, Long.parseLong(rastreosSeleccionados.getSelect()[i])));
                             }

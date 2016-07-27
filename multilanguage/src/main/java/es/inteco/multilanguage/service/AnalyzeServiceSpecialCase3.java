@@ -23,7 +23,7 @@ public class AnalyzeServiceSpecialCase3 {
 
     public List<Analysis> analyze(List<Analysis> analysisList, AnalysisConfiguration analysisConfiguration) throws Exception {
         for (Analysis analysis : analysisList) {
-            List<LanguageFound> languagesFoundList = new ArrayList<LanguageFound>();
+            List<LanguageFound> languagesFoundList = new ArrayList<>();
             languagesFoundList.addAll(analysis.getLanguagesFound());
 
             for (LanguageFound language : analysis.getLanguagesFound()) {

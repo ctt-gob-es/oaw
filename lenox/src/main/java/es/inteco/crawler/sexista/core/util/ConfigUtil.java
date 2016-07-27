@@ -28,8 +28,6 @@ public class ConfigUtil {
 
             properties.load(is);
 
-        } catch (FileNotFoundException e) {
-            Logger.getLogger(ConfigUtil.class).error(e.getMessage());
         } catch (IOException e) {
             Logger.getLogger(ConfigUtil.class).error(e.getMessage());
         } finally {
@@ -62,8 +60,6 @@ public class ConfigUtil {
 
             properties.load(is);
 
-        } catch (FileNotFoundException e) {
-            Logger.getLogger(ConfigUtil.class).error(e.getMessage());
         } catch (IOException e) {
             Logger.getLogger(ConfigUtil.class).error(e.getMessage());
         } finally {

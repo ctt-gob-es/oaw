@@ -96,7 +96,7 @@ public class Observatory {
 
     public List<VerificationModality> getVerificationModalityList() {
         if (verificationModalityList == null) {
-            verificationModalityList = new ArrayList<VerificationModality>();
+            verificationModalityList = new ArrayList<>();
         }
         return verificationModalityList;
     }
@@ -108,7 +108,7 @@ public class Observatory {
 
     public List<VerificationScore> getVerificationScoreList() {
         if (verificationScoreList == null) {
-            verificationScoreList = new ArrayList<VerificationScore>();
+            verificationScoreList = new ArrayList<>();
         }
         return verificationScoreList;
     }
@@ -120,7 +120,7 @@ public class Observatory {
 
     public List<AspectScore> getAspectScoreList() {
         if (aspectScoreList == null) {
-            aspectScoreList = new ArrayList<AspectScore>();
+            aspectScoreList = new ArrayList<>();
         }
         return aspectScoreList;
     }
@@ -131,7 +131,7 @@ public class Observatory {
 
     public List<Category> getCategoryList() {
         if (categoryList == null) {
-            categoryList = new ArrayList<Category>();
+            categoryList = new ArrayList<>();
         }
         return categoryList;
     }

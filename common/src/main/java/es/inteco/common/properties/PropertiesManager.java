@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class PropertiesManager {
 
-    private static final Map<String, Properties> PROPERTIES_MAP = new HashMap<String, Properties>();
+    private static final Map<String, Properties> PROPERTIES_MAP = new HashMap<>();
 
     static {
         initProperties();

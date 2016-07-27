@@ -75,8 +75,8 @@ public class NuevaCategoriaAction extends Action {
                 }
                 nuevaCategoriaForm.setNombre(cc.espacios());
 
-                List<String> terminos = new ArrayList<String>();
-                List<Float> pesos = new ArrayList<Float>();
+                List<String> terminos = new ArrayList<>();
+                List<Float> pesos = new ArrayList<>();
 
                 if (!nuevaCategoriaForm.getTermino1().equals("")) {
                     terminos.add(nuevaCategoriaForm.getTermino1());

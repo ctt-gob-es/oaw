@@ -70,17 +70,17 @@ public class Evaluation {
         filenameEncoded = "";
         base = "";
         source = "";
-        checksExecuted = new ArrayList<Integer>();
+        checksExecuted = new ArrayList<>();
         checksExecutedStr = "";
-        vectorProblemsAll = new ArrayList<Problem>();
-        vectorProblemsUnresolved = new ArrayList<Problem>();
-        vectorProblemsUser = new ArrayList<Problem>();
-        vectorGroupsHtml = new ArrayList<Object>();
-        vectorGroupsGuide = new ArrayList<Object>();
-        hashCheckProblem = new Hashtable<String, List<Problem>>();
-        vectorGuidelines = new ArrayList<String>();
-        vectorChecksRun = new ArrayList<Integer>();
-        vectorProblemsSorted = new ArrayList<Problem>();
+        vectorProblemsAll = new ArrayList<>();
+        vectorProblemsUnresolved = new ArrayList<>();
+        vectorProblemsUser = new ArrayList<>();
+        vectorGroupsHtml = new ArrayList<>();
+        vectorGroupsGuide = new ArrayList<>();
+        hashCheckProblem = new Hashtable<>();
+        vectorGuidelines = new ArrayList<>();
+        vectorChecksRun = new ArrayList<>();
+        vectorProblemsSorted = new ArrayList<>();
         docHtml = null;
     }
 
@@ -232,7 +232,7 @@ public class Evaluation {
     }
 
     public List<Integer> getChecksFailed() {
-        final List<Integer> checksFailed = new ArrayList<Integer>();
+        final List<Integer> checksFailed = new ArrayList<>();
         for (Problem problem : vectorProblemsAll) {
             if (problem.getCheck() != null) {
                 if (!checksFailed.contains(problem.getCheck().getId())) {
@@ -302,7 +302,7 @@ public class Evaluation {
                             if (hashCheckProblem.get(subgroup) != null) {
                                 hashCheckProblem.get(subgroup).add(problem);
                             } else {
-                                final List<Problem> vProblem = new ArrayList<Problem>();
+                                final List<Problem> vProblem = new ArrayList<>();
                                 vProblem.add(problem);
                                 hashCheckProblem.put(subgroup, vProblem);
                             }

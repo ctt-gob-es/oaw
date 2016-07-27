@@ -134,7 +134,7 @@ public abstract class AnonymousResultPdfBuilder {
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoLevelEvolutionGraphic(resultData);
 
         PDFUtils.createTitleTable(tableTitle, section, 420);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.date"));
         headers.add(resources.getMessage("resultados.anonimos.porc.portales"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -438,7 +438,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected void createVerificationResults(final MessageResources resources, Section section, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap, String verification) {
         Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(verification, pageObservatoryMap);
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(resources, resultData);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.date"));
         headers.add(resources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -447,7 +447,7 @@ public abstract class AnonymousResultPdfBuilder {
     protected void createAspectResults(final MessageResources resources, Section section, Map<Date, Map<String, BigDecimal>> resultsByAspect, String aspect) {
         Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(aspect, resultsByAspect);
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(resources, resultData);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.date"));
         headers.add(resources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -457,32 +457,32 @@ public abstract class AnonymousResultPdfBuilder {
         final MessageResources messageResources = CrawlerUtils.getResources(request);
         final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
-        ArrayList<String> boldWord = new ArrayList<String>();
+        ArrayList<String> boldWord = new ArrayList<>();
 
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        boldWord = new ArrayList<String>();
+        boldWord = new ArrayList<>();
         boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2.bold1"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p2"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        boldWord = new ArrayList<String>();
+        boldWord = new ArrayList<>();
         boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3.bold1"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage(CrawlerUtils.getLocale(request), "resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         ScoreForm scoreForm = IntavUtils.generateScores(messageResources, evaList);
 
-        boldWord = new ArrayList<String>();
+        boldWord = new ArrayList<>();
         boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.nivel.adecuacion") + ": ");
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + scoreForm.getLevel(), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, true));
-        boldWord = new ArrayList<String>();
+        boldWord = new ArrayList<>();
         boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.puntuacion.total") + ": ");
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + scoreForm.getTotalScore(), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
         if (rankingInfo != null && rankingInfo.getGlobalSeedsNumber() > 1) {
-            boldWord = new ArrayList<String>();
+            boldWord = new ArrayList<>();
             boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.posicion.global") + ": ");
             chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + rankingInfo.getGlobalRank() + " " + messageResources.getMessage("de.text", rankingInfo.getGlobalSeedsNumber()), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
 
-            boldWord = new ArrayList<String>();
+            boldWord = new ArrayList<>();
             boldWord.add(messageResources.getMessage(CrawlerUtils.getLocale(request), "observatorio.posicion.segmento", rankingInfo.getCategoria().getName()) + ": ");
             chapter.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + rankingInfo.getCategoryRank() + " " + messageResources.getMessage("de.text", rankingInfo.getCategorySeedsNumber()), boldWord, ConstantsFont.summaryScoreBoldFont, ConstantsFont.summaryScoreFont, false));
 
@@ -520,7 +520,7 @@ public abstract class AnonymousResultPdfBuilder {
     }
 
     protected int addResultsByVerification(HttpServletRequest request, Chapter chapter, java.util.List<ObservatoryEvaluationForm> evaList, int countSections, IndexEvents index) {
-        Map<String, java.util.List<LabelValueBean>> results = new TreeMap<String, java.util.List<LabelValueBean>>();
+        Map<String, java.util.List<LabelValueBean>> results = new TreeMap<>();
 
         int counter = 1;
         for (ObservatoryEvaluationForm evaluationForm : evaList) {
@@ -614,7 +614,7 @@ public abstract class AnonymousResultPdfBuilder {
     }
 
     protected void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final java.util.List<ObservatoryEvaluationForm> evaList, final String noDataMess) throws Exception {
-        final Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.PARAGRAPH));

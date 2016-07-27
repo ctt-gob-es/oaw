@@ -54,7 +54,7 @@ public class CartuchoAccesibilidad extends Cartucho {
             if (checkAccesibility.getGuidelineFile().startsWith("observatorio-une-2012")) {
                 final long idRastreo = (Long) datos.get("idFulfilledCrawling");
                 final Connection connection = DataBaseManager.getConnection();
-                final Set<String> distribucionTitulos = new HashSet<String>();
+                final Set<String> distribucionTitulos = new HashSet<>();
                 final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreo);
                 for (Long evaluationId : evaluationIds) {
                     final List<Incidencia> incidencias = IncidenciaDatos.getIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462l);

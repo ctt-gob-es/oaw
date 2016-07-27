@@ -170,7 +170,7 @@ public final class IntavUtils {
     }
 
     public static Map<String, List<String>> getFailedChecks(HttpServletRequest request, ObservatoryEvaluationForm evaluationForm, Guideline guideline) {
-        Map<String, List<String>> failedChecks = new TreeMap<String, List<String>>();
+        Map<String, List<String>> failedChecks = new TreeMap<>();
 
         for (Integer idFailed : evaluationForm.getChecksFailed()) {
             for (int i = 0; i < guideline.getGroups().size(); i++) {

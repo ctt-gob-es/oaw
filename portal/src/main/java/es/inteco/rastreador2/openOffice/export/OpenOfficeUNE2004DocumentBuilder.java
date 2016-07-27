@@ -67,7 +67,7 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
 
         if (evolution) {
             Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioIntavUtils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId));
-            Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
+            Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
             for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
                 resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), entry.getValue()));
             }

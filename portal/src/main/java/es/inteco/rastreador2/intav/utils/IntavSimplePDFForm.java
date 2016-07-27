@@ -12,7 +12,7 @@ public class IntavSimplePDFForm {
 
     public IntavSimplePDFForm() {
         priority = new PriorityForm();
-        guidelinesList = new ArrayList<ISPDFGuidelineForm>();
+        guidelinesList = new ArrayList<>();
     }
 
     public PriorityForm getPriority() {

@@ -149,7 +149,7 @@ public class MultilanguageUtils {
     }
 
     public static String getCookie(HttpURLConnection connection, String oldCookieText) {
-        List<Cookie> oldCookies = new ArrayList<Cookie>();
+        List<Cookie> oldCookies = new ArrayList<>();
         String[] oldCookiesArray = oldCookieText.split(";");
 
         for (String oldCookie : oldCookiesArray) {
@@ -160,7 +160,7 @@ public class MultilanguageUtils {
 
         // Cogemos la lista de cookies, teniendo en cuenta que el parametro set-cookie no es sensible a mayusculas o minusculas
         Map<String, List<String>> headerFields = connection.getHeaderFields();
-        List<String> cookies = new ArrayList<String>();
+        List<String> cookies = new ArrayList<>();
         if (headerFields != null && !headerFields.isEmpty()) {
             for (Map.Entry<String, List<String>> headersEntry : headerFields.entrySet()) {
                 if ("set-cookie".equalsIgnoreCase(headersEntry.getKey())) {
@@ -284,8 +284,8 @@ public class MultilanguageUtils {
     }
 
     private static List<LanguageFound> chooseCorrectFoundLanguages(List<LanguageFound> languagesFound) {
-        List<Language> assignedLanguages = new ArrayList<Language>();
-        List<LanguageFound> langFoundAux = new ArrayList<LanguageFound>();
+        List<Language> assignedLanguages = new ArrayList<>();
+        List<LanguageFound> langFoundAux = new ArrayList<>();
         for (LanguageFound languageFound : languagesFound) {
             if (languageFound.getPossibleLanguages().size() == 1) {
                 languageFound.setLanguage(languageFound.getPossibleLanguages().get(0));
@@ -339,7 +339,7 @@ public class MultilanguageUtils {
         List<Element> links = getElementsByTagName(document, "A");
         links.addAll(getElementsByTagName(document, "AREA"));
 
-        List<LanguageFound> languagesFound = new ArrayList<LanguageFound>();
+        List<LanguageFound> languagesFound = new ArrayList<>();
         for (Element link : links) {
             LanguageFound languageFound = new LanguageFound();
             for (Language language : languages) {
@@ -451,7 +451,7 @@ public class MultilanguageUtils {
     public static List<LanguageFound> sortLanguagesFound(List<LanguageFound> languages) {
         PropertiesManager pmgr = new PropertiesManager();
         String languagesStr = pmgr.getValue("multilanguage.properties", "languages.order");
-        List<LanguageFound> sortLanguages = new ArrayList<LanguageFound>();
+        List<LanguageFound> sortLanguages = new ArrayList<>();
         List<String> languagesOrder = Arrays.asList(languagesStr.split(";"));
         for (String idLanguage : languagesOrder) {
             for (LanguageFound language : languages) {
@@ -466,7 +466,7 @@ public class MultilanguageUtils {
     public static List<LanguageFoundForm> sortLanguagesFoundForm(List<LanguageFoundForm> languages) {
         PropertiesManager pmgr = new PropertiesManager();
         String languagesStr = pmgr.getValue("multilanguage.properties", "languages.order");
-        List<LanguageFoundForm> sortLanguages = new ArrayList<LanguageFoundForm>();
+        List<LanguageFoundForm> sortLanguages = new ArrayList<>();
         List<String> languagesOrder = Arrays.asList(languagesStr.split(";"));
         for (String idLanguage : languagesOrder) {
             for (LanguageFoundForm language : languages) {
@@ -481,7 +481,7 @@ public class MultilanguageUtils {
     public static List<Language> sortLanguagesForm(List<Language> languages) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         String languagesStr = pmgr.getValue("multilanguage.properties", "languages.order");
-        List<Language> sortLanguages = new ArrayList<Language>();
+        List<Language> sortLanguages = new ArrayList<>();
         List<String> languagesOrder = Arrays.asList(languagesStr.split(";"));
         for (String idLanguage : languagesOrder) {
             for (Language language : languages) {
@@ -511,7 +511,7 @@ public class MultilanguageUtils {
     public static List<LanguageForm> orderLanguagesForm(List<LanguageForm> languages) {
         PropertiesManager pmgr = new PropertiesManager();
         String languagesStr = pmgr.getValue("multilanguage.properties", "languages.order");
-        List<LanguageForm> orderedLanguages = new ArrayList<LanguageForm>();
+        List<LanguageForm> orderedLanguages = new ArrayList<>();
         List<String> languagesOrder = Arrays.asList(languagesStr.split(";"));
         for (String idLanguage : languagesOrder) {
             for (LanguageForm language : languages) {
@@ -526,7 +526,7 @@ public class MultilanguageUtils {
     public static List<Language> orderLanguages(List<Language> languages) {
         PropertiesManager pmgr = new PropertiesManager();
         String languagesStr = pmgr.getValue("multilanguage.properties", "languages.order");
-        List<Language> orderedLanguages = new ArrayList<Language>();
+        List<Language> orderedLanguages = new ArrayList<>();
         List<String> languagesOrder = Arrays.asList(languagesStr.split(";"));
         for (String idLanguage : languagesOrder) {
             for (Language language : languages) {
@@ -618,7 +618,7 @@ public class MultilanguageUtils {
         try {
             PropertiesManager pmgr = new PropertiesManager();
 
-            List<Node> nodes = new ArrayList<Node>();
+            List<Node> nodes = new ArrayList<>();
             nodes = generateTextNodeList(document.getDocumentElement(), nodes, Integer.MAX_VALUE);
 
             List<String> attributes = Arrays.asList(pmgr.getValue("multilanguage.properties", "text.attributes").split(";"));
@@ -766,7 +766,7 @@ public class MultilanguageUtils {
     }
 
     public static List<Element> getElementsByTagName(Document document, String tag) {
-        List<Element> elements = new ArrayList<Element>();
+        List<Element> elements = new ArrayList<>();
 
         NodeList allElements = document.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -780,7 +780,7 @@ public class MultilanguageUtils {
     }
 
     public static List<Element> getElementsByTagName(Element element, String tag) {
-        List<Element> elements = new ArrayList<Element>();
+        List<Element> elements = new ArrayList<>();
 
         NodeList allElements = element.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -794,7 +794,7 @@ public class MultilanguageUtils {
     }
 
     public static List<LanguageFound> deleteDuplicateLanguages(List<LanguageFound> languagesFound) {
-        List<LanguageFound> languagesFoundAux = new ArrayList<LanguageFound>();
+        List<LanguageFound> languagesFoundAux = new ArrayList<>();
         for (LanguageFound language : languagesFound) {
             if (!languagesFoundAux.contains(language)) {
                 languagesFoundAux.add(language);
@@ -821,7 +821,7 @@ public class MultilanguageUtils {
     public static List<Analysis> getLanguagesFromHome(List<Analysis> analysisList) throws Exception {
         // Lista de cambios de idioma en la home
         List<LanguageFound> languagesFound = analysisList.get(0).getLanguagesFound();
-        List<Long> languagesChecked = new ArrayList<Long>();
+        List<Long> languagesChecked = new ArrayList<>();
 
         for (LanguageFound switchLanguageHome : languagesFound) {
             if (!languagesChecked.contains(switchLanguageHome.getLanguage().getId())) {
@@ -855,7 +855,7 @@ public class MultilanguageUtils {
     public static List<SiteTranslationInformationForm> getPortalTraductionInformation(List<AnalysisForm> analysisFormList, boolean complet) throws Exception {
 
         Map<String, SiteTranslationInformationForm> infoMap = getPortalTraductionPercentageLanguages(analysisFormList);
-        List<SiteTranslationInformationForm> infoList = new ArrayList<SiteTranslationInformationForm>();
+        List<SiteTranslationInformationForm> infoList = new ArrayList<>();
 
         if (complet) {
             infoMap = getLanguagesValidity(infoMap, analysisFormList);
@@ -872,7 +872,7 @@ public class MultilanguageUtils {
 
     public static Map<String, SiteTranslationInformationForm> getPortalTraductionPercentageLanguages(List<AnalysisForm> analysisFormList) throws Exception {
 
-        Map<String, SiteTranslationInformationForm> infoMap = new TreeMap<String, SiteTranslationInformationForm>();
+        Map<String, SiteTranslationInformationForm> infoMap = new TreeMap<>();
         List<Language> languages = LanguageDAO.getLanguages(true);
 
         for (Language language : languages) {
@@ -904,7 +904,7 @@ public class MultilanguageUtils {
         if (analysisList != null && !analysisList.isEmpty()) {
             List<Language> languages = LanguageDAO.getLanguages(true);
             for (AnalysisForm analysisForm : analysisList) {
-                List<String> countedLangList = new ArrayList<String>();
+                List<String> countedLangList = new ArrayList<>();
                 //Iteramos sobre los lenguajes de la home, suponemos estos los que deberian estar presentes en todas las paginas
                 //for(LanguageFoundForm languageHomeFoundForm : analysisList.get(0).getLanguagesFound()) {
                 for (Language language : languages) {

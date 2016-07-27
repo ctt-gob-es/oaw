@@ -72,16 +72,16 @@ public class Guideline {
         date = "";
         statusElement = null;
         preamble = null;
-        groups = new ArrayList<GuidelineGroup>();
-        hashtableTechniques = new Hashtable<Integer, List<String>>();
-        hashtableSuccessCriteria = new Hashtable<Integer, List<String>>();
+        groups = new ArrayList<>();
+        hashtableTechniques = new Hashtable<>();
+        hashtableSuccessCriteria = new Hashtable<>();
         hashtableIssues = new Hashtable();
-        vectorTechniques = new ArrayList<String>();
-        hashtableTechChecks = new Hashtable<String, List<Integer>>();
-        hashtableScChecks = new Hashtable<String, List<Integer>>();
+        vectorTechniques = new ArrayList<>();
+        hashtableTechChecks = new Hashtable<>();
+        hashtableScChecks = new Hashtable<>();
         vectorHtmlGroups = new ArrayList();
         vectorGuidelineGroups = new ArrayList();
-        vectorChecksWithoutSc = new ArrayList<Check>();
+        vectorChecksWithoutSc = new ArrayList<>();
     }
 
     public String getType() {
@@ -408,7 +408,7 @@ public class Guideline {
                     // get techniques for check (WCAG specific)
                     NodeList listTechniques = ((Element) childNodes.item(x)).getElementsByTagName("technique");
                     if (listTechniques.getLength() > 0) {
-                        List<String> vectorTechniques = new ArrayList<String>();
+                        List<String> vectorTechniques = new ArrayList<>();
 
                         for (int t = 0; t < listTechniques.getLength(); t++) {
                             String stringTechId = ((Element) listTechniques.item(t)).getAttribute("id");
@@ -416,7 +416,7 @@ public class Guideline {
 
                             List<Integer> vectorTechChecks = hashtableTechChecks.get(stringTechId);
                             if (vectorTechChecks == null) {
-                                vectorTechChecks = new ArrayList<Integer>();
+                                vectorTechChecks = new ArrayList<>();
                                 hashtableTechChecks.put(stringTechId, vectorTechChecks);
                             }
                             vectorTechChecks.add(integerCheckId);
@@ -427,7 +427,7 @@ public class Guideline {
                     // get success criteria for check (WCAG specific)
                     NodeList listSC = ((Element) childNodes.item(x)).getElementsByTagName("success-criteria");
                     if (listSC.getLength() > 0) {
-                        List<String> vectorSC = new ArrayList<String>();
+                        List<String> vectorSC = new ArrayList<>();
 
                         for (int sc = 0; sc < listSC.getLength(); sc++) {
                             String stringScId = ((Element) listSC.item(sc)).getAttribute("id");
@@ -435,7 +435,7 @@ public class Guideline {
 
                             List<Integer> vectorScChecks = hashtableScChecks.get(stringScId);
                             if (vectorScChecks == null) {
-                                vectorScChecks = new ArrayList<Integer>();
+                                vectorScChecks = new ArrayList<>();
                                 hashtableScChecks.put(stringScId, vectorScChecks);
                             }
                             vectorScChecks.add(integerCheckId);

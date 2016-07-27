@@ -108,7 +108,7 @@ public class NuevaCuentaUsuarioAction extends Action {
                                 insertarRastreoForm.setCuenta_cliente(idCuenta);
 
                                 //Obtenemos los datos de los Cartuchos seleccionados
-                                ArrayList<CartuchoForm> cartuchosSelected = new ArrayList<CartuchoForm>();
+                                ArrayList<CartuchoForm> cartuchosSelected = new ArrayList<>();
                                 for (int i = 0; i < nuevaCuentaUsuarioForm.getCartuchos().size(); i++) {
                                     for (int j = 0; j < nuevaCuentaUsuarioForm.getCartuchosSelected().length; j++) {
                                         if (String.valueOf(nuevaCuentaUsuarioForm.getCartuchos().get(i).getId()).equals(

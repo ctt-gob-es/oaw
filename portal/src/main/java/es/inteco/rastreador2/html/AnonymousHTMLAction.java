@@ -49,13 +49,13 @@ public class AnonymousHTMLAction extends Action {
             pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(request.getParameter(Constants.ID), Constants.COMPLEXITY_SEGMENT_NONE, null);
         }
 
-        Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = new HashMap<Date, List<ObservatoryEvaluationForm>>();
+        Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = new HashMap<>();
         if (requestType.equals(Constants.EVOLUTION_RESULTS1) || requestType.equals(Constants.EVOLUTION_RESULTS2) ||
                 requestType.equals(Constants.EVOLUTION_RESULTS3) || requestType.equals(Constants.EVOLUTION_RESULTS4)) {
             pageObservatoryMap = ResultadosAnonimosObservatorioIntavUtils.resultEvolutionData(Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO)), Long.valueOf(request.getParameter(Constants.ID)));
         }
 
-        List<CategoriaForm> categories = new ArrayList<CategoriaForm>();
+        List<CategoriaForm> categories = new ArrayList<>();
         String categoryName = "";
         Connection conn = null;
         try {
@@ -444,7 +444,7 @@ public class AnonymousHTMLAction extends Action {
     }
 
     private ActionForward createEvolutionResults4(HttpServletRequest request, ActionMapping mapping, Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
-        Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
+        Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
             resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), entry.getValue()));
         }

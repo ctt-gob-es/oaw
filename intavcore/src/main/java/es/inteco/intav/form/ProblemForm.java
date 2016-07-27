@@ -16,7 +16,7 @@ public class ProblemForm implements Serializable {
     private List<SpecificProblemForm> specificProblems;
 
     public ProblemForm() {
-        specificProblems = new ArrayList<SpecificProblemForm>();
+        specificProblems = new ArrayList<>();
     }
 
     public String getType() {

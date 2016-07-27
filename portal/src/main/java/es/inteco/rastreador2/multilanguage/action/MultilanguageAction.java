@@ -115,8 +115,8 @@ public class MultilanguageAction extends Action {
      */
 
     private static List<LanguageForm> notFoundLanguages(List<LanguageFoundForm> foundLanguages) throws Exception {
-        List<LanguageForm> notFoundLanguagesList = new ArrayList<LanguageForm>();
-        List<LanguageForm> foundLanguagesList = new ArrayList<LanguageForm>();
+        List<LanguageForm> notFoundLanguagesList = new ArrayList<>();
+        List<LanguageForm> foundLanguagesList = new ArrayList<>();
 
         for (LanguageFoundForm language : foundLanguages) {
             foundLanguagesList.add(language.getLanguage());

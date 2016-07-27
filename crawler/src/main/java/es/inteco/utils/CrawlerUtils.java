@@ -111,7 +111,7 @@ public final class CrawlerUtils {
 
     public static List<String> addDomainsToList(String seedsList, boolean getOnlyDomain, int type) {
         if (StringUtils.isNotEmpty(seedsList)) {
-            List<String> domains = new ArrayList<String>();
+            List<String> domains = new ArrayList<>();
 
             String[] seeds = seedsList.split(";");
             for (int i = 0; i < seeds.length; i++) {
@@ -332,7 +332,7 @@ public final class CrawlerUtils {
     public static String getCookie(HttpURLConnection connection) {
         // Cogemos la lista de cookies, teniendo en cuenta que el parametro set-cookie no es sensible a mayusculas o minusculas
         Map<String, List<String>> headerFields = connection.getHeaderFields();
-        List<String> headers = new ArrayList<String>();
+        List<String> headers = new ArrayList<>();
         if (headerFields != null && !headerFields.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
                 if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {

@@ -285,16 +285,16 @@ public class ModificarCuentaUsuarioForm extends ValidatorForm {
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         if (this.cartuchos == null) {
-            this.cartuchos = new ArrayList<CartuchoForm>();
+            this.cartuchos = new ArrayList<>();
         }
         if (this.periodicidadVector == null) {
-            this.periodicidadVector = new ArrayList<PeriodicidadForm>();
+            this.periodicidadVector = new ArrayList<>();
         }
         if (this.lenguajeVector == null) {
-            this.lenguajeVector = new ArrayList<LenguajeForm>();
+            this.lenguajeVector = new ArrayList<>();
         }
         if (this.normaV == null) {
-            this.normaV = new ArrayList<NormaForm>();
+            this.normaV = new ArrayList<>();
         }
     }
 

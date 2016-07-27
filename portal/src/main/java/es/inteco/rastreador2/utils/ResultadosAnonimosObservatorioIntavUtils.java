@@ -217,7 +217,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                 getMidMarkVerificationEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color, regenerate);
                 getMidMarkVerificationEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color, regenerate);
 
-                Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
+                Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
                 for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
                     resultsByAspect.put(entry.getKey(), aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), entry.getValue()));
                 }
@@ -238,7 +238,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static List<GraphicData> infoGlobalAccessibilityLevel(final MessageResources resources,
                                                                  final Map<String, Integer> result) throws Exception {
-        final List<GraphicData> labelValueList = new ArrayList<GraphicData>();
+        final List<GraphicData> labelValueList = new ArrayList<>();
         final int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
         GraphicData labelValue;
 
@@ -275,7 +275,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     public static List<LabelValueBean> infoComparisonBySegment(final MessageResources resources,
                                                                Map<String, BigDecimal> category) throws Exception {
 
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(resources.getMessage("resultados.anonimos.punt.portales.aa"));
@@ -314,7 +314,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<LabelValueBean> infoComparisonBySegmentPuntuation(final MessageResources resources, final Map<String, BigDecimal> result) throws Exception {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(resources.getMessage("resultados.anonimos.punt.portales.aa"));
@@ -341,7 +341,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static List<LabelValueBean> infoAspectMidsComparison(final MessageResources resources,
                                                                 Map<String, BigDecimal> result) throws Exception {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(resources.getMessage("resultados.anonimos.general"));
@@ -408,7 +408,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<LabelValueBean> infoMarkAllocationLevelSegment(List<ObservatorySiteEvaluationForm> siteList) {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;
         for (ObservatorySiteEvaluationForm siteForm : siteList) {
             labelValue = new LabelValueBean();
@@ -428,7 +428,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     public static List<LabelValueBean> infoLevelIVerificationMidsComparison(final MessageResources resources,
                                                                             final Map<String, BigDecimal> result) {
 
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(resources.getMessage("inteco.observatory.subgroup.1.1.1"));
@@ -555,7 +555,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(final MessageResources resources,
                                                                              final Map<String, BigDecimal> result) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(resources.getMessage("inteco.observatory.subgroup.2.1.1"));
@@ -689,7 +689,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     private static List<LabelValueBean> infoEvolutionGraphic(final Map<String, BigDecimal> resultData, final String suffix) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
             final LabelValueBean labelValue = new LabelValueBean();
@@ -748,7 +748,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<ModalityComparisonForm> infoLevelVerificationModalityComparison(final Map<String, BigDecimal> results) {
-        final List<ModalityComparisonForm> modalityComparisonList = new ArrayList<ModalityComparisonForm>();
+        final List<ModalityComparisonForm> modalityComparisonList = new ArrayList<>();
 
         for (String key : results.keySet()) {
             if (!modalityComparisonList.contains(new ModalityComparisonForm(key.replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""))) &&
@@ -784,7 +784,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         final String executionId = request.getParameter(Constants.ID);
 
         final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
-        final List<CategoryViewListForm> categoriesLabels = new ArrayList<CategoryViewListForm>();
+        final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
         final MessageResources resources = CrawlerUtils.getResources(request);
         for (int i = 1; i <= resultLists.size(); i++) {
             final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
@@ -1021,7 +1021,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static List<LabelValueBean> infoMidMarkVerificationEvolutionGraphic(final MessageResources resources,
                                                                                Map<String, BigDecimal> resultData) {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
@@ -1042,7 +1042,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static List<LabelValueBean> infoMidMarkAspectEvolutionGraphic(final MessageResources resources,
                                                                          Map<String, BigDecimal> resultData) {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
@@ -1074,12 +1074,12 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         } catch (NeedsRefreshException nre) {
             Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_INFO);
             try {
-                observatoryEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
-                List<Long> listAnalysis = new ArrayList<Long>();
+                observatoryEvaluationList = new ArrayList<>();
+                List<Long> listAnalysis = new ArrayList<>();
 
                 c = DataBaseManager.getConnection();
                 conn = DataBaseManager.getConnection();
-                List<Long> listExecutionsIds = new ArrayList<Long>();
+                List<Long> listExecutionsIds = new ArrayList<>();
                 if (idCrawler == null) {
                     listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
                 } else {
@@ -1135,7 +1135,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     private static List<ObservatoryEvaluationForm> filterObservatoriesByComplexity(List<ObservatoryEvaluationForm> observatoryEvaluationList, Long executionId, long categoryId)
             throws Exception {
-        List<ObservatoryEvaluationForm> results = new ArrayList<ObservatoryEvaluationForm>();
+        List<ObservatoryEvaluationForm> results = new ArrayList<>();
 
         if (categoryId == Constants.COMPLEXITY_SEGMENT_NONE) {
             results = observatoryEvaluationList;
@@ -1160,7 +1160,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> calculateAspectEvolutionPuntuationDataSet(String aspect, Map<Date, Map<String, BigDecimal>> resultsByAspect) {
-        Map<String, BigDecimal> resultData = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        Map<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 PropertiesManager pmgr = new PropertiesManager();
@@ -1187,7 +1187,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> calculateVerificationEvolutionPuntuationDataSet(String verification, Map<Date, List<ObservatoryEvaluationForm>> result) {
-        TreeMap<String, BigDecimal> resultData = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        TreeMap<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 PropertiesManager pmgr = new PropertiesManager();
@@ -1217,7 +1217,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> calculateEvolutionPuntuationDataSet(Map<Date, List<ObservatoryEvaluationForm>> result) {
-        TreeMap<String, BigDecimal> resultData = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        TreeMap<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 PropertiesManager pmgr = new PropertiesManager();
@@ -1254,7 +1254,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     public static Map<String, BigDecimal> calculatePercentageApprovalSiteLevel(Map<Date, Map<Long, Map<String, Integer>>> result, String type) {
         PropertiesManager pmgr = new PropertiesManager();
         DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
-        TreeMap<String, BigDecimal> percentagesMap = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        TreeMap<String, BigDecimal> percentagesMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 PropertiesManager pmgr = new PropertiesManager();
@@ -1290,7 +1290,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(String observatoryId, String executionId,
                                                                                                   Map<Date, List<ObservatoryEvaluationForm>> result) {
-        final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<Date, Map<Long, Map<String, Integer>>>();
+        final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<>();
         Connection c = null;
         try {
             c = DataBaseManager.getConnection();
@@ -1313,7 +1313,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(Long observatoryId, Long executionId) {
         Connection c = null;
-        Map<Date, List<ObservatoryEvaluationForm>> resultData = new HashMap<Date, List<ObservatoryEvaluationForm>>();
+        Map<Date, List<ObservatoryEvaluationForm>> resultData = new HashMap<>();
         try {
             PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
@@ -1335,7 +1335,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     private static Map<String, BigDecimal> calculatePercentage(final Map<String, Integer> values) {
         int total = 0;
-        final Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
+        final Map<String, BigDecimal> result = new HashMap<>();
         for (Map.Entry<String, Integer> stringIntegerEntry : values.entrySet()) {
             total += stringIntegerEntry.getValue();
         }
@@ -1359,12 +1359,12 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static List<ObservatorySiteEvaluationForm> getSitesListByLevel(final List<ObservatoryEvaluationForm> pages) {
-        final List<ObservatorySiteEvaluationForm> siteList = new ArrayList<ObservatorySiteEvaluationForm>();
+        final List<ObservatorySiteEvaluationForm> siteList = new ArrayList<>();
 
         try {
-            Map<Long, ObservatorySiteEvaluationForm> siteMap = new HashMap<Long, ObservatorySiteEvaluationForm>();
+            Map<Long, ObservatorySiteEvaluationForm> siteMap = new HashMap<>();
             for (ObservatoryEvaluationForm page : pages) {
-                List<ObservatoryEvaluationForm> pagesL = new ArrayList<ObservatoryEvaluationForm>();
+                List<ObservatoryEvaluationForm> pagesL = new ArrayList<>();
                 ObservatorySiteEvaluationForm site = new ObservatorySiteEvaluationForm();
                 if (siteMap.get(page.getCrawlerExecutionId()) != null) {
                     site = siteMap.get(page.getCrawlerExecutionId());
@@ -1436,12 +1436,12 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<Integer, List<CategoriaForm>> createGraphicsMap(final List<CategoriaForm> categories) {
-        final Map<Integer, List<CategoriaForm>> resultLists = new TreeMap<Integer, List<CategoriaForm>>();
+        final Map<Integer, List<CategoriaForm>> resultLists = new TreeMap<>();
         final PropertiesManager pmgr = new PropertiesManager();
         final int numBarByGrapg = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "num.max.bar.graph"));
         int keyMap = 1;
         for (int i = 1; i <= categories.size(); i++) {
-            List<CategoriaForm> list = new ArrayList<CategoriaForm>();
+            List<CategoriaForm> list = new ArrayList<>();
             if (resultLists.get(keyMap) != null) {
                 list = resultLists.get(keyMap);
             }
@@ -1459,7 +1459,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         PropertiesManager pmgr = new PropertiesManager();
         String executionId = request.getParameter(Constants.ID);
         Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
-        List<CategoryViewListForm> categoriesLabels = new ArrayList<CategoryViewListForm>();
+        List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 
         for (int i = 1; i <= resultLists.size(); i++) {
             File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
@@ -1479,7 +1479,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        final Map<String, Integer> globalResult = new HashMap<String, Integer>();
+        final Map<String, Integer> globalResult = new HashMap<>();
         globalResult.put(Constants.OBS_NV, 0);
         globalResult.put(Constants.OBS_A, 0);
         globalResult.put(Constants.OBS_AA, 0);
@@ -1505,7 +1505,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> aspectMidsPuntuationGraphicData(final MessageResources resources, List<ObservatoryEvaluationForm> resultData) {
-        Map<String, List<LabelValueBean>> globalResult = new HashMap<String, List<LabelValueBean>>();
+        Map<String, List<LabelValueBean>> globalResult = new HashMap<>();
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm levelForm : observatoryEvaluationForm.getGroups()) {
                 for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
@@ -1522,11 +1522,11 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             }
         }
 
-        Map<String, BigDecimal> results = new HashMap<String, BigDecimal>();
+        Map<String, BigDecimal> results = new HashMap<>();
         for (Map.Entry<String, List<LabelValueBean>> globalResultEntry : globalResult.entrySet()) {
             String aspect = resources.getMessage(globalResultEntry.getKey());
             // Recorremos las verificaciones de cada aspecto
-            Map<String, List<BigDecimal>> partialResultsMap = new HashMap<String, List<BigDecimal>>();
+            Map<String, List<BigDecimal>> partialResultsMap = new HashMap<>();
             for (LabelValueBean lvb : globalResultEntry.getValue()) {
                 int value = Integer.parseInt(lvb.getValue());
                 if (!partialResultsMap.containsKey(lvb.getLabel())) {
@@ -1540,7 +1540,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             }
 
             // Hemos recorrido las verificaciones del aspecto, ahora calculamos la media de cada una
-            Map<String, BigDecimal> verificationsMap = new HashMap<String, BigDecimal>();
+            Map<String, BigDecimal> verificationsMap = new HashMap<>();
             for (String verificationKey : partialResultsMap.keySet()) {
                 List<BigDecimal> verificationsList = partialResultsMap.get(verificationKey);
                 if (!verificationsList.isEmpty()) {
@@ -1571,7 +1571,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> barGraphicFromMidPuntuationSegmentData(List<ObservatorySiteEvaluationForm> categoryList) {
-        final Map<String, BigDecimal> globalResult = new HashMap<String, BigDecimal>();
+        final Map<String, BigDecimal> globalResult = new HashMap<>();
 
         BigDecimal countA = BigDecimal.ZERO;
         BigDecimal countAA = BigDecimal.ZERO;
@@ -1610,8 +1610,8 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> getVerificationResultsByPoint(List<ObservatoryEvaluationForm> resultData, String level) {
-        Map<String, Integer> results = new TreeMap<String, Integer>();
-        Map<String, Integer> numPoint = new HashMap<String, Integer>();
+        Map<String, Integer> results = new TreeMap<>();
+        Map<String, Integer> numPoint = new HashMap<>();
 
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
@@ -1656,7 +1656,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             }
         }
         //Cambiamos las claves  por el nombre y calculamos la media
-        final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<String, BigDecimal>();
+        final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>();
         for (Map.Entry<String, Integer> resultEntry : results.entrySet()) {
             String name = resultEntry.getKey().substring(resultEntry.getKey().length() - 5);
             BigDecimal value;
@@ -1673,7 +1673,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, BigDecimal> getVerificationResultsByPointAndModality(final List<ObservatoryEvaluationForm> resultData, final String level) {
-        final Map<String, BigDecimal> results = new TreeMap<String, BigDecimal>();
+        final Map<String, BigDecimal> results = new TreeMap<>();
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
                 if (level.equals(Constants.OBS_PRIORITY_NONE) || observatoryLevelForm.getName().equals(level)) {
@@ -1721,7 +1721,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
     }
 
     public static Map<String, List<ObservatoryEvaluationForm>> getPagesByType(List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        final Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<String, List<ObservatoryEvaluationForm>>();
+        final Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<>();
         globalResult.put(Constants.OBS_NV, new ArrayList<ObservatoryEvaluationForm>());
         globalResult.put(Constants.OBS_A, new ArrayList<ObservatoryEvaluationForm>());
         globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
@@ -1786,7 +1786,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     private static Map<Long, Map<String, Integer>> getSitesByType(List<ObservatoryEvaluationForm> observatoryEvaluationList) {
         final Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);
-        final Map<Long, Map<String, Integer>> sitesByType = new HashMap<Long, Map<String, Integer>>();
+        final Map<Long, Map<String, Integer>> sitesByType = new HashMap<>();
 
         for (String key : pagesByType.keySet()) {
             for (ObservatoryEvaluationForm observatoryEvaluationForm : pagesByType.get(key)) {
@@ -1795,7 +1795,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
                     value.put(key, value.get(key) + 1);
                     sitesByType.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
                 } else {
-                    final Map<String, Integer> initialValues = new HashMap<String, Integer>();
+                    final Map<String, Integer> initialValues = new HashMap<>();
                     if (key.equals(Constants.OBS_NV)) {
                         initialValues.put(Constants.OBS_NV, 1);
                     } else {
@@ -1821,7 +1821,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
     //Cálculo de resultados
     public static Map<CategoriaForm, Map<String, BigDecimal>> calculatePercentageResultsBySegmentMap(String executionId, List<ObservatoryEvaluationForm> pageExecutionList, List<CategoriaForm> categories) throws Exception {
-        Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<CategoriaForm, Map<String, BigDecimal>>(new Comparator<CategoriaForm>() {
+        Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
             @Override
             public int compare(CategoriaForm o1, CategoriaForm o2) {
                 return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
@@ -1840,7 +1840,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         try {
             conn = DataBaseManager.getConnection();
 
-            final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<CategoriaForm, Map<String, BigDecimal>>(new Comparator<CategoriaForm>() {
+            final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
                 @Override
                 public int compare(CategoriaForm o1, CategoriaForm o2) {
                     return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));

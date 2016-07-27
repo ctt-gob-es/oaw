@@ -12,8 +12,8 @@ public class SpecificProblemForm implements Serializable {
     private List<String> code;
 
     public SpecificProblemForm() {
-        note = new ArrayList<String>();
-        code = new ArrayList<String>();
+        note = new ArrayList<>();
+        code = new ArrayList<>();
     }
 
     public String getLine() {

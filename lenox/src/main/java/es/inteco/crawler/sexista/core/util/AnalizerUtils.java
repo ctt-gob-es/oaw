@@ -48,7 +48,7 @@ public class AnalizerUtils {
     }
 
     private static List<String> getFrames(String source, String url) {
-        List<String> frames = new ArrayList<String>();
+        List<String> frames = new ArrayList<>();
 
         Properties properties = ConfigUtil.getConfiguracion("lenox.properties");
 
@@ -88,7 +88,7 @@ public class AnalizerUtils {
 
     // Convierte un inputStream en un string
     private static String getContentAsString(InputStream in, String charset) throws IOException {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         byte[] b = new byte[4096];
         for (int n; (n = in.read(b)) != -1; ) {
             out.append(new String(b, 0, n, charset));
@@ -99,7 +99,7 @@ public class AnalizerUtils {
 
     // Convierte un inputStream en un string
     private static String getContentAsString(InputStream in) throws IOException {
-        StringBuffer out = new StringBuffer();
+        StringBuilder out = new StringBuilder();
         byte[] b = new byte[4096];
         for (int n; (n = in.read(b)) != -1; ) {
             out.append(new String(b, 0, n));
@@ -135,7 +135,7 @@ public class AnalizerUtils {
 
             List<String> ignoredTags = Arrays.asList(properties.getProperty("ignored.tags").split(";"));
 
-            List<Node> nodes = new ArrayList<Node>();
+            List<Node> nodes = new ArrayList<>();
             nodes = generateTextNodeList(document.getDocumentElement(), nodes, Integer.MAX_VALUE, ignoredTags);
 
             List<String> attributes = Arrays.asList(properties.getProperty("text.attributes").split(";"));

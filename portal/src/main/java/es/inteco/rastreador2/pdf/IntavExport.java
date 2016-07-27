@@ -91,10 +91,10 @@ public final class IntavExport {
         String globalPath = generalExpPath + File.separator + "temp" + File.separator;
 
         try {
-            HashMap<Long, List<Long>> evaluationIdsMap = new HashMap<Long, List<Long>>();
+            HashMap<Long, List<Long>> evaluationIdsMap = new HashMap<>();
             evaluationIdsMap.put(idTracking, evaluationIds.get(idTracking));
             Map<String, List<EvaluationForm>> evolutionMap = generateEvaluationMap(request, evaluationIdsMap, true);
-            List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+            List<EvaluationForm> evaList = new ArrayList<>();
 
             String fechaInforme = "";
             for (Map.Entry<String, List<EvaluationForm>> evolutionEntry : evolutionMap.entrySet()) {
@@ -192,10 +192,10 @@ public final class IntavExport {
 
         try {
             //Se recuperan los resultados únicamente de la ejecución de la que se pide el informe
-            HashMap<Long, List<Long>> tracking = new HashMap<Long, List<Long>>();
+            HashMap<Long, List<Long>> tracking = new HashMap<>();
             tracking.put(idTracking, evaluationIds.get(idTracking));
             Map<String, List<EvaluationForm>> evolutionMap = generateEvaluationMap(request, tracking, false);
-            List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+            List<EvaluationForm> evaList = new ArrayList<>();
             String fechaInforme = "";
             for (Map.Entry<String, List<EvaluationForm>> evolutionEntry : evolutionMap.entrySet()) {
                 fechaInforme = evolutionEntry.getKey();
@@ -324,7 +324,7 @@ public final class IntavExport {
     }
 
     private static List<IntavSimplePDFForm> getResultsToShow(List<EvaluationForm> evaList) {
-        List<IntavSimplePDFForm> results = new ArrayList<IntavSimplePDFForm>();
+        List<IntavSimplePDFForm> results = new ArrayList<>();
 
         for (EvaluationForm evaluation : evaList) {
             for (PriorityForm priority : evaluation.getPriorities()) {
@@ -466,7 +466,7 @@ public final class IntavExport {
                 }
             }
         }
-        List<PriorityForm> prioList = new ArrayList<PriorityForm>();
+        List<PriorityForm> prioList = new ArrayList<>();
         prioList.add(priorityFormA);
         prioList.add(priorityFormAA);
 
@@ -510,7 +510,7 @@ public final class IntavExport {
                 }
             }
         }
-        List<PriorityForm> prioList = new ArrayList<PriorityForm>();
+        List<PriorityForm> prioList = new ArrayList<>();
         prioList.add(priorityForm1WCAG2);
         prioList.add(priorityForm2WCAG2);
         prioList.add(priorityForm3WCAG2);
@@ -969,7 +969,7 @@ public final class IntavExport {
 
     private static Map<String, List<EvaluationForm>> generateEvaluationMap(HttpServletRequest request, Map<Long, List<Long>> evaluationIds, boolean getOnlyChecks) throws Exception {
 
-        TreeMap<String, List<EvaluationForm>> evolutionMap = new TreeMap<String, List<EvaluationForm>>(new Comparator<String>() {
+        TreeMap<String, List<EvaluationForm>> evolutionMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
@@ -1001,7 +1001,7 @@ public final class IntavExport {
             }
 
             for (Map.Entry<Long, List<Long>> entry : evaluationIds.entrySet()) {
-                List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+                List<EvaluationForm> evaList = new ArrayList<>();
                 for (Long id : entry.getValue()) {
                     Evaluator evaluator = new Evaluator();
                     Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), getOnlyChecks);

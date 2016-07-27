@@ -71,7 +71,7 @@ public class InformesService {
 
             List<Integer> ids = dao.searchIdTerminosDetalle(dto);
 
-            List<TerminoDetalleDto> detalleTerminos = new ArrayList<TerminoDetalleDto>();
+            List<TerminoDetalleDto> detalleTerminos = new ArrayList<>();
 
             for (Object o : ids) {
                 Integer i = (Integer) o;
@@ -107,13 +107,13 @@ public class InformesService {
 
         DetalleDto detalleDto = new DetalleDto();
 
-        List<TerminoDetalleDto> detalleTerminos = new ArrayList<TerminoDetalleDto>();
+        List<TerminoDetalleDto> detalleTerminos = new ArrayList<>();
 
         Connection conn = null;
         try {
             conn = ConexionBBDD.conectar();
             for (TerminoPositionDto terminoPositionDto : lstGroupTerminos) {
-                List<ResultadoDto> listadoResult = new ArrayList<ResultadoDto>();
+                List<ResultadoDto> listadoResult = new ArrayList<>();
 
                 ResultadoDto resultadoDto = new ResultadoDto();
                 //Obtenemos el contexto del termino para cada posicion dada

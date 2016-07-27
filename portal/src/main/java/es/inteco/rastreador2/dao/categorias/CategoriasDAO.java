@@ -67,7 +67,7 @@ public final class CategoriasDAO {
     }
 
     public static List<Categoria> loadCategories(Connection c, int page) throws Exception {
-        List<Categoria> cats = new ArrayList<Categoria>();
+        List<Categoria> cats = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -117,7 +117,7 @@ public final class CategoriasDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            List<TerminoCatVer> termsVector = new ArrayList<TerminoCatVer>();
+            List<TerminoCatVer> termsVector = new ArrayList<>();
             ps = c.prepareStatement("SELECT * FROM categoria c " +
                     "INNER JOIN categoria_termino ct ON (c.id_categoria = ct.id_categoria)" +
                     "INNER JOIN termino t ON (ct.id_termino = t.id_termino)" +
@@ -199,7 +199,7 @@ public final class CategoriasDAO {
     public static List<TerminoCatVer> loadCategoryTerms(Connection c, int idCategory, int page) throws Exception {
         PreparedStatement ps = null;
         ResultSet rss = null;
-        List<TerminoCatVer> termsVector = new ArrayList<TerminoCatVer>();
+        List<TerminoCatVer> termsVector = new ArrayList<>();
         PropertiesManager pmgr = new PropertiesManager();
         int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
         int resultFrom = pagSize * page;
@@ -389,7 +389,7 @@ public final class CategoriasDAO {
     }
 
     public static List<Integer> termCategories(Connection c, int idTerm) throws Exception {
-        final List<Integer> categoriasIds = new ArrayList<Integer>();
+        final List<Integer> categoriasIds = new ArrayList<>();
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("SELECT * FROM categoria_termino WHERE id_termino = ?");

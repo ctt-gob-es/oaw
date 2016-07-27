@@ -15,7 +15,7 @@ public final class AnonymousResultExportPdfSection2 {
     }
 
     protected static void createChapter2(HttpServletRequest request, Chapter chapter, long observatoryType) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         if (observatoryType == Constants.OBSERVATORY_TYPE_PRENSA) {

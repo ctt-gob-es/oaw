@@ -639,7 +639,7 @@ public final class PrimaryExportPdfUtils {
 
         final Image image = PDFUtils.createImage(filePath, null);
         if (image != null) {
-            image.scalePercent(80);
+            image.scalePercent(70);
             image.setAlignment(Element.ALIGN_CENTER);
             chapter.add(image);
         }
@@ -649,6 +649,9 @@ public final class PrimaryExportPdfUtils {
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.anonimos.punt.media"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.anonimos.level"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+        table.setHeaderRows(1);
+        table.setKeepTogether(true);
+
         int pageCounter = 1;
         for (ObservatoryEvaluationForm evaluationForm : evaList) {
             table.addCell(PDFUtils.createLinkedTableCell(messageResources.getMessage("observatory.graphic.score.by.page.label", pageCounter), evaluationForm.getUrl(), Color.white, Element.ALIGN_CENTER, 0));
@@ -874,6 +877,7 @@ public final class PrimaryExportPdfUtils {
         if (!basicService) {
             table.addCell(PDFUtils.createTableCell("Evolución", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         }
+        table.setHeaderRows(1);
 
         if (level.equals(Constants.OBS_PRIORITY_1)) {
             final ListIterator<LabelValueBean> actualScoreIterator = actualScore.getVerifications1().listIterator();

@@ -35,14 +35,14 @@ public class GuessLanguage {
     static {
         BASIC_LATIN = Arrays.asList("en", "eu");
         EXTENDED_LATIN = Arrays.asList("ca", "es", "fr", "de", "it", "pt", "ast");
-        ALL_LATIN = new ArrayList<String>(BASIC_LATIN.size()
+        ALL_LATIN = new ArrayList<>(BASIC_LATIN.size()
                 + EXTENDED_LATIN.size());
         ALL_LATIN.addAll(BASIC_LATIN);
         ALL_LATIN.addAll(EXTENDED_LATIN);
         CYRILLIC = Arrays.asList("ru", "uk");
         ARABIC = Arrays.asList("ar", "fa", "ps", "ur");
         DEVANAGARI = Collections.emptyList();
-        SINGLETONS = new HashMap<UnicodeBlock, String>();
+        SINGLETONS = new HashMap<>();
         SINGLETONS.put(UnicodeBlock.ARMENIAN, "hy");
         SINGLETONS.put(UnicodeBlock.HEBREW, "he");
         SINGLETONS.put(UnicodeBlock.GREEK, "el");
@@ -57,7 +57,7 @@ public class GuessLanguage {
     private static final int MAXGRAMS = 300;
 
     public GuessLanguage() {
-        models = new HashMap<String, Map<String, Integer>>();
+        models = new HashMap<>();
         if (models.isEmpty()) {
             loadModels();
         }
@@ -85,7 +85,7 @@ public class GuessLanguage {
     }
 
     private List<UnicodeBlock> findRuns(final String text) {
-        final Map<UnicodeBlock, Integer> runTypes = new HashMap<UnicodeBlock, Integer>();
+        final Map<UnicodeBlock, Integer> runTypes = new HashMap<>();
         int count = 0;
         int totalCount = 0;
         UnicodeBlock previousBlock = null;
@@ -120,7 +120,7 @@ public class GuessLanguage {
             runTypes.put(previousBlock, count);
         }
         // relevant return types
-        final List<UnicodeBlock> relevantRuns = new LinkedList<UnicodeBlock>();
+        final List<UnicodeBlock> relevantRuns = new LinkedList<>();
         // return run types that used for 40% or more of the string
         // always return basic latin if found more than 15%.
         for (Entry<UnicodeBlock, Integer> entry : runTypes.entrySet()) {
@@ -212,7 +212,7 @@ public class GuessLanguage {
             return UNKNOWN_LANGUAGE;
         }
 
-        final Map<Integer, String> scores = new TreeMap<Integer, String>();
+        final Map<Integer, String> scores = new TreeMap<>();
         final Map<Integer, List<String>> model = createOrderedModel(sample);
 
         for (String key : langs) {
@@ -231,9 +231,9 @@ public class GuessLanguage {
     }
 
     private Map<Integer, List<String>> createOrderedModel(final String content) {
-        final HashMap<String, Integer> trigrams = new HashMap<String, Integer>();
+        final HashMap<String, Integer> trigrams = new HashMap<>();
         // Map ORDENADO por KEY
-        final Map<Integer, List<String>> otrigrams = new TreeMap<Integer, List<String>>();
+        final Map<Integer, List<String>> otrigrams = new TreeMap<>();
 
         for (int i = 0; i < (content.length() - 2); ++i) {
             final String tri = content.substring(i, i + 3).toLowerCase();
@@ -256,7 +256,7 @@ public class GuessLanguage {
             // Otrigrams.insertMulti( - trigrams[key], key);
             List<String> trigram = otrigrams.get(-entry.getValue());
             if (trigram == null) {
-                trigram = new LinkedList<String>();
+                trigram = new LinkedList<>();
                 otrigrams.put(-entry.getValue(), trigram);
             }
             trigram.add(entry.getKey());
@@ -300,7 +300,7 @@ public class GuessLanguage {
                                 "utf-8"));
                 // Asignamos una capacidad adecuada para que no haya operaciones
                 // de rehash (300/.75=400)
-                final HashMap<String, Integer> model = new HashMap<String, Integer>(405);
+                final HashMap<String, Integer> model = new HashMap<>(405);
                 String linea;
                 while ((linea = reader.readLine()) != null) {
                     model.put(linea.substring(0, 3).toLowerCase(), Integer
@@ -308,8 +308,6 @@ public class GuessLanguage {
                 }
                 models.put(trigram, model);
                 reader.close();
-            } catch (UnsupportedEncodingException e) {
-                Logger.putLog("No se ha podido cargar el idioma " + trigram, GuessLanguage.class, Logger.LOG_LEVEL_ERROR, e);
             } catch (IOException e) {
                 Logger.putLog("No se ha podido cargar el idioma " + trigram, GuessLanguage.class, Logger.LOG_LEVEL_ERROR, e);
             }

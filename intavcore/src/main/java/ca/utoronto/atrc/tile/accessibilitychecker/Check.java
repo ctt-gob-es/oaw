@@ -80,15 +80,15 @@ public class Check {
         id = -1;
         status = "";
         confidence = CheckFunctionConstants.CONFIDENCE_NOT_SET;
-        nameMap = new HashMap<String, Node>();
-        errorHashtable = new Hashtable<String, Node>();
+        nameMap = new HashMap<>();
+        errorHashtable = new Hashtable<>();
         languageAppropriate = IntavConstants.ENGLISH_ABB;
         firstOccuranceOnly = false;
-        prerequisites = new ArrayList<Integer>();
+        prerequisites = new ArrayList<>();
         keyElement = null;
         triggerElement = null;
-        vectorCode = new ArrayList<CheckCode>();
-        rationaleHashtable = new Hashtable<String, Node>();
+        vectorCode = new ArrayList<>();
+        rationaleHashtable = new Hashtable<>();
     }
 
     public int getCheckOkCode() {
@@ -217,7 +217,7 @@ public class Check {
 
     // Crea una lista de funciones basadas en el lenguage requerido
     private List<CheckCode> createVectorFunctions() {
-        List<CheckCode> vectorFunctions = new ArrayList<CheckCode>();
+        List<CheckCode> vectorFunctions = new ArrayList<>();
 
         for (CheckCode checkCode : vectorCode) {
             if (checkCode.getType() == CheckFunctionConstants.CODE_TYPE_LANGUAGE) {
@@ -921,7 +921,7 @@ public class Check {
     }
 
     private boolean functionGroupedRadioButtons(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        final Map<String, List<Node>> radioGroups = new HashMap<String, List<Node>>();
+        final Map<String, List<Node>> radioGroups = new HashMap<>();
         final NodeList listInputs = elementGiven.getElementsByTagName("input");
         // Extraemos todos los input tipo radio y los guardamos agrupados en el map radioGroups (key es el name de los controles)
         for (int i = 0; i < listInputs.getLength(); i++) {
@@ -929,7 +929,7 @@ public class Check {
             if (elementInput.getAttribute("type").equalsIgnoreCase(checkCode.getFunctionValue())) {
                 final String stringName = elementInput.getAttribute("name");
                 if (!radioGroups.containsKey(stringName)) {
-                    final List<Node> lista = new ArrayList<Node>();
+                    final List<Node> lista = new ArrayList<>();
                     radioGroups.put(stringName, lista);
                 }
                 radioGroups.get(stringName).add(elementInput);
@@ -1018,7 +1018,7 @@ public class Check {
                 TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
                 final String extractedText = extractTextHandler.getExtractedText();
                 final String[] words = extractedText.toLowerCase().split("\\s+");
-                final List<String> enWords = new ArrayList<String>();
+                final List<String> enWords = new ArrayList<>();
                 for (String word : words) {
                     if (Diccionario.containsWord("en", word)) {
                         enWords.add(word);
@@ -1441,7 +1441,7 @@ public class Check {
     }
 
     private List<String> getLanguageList(Element element) {
-        final List<String> languages = new ArrayList<String>();
+        final List<String> languages = new ArrayList<>();
 
         // is doc HTML or XHTML? and which version?
         final Element elementRoot = element.getOwnerDocument().getDocumentElement();
@@ -1651,7 +1651,7 @@ public class Check {
         try {
             String stringHeading = elementGiven.getNodeName().trim();
             int thisHeading = Integer.parseInt(stringHeading.substring(1));
-            int nextHeading = ((Integer) elementGiven.getUserData(IntavConstants.NEXT_LEVEL)).intValue();
+            int nextHeading = (Integer) elementGiven.getUserData(IntavConstants.NEXT_LEVEL);
 
             if (nextHeading == 0) { // no next heading
                 return false;
@@ -1671,7 +1671,7 @@ public class Check {
         try {
             String stringHeading = elementGiven.getNodeName().trim();
             int thisHeading = Integer.parseInt(stringHeading.substring(1));
-            int previousHeading = ((Integer) elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL)).intValue();
+            int previousHeading = (Integer) elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL);
 
             if (previousHeading == 0) {
                 // no previous heading
@@ -2366,8 +2366,8 @@ public class Check {
         if (elementRoot.getUserData("domainLinks") == null && elementRoot.getUserData("externalLinks") == null) {
             ((CheckedLinks) elementRoot.getUserData("checkedLinks")).setCheckedLinks(new ArrayList<String>());
 
-            final List<Element> domainLinks = new LinkedList<Element>();
-            final List<Element> externalLinks = new LinkedList<Element>();
+            final List<Element> domainLinks = new LinkedList<>();
+            final List<Element> externalLinks = new LinkedList<>();
             final String url = (String) elementRoot.getUserData("url");
             final NodeList links = elementGiven.getElementsByTagName("A");
             for (int i = 0; i < links.getLength(); i++) {
@@ -2968,7 +2968,7 @@ public class Check {
     }
 
     private int countDistinctValidationErrors(List<ValidationError> vectorValidationErrors) {
-        List<String> distinctErrors = new ArrayList<String>();
+        List<String> distinctErrors = new ArrayList<>();
         for (ValidationError validationError : vectorValidationErrors) {
             if (validationError.getMessageId() != null && !distinctErrors.contains(validationError.getMessageId())) {
                 distinctErrors.add(validationError.getMessageId());
@@ -3768,7 +3768,7 @@ public class Check {
     }
 
     private boolean functionHasIncorrectTabindex(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
-        final List<Element> elementList = new ArrayList<Element>();
+        final List<Element> elementList = new ArrayList<>();
 
         elementList.addAll(createElementList(elementGiven.getElementsByTagName("a")));
         elementList.addAll(createElementList(elementGiven.getElementsByTagName("area")));
@@ -3819,7 +3819,7 @@ public class Check {
     }
 
     private List<Element> createElementList(NodeList nodeList) {
-        final List<Element> elementList = new ArrayList<Element>();
+        final List<Element> elementList = new ArrayList<>();
         if (nodeList != null) {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 elementList.add((Element) nodeList.item(i));
@@ -3855,16 +3855,16 @@ public class Check {
 
     private boolean functionCorrectLinks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         NodeList elementList = elementGiven.getElementsByTagName("a");
-        List<Node> elementHrefList = new ArrayList<Node>();
+        List<Node> elementHrefList = new ArrayList<>();
         for (int i = 0; i < elementList.getLength(); i++) {
             if (elementList.item(i).getAttributes().getNamedItem("href") != null) {
                 elementHrefList.add(elementList.item(i));
             }
         }
 
-        Map<String, List<DestinationPosition>> linksMap = new HashMap<String, List<DestinationPosition>>();
+        Map<String, List<DestinationPosition>> linksMap = new HashMap<>();
         for (int i = 0; i < elementHrefList.size(); i++) {
-            List<DestinationPosition> destination = new ArrayList<DestinationPosition>();
+            List<DestinationPosition> destination = new ArrayList<>();
             String linkText = EvaluatorUtils.getLinkText((Element) elementHrefList.get(i));
             if (StringUtils.isNotEmpty(linkText) && !StringUtils.textMatchs(linkText, checkCode.getFunctionAttribute1())) {
                 if (linksMap.get(linkText) != null) {

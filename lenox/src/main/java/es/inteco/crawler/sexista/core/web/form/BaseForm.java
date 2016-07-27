@@ -61,15 +61,7 @@ public abstract class BaseForm extends ValidatorActionForm {
             Object[] parametros = {mapping, request};
 
             errors = (ActionErrors) metodo.invoke(this, parametros);
-        } catch (SecurityException e) {
-            log.error(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            log.error(e.getMessage());
-        } catch (NoSuchMethodException e) {
-            log.error(e.getMessage());
-        } catch (IllegalAccessException e) {
-            log.error(e.getMessage());
-        } catch (InvocationTargetException e) {
+        } catch (SecurityException | InvocationTargetException | IllegalAccessException | NoSuchMethodException | IllegalArgumentException e) {
             log.error(e.getMessage());
         }
 

@@ -29,7 +29,7 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
 
     @Override
     public List<CSSProblem> evaluate(final org.dom4j.Document dom4jDocument, final List<CSSResource> cssResources) {
-        final List<CSSProblem> cssProblems = new ArrayList<CSSProblem>();
+        final List<CSSProblem> cssProblems = new ArrayList<>();
         try {
             final StyleSheet styleSheet = CSSFactory.getUsedStyles(document, "utf-8", new URL(String.valueOf(document.getDocumentElement().getUserData("url"))), new MediaSpecAll());
             final Analyzer analyzer = new Analyzer(styleSheet);

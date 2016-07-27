@@ -75,7 +75,7 @@ public class TestRastreoAction extends Action {
         crawlerData.setTopN((int) insertarRastreoForm.getTopN());
         crawlerData.setNombreRastreo("test");
         crawlerData.setUser("test");
-        List<String> urls = new ArrayList<String>();
+        List<String> urls = new ArrayList<>();
         urls.add(insertarRastreoForm.getSemilla());
         crawlerData.setTest(true);
         crawlerData.setUrls(urls);

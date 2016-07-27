@@ -79,7 +79,7 @@ public final class BasicServiceExport {
     }
 
     public static Map<String, List<EvaluationForm>> getResultData(final List<Long> evaluationIds, final String language) throws Exception {
-        final Map<String, List<EvaluationForm>> evolutionMap = new HashMap<String, List<EvaluationForm>>();
+        final Map<String, List<EvaluationForm>> evolutionMap = new HashMap<>();
 
         Connection conn = null;
         try {
@@ -94,7 +94,7 @@ public final class BasicServiceExport {
                 }
             }
 
-            final List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+            final List<EvaluationForm> evaList = new ArrayList<>();
             for (Long id : evaluationIds) {
                 final Evaluator evaluator = new Evaluator();
                 Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), false);
@@ -170,7 +170,7 @@ public final class BasicServiceExport {
             Logger.putLog("No se han podido crear los directorios para la exportación en PDF", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR);
         }
 
-        List<EvaluationForm> evaList = new ArrayList<EvaluationForm>();
+        List<EvaluationForm> evaList = new ArrayList<>();
         String fechaInforme = "";
         for (Map.Entry<String, List<EvaluationForm>> entry : resultData.entrySet()) {
             fechaInforme = entry.getKey();
@@ -358,7 +358,7 @@ public final class BasicServiceExport {
             }
         }
 
-        List<PriorityForm> prioList = new ArrayList<PriorityForm>();
+        List<PriorityForm> prioList = new ArrayList<>();
         prioList.add(priorityFormA);
         prioList.add(priorityFormAA);
 
@@ -438,7 +438,7 @@ public final class BasicServiceExport {
     private static int createSection11(final MessageResources messageResources, final IndexEvents index, final Chapter chapter, final int countSections, final List<EvaluationForm> evalFormList) throws Exception {
         final Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
 
-        final ArrayList<String> boldWords = new ArrayList<String>();
+        final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("basic.service.introduction.1.p1.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("basic.service.introduction.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -472,13 +472,13 @@ public final class BasicServiceExport {
         int numSections = countSections;
         Chapter chapter1 = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("pdf.accessibility.bs.entity"));
         chapter1.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + EvaluatorUtils.getEntityName(evaList), boldWords, ConstantsFont.paragraphBoldTitleFont, ConstantsFont.paragraphTitleFont, true));
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("pdf.accessibility.bs.domain"));
         chapter1.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + evaList.get(0).getUrl(), boldWords, ConstantsFont.paragraphBoldTitleFont, ConstantsFont.paragraphTitleFont, false));
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("pdf.accessibility.bs.date"));
         chapter1.add(PDFUtils.createParagraphWithDiferentFormatWord("{0}" + fechaInforme, boldWords, ConstantsFont.paragraphBoldTitleFont, ConstantsFont.paragraphTitleFont, false));
 
@@ -630,7 +630,7 @@ public final class BasicServiceExport {
                 String text = HTMLEntities.unhtmlAngleBrackets(code.toString());
                 String message =specificProblem.getMessage();
 
-                java.util.List<String> boldWords = new ArrayList<String>();
+                java.util.List<String> boldWords = new ArrayList<>();
                 if (!StringUtils.isEmpty(message)) {
                     text = "{0} \n\n" + text.trim();
                     boldWords.add(message);

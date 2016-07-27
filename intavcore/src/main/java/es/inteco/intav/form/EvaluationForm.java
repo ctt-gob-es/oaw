@@ -13,7 +13,7 @@ public class EvaluationForm implements Serializable {
     private List<PriorityForm> priorities;
 
     public EvaluationForm() {
-        priorities = new ArrayList<PriorityForm>();
+        priorities = new ArrayList<>();
     }
 
     public String getSource() {

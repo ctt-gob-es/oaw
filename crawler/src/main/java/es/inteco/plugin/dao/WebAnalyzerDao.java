@@ -16,7 +16,7 @@ public final class WebAnalyzerDao {
     }
 
     public static List<Termino> getTerms(Connection conn) {
-        List<Termino> terms = new ArrayList<Termino>();
+        List<Termino> terms = new ArrayList<>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -61,7 +61,7 @@ public final class WebAnalyzerDao {
     }
 
     public static List<String> getCartridgeNames(Connection conn, Long idTracking) {
-        List<String> cartridgeNames = new ArrayList<String>();
+        List<String> cartridgeNames = new ArrayList<>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {

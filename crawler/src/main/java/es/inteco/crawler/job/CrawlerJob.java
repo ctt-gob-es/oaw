@@ -31,10 +31,10 @@ public class CrawlerJob implements InterruptableJob {
 
     public static final Log LOG = LogFactory.getLog(CrawlerJob.class);
 
-    private final List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
-    private final List<String> auxDomains = new ArrayList<String>();
-    private final List<String> md5Content = new ArrayList<String>();
-    private final List<String> rejectedDomains = new ArrayList<String>();
+    private final List<CrawledLink> crawlingDomains = new ArrayList<>();
+    private final List<String> auxDomains = new ArrayList<>();
+    private final List<String> md5Content = new ArrayList<>();
+    private final List<String> rejectedDomains = new ArrayList<>();
 
     @Override
     public void execute(JobExecutionContext jobContext) throws JobExecutionException {
@@ -89,7 +89,7 @@ public class CrawlerJob implements InterruptableJob {
     }
 
     public List<CrawledLink> runSimpleAnalysis(CrawlerData crawlerData) {
-        List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
+        List<CrawledLink> crawlingDomains = new ArrayList<>();
         CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
         crawlingDomains.add(crawledLink);
 
@@ -385,7 +385,7 @@ public class CrawlerJob implements InterruptableJob {
         PropertiesManager pmgr = new PropertiesManager();
         int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
         if (crawlerData.getProfundidad() > 0 && !interrupt) {
-            List<CrawledLink> levelLinks = new ArrayList<CrawledLink>();
+            List<CrawledLink> levelLinks = new ArrayList<>();
             HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
             try {
                 connection.setRequestProperty("Cookie", cookie);

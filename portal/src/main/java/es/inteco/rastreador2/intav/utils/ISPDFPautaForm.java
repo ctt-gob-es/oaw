@@ -12,7 +12,7 @@ public class ISPDFPautaForm {
 
     public ISPDFPautaForm() {
         pauta = new PautaForm();
-        problemList = new ArrayList<ISPDFProblemForm>();
+        problemList = new ArrayList<>();
     }
 
     public PautaForm getPauta() {

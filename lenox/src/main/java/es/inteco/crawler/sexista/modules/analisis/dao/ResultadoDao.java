@@ -103,7 +103,7 @@ public final class ResultadoDao {
 
         try {
 
-            ps = (PreparedStatement) con.prepareStatement(sql);
+            ps = con.prepareStatement(sql);
 
             int i = 1;
             ps.setLong(i++, dto.getIdRastreo());
@@ -174,7 +174,7 @@ public final class ResultadoDao {
             //Mostramos en el log la sql a ejecutar
             getLog().info(sb.toString());
 
-            ps = (PreparedStatement) con.prepareStatement(sb.toString());
+            ps = con.prepareStatement(sb.toString());
 
             //Añadimos los parametros de seleccion
             ps.setLong(1, resultadoDto.getIdRastreo());

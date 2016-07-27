@@ -92,19 +92,19 @@ public class DatabaseExportAction extends Action {
 
                     if (observatory == null) {
                         List<FulFilledCrawling> seedsResults = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, fulfilledObservatory.getId());
-                        Map<Long, List<Long>> crawlerIdsMap = new HashMap<Long, List<Long>>();
-                        Map<Long, String> categoryNames = new HashMap<Long, String>();
-                        Map<Long, String> siteNames = new HashMap<Long, String>();
+                        Map<Long, List<Long>> crawlerIdsMap = new HashMap<>();
+                        Map<Long, String> categoryNames = new HashMap<>();
+                        Map<Long, String> siteNames = new HashMap<>();
                         for (FulFilledCrawling crawler : seedsResults) {
-                            List<Long> crawlerIds = new ArrayList<Long>();
+                            List<Long> crawlerIds = new ArrayList<>();
                             if (crawlerIdsMap.get(Long.valueOf(crawler.getSeed().getCategoria().getId())) != null) {
                                 crawlerIds = crawlerIdsMap.get(Long.valueOf(crawler.getSeed().getCategoria().getId()));
                             }
-                            crawlerIds.add(Long.valueOf(crawler.getId()));
+                            crawlerIds.add(crawler.getId());
                             crawlerIdsMap.put(Long.valueOf(crawler.getSeed().getCategoria().getId()), crawlerIds);
 
                             //Guardamos los nombres de las categorias y portales para mostrarlos en las tablas de exportación del multilingüismo
-                            siteNames.put(Long.valueOf(crawler.getId()), crawler.getSeed().getNombre());
+                            siteNames.put(crawler.getId(), crawler.getSeed().getNombre());
                             if (categoryNames.get(Long.valueOf(crawler.getSeed().getCategoria().getId())) == null) {
                                 categoryNames.put(Long.valueOf(crawler.getSeed().getCategoria().getId()), crawler.getSeed().getCategoria().getName());
                             }

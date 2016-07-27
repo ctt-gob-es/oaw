@@ -126,7 +126,7 @@ public class SeedCategoriesAction extends Action {
         try {
             String idCategoria = request.getParameter(Constants.ID_CATEGORIA);
             c = DataBaseManager.getConnection();
-            List<ObservatorioForm> observatoryFormList = new ArrayList<ObservatorioForm>();
+            List<ObservatorioForm> observatoryFormList = new ArrayList<>();
             if (idCategoria != null) {
                 observatoryFormList = ObservatorioDAO.getObservatoriesFromCategory(c, idCategoria);
             }
@@ -270,8 +270,8 @@ public class SeedCategoriesAction extends Action {
     }
 
     private static void compareSeeds(final Connection c, final String idCategory, final List<SemillaForm> newSeeds, final List<SemillaForm> oldList) throws Exception {
-        final List<SemillaForm> repitSeeds = new ArrayList<SemillaForm>();
-        final List<SemillaForm> insertSeeds = new ArrayList<SemillaForm>();
+        final List<SemillaForm> repitSeeds = new ArrayList<>();
+        final List<SemillaForm> insertSeeds = new ArrayList<>();
 
         for (SemillaForm newSemillaForm : newSeeds) {
             boolean found = false;
@@ -374,7 +374,7 @@ public class SeedCategoriesAction extends Action {
             if (idSemilla != null) {
                 observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
             } else {
-                observatoryFormList = new ArrayList<ObservatorioForm>();
+                observatoryFormList = new ArrayList<>();
             }
             request.setAttribute(Constants.OBSERVATORY_SEED_LIST, observatoryFormList);
             final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));

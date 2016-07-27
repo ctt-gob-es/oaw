@@ -35,7 +35,7 @@ public final class RastreoDAO {
     public static List<Long> getExecutionObservatoryCrawlerIds(Connection c, Long idObservatoryExecution, long idCategory) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> executionObservatoryCrawlersIds = new ArrayList<Long>();
+        List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
 
         try {
             String query = "SELECT id FROM rastreos_realizados rr " +
@@ -335,7 +335,7 @@ public final class RastreoDAO {
             int num_rastreos = 0;
             boolean firstIteration = true;
             final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
-            final List<Rastreo> rastreos = new ArrayList<Rastreo>();
+            final List<Rastreo> rastreos = new ArrayList<>();
             while (rst.next()) {
                 if (firstIteration) {
                     cargarRastreosForm.setMaxrastreos(rst.getInt("numrastreos"));
@@ -570,7 +570,7 @@ public final class RastreoDAO {
             ps = c.prepareStatement("DELETE FROM rastreos_realizados WHERE id = ?");
             ps.setLong(1, id_rastreo_realizado);
             ps.executeUpdate();
-            List<Long> executedCrawlingIdsList = new ArrayList<Long>();
+            List<Long> executedCrawlingIdsList = new ArrayList<>();
             executedCrawlingIdsList.add(id_rastreo_realizado);
             deleteAnalyse(connections, executedCrawlingIdsList);
         } catch (SQLException e) {
@@ -584,7 +584,7 @@ public final class RastreoDAO {
     public static List<Long> getExecutedCrawlerIds(Connection connR, long id_rastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<Long>();
+        List<Long> executedCrawlerIds = new ArrayList<>();
         try {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS
             ps = connR.prepareStatement("SELECT rr.id FROM rastreo r " +
@@ -641,7 +641,7 @@ public final class RastreoDAO {
     public static List<Long> getEvolutionExecutedCrawlerIds(final Connection connection, long idRastreo, long idRastreoRealizado, long idCartucho, int limit) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        final List<Long> executedCrawlerIds = new ArrayList<Long>();
+        final List<Long> executedCrawlerIds = new ArrayList<>();
         try {
             ps = connection.prepareStatement("SELECT r.id FROM rastreos_realizados r " +
                     "WHERE id_rastreo = ? AND " +
@@ -669,7 +669,7 @@ public final class RastreoDAO {
     public static List<Long> getExecutedCrawlerClientAccountsIds(Connection connR, long idClientAccount) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<Long>();
+        List<Long> executedCrawlerIds = new ArrayList<>();
         try {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS
             ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr " +
@@ -1408,7 +1408,7 @@ public final class RastreoDAO {
 
 
     public static List<FulFilledCrawling> getFulfilledCrawlings(Connection conn, Long idCrawling, CargarRastreosRealizadosSearchForm searchForm, Long idFulfilledObservatory, int pagina) throws Exception {
-        List<FulFilledCrawling> crawlings = new ArrayList<FulFilledCrawling>();
+        List<FulFilledCrawling> crawlings = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -1500,7 +1500,7 @@ public final class RastreoDAO {
     }
 
     public static Map<Long, List<FulFilledCrawling>> getFulfilledCrawlings(Connection conn, List<ResultadoSemillaForm> seedsResults, Long idFulfilledObservatory) throws Exception {
-        Map<Long, List<FulFilledCrawling>> results = new HashMap<Long, List<FulFilledCrawling>>();
+        Map<Long, List<FulFilledCrawling>> results = new HashMap<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         boolean isWhere = false;
@@ -1575,7 +1575,7 @@ public final class RastreoDAO {
     }
 
     public static List<FulFilledCrawling> getOldCrawlings(Connection conn, int numDays) throws Exception {
-        List<FulFilledCrawling> crawlings = new ArrayList<FulFilledCrawling>();
+        List<FulFilledCrawling> crawlings = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1649,7 +1649,7 @@ public final class RastreoDAO {
     }
 
     private static List<String> convertStringToList(String lista) {
-        List<String> urlsList = new ArrayList<String>();
+        List<String> urlsList = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(lista, ";");
         while (tokenizer.hasMoreTokens()) {
             urlsList.add(tokenizer.nextToken());
@@ -1731,7 +1731,7 @@ public final class RastreoDAO {
     public static List<Long> getCrawlerCategoryIds(Connection connR, long id_observatorio, long id_categoria) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> crawlerIds = new ArrayList<Long>();
+        List<Long> crawlerIds = new ArrayList<>();
         try {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
             ps = connR.prepareStatement("SELECT id_rastreo FROM rastreo r " +

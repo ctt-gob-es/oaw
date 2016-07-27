@@ -35,15 +35,15 @@ public class LocalFilterExcepcion extends BaseFilterExcepcion implements
 
         // Guardamos el listado en un listado, con las keys en mayusculas y sin
         // espacios finales
-        List<String> lstBeforeExcepcion = new ArrayList<String>();
-        List<String> lstAfterExcepcion = new ArrayList<String>();
+        List<String> lstBeforeExcepcion = new ArrayList<>();
+        List<String> lstAfterExcepcion = new ArrayList<>();
 
         for (LocalExcepcionDto dto : lstExcep) {
             exception = dto.getExcepcion().trim().toUpperCase();
             position = dto.getPosition();
 
             // Diferenciamos entre excepciones anteriores y posteriores
-            if (position.intValue() == AnalyzeConstants.WORD_EXCEPTION_BEFORE_POSITION) {
+            if (position == AnalyzeConstants.WORD_EXCEPTION_BEFORE_POSITION) {
                 lstBeforeExcepcion.add(exception);
             } else {
                 lstAfterExcepcion.add(exception);

@@ -8,7 +8,7 @@ public class AnalysisConfiguration {
     private List<UrlConfiguration> urlConfigurations;
 
     public AnalysisConfiguration() {
-        this.urlConfigurations = new ArrayList<UrlConfiguration>();
+        this.urlConfigurations = new ArrayList<>();
     }
 
     public Integer getType() {

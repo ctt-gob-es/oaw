@@ -68,7 +68,7 @@ public class BaseDao {
         //ResultSet rsTotal = null;
         PreparedStatement st = null;
 
-        StringBuffer sqlPag = new StringBuffer("select 0 as linea, s.* from (");
+        StringBuilder sqlPag = new StringBuilder("select 0 as linea, s.* from (");
         sqlPag.append(sql);
         sqlPag.append(") s limit ? , ?");
 
@@ -90,7 +90,7 @@ public class BaseDao {
 
             rs = st.executeQuery();
 
-            List<Object> records = new ArrayList<Object>();
+            List<Object> records = new ArrayList<>();
 
             while (rs.next()) {
                 records.add(mapper.extract(rs));
@@ -130,7 +130,7 @@ public class BaseDao {
 
         try {
             //Cálculo del totalLista:
-            StringBuffer sqlTotal = new StringBuffer("select count(*) totalLista from ( ");
+            StringBuilder sqlTotal = new StringBuilder("select count(*) totalLista from ( ");
             sqlTotal.append(sql);
             sqlTotal.append(" ) s");
 
@@ -145,7 +145,7 @@ public class BaseDao {
             rsTotal = stTotal.executeQuery();
 
             if (rsTotal.next()) {
-                total = Long.valueOf(rsTotal.getLong("totalLista"));
+                total = rsTotal.getLong("totalLista");
             } // end if
 
         } catch (SQLException e) {

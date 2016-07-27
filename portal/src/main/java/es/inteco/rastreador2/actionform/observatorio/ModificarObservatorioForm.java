@@ -246,19 +246,19 @@ public class ModificarObservatorioForm extends ValidatorForm {
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         if (this.lenguajeVector == null) {
-            this.lenguajeVector = new ArrayList<LenguajeForm>();
+            this.lenguajeVector = new ArrayList<>();
         }
         if (this.periodicidadVector == null) {
-            this.periodicidadVector = new ArrayList<PeriodicidadForm>();
+            this.periodicidadVector = new ArrayList<>();
         }
         if (this.normaV == null) {
-            this.normaV = new ArrayList<NormaForm>();
+            this.normaV = new ArrayList<>();
         }
         if (this.semillasAnadidas == null) {
-            this.semillasAnadidas = new ArrayList<SemillaForm>();
+            this.semillasAnadidas = new ArrayList<>();
         }
         if (this.semillasNoAnadidas == null) {
-            this.semillasNoAnadidas = new ArrayList<SemillaForm>();
+            this.semillasNoAnadidas = new ArrayList<>();
         }
         if (this.cartucho == null) {
             this.cartucho = new CartuchoForm();

@@ -63,7 +63,7 @@ public final class RastreoDao {
      */
     public List<RastreoDto> find(RastreoDto rastreoDto, Connection con) throws BusinessException {
         RastreoDto dto;
-        List<RastreoDto> listado = new ArrayList<RastreoDto>();
+        List<RastreoDto> listado = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -158,10 +158,7 @@ public final class RastreoDao {
             // Ejecutamos la sql
             ps.execute();
 
-        } catch (ParseException e) {
-            Logger.putLog("Exception al insertar Rastreo", RastreoDao.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new BusinessException(e);
-        } catch (SQLException e) {
+        } catch (ParseException | SQLException e) {
             Logger.putLog("Exception al insertar Rastreo", RastreoDao.class, Logger.LOG_LEVEL_ERROR, e);
             throw new BusinessException(e);
         } finally {

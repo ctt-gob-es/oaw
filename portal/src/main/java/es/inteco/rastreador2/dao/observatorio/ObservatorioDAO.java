@@ -104,7 +104,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, boolean desc) throws Exception {
-        List<ObservatorioRealizadoForm> results = new ArrayList<ObservatorioRealizadoForm>();
+        List<ObservatorioRealizadoForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         String order = "DESC";
@@ -185,7 +185,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioRealizadoForm> getAllFulfilledObservatories(Connection c) throws Exception {
-        List<ObservatorioRealizadoForm> results = new ArrayList<ObservatorioRealizadoForm>();
+        List<ObservatorioRealizadoForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -246,7 +246,7 @@ public final class ObservatorioDAO {
     public static List<Long> realizeCrawlerIds(Connection c, long idObservatoryExecution) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> ids = new ArrayList<Long>();
+        List<Long> ids = new ArrayList<>();
 
         try {
             ps = c.prepareStatement("SELECT id FROM rastreos_realizados WHERE id_obs_realizado = ?");
@@ -265,7 +265,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioForm> getObservatoryList(Connection c) throws Exception {
-        List<ObservatorioForm> results = new ArrayList<ObservatorioForm>();
+        List<ObservatorioForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -306,7 +306,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioForm> getObservatoriesFromSeed(final Connection c, final String idSeed) throws Exception {
-        final List<ObservatorioForm> observatoryFormList = new ArrayList<ObservatorioForm>();
+        final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -359,7 +359,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws Exception {
-        List<ObservatorioForm> observatoryFormList = new ArrayList<ObservatorioForm>();
+        List<ObservatorioForm> observatoryFormList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -408,7 +408,7 @@ public final class ObservatorioDAO {
     }
 
     public static CargarObservatorioForm userList(Connection c, CargarObservatorioForm cargarObservatorioForm) throws Exception {
-        List<ListadoObservatorio> observatoryUserList = new ArrayList<ListadoObservatorio>();
+        List<ListadoObservatorio> observatoryUserList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -439,7 +439,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<SemillaForm> getObservatorySeeds(final Connection c) throws Exception {
-        final List<SemillaForm> seedList = new ArrayList<SemillaForm>();
+        final List<SemillaForm> seedList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -466,7 +466,7 @@ public final class ObservatorioDAO {
 
     public static CargarObservatorioForm observatoryList(final Connection c, int page) throws Exception {
         final CargarObservatorioForm cargarObservatorioForm = new CargarObservatorioForm();
-        final List<ListadoObservatorio> observatoryList = new ArrayList<ListadoObservatorio>();
+        final List<ListadoObservatorio> observatoryList = new ArrayList<>();
         final PropertiesManager pmgr = new PropertiesManager();
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
         final int resultFrom = pagSize * page;
@@ -724,7 +724,7 @@ public final class ObservatorioDAO {
     private static List<Long> getCrawlerIds(Connection connR, long idObservatorio) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> crawlerIds = new ArrayList<Long>();
+        List<Long> crawlerIds = new ArrayList<>();
         try {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
             ps = connR.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ?");
@@ -745,7 +745,7 @@ public final class ObservatorioDAO {
     private static List<Long> getFulfilledCrawlingIds(Connection connR, long idExecution) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Long> crawlerIds = new ArrayList<Long>();
+        List<Long> crawlerIds = new ArrayList<>();
         try {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
             ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr WHERE id_obs_realizado = ?");
@@ -766,7 +766,7 @@ public final class ObservatorioDAO {
     public static List<FulFilledCrawling> getFulfilledCrawlingByObservatoryExecution(Connection connR, long idExecution) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<FulFilledCrawling> crawlings = new ArrayList<FulFilledCrawling>();
+        List<FulFilledCrawling> crawlings = new ArrayList<>();
         try {
             //RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
             ps = connR.prepareStatement("SELECT * FROM rastreos_realizados rr JOIN lista l ON (l.id_lista = rr.id_lista) " +
@@ -917,7 +917,7 @@ public final class ObservatorioDAO {
 
             int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
             int resultFrom = pagSize * page;
-            List<SemillaForm> semillasList = new ArrayList<SemillaForm>();
+            List<SemillaForm> semillasList = new ArrayList<>();
             ps = c.prepareStatement("SELECT * FROM lista l " +
                     "JOIN observatorio_lista ol ON (l.id_lista = ol.id_lista) " +
                     "JOIN observatorio o ON (o.id_observatorio = ol.id_observatorio) " +
@@ -1097,7 +1097,7 @@ public final class ObservatorioDAO {
         ResultSet rs = null;
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final List<ResultadoSemillaForm> semillasFormList = new ArrayList<ResultadoSemillaForm>();
+        final List<ResultadoSemillaForm> semillasFormList = new ArrayList<>();
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
         final int resultFrom = pagSize * page;
         int paramCount = 1;
@@ -1217,7 +1217,7 @@ public final class ObservatorioDAO {
 
     public static List<SemillaForm> getSeedsFromObservatory(Connection c, long idObservatorio) throws Exception {
 
-        List<SemillaForm> semillasFormList = new ArrayList<SemillaForm>();
+        List<SemillaForm> semillasFormList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1247,7 +1247,7 @@ public final class ObservatorioDAO {
     }
 
     private static List<SemillaForm> getSeedsNotObservatory(Connection c, long idObservatorio) throws Exception {
-        final List<SemillaForm> semillasFormList = new ArrayList<SemillaForm>();
+        final List<SemillaForm> semillasFormList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -1292,7 +1292,7 @@ public final class ObservatorioDAO {
 
         // Añadimos las categorías nuevas que no están entre las viejas
         for (String newCategory : newCategories) {
-            final List<SemillaForm> seedsFromCategory = new ArrayList<SemillaForm>();
+            final List<SemillaForm> seedsFromCategory = new ArrayList<>();
             if (!oldCategories.contains(newCategory)) {
                 seedsFromCategory.addAll(SemillaDAO.getSeedsByCategory(c, Long.parseLong(newCategory), Constants.NO_PAGINACION, new SemillaForm()));
             }
@@ -1460,7 +1460,7 @@ public final class ObservatorioDAO {
     }
 
     public static Map<Long, Date> getObservatoryExecutionIds(Connection c, long observatoryId, long executionId, long cartridgeId) throws SQLException {
-        Map<Long, Date> observatoryExecutionIdsList = new HashMap<Long, Date>();
+        Map<Long, Date> observatoryExecutionIdsList = new HashMap<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -1530,7 +1530,7 @@ public final class ObservatorioDAO {
     }
 
     private static List<Long> getCrawlerFromCategory(Connection c, long idObservatory) throws SQLException {
-        List<Long> idCrawlerList = new ArrayList<Long>();
+        List<Long> idCrawlerList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -1554,7 +1554,7 @@ public final class ObservatorioDAO {
     }
 
     private static List<Long> getCrawlerFromObservatory(Connection c, long idObservatory) throws SQLException {
-        List<Long> idCrawlerList = new ArrayList<Long>();
+        List<Long> idCrawlerList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -1619,7 +1619,7 @@ public final class ObservatorioDAO {
     public static List<Long> getSubsequentObservatoryExecutionIds(Connection c, Long observatoryId,
                                                                   Long executionId, Long cartridgeId) throws Exception {
 
-        List<Long> subsequentExecutionIds = new ArrayList<Long>();
+        List<Long> subsequentExecutionIds = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -1684,7 +1684,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<CategoriaForm> getObservatoryCategories(Connection c, Long idObservatory) throws SQLException {
-        List<CategoriaForm> results = new ArrayList<CategoriaForm>();
+        List<CategoriaForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1714,7 +1714,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<CategoriaForm> getExecutionObservatoryCategories(final Connection c, final Long idExecutionObservatory) throws SQLException {
-        final List<CategoriaForm> results = new ArrayList<CategoriaForm>();
+        final List<CategoriaForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1779,7 +1779,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<Long> getSeedExecutionsFromObservatory(Connection c, String idSeed, Long idObservatory) throws SQLException {
-        List<Long> executedCrawlerList = new ArrayList<Long>();
+        List<Long> executedCrawlerList = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1803,7 +1803,7 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatoryTypeForm> getAllObservatoryTypes(Connection c) throws Exception {
-        List<ObservatoryTypeForm> typeList = new ArrayList<ObservatoryTypeForm>();
+        List<ObservatoryTypeForm> typeList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {

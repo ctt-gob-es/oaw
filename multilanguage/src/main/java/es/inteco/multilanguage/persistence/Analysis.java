@@ -42,7 +42,7 @@ public class Analysis implements Serializable {
     private List<LanguageFound> languagesFound;
 
     public Analysis() {
-        languagesFound = new ArrayList<LanguageFound>();
+        languagesFound = new ArrayList<>();
     }
 
     public Long getId() {

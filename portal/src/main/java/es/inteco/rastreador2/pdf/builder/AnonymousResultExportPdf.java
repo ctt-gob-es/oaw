@@ -40,7 +40,7 @@ public abstract class AnonymousResultExportPdf {
     public abstract int createMethodologyChapter(MessageResources messageResources, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception;
 
     protected void createSection34(final MessageResources messageResources, Section section) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.34.p1.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.34.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.34.p2"), ConstantsFont.PARAGRAPH, section);
@@ -50,7 +50,7 @@ public abstract class AnonymousResultExportPdf {
     protected void createSection341(final MessageResources messageResources, final Section section) {
         final PropertiesManager pmgr = new PropertiesManager();
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.341.p1.bold"), messageResources.getMessage("anchor.PMP"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p1"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -59,7 +59,7 @@ public abstract class AnonymousResultExportPdf {
 
         com.lowagie.text.List list = new com.lowagie.text.List();
 
-        final ArrayList<String> boldWords = new ArrayList<String>();
+        final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.341.p2"));
         ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.341.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -77,7 +77,7 @@ public abstract class AnonymousResultExportPdf {
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.341.p8.bold"), messageResources.getMessage("anchor.PMPO"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p8"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -104,7 +104,7 @@ public abstract class AnonymousResultExportPdf {
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.341.p15.bold"), messageResources.getMessage("anchor.PMV"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p15"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -131,7 +131,7 @@ public abstract class AnonymousResultExportPdf {
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.341.p22.bold"), messageResources.getMessage("anchor.PMNA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p22"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -168,7 +168,7 @@ public abstract class AnonymousResultExportPdf {
 
         com.lowagie.text.List list = new com.lowagie.text.List();
 
-        final ArrayList<String> boldWords = new ArrayList<String>();
+        final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.46.p2"));
         ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.46.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -205,7 +205,7 @@ public abstract class AnonymousResultExportPdf {
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p16"), ConstantsFont.PARAGRAPH, section);
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p17"), ConstantsFont.PARAGRAPH, section);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.46.p18.bold"), messageResources.getMessage("anchor.PMPA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.46.p18"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -233,7 +233,7 @@ public abstract class AnonymousResultExportPdf {
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.46.p22.bold"), messageResources.getMessage("anchor.PMA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.46.p22"), anchorMap, ConstantsFont.PARAGRAPH));

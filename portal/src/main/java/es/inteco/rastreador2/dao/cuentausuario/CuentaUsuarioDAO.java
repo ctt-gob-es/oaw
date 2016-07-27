@@ -72,7 +72,7 @@ public final class CuentaUsuarioDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
-            List<CuentaCliente> clientAccounts = new ArrayList<CuentaCliente>();
+            List<CuentaCliente> clientAccounts = new ArrayList<>();
 
             String statement = getQuery(type, idAccount);
 
@@ -221,7 +221,7 @@ public final class CuentaUsuarioDAO {
     }
 
     public static CargarCuentasUsuarioForm userList(Connection c, CargarCuentasUsuarioForm cargarCuentasUsuarioForm, int page) throws Exception {
-        List<ListadoCuentasUsuario> userAccountList = new ArrayList<ListadoCuentasUsuario>();
+        List<ListadoCuentasUsuario> userAccountList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -270,7 +270,7 @@ public final class CuentaUsuarioDAO {
     }
 
     private static List<String> listFromString(String listString, String separator) {
-        List<String> roleList = new ArrayList<String>();
+        List<String> roleList = new ArrayList<>();
         if (listString == null) {
             return null;
         }
@@ -520,7 +520,7 @@ public final class CuentaUsuarioDAO {
     }
 
     public static List<FulFilledCrawling> getFulfilledCrawlings(Connection conn, Long idCrawling, int page) throws Exception {
-        List<FulFilledCrawling> crawlings = new ArrayList<FulFilledCrawling>();
+        List<FulFilledCrawling> crawlings = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -599,7 +599,7 @@ public final class CuentaUsuarioDAO {
     }
 
     public static List<Rastreo> getClientCrawlings(Connection c, Long idClient, int page) throws Exception {
-        List<Rastreo> crawlings = new ArrayList<Rastreo>();
+        List<Rastreo> crawlings = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -832,7 +832,7 @@ public final class CuentaUsuarioDAO {
         List<CuentaCliente> cuentasCliente = CuentaUsuarioDAO.getClientAccounts(c, Long.parseLong(id_account), Constants.CLIENT_ACCOUNT_TYPE);
 
         if (!isMenu) {
-            List<String> cartuchosSelectedList = new ArrayList<String>(Arrays.asList(modificarCuentaUsuarioForm.getCartuchosSelected()));
+            List<String> cartuchosSelectedList = new ArrayList<>(Arrays.asList(modificarCuentaUsuarioForm.getCartuchosSelected()));
             for (CuentaCliente cuentaCliente : cuentasCliente) {
                 // Si uno de los cartuchos anteriores no está entre los seleccionados, se desactiva
                 if (!cartuchosSelectedList.contains(String.valueOf(cuentaCliente.getDatosRastreo().getId_cartucho()))) {
@@ -889,7 +889,7 @@ public final class CuentaUsuarioDAO {
     public static List<CartuchoForm> getCartridgeFromClientAccount(Connection c, Long id_account) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<CartuchoForm> cartuchoList = new ArrayList<CartuchoForm>();
+        List<CartuchoForm> cartuchoList = new ArrayList<>();
         try {
             ps = c.prepareStatement("SELECT * FROM cartucho c JOIN cuenta_cliente_cartucho ccc " +
                     "ON (c.id_cartucho = ccc.id_cartucho) WHERE id_cuenta = ?");
@@ -1003,7 +1003,7 @@ public final class CuentaUsuarioDAO {
     }
 
     public static List<LabelValueBean> getAccountsFromUser(Connection c, String user) throws Exception {
-        List<LabelValueBean> results = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {

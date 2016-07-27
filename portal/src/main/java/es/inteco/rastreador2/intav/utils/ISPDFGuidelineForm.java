@@ -12,7 +12,7 @@ public class ISPDFGuidelineForm {
 
     public ISPDFGuidelineForm() {
         guideline = new GuidelineForm();
-        pautaList = new ArrayList<ISPDFPautaForm>();
+        pautaList = new ArrayList<>();
     }
 
     public GuidelineForm getGuideline() {

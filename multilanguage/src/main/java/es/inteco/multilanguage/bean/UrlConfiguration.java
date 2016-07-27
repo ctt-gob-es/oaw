@@ -7,7 +7,7 @@ public class UrlConfiguration {
     private HashMap<Long, String> langUrls;
 
     public UrlConfiguration() {
-        this.langUrls = new HashMap<Long, String>();
+        this.langUrls = new HashMap<>();
     }
 
     public String getUrl() {

@@ -70,7 +70,7 @@ public class NuevoTerminoCatAction extends Action {
                     try {
                         int id_termino = CategoriasDAO.existTerm(c, nuevoTerminoCatForm.getTermino());
                         //Comprobamos en que categorías existe el término
-                        List<Integer> ids_c = new ArrayList<Integer>();
+                        List<Integer> ids_c = new ArrayList<>();
                         if (id_termino != -1) {
                             ids_c = CategoriasDAO.termCategories(c, id_termino);
                         }

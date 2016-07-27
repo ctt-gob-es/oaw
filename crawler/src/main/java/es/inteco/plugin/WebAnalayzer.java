@@ -19,7 +19,7 @@ public class WebAnalayzer {
     private final Map<String, Cartucho> cartuchos;  //Tenemos esta estructura para reutilizar los cartuchos
 
     public WebAnalayzer() {
-        cartuchos = new HashMap<String, Cartucho>();
+        cartuchos = new HashMap<>();
     }
 
     public void runCartuchos(CrawledLink crawledLink, String fecha, CrawlerData crawlerData, String cookie, boolean isLast) {
@@ -45,7 +45,7 @@ public class WebAnalayzer {
     }
 
     private Map<String, Object> getData(CrawledLink crawledLink, long idFulfilledCrawling, String fecha, CrawlerData crawlerData, String cookie, boolean isLast) {
-        final Map<String, Object> datos = new HashMap<String, Object>();
+        final Map<String, Object> datos = new HashMap<>();
 
         datos.put("id_rastreo", crawlerData.getIdCrawling());
         datos.put("idFulfilledCrawling", idFulfilledCrawling);

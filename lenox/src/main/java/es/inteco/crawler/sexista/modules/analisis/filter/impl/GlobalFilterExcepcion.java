@@ -43,14 +43,14 @@ public class GlobalFilterExcepcion extends BaseFilterExcepcion implements
 
         // Guardamos el listado en un listado, con las keys en mayusculas y sin
         // espacios finales
-        ArrayList<String> lstBeforeExcepcion = new ArrayList<String>();
-        ArrayList<String> lstAfterExcepcion = new ArrayList<String>();
+        ArrayList<String> lstBeforeExcepcion = new ArrayList<>();
+        ArrayList<String> lstAfterExcepcion = new ArrayList<>();
         for (GlobalExcepcionDto dto : lstExcep) {
             exception = dto.getExcepcion().trim().toUpperCase();
             position = dto.getPosition();
 
             // Diferenciamos entre excepciones anteriores y posteriores
-            if (position.intValue() == AnalyzeConstants.WORD_EXCEPTION_BEFORE_POSITION) {
+            if (position == AnalyzeConstants.WORD_EXCEPTION_BEFORE_POSITION) {
                 lstBeforeExcepcion.add(exception);
             } else {
                 lstAfterExcepcion.add(exception);

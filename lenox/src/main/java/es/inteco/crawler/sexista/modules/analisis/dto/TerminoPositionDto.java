@@ -13,7 +13,7 @@ public class TerminoPositionDto extends TerminoDto {
     /**
      * Posiciones donde aparece en el texto.
      */
-    List<Integer> positions = new ArrayList<Integer>();
+    List<Integer> positions = new ArrayList<>();
 
     /**
      * Indica si encontramos el termino en singular o en plural

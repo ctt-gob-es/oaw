@@ -31,7 +31,7 @@ public class Categorizacion {
      */
     public Map<String, Object> categoriza(Map<String, Object> terminos, String contenido) {
 
-        Map<String, Object> scores = new Hashtable<String, Object>();
+        Map<String, Object> scores = new Hashtable<>();
         int ocur = 0;
         for (int i = 0; i < terminos.size() / 4; i++) {
 

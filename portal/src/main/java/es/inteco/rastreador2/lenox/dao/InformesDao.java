@@ -74,7 +74,7 @@ public class InformesDao extends BaseDao {
         sbFinal.append(" GROUP BY ID_RASTREO ");
         sbFinal.append(" ORDER BY FECHA DESC ");
 
-        List<Object> params = new ArrayList<Object>();
+        List<Object> params = new ArrayList<>();
 
         if (null != dto.getNombreRastreo() && !"".equals(dto.getNombreRastreo())) {
             sbFiltros.append(" AND temp.ID_RASTREO LIKE ? ");
@@ -240,7 +240,7 @@ public class InformesDao extends BaseDao {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        List<RastreoExtDto> listado = new ArrayList<RastreoExtDto>();
+        List<RastreoExtDto> listado = new ArrayList<>();
 
         String formato = ConfigUtil.getConfiguracion().getProperty("config.formato.fecha");
 
@@ -328,7 +328,7 @@ public class InformesDao extends BaseDao {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<String> listado = new ArrayList<String>();
+        List<String> listado = new ArrayList<>();
 
         try {
             con = ConexionBBDD.conectar();
@@ -410,7 +410,7 @@ public class InformesDao extends BaseDao {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Integer> listado = new ArrayList<Integer>();
+        List<Integer> listado = new ArrayList<>();
 
         try {
             ps = conn.prepareStatement(sb.toString().toUpperCase());
@@ -568,7 +568,7 @@ public class InformesDao extends BaseDao {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<ResultadoDto> listado = new ArrayList<ResultadoDto>();
+        List<ResultadoDto> listado = new ArrayList<>();
 
         try {
             ps = conn.prepareStatement(sb.toString().toUpperCase());
@@ -625,7 +625,7 @@ public class InformesDao extends BaseDao {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<SugerenciaDto> listado = new ArrayList<SugerenciaDto>();
+        List<SugerenciaDto> listado = new ArrayList<>();
 
         try {
             ps = conn.prepareStatement(sb.toString().toUpperCase());
@@ -768,7 +768,7 @@ public class InformesDao extends BaseDao {
             ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
 
-            Map<String, Integer> resultsMap = new HashMap<String, Integer>();
+            Map<String, Integer> resultsMap = new HashMap<>();
             while (rs.next()) {
                 resultsMap.put(rs.getString("url_termino"), rs.getInt("numTerminos"));
             }
@@ -788,7 +788,7 @@ public class InformesDao extends BaseDao {
 
             rs = ps.executeQuery();
 
-            List<String> urlList = new ArrayList<String>();
+            List<String> urlList = new ArrayList<>();
             while (rs.next()) {
                 urlList.add(rs.getString("URL_TERMINO"));
             }
@@ -802,7 +802,7 @@ public class InformesDao extends BaseDao {
     }
 
     private static List<ResultsByUrlDto> createResults(Map<String, Integer> resultsMap, List<String> urlList) {
-        List<ResultsByUrlDto> results = new ArrayList<ResultsByUrlDto>();
+        List<ResultsByUrlDto> results = new ArrayList<>();
 
         for (String url : urlList) {
             if (resultsMap.containsKey(url)) {
@@ -839,7 +839,7 @@ public class InformesDao extends BaseDao {
     public static List<ObservatoryLenoxForm> getObservatoryData(Connection conn, List<Long> listExecutionsIds) throws BusinessException {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<ObservatoryLenoxForm> results = new ArrayList<ObservatoryLenoxForm>();
+        List<ObservatoryLenoxForm> results = new ArrayList<>();
         try {
             final StringBuilder query = new StringBuilder("SELECT ID_RASTREO, COUNT(DISTINCT(ID_RESULTADO)) AS TERMINOSLOCALIZADOS FROM SEXISTA_RESULTADOS WHERE ID_RASTREO IN ");
             query.append(buildParamValues(listExecutionsIds.size()));

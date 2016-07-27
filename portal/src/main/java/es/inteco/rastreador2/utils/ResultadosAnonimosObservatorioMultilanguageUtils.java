@@ -163,7 +163,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
     }
 
     private static Map<Integer, List<AnalysisForm>> getGlobalResultData(String executionId, long idCategory) throws Exception {
-        Map<Integer, List<AnalysisForm>> results = new HashMap<Integer, List<AnalysisForm>>();
+        Map<Integer, List<AnalysisForm>> results = new HashMap<>();
         results.put(Constants.MULTILANGUAGE_HOME, new ArrayList<AnalysisForm>());
         results.put(Constants.MULTILANGUAGE_INTERNAL_PAGES, new ArrayList<AnalysisForm>());
 
@@ -198,8 +198,8 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
                                                            String title, String filePath, List<AnalysisForm> analysisList, String colors) throws Exception {
 
         File file = new File(filePath);
-        List<LabelValueBean> results = new ArrayList<LabelValueBean>();
-        Map<String, BigDecimal> resultData = new HashMap<String, BigDecimal>();
+        List<LabelValueBean> results = new ArrayList<>();
+        Map<String, BigDecimal> resultData = new HashMap<>();
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
         if (!analysisList.isEmpty()) {
@@ -211,7 +211,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
 
             for (AnalysisForm analysisForm : analysisList) {
                 if (analysisForm.getLanguagesFound() != null && !analysisForm.getLanguagesFound().isEmpty()) {
-                    List<String> countedLangList = new ArrayList<String>();
+                    List<String> countedLangList = new ArrayList<>();
                     for (LanguageFoundForm languageFoundForm : analysisForm.getLanguagesFound()) {
                         if (resultData.get(languageFoundForm.getLanguage().getName()) != null && !countedLangList.contains(languageFoundForm.getLanguage().getName())) {
                             resultData.put(languageFoundForm.getLanguage().getName(), resultData.get(languageFoundForm.getLanguage().getName()).add(BigDecimal.ONE));
@@ -328,7 +328,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
                                                                            String title, String filePath, List<SiteTranslationInformationForm> infoList, int validationType) throws Exception {
 
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        List<ValidationLanguageForm> validationLanguageFormList = new ArrayList<ValidationLanguageForm>();
+        List<ValidationLanguageForm> validationLanguageFormList = new ArrayList<>();
         List<LanguageForm> languages = AnalysisManager.getLanguages(true);
 
         BigDecimal greenValue = null;
@@ -369,7 +369,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
         List<LanguageForm> languages = AnalysisManager.getLanguages(true);
         Map<String, BigDecimal> resultData = initLanguages(languages);
 
-        List<String> countedLangList = new ArrayList<String>();
+        List<String> countedLangList = new ArrayList<>();
         for (LanguageFoundForm languageFoundForm : analysisForm.getLanguagesFound()) {
             if (!countedLangList.contains(languageFoundForm.getLanguage().getName())) {
                 if (validationType == Constants.MULTILANGUAGE_TOTAL_VALIDATION) {
@@ -396,7 +396,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
         }
 
         Map<String, BigDecimal> resultDataAux = createValidInvalidDataSet(resultData);
-        List<ValidationLanguageForm> validationLangFormList = new ArrayList<ValidationLanguageForm>();
+        List<ValidationLanguageForm> validationLangFormList = new ArrayList<>();
         for (LanguageForm languageForm : languages) {
             ValidationLanguageForm validationLangForm = new ValidationLanguageForm();
             validationLangForm.setLanguage(languageForm.getName());
@@ -408,7 +408,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
     }
 
     public static Map<String, BigDecimal> initLanguages(List<LanguageForm> languages) {
-        Map<String, BigDecimal> resultData = new HashMap<String, BigDecimal>();
+        Map<String, BigDecimal> resultData = new HashMap<>();
         for (LanguageForm language : languages) {
             resultData.put(language.getName() + Constants.OBSERVATORY_MULTILANGUAGE_VALID_SUFFIX, BigDecimal.ZERO);
             resultData.put(language.getName() + Constants.OBSERVATORY_MULTILANGUAGE_INVALID_SUFFIX, BigDecimal.ZERO);
@@ -418,7 +418,7 @@ public final class ResultadosAnonimosObservatorioMultilanguageUtils {
     }
 
     public static Map<String, BigDecimal> createValidInvalidDataSet(Map<String, BigDecimal> resultData) {
-        Map<String, BigDecimal> resultDataAux = new TreeMap<String, BigDecimal>();
+        Map<String, BigDecimal> resultDataAux = new TreeMap<>();
         for (Map.Entry<String, BigDecimal> resultDataEntry : resultData.entrySet()) {
             final String keyPrefix = resultDataEntry.getKey().substring(0, resultDataEntry.getKey().length() - 3);
             final BigDecimal total = resultData.get(keyPrefix + "_ok").add(resultData.get(keyPrefix + "_ko"));

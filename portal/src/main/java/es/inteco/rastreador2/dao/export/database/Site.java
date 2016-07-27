@@ -105,7 +105,7 @@ public class Site {
 
     public List<Page> getPageList() {
         if (pageList == null) {
-            pageList = new ArrayList<Page>();
+            pageList = new ArrayList<>();
         }
         return pageList;
     }
@@ -156,7 +156,7 @@ public class Site {
 
     public List<AspectScore> getAspectScoreList() {
         if (aspectScoreList == null) {
-            aspectScoreList = new ArrayList<AspectScore>();
+            aspectScoreList = new ArrayList<>();
         }
         return aspectScoreList;
     }
@@ -167,7 +167,7 @@ public class Site {
 
     public List<VerificationScore> getVerificationScoreList() {
         if (verificationScoreList == null) {
-            verificationScoreList = new ArrayList<VerificationScore>();
+            verificationScoreList = new ArrayList<>();
         }
         return verificationScoreList;
     }
@@ -179,7 +179,7 @@ public class Site {
 
     public List<VerificationModality> getVerificationModalityList() {
         if (verificationModalityList == null) {
-            verificationModalityList = new ArrayList<VerificationModality>();
+            verificationModalityList = new ArrayList<>();
         }
         return verificationModalityList;
     }

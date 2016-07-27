@@ -206,16 +206,16 @@ public class NuevoObservatorioForm extends ValidatorForm {
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         if (this.lenguajeVector == null) {
-            this.lenguajeVector = new ArrayList<LenguajeForm>();
+            this.lenguajeVector = new ArrayList<>();
         }
         if (this.periodicidadVector == null) {
-            this.periodicidadVector = new ArrayList<PeriodicidadForm>();
+            this.periodicidadVector = new ArrayList<>();
         }
         if (this.addSeeds == null) {
-            this.addSeeds = new ArrayList<SemillaForm>();
+            this.addSeeds = new ArrayList<>();
         }
         if (this.otherSeeds == null) {
-            this.otherSeeds = new ArrayList<SemillaForm>();
+            this.otherSeeds = new ArrayList<>();
         }
         if (this.cartucho == null) {
             this.cartucho = new CartuchoForm();

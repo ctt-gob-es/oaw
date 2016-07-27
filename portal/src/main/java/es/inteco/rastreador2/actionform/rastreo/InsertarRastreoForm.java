@@ -298,13 +298,13 @@ public class InsertarRastreoForm extends ValidatorForm {
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         if (this.lenguajeVector == null) {
-            this.lenguajeVector = new ArrayList<LenguajeForm>();
+            this.lenguajeVector = new ArrayList<>();
         }
         if (this.cartuchos == null) {
-            this.cartuchos = new ArrayList<CartuchoForm>();
+            this.cartuchos = new ArrayList<>();
         }
         if (this.normaVector == null) {
-            this.normaVector = new ArrayList<NormaForm>();
+            this.normaVector = new ArrayList<>();
         }
         if (this.normaAnalisisEnlaces == null) {
             this.normaAnalisisEnlaces = "1";
