@@ -22,6 +22,7 @@ import java.util.Map;
  *
  */
 public abstract class OpenOfficeDocumentBuilder {
+
     protected final String executionId;
     protected final String observatoryId;
     protected final Long tipoObservatorio;
@@ -54,42 +55,59 @@ public abstract class OpenOfficeDocumentBuilder {
         replaceEvolutionTextCellTables(odt, odfFileContent, rowId, resultData, false);
     }
 
-    protected void replaceEvolutionTextCellTables(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String rowId, final Map<String, BigDecimal> resultData, final boolean percentValue) throws XPathExpressionException {
+    protected void replaceEvolutionTextCellTables(final OdfTextDocument odt, final OdfFileDom odfFileContent, final String rowId, final Map<String, BigDecimal> resultData, final boolean isPercentValue) throws XPathExpressionException {
         int index = 2;
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
-            final String value = getCellValue(entry.getValue(), percentValue);
             replaceText(odt, odfFileContent, "-" + rowId + ".a" + index + "-", entry.getKey());
-            replaceText(odt, odfFileContent, "-" + rowId + ".b" + index++ + "-", value);
+            replaceText(odt, odfFileContent, "-" + rowId + ".b" + index + "-", getCellValue(entry.getValue(), isPercentValue));
+            index++;
         }
         // Para el resto de la tabla borramos los placeholders para que al menos las celdas salgan vacías
-        while (index <= 6) {
+        while (index <= 7) {
             replaceText(odt, odfFileContent, "-" + rowId + ".a" + index + "-", "");
-            replaceText(odt, odfFileContent, "-" + rowId + ".b" + index++ + "-", "");
+            replaceText(odt, odfFileContent, "-" + rowId + ".b" + index + "-", "");
+            index++;
         }
     }
 
-    protected String getCellValue(final BigDecimal value, final boolean percentValue) {
+    protected String getCellValue(final BigDecimal value, final boolean isPercentValue) {
         if (value.compareTo(BigDecimal.ZERO) < 0) {
             return "NP";
         } else {
-            return value.toString() + (percentValue ? "%" : "");
+            return value.toString() + (isPercentValue ? "%" : "");
         }
     }
 
     protected void replaceImg(final OdfTextDocument odt, final String newImagePath, final String mymeType) throws Exception {
         final File f = new File(newImagePath);
-        final String embededName = getEmbededIdImage(tipoObservatorio, f.getName());
-        FileInputStream fin = null;
+        final String imageName = f.getName().substring(0, f.getName().length()-4);
+        final XPath xpath = odt.getXPath();
+        final OdfFileDom odfFileContent = odt.getContentDom();
+        final  DTMNodeList nodeList = (DTMNodeList) xpath.evaluate(String.format("//draw:frame[@draw:name = '%s']/draw:image", imageName), odfFileContent, XPathConstants.NODESET);
+        for (int i = 0; i < nodeList.getLength(); i++)        {
+            final OdfElement node = (OdfElement) nodeList.item(i);
+            final String embededName = node.getAttribute("xlink:href").trim();
+            insertFileInsideODTFile(odt, embededName, f, mymeType);
+        }
 
-        try {
-            fin = new FileInputStream(newImagePath);
-            odt.getPackage().insert(fin, "Pictures/" + embededName, mymeType);
-        } catch (Exception e) {
-            Logger.putLog("Error al intentar reemplazar una imagen en el documento OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            if (fin != null) {
-                fin.close();
+        final String embededName = getEmbededIdImage(tipoObservatorio, f.getName());
+        insertFileInsideODTFile(odt, "Pictures/" + embededName, f, mymeType );
+    }
+
+    /**
+     * Inserts a new file into the odt file package.
+     *
+     * @param odt OdfTextDocument the ODT text document file to insert into
+     * @param odtFileName String the filename (full path) to use when inserting the new file
+     * @param newFile File the file to insert
+     * @param mimeType String the mime type of the file
+     */
+    private void insertFileInsideODTFile(final OdfTextDocument odt, final String odtFileName, final File newFile, final String mimeType) {
+        if (newFile.exists()) {
+            try (FileInputStream fin = new FileInputStream(newFile)) {
+                odt.getPackage().insert(fin, odtFileName, mimeType);
+            } catch (Exception e) {
+                Logger.putLog("Error al intentar reemplazar una imagen en el documento OpenOffice: " + e.getMessage(), ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR);
             }
         }
     }
