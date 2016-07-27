@@ -76,67 +76,6 @@ public class TestCrawl {
         Assert.assertEquals(17, crawlingDomains.size());
     }
 
-//    @Test
-//    public void testGraphicsUtils() throws Exception {
-//        GraphicsUtils.totalPageStr = "N\u00BA Portales: ";
-//        GraphicsUtils.totalPage = 18;
-//        final DefaultPieDataset dataSet = new DefaultPieDataset();
-//
-//        dataSet.setValue("Parcial", Integer.valueOf(3));
-//        dataSet.setValue("Prioridad 1", Integer.valueOf(3));
-//        dataSet.setValue("Prioridad 1 y 2", Integer.valueOf(12));
-//
-//        final PropertiesManager pmgr = new PropertiesManager();
-//        GraphicsUtils.createPieChart(dataSet, "Distribución del Nivel de Accesibilidad. Segmento I: Principales", "/home/mikunis/na_seg_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
-//    }
-//
-//    @Test
-//    public void testGraphicsPsieChart() throws Exception {
-//        GraphicsUtils.totalPageStr = "N\u00BA Portales: ";
-//        GraphicsUtils.totalPage = 35+112+14;
-//        final DefaultPieDataset dataSet = new DefaultPieDataset();
-//
-//        dataSet.setValue("Emperoran", Integer.valueOf(35));
-//        dataSet.setValue("Se mantienen", Integer.valueOf(112));
-//        dataSet.setValue("Mejoran", Integer.valueOf(14));
-//
-//
-//        final PropertiesManager pmgr = new PropertiesManager();
-//        GraphicsUtils.createPieChart(dataSet, "Distribución según evolución de la puntuación", "/home/mikunis/evol_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
-//    }
-//
-//    @Test
-//    public void testComparacionSegmento() throws Exception {
-//        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-//        dataSet.addValue(17, "No Válido", "Segmento I: Principales");
-//        dataSet.addValue(42, "No Válido", "Segmento II: Organismos");
-//        dataSet.addValue(52, "No Válido", "Segmento III: Temáticos");
-//        dataSet.addValue(57, "No Válido" ,"Segmento IV: Otros");
-//        dataSet.addValue(40, "No Válido", "Segmento V: Sedes");
-//
-//        dataSet.addValue(17, "Prioridad 1","Segmento I: Principales");
-//        dataSet.addValue(27, "Prioridad 1","Segmento II: Organismos");
-//        dataSet.addValue(14, "Prioridad 1","Segmento III: Temáticos");
-//        dataSet.addValue(20, "Prioridad 1","Segmento IV: Otros");
-//        dataSet.addValue(21, "Prioridad 1","Segmento V: Sedes");
-//
-//        dataSet.addValue(66, "Prioridad 1 y 2","Segmento I: Principales");
-//        dataSet.addValue(31, "Prioridad 1 y 2","Segmento II: Organismos");
-//        dataSet.addValue(34, "Prioridad 1 y 2","Segmento III: Temáticos");
-//        dataSet.addValue(23, "Prioridad 1 y 2","Segmento IV: Otros");
-//        dataSet.addValue(39, "Prioridad 1 y 2","Segmento V: Sedes");
-//
-//        final PropertiesManager pmgr = new PropertiesManager();
-//        final String title = "Comparaci\u00F3n de Adecuaci\u00F3n por Segmento";
-//        final String rowTitle = "Puntuaci\u00F3n";
-//        final String noDataMess = "noData";
-//
-//        final ChartForm chartForm = new ChartForm(title, "", rowTitle, dataSet, true, false, false, true, true, false, false, 765, 554, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
-//        GraphicsUtils.createStackedBarChart(chartForm, noDataMess, "/home/mikunis/adecuacion_seg.jpg");
-//    }
-//
-//
-
     private void makeCrawl(CrawlerData crawlerData) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
 

@@ -27,19 +27,21 @@ public final class ExportOpenOfficeUtils {
     private ExportOpenOfficeUtils() {
     }
 
-    public static void createOpenOfficeDocument(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio, int numObs) {
-        long idObservatory = 0;
+    public static void createOpenOfficeDocument(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio, int numberObservatoryExecutions) {
+        final long idObservatory;
         if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
             idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
+        } else {
+            idObservatory = 0;
         }
-        final Connection c = DataBaseManager.getConnection();
-        try {
+
+        try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(request.getParameter(Constants.ID), Constants.COMPLEXITY_SEGMENT_NONE, null);
             final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, Long.valueOf(request.getParameter(Constants.ID)));
 
             final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO), tipoObservatorio, CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
-            final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocument(request, graphicPath, date, includeEvolution(numObs), pageExecutionList, categories);
+            final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocument(request, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList, categories);
 
             odt.save(filePath);
 

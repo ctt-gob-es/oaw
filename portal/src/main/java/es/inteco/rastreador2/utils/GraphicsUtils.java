@@ -5,7 +5,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatorySiteEvaluationForm;
-import es.inteco.rastreador2.action.rastreo.ChartIntavAction;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.util.MessageResources;
 import org.jfree.chart.*;
@@ -45,15 +44,37 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class GraphicsUtils {
 
+    private static final String LABEL_SPACE = "    ";
+    private static final Color RED_COLOR = new Color(225, 18, 13);
+    private static final Color GREEN_COLOR = new Color(38, 187, 8);
+    private static final Color BLUE_COLOR = new Color(15, 91, 255);
     public static String totalPageStr;
     public static long totalPage;
-    private static Font legendFont = new java.awt.Font("Arial", Font.PLAIN, 14);
-    private static Font pieToolTipFont = new Font("Arial", Font.PLAIN, 10);
-    private static Font noDataMessageFont = new java.awt.Font("Arial", Font.BOLD, 30);
-    private static String labelSpace = "    ";
-    private static Color redColor = new Color(225, 18, 13);
-    private static Color greenColor = new Color(38, 187, 8);
-    private static Color blueColor = new Color(15, 91, 255);
+    public static Font TICK_LABEL_FONT;
+    private static Font ITEM_LABEL_FONT;
+    private static Font LEGEND_FONT;
+    private static Font NO_DATA_FONT;
+
+    static {
+        try {
+            final PropertiesManager pmgr = new PropertiesManager();
+            final Font robotoFont = Font.createFont(Font.TRUETYPE_FONT, new File(pmgr.getValue("pdf.properties", "path.pdf.font.monospaced")));
+            GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(robotoFont);
+            LEGEND_FONT = new Font("Roboto", Font.PLAIN, 14);
+            TICK_LABEL_FONT = new Font("Roboto", Font.PLAIN, 14);
+            ITEM_LABEL_FONT = new java.awt.Font("Roboto", Font.BOLD, 12);
+            NO_DATA_FONT = new java.awt.Font("Roboto", Font.BOLD, 30);
+        } catch (Exception e) {
+            LEGEND_FONT = new java.awt.Font("Arial", Font.PLAIN, 14);
+            TICK_LABEL_FONT = new java.awt.Font("Arial", Font.PLAIN, 14);
+            ITEM_LABEL_FONT = new java.awt.Font("Arial", Font.BOLD, 12);
+            NO_DATA_FONT = new java.awt.Font("Arial", Font.BOLD, 30);
+        }
+    }
+
+    public enum GraphicFormatType {
+        PNG, JPG
+    }
 
     private GraphicsUtils() {
     }
@@ -69,7 +90,7 @@ public final class GraphicsUtils {
         plot.setBackgroundPaint(Color.white);
 
         plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessageFont(noDataMessageFont);
+        plot.setNoDataMessageFont(NO_DATA_FONT);
         plot.setNoDataMessagePaint(Color.RED);
 
         final Color[] colors = getColors(colorsKey).toArray(new Color[0]);
@@ -79,7 +100,6 @@ public final class GraphicsUtils {
         plot.setStartAngle(290);
         plot.setDirection(Rotation.CLOCKWISE);
 
-        plot.setLabelFont(pieToolTipFont);
         plot.setLabelLinkStyle(PieLabelLinkStyle.STANDARD);
         plot.setCircular(false);
         plot.setOutlineVisible(true);
@@ -90,35 +110,32 @@ public final class GraphicsUtils {
 
         plot.setLabelGenerator(new CustomLabelGenerator(false));
         plot.setLegendLabelGenerator(new CustomLabelGenerator(true));
+        plot.setLabelFont(LEGEND_FONT);
 
         for (int i = 0; i < plot.getLegendItems().getItemCount(); i++) {
             LegendItem item = plot.getLegendItems().get(i);
-            item.setLabelFont(legendFont);
+            item.setLabelFont(LEGEND_FONT);
         }
 
-        printChart(filePath, chart, x, y);
-    }
-
-    //labelPosition true 45 grados false normal
-    public static void createBarChart(DefaultCategoryDataset dataSet, String title, String rowTitle, String columnTitle,
-                                      String color, boolean withLegend, boolean percentage, boolean labelPosition,
-                                      String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
-
-        ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelPosition, false, x, y, color);
-        createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
+        saveChartToFile(filePath, chart, x, y);
     }
 
     //labelPosition true 45 grados false normal
     public static void createBarChart(Map<String, BigDecimal> result, String title, String rowTitle, String columnTitle,
-                                      String color, boolean withLegend, boolean percentage, boolean labelPosition,
+                                      String color, boolean withLegend, boolean percentage, boolean labelRotated,
                                       String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
-        DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<String, BigDecimal> entry : result.entrySet()) {
-            BigDecimal value = entry.getValue();
-            dataSet.addValue(value, "", parseLevelLabel(entry.getKey(), messageResources));
+            dataSet.addValue(entry.getValue(), "", parseLevelLabel(entry.getKey(), messageResources));
         }
+        createBarChart(dataSet, title, rowTitle, columnTitle, color, withLegend, percentage, labelRotated, filePath, noDataMess, messageResources, x, y);
+    }
 
-        ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelPosition, false, x, y, color);
+    //labelRotated true 45 grados false normal
+    public static void createBarChart(DefaultCategoryDataset dataSet, String title, String rowTitle, String columnTitle,
+                                      String color, boolean withLegend, boolean percentage, boolean labelRotated,
+                                      String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
+        final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelRotated, false, x, y, color);
         createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
@@ -128,21 +145,11 @@ public final class GraphicsUtils {
     }
 
     public static void createBar1PxChart(List<ObservatorySiteEvaluationForm> result, String title, String rowTitle, String columnTitle,
-                                         String filePath, String noDataMess, final MessageResources messageResources, int x, int y, boolean showColLab) throws Exception {
-
-        DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        PropertiesManager pmgr = new PropertiesManager();
-        StringBuilder colors = new StringBuilder();
+                                         String filePath, String noDataMess, final MessageResources messageResources, int x, int y, boolean showColumnsLabels) throws Exception {
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        final StringBuilder colors = new StringBuilder();
         for (ObservatorySiteEvaluationForm observatorySiteEvaluationForm : result) {
-            if ("NV".equalsIgnoreCase(observatorySiteEvaluationForm.getLevel())) {
-                colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.red.color")).append(",");
-            }
-            if ("A".equalsIgnoreCase(observatorySiteEvaluationForm.getLevel())) {
-                colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.yellow.color")).append(",");
-            }
-            if ("AA".equalsIgnoreCase(observatorySiteEvaluationForm.getLevel())) {
-                colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.green.color")).append(",");
-            }
+            getRequiredColors(colors, observatorySiteEvaluationForm.getLevel());
 
             if (observatorySiteEvaluationForm.getAcronym() != null && !StringUtils.isEmpty(observatorySiteEvaluationForm.getAcronym())) {
                 dataSet.addValue(observatorySiteEvaluationForm.getScore(), "", observatorySiteEvaluationForm.getAcronym());
@@ -151,32 +158,22 @@ public final class GraphicsUtils {
             }
         }
 
-        ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, false, false, true, false, true, true, true, x, y, colors.toString());
+        final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, false, false, true, false, true, true, true, x, y, colors.toString());
         observatoryGraphicsForm.setFixedColorBars(true);
         observatoryGraphicsForm.setFixedLegend(true);
-        observatoryGraphicsForm.setShowColumsLabels(showColLab);
+        observatoryGraphicsForm.setShowColumsLabels(showColumnsLabels);
         createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
     public static void createBarPageByLevelChart(List<ObservatoryEvaluationForm> result, String title, String rowTitle, String columnTitle,
                                                  String filePath, String noDataMess, final MessageResources messageResources, int x, int y) throws Exception {
-
-        DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        PropertiesManager pmgr = new PropertiesManager();
-        StringBuilder colors = new StringBuilder();
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        final StringBuilder colors = new StringBuilder();
         int i = 1;
         for (ObservatoryEvaluationForm observatoryEvaluationForm : result) {
-            if ("NV".equalsIgnoreCase(ObservatoryUtils.pageSuitabilityLevel(observatoryEvaluationForm))) {
-                colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.red.color")).append(",");
-            }
-            if ("A".equalsIgnoreCase(ObservatoryUtils.pageSuitabilityLevel(observatoryEvaluationForm))) {
-                colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.yellow.color")).append(",");
-            }
-            if ("AA".equalsIgnoreCase(ObservatoryUtils.pageSuitabilityLevel(observatoryEvaluationForm))) {
-                colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.green.color")).append(",");
-            }
+            getRequiredColors(colors, ObservatoryUtils.pageSuitabilityLevel(observatoryEvaluationForm));
 
-            dataSet.addValue(observatoryEvaluationForm.getScore().setScale(observatoryEvaluationForm.getScore().scale() - 1), "", messageResources.getMessage("observatory.graphic.score.by.page.label", i++));
+            dataSet.addValue(observatoryEvaluationForm.getScore().setScale(observatoryEvaluationForm.getScore().scale() - 1, BigDecimal.ROUND_UNNECESSARY), "", messageResources.getMessage("observatory.graphic.score.by.page.label", i++));
         }
 
         ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, false, true, true, true, x, y, colors.toString());
@@ -185,20 +182,36 @@ public final class GraphicsUtils {
         createStandardBarChart(observatoryGraphicsForm, filePath, noDataMess, messageResources, true);
     }
 
-    public static void createStackedBarChart(ChartForm chartForm, String noDataMess, String filePath) throws Exception {
+    /**
+     * Builds a comma (,) separated string with the required colors
+     * @param colors a StringBuilder object where append the colors
+     * @param level a String representing the suitability (conformance level)
+     */
+    private static void getRequiredColors(final StringBuilder colors, final String level) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        if (Constants.OBS_NV.equalsIgnoreCase(level) ||
+                Constants.OBS_PARCIAL.equalsIgnoreCase(level)) {
+            colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.red.color")).append(",");
+        }
+        if (Constants.OBS_A.equalsIgnoreCase(level)) {
+            colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.yellow.color")).append(",");
+        }
+        if (Constants.OBS_AA.equalsIgnoreCase(level)) {
+            colors.append(pmgr.getValue(CRAWLER_PROPERTIES, "chart.graphic.green.color")).append(",");
+        }
+    }
 
-        PropertiesManager pmgr = new PropertiesManager();
+    public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws Exception {
         JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(),
-                PlotOrientation.VERTICAL, chartForm.isLegend(), true, false);
+                PlotOrientation.VERTICAL, chartForm.isPrintLegend(), true, false);
 
         formatLegend(chart);
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setBackgroundPaint(Color.white);
-        //plot.setForegroundAlpha(0.6f);
 
         plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessageFont(noDataMessageFont);
+        plot.setNoDataMessageFont(NO_DATA_FONT);
         plot.setNoDataMessagePaint(Color.RED);
 
         List<Paint> colors = getColors(chartForm.getColor());
@@ -206,12 +219,14 @@ public final class GraphicsUtils {
         CategoryRenderer renderer = new CategoryRenderer(colors);
         renderer.setColor(plot, chartForm.getDataSet());
 
-        plot.setFixedLegendItems(generateLegend(colors, plot));
+        if (chartForm.isPrintLegend()) {
+            plot.setFixedLegendItems(generateLegend(colors, plot));
+        }
 
         BarRenderer barRenderer = (BarRenderer) plot.getRenderer();
         barRenderer.setBaseItemLabelGenerator(new LabelGenerator(true));
         barRenderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.CENTER, TextAnchor.CENTER));
-        barRenderer.setBaseItemLabelFont(new java.awt.Font("Arial", Font.BOLD, 12));
+        barRenderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
         barRenderer.setBaseItemLabelsVisible(true);
         barRenderer.setDrawBarOutline(true);
         barRenderer.setMaximumBarWidth(0.5);
@@ -219,35 +234,34 @@ public final class GraphicsUtils {
 
         itemLabelColor(barRenderer, colors);
 
-        CategoryAxis domainAxis = plot.getDomainAxis();
+        final CategoryAxis domainAxis = plot.getDomainAxis();
         domainAxis.setMaximumCategoryLabelLines(3);
         domainAxis.setUpperMargin(0.01);
         domainAxis.setLowerMargin(0.01);
-
 
         if (!chartForm.isRoundLabelPosition()) {
             domainAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
         } else {
             domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
         }
+        domainAxis.setTickLabelFont(TICK_LABEL_FONT);
 
         NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
         valueAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         createNumberAxis(plot, true);
 
-        printChart(filePath, chart, Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.x")),
-                Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.y")));
+        saveChartToFile(filePath, chart, chartForm.getX(), chartForm.getY());
 
     }
 
     private static void itemLabelColor(BarRenderer barRenderer, List<Paint> colors) {
         int serie = 0;
         for (Paint color : colors) {
-            if (color.equals(redColor) || color.equals(greenColor) || color.equals(blueColor)) {
-                barRenderer.setSeriesItemLabelPaint(serie, Color.white);
+            if (color.equals(RED_COLOR) || color.equals(GREEN_COLOR) || color.equals(BLUE_COLOR)) {
+                barRenderer.setSeriesItemLabelPaint(serie, Color.WHITE);
             } else {
-                barRenderer.setSeriesItemLabelPaint(serie, Color.black);
+                barRenderer.setSeriesItemLabelPaint(serie, Color.BLACK);
             }
             serie++;
         }
@@ -256,23 +270,21 @@ public final class GraphicsUtils {
     public static void createStandardBarChart(ChartForm observatoryGraphicsForm,
                                               String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws Exception {
 
-        JFreeChart chart;
+        final JFreeChart chart;
 
         if (observatoryGraphicsForm.isTridimensional()) {
             chart = ChartFactory.createBarChart3D(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
-                    observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isLegend(), true, false);
+                    observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
         } else {
             chart = ChartFactory.createBarChart(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(), observatoryGraphicsForm.getRowTitle(),
-                    observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isLegend(), true, false);
+                    observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
         }
-//        chart = ChartFactory.createLineChart(observatoryGraphicsForm.getTitle(), observatoryGraphicsForm.getColumnTitle(),observatoryGraphicsForm.getRowTitle(),
-//                observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isLegend(), true, false);
 
         formatLegend(chart);
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessageFont(noDataMessageFont);
+        plot.setNoDataMessageFont(NO_DATA_FONT);
         plot.setNoDataMessagePaint(Color.RED);
 
         //Elimina la transparencia de las gráficas
@@ -297,7 +309,7 @@ public final class GraphicsUtils {
 
         putValuesOnBars(chart, observatoryGraphicsForm);
 
-        printChart(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
+        saveChartToFile(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
     }
 
     public static String parseLevelLabel(final String key, final MessageResources messageResources) {
@@ -305,17 +317,15 @@ public final class GraphicsUtils {
             return messageResources.getMessage("observatory.graphics.level.A");
         } else if (key.equals(Constants.OBS_AA)) {
             return messageResources.getMessage("observatory.graphics.level.AA");
-        } else if (key.equals(Constants.OBS_NV)) {
-            return messageResources.getMessage("observatory.graphics.level.NV");
-        } else if (key.equals(Constants.OBS_PARCIAL)) {
+        } else if (key.equals(Constants.OBS_NV) || key.equals(Constants.OBS_PARCIAL)) {
             return messageResources.getMessage("observatory.graphics.level.Parcial");
         } else {
             return key;
         }
     }
 
-    private static void createNumberAxis(CategoryPlot plot, boolean percentage) {
-        NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
+    private static void createNumberAxis(final CategoryPlot plot, boolean percentage) {
+        final NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
 
         if (!percentage) {
             valueAxis.setTickUnit(new NumberTickUnit(1));
@@ -324,6 +334,7 @@ public final class GraphicsUtils {
             valueAxis.setTickUnit(new NumberTickUnit(10));
             valueAxis.setRangeWithMargins(new Range(0, 100));
         }
+        valueAxis.setTickLabelFont(TICK_LABEL_FONT);
         valueAxis.setLowerBound(0);
     }
 
@@ -358,6 +369,7 @@ public final class GraphicsUtils {
                 domainAxis.setTickLabelsVisible(false);
             }
         }
+        domainAxis.setTickLabelFont(ITEM_LABEL_FONT);
         domainAxis.setUpperMargin(0.01);
         domainAxis.setLowerMargin(0.01);
     }
@@ -376,7 +388,7 @@ public final class GraphicsUtils {
         }
 
         CategoryItemRenderer renderer = plot.getRenderer();
-        if (chartForm.isLegend()) {
+        if (chartForm.isPrintLegend()) {
             if (chartForm.isFixedLegend()) {
                 plot.setFixedLegendItems(generateOnePixelLegend(messageResources));
             } else {
@@ -412,7 +424,7 @@ public final class GraphicsUtils {
     private static void formatLegend(JFreeChart chart) {
         LegendTitle lt = chart.getLegend();
         if (lt != null) {
-            lt.setItemFont(legendFont);
+            lt.setItemFont(LEGEND_FONT);
             lt.setItemPaint(Color.black);
             lt.setPadding(10, 10, 10, 10);
         }
@@ -427,7 +439,7 @@ public final class GraphicsUtils {
 
         for (int i = 0; i < legend.getItemCount(); i++) {
             LegendItem item = legend.get(i);
-            item = new LegendItem(item.getLabel() + labelSpace, item.getLabel() + labelSpace, item.getLabel() + labelSpace, item.getLabel() + labelSpace, shape, colors.get(i), stroke, Color.black);
+            item = new LegendItem(item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, item.getLabel() + LABEL_SPACE, shape, colors.get(i), stroke, Color.black);
             newLegend.add(item);
         }
         return newLegend;
@@ -447,7 +459,7 @@ public final class GraphicsUtils {
         if (colors.size() == labels.length) {
             int i = 0;
             for (String label : labels) {
-                LegendItem item = new LegendItem(label + labelSpace, label + labelSpace, label + labelSpace, label + labelSpace, shape, colors.get(i), stroke, Color.black);
+                LegendItem item = new LegendItem(label + LABEL_SPACE, label + LABEL_SPACE, label + LABEL_SPACE, label + LABEL_SPACE, shape, colors.get(i), stroke, Color.black);
                 legend.add(item);
                 i++;
             }
@@ -464,16 +476,17 @@ public final class GraphicsUtils {
 
         if (chartForm.isOnePixelGraph()) {
             barRenderer.setMaximumBarWidth(0.005);
-        } else {
+        } else if (chartForm.isShowColumsLabels()){
             barRenderer.setMaximumBarWidth(0.1);
-            barRenderer.setBaseItemLabelFont(new java.awt.Font("Arial", Font.BOLD, 12));
+            barRenderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
             barRenderer.setBaseItemLabelGenerator(new LabelGenerator(chartForm.isPercentage()));
             barRenderer.setBaseItemLabelsVisible(true);
             barRenderer.setDrawBarOutline(true);
             barRenderer.setBaseOutlinePaint(Color.gray);
 
             if (chartForm.isTridimensional()) {
-                CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer();
+                final CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer();
+                renderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
                 renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
                 ((BarRenderer3D) renderer).setItemLabelAnchorOffset(10D);
             }
@@ -482,30 +495,30 @@ public final class GraphicsUtils {
         barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
     }
 
-    private static void printChart(String filePath, JFreeChart chart, int x, int y) throws Exception {
+    public static void saveChartToFile(final String filePath, final JFreeChart chart, int x, int y) throws Exception {
+       saveChartToFile(filePath, chart, x, y, GraphicFormatType.JPG);
+    }
 
-        File file = new File(filePath);
+    public static void saveChartToFile(final String filePath, final JFreeChart chart, final int x, final int y, final GraphicFormatType mimeType) throws Exception {
+        final File file = new File(filePath);
+        if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+            Logger.putLog("Error al crear el archivo con la imagen de la gráfica", GraphicsUtils.class, Logger.LOG_LEVEL_ERROR);
+        }
+        file.createNewFile();
 
-        FileOutputStream fout = null;
-        try {
-            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
-                Logger.putLog("Error al crear el archivo con la imagen de la gráfica", ChartIntavAction.class, Logger.LOG_LEVEL_ERROR);
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            if (mimeType.equals(GraphicFormatType.JPG)) {
+                ChartUtilities.writeChartAsJPEG(out, chart, x, y);
+            } else {
+                ChartUtilities.writeChartAsPNG(out, chart, x, y);
             }
-            fout = new FileOutputStream(file);
-            ChartUtilities.writeChartAsJPEG(fout, chart, x, y);
-        } finally {
-            try {
-                if (fout != null) {
-                    fout.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error cerrar el archivo con la imagen de la gráfica", ChartIntavAction.class, Logger.LOG_LEVEL_ERROR, e);
-            }
+        } catch (Exception e) {
+            Logger.putLog("Error guardar el archivo con la imagen de la gráfica: " + e.getMessage(), GraphicsUtils.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 
-    private static List<Paint> getColors(String colorsProperty) {
 
+    private static List<Paint> getColors(final String colorsProperty) {
         String regexp = "\\{(.*?),(.*?),(.*?)\\}";
         Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
         Matcher matcher = pattern.matcher(colorsProperty);
@@ -555,7 +568,7 @@ public final class GraphicsUtils {
                     return null;
                 }
             } else {
-                return key + labelSpace;
+                return key + LABEL_SPACE;
             }
         }
 

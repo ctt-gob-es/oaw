@@ -22,17 +22,27 @@ import es.inteco.view.forms.CategoryViewListForm;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.Dataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.crypto.Data;
+import java.awt.*;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
@@ -84,6 +94,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
             String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.title");
             String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.name") + ".jpg";
+            title = "";
             getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, title, file, noDataMess, regenerate);
 
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.title");
@@ -737,19 +748,19 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     }
 
-    public static void getApprovalLevelEvolutionGraphic(final HttpServletRequest request, final String type, final String title, final String filePath,
+    public static void getApprovalLevelEvolutionGraphic(final HttpServletRequest request, final String suitabilityLevel, final String title, final String filePath,
                                                         final String noDataMess, final Map<Date, List<ObservatoryEvaluationForm>> observatoryResult, final String color, final boolean regenerate) throws Exception {
         final File file = new File(filePath);
         final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(request, observatoryResult);
-        final Map<String, BigDecimal> resultData = calculatePercentageApprovalSiteLevel(result, type);
+        final Map<String, BigDecimal> resultData = calculatePercentageApprovalSiteLevel(result, suitabilityLevel);
 
         //Los incluimos en la request
-        if (type.equals(Constants.OBS_A)) {
+        if (suitabilityLevel.equals(Constants.OBS_A)) {
             request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A, infoLevelEvolutionGraphic(resultData));
-        } else if (type.equals(Constants.OBS_AA)) {
+        } else if (suitabilityLevel.equals(Constants.OBS_AA)) {
             request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA, infoLevelEvolutionGraphic(resultData));
         }
-        if (type.equals(Constants.OBS_NV)) {
+        if (suitabilityLevel.equals(Constants.OBS_NV) || suitabilityLevel.equals(Constants.OBS_PARCIAL)) {
             request.setAttribute(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV, infoLevelEvolutionGraphic(resultData));
         }
 
@@ -939,7 +950,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             @Override
             public int compare(String o1, String o2) {
                 final PropertiesManager pmgr = new PropertiesManager();
-                final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+                final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
                 try {
                     final Date fecha1 = new Date(df.parse(o1).getTime());
                     final Date fecha2 = new Date(df.parse(o2).getTime());
@@ -953,7 +964,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         });
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
 
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : result.entrySet()) {
             //Para un observatorio en concreto recuperamos la puntuación de una verificación
@@ -999,7 +1010,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         return resultData;
     }
 
-    public static Map<String, BigDecimal> calculatePercentageApprovalSiteLevel(final Map<Date, Map<Long, Map<String, Integer>>> result, final String type) {
+    public static Map<String, BigDecimal> calculatePercentageApprovalSiteLevel(final Map<Date, Map<Long, Map<String, Integer>>> result, final String suitabilityLevel) {
         final PropertiesManager pmgr = new PropertiesManager();
         final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
         final TreeMap<String, BigDecimal> percentagesMap = new TreeMap<String, BigDecimal>(new Comparator<String>() {
@@ -1022,7 +1033,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             int numSitesType = 0;
             for (Map.Entry<Long, Map<String, Integer>> longMapEntry : dateMapEntry.getValue().entrySet()) {
                 final String portalLevel = siteLevel(dateMapEntry.getValue(), longMapEntry.getKey());
-                if (portalLevel.equals(type)) {
+                if (portalLevel.equals(suitabilityLevel)) {
                     numSitesType++;
                 }
             }
@@ -1599,4 +1610,91 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         }
     }
 
+    /**
+     */
+    public static void generateEvolutionSuitabilityChart(final HttpServletRequest request, final String filePath,
+                                                         final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
+        final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
+        final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(request, pageObservatoryMap);
+        evolutionSuitabilityDatePercentMap.put("Parcial", calculatePercentageApprovalSiteLevel(result, Constants.OBS_NV));
+        evolutionSuitabilityDatePercentMap.put("Prioridad 1", calculatePercentageApprovalSiteLevel(result, Constants.OBS_A));
+        evolutionSuitabilityDatePercentMap.put("Prioridad 1 y 2", calculatePercentageApprovalSiteLevel(result, Constants.OBS_AA));
+
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        for(Map.Entry<String,Map<String, BigDecimal>> evolutionSuitabilityEntry: evolutionSuitabilityDatePercentMap.entrySet()) {
+            for(Map.Entry<String, BigDecimal> datePercentEntry: evolutionSuitabilityEntry.getValue().entrySet()) {
+                dataSet.addValue(datePercentEntry.getValue(), evolutionSuitabilityEntry.getKey(), datePercentEntry.getKey());
+            }
+        }
+
+        final String noDataMess = "noData";
+
+        final PropertiesManager pmgr = new PropertiesManager();
+        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, false, false, true, true, false, false, 1265, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+
+        GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
+    }
+
+    /**
+     * Generate the evolution chart of the average score grouped by verification. This is a landscape chart where for
+     * each verification there is a column with the score achieved in each observatory execution.
+     *
+     * @param messageResources MessageResources needed for GraphicsUtils utility class
+     * @param filePath String with the full path (filename included) where the chart will be saved as jpg file.
+     * @param pageObservatoryMap a Map where each entrey is keyed by observatory date and the value is a list of the page evaluations
+     * @param verifications list of verifications to include on the chart
+     * @throws Exception
+     */
+    public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources, final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+            for(String verification: verifications) {
+                //Para un observatorio en concreto recuperamos la puntuación de una verificación
+                final BigDecimal value = getVerificationResultsByPoint(entry.getValue(), Constants.OBS_PRIORITY_NONE).get(verification);
+                dataSet.addValue(value, df.format(entry.getKey()), verification);
+            }
+        }
+
+        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+        chartForm.setFixedColorBars(true);
+        chartForm.setShowColumsLabels(false);
+
+        GraphicsUtils.createStandardBarChart(chartForm, filePath, "", messageResources, true);
+    }
+
+    /**
+     * Generate the evolution char of the average score grouped by aspects. This is a landscape chart where for each
+     * aspect there is a column with the score achieved in each observatory execution.
+     *
+     * @param messageResources MessageResources needed for GraphicsUtils utility class
+     * @param filePath String with the full path (filename included) where the chart will be saved as jpg file.
+     * @param pageObservatoryMap a Map where each entrey is keyed by observatory date and the value is a list of the page evaluations
+     * @throws Exception
+     */
+    public static void generateEvolutionAverageScoreByAspectChart(final MessageResources messageResources, final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
+        final Map<Date, Map<String, BigDecimal>> resultsByAspect = new LinkedHashMap<>();
+        for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+            resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+        }
+
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        for (Map.Entry<Date, Map<String,BigDecimal>> dateAspectValueEntry : resultsByAspect.entrySet()) {
+            // Todas las puntuaciones por aspecto se muestran en este orden
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.general")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.general"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.presentation")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.presentation"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.structure")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.structure"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.navigation")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.navigation"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.alternatives")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.alternatives"));
+        }
+
+        final PropertiesManager pmgr = new PropertiesManager();
+        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, false, false, false, false, false, false, 1565, 684, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+        chartForm.setFixedColorBars(true);
+        chartForm.setShowColumsLabels(false);
+
+        GraphicsUtils.createStandardBarChart(chartForm, filePath, "", messageResources, true);
+    }
 }

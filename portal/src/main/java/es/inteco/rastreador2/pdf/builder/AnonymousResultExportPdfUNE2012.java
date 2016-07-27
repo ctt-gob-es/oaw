@@ -63,9 +63,9 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
             PDFUtils.addParagraph("La realización de las iteraciones periódicas del Observatorio de Accesibilidad Web permite conocer el grado de cumplimiento de los principios de Accesibilidad Web, cómo éste va evolucionando a lo largo del tiempo, y los principales problemas que hay que resolver. De esta forma se consigue extraer las conclusiones y planes de acción adecuados para apoyar a las organizaciones a alcanzar el siguiente " +
                     "objetivo: Conseguir afianzar un nivel óptimo de cumplimiento de forma sostenible en el tiempo.", ConstantsFont.PARAGRAPH, chapter);
 
-            final SpecialChunk anchor = new SpecialChunk("metodología propia", "anchor_annex", false, ConstantsFont.ANCHOR_FONT);
+            final SpecialChunk anchor = new SpecialChunk("ANEXO I", "anchor_annex", false, ConstantsFont.ANCHOR_FONT);
             specialChunkMap.put(1, anchor);
-            chapter.add(PDFUtils.createParagraphAnchor("Las diferentes iteraciones del Estudio de Observatorio se realizan según una [anchor1] acordada y que supone una abstracción de los principios de accesibilidad en función de un conjunto de evaluaciones significativas. De este modo se consigue una estimación del estado de accesibilidad de los portales.", specialChunkMap, ConstantsFont.PARAGRAPH));
+            chapter.add(PDFUtils.createParagraphAnchor("Las diferentes iteraciones del Estudio de Observatorio se realizan según una metodología propia acordada (disponible en el [anchor1]) y que supone una abstracción de los principios de accesibilidad en función de un conjunto de evaluaciones significativas. De este modo se consigue una estimación del estado de accesibilidad de los portales.", specialChunkMap, ConstantsFont.PARAGRAPH));
             //createChapter1(messageResources, chapter);
 
             final Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter11.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
@@ -89,6 +89,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
             boldWords.clear();
             boldWords.add("ofrece una estimación de la situación general de la accesibilidad en ese portal");
+
             final String annexAnchor = "ANEXO I";
             final String parrafoEstimacionSituacionPreLink = "El informe {0} basado en la metodología acordada (";
             final String parrafoEstimacionSituacionPostLink = ") pero no se trata de una \"Auditoría de Accesibilidad\".";
@@ -222,7 +223,8 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         final Chapter chapter = PDFUtils.createChapterWithTitle("ANEXO I: " + messageResources.getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont, true, "anchor_annex");
         chapter.setNumberDepth(0);
 
-        final String anexoMetodologiaParrafo1 = "La revisión de accesibilidad de los estudios del Observatorio de Accesibilidad Web se realiza mediante una metodología automática desarrollada expresamente para este observatorio. Esta metodología tiene en cuenta únicamente 20 verificaciones de accesibilidad. Cada verificación está compuesta por varias comprobaciones realizadas automáticamente. Mediante métricas especializadas se pudieron incluir algunas comprobaciones de revisión habitualmente manual.";
+        //final String anexoMetodologiaParrafo1 = "La revisión de accesibilidad de los estudios del Observatorio de Accesibilidad Web se realiza mediante una metodología automática desarrollada expresamente para este observatorio. Esta metodología tiene en cuenta únicamente 20 verificaciones de accesibilidad. Cada verificación está compuesta por varias comprobaciones realizadas automáticamente. Mediante métricas especializadas se pudieron incluir algunas comprobaciones de revisión habitualmente manual.";
+        final String anexoMetodologiaParrafo1 ="La revisión de accesibilidad de los estudios del Observatorio de Accesibilidad Web se realiza mediante una metodología automática desarrollada expresamente para este observatorio. Esta metodología tiene en cuenta únicamente 20 verificaciones de accesibilidad. Cada verificación está compuesta por varias comprobaciones realizadas automáticamente. Se ha hecho un esfuerzo importante en que las verificaciones realizadas sobre cada página no solo consistan en aquellas puramente automáticas, sino que a través de distintos algoritmos y métricas especializadas se han automatizado mediante estimaciones un buen número de comprobaciones cuya revisión es tradicionalmente manual.";
         PDFUtils.addParagraph(anexoMetodologiaParrafo1, ConstantsFont.PARAGRAPH, chapter);
         final String anexoMetodologiaParrafo2 = "La metodología usando el estándar UNE 139803:2012 (WCAG 2.0) se aprobó por el grupo de Trabajo de Sitios Web de la Administración General del Estado y por el Grupo \"Observatorio, Indicadores y Medidas\" del Comité Sectorial de Administración Electrónica (gobiernos regionales y locales).";
         PDFUtils.addParagraph(anexoMetodologiaParrafo2, ConstantsFont.PARAGRAPH, chapter);
@@ -232,10 +234,10 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         p.setSpacingBefore(LINE_SPACE);
         p.add(PDFUtils.createPhraseLink(anexoMetodologiaParrafo3Link, anexoMetodologiaParrafo3Link, ConstantsFont.LINK_FONT));
         chapter.add(p);
-        final String anexoMetodologiaParrafo4 = "La metodología del Observatorio de Accesibilidad se basa en la experiencia de los expertos en accesibilidad y en la realización de distintos observatorios previos.";
-        PDFUtils.addParagraph(anexoMetodologiaParrafo4, ConstantsFont.PARAGRAPH, chapter);
-        final String anexoMetodologiaParrafo5 = "Los análisis de las páginas se efectúan de forma automática por lo que se ha hecho un esfuerzo importante en que las verificaciones realizadas sobre cada página no solo consistan en aquellas puramente automáticas, sino que a través de distintos algoritmos y métricas se han automatizado mediante estimaciones un buen número de comprobaciones cuya revisión es tradicionalmente manual.";
-        PDFUtils.addParagraph(anexoMetodologiaParrafo5, ConstantsFont.PARAGRAPH, chapter);
+        //final String anexoMetodologiaParrafo4 = "La metodología del Observatorio de Accesibilidad se basa en la experiencia de los expertos en accesibilidad y en la realización de distintos observatorios previos.";
+        //PDFUtils.addParagraph(anexoMetodologiaParrafo4, ConstantsFont.PARAGRAPH, chapter);
+        //final String anexoMetodologiaParrafo5 = "Los análisis de las páginas se efectúan de forma automática por lo que se ha hecho un esfuerzo importante en que las verificaciones realizadas sobre cada página no solo consistan en aquellas puramente automáticas, sino que a través de distintos algoritmos y métricas se han automatizado mediante estimaciones un buen número de comprobaciones cuya revisión es tradicionalmente manual.";
+        //PDFUtils.addParagraph(anexoMetodologiaParrafo5, ConstantsFont.PARAGRAPH, chapter);
         //chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.3.p1"), Collections.singletonList(messageResources.getMessage("ob.resAnon.intav.report.3.p1.bold")), ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         //PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.3.p2"), ConstantsFont.PARAGRAPH, chapter);

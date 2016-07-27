@@ -16,7 +16,7 @@ public class ChartForm {
     private boolean isOnePixelGraph;
     private boolean fixedLegend;
     private boolean percentage;
-    private boolean legend;
+    private boolean printLegend;
     private boolean roundLabelPosition;
     private boolean gridline;
     private int x;
@@ -24,7 +24,7 @@ public class ChartForm {
 
     public ChartForm(String title, String columnTitle, String rowTitle,
                      DefaultCategoryDataset dataSet, boolean isTridimensional, boolean isSeriesChart,
-                     boolean isOnePixelGraph, boolean percentage, boolean legend, boolean roundLabelPosition,
+                     boolean isOnePixelGraph, boolean percentage, boolean printLegend, boolean roundLabelPosition,
                      boolean gridline, int x, int y, String color) {
         super();
         this.title = title;
@@ -36,7 +36,7 @@ public class ChartForm {
         this.isOnePixelGraph = isOnePixelGraph;
         this.percentage = percentage;
         this.color = color;
-        this.legend = legend;
+        this.printLegend = printLegend;
         this.roundLabelPosition = roundLabelPosition;
         this.gridline = gridline;
         this.x = x;
@@ -50,7 +50,8 @@ public class ChartForm {
     }
 
     public String getTitle() {
-        return title;
+        //return title;
+        return "";
     }
 
     public void setTitle(String title) {
@@ -58,7 +59,8 @@ public class ChartForm {
     }
 
     public String getColumnTitle() {
-        return columnTitle;
+//        return columnTitle;
+        return "";
     }
 
     public void setColumnTitle(String columnTitle) {
@@ -66,7 +68,8 @@ public class ChartForm {
     }
 
     public String getRowTitle() {
-        return rowTitle;
+//        return rowTitle;
+        return "";
     }
 
     public void setRowTitle(String rowTitle) {
@@ -121,12 +124,12 @@ public class ChartForm {
         this.color = color;
     }
 
-    public boolean isLegend() {
-        return legend;
+    public boolean isPrintLegend() {
+        return printLegend;
     }
 
-    public void setLegend(boolean legend) {
-        this.legend = legend;
+    public void setPrintLegend(boolean printLegend) {
+        this.printLegend = printLegend;
     }
 
     public boolean isRoundLabelPosition() {
