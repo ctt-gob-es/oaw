@@ -184,8 +184,12 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
             PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
             final List listaConfiguracionRastreo = new List();
             listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
-            // FIXME: Enlazar el origen con la URL
-            PDFUtils.addListItem("Origen: " + basicServiceForm.getDomain(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+            final SpecialChunk externalLink = new SpecialChunk(basicServiceForm.getDomain(), ConstantsFont.ANCHOR_FONT);
+            externalLink.setExternalLink(true);
+            externalLink.setAnchor(basicServiceForm.getDomain());
+            final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+            specialChunkMap.put(1, externalLink);
+            listaConfiguracionRastreo.add(new ListItem(PDFUtils.createParagraphAnchor("Origen: [anchor1]", specialChunkMap ,ConstantsFont.PARAGRAPH, false)));
             PDFUtils.addListItem("Forma de selección de páginas: aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Profundidad: " + basicServiceForm.getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Amplitud: " + basicServiceForm.getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
