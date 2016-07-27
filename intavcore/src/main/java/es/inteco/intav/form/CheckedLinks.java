@@ -11,9 +11,9 @@ public class CheckedLinks implements Serializable {
     private List<String> availablelinks;
 
     public CheckedLinks() {
-        brokenLinks = new ArrayList<String>();
-        availablelinks = new ArrayList<String>();
-        checkedLinks = new ArrayList<String>();
+        brokenLinks = new ArrayList<>();
+        availablelinks = new ArrayList<>();
+        checkedLinks = new ArrayList<>();
     }
 
     public List<String> getBrokenLinks() {

@@ -16,7 +16,7 @@ import java.util.List;
 public class TerminoDetalleDto extends BaseDto {
 
     public TerminoDetalleDto() {
-        this.contextos = new ArrayList<ResultadoDto>();
+        this.contextos = new ArrayList<>();
         this.numOcurrencias = 0;
     }
 

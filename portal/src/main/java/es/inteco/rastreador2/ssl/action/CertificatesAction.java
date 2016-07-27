@@ -71,10 +71,10 @@ public class CertificatesAction extends Action {
         int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "certificates.pagination.size"));
         int resultFrom = pagSize * (pagina - 1);
         DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
-        List<CertificateForm> certificates = new ArrayList<CertificateForm>();
+        List<CertificateForm> certificates = new ArrayList<>();
         Enumeration<String> aliases = keyStore.aliases();
 
-        List<CertificateForm> allCertificates = new ArrayList<CertificateForm>();
+        List<CertificateForm> allCertificates = new ArrayList<>();
         while (aliases.hasMoreElements()) {
             String alias = aliases.nextElement();
             allCertificates.add(getCertificateForm((X509Certificate) keyStore.getCertificate(alias), df, alias));

@@ -101,7 +101,7 @@ public class Page {
 
     public List<AspectScore> getAspectScoreList() {
         if (aspectScoreList == null) {
-            aspectScoreList = new ArrayList<AspectScore>();
+            aspectScoreList = new ArrayList<>();
         }
         return aspectScoreList;
     }
@@ -112,7 +112,7 @@ public class Page {
 
     public List<VerificationPage> getVerificationPageList() {
         if (verificationPageList == null) {
-            verificationPageList = new ArrayList<VerificationPage>();
+            verificationPageList = new ArrayList<>();
         }
         return verificationPageList;
     }

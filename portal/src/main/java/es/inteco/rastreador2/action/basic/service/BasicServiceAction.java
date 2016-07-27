@@ -171,7 +171,7 @@ public class BasicServiceAction extends Action {
                 //Lo enviamos por correo electrónico
                 final String subject = getMailSubject(basicServiceForm.getReport());
                 final String text = getMailText(request, basicServiceForm);
-                final ArrayList<String> mailTo = new ArrayList<String>();
+                final ArrayList<String> mailTo = new ArrayList<>();
                 mailTo.add(basicServiceForm.getEmail());
                 final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
                 Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
@@ -222,12 +222,12 @@ public class BasicServiceAction extends Action {
         crawlerData.setPseudoaleatorio(true);
         crawlerData.setTopN(Integer.parseInt(basicServiceForm.getAmplitud()));
         crawlerData.setUser(basicServiceForm.getUser());
-        final ArrayList<String> mails = new ArrayList<String>();
+        final ArrayList<String> mails = new ArrayList<>();
         mails.add(basicServiceForm.getEmail());
         crawlerData.setUsersMail(mails);
         crawlerData.setTest(true);
         if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
-            final List<String> urls = new ArrayList<String>();
+            final List<String> urls = new ArrayList<>();
             urls.add(basicServiceForm.getDomain());
             crawlerData.setUrls(urls);
         } else {

@@ -198,7 +198,7 @@ public class Evaluator {
 
 
     private List<Integer> createCheckList(final CheckAccessibility checkAccessibility, final Guideline guideline) {
-        final List<Integer> checksSelected = new ArrayList<Integer>();
+        final List<Integer> checksSelected = new ArrayList<>();
 
         //PropertiesManager pmgr = new PropertiesManager();
         //if (guideline.getFilename().equalsIgnoreCase(pmgr.getValue("intav.properties", "observatory.guideline.file"))) {
@@ -227,7 +227,7 @@ public class Evaluator {
     // create an index that links each element to its required checks
 
     private Map<String, List<Check>> createElementChecksLinks(final List<Integer> checksSelected, final AllChecks allChecks) {
-        final Map<String, List<Check>> elementsMap = new HashMap<String, List<Check>>();
+        final Map<String, List<Check>> elementsMap = new HashMap<>();
         for (Integer integerSelectedCheck : checksSelected) {
             final Check check = allChecks.getCheck(integerSelectedCheck);
             if (check == null) {
@@ -239,7 +239,7 @@ public class Evaluator {
                 if ((elementName != null) && (elementName.length() != 0)) {
                     List<Check> listOfChecks = elementsMap.get(elementName);
                     if (listOfChecks == null) {
-                        listOfChecks = new ArrayList<Check>();
+                        listOfChecks = new ArrayList<>();
                         elementsMap.put(elementName, listOfChecks);
                         listOfChecks.add(check);
                     } else {
@@ -365,7 +365,7 @@ public class Evaluator {
 
     private void performEvaluation(final Node node, final List<Check> vectorChecks, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
         // keep track of the checks that have run (needed for prerequisites)
-        final List<Integer> vectorChecksRun = new ArrayList<Integer>();
+        final List<Integer> vectorChecksRun = new ArrayList<>();
 
         for (Check check : vectorChecks) {
             // Comprobamos que el check está activo
@@ -425,7 +425,7 @@ public class Evaluator {
         } // end for (Check check : vectorChecks)
 
         // Una vez acabadas las comprobaciones sobre HTML, ejecutamos las comprobaciones de CSS (que tienen estructura distinta)
-        final List<CSSResource> cssResources = new ArrayList<CSSResource>();
+        final List<CSSResource> cssResources = new ArrayList<>();
         final NodeList embeddedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("style");
         if (embeddedStyleSheets != null && embeddedStyleSheets.getLength() > 0) {
             for (int i = 0; i < embeddedStyleSheets.getLength(); i++) {
@@ -549,7 +549,7 @@ public class Evaluator {
         return addValidationIncidences(evaluation, check, incidenceList, ALL_HTML_VALIDATION_ERRORS);
     }
     private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final String id) {
-        final List<Incidencia> validationProblems = new ArrayList<Incidencia>();
+        final List<Incidencia> validationProblems = new ArrayList<>();
 
         final Document docHtml = evaluation.getHtmlDoc();
         final Element elementHtmlRoot = docHtml.getDocumentElement();
@@ -587,7 +587,7 @@ public class Evaluator {
 
     // Añade los problemas de validación de CSS
     private List<Incidencia> addCssValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
-        final List<Incidencia> validationProblems = new ArrayList<Incidencia>();
+        final List<Incidencia> validationProblems = new ArrayList<>();
 
         final Document docHtml = evaluation.getHtmlDoc();
         final Element elementHtmlRoot = docHtml.getDocumentElement();
@@ -673,7 +673,7 @@ public class Evaluator {
         final PropertiesManager pmgr = new PropertiesManager();
         int maxNumElements = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "intav.max.num.html.elements"));
         long time = System.currentTimeMillis();
-        final List<Incidencia> incidenceList = new ArrayList<Incidencia>();
+        final List<Incidencia> incidenceList = new ArrayList<>();
         if (rootNode != null) {
             final List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
             int counter = 0;
@@ -684,7 +684,7 @@ public class Evaluator {
                         continue;
                     }
                     // get a list of checks for this element
-                    final List<Check> vectorChecks = new ArrayList<Check>();
+                    final List<Check> vectorChecks = new ArrayList<>();
                     addSpecificChecks(vectorChecks, elementsMap, nameElement);
                     addGeneralChecks(vectorChecks, elementsMap);
                     addCssChecks(vectorChecks, elementsMap);
@@ -886,7 +886,7 @@ public class Evaluator {
     }
 
     private List<Integer> getChecksExecuted(final String checksExecutedStr) {
-        final List<Integer> results = new ArrayList<Integer>();
+        final List<Integer> results = new ArrayList<>();
         if (checksExecutedStr != null) {
             final String[] checksExecutedArray = checksExecutedStr.split(",");
             for (int i = 1; i < checksExecutedArray.length; i++) {

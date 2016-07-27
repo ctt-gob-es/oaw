@@ -53,7 +53,7 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
     }
 
     public static Map<String, Integer> getResultsByLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        final Map<String, Integer> globalResult = new HashMap<String, Integer>();
+        final Map<String, Integer> globalResult = new HashMap<>();
         globalResult.put(Constants.OBS_NV, 0);
         globalResult.put(Constants.OBS_A, 0);
         globalResult.put(Constants.OBS_AA, 0);
@@ -71,12 +71,12 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
         final File file = new File(filePath);
         //Si no existe la gráfica, la creamos
         if (!file.exists()) {
-            GraphicsUtils.createBarPageByLevelChart(pageExecutionList, title, request.getMessage("observatory.graphic.mid.puntuation"), "", filePath, noDataMess, request, x, y);
+            GraphicsUtils.createBarPageByLevelChart(pageExecutionList, title, "", "", filePath, noDataMess, request, x, y);
         }
     }
 
     public static Map<String, BigDecimal> getScoresByPage(HttpServletRequest request, List<ObservatoryEvaluationForm> pageExecutionList) {
-        TreeMap<String, BigDecimal> result = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        TreeMap<String, BigDecimal> result = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 Pattern pattern = Pattern.compile("[a-zA-Z ]*(\\d+)");

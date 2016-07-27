@@ -159,7 +159,7 @@ public class ExportAction extends Action {
             VerRastreoForm vrf = new VerRastreoForm();
             vrf = RastreoDAO.cargarRastreoVer(c, idRastreo, vrf);
             final List<Long> trackingsIds = RastreoDAO.getEvolutionExecutedCrawlerIds(c, idRastreo, idTracking, vrf.getId_cartucho());
-            final Map<Long, List<Long>> evaluationIdsMap = new HashMap<Long, List<Long>>();
+            final Map<Long, List<Long>> evaluationIdsMap = new HashMap<>();
             for (Long idTrack : trackingsIds) {
                 List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idTrack);
                 evaluationIdsMap.put(idTrack, evaluationIds);

@@ -66,7 +66,7 @@ public final class BasicServiceUtils {
     public static void somethingWasWrongMessage(final MessageResources messageResources, final BasicServiceForm basicServiceForm, final String message) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         final String subject = messageResources.getMessage("basic.service.mail.error.subject");
-        final ArrayList<String> mailTo = new ArrayList<String>();
+        final ArrayList<String> mailTo = new ArrayList<>();
         mailTo.add(basicServiceForm.getEmail());
         final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
         MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", mailTo, subject, message, null, null, null, null, true);

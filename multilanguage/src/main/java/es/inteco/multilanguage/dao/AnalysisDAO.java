@@ -125,7 +125,7 @@ public class AnalysisDAO {
 
         List<Object[]> queryResults = criteria.list();
 
-        List<Analysis> results = new ArrayList<Analysis>();
+        List<Analysis> results = new ArrayList<>();
         Analysis analysis = null;
         Long lastId = (long) 0;
         for (Object[] data : queryResults) {

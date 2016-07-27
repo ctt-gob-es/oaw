@@ -21,7 +21,7 @@ public final class ExportDataBaseUtils {
     public static ObservatoryForm getObservatoryForm(Observatory observatory) throws Exception {
         ObservatoryForm observatoryForm = new ObservatoryForm();
         BeanUtils.copyProperties(observatoryForm, observatory);
-        List<CategoryForm> categoryFormList = new ArrayList<CategoryForm>();
+        List<CategoryForm> categoryFormList = new ArrayList<>();
         if (observatory.getCategoryList() != null) {
             for (Category category : observatory.getCategoryList()) {
                 categoryFormList.add(getCategoryForm(category));
@@ -35,7 +35,7 @@ public final class ExportDataBaseUtils {
         CategoryForm categoryForm = new CategoryForm();
 
         BeanUtils.copyProperties(categoryForm, category);
-        List<SiteForm> siteFormList = new ArrayList<SiteForm>();
+        List<SiteForm> siteFormList = new ArrayList<>();
         for (Site site : category.getSiteList()) {
             siteFormList.add(getSiteForm(site));
         }
@@ -47,7 +47,7 @@ public final class ExportDataBaseUtils {
         SiteForm siteForm = new SiteForm();
 
         BeanUtils.copyProperties(siteForm, site);
-        List<PageForm> pageFormList = new ArrayList<PageForm>();
+        List<PageForm> pageFormList = new ArrayList<>();
         for (Page page : site.getPageList()) {
             PageForm pageForm = new PageForm();
             BeanUtils.copyProperties(pageForm, page);

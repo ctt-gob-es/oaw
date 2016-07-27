@@ -134,7 +134,7 @@ public class Category {
 
     public List<VerificationModality> getVerificationModalityList() {
         if (verificationModalityList == null) {
-            verificationModalityList = new ArrayList<VerificationModality>();
+            verificationModalityList = new ArrayList<>();
         }
         return verificationModalityList;
     }
@@ -146,7 +146,7 @@ public class Category {
 
     public List<VerificationScore> getVerificationScoreList() {
         if (verificationScoreList == null) {
-            verificationScoreList = new ArrayList<VerificationScore>();
+            verificationScoreList = new ArrayList<>();
         }
         return verificationScoreList;
     }
@@ -158,7 +158,7 @@ public class Category {
 
     public List<AspectScore> getAspectScoreList() {
         if (aspectScoreList == null) {
-            aspectScoreList = new ArrayList<AspectScore>();
+            aspectScoreList = new ArrayList<>();
         }
         return aspectScoreList;
     }
@@ -169,7 +169,7 @@ public class Category {
 
     public List<Site> getSiteList() {
         if (siteList == null) {
-            siteList = new ArrayList<Site>();
+            siteList = new ArrayList<>();
         }
         return siteList;
     }

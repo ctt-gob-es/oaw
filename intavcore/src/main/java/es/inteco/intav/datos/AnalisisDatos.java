@@ -200,7 +200,7 @@ public final class AnalisisDatos {
 
 
     public static List<Long> getAnalysisIdsByTracking(Connection conn, long idTracking) {
-        List<Long> results = new ArrayList<Long>();
+        List<Long> results = new ArrayList<>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
@@ -262,7 +262,7 @@ public final class AnalisisDatos {
     }
 
     private static List<Analysis> getAnalysisList(final Connection conn, final ResultSet rs, final String language) throws SQLException {
-        final List<Analysis> listAnalysis = new ArrayList<Analysis>();
+        final List<Analysis> listAnalysis = new ArrayList<>();
         while (rs.next()) {
             final Analysis analysis = new Analysis();
             analysis.setCode(rs.getInt("cod_analisis"));
@@ -293,7 +293,7 @@ public final class AnalisisDatos {
     }
 
     public static List<Long> getEvaluationIdsFromRastreoRealizado(long idRastreoRealizado) {
-        List<Long> evaluationIds = new ArrayList<Long>();
+        List<Long> evaluationIds = new ArrayList<>();
 
         Connection conn = null;
         PreparedStatement pstmt = null;

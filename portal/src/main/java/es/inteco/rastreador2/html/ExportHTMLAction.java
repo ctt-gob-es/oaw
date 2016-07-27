@@ -40,11 +40,11 @@ public class ExportHTMLAction extends Action {
 
         PropertiesManager pmgr = new PropertiesManager();
 
-        List<String> typeList = new ArrayList<String>();
+        List<String> typeList = new ArrayList<>();
         String htmlPages = pmgr.getValue(CRAWLER_PROPERTIES, "html.pages");
         Connection conn = null;
         int numObs = 0;
-        List<CategoriaForm> categories = new ArrayList<CategoriaForm>();
+        List<CategoriaForm> categories = new ArrayList<>();
         try {
             conn = DataBaseManager.getConnection();
             ObservatorioRealizadoForm observatoryForm = ObservatorioDAO.getFulfilledObservatory(conn, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Long.parseLong(request.getParameter(Constants.ID)));

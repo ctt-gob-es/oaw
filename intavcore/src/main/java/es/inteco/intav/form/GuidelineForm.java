@@ -10,7 +10,7 @@ public class GuidelineForm implements Serializable {
     private List<PautaForm> pautas;
 
     public GuidelineForm() {
-        pautas = new ArrayList<PautaForm>();
+        pautas = new ArrayList<>();
     }
 
     public String getDescription() {

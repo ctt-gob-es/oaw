@@ -56,7 +56,7 @@ public class CheckCode {
         type = CheckFunctionConstants.CODE_TYPE_NOTSET;
         conditionType = CheckFunctionConstants.CONDITION_NOTSET;
         functionId = CheckFunctionConstants.FUNCTION_NOTSET;
-        vectorCode = new ArrayList<CheckCode>();
+        vectorCode = new ArrayList<>();
         stringNodeRelation = "";
         stringLanguage = "";
         stringFunctionValue = "";

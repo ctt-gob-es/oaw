@@ -29,8 +29,8 @@ public final class CheckUtils {
     }
 
     public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
-        final Set<String> includedLinks = new HashSet<String>();
-        final List<Element> linksFound = new ArrayList<Element>();
+        final Set<String> includedLinks = new HashSet<>();
+        final List<Element> linksFound = new ArrayList<>();
         for (int i = 0; i < links.getLength(); i++) {
             final Element link = (Element) links.item(i);
             final String href = link.getAttribute("href").toLowerCase();

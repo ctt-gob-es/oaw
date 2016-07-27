@@ -40,7 +40,7 @@ public final class AnonymousResultExportPdfSectionEv {
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoLevelEvolutionGraphic(resultData);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev1.ob.tableTitle"), section, 420);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.date"));
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.portales"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -52,7 +52,7 @@ public final class AnonymousResultExportPdfSectionEv {
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoLevelEvolutionGraphic(resultData);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev2.ob.tableTitle"), section, 420);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.date"));
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.portales"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -64,7 +64,7 @@ public final class AnonymousResultExportPdfSectionEv {
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoLevelEvolutionGraphic(resultData);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev3.ob.tableTitle"), section, 420);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.date"));
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.porc.portales"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -77,7 +77,7 @@ public final class AnonymousResultExportPdfSectionEv {
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkEvolutionGraphic(resultData);
 
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.Ev4.ob.tableTitle"), section, 420);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.date"));
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -261,7 +261,7 @@ public final class AnonymousResultExportPdfSectionEv {
     private static void createVerificationResults(final MessageResources messageResources, Section section, Map<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryMap, String verification) {
         final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateVerificationEvolutionPuntuationDataSet(verification, pageObservatoryMap);
         final java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkVerificationEvolutionGraphic(messageResources, resultData);
-        final java.util.List<String> headers = new ArrayList<String>();
+        final java.util.List<String> headers = new ArrayList<>();
         headers.add(messageResources.getMessage("resultados.anonimos.date"));
         headers.add(messageResources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -270,7 +270,7 @@ public final class AnonymousResultExportPdfSectionEv {
     private static void createAspectResults(final MessageResources messageResources, Section section, Map<Date, Map<String, BigDecimal>> resultsByAspect, String aspect) {
         final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioIntavUtils.calculateAspectEvolutionPuntuationDataSet(aspect, resultsByAspect);
         final java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkAspectEvolutionGraphic(messageResources, resultData);
-        final java.util.List<String> headers = new ArrayList<String>();
+        final java.util.List<String> headers = new ArrayList<>();
         headers.add(messageResources.getMessage("resultados.anonimos.date"));
         headers.add(messageResources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));

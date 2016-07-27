@@ -19,7 +19,7 @@ public final class BrokenLinksDAO {
     }
 
     public static List<BrokenLinks> getBrokenLinks(Connection conn, long idCrawling, int pagina) throws Exception {
-        List<BrokenLinks> brokenLinksList = new ArrayList<BrokenLinks>();
+        List<BrokenLinks> brokenLinksList = new ArrayList<>();
 
         PropertiesManager pmgr = new PropertiesManager();
         int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));

@@ -44,7 +44,7 @@ public final class Pagination {
     }
 
     private static List<PageForm> createPageList(HttpServletRequest request, int currentPage, int begin, int end, String parameter, int numPages) {
-        List<PageForm> pageFormList = new ArrayList<PageForm>();
+        List<PageForm> pageFormList = new ArrayList<>();
 
         String path = request.getRequestURI() + "?";
         if (request.getQueryString() != null) {

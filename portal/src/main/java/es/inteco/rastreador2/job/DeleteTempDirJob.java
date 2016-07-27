@@ -41,7 +41,7 @@ public class DeleteTempDirJob implements StatefulJob {
     public void deleteFilesJob() {
         Logger.putLog("Inicio del JOB que se encarga de borrar gráficas viejas", DeleteTempDirJob.class, Logger.LOG_LEVEL_INFO);
         PropertiesManager pmgr = new PropertiesManager();
-        List<String> pathsToDelete = new ArrayList<String>();
+        List<String> pathsToDelete = new ArrayList<>();
         Connection conn = null;
         try {
             conn = DataBaseManager.getConnection();

@@ -31,7 +31,7 @@ public class RedireccionConfigAction extends Action {
                 try {
                     c = DataBaseManager.getConnection();
                     redireccionConfigForm = LoginDAO.loadUserData(c, user, redireccionConfigForm);
-                    redireccionConfigForm.setProyecto(CartuchoDAO.getApplication(c, Long.valueOf(redireccionConfigForm.getId_cartucho())));
+                    redireccionConfigForm.setProyecto(CartuchoDAO.getApplication(c, (long) redireccionConfigForm.getId_cartucho()));
                 } catch (Exception e) {
                     Logger.putLog("Exception: ", RedireccionConfigAction.class, Logger.LOG_LEVEL_ERROR, e);
                     throw new Exception(e);

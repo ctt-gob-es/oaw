@@ -57,11 +57,11 @@ public class GuidelineGroup {
         nameId = "";
         url = "";
         number = "";
-        checks = new ArrayList<Integer>();
-        groups = new ArrayList<GuidelineGroup>();
-        noExecutedMarkChecks = new ArrayList<Integer>();
-        onlyWarningChecks = new ArrayList<Integer>();
-        relatedChecks = new HashMap<Integer, Integer>();
+        checks = new ArrayList<>();
+        groups = new ArrayList<>();
+        noExecutedMarkChecks = new ArrayList<>();
+        onlyWarningChecks = new ArrayList<>();
+        relatedChecks = new HashMap<>();
         type = "";
         aspect = "";
         level = "";

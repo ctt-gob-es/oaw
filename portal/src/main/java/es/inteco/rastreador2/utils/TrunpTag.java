@@ -33,8 +33,6 @@ public class TrunpTag extends TagSupport {
                 }
                 writer.print(cadenavalor);
             }
-        } catch (IOException e) {
-            Logger.putLog("TrunpTag Exception", TrunpTag.class, Logger.LOG_LEVEL_ERROR, e);
         } catch (Exception e) {
             Logger.putLog("TrunpTag Exception", TrunpTag.class, Logger.LOG_LEVEL_ERROR, e);
         }

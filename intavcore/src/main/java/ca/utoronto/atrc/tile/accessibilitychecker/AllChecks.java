@@ -34,7 +34,7 @@ public class AllChecks {
     private final List<Check> checks;
 
     public AllChecks() {
-        checks = new ArrayList<Check>();
+        checks = new ArrayList<>();
     }
 
     public void addCheck(Check aCheck) {

@@ -67,16 +67,16 @@ public class CheckerParser extends DOMParser {
     /**
      * Map que guarda para cada imagen (atributo src del tag img) sus dimensiones (ancho y alto)
      */
-    private Map<String, Dimension> hashtableImages = new Hashtable<String, Dimension>();
+    private Map<String, Dimension> hashtableImages = new Hashtable<>();
     /**
      * Map que guarda el número de veces que aparece un elemento (una etiqueta)
      */
-    private Map<String, Integer> hashtableElements = new Hashtable<String, Integer>();
+    private Map<String, Integer> hashtableElements = new Hashtable<>();
     private String filename = "";
     private String base = "";
     private String formname = "";
-    private List<String> vectorIDs = new ArrayList<String>();
-    private List<String> vectorFors = new ArrayList<String>();
+    private List<String> vectorIDs = new ArrayList<>();
+    private List<String> vectorFors = new ArrayList<>();
     private int position = 1;
     private boolean inHeading = false;
 

@@ -13,7 +13,7 @@ public class CategoryViewListForm {
 
     public CategoryViewListForm() {
         category = new CategoriaForm();
-        viewList = new ArrayList<LabelValueBean>();
+        viewList = new ArrayList<>();
     }
 
     public CategoryViewListForm(CategoriaForm category, List<LabelValueBean> viewList) {

@@ -24,7 +24,7 @@ public class AnalysisJdbcDAO {
      * @return
      */
     public static List<Analysis> getObservatoryAnalysis(Connection connection, List<Long> listCrawlings) throws Exception {
-        List<Analysis> results = new ArrayList<Analysis>();
+        List<Analysis> results = new ArrayList<>();
 
         Map<Long, List<LanguageFound>> languagesFoundMap = getLanguagesFoundMap(connection, listCrawlings);
 
@@ -69,7 +69,7 @@ public class AnalysisJdbcDAO {
     }
 
     private static Map<Long, List<LanguageFound>> getLanguagesFoundMap(Connection connection, List<Long> listCrawlings) throws Exception {
-        Map<Long, List<LanguageFound>> results = new HashMap<Long, List<LanguageFound>>();
+        Map<Long, List<LanguageFound>> results = new HashMap<>();
 
         Map<Long, Language> languages = getLanguagesMap(connection);
 
@@ -119,7 +119,7 @@ public class AnalysisJdbcDAO {
     }
 
     private static Map<Long, Language> getLanguagesMap(Connection connection) throws Exception {
-        Map<Long, Language> results = new HashMap<Long, Language>();
+        Map<Long, Language> results = new HashMap<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

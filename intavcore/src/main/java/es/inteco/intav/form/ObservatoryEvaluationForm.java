@@ -18,8 +18,8 @@ public class ObservatoryEvaluationForm implements Serializable {
     private String source;
 
     public ObservatoryEvaluationForm() {
-        this.groups = new ArrayList<ObservatoryLevelForm>();
-        this.checksFailed = new ArrayList<Integer>();
+        this.groups = new ArrayList<>();
+        this.checksFailed = new ArrayList<>();
     }
 
 

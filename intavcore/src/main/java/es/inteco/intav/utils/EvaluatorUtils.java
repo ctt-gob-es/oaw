@@ -99,7 +99,7 @@ public final class EvaluatorUtils {
 
     // Devuelve la lista de guidelines que tienen algún problema asociado.
     private static List<GuidelineForm> getGuidelinesFromGroup(GuidelineGroup group, Evaluation evaluation, String language) {
-        List<GuidelineForm> guidelines = new ArrayList<GuidelineForm>();
+        List<GuidelineForm> guidelines = new ArrayList<>();
         // iterate any check in the group (priority)
         for (int i = 0; i < group.getGroupsVector().size(); i++) {
             GuidelineGroup subgroup = group.getGroupsVector().get(i);
@@ -116,7 +116,7 @@ public final class EvaluatorUtils {
 
     // Devuelve la lista de pautas que tienen algún problema asociado.
     private static List<PautaForm> getPautasFromGroup(GuidelineGroup group, Evaluation evaluation, String language) {
-        List<PautaForm> pautas = new ArrayList<PautaForm>();
+        List<PautaForm> pautas = new ArrayList<>();
         // iterate any check in the group (priority)
         for (int i = 0; i < group.getGroupsVector().size(); i++) {
             GuidelineGroup subgroup = group.getGroupsVector().get(i);
@@ -140,7 +140,7 @@ public final class EvaluatorUtils {
 
     // Devuelve los tipos de problemas asociados a una pauta concreta
     public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, GuidelineGroup subgroup, Evaluation evaluation, String language) {
-        final List<ProblemForm> problems = new ArrayList<ProblemForm>();
+        final List<ProblemForm> problems = new ArrayList<>();
 
         int lastProblem = 0;
 
@@ -196,7 +196,7 @@ public final class EvaluatorUtils {
                 if (code.size() == 1 && code.get(0) != null && code.get(0).contains("<|>")) {
                     specificProblem.setMessage(getMessage(code.get(0)));
                     String codeFiltered = getCode(code.get(0));
-                    List<String> source = new ArrayList<String>();
+                    List<String> source = new ArrayList<>();
                     source.add(codeFiltered);
                     specificProblem.setCode(source);
                 } else {
@@ -215,7 +215,7 @@ public final class EvaluatorUtils {
 
     // Adds information to the document that is used to display the accessibility problem.
     public static List<String> getCode(Problem problem, Evaluation evaluation) {
-        List<String> code = new ArrayList<String>();
+        List<String> code = new ArrayList<>();
 
         PropertiesManager properties = new PropertiesManager();
         Check check = problem.getCheck();
@@ -308,7 +308,7 @@ public final class EvaluatorUtils {
     }
 
     private static List<String> getHtmlHeaders(Element elementGiven) {
-        List<String> codigo = new ArrayList<String>();
+        List<String> codigo = new ArrayList<>();
         List<Node> headersList = getNodeHeaders(elementGiven);
 
         for (Node node : headersList) {
@@ -322,7 +322,7 @@ public final class EvaluatorUtils {
 
     private static List<Node> getNodeHeaders(Element elementGiven) {
         try {
-            List<Node> nodeHeaders = new ArrayList<Node>();
+            List<Node> nodeHeaders = new ArrayList<>();
             if (elementGiven != null) {
                 if (("h1".equalsIgnoreCase(elementGiven.getNodeName())) ||
                         ("h2".equalsIgnoreCase(elementGiven.getNodeName())) ||
@@ -409,7 +409,7 @@ public final class EvaluatorUtils {
         final int sourceMaxNumChar = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "source.max.num.characters"));
         try {
             if (elementGiven != null) {
-                final List<String> codigo = new ArrayList<String>();
+                final List<String> codigo = new ArrayList<>();
                 final String codigoString;
 
                 if (elementGiven.getAttribute(IntavConstants.GETTING_FROM_BD).equals(IntavConstants.TRUE)) {
@@ -499,7 +499,7 @@ public final class EvaluatorUtils {
     }
 
     public static List<AnalysisForm> getFormList(List<Analysis> listAnalysis) {
-        List<AnalysisForm> formList = new ArrayList<AnalysisForm>();
+        List<AnalysisForm> formList = new ArrayList<>();
         PropertiesManager pmgr = new PropertiesManager();
 
         try {
@@ -525,7 +525,7 @@ public final class EvaluatorUtils {
         }
 
         PropertiesManager properties = new PropertiesManager();
-        List<PageForm> pageFormList = new ArrayList<PageForm>();
+        List<PageForm> pageFormList = new ArrayList<>();
         String path = request.getRequestURL() + "?" + request.getQueryString();
         path = removeParameterP(path);
         int numPages = (int) Math.ceil((float) numResult / (float) Integer.parseInt(properties.getValue("intav.properties", "pagination.size")));
@@ -542,7 +542,7 @@ public final class EvaluatorUtils {
     }
 
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult, int pagSize, int currentPage) {
-        List<PageForm> pageFormList = new ArrayList<PageForm>();
+        List<PageForm> pageFormList = new ArrayList<>();
         String path = request.getRequestURL() + "?" + request.getQueryString();
         path = removeParameterP(path);
         int numPages = (int) Math.ceil((float) numResult / (float) pagSize);
@@ -570,7 +570,7 @@ public final class EvaluatorUtils {
     }
 
     public static List<String> getFramesUrl(String content) throws Exception {
-        List<String> frames = new ArrayList<String>();
+        List<String> frames = new ArrayList<>();
 
         PropertiesManager pmgr = new PropertiesManager();
         String regexp = pmgr.getValue("intav.properties", "frame.reg.exp.matcher");
@@ -648,7 +648,7 @@ public final class EvaluatorUtils {
     }
 
     public static Element getPreviousElement(Element elementGiven, boolean filterInlineElements) {
-        List<String> inlineTags = new ArrayList<String>();
+        List<String> inlineTags = new ArrayList<>();
         if (filterInlineElements) {
             PropertiesManager pmgr = new PropertiesManager();
             inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
@@ -673,7 +673,7 @@ public final class EvaluatorUtils {
     }
 
     public static Element getNextElement(Element elementGiven, boolean filterInlineElements) {
-        List<String> inlineTags = new ArrayList<String>();
+        List<String> inlineTags = new ArrayList<>();
         if (filterInlineElements) {
             PropertiesManager pmgr = new PropertiesManager();
             inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
@@ -698,7 +698,7 @@ public final class EvaluatorUtils {
     }
 
     private static Map<String, List<Integer>> initializeAspects() {
-        final Map<String, List<Integer>> aspectMap = new HashMap<String, List<Integer>>();
+        final Map<String, List<Integer>> aspectMap = new HashMap<>();
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> aspects = Arrays.asList(pmgr.getValue("intav.properties", "observatory.key.aspects").split(","));
 
@@ -915,7 +915,7 @@ public final class EvaluatorUtils {
      * @return
      */
     private static List<AspectScoreForm> getAspectScore(Map<String, List<Integer>> aspects) {
-        List<AspectScoreForm> aspectScore = new ArrayList<AspectScoreForm>();
+        List<AspectScoreForm> aspectScore = new ArrayList<>();
         PropertiesManager pmgr = new PropertiesManager();
         for (Map.Entry<String, List<Integer>> entry : aspects.entrySet()) {
             AspectScoreForm aspectScoreForm = new AspectScoreForm();
@@ -1267,7 +1267,7 @@ public final class EvaluatorUtils {
     }
 
     public static List<Element> getElementsByTagName(Document document, String tag) {
-        final List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<>();
 
         NodeList allElements = document.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -1281,7 +1281,7 @@ public final class EvaluatorUtils {
     }
 
     public static List<Element> getElementsByTagName(Element element, String tag) {
-        final List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<>();
 
         NodeList allElements = element.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -1327,7 +1327,7 @@ public final class EvaluatorUtils {
     }
 
     public static Element getFirstElement(Element elementGiven, boolean filterInlineElements) {
-        List<String> inlineTags = new ArrayList<String>();
+        List<String> inlineTags = new ArrayList<>();
         if (filterInlineElements) {
             PropertiesManager pmgr = new PropertiesManager();
             inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));

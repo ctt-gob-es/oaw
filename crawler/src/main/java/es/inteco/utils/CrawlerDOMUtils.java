@@ -27,7 +27,7 @@ public class CrawlerDOMUtils {
     }
 
     public static List<Element> getElementsByTagName(Document document, String tag) {
-        final List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<>();
 
         final NodeList allElements = document.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -41,7 +41,7 @@ public class CrawlerDOMUtils {
     }
 
     public static List<Element> getElementsByTagName(final Element element, final String tag) {
-        final List<Element> elements = new ArrayList<Element>();
+        final List<Element> elements = new ArrayList<>();
 
         final NodeList allElements = element.getElementsByTagName("*");
         for (int i = 0; i < allElements.getLength(); i++) {
@@ -318,7 +318,7 @@ public class CrawlerDOMUtils {
     }
 
     public static List<String> getDomLinks(Document document, List<IgnoredLink> ignoredLinks) {
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         List<Element> links = getElementsByTagName(document, "a");
         links.addAll(getElementsByTagName(document, "area"));
 

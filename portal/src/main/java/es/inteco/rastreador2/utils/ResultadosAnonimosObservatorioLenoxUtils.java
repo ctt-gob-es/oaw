@@ -122,7 +122,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
         Connection c = null;
         Connection conn = null;
 
-        List<ObservatoryLenoxForm> lenoxResultList = new ArrayList<ObservatoryLenoxForm>();
+        List<ObservatoryLenoxForm> lenoxResultList = new ArrayList<>();
         try {
             c = DataBaseManager.getConnection();
             conn = ConexionBBDD.conectar();
@@ -181,7 +181,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
 
         PropertiesManager pmgr = new PropertiesManager();
         DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
-        Map<String, BigDecimal> result = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        Map<String, BigDecimal> result = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 PropertiesManager pmgr = new PropertiesManager();
@@ -217,7 +217,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
 
     public static Map<Date, List<ObservatoryLenoxForm>> resultEvolutionData(Long observatory_id, Long execution_id) {
         Connection c = null;
-        Map<Date, List<ObservatoryLenoxForm>> resultData = new HashMap<Date, List<ObservatoryLenoxForm>>();
+        Map<Date, List<ObservatoryLenoxForm>> resultData = new HashMap<>();
         try {
             PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
@@ -267,7 +267,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
                                                                   List<ObservatoryLenoxForm> pageExecutionListSII, List<ObservatoryLenoxForm> pageExecutionListSIII, String title, String filePath, String noDataMess) throws Exception {
         File file = new File(filePath);
 
-        Map<String, Map<String, BigDecimal>> resultDataBySegment = new HashMap<String, Map<String, BigDecimal>>();
+        Map<String, Map<String, BigDecimal>> resultDataBySegment = new HashMap<>();
         resultDataBySegment.put(Constants.COMPLEXITY_SEGMENT_NAME_1, calculatePercentage(getPriorityTermsMap(pageExecutionListSI)));
         resultDataBySegment.put(Constants.COMPLEXITY_SEGMENT_NAME_2, calculatePercentage(getPriorityTermsMap(pageExecutionListSII)));
         resultDataBySegment.put(Constants.COMPLEXITY_SEGMENT_NAME_3, calculatePercentage(getPriorityTermsMap(pageExecutionListSIII)));
@@ -306,7 +306,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
         PropertiesManager pmgr = new PropertiesManager();
         File file = new File(filePath);
 
-        Map<String, Map<String, BigDecimal>> resultDataBySegment = new HashMap<String, Map<String, BigDecimal>>();
+        Map<String, Map<String, BigDecimal>> resultDataBySegment = new HashMap<>();
         resultDataBySegment.put(Constants.COMPLEXITY_SEGMENT_NAME_1, getPriorityTermsMap(pageExecutionListSI));
         resultDataBySegment.put(Constants.COMPLEXITY_SEGMENT_NAME_2, getPriorityTermsMap(pageExecutionListSII));
         resultDataBySegment.put(Constants.COMPLEXITY_SEGMENT_NAME_3, getPriorityTermsMap(pageExecutionListSIII));
@@ -322,7 +322,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
     }
 
     private static Map<String, BigDecimal> getPriorityTermsMap(List<ObservatoryLenoxForm> segmentTerms) {
-        Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
+        Map<String, BigDecimal> result = new HashMap<>();
 
         result.put(Constants.LOW_LENOX_PRIORITY_LABEL, BigDecimal.ZERO);
         result.put(Constants.MEDIUM_LENOX_PRIORITY_LABEL, BigDecimal.ZERO);
@@ -355,7 +355,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
 
     private static Map<String, BigDecimal> calculatePercentage(Map<String, BigDecimal> values) {
         BigDecimal total = BigDecimal.ZERO;
-        Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
+        Map<String, BigDecimal> result = new HashMap<>();
         for (String key : values.keySet()) {
             total = total.add(values.get(key));
         }
@@ -373,7 +373,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
     //INCLUDE LABELS METHODS
 
     private static List<LabelValueBean> infoPercentagePriorityTerms(HttpServletRequest request, Map<String, BigDecimal> result) throws Exception {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         BigDecimal totalPort = result.get(Constants.HIGH_LENOX_PRIORITY_LABEL).add(result.get(Constants.MEDIUM_LENOX_PRIORITY_LABEL)).add(result.get(Constants.LOW_LENOX_PRIORITY_LABEL));
         LabelValueBean labelValue;
@@ -397,7 +397,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
     }
 
     private static List<LabelValueBean> infoPercentagePrioritySegmentTerms(HttpServletRequest request, Map<String, BigDecimal> result) throws Exception {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.high"));
@@ -436,7 +436,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
     }
 
     private static List<LabelValueBean> infoNumberPrioritySegmentTerms(HttpServletRequest request, Map<String, BigDecimal> result) throws Exception {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
 
         LabelValueBean labelValue = new LabelValueBean();
         labelValue.setLabel(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.high"));
@@ -475,7 +475,7 @@ public final class ResultadosAnonimosObservatorioLenoxUtils {
     }
 
     private static List<LabelValueBean> infoLevelEvolutionGraphic(Map<String, BigDecimal> resultData) {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;
 
         for (String date : resultData.keySet()) {

@@ -7,7 +7,7 @@ public class SectionSetForm {
     private List<SectionForm> sectionList;
 
     public SectionSetForm() {
-        sectionList = new ArrayList<SectionForm>();
+        sectionList = new ArrayList<>();
     }
 
     public List<SectionForm> getSectionList() {

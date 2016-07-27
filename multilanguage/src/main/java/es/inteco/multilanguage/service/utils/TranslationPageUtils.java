@@ -13,7 +13,7 @@ public class TranslationPageUtils {
 
     public static Map<String, BigDecimal> getPercentagesMap(String content) {
 
-        Map<String, BigDecimal> percentageMap = new HashMap<String, BigDecimal>();
+        Map<String, BigDecimal> percentageMap = new HashMap<>();
 
         PropertiesManager pmgr = new PropertiesManager();
         //Cargamos los diccionarios de los distintos idiomas
@@ -29,7 +29,7 @@ public class TranslationPageUtils {
 
         //Creamos una lista con las distintas palabras del texto encontradas en alguno de los diccionarios
         //Y las distintas listas de palabras en cada uno de los diccionarios
-        final List<String> foundWords = new ArrayList<String>();
+        final List<String> foundWords = new ArrayList<>();
         List<String> spFound = TranslationPageUtils.getWordsInDictionary(spanishDictionary, textWords, foundWords);
         List<String> caFound = TranslationPageUtils.getWordsInDictionary(catalanDictionary, textWords, foundWords);
         List<String> frFound = TranslationPageUtils.getWordsInDictionary(frenchDictionary, textWords, foundWords);
@@ -65,7 +65,7 @@ public class TranslationPageUtils {
      * @return
      */
     private static Map<String, List<String>> loadDictionary(String file) {
-        Map<String, List<String>> dictionary = new TreeMap<String, List<String>>();
+        Map<String, List<String>> dictionary = new TreeMap<>();
 
         BufferedReader br = null;
         String word;
@@ -74,7 +74,7 @@ public class TranslationPageUtils {
             while ((word = br.readLine()) != null) {
                 if (!word.isEmpty()) {
                     word = word.trim().toUpperCase();
-                    List<String> wordList = new ArrayList<String>();
+                    List<String> wordList = new ArrayList<>();
                     if (dictionary.get(word.substring(0, 1)) == null) {
                         wordList.add(word);
                         dictionary.put(word.substring(0, 1), wordList);
@@ -109,7 +109,7 @@ public class TranslationPageUtils {
      */
 
     private static List<String> getWordsInDictionary(Map<String, List<String>> dictionary, Map<String, Integer> textWords, List<String> foundWords) {
-        List<String> dictionaryWords = new ArrayList<String>();
+        List<String> dictionaryWords = new ArrayList<>();
         for (String word : textWords.keySet()) {
             if (exist(dictionary, word)) {
                 dictionaryWords.add(word);
@@ -138,7 +138,7 @@ public class TranslationPageUtils {
      */
 
     private static Map<String, Integer> loadText(String text) {
-        TreeMap<String, Integer> textMap = new TreeMap<String, Integer>();
+        TreeMap<String, Integer> textMap = new TreeMap<>();
         try {
             List<String> textList = Arrays.asList(text.split("[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜàèìòùÀÈÌÒÙçÇ·]+"));
             for (String str : textList) {

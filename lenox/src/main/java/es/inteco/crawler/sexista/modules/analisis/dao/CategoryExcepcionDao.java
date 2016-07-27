@@ -26,7 +26,7 @@ public class CategoryExcepcionDao {
             throws BusinessException {
 
         CategoryExcepcionDto dto;
-        ArrayList<CategoryExcepcionDto> listado = new ArrayList<CategoryExcepcionDto>();
+        ArrayList<CategoryExcepcionDto> listado = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

@@ -90,7 +90,7 @@ public final class IncidenciaDatos {
             pstmt = conn.prepareStatement(query);
             pstmt.setLong(1, id);
             rs = pstmt.executeQuery();
-            final List<Incidencia> incidencias = new ArrayList<Incidencia>();
+            final List<Incidencia> incidencias = new ArrayList<>();
 
             while (rs.next()) {
                 final Incidencia incidencia = new Incidencia();
@@ -139,7 +139,7 @@ public final class IncidenciaDatos {
             pstmt.setLong(1, idAnalisis);
             pstmt.setLong(2, idComprobacion);
             rs = pstmt.executeQuery();
-            final ArrayList<Incidencia> arrlist = new ArrayList<Incidencia>();
+            final ArrayList<Incidencia> arrlist = new ArrayList<>();
 
             while (rs.next()) {
                 final Incidencia incidencia = new Incidencia();
@@ -208,7 +208,7 @@ public final class IncidenciaDatos {
         try {
             pstmt = conn.prepareStatement(query);
             rs = pstmt.executeQuery();
-            ArrayList<Incidencia> arrlist = new ArrayList<Incidencia>();
+            ArrayList<Incidencia> arrlist = new ArrayList<>();
 
             while (rs.next()) {
                 Incidencia incidencia = new Incidencia();

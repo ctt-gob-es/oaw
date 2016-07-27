@@ -41,7 +41,7 @@ public class ContextFilterExcepcion extends BaseFilterExcepcion implements Filte
     public void filterException(Connection conn, TerminoPositionDto terminoDto, List<String> contexto) {
 
         //Inicializamos el listado de excepciones de contexto
-        List<String> excepcionesContexto = new ArrayList<String>();
+        List<String> excepcionesContexto = new ArrayList<>();
 
         if (!terminoDto.isFormaUnica()) {
             //'Se crea una lista que incluye el femenino y femenino plural, tanto calculados como los irregulares procedentes de BD
@@ -51,7 +51,7 @@ public class ContextFilterExcepcion extends BaseFilterExcepcion implements Filte
         //Listados
         List<String> lstBeforeTerms;
         List<String> lstAfterTerms;
-        List<Integer> lstAuxPosition = new ArrayList<Integer>();
+        List<Integer> lstAuxPosition = new ArrayList<>();
 
         //PARA CADA posicion en la que se encuentre el termino.
         for (Integer position : terminoDto.getPositions()) {
@@ -81,7 +81,7 @@ public class ContextFilterExcepcion extends BaseFilterExcepcion implements Filte
     private List<String> getLstContextException(TerminoPositionDto terminoDto) {
 
         //Creamos el listado de las excepciones de contexto
-        List<String> excepcionesContexto = new ArrayList<String>();
+        List<String> excepcionesContexto = new ArrayList<>();
 
         //Femenino Irregular
         String femenino = terminoDto.getFemenino();
@@ -147,7 +147,7 @@ public class ContextFilterExcepcion extends BaseFilterExcepcion implements Filte
     private List<String> getBeforeTerminos(int position, List<String> context) {
 
         //Listado
-        List<String> lstBeforeTerms = new ArrayList<String>();
+        List<String> lstBeforeTerms = new ArrayList<>();
 
         //Recuperamos la primera posicion
         int beforePosition = this.getBeforePosition(position);
@@ -170,7 +170,7 @@ public class ContextFilterExcepcion extends BaseFilterExcepcion implements Filte
     private List<String> getAfterTerminos(int position, List<String> context) {
 
         //Listado
-        List<String> lstAfterTerms = new ArrayList<String>();
+        List<String> lstAfterTerms = new ArrayList<>();
 
         //Retornamos la ultima posicion posterior al termino
         int afterPosition = this.getAfterPosition(context, position);

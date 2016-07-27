@@ -335,7 +335,7 @@ public final class CheckTables {
         //Se comprueba que todas las filas sean o encabezados o datos, (no híbridos)
         //Si se encuentra una sola que sea híbrida, la tabla no es correcta
         for (int i = 0; i < y; i++) {
-            List<TableNode> nodeList = new ArrayList<TableNode>();
+            List<TableNode> nodeList = new ArrayList<>();
             for (int j = 0; j < x; j++) {
                 nodeList.add(table[i][j]);
             }
@@ -351,7 +351,7 @@ public final class CheckTables {
         //Se comprueba que todas las columnas sean o encabezados o datos, (no híbridos)
         //Si se encuentra una sola que sea híbrida, la tabla no es correcta
         for (int j = 0; j < x; j++) {
-            List<TableNode> nodeList = new ArrayList<TableNode>();
+            List<TableNode> nodeList = new ArrayList<>();
             for (int i = 0; i < y; i++) {
                 nodeList.add(table[i][j]);
             }
@@ -432,7 +432,7 @@ public final class CheckTables {
     }
 
     private static List<Node> createNodeElementList(NodeList nodeList) {
-        List<Node> elementListNode = new ArrayList<Node>();
+        List<Node> elementListNode = new ArrayList<>();
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 elementListNode.add(nodeList.item(i));

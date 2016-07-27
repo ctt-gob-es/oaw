@@ -87,10 +87,6 @@ public final class AnnexUtils {
 
             hd.endElement("", "", "resultados");
             hd.endDocument();
-        } catch (IOException e) {
-            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } catch (SAXException e) {
-            Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         } catch (Exception e) {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
@@ -128,7 +124,7 @@ public final class AnnexUtils {
     }
 
     private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
-        final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<Long, TreeMap<String, ScoreForm>>();
+        final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
         Connection c = null;
 
         try {
@@ -137,7 +133,7 @@ public final class AnnexUtils {
             final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
             final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false);
 
-            final List<ObservatoryForm> observatoryFormList = new ArrayList<ObservatoryForm>();
+            final List<ObservatoryForm> observatoryFormList = new ArrayList<>();
             for (ObservatorioRealizadoForm orForm : observatoriesList) {
                 observatoryFormList.add(ObservatoryExportManager.getObservatory(orForm.getId()));
             }
@@ -148,7 +144,7 @@ public final class AnnexUtils {
                         final ScoreForm scoreForm = new ScoreForm();
                         scoreForm.setLevel(siteForm.getLevel());
                         scoreForm.setTotalScore(new BigDecimal(siteForm.getScore()));
-                        TreeMap<String, ScoreForm> seedInfo = new TreeMap<String, ScoreForm>();
+                        TreeMap<String, ScoreForm> seedInfo = new TreeMap<>();
                         if (seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed())) != null) {
                             seedInfo = seedMap.get(Long.valueOf(siteForm.getIdCrawlerSeed()));
                         }

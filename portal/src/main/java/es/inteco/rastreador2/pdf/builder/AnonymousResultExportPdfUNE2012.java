@@ -184,11 +184,12 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
             PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
             final List listaConfiguracionRastreo = new List();
             listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
-            PDFUtils.addListItem("Tipo: Selección aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+            // FIXME: Enlazar el origen con la URL
             PDFUtils.addListItem("Origen: " + basicServiceForm.getDomain(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+            PDFUtils.addListItem("Forma de selección de páginas: aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Profundidad: " + basicServiceForm.getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Amplitud: " + basicServiceForm.getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-            PDFUtils.addListItem("Restringido a directorio: " + (basicServiceForm.isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+            PDFUtils.addListItem("Selección restringida a directorio: " + (basicServiceForm.isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Normativa: " + basicServiceForm.reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 
             chapter.add(listaConfiguracionRastreo);
@@ -329,13 +330,6 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
             PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p10"), ConstantsFont.PARAGRAPH, section);
             PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p11"), ConstantsFont.PARAGRAPH, section);
         }
-
-//        section.newPage();
-//        if (primaryReportPageList != null) {
-//            PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p9"), ConstantsFont.PARAGRAPH, section);
-//            section.add(addURLTable(messageResources, primaryReportPageList));
-//            section.newPage();
-//        }
     }
 
     protected Section createSection33(final MessageResources messageResources, Section section, long observatoryType) throws BadElementException, IOException {
@@ -343,7 +337,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
         com.lowagie.text.List list = new com.lowagie.text.List();
 
-        final ArrayList<String> boldWords = new ArrayList<String>();
+        final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p2"));
         ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 
@@ -578,7 +572,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        final ArrayList<String> boldWords = new ArrayList<String>();
+        final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p7.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.342.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 

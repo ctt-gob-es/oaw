@@ -24,7 +24,7 @@ public class CargarSemillaWebsAction extends Action {
                 cargarSemillaWebsForm.setArchivo(request.getParameter(Constants.ARCHIVO_D));
 
                 String urlsString = "";
-                List<String> urls = new ArrayList<String>();
+                List<String> urls = new ArrayList<>();
 
                 if (request.getParameter(Constants.URLS_STRING) != null) {
                     try {

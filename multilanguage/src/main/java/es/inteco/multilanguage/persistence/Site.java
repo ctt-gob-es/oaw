@@ -37,8 +37,8 @@ public class Site implements Serializable {
 
     public Site(Long idCrawling) {
         this.id_site = idCrawling;
-        results = new ArrayList<Results>();
-        pages = new ArrayList<Page>();
+        results = new ArrayList<>();
+        pages = new ArrayList<>();
     }
 
     public Long getId() {

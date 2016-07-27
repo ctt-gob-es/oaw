@@ -65,7 +65,7 @@ public class NuevaSemillaIpAction extends Action {
 
                 if (errors.isEmpty()) {
 
-                    List<Integer> puertos = new ArrayList<Integer>();
+                    List<Integer> puertos = new ArrayList<>();
                     if (!nuevaSemillaIpForm.getPuerto1().equals("-1")) {
                         puertos.add(Integer.parseInt(nuevaSemillaIpForm.getPuerto1()));
                     }

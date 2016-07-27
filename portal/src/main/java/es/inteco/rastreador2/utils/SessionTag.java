@@ -131,7 +131,7 @@ public class SessionTag extends TagSupport {
     }
 
     public int doStartTag() throws JspException {
-        StringBuffer results = new StringBuffer("");
+        StringBuilder results = new StringBuilder("");
         String urlinicio = "../oaw/";
 
         try {

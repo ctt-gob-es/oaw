@@ -58,7 +58,7 @@ public final class IanaUtils {
     }
 
     public static List<String> getIanaList(final String ianaRegistries, final String type) {
-        final List<String> languages = new ArrayList<String>();
+        final List<String> languages = new ArrayList<>();
         final Pattern pattern = Pattern.compile(String.format("type: %s\nsubtag: (.*?)\n", type), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
         final Matcher matcher = pattern.matcher(ianaRegistries);
         while (matcher.find()) {

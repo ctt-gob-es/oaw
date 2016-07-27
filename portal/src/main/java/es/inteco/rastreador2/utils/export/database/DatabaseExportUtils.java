@@ -176,7 +176,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuación de cada modalidad
-        List<CategoriaForm> categories = new ArrayList<CategoriaForm>();
+        List<CategoriaForm> categories = new ArrayList<>();
         categories.add(categoriaForm);
         Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(observatory.getIdExecution().toString(), pageExecutionList, categories);
         for (String key : resultDataBySegment.get(categoriaForm).keySet()) {

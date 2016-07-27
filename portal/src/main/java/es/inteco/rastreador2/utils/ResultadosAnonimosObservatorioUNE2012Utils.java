@@ -95,34 +95,34 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.title");
             String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.name") + ".jpg";
             title = "";
-            getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, title, file, noDataMess, regenerate);
+            getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, "", file, noDataMess, regenerate);
 
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-            getGlobalMarkBySegmentGraphic(request, pageExecutionList, title, file, noDataMess, categories);
+            getGlobalMarkBySegmentGraphic(request, pageExecutionList, "", file, noDataMess, categories);
 
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
-            getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+            getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + ".jpg";
-            getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+            getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
             getGlobalMarkBySegmentsGroupGraphic(request, file, noDataMess, pageExecutionList, categories, regenerate);
 
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + ".jpg";
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.title");
-            getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, title, regenerate);
+            getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, "", regenerate);
 
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
-            getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+            getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 
             title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg";
-            getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
+            getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
 
             return Constants.OBSERVATORY_HAVE_RESULTS;
         } else {
@@ -227,7 +227,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 getMidMarkVerificationEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color, regenerate);
                 getMidMarkVerificationEvolutionGraphic(request, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color, regenerate);
 
-                Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
+                Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
                 for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
                     resultsByAspect.put(entry.getKey(), aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
                 }
@@ -248,7 +248,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static List<GraphicData> infoGlobalAccessibilityLevel(final MessageResources messageResources,
                                                                  final Map<String, Integer> result) throws Exception {
-        final List<GraphicData> labelValueList = new ArrayList<GraphicData>();
+        final List<GraphicData> labelValueList = new ArrayList<>();
         final int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
 
         labelValueList.add(infoGlobalAccessibilityLevelGraphicData(messageResources.getMessage("resultados.anonimos.porc.portales.aa"), result.get(Constants.OBS_AA), totalPort));
@@ -270,7 +270,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static List<LabelValueBean> infoComparisonBySegment(final MessageResources messageResources,
                                                                final Map<String, BigDecimal> category) throws Exception {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         labelValueList.add(createLabelValueScore(messageResources,
                 messageResources.getMessage("resultados.anonimos.punt.portales.aa"),
@@ -289,7 +289,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static List<LabelValueBean> infoComparisonBySegmentPuntuation(final MessageResources messageResources,
                                                                          final Map<String, BigDecimal> result) throws Exception {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
         labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.aa"), String.valueOf(result.get(Constants.OBS_AA)).replace(".00", "")));
         labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.a"), String.valueOf(result.get(Constants.OBS_A)).replace(".00", "")));
         labelValueList.add(new LabelValueBean(messageResources.getMessage("resultados.anonimos.punt.portales.parcial"), String.valueOf(result.get(Constants.OBS_NV)).replace(".00", "")));
@@ -298,7 +298,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static List<LabelValueBean> infoAspectMidsComparison(final MessageResources messageResources, final Map<String, BigDecimal> result) throws Exception {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         labelValueList.add(createLabelValueScore(messageResources,
                 messageResources.getMessage("resultados.anonimos.general"),
@@ -348,7 +348,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static List<LabelValueBean> infoMarkAllocationLevelSegment(final List<ObservatorySiteEvaluationForm> siteList) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;
         for (ObservatorySiteEvaluationForm siteForm : siteList) {
             labelValue = new LabelValueBean();
@@ -413,7 +413,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(final MessageResources messageResources,
                                                                              final Map<String, BigDecimal> result) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         labelValueList.add(createLabelValueScore(messageResources,
                 messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.1"),
@@ -467,7 +467,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     private static List<LabelValueBean> infoEvolutionGraphic(final Map<String, BigDecimal> resultData, final String suffix) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
             final LabelValueBean labelValue = new LabelValueBean();
@@ -497,7 +497,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         if (!file.exists() || regenerate) {
             final String rowTitle = messageResources.getMessage("observatory.graphic.mid.puntuation");
             final String columnTitle = messageResources.getMessage("observatory.graphic.verification.points");
-            GraphicsUtils.createBarChart(result, title, rowTitle, columnTitle, color, false, false, false, filePath, noDataMess, messageResources, x, y);
+            GraphicsUtils.createBarChart(result, title, "", "", color, false, false, false, filePath, noDataMess, messageResources, x, y);
         }
     }
 
@@ -518,13 +518,13 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final PropertiesManager pmgr = new PropertiesManager();
             final String rowTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.points");
             final String colTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.percentage");
-            final ChartForm chartForm = new ChartForm(title, colTitle, rowTitle, dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
+            final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
             GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
         }
     }
 
     public static List<ModalityComparisonForm> infoLevelVerificationModalityComparison(final Map<String, BigDecimal> results) {
-        final List<ModalityComparisonForm> modalityComparisonList = new ArrayList<ModalityComparisonForm>();
+        final List<ModalityComparisonForm> modalityComparisonList = new ArrayList<>();
 
         for (String key : results.keySet()) {
             if (!modalityComparisonList.contains(new ModalityComparisonForm(key.replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""))) &&
@@ -559,7 +559,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                                                            final String filePath, final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate) throws Exception {
         final String executionId = request.getParameter(Constants.ID);
         final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
-        final List<CategoryViewListForm> categoriesLabels = new ArrayList<CategoryViewListForm>();
+        final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
         final MessageResources messageResources = CrawlerUtils.getResources(request);
 
         for (int i = 1; i <= resultLists.size(); i++) {
@@ -571,7 +571,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             if (!file.exists() || regenerate) {
                 final String title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.title");
                 final String rowTitle = messageResources.getMessage("observatory.graphic.puntuation");
-                final ChartForm chartForm = new ChartForm(title, "", rowTitle, dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+                final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
                 GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
             }
 
@@ -651,7 +651,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final String rowTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
             final String columnTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
             final String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.aspect.mid.puntuation", aspectStr);
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, fileName, noDataMess, messageResources, x, y);
+            GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, fileName, noDataMess, messageResources, x, y);
         }
     }
 
@@ -724,7 +724,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final String rowTitle = resources.getMessage("observatory.graphic.mid.puntuation");
             final String columnTitle = resources.getMessage("observatory.graphic.date");
             final String title = resources.getMessage("observatory.graphic.evolution.verification.mid.puntuation", verification);
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, fileName, noDataMess, resources, x, y);
+            GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, fileName, noDataMess, resources, x, y);
         }
     }
 
@@ -743,7 +743,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final String rowTitle = messageResources.getMessage("observatory.graphic.mid.puntuation");
             final String columnTitle = messageResources.getMessage("observatory.graphic.date");
             final String title = messageResources.getMessage("observatory.graphic.evolution.mid.puntuation");
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, false, true, filePath, noDataMess, messageResources, x, y);
+            GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, filePath, noDataMess, messageResources, x, y);
         }
 
     }
@@ -768,7 +768,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         if (!file.exists() || regenerate) {
             String rowTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.pages");
             String columnTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.date");
-            GraphicsUtils.createBarChart(resultData, title, rowTitle, columnTitle, color, false, true, true, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
+            GraphicsUtils.createBarChart(resultData, "", "", "", color, false, true, true, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
 
     }
@@ -787,7 +787,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         if (!file.exists() || regenerate) {
             final String rowTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.puntuation");
             final String columnTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.portales");
-            GraphicsUtils.createBar1PxChart(result2, title, rowTitle, columnTitle, filePath, noDataMess, CrawlerUtils.getResources(request), x, y, showColLab);
+            GraphicsUtils.createBar1PxChart(result2, "", "", "", filePath, noDataMess, CrawlerUtils.getResources(request), x, y, showColLab);
         }
     }
 
@@ -803,13 +803,13 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         if (!file.exists() || regenerate) {
             final String rowTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.puntuation");
             final String columnTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspects");
-            GraphicsUtils.createBarChart(result, title, rowTitle, columnTitle, color, false, false, false, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
+            GraphicsUtils.createBarChart(result, "", "", "", color, false, false, false, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
     }
 
     public static List<LabelValueBean> infoMidMarkVerificationEvolutionGraphic(final MessageResources messageResources,
                                                                                final Map<String, BigDecimal> resultData) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
             labelValueList.add(createLabelValueScore(messageResources,
@@ -822,7 +822,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static List<LabelValueBean> infoMidMarkAspectEvolutionGraphic(final MessageResources messageResources,
                                                                          final Map<String, BigDecimal> resultData) {
-        final List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        final List<LabelValueBean> labelValueList = new ArrayList<>();
 
         for (Map.Entry<String, BigDecimal> entry : resultData.entrySet()) {
             labelValueList.add(createLabelValueScore(messageResources,
@@ -844,10 +844,10 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         } catch (NeedsRefreshException nre) {
             Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_INFO);
             try (Connection c = DataBaseManager.getConnection()){
-                observatoryEvaluationList = new ArrayList<ObservatoryEvaluationForm>();
-                final List<Long> listAnalysis = new ArrayList<Long>();
+                observatoryEvaluationList = new ArrayList<>();
+                final List<Long> listAnalysis = new ArrayList<>();
 
-                List<Long> listExecutionsIds = new ArrayList<Long>();
+                List<Long> listExecutionsIds = new ArrayList<>();
                 if (idCrawler == null) {
                     listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
                 } else {
@@ -903,7 +903,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         if (categoryId == Constants.COMPLEXITY_SEGMENT_NONE) {
             return observatoryEvaluationList;
         } else {
-            final List<ObservatoryEvaluationForm> results = new ArrayList<ObservatoryEvaluationForm>();
+            final List<ObservatoryEvaluationForm> results = new ArrayList<>();
             try (Connection conn = DataBaseManager.getConnection()) {
                 final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, executionId, categoryId);
                 for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
@@ -920,7 +920,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> calculateAspectEvolutionPuntuationDataSet(final String aspect, final Map<Date, Map<String, BigDecimal>> resultsByAspect) {
-        final Map<String, BigDecimal> resultData = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        final Map<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 final PropertiesManager pmgr = new PropertiesManager();
@@ -946,7 +946,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> calculateVerificationEvolutionPuntuationDataSet(final String verification, final Map<Date, List<ObservatoryEvaluationForm>> result) {
-        final TreeMap<String, BigDecimal> resultData = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        final TreeMap<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 final PropertiesManager pmgr = new PropertiesManager();
@@ -976,7 +976,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> calculateEvolutionPuntuationDataSet(final Map<Date, List<ObservatoryEvaluationForm>> result) {
-        final TreeMap<String, BigDecimal> resultData = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        final TreeMap<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 final PropertiesManager pmgr = new PropertiesManager();
@@ -1013,7 +1013,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static Map<String, BigDecimal> calculatePercentageApprovalSiteLevel(final Map<Date, Map<Long, Map<String, Integer>>> result, final String suitabilityLevel) {
         final PropertiesManager pmgr = new PropertiesManager();
         final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
-        final TreeMap<String, BigDecimal> percentagesMap = new TreeMap<String, BigDecimal>(new Comparator<String>() {
+        final TreeMap<String, BigDecimal> percentagesMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
                 final PropertiesManager pmgr = new PropertiesManager();
@@ -1054,7 +1054,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(final String observatoryId, final String executionId, final Map<Date, List<ObservatoryEvaluationForm>> result) {
-        final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<Date, Map<Long, Map<String, Integer>>>();
+        final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<>();
         try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(observatoryId));
             final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId), observatoryForm.getCartucho().getId());
@@ -1071,7 +1071,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId) {
-        final Map<Date, List<ObservatoryEvaluationForm>> resultData = new HashMap<Date, List<ObservatoryEvaluationForm>>();
+        final Map<Date, List<ObservatoryEvaluationForm>> resultData = new HashMap<>();
 
         try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
@@ -1089,7 +1089,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     private static Map<String, BigDecimal> calculatePercentage(final Map<String, Integer> values) {
         int total = 0;
-        final Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
+        final Map<String, BigDecimal> result = new HashMap<>();
         for (Map.Entry<String, Integer> stringIntegerEntry : values.entrySet()) {
             total += stringIntegerEntry.getValue();
         }
@@ -1113,12 +1113,12 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static List<ObservatorySiteEvaluationForm> getSitesListByLevel(final List<ObservatoryEvaluationForm> pages) {
-        final List<ObservatorySiteEvaluationForm> siteList = new ArrayList<ObservatorySiteEvaluationForm>();
+        final List<ObservatorySiteEvaluationForm> siteList = new ArrayList<>();
 
         try {
-            final Map<Long, ObservatorySiteEvaluationForm> siteMap = new HashMap<Long, ObservatorySiteEvaluationForm>();
+            final Map<Long, ObservatorySiteEvaluationForm> siteMap = new HashMap<>();
             for (ObservatoryEvaluationForm page : pages) {
-                List<ObservatoryEvaluationForm> pagesL = new ArrayList<ObservatoryEvaluationForm>();
+                List<ObservatoryEvaluationForm> pagesL = new ArrayList<>();
                 ObservatorySiteEvaluationForm site = new ObservatorySiteEvaluationForm();
                 if (siteMap.get(page.getCrawlerExecutionId()) != null) {
                     site = siteMap.get(page.getCrawlerExecutionId());
@@ -1182,13 +1182,13 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
             dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
 
-            GraphicsUtils.createPieChart(dataSet, title, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
+            GraphicsUtils.createPieChart(dataSet, "", filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
         }
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(messageResources, result));
     }
 
     public static Map<Integer, List<CategoriaForm>> createGraphicsMap(final List<CategoriaForm> categories) {
-        final Map<Integer, List<CategoriaForm>> resultLists = new TreeMap<Integer, List<CategoriaForm>>();
+        final Map<Integer, List<CategoriaForm>> resultLists = new TreeMap<>();
         final PropertiesManager pmgr = new PropertiesManager();
         final int numBarByGrapg = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "num.max.bar.graph"));
         int keyMap = 1;
@@ -1197,7 +1197,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             if (resultLists.get(keyMap) != null) {
                 list = resultLists.get(keyMap);
             } else {
-                list = new ArrayList<CategoriaForm>();
+                list = new ArrayList<>();
             }
             list.add(categories.get(i - 1));
             resultLists.put(keyMap, list);
@@ -1213,15 +1213,15 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         final PropertiesManager pmgr = new PropertiesManager();
         final String executionId = request.getParameter(Constants.ID);
         final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
-        final List<CategoryViewListForm> categoriesLabels = new ArrayList<CategoryViewListForm>();
+        final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
         final MessageResources messageResources = CrawlerUtils.getResources(request);
 
         for (int i = 1; i <= resultLists.size(); i++) {
             final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
             final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
             if (!file.exists()) {
-                final String rowTitle = messageResources.getMessage("observatory.graphic.puntuation");
-                final ChartForm observatoryGraphicsForm = new ChartForm(title, "", rowTitle, createDataSet(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+//                final String rowTitle = messageResources.getMessage("observatory.graphic.puntuation");
+                final ChartForm observatoryGraphicsForm = new ChartForm(createDataSet(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
                 GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg", noDataMess, messageResources, true);
             }
             for (CategoriaForm category : resultLists.get(i)) {
@@ -1234,7 +1234,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, Integer> getResultsBySiteLevel(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        final Map<String, Integer> globalResult = new HashMap<String, Integer>();
+        final Map<String, Integer> globalResult = new HashMap<>();
         globalResult.put(Constants.OBS_NV, 0);
         globalResult.put(Constants.OBS_A, 0);
         globalResult.put(Constants.OBS_AA, 0);
@@ -1260,7 +1260,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> aspectMidsPuntuationGraphicData(final MessageResources messageResources, final List<ObservatoryEvaluationForm> resultData) {
-        final Map<String, List<LabelValueBean>> globalResult = new HashMap<String, List<LabelValueBean>>();
+        final Map<String, List<LabelValueBean>> globalResult = new HashMap<>();
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm levelForm : observatoryEvaluationForm.getGroups()) {
                 for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
@@ -1277,11 +1277,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
         }
 
-        final Map<String, BigDecimal> results = new HashMap<String, BigDecimal>();
+        final Map<String, BigDecimal> results = new HashMap<>();
         for (Map.Entry<String, List<LabelValueBean>> globalResultEntry : globalResult.entrySet()) {
             final String aspect = messageResources.getMessage(globalResultEntry.getKey());
             // Recorremos las verificaciones de cada aspecto
-            final Map<String, List<BigDecimal>> partialResultsMap = new HashMap<String, List<BigDecimal>>();
+            final Map<String, List<BigDecimal>> partialResultsMap = new HashMap<>();
             for (LabelValueBean lvb : globalResultEntry.getValue()) {
                 int value = Integer.parseInt(lvb.getValue());
                 if (!partialResultsMap.containsKey(lvb.getLabel())) {
@@ -1295,7 +1295,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
 
             // Hemos recorrido las verificaciones del aspecto, ahora calculamos la media de cada una
-            final Map<String, BigDecimal> verificationsMap = new HashMap<String, BigDecimal>();
+            final Map<String, BigDecimal> verificationsMap = new HashMap<>();
             for (String verificationKey : partialResultsMap.keySet()) {
                 List<BigDecimal> verificationsList = partialResultsMap.get(verificationKey);
                 if (!verificationsList.isEmpty()) {
@@ -1326,7 +1326,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> barGraphicFromMidPuntuationSegmentData(final List<ObservatorySiteEvaluationForm> categoryList) {
-        final Map<String, BigDecimal> globalResult = new HashMap<String, BigDecimal>();
+        final Map<String, BigDecimal> globalResult = new HashMap<>();
 
         BigDecimal countA = BigDecimal.ZERO;
         BigDecimal countAA = BigDecimal.ZERO;
@@ -1365,8 +1365,8 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> getVerificationResultsByPoint(final List<ObservatoryEvaluationForm> resultData, final String level) {
-        final Map<String, Integer> results = new TreeMap<String, Integer>();
-        final Map<String, Integer> numPoint = new HashMap<String, Integer>();
+        final Map<String, Integer> results = new TreeMap<>();
+        final Map<String, Integer> numPoint = new HashMap<>();
 
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
@@ -1411,7 +1411,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
         }
         //Cambiamos las claves  por el nombre y calculamos la media
-        final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<String, BigDecimal>();
+        final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>();
         for (Map.Entry<String, Integer> resultEntry : results.entrySet()) {
             final String name = resultEntry.getKey().substring(resultEntry.getKey().length() - 5);
             final BigDecimal value;
@@ -1428,7 +1428,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> getVerificationResultsByPointAndModality(final List<ObservatoryEvaluationForm> resultData, final String level) {
-        final Map<String, BigDecimal> results = new TreeMap<String, BigDecimal>();
+        final Map<String, BigDecimal> results = new TreeMap<>();
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
                 if (level.equals(Constants.OBS_PRIORITY_NONE) || observatoryLevelForm.getName().equals(level)) {
@@ -1476,7 +1476,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, List<ObservatoryEvaluationForm>> getPagesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
-        final Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<String, List<ObservatoryEvaluationForm>>();
+        final Map<String, List<ObservatoryEvaluationForm>> globalResult = new HashMap<>();
         globalResult.put(Constants.OBS_NV, new ArrayList<ObservatoryEvaluationForm>());
         globalResult.put(Constants.OBS_A, new ArrayList<ObservatoryEvaluationForm>());
         globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
@@ -1541,7 +1541,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     private static Map<Long, Map<String, Integer>> getSitesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
         final Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);
-        final Map<Long, Map<String, Integer>> sitesByType = new HashMap<Long, Map<String, Integer>>();
+        final Map<Long, Map<String, Integer>> sitesByType = new HashMap<>();
 
         for (String key : pagesByType.keySet()) {
             for (ObservatoryEvaluationForm observatoryEvaluationForm : pagesByType.get(key)) {
@@ -1550,7 +1550,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                     value.put(key, value.get(key) + 1);
                     sitesByType.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
                 } else {
-                    final Map<String, Integer> initialValues = new HashMap<String, Integer>();
+                    final Map<String, Integer> initialValues = new HashMap<>();
                     if (key.equals(Constants.OBS_NV)) {
                         initialValues.put(Constants.OBS_NV, 1);
                     } else {
@@ -1576,7 +1576,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     //Cálculo de resultados
     public static Map<CategoriaForm, Map<String, BigDecimal>> calculatePercentageResultsBySegmentMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
-        final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<CategoriaForm, Map<String, BigDecimal>>(new Comparator<CategoriaForm>() {
+        final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
             @Override
             public int compare(CategoriaForm o1, CategoriaForm o2) {
                 return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
@@ -1592,7 +1592,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static Map<CategoriaForm, Map<String, BigDecimal>> calculateMidPuntuationResultsBySegmentMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
         try {
-            final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<CategoriaForm, Map<String, BigDecimal>>(new Comparator<CategoriaForm>() {
+            final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
                 @Override
                 public int compare(CategoriaForm o1, CategoriaForm o2) {
                     return (Long.valueOf(o1.getId()).compareTo(Long.valueOf(o2.getId())));
@@ -1630,7 +1630,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         final String noDataMess = "noData";
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, false, false, true, true, false, false, 1265, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+        final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, 1265, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 
         GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
     }
@@ -1658,7 +1658,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
         }
 
-        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+        final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
         chartForm.setFixedColorBars(true);
         chartForm.setShowColumsLabels(false);
 
@@ -1691,7 +1691,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         }
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, false, false, false, false, false, false, 1565, 684, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+        final ChartForm chartForm = new ChartForm(dataSet, true, false, false, false, false, false, false, 1565, 684, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
         chartForm.setFixedColorBars(true);
         chartForm.setShowColumsLabels(false);
 

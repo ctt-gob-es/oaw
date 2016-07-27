@@ -67,7 +67,7 @@ public class SemillaForm extends ValidatorForm {
 
     public void addListUrl(String url) {
         if (this.listaUrls == null) {
-            this.listaUrls = new ArrayList<String>();
+            this.listaUrls = new ArrayList<>();
         }
         this.listaUrls.add(url);
     }

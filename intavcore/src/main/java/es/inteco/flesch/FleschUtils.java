@@ -61,7 +61,7 @@ public final class FleschUtils {
 
             PropertiesManager pmgr = new PropertiesManager();
 
-            List<Node> nodes = new ArrayList<Node>();
+            List<Node> nodes = new ArrayList<>();
             nodes = generateTextNodeList(document.getDocumentElement(), nodes, Integer.MAX_VALUE);
 
             List<String> attributes = Arrays.asList(pmgr.getValue("intav.properties", "text.attributes").split(";"));

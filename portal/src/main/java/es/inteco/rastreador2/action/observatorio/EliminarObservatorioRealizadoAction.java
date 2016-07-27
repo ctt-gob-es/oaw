@@ -90,7 +90,7 @@ public class EliminarObservatorioRealizadoAction extends Action {
         if ((observatoryId != null) && (executionId != null)) {
 
             long cartucho = ObservatorioDAO.getCartridgeFromExecutedObservatoryId(c, Long.valueOf(executionId));
-            List<Long> subsequentExecutions = ObservatorioDAO.getSubsequentObservatoryExecutionIds(c, Long.valueOf(observatoryId), Long.valueOf(executionId), Long.valueOf(cartucho));
+            List<Long> subsequentExecutions = ObservatorioDAO.getSubsequentObservatoryExecutionIds(c, Long.valueOf(observatoryId), Long.valueOf(executionId), cartucho);
 
             String chartPath = "";
 

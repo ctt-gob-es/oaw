@@ -23,7 +23,7 @@ public final class SeedUtils {
     }
 
     public static List<String> getValidUrls(final String seed, boolean validate) {
-        List<String> validUrls = new ArrayList<String>();
+        List<String> validUrls = new ArrayList<>();
         List<String> seedUrls = Arrays.asList(seed.split("\r\n"));
         for (String seedUrl : seedUrls) {
             if (!seedUrl.startsWith("http://") && !seedUrl.startsWith("https://")) {

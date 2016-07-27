@@ -36,7 +36,7 @@ public class ExtractTextHandler extends DefaultHandler {
     public ExtractTextHandler(final String language, final boolean extractSameLanguage) {
         this.webpageLanguage = language;
         this.extractSameLanguage = extractSameLanguage;
-        languages = new Stack<String>();
+        languages = new Stack<>();
         languages.push(language);
         extractedText = new StringBuilder(200);
         skipCharacters = false;

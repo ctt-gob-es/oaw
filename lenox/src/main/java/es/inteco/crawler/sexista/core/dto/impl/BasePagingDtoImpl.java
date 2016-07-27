@@ -17,7 +17,7 @@ public class BasePagingDtoImpl extends BaseDto implements BasePagingDto {
      * Tamaño de página por defecto.
      */
     private static final int DEFAULT_PAGE_SIZE = Integer.valueOf(ConfigUtil.getConfiguracion()
-            .getProperty("maxRows")).intValue();
+            .getProperty("maxRows"));
 
     /**
      * Registro de inicio.

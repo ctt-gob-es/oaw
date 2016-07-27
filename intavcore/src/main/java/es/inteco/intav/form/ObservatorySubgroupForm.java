@@ -15,10 +15,10 @@ public class ObservatorySubgroupForm implements Serializable {
     private int value;
 
     public ObservatorySubgroupForm() {
-        this.failChecks = new ArrayList<Integer>();
-        this.onlyWarningChecks = new ArrayList<Integer>();
-        this.problems = new ArrayList<ProblemForm>();
-        this.ignoreRelatedChecks = new ArrayList<Integer>();
+        this.failChecks = new ArrayList<>();
+        this.onlyWarningChecks = new ArrayList<>();
+        this.problems = new ArrayList<>();
+        this.ignoreRelatedChecks = new ArrayList<>();
     }
 
     public List<Integer> getIgnoreRelatedChecks() {
@@ -71,7 +71,7 @@ public class ObservatorySubgroupForm implements Serializable {
 
     public List<ProblemForm> getProblems() {
         if (problems == null) {
-            problems = new ArrayList<ProblemForm>();
+            problems = new ArrayList<>();
         }
         return problems;
     }

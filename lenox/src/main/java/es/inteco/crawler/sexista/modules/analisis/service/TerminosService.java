@@ -68,7 +68,7 @@ public class TerminosService {
     public ArrayList<TerminoPositionDto> findTerminos(Connection conn, ArrayList<TerminoPositionDto> lstGroupTerminos)
             throws BusinessException {
 
-        ArrayList<String> lstTerminosBusqueda = new ArrayList<String>();
+        ArrayList<String> lstTerminosBusqueda = new ArrayList<>();
 
         //Pasamos un array con el listado de terminos que queremos buscar
         for (TerminoPositionDto dto : lstGroupTerminos) {
@@ -94,7 +94,7 @@ public class TerminosService {
         }
 
         //Retornamos el listado vacio si no tenemos terminos que consultar
-        return new ArrayList<TerminoPositionDto>();
+        return new ArrayList<>();
     }
 
     /**
@@ -152,7 +152,7 @@ public class TerminosService {
         String termino = "";
         String auxTermino = "";
 
-        ArrayList<TerminoPositionDto> lstGroupTerms = new ArrayList<TerminoPositionDto>();
+        ArrayList<TerminoPositionDto> lstGroupTerms = new ArrayList<>();
 
         //Recorremos el listado de terminos encontrados
         for (TerminoDto terminoDto : lstTerminos) {

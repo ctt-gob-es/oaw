@@ -59,7 +59,7 @@ public class BaseFilterExcepcion {
 
         if (null == this.excepDelanterasFU) {
 
-            this.excepDelanterasFU = new ArrayList<String>();
+            this.excepDelanterasFU = new ArrayList<>();
 
             for (String exc : EXCEP_DELANTERAS_FU) {
 
@@ -84,7 +84,7 @@ public class BaseFilterExcepcion {
 
         if (null == this.determinantesFemeninos) {
 
-            this.determinantesFemeninos = new ArrayList<String>();
+            this.determinantesFemeninos = new ArrayList<>();
             String detPlural = null;
             for (String det : DETERMINANTES_FEMENINOS) {
                 det = UtilCalculateTerms.removeAccents(det);
@@ -109,7 +109,7 @@ public class BaseFilterExcepcion {
 
         if (null == this.determinantesMasculinos) {
 
-            this.determinantesMasculinos = new ArrayList<String>();
+            this.determinantesMasculinos = new ArrayList<>();
             String detPlural = null;
             for (String det : DETERMINANTES_MASCULINOS) {
                 det = UtilCalculateTerms.removeAccents(det);
@@ -181,8 +181,7 @@ public class BaseFilterExcepcion {
             if (startPositionExcep >= 0) {
 
                 // Montamos el texto que sigue al termino a analizar
-                for (int index = startPositionExcep; index < arrayPosition
-                        .intValue(); index++) {
+                for (int index = startPositionExcep; index < arrayPosition; index++) {
                     beforeWord = beforeWord.concat(lstTerminos.get(index));
                 }
 
@@ -289,7 +288,7 @@ public class BaseFilterExcepcion {
         // Recuperamos el array de posiciones para el que trataremos cada
         // palabra
         List<Integer> positions = terminoPositionDto.getPositions();
-        List<Integer> auxPositions = new ArrayList<Integer>();
+        List<Integer> auxPositions = new ArrayList<>();
 
         // Revisamos posición a posición
         for (Integer arrayPosition : positions) {

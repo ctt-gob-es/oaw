@@ -35,7 +35,7 @@ public class ObservatoryExportManager extends BaseManager {
         Session session = getSession();
 
         List<Category> categories = DatabaseExportDAO.getCategoryInformation(session, idExecutionObs);
-        List<CategoryForm> categoryFormList = new ArrayList<CategoryForm>();
+        List<CategoryForm> categoryFormList = new ArrayList<>();
 
         for (Category category : categories) {
             categoryFormList.add(ExportDataBaseUtils.getCategoryForm(category));
@@ -54,7 +54,7 @@ public class ObservatoryExportManager extends BaseManager {
         Session session = getSession();
 
         List<Site> siteList = DatabaseExportDAO.getSiteInformation(session, idCategory);
-        List<SiteForm> siteFormList = new ArrayList<SiteForm>();
+        List<SiteForm> siteFormList = new ArrayList<>();
 
         for (Site site : siteList) {
             siteFormList.add(ExportDataBaseUtils.getSiteForm(site));

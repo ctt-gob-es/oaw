@@ -69,7 +69,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
     @Override
     protected void createObjetiveChapter(final MessageResources resources, final Font titleFont) throws DocumentException {
         Chapter chapter = PDFUtils.createChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter2.title"), index, countSections++, numChapter, titleFont);
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -91,7 +91,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
     protected void createMethodologyChapter(final MessageResources resources, final Font titleFont, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList, final boolean isBasicService) throws Exception {
         Chapter chapter = PDFUtils.createChapterWithTitle(resources.getMessage("ob.resAnon.intav.report.chapter3.title"), index, countSections++, numChapter, titleFont);
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.3.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.3.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -259,7 +259,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.33.p27"), Collections.singletonList(resources.getMessage("ob.resAnon.intav.report.33.p27.bold")), ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.33.p28"), ConstantsFont.PARAGRAPH, section);
 
-        final ArrayList<String> boldWords = new ArrayList<String>();
+        final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.33.p29.bold1"));
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.33.p29.bold2"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.33.p29"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -294,7 +294,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
     private void createSection341(final MessageResources resources, Section section) {
         PropertiesManager pmgr = new PropertiesManager();
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.341.p1.bold"), resources.getMessage("anchor.PMP"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.341.p1"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -317,7 +317,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         section.newPage();
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.341.p8.bold"), resources.getMessage("anchor.PMPO"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.341.p8"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -338,7 +338,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.341.p15.bold"), resources.getMessage("anchor.PMV"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.341.p15"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -359,7 +359,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.341.p22.bold"), resources.getMessage("anchor.PMNA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.341.p22"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -395,26 +395,26 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p7.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.342.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p8.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.342.p8"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         list = new List();
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p9.bold"));
         ListItem item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p10.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p10"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p11.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
@@ -422,22 +422,22 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p12.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.342.p12"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
         list = new List();
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p13.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p14.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p14"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p15.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p15"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
@@ -445,7 +445,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p16.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.342.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -465,17 +465,17 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         list = new List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p22.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p22"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p23.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p24.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
@@ -487,20 +487,20 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         list = new List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p26.bold1"));
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p26.bold2"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p26"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p27.bold1"));
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p27.bold2"));
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p27.bold3"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p27"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p28.bold1"));
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.342.p28.bold2"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.342.p28"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
@@ -515,27 +515,27 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         List list = new List();
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p2"));
         ListItem item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p8"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p6"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p10"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p4"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -552,7 +552,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.46.p16"), ConstantsFont.PARAGRAPH, section);
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.46.p17"), ConstantsFont.PARAGRAPH, section);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.46.p18.bold"), resources.getMessage("anchor.PMPA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.46.p18"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -562,17 +562,17 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         list = new List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p19.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p19"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p20.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p20"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p21.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p21"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
@@ -580,7 +580,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        anchorMap = new HashMap<Integer, SpecialChunk>();
+        anchorMap = new HashMap<>();
         anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.46.p22.bold"), resources.getMessage("anchor.PMA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.46.p22"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -589,17 +589,17 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         list = new List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p23.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p24.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.46.p25.bold"));
         item = PDFUtils.addMixFormatListItem(resources.getMessage("ob.resAnon.intav.report.46.p25"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list.add(item);
@@ -707,7 +707,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
             for (LabelValueBean label : results) {
                 label.setValue(label.getValue() + "%");
             }
-            java.util.List<String> headers = new ArrayList<String>();
+            java.util.List<String> headers = new ArrayList<>();
             headers.add(resources.getMessage("resultados.anonimos.level"));
             headers.add(resources.getMessage("ob.resAnon.intav.report.42.resT"));
             section.add(PDFUtils.createResultTable(results, headers));
@@ -725,7 +725,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.43.p1"), ConstantsFont.PARAGRAPH, section);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.43.p4.anchor"), resources.getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.43.p4"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -740,7 +740,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         for (CategoriaForm category : categories) {
             PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.43.tableTitle", category.getName()), section, 300);
             java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(resources, res.get(category));
-            java.util.List<String> headers = new ArrayList<String>();
+            java.util.List<String> headers = new ArrayList<>();
             headers.add(resources.getMessage("resultados.anonimos.level"));
             headers.add(resources.getMessage("ob.resAnon.intav.report.43.resT"));
             section.add(PDFUtils.createResultTable(results, headers));
@@ -754,7 +754,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.44.p1"), ConstantsFont.PARAGRAPH, section);
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.44.p2"), ConstantsFont.PARAGRAPH, section);
 
-        final Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         final SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.44.p7.anchor"), resources.getMessage("anchor.PMV"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.44.p7"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -767,7 +767,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(resources, resultL1);
         PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.44.tableTitle1"), subSection, 380);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.punto.verification"));
         headers.add(resources.getMessage("resultados.anonimos.punt.media"));
         PdfPTable table = PDFUtils.createResultTable(labelsL1, headers);
@@ -807,7 +807,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
     private void createSection46(final MessageResources resources, Section section, String graphicPath, java.util.List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(resources, pageExecutionList);
 
-        final Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         final SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.46.p12.ancla"), resources.getMessage("anchor.PMA"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.46.p12"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -817,7 +817,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
 
         PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.46.tableTitle"), section, 380);
 
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.aspect"));
         headers.add(resources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -889,7 +889,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         try {
             PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.Cat2.p1"), ConstantsFont.PARAGRAPH, section);
 
-            Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+            Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
             SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.Cat2.p12.anchor"), resources.getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
             anchorMap.put(1, anchor);
             section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.Cat2.p12"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -912,11 +912,11 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
             Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
             Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
 
-            ArrayList<String> boldWords = new ArrayList<String>();
+            ArrayList<String> boldWords = new ArrayList<>();
             boldWords.add(resources.getMessage("ob.resAnon.intav.report.Cat.segment") + " " + category.getName());
             section.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.Cat3.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-            Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+            Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
             SpecialChunk anchor = new SpecialChunk(resources.getMessage("ob.resAnon.intav.report.Cat3.p2.anchor"), resources.getMessage("anchor.PMV"), false, ConstantsFont.paragraphAnchorFont);
             anchorMap.put(1, anchor);
             section.add(PDFUtils.createParagraphAnchor(resources.getMessage("ob.resAnon.intav.report.Cat3.p2"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -929,7 +929,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
             java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(resources, resultL1);
             PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.Cat3.tableTitle1", category.getName()), subSection, 400);
 
-            java.util.List<String> headers = new ArrayList<String>();
+            java.util.List<String> headers = new ArrayList<>();
             headers.add(resources.getMessage("resultados.anonimos.punto.verification"));
             headers.add(resources.getMessage("resultados.anonimos.punt.media"));
             PdfPTable table = PDFUtils.createResultTable(labelsL1, headers);
@@ -982,7 +982,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoAspectMidsComparison(resources, result);
 
         PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.Cat5.tableTitle", category.getName()), section, 380);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.aspect"));
         headers.add(resources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));
@@ -1154,7 +1154,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
                 resources.getMessage("ob.resAnon.intav.report.Ev24.ob.tableTitle"));
         section3L1.newPage();
 
-        final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<Date, Map<String, BigDecimal>>();
+        final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
         for (Map.Entry<Date, java.util.List<ObservatoryEvaluationForm>> pageObservatoryEntry : pageObservatoryMap.entrySet()) {
             resultsByAspect.put(pageObservatoryEntry.getKey(), ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(resources, pageObservatoryEntry.getValue()));
         }
@@ -1201,7 +1201,7 @@ public class AnonymousResultPdfUNE2004Builder extends AnonymousResultPdfBuilder 
         java.util.List<LabelValueBean> labels = ResultadosAnonimosObservatorioIntavUtils.infoMidMarkEvolutionGraphic(resultData);
 
         PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.Ev4.ob.tableTitle"), section, 420);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(resources.getMessage("resultados.anonimos.date"));
         headers.add(resources.getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));

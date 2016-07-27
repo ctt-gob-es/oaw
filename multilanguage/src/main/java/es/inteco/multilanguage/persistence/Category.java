@@ -37,8 +37,8 @@ public class Category implements Serializable {
 
     public Category(Long idCategory) {
         this.id_category = idCategory;
-        results = new ArrayList<Results>();
-        sites = new ArrayList<Site>();
+        results = new ArrayList<>();
+        sites = new ArrayList<>();
     }
 
     public Long getId() {

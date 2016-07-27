@@ -43,16 +43,16 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     protected void createChapter1(MessageResources resources, Chapter chapter) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.1.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.1.p2.bold"));
         Paragraph p = PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.1.p2"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         Phrase ph = new Phrase(resources.getMessage("ob.resAnon.intav.report.1.p2.m1"), ConstantsFont.paragraphUnderlinedFont);
         p.add(ph);
         chapter.add(p);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(resources.getMessage("ob.resAnon.intav.report.1.p3.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(resources.getMessage("ob.resAnon.intav.report.1.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         if ( isBasicService() ) {
@@ -62,11 +62,11 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     protected void createSection11(MessageResources messageResources, Section section) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.11.p4.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.11.p4"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.11.p5"), ConstantsFont.PARAGRAPH, section);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.11.p1.bold"));
         //section.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.11.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.11.p1"), ConstantsFont.PARAGRAPH, section);
@@ -82,7 +82,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     protected void createChapter2(final MessageResources messageResources, Chapter chapter, long observatoryType) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -137,7 +137,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     protected void createSection32(final MessageResources messageResources, Section section, java.util.List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) {
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         if (!isBasicService) {
             boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p1.bold"));
             section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.32.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -150,11 +150,11 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p4"), ConstantsFont.PARAGRAPH, section);
 
         com.lowagie.text.List list = new com.lowagie.text.List();
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p5.bold"));
         list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p6.bold"));
         list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -202,16 +202,16 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 
         com.lowagie.text.List list = new com.lowagie.text.List();
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p2"));
         ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 
         com.lowagie.text.List list2 = new com.lowagie.text.List();
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p4"));
         ListItem itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list2.add(itemL2);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p6"));
         itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list2.add(itemL2);
@@ -220,16 +220,16 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 
         list.add(item);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p8"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 
         list2 = new com.lowagie.text.List();
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p10"));
         itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list2.add(itemL2);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p12"));
         itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
         list2.add(itemL2);
@@ -245,27 +245,27 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
 
         list = new com.lowagie.text.List();
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p15"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p17"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p18"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p19"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p20"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p21"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p22"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p23"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p25"));
         item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p26"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
         list.add(item);
@@ -273,17 +273,17 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p27.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.33.p27"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p28"), ConstantsFont.PARAGRAPH, section);
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p29.bold1"));
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p29.bold2"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.33.p29"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
-        boldWords = new ArrayList<String>();
+        boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p30.bold"));
         section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.33.p30"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 

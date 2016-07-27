@@ -69,7 +69,7 @@ public class ExecuteScheduledCrawling implements StatefulJob {
     }
 
     private List<String> getMailsFromRole(Long idRole, List<DatosForm> users) {
-        List<String> mails = new ArrayList<String>();
+        List<String> mails = new ArrayList<>();
 
         for (DatosForm userData : users) {
             for (Role role : userData.getRoles()) {

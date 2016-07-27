@@ -103,7 +103,7 @@ public final class LenoxExport {
 
             int numChapter = 2;
 
-            List<DetalleDto> urlsNoLocatedTerms = new ArrayList<DetalleDto>();
+            List<DetalleDto> urlsNoLocatedTerms = new ArrayList<>();
 
             for (DetalleDto analyse : detailAnalyseList) {
                 if (analyse.getDetalleTerminos() != null && !analyse.getDetalleTerminos().isEmpty()) {
@@ -119,7 +119,7 @@ public final class LenoxExport {
                     com.lowagie.text.List summary = addLenoxSummary(analyse, request, false);
                     chapter.add(summary);
 
-                    List<DetalleDto> listOneAnalyse = new ArrayList<DetalleDto>();
+                    List<DetalleDto> listOneAnalyse = new ArrayList<>();
                     listOneAnalyse.add(analyse);
                     generateLenoxGraphic(listOneAnalyse, request, CrawlerUtils.getResources(request).getMessage("pdf.lenox.global.indicator"), globalPath);
                     addImage(request, globalPath, chapter);
@@ -219,7 +219,7 @@ public final class LenoxExport {
 
     private static List<DetalleDto> getLenoxResults(HttpServletRequest request, Connection c, List<ResultsByUrlDto> results) throws Exception {
         long idExecution = Long.parseLong(request.getParameter(Constants.ID));
-        List<DetalleDto> detailAnalyseList = new ArrayList<DetalleDto>();
+        List<DetalleDto> detailAnalyseList = new ArrayList<>();
 
         for (ResultsByUrlDto analyse : results) {
             DetalleDto detalleDto = new DetalleDto();
@@ -311,7 +311,7 @@ public final class LenoxExport {
     }
 
     private static void generateLenoxGraphic(List<DetalleDto> detailAnalyseList, HttpServletRequest request, String tableName, String tempPath) {
-        Map<String, Integer> result = new HashMap<String, Integer>();
+        Map<String, Integer> result = new HashMap<>();
         DefaultPieDataset dataSet = new DefaultPieDataset();
 
         for (DetalleDto detalle : detailAnalyseList) {

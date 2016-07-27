@@ -113,7 +113,7 @@ public class LanguageFound implements Serializable {
 
     public List<Language> getPossibleLanguages() {
         if (this.possibleLanguages == null) {
-            this.possibleLanguages = new ArrayList<Language>();
+            this.possibleLanguages = new ArrayList<>();
         }
         return possibleLanguages;
     }

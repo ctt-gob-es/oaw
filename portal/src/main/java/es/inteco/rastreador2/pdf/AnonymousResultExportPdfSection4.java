@@ -94,7 +94,7 @@ public final class AnonymousResultExportPdfSection4 {
             for (LabelValueBean label : results) {
                 label.setValue(label.getValue() + "%");
             }
-            java.util.List<String> headers = new ArrayList<String>();
+            java.util.List<String> headers = new ArrayList<>();
             headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.level"));
             headers.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.42.resT"));
             section.add(PDFUtils.createResultTable(results, headers));
@@ -114,7 +114,7 @@ public final class AnonymousResultExportPdfSection4 {
 
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p1"), ConstantsFont.PARAGRAPH, section);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -130,7 +130,7 @@ public final class AnonymousResultExportPdfSection4 {
         for (CategoriaForm category : categories) {
             PDFUtils.createTitleTable(resources.getMessage("ob.resAnon.intav.report.43.tableTitle", category.getName()), section, 300);
             java.util.List<LabelValueBean> results = ResultadosAnonimosObservatorioIntavUtils.infoComparisonBySegmentPuntuation(resources, res.get(category));
-            java.util.List<String> headers = new ArrayList<String>();
+            java.util.List<String> headers = new ArrayList<>();
             headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.level"));
             headers.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.resT"));
             section.add(PDFUtils.createResultTable(results, headers));
@@ -145,7 +145,7 @@ public final class AnonymousResultExportPdfSection4 {
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p1"), ConstantsFont.PARAGRAPH, section);
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p2"), ConstantsFont.PARAGRAPH, section);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p7.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMV"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p7"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -158,7 +158,7 @@ public final class AnonymousResultExportPdfSection4 {
 
         java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(CrawlerUtils.getResources(request), resultL1);
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.tableTitle1"), subSection, 380);
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punto.verification"));
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punt.media"));
         PdfPTable table = PDFUtils.createResultTable(labelsL1, headers);
@@ -202,7 +202,7 @@ public final class AnonymousResultExportPdfSection4 {
 
         Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
 
-        Map<Integer, SpecialChunk> anchorMap = new HashMap<Integer, SpecialChunk>();
+        Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p12.ancla"), CrawlerUtils.getResources(request).getMessage("anchor.PMA"), false, ConstantsFont.paragraphAnchorFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p12"), anchorMap, ConstantsFont.PARAGRAPH));
@@ -213,7 +213,7 @@ public final class AnonymousResultExportPdfSection4 {
         PDFUtils.createTitleTable(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.tableTitle"), section, 380);
 
         //section.add(PDFUtils.addResultsList(request, labels, CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.resT")));
-        java.util.List<String> headers = new ArrayList<String>();
+        java.util.List<String> headers = new ArrayList<>();
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.aspect"));
         headers.add(CrawlerUtils.getResources(request).getMessage("resultados.anonimos.punt.media"));
         section.add(PDFUtils.createResultTable(labels, headers));

@@ -88,7 +88,7 @@ public class ValidarLoginSistemaAction extends Action {
     }
 
     private List<String> getRoleIdList(List<Role> roleList) {
-        List<String> roleIdList = new ArrayList<String>();
+        List<String> roleIdList = new ArrayList<>();
         if (roleList != null) {
             for (Role role : roleList) {
                 String roleId = role.getId().toString();

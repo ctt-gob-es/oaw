@@ -8,7 +8,7 @@ import java.util.*;
  */
 public final class Diccionario {
 
-    private static final Map<String, Set<String>> diccionario = new HashMap<String, Set<String>>();
+    private static final Map<String, Set<String>> diccionario = new HashMap<>();
 
     static {
         Diccionario.init();
@@ -17,7 +17,7 @@ public final class Diccionario {
     private static void init() {
         final InputStream is = Diccionario.class.getClassLoader().getResourceAsStream("languages/words_en.txt");
         final Scanner scanner = new Scanner(is);
-        final Set<String> words = new HashSet<String>();
+        final Set<String> words = new HashSet<>();
         while (scanner.hasNext()) {
             words.add(scanner.next());
         }

@@ -20,7 +20,7 @@ public final class MultilanguageAnonymousResultExportPdfSections {
     public static int createIntroductionChapter(HttpServletRequest request, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws DocumentException, IOException {
         Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
 
-        ArrayList<String> boldWords = new ArrayList<String>();
+        ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.1.p1.bold"));
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(CrawlerUtils.getResources(request).getMessage("ob.resAnon.multilanguage.report.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 

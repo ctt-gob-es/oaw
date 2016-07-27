@@ -12,7 +12,7 @@ public class ISPDFProblemForm {
 
     public ISPDFProblemForm() {
         problem = new ProblemForm();
-        urls = new ArrayList<String>();
+        urls = new ArrayList<>();
     }
 
     public ProblemForm getProblem() {

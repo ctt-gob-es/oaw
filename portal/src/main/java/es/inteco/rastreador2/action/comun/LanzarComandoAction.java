@@ -139,7 +139,7 @@ public class LanzarComandoAction extends Action {
 
                 Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, null, Long.valueOf(userData.getId()));
 
-                ArrayList<String> mailTo = new ArrayList<String>();
+                ArrayList<String> mailTo = new ArrayList<>();
                 mailTo.add(userData.getEmail());
 
                 CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, user, mailTo));

@@ -12,7 +12,7 @@ public class PriorityForm implements Serializable {
     private List<GuidelineForm> guidelines;
 
     public PriorityForm() {
-        guidelines = new ArrayList<GuidelineForm>();
+        guidelines = new ArrayList<>();
     }
 
     public int getNumProblems() {

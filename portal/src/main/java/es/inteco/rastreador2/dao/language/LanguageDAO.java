@@ -17,7 +17,7 @@ public final class LanguageDAO {
     }
 
     public static List<LenguajeForm> loadLanguages(Connection c) {
-        List<LenguajeForm> lenguajeFormList = new ArrayList<LenguajeForm>();
+        List<LenguajeForm> lenguajeFormList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 

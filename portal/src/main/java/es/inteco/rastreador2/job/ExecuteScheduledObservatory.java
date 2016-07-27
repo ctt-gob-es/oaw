@@ -126,7 +126,7 @@ public class ExecuteScheduledObservatory implements StatefulJob {
         try {
             final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(conn, observatoryId);
 
-            final List<SemillaForm> totalSeedsAdded = new ArrayList<SemillaForm>();
+            final List<SemillaForm> totalSeedsAdded = new ArrayList<>();
             if (observatorioForm.getCategoria() != null) {
                 for (String categoria : observatorioForm.getCategoria()) {
                     totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(conn, Long.parseLong(categoria), es.inteco.common.Constants.NO_PAGINACION, new SemillaForm()));

@@ -43,7 +43,7 @@ public class UtilProcessingText {
         Object[] secondWords;
         String secondWord;
 
-        ArrayList<String> col = new ArrayList<String>();
+        ArrayList<String> col = new ArrayList<>();
 
         // Separamos los caracteres especiales
         for (int i = 0; i < words.length; i++) {
@@ -60,7 +60,7 @@ public class UtilProcessingText {
 
                 }
                 if (secondWords.length > 0) {
-                    col.set(col.size() - 1, ((String) col.get(col.size() - 1))
+                    col.set(col.size() - 1, col.get(col.size() - 1)
                             .concat(" "));
                 }
             }
@@ -148,7 +148,7 @@ public class UtilProcessingText {
 
         TerminoPositionDto terminoPositionDto;
 
-        ArrayList<TerminoPositionDto> listGroupTerms = new ArrayList<TerminoPositionDto>();
+        ArrayList<TerminoPositionDto> listGroupTerms = new ArrayList<>();
 
         // 1- Recorremos el listado de terminos
         for (int index = 0; index < listTerms.size(); index++) {
@@ -157,13 +157,13 @@ public class UtilProcessingText {
             controlPosition = -1;
 
             // Recuperamos el termino del listado general
-            term = (String) listTerms.get(index);
+            term = listTerms.get(index);
 
             // Recorremos el listado de terminos agrupados
             for (int jndex = 0; jndex < listGroupTerms.size(); jndex++) {
 
                 // Recuperamos el termino del listado agrupado
-                groupTerm = (String) listGroupTerms.get(jndex).getTermino();
+                groupTerm = listGroupTerms.get(jndex).getTermino();
 
                 if (groupTerm.trim().equalsIgnoreCase(term.trim())) {
                     controlPosition = jndex;
@@ -175,8 +175,8 @@ public class UtilProcessingText {
             if (controlPosition < 0) {
 
                 // Si es menor que cero, será un termino nuevo
-                ArrayList<Integer> posiciones = new ArrayList<Integer>();
-                posiciones.add(Integer.valueOf(index));
+                ArrayList<Integer> posiciones = new ArrayList<>();
+                posiciones.add(index);
 
                 terminoPositionDto = new TerminoPositionDto();
                 terminoPositionDto.setTermino(term.trim().toUpperCase());
@@ -187,7 +187,7 @@ public class UtilProcessingText {
             } else {
                 // Sino añadimos una posicion al objeto
                 terminoPositionDto = listGroupTerms.get(controlPosition);
-                terminoPositionDto.getPositions().add(Integer.valueOf(index));
+                terminoPositionDto.getPositions().add(index);
             }
         }
 
@@ -209,7 +209,7 @@ public class UtilProcessingText {
         String textoAnterior = "";
         String textoPosterior = "";
         ArrayList<Integer> listaPosiciones;
-        HashMap<String, String> hmSustitucion = new HashMap<String, String>();
+        HashMap<String, String> hmSustitucion = new HashMap<>();
 
         int posicionComp = -1;
         int posicion = -1;
@@ -335,7 +335,7 @@ public class UtilProcessingText {
 
         // Buscamos la posición(en palabras) del termino compuesto en singular
         // en el texto en singular
-        ArrayList<Integer> posicionCompuesta = new ArrayList<Integer>();
+        ArrayList<Integer> posicionCompuesta = new ArrayList<>();
         int numCaracteres = 0;
         while (auxText.toUpperCase().indexOf(sb.toString().toUpperCase()) != -1) {
             String auxPrevText = auxText.substring(0, auxText.toUpperCase()
@@ -402,7 +402,7 @@ public class UtilProcessingText {
 		 * Listado de apoyo para almacenar las disintas palabra que vallamos
 		 * 'cortando'
 		 */
-        List<String> col = new ArrayList<String>();
+        List<String> col = new ArrayList<>();
 
 		/* Cadena auxiliar, inicialmente a cadena vacia */
         String auxString = "";

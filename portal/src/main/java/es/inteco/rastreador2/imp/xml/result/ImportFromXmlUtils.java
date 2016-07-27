@@ -67,7 +67,7 @@ public final class ImportFromXmlUtils {
 
     public static String getSpecialChunks(HttpServletRequest request, Element element, ParagraphForm paragraph, String text) {
         NodeList specialChunks = element.getChildNodes();
-        List<Element> elementList = new ArrayList<Element>();
+        List<Element> elementList = new ArrayList<>();
         for (int i = 0; i < specialChunks.getLength(); i++) {
             if (specialChunks.item(i).getNodeName().equalsIgnoreCase("strong") || specialChunks.item(i).getNodeName().equalsIgnoreCase("anchor")
                     || specialChunks.item(i).getNodeName().equalsIgnoreCase("underline")) {
@@ -81,7 +81,7 @@ public final class ImportFromXmlUtils {
         for (Element specialChunk : elementList) {
             Map<Integer, SpecialChunk> specialChunkMap = paragraph.getSpecialChunks();
             if (specialChunkMap == null) {
-                specialChunkMap = new HashMap<Integer, SpecialChunk>();
+                specialChunkMap = new HashMap<>();
             }
             if (specialChunk.getNodeName().equalsIgnoreCase("anchor")) {
                 if (specialChunk.getAttribute("external") == null || specialChunk.getAttribute("external").isEmpty()) {

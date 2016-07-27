@@ -54,7 +54,7 @@ public class TerminosDao {
     public ArrayList<TerminoDto> find(Connection conn, ArrayList<String> lstTerminos) throws BusinessException {
 
         TerminoDto dto;
-        ArrayList<TerminoDto> listado = new ArrayList<TerminoDto>();
+        ArrayList<TerminoDto> listado = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -114,7 +114,7 @@ public class TerminosDao {
     public ArrayList<TerminoDto> find(Connection conn, String termino) throws BusinessException {
 
         //Montamos el listado de busqueda
-        ArrayList<String> lstTerminos = new ArrayList<String>();
+        ArrayList<String> lstTerminos = new ArrayList<>();
         lstTerminos.add(termino);
 
         //Buscamos el termino
@@ -147,7 +147,7 @@ public class TerminosDao {
     public ArrayList<TerminoDto> findCompuestos(Connection conn) throws BusinessException {
 
         TerminoDto dto;
-        ArrayList<TerminoDto> listado = new ArrayList<TerminoDto>();
+        ArrayList<TerminoDto> listado = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

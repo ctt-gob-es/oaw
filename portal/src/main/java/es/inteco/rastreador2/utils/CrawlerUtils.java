@@ -95,14 +95,14 @@ public final class CrawlerUtils {
     }
 
     private static List<String> getList(final String[] array) {
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         Collections.addAll(list, array);
 
         return list;
     }
 
     public static List<FulfilledCrawlingForm> getCrawlingsForm(final List<FulFilledCrawling> crawlings) throws Exception {
-        final List<FulfilledCrawlingForm> crawlingsForm = new ArrayList<FulfilledCrawlingForm>();
+        final List<FulfilledCrawlingForm> crawlingsForm = new ArrayList<>();
 
         final PropertiesManager pmgr = new PropertiesManager();
         final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));

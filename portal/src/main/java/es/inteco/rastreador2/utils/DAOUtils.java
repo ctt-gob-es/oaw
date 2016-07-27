@@ -53,7 +53,7 @@ public final class DAOUtils {
 
     public static List<NormaForm> getNormas(Connection conn, boolean enlacesRotos) throws SQLException {
         PropertiesManager pmgr = new PropertiesManager();
-        List<NormaForm> normas = new ArrayList<NormaForm>();
+        List<NormaForm> normas = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -92,7 +92,7 @@ public final class DAOUtils {
     }
 
     public static List<LenguajeForm> getLenguaje(Connection conn) throws SQLException {
-        List<LenguajeForm> lenguajes = new ArrayList<LenguajeForm>();
+        List<LenguajeForm> lenguajes = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -122,7 +122,7 @@ public final class DAOUtils {
         try {
             ps = c.prepareStatement("SELECT * FROM periodicidad;");
             rs = ps.executeQuery();
-            List<PeriodicidadForm> recurrenceVector = new ArrayList<PeriodicidadForm>();
+            List<PeriodicidadForm> recurrenceVector = new ArrayList<>();
             while (rs.next()) {
                 PeriodicidadForm periodicidadForm = new PeriodicidadForm();
                 periodicidadForm.setId(rs.getLong("id_periodicidad"));
@@ -141,9 +141,9 @@ public final class DAOUtils {
     }
 
     public static List<Connection> getCartridgeConnections() {
-        final List<Connection> results = new ArrayList<Connection>();
+        final List<Connection> results = new ArrayList<>();
 
-        final List<String> datasources = new ArrayList<String>();
+        final List<String> datasources = new ArrayList<>();
         datasources.add("datasource.name.intav");
         datasources.add("datasource.name.malware");
         datasources.add("datasource.name.lenox");

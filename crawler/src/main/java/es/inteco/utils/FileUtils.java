@@ -47,7 +47,7 @@ public final class FileUtils {
     }
 
     public static List<String> listContents(String contentPath) {
-        List<String> contents = new ArrayList<String>();
+        List<String> contents = new ArrayList<>();
 
         FileInputStream fstream = null;
         DataInputStream in = null;
@@ -122,7 +122,7 @@ public final class FileUtils {
     }
 
     public static List<String> getDomainsFromCrawlDb(String crawlDbPath) {
-        List<String> domains = new ArrayList<String>();
+        List<String> domains = new ArrayList<>();
 
         FileReader reader = null;
         BufferedReader bfReader = null;

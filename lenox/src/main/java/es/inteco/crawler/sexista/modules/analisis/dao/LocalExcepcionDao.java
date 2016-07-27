@@ -43,7 +43,7 @@ public class LocalExcepcionDao {
     public List<LocalExcepcionDto> find(Connection conn, int idTermino) throws BusinessException {
 
         LocalExcepcionDto dto;
-        List<LocalExcepcionDto> listado = new ArrayList<LocalExcepcionDto>();
+        List<LocalExcepcionDto> listado = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

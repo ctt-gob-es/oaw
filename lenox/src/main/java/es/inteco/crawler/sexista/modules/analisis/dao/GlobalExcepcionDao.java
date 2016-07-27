@@ -26,7 +26,7 @@ public class GlobalExcepcionDao {
     public ArrayList<GlobalExcepcionDto> find(Connection conn) throws BusinessException {
 
         GlobalExcepcionDto dto;
-        ArrayList<GlobalExcepcionDto> listado = new ArrayList<GlobalExcepcionDto>();
+        ArrayList<GlobalExcepcionDto> listado = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

@@ -60,7 +60,7 @@ public class CategoriaForm extends ValidatorForm {
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);
         if (seeds == null) {
-            seeds = new ArrayList<SemillaForm>();
+            seeds = new ArrayList<>();
         }
     }
 }

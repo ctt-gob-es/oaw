@@ -109,7 +109,7 @@ public final class SemillaDAO {
     public static List<SemillaForm> getSeeds(Connection c, int type) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<SemillaForm> seedList = new ArrayList<SemillaForm>();
+        List<SemillaForm> seedList = new ArrayList<>();
 
         try {
             ps = c.prepareStatement("SELECT * FROM lista l WHERE id_tipo_lista = ? ;");
@@ -149,7 +149,7 @@ public final class SemillaDAO {
     public static List<SemillaForm> getObservatorySeeds(Connection c, int pagina, SemillaSearchForm searchForm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<SemillaForm> seedList = new ArrayList<SemillaForm>();
+        List<SemillaForm> seedList = new ArrayList<>();
 
         try {
             PropertiesManager pmgr = new PropertiesManager();
@@ -273,7 +273,7 @@ public final class SemillaDAO {
     public static List<SemillaForm> getSeedsChoose(Connection c, int pagina, SemillaSearchForm searchForm) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<SemillaForm> seedList = new ArrayList<SemillaForm>();
+        List<SemillaForm> seedList = new ArrayList<>();
 
         try {
             PropertiesManager pmgr = new PropertiesManager();
@@ -355,7 +355,7 @@ public final class SemillaDAO {
     }
 
     private static List<String> convertStringToList(String lista) {
-        List<String> urlsList = new ArrayList<String>();
+        List<String> urlsList = new ArrayList<>();
         StringTokenizer tokenizer = new StringTokenizer(lista, ";");
         while (tokenizer.hasMoreTokens()) {
             urlsList.add(tokenizer.nextToken());
@@ -655,7 +655,7 @@ public final class SemillaDAO {
     public static List<CategoriaForm> getSeedCategories(Connection c, int page) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<CategoriaForm> categories = new ArrayList<CategoriaForm>();
+        List<CategoriaForm> categories = new ArrayList<>();
 
         try {
             if (page == Constants.NO_PAGINACION) {
@@ -712,7 +712,7 @@ public final class SemillaDAO {
     }
 
     public static List<SemillaForm> getSeedsByCategory(Connection c, long idCategory, int page, SemillaForm searchForm) throws Exception {
-        List<SemillaForm> results = new ArrayList<SemillaForm>();
+        List<SemillaForm> results = new ArrayList<>();
         String query = "SELECT * FROM lista l WHERE id_categoria = ? ";
 
         if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -878,7 +878,7 @@ public final class SemillaDAO {
             ps.setLong(1, idCategory);
             rs = ps.executeQuery();
 
-            List<Long> observatoriesIdsList = new ArrayList<Long>();
+            List<Long> observatoriesIdsList = new ArrayList<>();
             while (rs.next()) {
                 observatoriesIdsList.add(rs.getLong(1));
             }

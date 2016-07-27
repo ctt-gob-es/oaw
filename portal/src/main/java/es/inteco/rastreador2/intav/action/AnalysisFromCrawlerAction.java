@@ -80,7 +80,7 @@ public class AnalysisFromCrawlerAction extends Action {
                     ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
                     evaluationForm.setSource(BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), true));
                     setDescription(evaluationForm, messageResources, locale);
-                    request.setAttribute(Constants.FAILED_CHECKS, IntavUtils.getFailedChecks(request, evaluationForm, EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0).toString())));
+                    request.setAttribute(Constants.FAILED_CHECKS, IntavUtils.getFailedChecks(request, evaluationForm, EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0))));
                     request.setAttribute(Constants.EVALUATION_FORM, evaluationForm);
                 } else {
                     EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, EvaluatorUtility.getLanguage(request));

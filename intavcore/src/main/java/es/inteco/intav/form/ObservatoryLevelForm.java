@@ -12,7 +12,7 @@ public class ObservatoryLevelForm implements Serializable {
     private List<ObservatorySuitabilityForm> suitabilityGroups;
 
     public ObservatoryLevelForm() {
-        this.suitabilityGroups = new ArrayList<ObservatorySuitabilityForm>();
+        this.suitabilityGroups = new ArrayList<>();
     }
 
     public BigDecimal getScore() {

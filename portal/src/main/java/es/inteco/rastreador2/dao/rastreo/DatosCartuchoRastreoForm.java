@@ -196,16 +196,16 @@ public class DatosCartuchoRastreoForm extends ActionForm {
             this.language = new LenguajeForm();
         }
         if (this.urls == null) {
-            this.urls = new ArrayList<String>();
+            this.urls = new ArrayList<>();
         }
         if (this.domains == null) {
-            this.domains = new ArrayList<String>();
+            this.domains = new ArrayList<>();
         }
         if (this.exceptions == null) {
-            this.exceptions = new ArrayList<String>();
+            this.exceptions = new ArrayList<>();
         }
         if (this.crawlingList == null) {
-            this.crawlingList = new ArrayList<String>();
+            this.crawlingList = new ArrayList<>();
         }
     }
 

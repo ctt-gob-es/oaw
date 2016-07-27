@@ -32,7 +32,7 @@ public class AnalysisManager extends BaseManager {
         Session session = getSession();
 
         List<Analysis> analysisList = AnalysisDAO.getAnalysisByExecution(session, idCrawling, offset, numResults);
-        List<AnalysisForm> analysisFormList = new ArrayList<AnalysisForm>();
+        List<AnalysisForm> analysisFormList = new ArrayList<>();
 
         for (Analysis analysis : analysisList) {
             analysisFormList.add(MultilanguageUtils.getAnalysisForm(analysis));
@@ -106,10 +106,10 @@ public class AnalysisManager extends BaseManager {
         Session session = getSession();
 
         List<Analysis> analysisList = AnalysisDAO.getObservatoryAnalysis(session, listCrawlings);
-        Map<Long, List<AnalysisForm>> analysisFormMap = new HashMap<Long, List<AnalysisForm>>();
+        Map<Long, List<AnalysisForm>> analysisFormMap = new HashMap<>();
 
         for (Analysis analysis : analysisList) {
-            List<AnalysisForm> analysisPages = new ArrayList<AnalysisForm>();
+            List<AnalysisForm> analysisPages = new ArrayList<>();
             if (analysisFormMap.get(analysis.getIdCrawling()) != null) {
                 analysisPages = analysisFormMap.get(analysis.getIdCrawling());
                 analysisPages.add(MultilanguageUtils.getAnalysisForm(analysis));
@@ -130,10 +130,10 @@ public class AnalysisManager extends BaseManager {
 
     public static List<AnalysisForm> getObservatoryAnalysisList(Long idCrawling) throws Exception {
         Session session = getSession();
-        List<Long> idCrawlingList = new ArrayList<Long>();
+        List<Long> idCrawlingList = new ArrayList<>();
         idCrawlingList.add(idCrawling);
         List<Analysis> analysisList = AnalysisDAO.getObservatoryAnalysis(session, idCrawlingList);
-        List<AnalysisForm> analysisFormList = new ArrayList<AnalysisForm>();
+        List<AnalysisForm> analysisFormList = new ArrayList<>();
 
         for (Analysis analysis : analysisList) {
             analysisFormList.add(MultilanguageUtils.getAnalysisForm(analysis));
@@ -152,7 +152,7 @@ public class AnalysisManager extends BaseManager {
     public static List<LanguageForm> getLanguages(boolean onlyToAnalyze) throws Exception {
         Session session = getSession();
 
-        List<LanguageForm> languageFormList = new ArrayList<LanguageForm>();
+        List<LanguageForm> languageFormList = new ArrayList<>();
         List<Language> languageList = LanguageDAO.getLanguages(onlyToAnalyze);
 
         for (Language language : languageList) {
@@ -217,7 +217,7 @@ public class AnalysisManager extends BaseManager {
 
     public static List<AnalysisForm> getAnalysisFormByExecution(Long idCrawling) throws Exception {
         List<Analysis> analysisList = getAnalysisByExecution(idCrawling);
-        List<AnalysisForm> analysisFormList = new ArrayList<AnalysisForm>();
+        List<AnalysisForm> analysisFormList = new ArrayList<>();
         for (Analysis analysis : analysisList) {
             analysisFormList.add(MultilanguageUtils.getAnalysisForm(analysis));
         }

@@ -59,7 +59,7 @@ public class LenoxUtils {
 
                 if (isTerminoOnContext(termino, palabra) ||
                         ((i != (lstTerminos.size() - 1) && articles.contains(palabra.trim().toUpperCase())) && isTerminoOnContext(termino, lstTerminos.get(i + 1)))) {
-                    StringBuffer palabraNegrita = new StringBuffer(CommonsConstants.TAG_INI_NEGRITA_INTECO);
+                    StringBuilder palabraNegrita = new StringBuilder(CommonsConstants.TAG_INI_NEGRITA_INTECO);
                     palabraNegrita.append(palabra);
                     palabraNegrita.append(CommonsConstants.TAG_FIN_NEGRITA_INTECO);
                     palabra = palabraNegrita.toString();

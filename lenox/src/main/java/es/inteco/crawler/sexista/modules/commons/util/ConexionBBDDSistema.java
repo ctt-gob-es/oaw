@@ -48,10 +48,7 @@ public class ConexionBBDDSistema {
             Class.forName(properties.getProperty(CommonsConstants.DRIVER_BD_SISTEMA));
             //Obtener la conexión a la BBDD
             con = DriverManager.getConnection(url, usuario, password);
-        } catch (ClassNotFoundException w) {
-            Logger.getLogger(ConexionBBDD.class).error(w.getMessage());
-            throw w;
-        } catch (SQLException w) {
+        } catch (ClassNotFoundException | SQLException w) {
             Logger.getLogger(ConexionBBDD.class).error(w.getMessage());
             throw w;
         }

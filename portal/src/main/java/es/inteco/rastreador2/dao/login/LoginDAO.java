@@ -97,7 +97,7 @@ public final class LoginDAO {
                     "WHERE ccu.id_usuario = ? GROUP BY ccu.id_usuario");
             ps.setLong(1, idUser);
             rs = ps.executeQuery();
-            List<String> nombreCuenta = new ArrayList<String>();
+            List<String> nombreCuenta = new ArrayList<>();
             if (rs.next()) {
                 nombreCuenta.addAll(listFromString(rs.getString("nombre")));
             }
@@ -118,7 +118,7 @@ public final class LoginDAO {
             ps = c.prepareStatement("SELECT id_cuenta FROM cuenta_cliente_usuario WHERE id_usuario = ?");
             ps.setLong(1, idUser);
             rs = ps.executeQuery();
-            List<String> idsCuenta = new ArrayList<String>();
+            List<String> idsCuenta = new ArrayList<>();
             while (rs.next()) {
                 idsCuenta.add(rs.getString("id_cuenta"));
             }
@@ -139,7 +139,7 @@ public final class LoginDAO {
             ps = c.prepareStatement("SELECT id_observatorio FROM observatorio_usuario WHERE id_usuario = ?");
             ps.setLong(1, idUser);
             rs = ps.executeQuery();
-            List<String> idsObservatorio = new ArrayList<String>();
+            List<String> idsObservatorio = new ArrayList<>();
             if (rs.next()) {
                 idsObservatorio.add(rs.getString("id_observatorio"));
             }
@@ -163,7 +163,7 @@ public final class LoginDAO {
                     "WHERE ou.id_usuario = ? GROUP BY ou.id_usuario");
             ps.setLong(1, idUser);
             rs = ps.executeQuery();
-            List<String> nombreObservatorio = new ArrayList<String>();
+            List<String> nombreObservatorio = new ArrayList<>();
             if (rs.next()) {
                 nombreObservatorio.addAll(listFromString(rs.getString("nombre")));
             }
@@ -177,7 +177,7 @@ public final class LoginDAO {
     }
 
     public static List<CartuchoForm> getUserCartridge(Connection c, Long idUser) throws Exception {
-        List<CartuchoForm> cartridgeList = new ArrayList<CartuchoForm>();
+        List<CartuchoForm> cartridgeList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -202,7 +202,7 @@ public final class LoginDAO {
     }
 
     public static List<Role> getUserRoles(Connection c, Long idUser) throws SQLException {
-        List<Role> roleList = new ArrayList<Role>();
+        List<Role> roleList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -227,7 +227,7 @@ public final class LoginDAO {
     }
 
     public static List<CartuchoForm> getAllUserCartridge(Connection c) throws Exception {
-        final List<CartuchoForm> cartridgeList = new ArrayList<CartuchoForm>();
+        final List<CartuchoForm> cartridgeList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -250,7 +250,7 @@ public final class LoginDAO {
     }
 
     public static List<Role> getAllUserRoles(Connection c, int userRolType) throws Exception {
-        List<Role> roleList = new ArrayList<Role>();
+        List<Role> roleList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -308,7 +308,7 @@ public final class LoginDAO {
     }
 
     public static List<ListadoUsuario> userList(Connection c, int page) throws Exception {
-        List<ListadoUsuario> userList = new ArrayList<ListadoUsuario>();
+        List<ListadoUsuario> userList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         PropertiesManager pmgr = new PropertiesManager();
@@ -761,7 +761,7 @@ public final class LoginDAO {
     }
 
     private static List<String> listFromString(String roleString) {
-        final List<String> roleList = new ArrayList<String>();
+        final List<String> roleList = new ArrayList<>();
         if (roleString != null) {
             final StringTokenizer tokenizer = new StringTokenizer(roleString, ",");
             while (tokenizer.hasMoreTokens()) {
@@ -773,7 +773,7 @@ public final class LoginDAO {
     }
 
     public static List<DatosForm> getClientAccount(Connection c, Long idAccount) throws SQLException {
-        List<DatosForm> results = new ArrayList<DatosForm>();
+        List<DatosForm> results = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -805,7 +805,7 @@ public final class LoginDAO {
     }
 
     public static List<String> getMailsByRole(Connection c, Long idRole) throws SQLException {
-        List<String> mails = new ArrayList<String>();
+        List<String> mails = new ArrayList<>();
 
         PreparedStatement ps = null;
         ResultSet rs = null;

@@ -26,22 +26,22 @@ public class ExportMultilanguageUtils {
             Observatory observatory = new Observatory(idObservatory);
             observatory.setName(observatoryName);
             observatory.setDate(date);
-            List<Category> categories = new ArrayList<Category>();
-            Map<String, SiteTranslationInformationForm> observatoryInfo = new HashMap<String, SiteTranslationInformationForm>();
-            List<AnalysisForm> analysisObsList = new ArrayList<AnalysisForm>();
-            List<AnalysisForm> analysisObsListHome = new ArrayList<AnalysisForm>();
-            List<AnalysisForm> analysisObsListInternal = new ArrayList<AnalysisForm>();
+            List<Category> categories = new ArrayList<>();
+            Map<String, SiteTranslationInformationForm> observatoryInfo = new HashMap<>();
+            List<AnalysisForm> analysisObsList = new ArrayList<>();
+            List<AnalysisForm> analysisObsListHome = new ArrayList<>();
+            List<AnalysisForm> analysisObsListInternal = new ArrayList<>();
             //Introducimos las categorias
             for (Map.Entry<Long, List<Long>> crawlerIdsEntry : crawlerIdsMap.entrySet()) {
-                Map<String, SiteTranslationInformationForm> categoryInfo = new HashMap<String, SiteTranslationInformationForm>();
+                Map<String, SiteTranslationInformationForm> categoryInfo = new HashMap<>();
                 Category category = new Category(crawlerIdsEntry.getKey());
                 category.setObservatory(observatory);
                 category.setName(categoryNames.get(crawlerIdsEntry.getKey()));
                 category.setId_category(crawlerIdsEntry.getKey());
-                List<Site> sites = new ArrayList<Site>();
-                List<AnalysisForm> analysisCatList = new ArrayList<AnalysisForm>();
-                List<AnalysisForm> analysisCatListHome = new ArrayList<AnalysisForm>();
-                List<AnalysisForm> analysisCatListInternal = new ArrayList<AnalysisForm>();
+                List<Site> sites = new ArrayList<>();
+                List<AnalysisForm> analysisCatList = new ArrayList<>();
+                List<AnalysisForm> analysisCatListHome = new ArrayList<>();
+                List<AnalysisForm> analysisCatListInternal = new ArrayList<>();
                 //Introducimos los portales
                 for (Long idCrawler : crawlerIdsEntry.getValue()) {
                     List<AnalysisForm> analysisList = AnalysisManager.getAnalysisFormByExecution(idCrawler);
@@ -50,7 +50,7 @@ public class ExportMultilanguageUtils {
                         Site site = new Site(idCrawler);
                         site.setCategory(category);
                         site.setName(siteNames.get(idCrawler));
-                        List<Page> pages = new ArrayList<Page>();
+                        List<Page> pages = new ArrayList<>();
                         //Introducimos las páginas
                         for (AnalysisForm analysisForm : analysisList) {
                             Page page = new Page(Long.valueOf(analysisForm.getId()), analysisForm.getUrl());
@@ -120,7 +120,7 @@ public class ExportMultilanguageUtils {
 
     private static List<Results> createSiteResults(Site site, List<AnalysisForm> analysisList, String type) throws Exception {
         List<SiteTranslationInformationForm> translationLanguagesFormList = MultilanguageUtils.getPortalTraductionInformation(analysisList, true);
-        List<Results> results = new ArrayList<Results>();
+        List<Results> results = new ArrayList<>();
         for (SiteTranslationInformationForm infoSite : translationLanguagesFormList) {
             Results result;
             if (infoSite.getNoTranslationPercentage().compareTo(new BigDecimal(100)) != 0) {
@@ -140,7 +140,7 @@ public class ExportMultilanguageUtils {
     }
 
     private static List<PageResult> createPageResults(AnalysisForm analysisForm, Page page) throws IllegalAccessException, InvocationTargetException {
-        List<PageResult> results = new ArrayList<PageResult>();
+        List<PageResult> results = new ArrayList<>();
         for (LanguageFoundForm lang : analysisForm.getLanguagesFound()) {
             Language language = new Language();
             Language languageS = new Language();
@@ -158,7 +158,7 @@ public class ExportMultilanguageUtils {
     }
 
     private static List<Results> createResults(Map<String, SiteTranslationInformationForm> info, Category category, Observatory observatory, String type) {
-        List<Results> results = new ArrayList<Results>();
+        List<Results> results = new ArrayList<>();
         for (Map.Entry<String, SiteTranslationInformationForm> entry : info.entrySet()) {
             SiteTranslationInformationForm langInfo = entry.getValue();
             Results result = new Results(LanguageDAO.getLanguage(entry.getKey()), langInfo.getNoTranslationPercentage(),

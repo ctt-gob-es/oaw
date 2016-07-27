@@ -45,7 +45,7 @@ public class InformesService {
 
             dto.setRastreo(dao.searchRastreoDetalle(conn, dto));
 
-            List<TerminoDetalleDto> detalleTerminos = new ArrayList<TerminoDetalleDto>();
+            List<TerminoDetalleDto> detalleTerminos = new ArrayList<>();
 
             List<Integer> ids = dao.searchIdTerminosDetalle(conn, dto, page);
             for (Object o : ids) {

@@ -96,8 +96,8 @@ public class ChartIntavAction extends Action {
     private int createChart(Long idExecution, String chartsPath, HttpServletRequest request, boolean regenerate) throws Exception {
 
         List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idExecution);
-        Map<String, Map<String, BigDecimal>> globalDataMap = new HashMap<String, Map<String, BigDecimal>>();
-        Map<String, BigDecimal> totalDataMap = new HashMap<String, BigDecimal>();
+        Map<String, Map<String, BigDecimal>> globalDataMap = new HashMap<>();
+        Map<String, BigDecimal> totalDataMap = new HashMap<>();
 
         // Inicializamos el evaluador
         EvaluatorUtility.initialize();
@@ -120,7 +120,7 @@ public class ChartIntavAction extends Action {
                         for (PriorityForm priority : evaluationForm.getPriorities()) {
 
                             EvaluatorUtils.countProblems(priority);
-                            HashMap<String, BigDecimal> dataMap = new HashMap<String, BigDecimal>();
+                            HashMap<String, BigDecimal> dataMap = new HashMap<>();
                             dataMap.put(getResources(request).getMessage(getLocale(request), "chart.problems"), new BigDecimal(priority.getNumProblems()));
                             dataMap.put(getResources(request).getMessage(getLocale(request), "chart.warnings"), new BigDecimal(priority.getNumWarnings()));
                             dataMap.put(getResources(request).getMessage(getLocale(request), "chart.infos"), new BigDecimal(priority.getNumInfos()));
@@ -137,7 +137,7 @@ public class ChartIntavAction extends Action {
                             if (globalDataMap.get(priorityName) == null) {
                                 globalDataMap.put(priorityName, dataMap);
                             } else {
-                                HashMap<String, BigDecimal> auxDataMap = new HashMap<String, BigDecimal>();
+                                HashMap<String, BigDecimal> auxDataMap = new HashMap<>();
                                 for (Map.Entry<String, BigDecimal> dataEntry : dataMap.entrySet()) {
                                     auxDataMap.put(dataEntry.getKey(), globalDataMap.get(priorityName).get(dataEntry.getKey()).add(dataEntry.getValue()));
                                 }
@@ -235,7 +235,7 @@ public class ChartIntavAction extends Action {
     }
 
     private List<LabelValueBean> labelInformation(Map<String, BigDecimal> info) {
-        List<LabelValueBean> labelValueList = new ArrayList<LabelValueBean>();
+        List<LabelValueBean> labelValueList = new ArrayList<>();
         LabelValueBean labelValue;
 
         for (Map.Entry<String, BigDecimal> entry : info.entrySet()) {

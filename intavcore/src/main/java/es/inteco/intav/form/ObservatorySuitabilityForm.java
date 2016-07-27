@@ -11,7 +11,7 @@ public class ObservatorySuitabilityForm implements Serializable {
     private List<ObservatorySubgroupForm> subgroups;
 
     public ObservatorySuitabilityForm() {
-        this.subgroups = new ArrayList<ObservatorySubgroupForm>();
+        this.subgroups = new ArrayList<>();
     }
 
     public BigDecimal getScore() {

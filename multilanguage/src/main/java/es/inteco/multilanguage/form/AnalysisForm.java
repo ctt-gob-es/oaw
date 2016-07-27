@@ -24,7 +24,7 @@ public class AnalysisForm {
     private List<LanguageFoundForm> languagesFound;
 
     public AnalysisForm() {
-        languagesFound = new ArrayList<LanguageFoundForm>();
+        languagesFound = new ArrayList<>();
     }
 
     public String getId() {

@@ -50,7 +50,7 @@ public class Identifier {
 
     // Constructor using the parameters given in a request
     public Identifier(HttpServletRequest inReq) {
-        hashtableAttributes = new Hashtable<String, String>();
+        hashtableAttributes = new Hashtable<>();
 
         nameElement = inReq.getParameter(IntavConstants.ELEMENT);
         if (nameElement == null) {
@@ -79,7 +79,7 @@ public class Identifier {
         }
 
         String stringNumber = null;
-        if (integerNumber.intValue() < 10) {
+        if (integerNumber < 10) {
             stringNumber = "0" + integerNumber.toString();
         } else {
             stringNumber = integerNumber.toString();
