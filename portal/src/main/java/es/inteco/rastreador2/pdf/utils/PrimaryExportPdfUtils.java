@@ -302,32 +302,32 @@ public final class PrimaryExportPdfUtils {
                                     comprobacion.setVerticalAlignment(Element.ALIGN_TOP);
                                     tablaVerificacionProblema.addCell(comprobacion);
 
-                                    if (StringUtils.isNotEmpty(problem.getRationale()) && messageResources.isPresent(problem.getRationale())) {
-                                        final Paragraph rationale = new Paragraph();
-                                        boolean isFirst = true;
-                                        for (String phraseText : Arrays.asList(messageResources.getMessage(problem.getRationale()).split("<p>|</p>"))) {
-                                            if (isFirst) {
-                                                if (StringUtils.isNotEmpty(phraseText)) {
+                                    if (isBasicService) {
+                                        if (StringUtils.isNotEmpty(problem.getRationale()) && messageResources.isPresent(problem.getRationale())) {
+                                            final Paragraph rationale = new Paragraph();
+                                            boolean isFirst = true;
+                                            for (String phraseText : Arrays.asList(messageResources.getMessage(problem.getRationale()).split("<p>|</p>"))) {
+                                                if (isFirst) {
+                                                    if (StringUtils.isNotEmpty(phraseText)) {
+                                                        rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
+                                                    }
+                                                    isFirst = false;
+                                                } else {
                                                     rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
                                                 }
-                                                isFirst = false;
-                                            } else {
-                                                rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
                                             }
+
+                                            tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
+
+                                            final PdfPCell celdaRationale = new PdfPCell(rationale);
+                                            celdaRationale.setBorder(0);
+                                            celdaRationale.setBackgroundColor(Color.WHITE);
+                                            celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+                                            celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                                            celdaRationale.setPadding(DEFAULT_PADDING);
+                                            tablaVerificacionProblema.addCell(celdaRationale);
                                         }
 
-                                        tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
-
-                                        final PdfPCell celdaRationale = new PdfPCell(rationale);
-                                        celdaRationale.setBorder(0);
-                                        celdaRationale.setBackgroundColor(Color.WHITE);
-                                        celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-                                        celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                                        celdaRationale.setPadding(DEFAULT_PADDING);
-                                        tablaVerificacionProblema.addCell(celdaRationale);
-                                    }
-
-                                    if (isBasicService) {
                                         BasicServiceExport.addSpecificProblems(messageResources, levelSection, problem.getSpecificProblems());
                                     }
 
@@ -668,7 +668,7 @@ public final class PrimaryExportPdfUtils {
     private static int addResultsByVerification(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, int countSections, final IndexEvents index) {
         countSections = createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, 0, countSections, index);
 
-        if (evaList.size() > 2 && evaList.size()<17) {
+        if (evaList.size() > 2 && evaList.size() < 17) {
             chapter.newPage();
         }
 

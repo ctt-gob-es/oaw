@@ -248,16 +248,18 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         //PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.3.p2"), ConstantsFont.PARAGRAPH, chapter);
         //PDFUtils.addParagraph(messageResources.getMessage("une2012.resAnon.intav.report.3.p3"), ConstantsFont.PARAGRAPH, chapter);
 
-        if (!isBasicService) {
+        //if (!isBasicService) {
             Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-            if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-                createSection31(messageResources, section1, observatoryType, "AGE");
-            } else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
-                createSection31(messageResources, section1, observatoryType, "CCAA");
-            } else if (observatoryType == Constants.OBSERVATORY_TYPE_EELL) {
-                createSection31(messageResources, section1, observatoryType, "EELL");
-            }
-        }
+            PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.31.intro"), ConstantsFont.PARAGRAPH, section1);
+
+            //if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
+                createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_AGE, "AGE");
+            //} else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
+                createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_CCAA, "CCAA");
+            //} else if (observatoryType == Constants.OBSERVATORY_TYPE_EELL) {
+                createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_EELL, "EELL");
+            //}
+        //}
 
         Section section2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter32.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         createSection32(messageResources, section2, primaryReportPageList, observatoryType, isBasicService);
