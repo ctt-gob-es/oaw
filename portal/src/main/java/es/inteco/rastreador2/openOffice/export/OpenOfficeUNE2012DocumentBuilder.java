@@ -17,6 +17,8 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
@@ -455,9 +457,11 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
     private int replaceSectionEvolutionSuitabilityLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNE2012Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageExecutionList);
-            final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNE2012Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A);
-            final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNE2012Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA);
-            final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNE2012Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV);
+            final PropertiesManager pmgr = new PropertiesManager();
+            final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+            final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNE2012Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
+            final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNE2012Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
+            final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNE2012Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
 
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg", "image/jpeg");
             numImg++;
@@ -617,27 +621,30 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
 
     private int replaceSectionEvolutionScoreByAspect(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final Map<Date, Map<String, BigDecimal>> resultsByAspect) throws Exception {
         if (resultsByAspect != null && !resultsByAspect.isEmpty()) {
-            Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.general"), resultsByAspect);
+            final PropertiesManager pmgr = new PropertiesManager();
+            final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+
+            Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.general"), resultsByAspect, df);
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID) + ".jpg", "image/jpeg");
             numImg++;
             replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "25.t1", resultData);
 
-            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.presentation"), resultsByAspect);
+            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.presentation"), resultsByAspect, df);
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID) + ".jpg", "image/jpeg");
             numImg++;
             replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "26.t1", resultData);
 
-            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.structure"), resultsByAspect);
+            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.structure"), resultsByAspect, df);
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID) + ".jpg", "image/jpeg");
             numImg++;
             replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "27.t1", resultData);
 
-            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.navigation"), resultsByAspect);
+            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.navigation"), resultsByAspect, df);
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID) + ".jpg", "image/jpeg");
             numImg++;
             replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "28.t1", resultData);
 
-            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.alternatives"), resultsByAspect);
+            resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.alternatives"), resultsByAspect, df);
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID) + ".jpg", "image/jpeg");
             numImg++;
             replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "29.t1", resultData);

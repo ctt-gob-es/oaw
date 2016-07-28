@@ -157,19 +157,19 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
                 title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.cat.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg";
-                getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+                getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 
                 title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.cat.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg";
-                getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
+                getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
 
                 title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.category.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg";
-                getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
+                getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
                 title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.category.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg";
-                getModalityByVerificationLevelGraphic(request, pageExecutionList, title, file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+                getModalityByVerificationLevelGraphic(request, pageExecutionList, title, "", noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
                 return Constants.OBSERVATORY_HAVE_RESULTS;
             } else {
@@ -920,6 +920,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> calculateAspectEvolutionPuntuationDataSet(final String aspect, final Map<Date, Map<String, BigDecimal>> resultsByAspect) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+        return calculateAspectEvolutionPuntuationDataSet(aspect, resultsByAspect, df);
+    }
+    public static Map<String, BigDecimal> calculateAspectEvolutionPuntuationDataSet(final String aspect, final Map<Date, Map<String, BigDecimal>> resultsByAspect, final DateFormat dateFormat) {
         final Map<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -935,11 +940,10 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 return 0;
             }
         });
-        final PropertiesManager pmgr = new PropertiesManager();
-        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+
 
         for (Map.Entry<Date, Map<String, BigDecimal>> entry : resultsByAspect.entrySet()) {
-            resultData.put(df.format(entry.getKey()), entry.getValue().get(aspect));
+            resultData.put(dateFormat.format(entry.getKey()), entry.getValue().get(aspect));
         }
 
         return resultData;
@@ -1013,6 +1017,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static Map<String, BigDecimal> calculatePercentageApprovalSiteLevel(final Map<Date, Map<Long, Map<String, Integer>>> result, final String suitabilityLevel) {
         final PropertiesManager pmgr = new PropertiesManager();
         final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
+
+        return calculatePercentageApprovalSiteLevel(result, suitabilityLevel, df);
+    }
+
+    public static Map<String, BigDecimal> calculatePercentageApprovalSiteLevel(final Map<Date, Map<Long, Map<String, Integer>>> result, final String suitabilityLevel, final DateFormat dateFormat) {
         final TreeMap<String, BigDecimal> percentagesMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -1042,7 +1051,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 final int numSites = dateMapEntry.getValue().size();
                 percentage = (new BigDecimal(numSitesType)).divide(new BigDecimal(numSites), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED);
             }
-            percentagesMap.put(df.format(dateMapEntry.getKey()), percentage);
+            percentagesMap.put(dateFormat.format(dateMapEntry.getKey()), percentage);
         }
         return percentagesMap;
     }
@@ -1630,7 +1639,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         final String noDataMess = "noData";
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, 1265, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+        final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 
         GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
     }
