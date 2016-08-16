@@ -46,9 +46,9 @@ public class CambiarUsuarioPasswordAction extends Action {
 
                 //nos conectamos
                 PropertiesManager pmgr = new PropertiesManager();
-                Connection con = DataBaseManager.getConnection();
 
-                try {
+
+                try (Connection con = DataBaseManager.getConnection()) {
                     String idUsuario = request.getParameter(Constants.USER);
                     ModificarUsuarioPassForm modificarUsuarioPassForm = (ModificarUsuarioPassForm) form;
                     modificarUsuarioPassForm.setIdUsuario(idUsuario);
@@ -72,13 +72,11 @@ public class CambiarUsuarioPasswordAction extends Action {
                     if (accion != null && accion.equals(Constants.ACCION_MODIFICAR)) {
                         ActionErrors errors = modificarUsuarioPassForm.validate(mapping, request);
 
-                        if (errors == null || errors.isEmpty()) {
-                            if (deMenu != null) {
-                                if (!LoginDAO.existUserWithKey(con, modificarUsuarioPassForm.getPasswold(), Long.valueOf(idUsuario))) {
-                                    errors.add("errorDistintos", new ActionMessage("pass.Incorrecto"));
-                                    saveErrors(request, errors);
-                                    return mapping.findForward(Constants.VOLVER);
-                                }
+                        if (errors.isEmpty()) {
+                            if (deMenu != null && !LoginDAO.existUserWithKey(con, modificarUsuarioPassForm.getPasswold(), Long.valueOf(idUsuario))) {
+                                errors.add("errorDistintos", new ActionMessage("pass.Incorrecto"));
+                                saveErrors(request, errors);
+                                return mapping.findForward(Constants.VOLVER);
                             }
 
                             if (modificarUsuarioPassForm.getPassword().equals(modificarUsuarioPassForm.getPassword2())) {
@@ -110,9 +108,7 @@ public class CambiarUsuarioPasswordAction extends Action {
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepion: ", CambiarUsuarioPasswordAction.class, Logger.LOG_LEVEL_ERROR, e);
-                    throw new Exception(e);
-                } finally {
-                    DataBaseManager.closeConnection(con);
+                    throw e;
                 }
                 return mapping.findForward(Constants.EXITO);
             } else {

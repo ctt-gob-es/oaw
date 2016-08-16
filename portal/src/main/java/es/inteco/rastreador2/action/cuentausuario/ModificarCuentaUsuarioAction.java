@@ -43,26 +43,21 @@ public class ModificarCuentaUsuarioAction extends Action {
                 ModificarCuentaUsuarioForm modificarCuentaUsuarioForm = (ModificarCuentaUsuarioForm) form;
                 modificarCuentaUsuarioForm.setNombre_antiguo(request.getParameter(Constants.NOMBRE_ANTIGUO));
 
-                Connection c = null;
-                Connection con = null;
+                try (Connection c = DataBaseManager.getConnection()){
 
-                try {
-                    c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection();
-
-                    String id_cuenta = null;
+                    final String idCuenta;
                     if (request.getParameter(Constants.DE_MENU) == null) {
-                        id_cuenta = request.getParameter(Constants.ID_CUENTA);
+                        idCuenta = request.getParameter(Constants.ID_CUENTA);
                     } else {
                         String user = (String) sesion.getAttribute(Constants.USER);
-                        id_cuenta = String.valueOf(CuentaUsuarioDAO.getAccountFromUser(c, user));
+                        idCuenta = String.valueOf(CuentaUsuarioDAO.getAccountFromUser(c, user));
                         request.setAttribute(Constants.DE_MENU, "true");
                     }
-                    request.setAttribute(Constants.ID_CUENTA, id_cuenta);
+                    request.setAttribute(Constants.ID_CUENTA, idCuenta);
 
-                    modificarCuentaUsuarioForm.setId_cuenta(id_cuenta);
+                    modificarCuentaUsuarioForm.setId_cuenta(idCuenta);
                     modificarCuentaUsuarioForm.setCartuchosList(LoginDAO.getAllUserCartridge(c));
-                    modificarCuentaUsuarioForm.setNormaV(DAOUtils.getNormas(con, false));
+                    modificarCuentaUsuarioForm.setNormaV(DAOUtils.getNormas(c, false));
 
                     modificarCuentaUsuarioForm.setPeriodicidadVector(DAOUtils.getRecurrence(c));
 
@@ -76,7 +71,7 @@ public class ModificarCuentaUsuarioAction extends Action {
                     request.setAttribute(Constants.MINUTES, CrawlerUtils.getMinutes());
                     request.setAttribute(Constants.HOURS, CrawlerUtils.getHours());
 
-                    //Comprobamos si estamos en inicio o se a pulsado al submit del formulario
+                    //Comprobamos si estamos en inicio o se ha pulsado al submit del formulario
                     //para ello cojemos el valEmail y miramos si esta en request
                     String esPrimera = request.getParameter(Constants.ES_PRIMERA);
 
@@ -96,7 +91,7 @@ public class ModificarCuentaUsuarioAction extends Action {
                     } else {
                         ActionErrors errors = modificarCuentaUsuarioForm.validate(mapping, request);
 
-                        if (errors != null && !errors.isEmpty()) {
+                        if (!errors.isEmpty()) {
                             saveErrors(request, errors);
                             return (mapping.findForward(Constants.VOLVER));
                         } else {
@@ -112,41 +107,39 @@ public class ModificarCuentaUsuarioAction extends Action {
                                         return mapping.findForward(Constants.VOLVER);
                                     }
                                     String nombre = cc.espacios();
-                                    if (!nombre.equals(modificarCuentaUsuarioForm.getNombre_antiguo())) {
-                                        if (CuentaUsuarioDAO.existAccount(c, modificarCuentaUsuarioForm.getNombre())) {
-                                            Logger.putLog("Usuario Duplicado", ModificarCuentaUsuarioAction.class, Logger.LOG_LEVEL_INFO);
-                                            errors.add("usuarioDuplicado", new ActionMessage("usuario.duplicado"));
-                                            saveErrors(request, errors);
-                                            return mapping.findForward(Constants.USUARIO_DUPLICADO);
-                                        }
+                                    if (!nombre.equals(modificarCuentaUsuarioForm.getNombre_antiguo()) && CuentaUsuarioDAO.existAccount(c, modificarCuentaUsuarioForm.getNombre())) {
+                                        Logger.putLog("Usuario Duplicado", ModificarCuentaUsuarioAction.class, Logger.LOG_LEVEL_INFO);
+                                        errors.add("usuarioDuplicado", new ActionMessage("usuario.duplicado"));
+                                        saveErrors(request, errors);
+                                        return mapping.findForward(Constants.USUARIO_DUPLICADO);
                                     }
                                 }
 
-                                modificarCuentaUsuarioForm.setId_cuenta(id_cuenta);
-                                modificarCuentaUsuarioForm.setIdSemilla(CuentaUsuarioDAO.getIdSemillaFromCA(c, Long.parseLong(id_cuenta)));
-                                modificarCuentaUsuarioForm.setIdListaRastreable(CuentaUsuarioDAO.getIdLRFromCA(c, Long.parseLong(id_cuenta)));
-                                modificarCuentaUsuarioForm.setIdListaNoRastreable(CuentaUsuarioDAO.getIdLNRFromCA(c, Long.parseLong(id_cuenta)));
+                                modificarCuentaUsuarioForm.setId_cuenta(idCuenta);
+                                modificarCuentaUsuarioForm.setIdSemilla(CuentaUsuarioDAO.getIdSemillaFromCA(c, Long.parseLong(idCuenta)));
+                                modificarCuentaUsuarioForm.setIdListaRastreable(CuentaUsuarioDAO.getIdLRFromCA(c, Long.parseLong(idCuenta)));
+                                modificarCuentaUsuarioForm.setIdListaNoRastreable(CuentaUsuarioDAO.getIdLNRFromCA(c, Long.parseLong(idCuenta)));
 
                                 if (request.getParameter(Constants.DE_MENU) != null) {
-                                    CuentaUsuarioDAO.updateUAccount(modificarCuentaUsuarioForm, id_cuenta, true);
+                                    CuentaUsuarioDAO.updateUAccount(modificarCuentaUsuarioForm, idCuenta, true);
                                 } else {
-                                    CuentaUsuarioDAO.updateUAccount(modificarCuentaUsuarioForm, id_cuenta, false);
+                                    CuentaUsuarioDAO.updateUAccount(modificarCuentaUsuarioForm, idCuenta, false);
                                 }
 
                                 // Cambiamos los rastreos programados
-                                ScheduleClientAccountsServlet.deleteJobs(Long.parseLong(id_cuenta), Constants.CLIENT_ACCOUNT_TYPE);
+                                ScheduleClientAccountsServlet.deleteJobs(Long.parseLong(idCuenta), Constants.CLIENT_ACCOUNT_TYPE);
 
                                 if (modificarCuentaUsuarioForm.isActivo()) {
-                                    ScheduleClientAccountsServlet.scheduleJob(Long.parseLong(id_cuenta), Constants.CLIENT_ACCOUNT_TYPE);
+                                    ScheduleClientAccountsServlet.scheduleJob(Long.parseLong(idCuenta), Constants.CLIENT_ACCOUNT_TYPE);
                                 }
                             } catch (Exception e) {
                                 Logger.putLog("Exception: ", ModificarCuentaUsuarioAction.class, Logger.LOG_LEVEL_ERROR, e);
-                                throw new Exception(e);
+                                throw e;
                             }
                         }
-                        String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.cuenta.usuario.editada");
 
-                        String volver = "";
+                        final String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.cuenta.usuario.editada");
+                        final String volver;
                         if (request.getParameter(Constants.DE_MENU) == null) {
                             volver = pmgr.getValue("returnPaths.properties", "volver.carga.cuentas.cliente");
                         } else {
@@ -158,10 +151,7 @@ public class ModificarCuentaUsuarioAction extends Action {
                     }
                 } catch (Exception e) {
                     log.error("Excepción genérica al crear un nuevo usuario");
-                    throw new Exception(e);
-                } finally {
-                    DataBaseManager.closeConnection(c);
-                    DataBaseManager.closeConnection(con);
+                    throw e;
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);

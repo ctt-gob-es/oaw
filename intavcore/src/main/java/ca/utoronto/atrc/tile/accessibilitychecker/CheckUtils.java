@@ -230,11 +230,14 @@ public final class CheckUtils {
 
             if (allowedPorts.contains(String.valueOf(remoteUrl.getPort()))) {
                 checkedLinks = (CheckedLinks) elementRoot.getUserData("checkedLinks");
-                if (checkedLinks != null && checkedLinks.getCheckedLinks().contains(remoteUrl.toString())) {
+                if (checkedLinks==null) {
+                    checkedLinks = new CheckedLinks();
+                    elementRoot.setUserData("checkedLinks", checkedLinks, null);
+                }
+                if (checkedLinks.getCheckedLinks().contains(remoteUrl.toString())) {
                     // Los enlaces ya verificados los damos por buenos, no puntúan mal varias veces
                     return true;
-                } else if (checkedLinks == null ||
-                        (!checkedLinks.getBrokenLinks().contains(remoteUrl.toString()) && !checkedLinks.getAvailablelinks().contains(remoteUrl.toString()))) {
+                } else if (!checkedLinks.getBrokenLinks().contains(remoteUrl.toString()) && !checkedLinks.getAvailablelinks().contains(remoteUrl.toString())) {
                     Logger.putLog("Verificando que existe la URL " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                     final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrl.toString(), "GET", true);
                     if (documentUrl != null) {
@@ -247,9 +250,7 @@ public final class CheckUtils {
                         Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                         return false;
                     } else {
-                        if (checkedLinks != null) {
-                            checkedLinks.getAvailablelinks().add(remoteUrl.toString());
-                        }
+                        checkedLinks.getAvailablelinks().add(remoteUrl.toString());
                         return true;
                     }
                 } else {
@@ -273,7 +274,7 @@ public final class CheckUtils {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
             return false;
         } finally {
-            if (checkedLinks != null && remoteUrl != null) {
+            if (remoteUrl != null) {
                 checkedLinks.getCheckedLinks().add(remoteUrl.toString());
             }
         }

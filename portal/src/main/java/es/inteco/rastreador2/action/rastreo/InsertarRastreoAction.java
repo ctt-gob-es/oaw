@@ -43,15 +43,7 @@ public class InsertarRastreoAction extends Action {
                 //es inicio,Consigue la fecha actual.
                 InsertarRastreoForm insertarRastreoForm = (InsertarRastreoForm) form;
 
-                Connection c = null;
-                Connection con = null;
-
-                try {
-
-                    PropertiesManager pmgr = new PropertiesManager();
-                    con = DataBaseManager.getConnection();
-                    c = DataBaseManager.getConnection();
-
+                try (Connection c = DataBaseManager.getConnection()) {
                     //Si se ha pulsado Cargar Semilla
                     if (insertarRastreoForm.getSemillaBoton() != null && insertarRastreoForm.getSemillaBoton().equals(getResources(request).getMessage(getLocale(request), "boton.semilla"))) {
                         request.setAttribute(Constants.IS_NEW, "true");
@@ -85,7 +77,7 @@ public class InsertarRastreoAction extends Action {
                     }
 
                     //Recuperamos las normas
-                    insertarRastreoForm.setNormaVector(DAOUtils.getNormas(con, false));
+                    insertarRastreoForm.setNormaVector(DAOUtils.getNormas(c, false));
 
                     // Recuperamos los cartuchos
                     insertarRastreoForm.setCartuchos(LoginDAO.getUserCartridge(c, Long.valueOf(userData.getId())));
@@ -93,6 +85,7 @@ public class InsertarRastreoAction extends Action {
                     if (insertarRastreoForm.getCartuchos() == null || insertarRastreoForm.getCartuchos().isEmpty()) {
                         //error, no puede crear un rastreo si no hay cartuchos instalados para el usuario
                         String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.noCartuchos");
+                        PropertiesManager pmgr = new PropertiesManager();
                         String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
                         request.setAttribute("mensajeExito", mensaje);
                         request.setAttribute("accionVolver", volver);
@@ -105,9 +98,9 @@ public class InsertarRastreoAction extends Action {
                         return cargarDatosInicio(mapping, insertarRastreoForm);
                     } else {
 
-                        ActionErrors errors = insertarRastreoForm.validate(mapping, request);
+                        final ActionErrors errors = insertarRastreoForm.validate(mapping, request);
 
-                        if (errors == null || errors.isEmpty()) {
+                        if (errors.isEmpty()) {
                             //Comprobamos que el rastreo usa caracteres correctos
                             ComprobadorCaracteres cc = new ComprobadorCaracteres(insertarRastreoForm.getCodigo());
                             if (!cc.isNombreValido()) {
@@ -143,6 +136,7 @@ public class InsertarRastreoAction extends Action {
 
                             request.getSession().removeAttribute("InsertarRastreoForm");
                             String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.rastreo.insertado");
+                            PropertiesManager pmgr = new PropertiesManager();
                             String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
                             request.setAttribute("mensajeExito", mensaje);
                             request.setAttribute("accionVolver", volver);
@@ -155,9 +149,6 @@ public class InsertarRastreoAction extends Action {
                             return (forward);
                         }
                     }
-                } finally {
-                    DataBaseManager.closeConnection(c);
-                    DataBaseManager.closeConnection(con);
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);

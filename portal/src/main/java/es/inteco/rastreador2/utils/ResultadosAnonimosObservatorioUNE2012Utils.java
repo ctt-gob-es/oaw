@@ -92,20 +92,15 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final MessageResources messageResources = CrawlerUtils.getResources(request);
             final String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
 
-            String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.title");
             String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.name") + ".jpg";
-            title = "";
             getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, "", file, noDataMess, regenerate);
 
-            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
             getGlobalMarkBySegmentGraphic(request, pageExecutionList, "", file, noDataMess, categories);
 
-            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + ".jpg";
             getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
-            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + ".jpg";
             getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
@@ -113,14 +108,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             getGlobalMarkBySegmentsGroupGraphic(request, file, noDataMess, pageExecutionList, categories, regenerate);
 
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + ".jpg";
-            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.title");
             getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, "", regenerate);
 
-            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
             getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 
-            title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.title");
             file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg";
             getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
 
@@ -155,20 +147,16 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.segment.aspect.mid.title", category.getName());
                 getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, title, regenerate);
 
-                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.cat.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg";
                 getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 
-                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.cat.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg";
                 getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
 
-                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.category.title", category.getName());
                 file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg";
                 getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
                 title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.category.title", category.getName());
-                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg";
                 getModalityByVerificationLevelGraphic(request, pageExecutionList, title, "", noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
                 return Constants.OBSERVATORY_HAVE_RESULTS;
@@ -495,8 +483,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            final String rowTitle = messageResources.getMessage("observatory.graphic.mid.puntuation");
-            final String columnTitle = messageResources.getMessage("observatory.graphic.verification.points");
             GraphicsUtils.createBarChart(result, title, "", "", color, false, false, false, filePath, noDataMess, messageResources, x, y);
         }
     }
@@ -516,8 +502,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         if (!file.exists() || regenerate) {
             final PropertiesManager pmgr = new PropertiesManager();
-            final String rowTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.points");
-            final String colTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.percentage");
             final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
             GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
         }
@@ -569,8 +553,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final PropertiesManager pmgr = new PropertiesManager();
             //Si la gráfica no existe, la creamos
             if (!file.exists() || regenerate) {
-                final String title = messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.title");
-                final String rowTitle = messageResources.getMessage("observatory.graphic.puntuation");
                 final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
                 GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
             }
@@ -648,9 +630,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            final String rowTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mid.puntuation");
-            final String columnTitle = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.date");
-            final String title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.evolution.aspect.mid.puntuation", aspectStr);
             GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, fileName, noDataMess, messageResources, x, y);
         }
     }
@@ -721,9 +700,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            final String rowTitle = resources.getMessage("observatory.graphic.mid.puntuation");
-            final String columnTitle = resources.getMessage("observatory.graphic.date");
-            final String title = resources.getMessage("observatory.graphic.evolution.verification.mid.puntuation", verification);
             GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, fileName, noDataMess, resources, x, y);
         }
     }
@@ -740,9 +716,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
             final MessageResources messageResources = CrawlerUtils.getResources(request);
-            final String rowTitle = messageResources.getMessage("observatory.graphic.mid.puntuation");
-            final String columnTitle = messageResources.getMessage("observatory.graphic.date");
-            final String title = messageResources.getMessage("observatory.graphic.evolution.mid.puntuation");
             GraphicsUtils.createBarChart(resultData, "", "", "", color, false, false, true, filePath, noDataMess, messageResources, x, y);
         }
 
@@ -766,8 +739,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            String rowTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.pages");
-            String columnTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.date");
             GraphicsUtils.createBarChart(resultData, "", "", "", color, false, true, true, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
 
@@ -785,8 +756,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         //Si no existe la gráfica, la creamos
         if (!file.exists() || regenerate) {
-            final String rowTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.puntuation");
-            final String columnTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.portales");
             GraphicsUtils.createBar1PxChart(result2, "", "", "", filePath, noDataMess, CrawlerUtils.getResources(request), x, y, showColLab);
         }
     }
@@ -801,8 +770,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         //Si no existe la grafica, la creamos
         final File file = new File(filePath);
         if (!file.exists() || regenerate) {
-            final String rowTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.puntuation");
-            final String columnTitle = CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspects");
             GraphicsUtils.createBarChart(result, "", "", "", color, false, false, false, filePath, noDataMess, CrawlerUtils.getResources(request), x, y);
         }
     }
@@ -1229,7 +1196,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
             final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
             if (!file.exists()) {
-//                final String rowTitle = messageResources.getMessage("observatory.graphic.puntuation");
                 final ChartForm observatoryGraphicsForm = new ChartForm(createDataSet(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
                 GraphicsUtils.createSeriesBarChart(observatoryGraphicsForm, filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg", noDataMess, messageResources, true);
             }
@@ -1692,11 +1658,11 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<Date, Map<String,BigDecimal>> dateAspectValueEntry : resultsByAspect.entrySet()) {
             // Todas las puntuaciones por aspecto se muestran en este orden
-            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.general")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.general"));
-            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.presentation")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.presentation"));
-            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.structure")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.structure"));
-            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.navigation")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.navigation"));
-            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.alternatives")), dateAspectValueEntry.getKey(),messageResources.getMessage("observatory.aspect.alternatives"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.general")), dateAspectValueEntry.getKey().getTime(),messageResources.getMessage("observatory.aspect.general"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.presentation")), dateAspectValueEntry.getKey().getTime(),messageResources.getMessage("observatory.aspect.presentation"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.structure")), dateAspectValueEntry.getKey().getTime(),messageResources.getMessage("observatory.aspect.structure"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.navigation")), dateAspectValueEntry.getKey().getTime(),messageResources.getMessage("observatory.aspect.navigation"));
+            dataSet.addValue(dateAspectValueEntry.getValue().get(messageResources.getMessage("observatory.aspect.alternatives")), dateAspectValueEntry.getKey().getTime(),messageResources.getMessage("observatory.aspect.alternatives"));
         }
 
         final PropertiesManager pmgr = new PropertiesManager();

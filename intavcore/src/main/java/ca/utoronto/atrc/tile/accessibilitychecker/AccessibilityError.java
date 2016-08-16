@@ -34,12 +34,20 @@ public class AccessibilityError extends Throwable {
     public static final int FAIL = 1;
     public static final int CANNOTTELL = 2;
 
-    private Node node;
-    private int code;
+    private final Node node;
+    private final int code;
 
-    public AccessibilityError(int aCode, Node aNode) {
+    public AccessibilityError(int aCode, final Node aNode) {
         code = aCode;
         node = aNode;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public int getCode() {
+        return code;
     }
 }
 
