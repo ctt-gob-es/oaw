@@ -3975,7 +3975,7 @@ public class Check {
             if (elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL) == null) {
                 elementRoot.setUserData(IntavConstants.FAILED_GIFS_URL, new ArrayList<String>(), null);
             }
-            ((ArrayList<String>) elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL)).add(urlImage == null ? elementGiven.getAttribute("src") : urlImage.toString());
+            ((ArrayList<String>) elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL)).add(elementGiven.getAttribute("src"));
         }
 
         return false;

@@ -25,9 +25,9 @@ import java.util.*;
  */
 public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
 
+    protected final List<CSSProblem> problems = new ArrayList<>();
     private final Stack<Boolean> currentMedia = new Stack<>();
     protected CSSStyleRule currentStyleRule;
-    protected final List<CSSProblem> problems = new ArrayList<>();
     protected CSSResource resource;
     private Document document;
 
@@ -108,7 +108,6 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     protected CSSProblem createCSSProblem(final String textContent, final CSSDeclaration cssDeclaration) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());
-        cssProblem.setSelector(currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
         if (cssDeclaration != null && cssDeclaration.getSourceLocation() != null) {
             cssProblem.setLineNumber(cssDeclaration.getSourceLocation().getFirstTokenBeginLineNumber());
             cssProblem.setColumnNumber(cssDeclaration.getSourceLocation().getFirstTokenBeginColumnNumber());
@@ -117,7 +116,11 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
             } else {
                 cssProblem.setTextContent(resource.getStringSource() + System.lineSeparator() + textContent + cssDeclaration.getAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
             }
+            if (currentStyleRule != null) {
+                cssProblem.setSelector(currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
+            }
         } else if (currentStyleRule != null && currentStyleRule.getSourceLocation() != null) {
+            cssProblem.setSelector(currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0));
             cssProblem.setLineNumber(currentStyleRule.getSourceLocation().getFirstTokenBeginLineNumber());
             cssProblem.setColumnNumber(currentStyleRule.getSourceLocation().getFirstTokenBeginColumnNumber());
             if (resource.getStringSource().isEmpty()) {

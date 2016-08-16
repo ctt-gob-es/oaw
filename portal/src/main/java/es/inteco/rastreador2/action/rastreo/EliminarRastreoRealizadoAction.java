@@ -28,12 +28,9 @@ public class EliminarRastreoRealizadoAction extends Action {
             ActionErrors errors = rastreosSeleccionados.validate(mapping, request);
 
             if (CrawlerUtils.hasAccess(request, "load.crawlers")) {
-                Connection c = null;
-                try {
-                    PropertiesManager pmgr = new PropertiesManager();
-                    c = DataBaseManager.getConnection();
+                try (Connection c = DataBaseManager.getConnection()) {
                     if (request.getParameter(Constants.CONFIRMACION) == null) {
-                        if (errors == null || errors.isEmpty()) {
+                        if (errors.isEmpty()) {
                             List<RastreoEjecutadoForm> rastreoFormList = new ArrayList<>();
                             for (int i = 0; i < rastreosSeleccionados.getSelect().length; i++) {
                                 rastreoFormList.add(RastreoDAO.cargarRastreoEjecutado(c, Long.parseLong(rastreosSeleccionados.getSelect()[i])));
@@ -61,6 +58,7 @@ public class EliminarRastreoRealizadoAction extends Action {
                                 RastreoUtils.borrarArchivosAsociados(request, c, rastreosSeleccionados.getSelect()[i]);
                                 RastreoDAO.borrarRastreoRealizado(c, Long.parseLong((rastreosSeleccionados.getSelect()[i])));
                             }
+                            PropertiesManager pmgr = new PropertiesManager();
                             String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.rastreo.realizado.eliminado");
                             String volver = pmgr.getValue("returnPaths.properties", "volver.carga.rastreo.realizado").replace("{0}", String.valueOf(request.getParameter(Constants.ID_RASTREO)));
                             request.setAttribute("mensajeExito", mensaje);
@@ -70,9 +68,7 @@ public class EliminarRastreoRealizadoAction extends Action {
                     }
                 } catch (Exception e) {
                     Logger.putLog("Exception: ", EliminarRastreoRealizadoAction.class, Logger.LOG_LEVEL_ERROR, e);
-                    throw new Exception(e);
-                } finally {
-                    DataBaseManager.closeConnection(c);
+                    throw e;
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);

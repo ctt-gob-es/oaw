@@ -16,8 +16,8 @@ import java.sql.Connection;
 public class ModificarCategoriaAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-        Connection c = null;
-        try {
+
+        try (Connection c = DataBaseManager.getConnection()) {
             if (CrawlerUtils.hasAccess(request, "edit.category")) {
                 VerCategoriaForm verCategoriaForm = (VerCategoriaForm) form;
 
@@ -25,13 +25,11 @@ public class ModificarCategoriaAction extends Action {
                     return (mapping.findForward(Constants.VOLVER_CARGA));
                 }
 
-                String id_categoria = request.getParameter(Constants.ID_CATEGORIA);
-                verCategoriaForm.setId_categoria(Integer.parseInt(id_categoria));
-                PropertiesManager pmgr = new PropertiesManager();
+                final String idCategoria = request.getParameter(Constants.ID_CATEGORIA);
+                verCategoriaForm.setId_categoria(Integer.parseInt(idCategoria));
+                final PropertiesManager pmgr = new PropertiesManager();
 
-                c = DataBaseManager.getConnection();
-
-                int numResult = CategoriasDAO.countTerms(c, Integer.parseInt(id_categoria));
+                int numResult = CategoriasDAO.countTerms(c, Integer.parseInt(idCategoria));
                 int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
                 verCategoriaForm.setVectorTerminos(CategoriasDAO.loadCategoryTerms(c, verCategoriaForm.getId_categoria(), (pagina - 1)));
                 request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
@@ -47,7 +45,7 @@ public class ModificarCategoriaAction extends Action {
                     verCategoriaForm.setNombre_antiguo(request.getParameter(Constants.NOMBRE_ANTIGUO));
                     ActionErrors errors = verCategoriaForm.validate(mapping, request);
 
-                    if (errors == null || errors.isEmpty()) {
+                    if (errors.isEmpty()) {
                         CategoriasDAO.updateCategory(c, verCategoriaForm);
                         String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.editada");
                         String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.categorias");
@@ -56,7 +54,7 @@ public class ModificarCategoriaAction extends Action {
                         return mapping.findForward(Constants.EXITO);
                     } else {
                         ActionForward forward = new ActionForward();
-                        forward.setPath(mapping.getInput() + "?" + Constants.ID_CATEGORIA + "=" + id_categoria);
+                        forward.setPath(mapping.getInput() + "?" + Constants.ID_CATEGORIA + "=" + idCategoria);
                         forward.setRedirect(true);
                         saveErrors(request.getSession(), errors);
                         return (forward);
@@ -68,8 +66,6 @@ public class ModificarCategoriaAction extends Action {
         } catch (Exception e) {
             CrawlerUtils.warnAdministrators(e, this.getClass());
             return mapping.findForward(Constants.ERROR_PAGE);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

@@ -71,7 +71,7 @@ public abstract class OpenOfficeDocumentBuilder {
     }
 
     protected String getCellValue(final BigDecimal value, final boolean isPercentValue) {
-        if (value.compareTo(BigDecimal.ZERO) < 0) {
+        if (value==null || value.compareTo(BigDecimal.ZERO) < 0) {
             return "NP";
         } else {
             return value.toString() + (isPercentValue ? "%" : "");

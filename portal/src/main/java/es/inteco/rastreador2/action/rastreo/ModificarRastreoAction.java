@@ -29,6 +29,49 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ModificarRastreoAction extends Action {
 
+    public static String getHoraActual() {
+        //Consigue la hora actual
+        Calendar horac = java.util.Calendar.getInstance();
+        int h = horac.get(Calendar.HOUR_OF_DAY);
+        int min = horac.get(Calendar.MINUTE);
+        int seg = horac.get(Calendar.SECOND);
+
+        String horaText = Integer.toString(h);
+        String minText = Integer.toString(min);
+        String segText = Integer.toString(seg);
+
+        if (h < 10) {
+            horaText = "0" + h;
+        }
+        if (min < 10) {
+            minText = "0" + min;
+        }
+        if (seg < 10) {
+            segText = "0" + seg;
+        }
+        return horaText + ":" + minText + ":" + segText;
+    }
+
+    public static String getFechaActual() {
+        //Consigue la fecha actual.
+        Calendar fechac = java.util.Calendar.getInstance();
+        int anio = fechac.get(Calendar.YEAR);
+        int mes = fechac.get(Calendar.MONTH) + 1;
+        int dia = fechac.get(Calendar.DAY_OF_MONTH);
+
+        String a = Integer.toString(anio);
+        String mc = Integer.toString(mes);
+        String d = Integer.toString(dia);
+
+        if (mes < 10) {
+            mc = "0" + mes;
+        }
+        if (dia < 10) {
+            d = "0" + dia;
+        }
+        return a + "-" + mc + "-" + d;
+    }
+
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
 
@@ -47,14 +90,9 @@ public class ModificarRastreoAction extends Action {
 
                 String id_rastreo = request.getParameter(Constants.ID_RASTREO);
 
-                Connection c = null;
-                Connection con = null;
-
-                try {
+                try (Connection c = DataBaseManager.getConnection()) {
                     PropertiesManager pmgr = new PropertiesManager();
 
-                    con = DataBaseManager.getConnection();
-                    c = DataBaseManager.getConnection();
 
                     request.setAttribute(Constants.ID_RASTREO, id_rastreo);
                     //Si se ha pulsado Cargar Semilla
@@ -100,7 +138,7 @@ public class ModificarRastreoAction extends Action {
                             insertarRastreoForm.setCartuchos(LoginDAO.getUserCartridge(c, Long.valueOf(userData.getId())));
 
                             //Recuperamos las normas
-                            insertarRastreoForm.setNormaVector(DAOUtils.getNormas(con, false));
+                            insertarRastreoForm.setNormaVector(DAOUtils.getNormas(c, false));
 
                             //Recuperamos el lenguaje
                             List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);
@@ -146,7 +184,7 @@ public class ModificarRastreoAction extends Action {
 
                         } else {
                             ActionErrors errors = insertarRastreoForm.validate(mapping, request);
-                            if (errors == null || errors.isEmpty()) {
+                            if (errors.isEmpty()) {
                                 String rastreo_antiguo = request.getParameter(Constants.RASTREO_ANTIGUO);
 
                                 //Comprobamos que el rastreo usa caracteres correctos
@@ -158,12 +196,10 @@ public class ModificarRastreoAction extends Action {
                                 }
 
                                 //Comprobamos que no existe el rastreo
-                                if (!rastreo_antiguo.equals(insertarRastreoForm.getCodigo())) {
-                                    if (RastreoDAO.existeRastreo(c, insertarRastreoForm.getCodigo())) {
-                                        errors.add("errorObligatorios", new ActionMessage("rastreo.duplicado"));
-                                        saveErrors(request, errors);
-                                        return mapping.findForward(Constants.VOLVER);
-                                    }
+                                if (!rastreo_antiguo.equals(insertarRastreoForm.getCodigo()) && RastreoDAO.existeRastreo(c, insertarRastreoForm.getCodigo())) {
+                                    errors.add("errorObligatorios", new ActionMessage("rastreo.duplicado"));
+                                    saveErrors(request, errors);
+                                    return mapping.findForward(Constants.VOLVER);
                                 }
                                 if (insertarRastreoForm.getCuenta_cliente() != null && insertarRastreoForm.getCuenta_cliente() != 0) {
                                     insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho())));
@@ -202,8 +238,6 @@ public class ModificarRastreoAction extends Action {
                     throw new Exception(e);
                 } finally {
                     request.setAttribute("InsertarRastreoForm", insertarRastreoForm);
-                    DataBaseManager.closeConnection(c);
-                    DataBaseManager.closeConnection(con);
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);
@@ -212,49 +246,6 @@ public class ModificarRastreoAction extends Action {
             CrawlerUtils.warnAdministrators(e, this.getClass());
             return mapping.findForward(Constants.ERROR_PAGE);
         }
-    }
-
-    public static String getHoraActual() {
-        //Consigue la hora actual
-        Calendar horac = java.util.Calendar.getInstance();
-        int h = horac.get(Calendar.HOUR_OF_DAY);
-        int min = horac.get(Calendar.MINUTE);
-        int seg = horac.get(Calendar.SECOND);
-
-        String h_text = Integer.toString(h);
-        String min_text = Integer.toString(min);
-        String seg_text = Integer.toString(seg);
-
-        if (h < 10) {
-            h_text = "0" + h;
-        }
-        if (min < 10) {
-            min_text = "0" + min;
-        }
-        if (seg < 10) {
-            seg_text = "0" + seg;
-        }
-        return h_text + ":" + min_text + ":" + seg_text;
-    }
-
-    public static String getFechaActual() {
-        //Consigue la fecha actual.
-        Calendar fechac = java.util.Calendar.getInstance();
-        int anio = fechac.get(Calendar.YEAR);
-        int mes = fechac.get(Calendar.MONTH) + 1;
-        int dia = fechac.get(Calendar.DAY_OF_MONTH);
-
-        String a = Integer.toString(anio);
-        String mc = Integer.toString(mes);
-        String d = Integer.toString(dia);
-
-        if (mes < 10) {
-            mc = "0" + mes;
-        }
-        if (dia < 10) {
-            d = "0" + dia;
-        }
-        return a + "-" + mc + "-" + d;
     }
 
     private InsertarRastreoForm cargarDatos(InsertarRastreoForm insertarRastreoForm) {
