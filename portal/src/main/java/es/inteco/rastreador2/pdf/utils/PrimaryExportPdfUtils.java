@@ -420,8 +420,6 @@ public final class PrimaryExportPdfUtils {
 
         tablaRankings.addCell(PDFUtils.createEmptyTableCell());
 
-        final PropertiesManager pmgr = new PropertiesManager();
-
         if (pdfBuilder.isBasicService()) {
             tablaRankings.addCell(PDFUtils.createTableCell("Resultado", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         } else {
@@ -436,7 +434,7 @@ public final class PrimaryExportPdfUtils {
         tablaRankings.addCell(PDFUtils.createTableCell(currentScore.getLevel(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         if (rankingPrevio != null) {
             tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getLevel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-            tablaRankings.addCell(PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene"), "se mantiene", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+            tablaRankings.addCell(createEvolutionLevelCell(messageResources, currentScore.getLevel(), previousScore.getLevel()));
         }
         tablaRankings.completeRow();
 
@@ -487,6 +485,37 @@ public final class PrimaryExportPdfUtils {
 
         document.add(chapter);
         return countSections;
+    }
+
+    /**
+     * Crea una celda PdfPCell para una tabla del informa PDF con la evolución del nivel de accesibilidad.
+     * @param messageResources
+     * @param currentLevel String nivel de accesibilidad actual.
+     * @param previousLevel String nivel de accesibilidad de la iteración anterior.
+     * @return una celda PdfPCell con una imagen que indica la evolución y una cadena con la misma información complementando la imagen.
+     */
+    private static PdfPCell createEvolutionLevelCell(final MessageResources messageResources, final String currentLevel, final String previousLevel) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        if (currentLevel.equalsIgnoreCase(previousLevel)) {
+            return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene"), "se mantiene", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+        } else {
+            // Si los valores entre iteraciones han variado
+            if (messageResources.getMessage("resultados.anonimos.num.portales.nv").equalsIgnoreCase(previousLevel) ||
+                    messageResources.getMessage("resultados.anonimos.num.portales.parcial").equalsIgnoreCase(previousLevel)) {
+                // Si el valor actual es distinto al anterior y el anterior era "No válido" (o "Parcial") entonces ha mejorado
+                return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+            } else if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equalsIgnoreCase(previousLevel)) {
+                // Si el valor actual es distinto al anterior y el anterior era "Prioridad 1 y 2" entonces ha empeorado
+                return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+            } else {
+                // Si estamos en este punto el valor anterior era "Prioridad 1" y el actual es distinto
+                if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equalsIgnoreCase(currentLevel)) {
+                    return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+                } else {
+                    return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+                }
+            }
+        }
     }
 
     private static Image getEvolutionImage(final int actualValue, final int previousValue, boolean invertedEvolution) {
