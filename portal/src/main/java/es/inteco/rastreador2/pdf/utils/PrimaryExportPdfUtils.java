@@ -5,6 +5,7 @@ import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.pdf.*;
 import com.lowagie.text.pdf.events.IndexEvents;
+import es.ctic.rastreador2.pdf.utils.CheckDescriptionsManager;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
@@ -297,16 +298,18 @@ public final class PrimaryExportPdfUtils {
                                     celdaProblema.setVerticalAlignment(Element.ALIGN_TOP);
                                     tablaVerificacionProblema.addCell(celdaProblema);
 
-                                    final PdfPCell comprobacion = PDFUtils.createTableCell(StringUtils.removeHtmlTags(messageResources.getMessage(problem.getError())), Color.WHITE, ConstantsFont.strongDescriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+                                    final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
+                                    final PdfPCell comprobacion = PDFUtils.createTableCell(StringUtils.removeHtmlTags(checkDescriptionsManager.getErrorMessage(problem.getCheck())), Color.WHITE, ConstantsFont.strongDescriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
                                     comprobacion.setBorder(0);
                                     comprobacion.setVerticalAlignment(Element.ALIGN_TOP);
                                     tablaVerificacionProblema.addCell(comprobacion);
 
                                     if (isBasicService) {
-                                        if (StringUtils.isNotEmpty(problem.getRationale()) && messageResources.isPresent(problem.getRationale())) {
+                                        final String rationaleMessage = checkDescriptionsManager.getRationaleMessage(problem.getCheck());
+                                        if (rationaleMessage !=null && StringUtils.isNotEmpty(rationaleMessage)) {
                                             final Paragraph rationale = new Paragraph();
                                             boolean isFirst = true;
-                                            for (String phraseText : Arrays.asList(messageResources.getMessage(problem.getRationale()).split("<p>|</p>"))) {
+                                            for (String phraseText : Arrays.asList(rationaleMessage.split("<p>|</p>"))) {
                                                 if (isFirst) {
                                                     if (StringUtils.isNotEmpty(phraseText)) {
                                                         rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
