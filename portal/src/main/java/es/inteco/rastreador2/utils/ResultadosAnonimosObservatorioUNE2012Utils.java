@@ -1626,9 +1626,10 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+            final Map<String, BigDecimal> resultsByVerification = getVerificationResultsByPoint(entry.getValue(), Constants.OBS_PRIORITY_NONE);
             for(String verification: verifications) {
                 //Para un observatorio en concreto recuperamos la puntuación de una verificación
-                final BigDecimal value = getVerificationResultsByPoint(entry.getValue(), Constants.OBS_PRIORITY_NONE).get(verification);
+                final BigDecimal value = resultsByVerification.get(verification);
                 dataSet.addValue(value, df.format(entry.getKey()), verification);
             }
         }
