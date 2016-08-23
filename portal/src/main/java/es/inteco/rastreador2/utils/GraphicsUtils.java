@@ -373,7 +373,7 @@ public final class GraphicsUtils {
                 domainAxis.setTickLabelsVisible(false);
             }
         }
-        domainAxis.setTickLabelFont(ITEM_LABEL_FONT);
+        domainAxis.setTickLabelFont(TICK_LABEL_FONT);
         domainAxis.setUpperMargin(0.01);
         domainAxis.setLowerMargin(0.01);
     }
