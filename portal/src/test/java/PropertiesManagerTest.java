@@ -24,6 +24,10 @@ public class PropertiesManagerTest {
         Assert.assertNotNull(pm.getProperties("language.mapping"));
 
         Assert.assertNotNull(pm.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator"));
+
+        Assert.assertEquals("observ.accesibilidad@correo.gob.es", pm.getValue("crawler.core.properties", "incomplete.crawler.warning.emails"));
+
+
     }
 
 }
