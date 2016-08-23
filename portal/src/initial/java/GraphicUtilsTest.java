@@ -1,35 +1,33 @@
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.utils.ChartForm;
 import es.inteco.rastreador2.utils.GraphicsUtils;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.data.Range;
+import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.rastreador2.utils.GraphicsUtils.TICK_LABEL_FONT;
 
 /**
  * Clase para crear gráficas de forma local.
  */
 public class GraphicUtilsTest {
+
+    private final String[] LEVEL_I_VERIFICATIONS = new String[]{"1.1.1", "1.1.2", "1.1.3", "1.1.4", "1.1.5", "1.1.6", "1.1.7", "1.2.1", "1.2.2", "1.2.3"};
+    private final String[] LEVEL_II_VERIFICATIONS = new String[]{"2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7", "2.2.1", "2.2.2", "2.2.3"};
+    private final String[] ASPECTS = new String[]{"General", "Presentación", "Estructura", "Navegación", "Alternativas"};
+
+    private PropertiesManager pmgr;
+    private MessageResources messageResources;
+
+    @Before
+    public void init() {
+        pmgr = new PropertiesManager();
+        messageResources = MessageResources.getMessageResources("ApplicationResources");
+    }
 
     @Test
     public void testGraphicsUtils() throws Exception {
@@ -92,58 +90,45 @@ public class GraphicUtilsTest {
 
     @Test
     public void testEvaluacionNivelInformeAgregado() throws Exception {
+        final Map<String, Map<String, Double>> data = new HashMap<>();
+        populateEvolutionObservatoryData(data, "16/09/15", new double[]{7.20, 6.80, 7.90, 7.30, 7.90, 8.80, 8.80, 7.80, 9.40, 7.10}, LEVEL_I_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "27/11/15", new double[]{7.40, 7.10, 8.10, 7.90, 8.00, 8.80, 8.90, 7.90, 9.50, 4.20}, LEVEL_I_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "19/08/16", new double[]{7.70, 7.40, 8.40, 7.50, 8.20, 9.00, 9.20, 8.30, 9.60, 4.70}, LEVEL_I_VERIFICATIONS);
+
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        final List<String> dates = Arrays.asList("8/6/2015", "1/9/2015", "15/11/2015", "23/1/2016", "7/6/2016", "10/12/2016");
-        final List<String> verificaciones = Arrays.asList("1.1.1", "1.1.2", "1.1.3", "1.1.4", "1.1.5", "1.1.6", "1.1.7", "1.2.1", "1.2.2", "1.2.3");
-        final Random random = new Random();
-
-        for (String date : dates) {
-            for (String verifacion : verificaciones) {
-                dataSet.addValue(random.nextDouble() * 10, date, verifacion);
+        for (Map.Entry<String, Map<String, Double>> observatoryEntry : data.entrySet()) {
+            for (Map.Entry<String, Double> columnsValues : observatoryEntry.getValue().entrySet()) {
+                dataSet.addValue(columnsValues.getValue(), observatoryEntry.getKey(), columnsValues.getKey());
             }
         }
 
-        final String title = "Evolución de la Puntuación Media por Verificación Nivel de Accesibilidad I";
-        final String rowTitle = "Puntuaci\u00F3n";
-        final String noDataMess = "noData";
-
-        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, true, false, false, false, false, false, 765, 554, "{126,154,64}");
+        final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
         chartForm.setFixedColorBars(true);
+        chartForm.setShowColumsLabels(false);
+        GraphicsUtils.createStandardBarChart(chartForm, "/home/mikunis/evolucion_agregado_level_i.jpg", "", messageResources, true);
 
-        final JFreeChart chart = ChartFactory.createBarChart(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(),
-                chartForm.getDataSet(), PlotOrientation.VERTICAL, chartForm.isPrintLegend(), true, false);
+        data.clear();
+        populateEvolutionObservatoryData(data, "16/09/15", new double[]{8.80, 10.00, 5.90, 8.60, 6.70, 10.00, 5.50, 8.60, 9.70, 6.10}, LEVEL_II_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "27/11/15", new double[]{8.90, 10.00, 6.10, 8.80, 6.70, 10.00, 5.60, 8.70, 9.70, 6.40}, LEVEL_II_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "19/08/16", new double[]{9.10, 10.00, 6.10, 8.90, 6.80, 9.90, 6.00, 8.70, 9.60, 8.90}, LEVEL_II_VERIFICATIONS);
 
-        final CategoryPlot plot = chart.getCategoryPlot();
-        plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessagePaint(Color.RED);
-
-        //Elimina la transparencia de las gráficas
-        plot.setForegroundAlpha(1.0f);
-
-        defineBarColor(plot, chartForm);
-
-        final NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
-        valueAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        createNumberAxis(plot, chartForm.isPercentage());
-
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
-        domainAxis.setMaximumCategoryLabelLines(3);
-        if (chartForm.isOnePixelGraph()) {
-            if (chartForm.isShowColumsLabels()) {
-                domainAxis.setVisible(true);
-            } else {
-                domainAxis.setTickMarksVisible(false);
-                domainAxis.setAxisLineVisible(false);
-                domainAxis.setTickLabelsVisible(false);
+        dataSet.clear();
+        for (Map.Entry<String, Map<String, Double>> observatoryEntry : data.entrySet()) {
+            for (Map.Entry<String, Double> columnsValues : observatoryEntry.getValue().entrySet()) {
+                dataSet.addValue(columnsValues.getValue(), observatoryEntry.getKey(), columnsValues.getKey());
             }
         }
-        domainAxis.setUpperMargin(0.01);
-        domainAxis.setLowerMargin(0.01);
-        domainAxis.setTickLabelFont(GraphicsUtils.TICK_LABEL_FONT);
+        chartForm.setDataSet(dataSet);
+        GraphicsUtils.createStandardBarChart(chartForm, "/home/mikunis/evolucion_agregado_level_ii.jpg", "", messageResources, true);
+    }
 
-        GraphicsUtils.saveChartToFile("/home/mikunis/evolucion_agregado.jpg", chart, 1465, 654);
+    private void populateEvolutionObservatoryData(final Map<String, Map<String, Double>> data, final String observatoryDate, final double[] values, final String[] columnsKeys) {
+        assert values.length == columnsKeys.length;
+        final Map<String, Double> columnsValues = new LinkedHashMap<>();
+        for (int i = 0; i < columnsKeys.length; i++) {
+            columnsValues.put(columnsKeys[i], values[i]);
+        }
+        data.put(observatoryDate, columnsValues);
     }
 
     @Test
@@ -179,124 +164,54 @@ public class GraphicUtilsTest {
 
         final String noDataMess = "noData";
 
-        final PropertiesManager pmgr = new PropertiesManager();
         final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, false, false, true, true, false, false, 1265, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
-
-        GraphicsUtils.createStackedBarChart(chartForm, noDataMess, "/home/mikunis/evolucion_nivel_conformidad.jpg");
+        GraphicsUtils.createStandardBarChart(chartForm, "/home/mikunis/evolucion_nivel_conformidad.jpg", noDataMess, messageResources, false);
     }
-
-    private void defineBarColor(final CategoryPlot plot, final ChartForm chartForm) {
-        plot.setBackgroundPaint(Color.white);
-        if (chartForm.isGridline()) {
-            plot.setRangeGridlinePaint(Color.black);
-        }
-
-        java.util.List<Paint> colors;
-        if (chartForm.getColor() != null && !chartForm.getColor().equals("")) {
-            colors = getColors(chartForm.getColor());
-        } else {
-            colors = getColors("chart.observatory.graphic.intav.colors");
-        }
-
-        CategoryItemRenderer renderer = plot.getRenderer();
-
-        if (!chartForm.isFixedColorBars()) {
-            for (int i = 0; i < colors.size(); i++) {
-                renderer.setSeriesPaint(i, colors.get(i));
-            }
-        } else {
-            Paint[] paintArray = new Paint[colors.size()];
-            int i = 0;
-            for (Paint p : colors) {
-                paintArray[i++] = p;
-            }
-            CategoryItemRenderer rendererC;
-            if (chartForm.isTridimensional()) {
-                rendererC = new GraphicsUtils.CustomRenderer3D(paintArray);
-            } else {
-                rendererC = new GraphicsUtils.CustomRenderer(paintArray);
-            }
-            plot.setRenderer(rendererC);
-        }
-    }
-
 
     @Test
     public void testEvaluacionPuntuacionMediaAspecto() throws Exception {
+        final Map<String, Map<String, Double>> data = new HashMap<>();
+        populateEvolutionObservatoryData(data, "16/09/15", new double[]{7.90, 9.10, 7.20, 8.40, 7.20}, ASPECTS);
+        populateEvolutionObservatoryData(data, "27/11/15", new double[]{7.50, 9.20, 7.40, 8.50, 7.40}, ASPECTS);
+        populateEvolutionObservatoryData(data, "19/08/16", new double[]{7.80, 9.30, 7.50, 8.90, 7.70}, ASPECTS);
+
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        final List<String> dates = Arrays.asList("8/6/2015", "1/9/2015", "15/11/2015", "23/1/2016", "7/6/2016", "10/12/2016");
-        final List<String> verificaciones = Arrays.asList("General", "Presentación", "Estructura", "Navegación", "Alternativas");
-        final Random random = new Random();
-
-        for (String date : dates) {
-            for (String verifacion : verificaciones) {
-                dataSet.addValue(random.nextDouble() * 10, date, verifacion);
+        for (Map.Entry<String, Map<String, Double>> observatoryEntry : data.entrySet()) {
+            for (Map.Entry<String, Double> columnsValues : observatoryEntry.getValue().entrySet()) {
+                dataSet.addValue(columnsValues.getValue(), observatoryEntry.getKey(), columnsValues.getKey());
             }
         }
 
-        final String noDataMess = "noData";
-
-        final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, true, false, false, false, false, false, 1465, 654, "{126,154,64}");
+        final ChartForm chartForm = new ChartForm(dataSet, true, false, false, false, false, false, false, 1565, 684, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
         chartForm.setFixedColorBars(true);
+        chartForm.setShowColumsLabels(false);
 
-        final JFreeChart chart = ChartFactory.createBarChart(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(),
-                chartForm.getDataSet(), PlotOrientation.VERTICAL, chartForm.isPrintLegend(), true, false);
-
-        final CategoryPlot plot = chart.getCategoryPlot();
-        plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessagePaint(Color.RED);
-
-        //Elimina la transparencia de las gráficas
-        plot.setForegroundAlpha(1.0f);
-
-        defineBarColor(plot, chartForm);
-
-        final NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
-        valueAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        createNumberAxis(plot, chartForm.isPercentage());
-
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.STANDARD);
-        domainAxis.setMaximumCategoryLabelLines(3);
-        if (chartForm.isOnePixelGraph()) {
-            if (chartForm.isShowColumsLabels()) {
-                domainAxis.setVisible(true);
-            } else {
-                domainAxis.setTickMarksVisible(false);
-                domainAxis.setAxisLineVisible(false);
-                domainAxis.setTickLabelsVisible(false);
-            }
-        }
-        domainAxis.setUpperMargin(0.01);
-        domainAxis.setLowerMargin(0.01);
-
-        GraphicsUtils.saveChartToFile("/home/mikunis/evolucion_puntuacion_media_aspectos.jpg", chart, 1465, 654);
+        GraphicsUtils.createStandardBarChart(chartForm, "/home/mikunis/evolucion_puntuacion_media_aspectos.jpg", "", messageResources, true);
     }
 
-    private List<Paint> getColors(String colorsProperty) {
+    @Test
+    public void testModalityVerificationSegment() throws Exception {
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        final int[] passPercentages = new int[]{95,
+                100,
+                82,
+                86,
+                71,
+                100,
+                66,
+                84,
+                99,
+                94,
 
-        String regexp = "\\{(.*?),(.*?),(.*?)\\}";
-        Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(colorsProperty);
-        List<Paint> colors = new ArrayList<Paint>();
-        while (matcher.find()) {
-            colors.add(new Color(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3))));
+
+        };
+        for (int i = 0; i < LEVEL_I_VERIFICATIONS.length; i++) {
+            dataSet.addValue(passPercentages[i], "Modalidad pasa", LEVEL_I_VERIFICATIONS[i]);
+            dataSet.addValue(100 - passPercentages[i], "Modalidad falla", LEVEL_I_VERIFICATIONS[i]);
         }
-        return colors;
+
+        final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, 580, 458, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
+        GraphicsUtils.createStackedBarChart(chartForm, "", "/home/mikunis/modality_verification_level_ii_segment.jpg");
     }
 
-    private void createNumberAxis(CategoryPlot plot, boolean percentage) {
-        NumberAxis valueAxis = (NumberAxis) plot.getRangeAxis();
-
-        if (!percentage) {
-            valueAxis.setTickUnit(new NumberTickUnit(1));
-            valueAxis.setRangeWithMargins(new Range(0, 10));
-        } else {
-            valueAxis.setTickUnit(new NumberTickUnit(10));
-            valueAxis.setRangeWithMargins(new Range(0, 100));
-        }
-        valueAxis.setLowerBound(0);
-        valueAxis.setTickLabelFont(TICK_LABEL_FONT);
-    }
 }
