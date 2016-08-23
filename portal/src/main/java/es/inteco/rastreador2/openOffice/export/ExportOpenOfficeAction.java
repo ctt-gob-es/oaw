@@ -51,7 +51,7 @@ public class ExportOpenOfficeAction extends Action {
             final String graphicPath = basePath + "temp" + File.separator;
             final int numObs = ObservatorioDAO.getFulfilledObservatories(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)), Constants.NO_PAGINACION, observatoryFFForm.getFecha()).size();
             ExportOpenOfficeUtils.createOpenOfficeDocument(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), numObs);
-//            FileUtils.deleteDir(new File(graphicPath));
+            FileUtils.deleteDir(new File(graphicPath));
         } catch (Exception e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR_PAGE);

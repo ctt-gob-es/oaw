@@ -122,20 +122,20 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         }
     }
 
-    public static int generateCategoryGraphics(HttpServletRequest request, CategoriaForm category, String filePath, String color, boolean regenerate) throws Exception {
+    public static int generateCategoryGraphics(final HttpServletRequest request, final CategoriaForm category, final String filePath, final String color, final boolean regenerate) throws Exception {
         try {
             final String idExecution = request.getParameter(Constants.ID);
             final MessageResources messageResources = CrawlerUtils.getResources(request);
-            final String noDataMess = messageResources.getMessage(CrawlerUtils.getLocale(request), "grafica.sin.datos");
+            final String noDataMess = messageResources.getMessage("grafica.sin.datos");
             final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(category.getId()), null);
 
             if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
                 String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", category.getName());
-                String file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg";
+                String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg";
                 getGlobalAccessibilityLevelAllocationSegmentGraphic(request, pageExecutionList, title, file, noDataMess, regenerate);
 
-                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.title", category.getName());
-                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg";
+                title = messageResources.getMessage("observatory.graphic.mark.allocation.segment.title", category.getName());
+                file = filePath + messageResources.getMessage("observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg";
                 List<ObservatorySiteEvaluationForm> result = getSitesListByLevel(pageExecutionList);
                 //if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA){
                 //getMarkAllocationLevelSegmentGraphic(request, title, file, noDataMess, result, true, regenerate);
@@ -143,21 +143,21 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 getMarkAllocationLevelSegmentGraphic(request, title, file, noDataMess, result, false, regenerate);
                 //}
 
-                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg";
-                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.segment.aspect.mid.title", category.getName());
+                file = filePath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg";
+                title = messageResources.getMessage("observatory.graphic.segment.aspect.mid.title", category.getName());
                 getAspectMidsGraphic(request, file, noDataMess, pageExecutionList, color, title, regenerate);
 
-                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg";
+                file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg";
                 getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
 
-                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg";
+                file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg";
                 getMidsComparationByVerificationLevelGraphic(request, Constants.OBS_PRIORITY_2, "", file, noDataMess, pageExecutionList, color, regenerate);
 
-                file = filePath + messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg";
+                file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg";
                 getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 
-                title = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.modality.by.verification.level.2.category.title", category.getName());
-                getModalityByVerificationLevelGraphic(request, pageExecutionList, title, "", noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+                file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg";
+                getModalityByVerificationLevelGraphic(request, pageExecutionList, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
 
                 return Constants.OBSERVATORY_HAVE_RESULTS;
             } else {
