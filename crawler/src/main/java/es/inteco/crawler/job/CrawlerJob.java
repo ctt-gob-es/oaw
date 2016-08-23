@@ -12,8 +12,6 @@ import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 import es.inteco.utils.MailUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.quartz.*;
 import org.w3c.dom.Document;
 
@@ -22,33 +20,114 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CrawlerJob implements InterruptableJob {
-    private boolean interrupt = false;
-
-    public static final Log LOG = LogFactory.getLog(CrawlerJob.class);
-
     private final List<CrawledLink> crawlingDomains = new ArrayList<>();
     private final List<String> auxDomains = new ArrayList<>();
     private final List<String> md5Content = new ArrayList<>();
     private final List<String> rejectedDomains = new ArrayList<>();
+    private boolean interrupt = false;
+
+    private boolean isOuterDomain(final String domain, final String url) {
+        try {
+            if (domain.equalsIgnoreCase(new URL(url).getHost())) {
+                return false;
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al obtener el dominio base de la URL", CrawlerJob.class, Logger.LOG_LEVEL_ERROR);
+        }
+        return true;
+    }
+
+    private boolean contains(final List<CrawledLink> crawledLinks, final String url) {
+        for (CrawledLink crawledLink : crawledLinks) {
+            if (crawledLink.getUrl().equals(url)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isInTheSameDirectory(final String link, final String urlRoot) {
+        final String protocolRegExp = "https?://";
+        final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
+                urlRoot.replaceAll(protocolRegExp, "").substring(0, urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
+                urlRoot.replaceAll(protocolRegExp, "");
+
+        final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
+                link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
+                link.replaceAll(protocolRegExp, "");
+
+        return linkDirectory.contains(urlRootDirectory);
+    }
+
+    /**
+     * Obtiene la lista de correos electrónicos de los administradores para enviar correos de aviso.
+     *
+     * @return una lista de cadenas que corresponden a los correos electrónicos a los que hay que enviar el correo de aviso.
+     */
+    private List<String> getAdministradoresMails() {
+        final List<String> mails = new ArrayList<>();
+
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try (final Connection c = DataBaseManager.getConnection()) {
+            if (c != null) {
+                ps = c.prepareStatement("SELECT email FROM usuario u " +
+                        "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
+                        "WHERE ur.id_rol = ?;");
+                ps.setLong(1, 1);
+
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    mails.add(rs.getString("email"));
+                }
+            }
+        } catch (SQLException e) {
+            Logger.putLog("Error al obtener los correos de los administradores", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
+            }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (SQLException e) {
+                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
+            }
+        }
+        // Ademas de avisar a los usuarios administrador se avisa a los correos indicados en el fichero crawler.core.properties
+        final PropertiesManager pmg = new PropertiesManager();
+        final String warningEmails = pmg.getValue("crawler.core.properties", "incomplete.crawler.warning.emails");
+        if (warningEmails != null) {
+            mails.addAll(Arrays.asList(warningEmails.split(";")));
+        }
+        return mails;
+    }
 
     @Override
-    public void execute(JobExecutionContext jobContext) throws JobExecutionException {
-        JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
-        CrawlerData crawlerData = (CrawlerData) jobDataMap.get(Constants.CRAWLER_DATA);
+    public void execute(final JobExecutionContext jobContext) throws JobExecutionException {
+        final JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
+        final CrawlerData crawlerData = (CrawlerData) jobDataMap.get(Constants.CRAWLER_DATA);
 
         launchCrawler(crawlerData);
     }
 
-    public void launchCrawler(CrawlerData crawlerData) {
-        Connection conn = null;
+    public void launchCrawler(final CrawlerData crawlerData) {
+        try (final Connection conn = DataBaseManager.getConnection()) {
 
-        try {
-            conn = DataBaseManager.getConnection();
             RastreoDAO.actualizarEstadoRastreo(conn, crawlerData.getIdCrawling(), Constants.STATUS_LAUNCHED);
 
             try {
@@ -60,11 +139,11 @@ public class CrawlerJob implements InterruptableJob {
                 try {
                     RastreoDAO.actualizarEstadoRastreo(conn, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_ERROR);
                 } catch (Exception e2) {
-                    LOG.error("No se ha podido cambiar el estado del rastreo");
+                    Logger.putLog("No se ha podido cambiar el estado del rastreo", CrawlerJob.class, Logger.LOG_LEVEL_ERROR);
                 }
 
                 // Intentamos enviar el error por correo
-                PropertiesManager pmgr = new PropertiesManager();
+                final PropertiesManager pmgr = new PropertiesManager();
                 MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), pmgr.getValue("crawler.core.properties", "mail.address.from.name"),
                         crawlerData.getUsersMail(), pmgr.getValue("crawler.core.properties", "error.mail.message.subject"),
                         buildMensajeCorreo(pmgr.getValue("crawler.core.properties", "error.mail.message"), crawlerData), null, null, null, null, true);
@@ -74,12 +153,10 @@ public class CrawlerJob implements InterruptableJob {
 
         } catch (Exception e) {
             Logger.putLog("Error al ejecutar el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
     }
 
-    public List<CrawledLink> testCrawler(CrawlerData crawlerData) {
+    public List<CrawledLink> testCrawler(final CrawlerData crawlerData) {
         try {
             makeCrawl(crawlerData);
         } catch (Exception e) {
@@ -88,36 +165,36 @@ public class CrawlerJob implements InterruptableJob {
         return crawlingDomains;
     }
 
-    public List<CrawledLink> runSimpleAnalysis(CrawlerData crawlerData) {
-        List<CrawledLink> crawlingDomains = new ArrayList<>();
-        CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
-        crawlingDomains.add(crawledLink);
+    public List<CrawledLink> runSimpleAnalysis(final CrawlerData crawlerData) {
+        final List<CrawledLink> simpleAnalysisiDomains = new ArrayList<>();
+        final CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
+        simpleAnalysisiDomains.add(crawledLink);
 
         try {
-            analyze(crawlingDomains, crawlerData, "");
+            analyze(simpleAnalysisiDomains, crawlerData, "");
         } catch (Exception e) {
             Logger.putLog("Error al ejecutar el análisis simple", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
         }
 
-        return crawlingDomains;
+        return simpleAnalysisiDomains;
     }
 
-    private void endCrawling(Connection c, CrawlerData crawlerData) throws Exception {
+    private void endCrawling(final Connection c, final CrawlerData crawlerData) throws Exception {
         if (!interrupt) {
-            PropertiesManager pmgr = new PropertiesManager();
-            Logger.putLog("Enviando el informe por correo electrï¿½nico", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+            final PropertiesManager pmgr = new PropertiesManager();
+            Logger.putLog("Enviando el informe por correo electrónico", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
             // Cambiamos el estado del rastreo a 'Finalizado'
-            LOG.info("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos");
+            Logger.putLog("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
             try {
                 RastreoDAO.actualizarEstadoRastreo(c, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
 
-                int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());
-                if (idCartucho == Integer.parseInt(pmgr.getValue("crawler.core.properties", "cartridge.intav.id"))) {
+                final int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());
+                if (RastreoDAO.isCartuchoAccesibilidad(c, idCartucho)) {
                     if (crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) {
                         // Intentamos enviar los resultados del informe por correo
                         generatePDFFile(crawlerData);
-                        String attachPath = pmgr.getValue("crawler.properties", "path.inteco.exports.intav") + crawlerData.getIdCrawling()
+                        final String attachPath = pmgr.getValue("crawler.properties", "path.inteco.exports.intav") + crawlerData.getIdCrawling()
                                 + File.separator + crawlerData.getIdFulfilledCrawling()
                                 + File.separator + crawlerData.getLanguage()
                                 + File.separator + pmgr.getValue("pdf.properties", "pdf.file.intav.name");
@@ -128,7 +205,7 @@ public class CrawlerJob implements InterruptableJob {
                     }
 
                     if (crawlerData.getResponsiblesMail() != null && !crawlerData.getResponsiblesMail().isEmpty()) {
-                        URL url = new URL(pmgr.getValue("crawler.core.properties", "pdf.executive.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
+                        final URL url = new URL(pmgr.getValue("crawler.core.properties", "pdf.executive.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
                                 .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
                                 .replace("{2}", pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key")));
 
@@ -138,38 +215,38 @@ public class CrawlerJob implements InterruptableJob {
                     }
                 }
             } catch (Exception e) {
-                LOG.error("Error al concluir el rastreo");
+                Logger.putLog("Error al concluir el rastreo", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
                 throw e;
             }
         } else {
-            LOG.info("El rastreo " + crawlerData.getIdCrawling() + " ha sido detenido a petición del usuario");
+            Logger.putLog("El rastreo " + crawlerData.getIdCrawling() + " ha sido detenido a petición del usuario", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
         }
     }
 
-    private void generatePDFFile(CrawlerData crawlerData) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+    private void generatePDFFile(final CrawlerData crawlerData) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        String attachUrl = pmgr.getValue("crawler.core.properties", "pdf.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
+        final String attachUrl = pmgr.getValue("crawler.core.properties", "pdf.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
                 .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
                 .replace("{2}", pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"));
 
-        LOG.info("Se va a pedir la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"));
+        Logger.putLog("Se va a pedir la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
-        HttpURLConnection connection = CrawlerUtils.getConnection(attachUrl, null, true);
+        final HttpURLConnection connection = CrawlerUtils.getConnection(attachUrl, null, true);
         // Aumentamos el timeout porque puede que tarde en generarse
         connection.setConnectTimeout(20 * Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
         connection.setReadTimeout(20 * Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
         connection.connect();
-        int responseCode = connection.getResponseCode();
+        final int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            LOG.info("Generada con éxito la exportacón de la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"));
+            Logger.putLog("Generada con éxito la exportacón de la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
         } else {
-            LOG.error("Error al pedir la url de la exportación " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"));
+            Logger.putLog("Error al pedir la url de la exportación " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 
-    private String buildMensajeCorreo(String mensaje, CrawlerData crawlerData) {
-        PropertiesManager pmgr = new PropertiesManager();
+    private String buildMensajeCorreo(final String mensaje, final CrawlerData crawlerData) {
+        final PropertiesManager pmgr = new PropertiesManager();
 
         return mensaje
                 .replace("{0}", new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format")).format(new Date()))
@@ -195,28 +272,28 @@ public class CrawlerJob implements InterruptableJob {
         return dominios.toString();
     }
 
-    public void makeCrawl(CrawlerData crawlerData) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+    public void makeCrawl(final CrawlerData crawlerData) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-        long timeRetry = Long.parseLong(pmgr.getValue("crawler.core.properties", "time.retry"));
+        final int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
+        final int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
+        final long timeRetry = Long.parseLong(pmgr.getValue("crawler.core.properties", "time.retry"));
 
         List<IgnoredLink> ignoredLinks = null;
 
         String cookie = null;
 
-        int chosenDepth = crawlerData.getProfundidad();
+        final int chosenDepth = crawlerData.getProfundidad();
         for (String url : crawlerData.getUrls()) {
             String domain = null;
 
             try {
                 HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
-                int counter = 0;
+                int numRetries = 0;
                 int numRedirections = 0;
-                int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
                 int responseCode = Integer.MAX_VALUE;
 
-                while ((counter < maxNumRetries) && (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRedirections < maxNumRedirections)) {
+                while ((numRetries < maxNumRetries) && (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRedirections < maxNumRedirections)) {
                     url = connection.getURL().toString();
                     connection.connect();
                     responseCode = connection.getResponseCode();
@@ -227,19 +304,20 @@ public class CrawlerJob implements InterruptableJob {
                         // Si hay redirecciones, puede que el dominio cambie
                         domain = connection.getURL().getHost();
 
-                        InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+                        final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                         String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                        // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+                        textContent = textContent.replaceAll("(?i)<iframe [^>]*/>", "");
+                        final Document document = CrawlerDOMUtils.getDocument(textContent);
 
-                        Document document = CrawlerDOMUtils.getDocument(textContent);
-
-                        String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
+                        final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
                         if (StringUtils.isEmpty(metaRedirect)) {
-                            String textContentHash = CrawlerUtils.getHash(textContent);
+                            final String textContentHash = CrawlerUtils.getHash(textContent);
                             if (!md5Content.contains(textContentHash)) {
-                                CrawledLink crawledLink = new CrawledLink(url, textContent, counter, numRedirections);
+                                final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries, numRedirections);
                                 crawlingDomains.add(crawledLink);
                                 md5Content.add(textContentHash);
-                                LOG.info("Introducida la URL número " + crawlingDomains.size() + ": " + url);
+                                Logger.putLog(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                                 if (crawlerData.getProfundidad() > 1 || crawlerData.getTopN() != 1) {
                                     // Si se trata de un observatorio, o la petición viene del servicio básico
                                     if (crawlerData.getIdObservatory() != 0 || crawlerData.getIdCrawling() < 0) {
@@ -249,7 +327,7 @@ public class CrawlerJob implements InterruptableJob {
                                     makeCrawl(domain, url, url, cookie, crawlerData, ignoredLinks);
                                 }
                             } else {
-                                LOG.info("La url " + url + " ha sido rechazada por estar incluida en el rastreo");
+                                Logger.putLog(String.format("La url %s ha sido rechazada por estar incluida en el rastreo", url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                                 rejectedDomains.add(url);
                             }
                         } else {
@@ -257,26 +335,25 @@ public class CrawlerJob implements InterruptableJob {
                             connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), metaRedirect);
                             responseCode = Integer.MAX_VALUE;
                         }
-
                     } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                         numRedirections++;
                         connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), connection.getHeaderField("location"));
                     } else {
                         if (CrawlerUtils.isOpenDNSResponse(connection)) {
-                            LOG.info("La URL solicitada ha provocado la respuesta del OpenDNS");
-                            if ((counter < maxNumRetries - 1) && (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST)) {
+                            Logger.putLog("La URL solicitada ha provocado la respuesta del OpenDNS", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+                            if ((numRetries < maxNumRetries - 1) && (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST)) {
                                 Thread.sleep(timeRetry);
                             }
-                            counter++;
+                            numRetries++;
                         } else if (contains(crawlingDomains, url)) {
-                            LOG.info("La url " + url + " ha sido rechazada por estar incluida en el rastreo");
+                            Logger.putLog(String.format("La url %s ha sido rechazada por estar incluida en el rastreo", url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                             rejectedDomains.add(url);
                         } else {
-                            LOG.info("No se ha podido acceder a la raiz del rastreo configurado " + url + " ya que ha respondido con el código " + responseCode);
-                            if (counter < maxNumRetries - 1) {
+                            Logger.putLog(String.format("No se ha podido acceder a la raiz del rastreo configurado %s ya que ha respondido con el código %d", url, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+                            if (numRetries < maxNumRetries - 1) {
                                 Thread.sleep(timeRetry);
                             }
-                            counter++;
+                            numRetries++;
                         }
                     }
                 }
@@ -294,7 +371,7 @@ public class CrawlerJob implements InterruptableJob {
                             break;
                         }
                     } catch (Exception e) {
-                        LOG.info("Error al intentar introducir la url auxiliar " + auxDomain + ": " + e.getMessage());
+                        Logger.putLog("Error al intentar introducir la url auxiliar " + auxDomain + ": " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                     }
                 }
 
@@ -304,39 +381,48 @@ public class CrawlerJob implements InterruptableJob {
                 }
 
             } catch (Exception e) {
-                LOG.info("Error al rastrear el dominio " + url + ": " + e.getMessage());
+                Logger.putLog("Error al rastrear el dominio " + url + ": " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
             }
         }
 
         // Avisa si se han rastreado menos páginas de las debidas
-        if (!crawlerData.isTest()) {
-            if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && chosenDepth != 1)) {
-                if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * chosenDepth + 1))) {
-                    List<String> mailTo = Arrays.asList(pmgr.getValue("crawler.core.properties", "incomplete.crawler.warning.emails").split(";"));
-                    String text = "El rastreo para " + crawlerData.getUrls().get(0) + " ha devuelto solo " + crawlingDomains.size() + " resultados";
-                    MailUtils.sendMail("rastreador@inteco.es", "Rastreador Web de Inteco", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
-                }
-            }
+        if (incompleteCrawl(crawlerData, chosenDepth)) {
+            warnIncompleteCrawl(crawlerData);
         }
 
         // Llamamos al analizador
         analyze(crawlingDomains, crawlerData, cookie);
     }
 
-    private void analyze(List<CrawledLink> crawlingDomains, CrawlerData crawlerData, String cookie) throws Exception {
-        WebAnalayzer webAnalayzer = new WebAnalayzer();
+    private boolean incompleteCrawl(final CrawlerData crawlerData, final int chosenDepth) {
+        if (!crawlerData.isTest()) {
+            if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && chosenDepth != 1)) {
+                if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * chosenDepth + 1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
+    private void warnIncompleteCrawl(final CrawlerData crawlerData) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<String> mailTo = getAdministradoresMails();
+        final String text = String.format("El rastreo para %s ha devuelto solo %d resultados", crawlerData.getUrls().get(0), crawlingDomains.size());
+
+        MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), "Rastreador Web de MINHAP", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
+    }
+
+    private void analyze(final List<CrawledLink> analyzeDomains, final CrawlerData crawlerData, final String cookie) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         final DateFormat df = new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format"));
 
         int cont = 0;
-        for (CrawledLink crawledLink : crawlingDomains) {
+        final WebAnalayzer webAnalyzer = new WebAnalayzer();
+        for (CrawledLink crawledLink : analyzeDomains) {
             if (!interrupt && (crawlerData.getCartuchos() != null && crawlerData.getCartuchos().length > 0)) {
-                if (cont < crawlingDomains.size() - 1) {
-                    webAnalayzer.runCartuchos(crawledLink, df.format(new Date()), crawlerData, cookie, false);
-                } else {
-                    webAnalayzer.runCartuchos(crawledLink, df.format(new Date()), crawlerData, cookie, true);
-                }
+                final boolean isLast = (cont >= analyzeDomains.size() - 1);
+                webAnalyzer.runCartuchos(crawledLink, df.format(new Date()), crawlerData, cookie, isLast);
             } else {
                 // Si se pide interrupción, se abandonan los análisis
                 break;
@@ -345,8 +431,8 @@ public class CrawlerJob implements InterruptableJob {
         }
     }
 
-    private boolean isValidUrl(String urlRoot, String domain, String urlLink, CrawlerData crawlerData) {
-        PropertiesManager pmgr = new PropertiesManager();
+    private boolean isValidUrl(final String urlRoot, final String domain, final String urlLink, final CrawlerData crawlerData) {
+        final PropertiesManager pmgr = new PropertiesManager();
 
         if (urlLink.length() < Integer.parseInt(pmgr.getValue("crawler.core.properties", "link.chars.max.length"))) {
             if (crawlerData.isExhaustive() || !isOuterDomain(domain, urlLink)) {
@@ -357,53 +443,54 @@ public class CrawlerJob implements InterruptableJob {
                                 if (crawlerData.getCrawlingList() == null || CrawlerUtils.domainMatchs(crawlerData.getCrawlingList(), urlLink)) {
                                     return true;
                                 } else {
-                                    LOG.info("La URL " + urlLink + " ha sido rechazada por no estar incluida en la lista de dominio rastreable");
+                                    Logger.putLog(String.format("La URL %s ha sido rechazada por no estar incluida en la lista de dominio rastreable", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                                 }
                             } else {
-                                LOG.info("La URL " + urlLink + " ha sido rechazada por estar incluida en la lista de excepciones");
+                                Logger.putLog(String.format("La URL %s ha sido rechazada por estar incluida en la lista de excepciones", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                             }
                         } else {
-                            LOG.info("La URL " + urlLink + " ha sido rechazada por haber sido rechazada previamente");
+                            Logger.putLog(String.format("La URL %s ha sido rechazada por haber sido rechazada previamente", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                         }
                     } else {
-                        LOG.info("La URL " + urlLink + " ha sido rechazada por estar incluida en el rastreo");
+                        Logger.putLog(String.format("La URL %s ha sido rechazada por estar incluida en el rastreo", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                     }
                 } else {
-                    LOG.info("La URL " + urlLink + " ha sido rechazada por no estar en el mismo directorio pedido");
+                    Logger.putLog(String.format("La URL %s ha sido rechazada por no estar en el mismo directorio pedido", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                 }
             } else {
-                LOG.info("La URL " + urlLink + " ha sido rechazada por ser encontrarse fuera del dominio");
+                Logger.putLog(String.format("La URL %s ha sido rechazada por ser encontrarse fuera del dominio", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
             }
         } else {
-            LOG.info("La URL " + urlLink + " ha sido rechazada por ser demasiado larga");
+            Logger.putLog(String.format("La URL %s ha sido rechazada por ser demasiado larga", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
         }
 
         return false;
     }
 
-    private void makeCrawl(String domain, String rootUrl, String url, String cookie, CrawlerData crawlerData, List<IgnoredLink> ignoredLinks) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
+    private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie, final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
         if (crawlerData.getProfundidad() > 0 && !interrupt) {
-            List<CrawledLink> levelLinks = new ArrayList<>();
-            HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
+            final List<CrawledLink> levelLinks = new ArrayList<>();
+            final HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
             try {
                 connection.setRequestProperty("Cookie", cookie);
                 connection.connect();
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+                    final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                     String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
-                    String textContentHash = CrawlerUtils.getHash(textContent);
+                    final String textContentHash = CrawlerUtils.getHash(textContent);
 
                     if (!md5Content.contains(textContentHash)) {
                         md5Content.add(textContentHash);
                     }
 
                     connection.disconnect();
-
-                    Document document = CrawlerDOMUtils.getDocument(textContent);
-                    List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
+                    // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+                    textContent = textContent.replaceAll("(?i)<iframe [^>]*/>", "");
+                    final Document document = CrawlerDOMUtils.getDocument(textContent);
+                    final List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
 
                     if (crawlerData.isPseudoaleatorio()) {
                         Collections.shuffle(urlLinks, new Random(System.currentTimeMillis()));
@@ -425,7 +512,7 @@ public class CrawlerJob implements InterruptableJob {
                                 }
                             }
                         } catch (Exception e) {
-                            LOG.info("La URL " + urlLink + " del enlace encontrado ha dado problemas de conexión: " + e.getMessage());
+                            Logger.putLog("La URL " + urlLink + " del enlace encontrado ha dado problemas de conexión: " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                         }
                     }
 
@@ -435,7 +522,7 @@ public class CrawlerJob implements InterruptableJob {
                     }
                 }
             } catch (Exception e) {
-                LOG.info("La url " + url + " ha dado problemas de conexión: " + e.getMessage());
+                Logger.putLog("La url " + url + " ha dado problemas de conexión: " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
             }
         }
     }
@@ -445,14 +532,16 @@ public class CrawlerJob implements InterruptableJob {
     }
 
     /**
-     * El siguiente método comprueba que la URL pedida sea de tipo text/html.
+     * Comprueba que la URL pedida sea de tipo text/html.
      *
-     * @param urlLink la URL de la página a comprobar
-     * @return true si la cabecera content-type es text/html y false en caso contrario
+     * @param refererUrl cadena con la URL de la que proviene
+     * @param urlLink    cadena la URL de la página a comprobar
+     * @param cookie     cadena con las cookies enviadas por el servidor
+     * @return true si la URL corresponde a un recurso text/html o false en caso contrario
      * @throws Exception
      */
-    private boolean isHtmlTextContent(String domain, String urlLink, String cookie) throws Exception {
-        HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
+    private boolean isHtmlTextContent(final String refererUrl, final String urlLink, final String cookie) throws Exception {
+        final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, refererUrl, true);
         connection.setRequestProperty("Cookie", cookie);
         connection.connect();
         int responseCode = connection.getResponseCode();
@@ -461,86 +550,85 @@ public class CrawlerJob implements InterruptableJob {
                     connection.getHeaderField("content-type").contains("text/html")) {
                 return true;
             } else {
-                LOG.info("La url " + urlLink + " ha sido rechazada por no ser un documento de tipo text/html");
+                Logger.putLog(String.format("La url %s ha sido rechazada por no ser un documento de tipo text/html", urlLink), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                 rejectedDomains.add(urlLink);
             }
         } else {
-            LOG.info("La url " + urlLink + " ha sido rechazada por devolver el código " + responseCode);
+            Logger.putLog(String.format("La url %s ha sido rechazada por devolver el código %d", urlLink, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
             rejectedDomains.add(urlLink);
         }
         connection.disconnect();
         return false;
     }
 
-    private boolean hasAccessToUrl(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks, List<IgnoredLink> ignoredLinks) throws Exception {
+    private boolean hasAccessToUrl(final String rootUrl, final String domain, final String urlLink, final String cookie, final List<CrawledLink> levelLinks, final CrawlerData crawlerData, final boolean addAuxiliaryLinks, final List<IgnoredLink> ignoredLinks) throws Exception {
         HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, false);
         connection.setRequestProperty("Cookie", cookie);
         int responseCode = Integer.MAX_VALUE;
         int numRetries = 0;
         int numRedirections = 0;
 
-        PropertiesManager pmgr = new PropertiesManager();
-        int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-        int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
+        final int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
 
         while ((responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRetries < maxNumRetries) && (numRedirections < maxNumRedirections)) {
-            urlLink = connection.getURL().toString();
+            final String connectedURL = connection.getURL().toString();
             connection.connect();
             responseCode = connection.getResponseCode();
             if (responseCode > HttpURLConnection.HTTP_BAD_REQUEST) {
                 numRetries++;
             } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                 numRedirections++;
-                connection = CrawlerUtils.followRedirection(connection, cookie, new URL(urlLink), connection.getHeaderField("location"));
+                connection = CrawlerUtils.followRedirection(connection, cookie, new URL(connectedURL), connection.getHeaderField("location"));
             } else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
-                InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-                String remoteContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+                final String remoteContent = CrawlerUtils.getTextContent(connection, markableInputStream);
                 if (!CrawlerUtils.isRss(remoteContent)) {
-                    Document document = CrawlerDOMUtils.getDocument(remoteContent);
-                    String metaRedirect = CrawlerDOMUtils.getMetaRedirect(urlLink, document);
+                    final Document document = CrawlerDOMUtils.getDocument(remoteContent);
+                    final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(connectedURL, document);
                     if (StringUtils.isEmpty(metaRedirect)) {
                         String remoteContentHash = CrawlerUtils.getHash(remoteContent);
-                        if (isValidUrl(rootUrl, domain, urlLink, crawlerData)) {
+                        if (isValidUrl(rootUrl, domain, connectedURL, crawlerData)) {
                             if (!md5Content.contains(remoteContentHash)) {
-                                CrawledLink crawledLink = new CrawledLink(urlLink, remoteContent, numRetries, numRedirections);
+                                final CrawledLink crawledLink = new CrawledLink(connectedURL, remoteContent, numRetries, numRedirections);
                                 if (levelLinks != null) {
                                     levelLinks.add(crawledLink);
                                 }
                                 crawlingDomains.add(crawledLink);
                                 md5Content.add(remoteContentHash);
-                                LOG.info("Introducida la URL número " + crawlingDomains.size() + ": " + urlLink);
+                                Logger.putLog(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), connectedURL), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                                 return true;
                             } else {
-                                LOG.info("La url " + urlLink + " ha sido rechazada por estar incluida en el rastreo");
-                                rejectedDomains.add(urlLink);
+                                Logger.putLog(String.format("La url %s ha sido rechazada por estar incluida en el rastreo", connectedURL), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+                                rejectedDomains.add(connectedURL);
                             }
 
                             if (addAuxiliaryLinks) {
-                                List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
+                                final List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
                                 for (String urlLinkAux : urlLinks) {
                                     try {
-                                        urlLinkAux = CrawlerUtils.getAbsoluteUrl(document, urlLink, CrawlerUtils.encodeUrl(urlLinkAux)).toString().replaceAll("\\.\\./", "");
+                                        urlLinkAux = CrawlerUtils.getAbsoluteUrl(document, connectedURL, CrawlerUtils.encodeUrl(urlLinkAux)).toString().replaceAll("\\.\\./", "");
                                         if (!auxDomains.contains(urlLinkAux)) {
                                             auxDomains.add(urlLinkAux);
                                         }
                                     } catch (Exception e) {
-                                        LOG.info("La URL " + urlLink + " del enlace encontrado ha dado problemas de conexión: " + e.getMessage());
+                                        Logger.putLog(String.format("La URL %s del enlace encontrado ha dado problemas de conexión: %s", connectedURL, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                                     }
                                 }
                             }
                         }
                     } else {
                         numRedirections++;
-                        connection = CrawlerUtils.followRedirection(connection, cookie, new URL(urlLink), metaRedirect);
+                        connection = CrawlerUtils.followRedirection(connection, cookie, new URL(connectedURL), metaRedirect);
                         responseCode = Integer.MAX_VALUE;
                     }
                 } else {
-                    LOG.info("La url " + urlLink + " ha sido rechazada por tratarse de un RSS");
+                    Logger.putLog(String.format("La url %s ha sido rechazada por tratarse de un RSS", connectedURL), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                 }
             } else {
-                LOG.info("La url " + urlLink + " ha respondido con el código " + responseCode + " y no se le pasara al analizador");
+                Logger.putLog(String.format("La url %s ha respondido con el código %d y no se le pasara al analizador", connectedURL, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
             }
-
             connection.disconnect();
         }
 
@@ -549,41 +637,7 @@ public class CrawlerJob implements InterruptableJob {
 
     @Override
     public void interrupt() throws UnableToInterruptJobException {
-        LOG.info("Se ha pedido una interrupción!!");
+        Logger.putLog("Se ha pedido una interrupción!!", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
         interrupt = true;
     }
-
-    private static boolean isOuterDomain(String domain, String url) {
-        try {
-            if (domain.equalsIgnoreCase(new URL(url).getHost())) {
-                return false;
-            }
-        } catch (Exception e) {
-            LOG.error("Error al obtener el dominio base de la URL");
-        }
-        return true;
-    }
-
-    private static boolean contains(List<CrawledLink> crawledLinks, String url) {
-        for (CrawledLink crawledLink : crawledLinks) {
-            if (crawledLink.getUrl().equals(url)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean isInTheSameDirectory(String link, String urlRoot) {
-        final String protocolRegExp = "https?://";
-        final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
-                urlRoot.replaceAll(protocolRegExp, "").substring(0, urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
-                urlRoot.replaceAll(protocolRegExp, "");
-
-        final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
-                link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
-                link.replaceAll(protocolRegExp, "");
-
-        return linkDirectory.contains(urlRootDirectory);
-    }
-
 }
