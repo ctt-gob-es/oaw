@@ -1,5 +1,7 @@
 package es.ctic.rastreador2.pdf.utils;
 
+import es.inteco.common.logging.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,7 +47,7 @@ public final class CheckDescriptionsManager {
         try (final Reader reader = getFileReader(descriptionsPath)) {
             this.properties.load(reader);
         } catch (IOException e) {
-
+            Logger.putLog("No se ha podido leer el fichero de descripciones de los checks", CheckDescriptionsManager.class, Logger.LOG_LEVEL_WARNING, e);
         }
     }
 
@@ -54,7 +56,7 @@ public final class CheckDescriptionsManager {
         try (InputStream is = CheckDescriptionsManager.class.getResourceAsStream("/propertiesmanager.properties")) {
             pmg.load(is);
         } catch (IOException e) {
-
+            Logger.putLog("No se ha podido leer la propiedad en el propertiesmanager.properties del fichero de descripciones de los checks", CheckDescriptionsManager.class, Logger.LOG_LEVEL_WARNING, e);
         }
         return pmg.getProperty("file.descriptions");
     }
