@@ -22,6 +22,7 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,48 +70,9 @@ public class DatabaseExportAction extends Action {
                 final PropertiesManager pmgr = new PropertiesManager();
 
                 if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
-                    Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
-                    if (observatory == null) {
-                        // Información general de la ejecución del Observatorio
-                        observatory = DatabaseExportUtils.getObservatoryInfo(CrawlerUtils.getResources(request), fulfilledObservatory.getId());
-
-                        List<CategoriaForm> categories = ObservatorioDAO.getObservatoryCategories(c, idObservatory);
-                        for (CategoriaForm categoriaForm : categories) {
-                            Category category = DatabaseExportUtils.getCategoryInfo(request, categoriaForm, observatory);
-                            observatory.getCategoryList().add(category);
-                        }
-
-                        ObservatorioRealizadoForm observatorioRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, fulfilledObservatory.getId());
-
-                        observatory.setName(observatorioRealizadoForm.getObservatorio().getNombre());
-                        observatory.setDate(new Timestamp(observatorioRealizadoForm.getFecha().getTime()));
-
-                        BaseManager.save(observatory);
-                    }
+                    exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
                 } else if (String.valueOf(fulfilledObservatory.getCartucho().getId()).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
-                    es.inteco.multilanguage.persistence.Observatory observatory = ObservatoryManager.getMultilanguageObservatory(fulfilledObservatory.getId());
-
-                    if (observatory == null) {
-                        List<FulFilledCrawling> seedsResults = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, fulfilledObservatory.getId());
-                        Map<Long, List<Long>> crawlerIdsMap = new HashMap<>();
-                        Map<Long, String> categoryNames = new HashMap<>();
-                        Map<Long, String> siteNames = new HashMap<>();
-                        for (FulFilledCrawling crawler : seedsResults) {
-                            List<Long> crawlerIds = new ArrayList<>();
-                            if (crawlerIdsMap.get(Long.valueOf(crawler.getSeed().getCategoria().getId())) != null) {
-                                crawlerIds = crawlerIdsMap.get(Long.valueOf(crawler.getSeed().getCategoria().getId()));
-                            }
-                            crawlerIds.add(crawler.getId());
-                            crawlerIdsMap.put(Long.valueOf(crawler.getSeed().getCategoria().getId()), crawlerIds);
-
-                            //Guardamos los nombres de las categorias y portales para mostrarlos en las tablas de exportación del multilingüismo
-                            siteNames.put(crawler.getId(), crawler.getSeed().getNombre());
-                            if (categoryNames.get(Long.valueOf(crawler.getSeed().getCategoria().getId())) == null) {
-                                categoryNames.put(Long.valueOf(crawler.getSeed().getCategoria().getId()), crawler.getSeed().getCategoria().getName());
-                            }
-                        }
-                        ExportMultilanguageUtils.exportObservatoryMultilanguageInfo(crawlerIdsMap, categoryNames, siteNames, fulfilledObservatory.getId(), fulfilledObservatory.getObservatorio().getNombre(), fulfilledObservatory.getFecha());
-                    }
+                    exportResultadosMultilinguismo(c, fulfilledObservatory);
                 }
             }
 
@@ -129,6 +91,54 @@ public class DatabaseExportAction extends Action {
         return mapping.findForward(Constants.EXITO);
     }
 
+    private void exportResultadosMultilinguismo(Connection c, ObservatorioRealizadoForm fulfilledObservatory) throws Exception {
+        es.inteco.multilanguage.persistence.Observatory observatory = ObservatoryManager.getMultilanguageObservatory(fulfilledObservatory.getId());
+
+        if (observatory == null) {
+            List<FulFilledCrawling> seedsResults = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, fulfilledObservatory.getId());
+            Map<Long, List<Long>> crawlerIdsMap = new HashMap<>();
+            Map<Long, String> categoryNames = new HashMap<>();
+            Map<Long, String> siteNames = new HashMap<>();
+            for (FulFilledCrawling crawler : seedsResults) {
+                List<Long> crawlerIds = new ArrayList<>();
+                if (crawlerIdsMap.get(Long.valueOf(crawler.getSeed().getCategoria().getId())) != null) {
+                    crawlerIds = crawlerIdsMap.get(Long.valueOf(crawler.getSeed().getCategoria().getId()));
+                }
+                crawlerIds.add(crawler.getId());
+                crawlerIdsMap.put(Long.valueOf(crawler.getSeed().getCategoria().getId()), crawlerIds);
+
+                //Guardamos los nombres de las categorias y portales para mostrarlos en las tablas de exportación del multilingüismo
+                siteNames.put(crawler.getId(), crawler.getSeed().getNombre());
+                if (categoryNames.get(Long.valueOf(crawler.getSeed().getCategoria().getId())) == null) {
+                    categoryNames.put(Long.valueOf(crawler.getSeed().getCategoria().getId()), crawler.getSeed().getCategoria().getName());
+                }
+            }
+            ExportMultilanguageUtils.exportObservatoryMultilanguageInfo(crawlerIdsMap, categoryNames, siteNames, fulfilledObservatory.getId(), fulfilledObservatory.getObservatorio().getNombre(), fulfilledObservatory.getFecha());
+        }
+    }
+
+    private void exportResultadosAccesibilidad(final MessageResources messageResources, Long idObservatory, Connection c, ObservatorioRealizadoForm fulfilledObservatory) throws Exception {
+//        Observatory observatory = DatabaseExportManager.getObservatory(fulfilledObservatory.getId());
+//        if (observatory == null) {
+            Logger.putLog("Generando exportación", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR);
+            // Información general de la ejecución del Observatorio
+            Observatory observatory = DatabaseExportUtils.getObservatoryInfo(messageResources, fulfilledObservatory.getId());
+
+            final List<CategoriaForm> categories = ObservatorioDAO.getObservatoryCategories(c, idObservatory);
+            for (CategoriaForm categoriaForm : categories) {
+                final Category category = DatabaseExportUtils.getCategoryInfo(messageResources, categoriaForm, observatory);
+                observatory.getCategoryList().add(category);
+            }
+
+            final ObservatorioRealizadoForm observatorioRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, fulfilledObservatory.getId());
+
+            observatory.setName(observatorioRealizadoForm.getObservatorio().getNombre());
+            observatory.setDate(new Timestamp(observatorioRealizadoForm.getFecha().getTime()));
+
+            BaseManager.save(observatory);
+//        }
+    }
+
     private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 
@@ -138,6 +148,7 @@ public class DatabaseExportAction extends Action {
             final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
         } catch (Exception e) {
+            Logger.putLog("Error en la confirmación para exportar los resultados del observatorio: ", DatabaseExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             DataBaseManager.closeConnection(c);
