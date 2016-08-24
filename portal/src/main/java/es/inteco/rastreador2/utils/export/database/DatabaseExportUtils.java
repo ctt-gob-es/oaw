@@ -104,7 +104,8 @@ public final class DatabaseExportUtils {
         return observatory;
     }
 
-    public static Category getCategoryInfo(HttpServletRequest request, CategoriaForm categoriaForm, Observatory observatory) throws Exception {
+    public static Category getCategoryInfo(final MessageResources messageResources, CategoriaForm categoriaForm, Observatory observatory) throws Exception {
+//        final MessageResources messageResources = CrawlerUtils.getResources(request);
         Category category = new Category();
 
         category.setName(categoriaForm.getName());
@@ -166,7 +167,7 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuaciones por aspectos
-        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
+        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
         for (String key : aspectAndScore.keySet()) {
             AspectScore aspectScore = new AspectScore();
             aspectScore.setAspect(key);
@@ -193,7 +194,7 @@ public final class DatabaseExportUtils {
         try {
             List<ObservatorySiteEvaluationForm> observatorySiteEvaluations = ResultadosAnonimosObservatorioIntavUtils.getSitesListByLevel(pageExecutionList);
             for (ObservatorySiteEvaluationForm observatorySiteEvaluationForm : observatorySiteEvaluations) {
-                Site site = getSiteInfo(CrawlerUtils.getResources(request), observatorySiteEvaluationForm, category);
+                Site site = getSiteInfo(messageResources, observatorySiteEvaluationForm, category);
                 category.getSiteList().add(site);
             }
         } catch (Exception e) {
