@@ -274,7 +274,7 @@ public final class CheckUtils {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
             return false;
         } finally {
-            if (remoteUrl != null) {
+            if (remoteUrl != null && checkedLinks!=null) {
                 checkedLinks.getCheckedLinks().add(remoteUrl.toString());
             }
         }
@@ -487,17 +487,17 @@ public final class CheckUtils {
             }
             if (tag.getAttribute("alt") != null) {
                 final String alt = tag.getAttribute("alt");
-                for (Pattern pattern : altA) {
+                for (Pattern pattern : ALT_A) {
                     if (pattern.matcher(alt).find()) {
                         return true;
                     }
                 }
-                for (Pattern pattern : altAA) {
+                for (Pattern pattern : ALT_AA) {
                     if (pattern.matcher(alt).find()) {
                         return true;
                     }
                 }
-                for (Pattern pattern : altAAA) {
+                for (Pattern pattern : ALT_AAA) {
                     if (pattern.matcher(alt).find()) {
                         return true;
                     }
@@ -505,17 +505,17 @@ public final class CheckUtils {
             }
         }
         final String text = getDocumentText(document);
-        for (Pattern pattern : altA) {
+        for (Pattern pattern : ALT_A) {
             if (pattern.matcher(text).find()) {
                 return true;
             }
         }
-        for (Pattern pattern : altAA) {
+        for (Pattern pattern : ALT_AA) {
             if (pattern.matcher(text).find()) {
                 return true;
             }
         }
-        for (Pattern pattern : altAAA) {
+        for (Pattern pattern : ALT_AAA) {
             if (pattern.matcher(text).find()) {
                 return true;
             }
@@ -548,7 +548,7 @@ public final class CheckUtils {
     private static final String SRC2AA = "wcag2AA";
     private static final String SRC2AAA = "wcag2AAA";
 
-    private static final Pattern[] altA = new Pattern[]{
+    private static final Pattern[] ALT_A = new Pattern[]{
             Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
@@ -557,7 +557,7 @@ public final class CheckUtils {
             Pattern.compile("\\bconformidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
-    private static final Pattern[] altAA = new Pattern[]{
+    private static final Pattern[] ALT_AA = new Pattern[]{
             Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
@@ -569,7 +569,7 @@ public final class CheckUtils {
             Pattern.compile("\\bconformidad\\s+doble\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
-    private static final Pattern[] altAAA = new Pattern[]{
+    private static final Pattern[] ALT_AAA = new Pattern[]{
             Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),

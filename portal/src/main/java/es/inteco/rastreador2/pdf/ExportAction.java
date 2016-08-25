@@ -3,12 +3,10 @@ package es.inteco.rastreador2.pdf;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.sexista.modules.analisis.dto.ResultsByUrlDto;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.rastreo.VerRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
-import es.inteco.rastreador2.lenox.service.InformesService;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.*;
 
@@ -56,15 +54,13 @@ public class ExportAction extends Action {
             language = request.getLocale();
         }
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
             //Comprobamos que el usuario esta asociado con el rastreo que quiere exportar
             if (user == null || RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user)) {
                 if (crawlerType.equals(Constants.EXPORT_PDF_INTAV) || crawlerType.equals(Constants.EXPORT_PDF_INTAV_SIMPLE)) {
                     return createIntavPdf(mapping, form, request, response, idRastreo, idTracking, language, crawlerType);
                 } else if (crawlerType.equals(Constants.EXPORT_PDF_LENOX)) {
-                    return createLenoxPdf(mapping, form, request, response, idRastreo, idTracking, language);
+                    return mapping.findForward(Constants.ERROR);
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);
@@ -72,38 +68,7 @@ public class ExportAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
-        return null;
-    }
-
-    private ActionForward createLenoxPdf(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-                                         HttpServletResponse response, long idRastreo, long idTracking, Locale language) throws Exception {
-
-        PropertiesManager pmgr = new PropertiesManager();
-
-        String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.lenox")
-                + idRastreo + File.separator + idTracking + File.separator + language.getLanguage();
-
-        File checkFile = new File(path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.file.lenox.name"));
-
-        InformesService informesService = new InformesService();
-        List<ResultsByUrlDto> results = informesService.getResultsByUrl(idTracking, Constants.NO_PAGINACION);
-        if (results != null && !results.isEmpty()) {
-            // Si el pdf no ha sido creado lo creamos
-            if (request.getParameter(Constants.EXPORT_PDF_REGENERATE) != null || !checkFile.exists()) {
-                LenoxExport.exportLenoxToPdf(results, request, path);
-            }
-        } else {
-            ActionErrors errors = new ActionErrors();
-            errors.add("errorPDF", new ActionMessage("pdf.error.no.results"));
-            saveErrors(request, errors);
-            return mapping.findForward(Constants.PDF_ERROR_FORWARD);
-        }
-
-        CrawlerUtils.returnFile(path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.file.lenox.name"), response, "application/pdf", false);
-
         return null;
     }
 
@@ -154,8 +119,7 @@ public class ExportAction extends Action {
     }
 
     public static Map<Long, List<Long>> resultEvolutionData(Long idRastreo, Long idTracking) throws Exception {
-        final Connection c = DataBaseManager.getConnection();
-        try {
+        try (final Connection c = DataBaseManager.getConnection()) {
             VerRastreoForm vrf = new VerRastreoForm();
             vrf = RastreoDAO.cargarRastreoVer(c, idRastreo, vrf);
             final List<Long> trackingsIds = RastreoDAO.getEvolutionExecutedCrawlerIds(c, idRastreo, idTracking, vrf.getId_cartucho());
@@ -169,8 +133,6 @@ public class ExportAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Excepción genérica al generar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

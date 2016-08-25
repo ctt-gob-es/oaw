@@ -4,7 +4,7 @@
 
     <groupId>es.minhap.oaw</groupId>
     <artifactId>oaw</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <packaging>pom</packaging>
 
     <name>oaw</name>
@@ -13,8 +13,6 @@
         <module>../common</module>
         <module>../intavcore</module>
         <module>../crawler</module>
-        <module>../lenox</module>
-        <module>../multilanguage</module>
         <module>../portal</module>
     </modules>
 
