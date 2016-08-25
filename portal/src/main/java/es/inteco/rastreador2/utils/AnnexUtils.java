@@ -5,18 +5,11 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.multilanguage.database.export.SiteTranslationInformationForm;
-import es.inteco.multilanguage.form.AnalysisForm;
-import es.inteco.multilanguage.form.LanguageFoundForm;
-import es.inteco.multilanguage.manager.AnalysisManager;
-import es.inteco.multilanguage.service.utils.MultilanguageUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
-import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
-import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.export.database.form.CategoryForm;
 import es.inteco.rastreador2.export.database.form.ObservatoryForm;
@@ -45,10 +38,9 @@ public final class AnnexUtils {
     //Anexos sin iteraciones *************************************************************************************
 
     public static void createAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-        FileWriter writer = null;
-        final Connection c = DataBaseManager.getConnection();
-        try {
-            writer = getFileWriter(idOperation, "anexo_paginas.xml");
+        try (final Connection c = DataBaseManager.getConnection();
+             final FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
+
             final ContentHandler hd = getContentHandler(writer);
             hd.startDocument();
             hd.startElement("", "", "resultados", null);
@@ -89,15 +81,6 @@ public final class AnnexUtils {
             hd.endDocument();
         } catch (Exception e) {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -125,10 +108,9 @@ public final class AnnexUtils {
 
     private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
         final Map<Long, TreeMap<String, ScoreForm>> seedMap = new HashMap<>();
-        Connection c = null;
 
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
+
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryFormFromExecution(c, idObsExecution);
             final ObservatorioRealizadoForm executedObservatory = ObservatorioDAO.getFulfilledObservatory(c, observatoryForm.getId(), idObsExecution);
             final List<ObservatorioRealizadoForm> observatoriesList = ObservatorioDAO.getFulfilledObservatories(c, observatoryForm.getId(), Constants.NO_PAGINACION, executedObservatory.getFecha(), false);
@@ -153,11 +135,8 @@ public final class AnnexUtils {
                     }
                 }
             }
-
         } catch (Exception e) {
             Logger.putLog("Error al recuperar las semillas del Observatorio al crear el anexo", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return seedMap;
@@ -176,15 +155,15 @@ public final class AnnexUtils {
     }
 
     public static void createAnnex2Ev(final MessageResources request, final Long idObsExecution, final Long idOperation) throws Exception {
-        final FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml");
-        final ContentHandler hd = getContentHandler(writer);
-        hd.startDocument();
-        hd.startElement("", "", "resultados", null);
+        try (final Connection c = DataBaseManager.getConnection();
+             final FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 
-        Connection c = null;
-        try {
+            final ContentHandler hd = getContentHandler(writer);
+            hd.startDocument();
+            hd.startElement("", "", "resultados", null);
+
             final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
-            c = DataBaseManager.getConnection();
+
             for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
                 final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
                 if (semillaForm.getId() != 0) {
@@ -207,175 +186,8 @@ public final class AnnexUtils {
             hd.endDocument();
         } catch (Exception e) {
             Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-            DataBaseManager.closeConnection(c);
         }
 
-    }
-
-    public static void createMultilanguageAnnexes(final Long idObsExecution, final Long idOperation) {
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
-            Logger.putLog("Creando anexo portales multilingüismo", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
-            createMultilanguageSiteAnnex(conn, idObsExecution, idOperation, false);
-            Logger.putLog("Creando anexo portales completo multilingüismo", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
-            createMultilanguageSiteAnnex(conn, idObsExecution, idOperation, true);
-            Logger.putLog("Creando anexo páginas multilingüismo", AnnexUtils.class, Logger.LOG_LEVEL_INFO);
-            createMultilanguagePageAnnex(conn, idObsExecution, idOperation);
-        } catch (Exception e) {
-            Logger.putLog("Error al conectar o recuperar datos de la BBDD al crear los XML de resultados", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
-        }
-    }
-
-    private static void createMultilanguagePageAnnex(final Connection conn, final Long idObsExecution, final Long idOperation) {
-        FileWriter writer = null;
-        try {
-            writer = getFileWriter(idOperation, "anexo_paginas_multilanguage_completo.xml");
-            final ContentHandler hd = getContentHandler(writer);
-            hd.startDocument();
-            hd.startElement("", "", "resultados", null);
-
-            List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, idObsExecution, Constants.COMPLEXITY_SEGMENT_NONE);
-            for (Long id : listExecutionsIds) {
-                List<AnalysisForm> analysisList = AnalysisManager.getObservatoryAnalysisList(id);
-                if (analysisList != null && !analysisList.isEmpty()) {
-                    hd.startElement("", "", "portal", null);
-
-                    final FulfilledCrawlingForm fulfilledCrawlingForm = RastreoDAO.getFullfilledCrawlingExecution(conn, Long.parseLong(analysisList.get(0).getIdCrawling()));
-
-                    writeTag(hd, "nombre", fulfilledCrawlingForm.getSeed().getNombre());
-                    writeTag(hd, "categoria", fulfilledCrawlingForm.getSeed().getCategoria().getName());
-                    writeTag(hd, "depende_de", fulfilledCrawlingForm.getSeed().getDependencia());
-
-                    hd.startElement("", "", "paginas", null);
-
-                    for (AnalysisForm analysisForm : analysisList) {
-                        hd.startElement("", "", "pagina", null);
-
-                        writeTag(hd, "url", analysisForm.getUrl());
-
-                        final List<LanguageFoundForm> languagesFoundList = MultilanguageUtils.sortLanguagesFoundForm(analysisForm.getLanguagesFound());
-                        for (LanguageFoundForm languageFoundForm : languagesFoundList) {
-                            hd.startElement("", "", "lenguaje", null);
-
-                            writeTag(hd, "nombre", languageFoundForm.getLanguage().getName());
-                            writeTag(hd, "url_destino", languageFoundForm.getHref());
-                            writeTag(hd, "cod_idioma", languageFoundForm.getDeclarationLang() != null ? languageFoundForm.getDeclarationLang() : "No declarado");
-                            writeTag(hd, "idioma_texto", languageFoundForm.getLanguageSuspected().getName() != null ? languageFoundForm.getLanguageSuspected().getName() : "Sin texto");
-                            writeTag(hd, "traduccion", languageFoundForm.isCorrect() ? "Correcta" : "Incorrecta");
-
-                            hd.endElement("", "", "lenguaje");
-                        }
-
-                        hd.endElement("", "", "pagina");
-                    }
-
-                    hd.endElement("", "", "paginas");
-
-                    hd.endElement("", "", "portal");
-                } else {
-                    final String noResults = "Portal: " + RastreoDAO.getFullfilledCrawlingExecution(conn, id).getSeed().getNombre() + " Sin Resultados";
-                    writeTag(hd, "portal", noResults);
-                }
-            }
-
-            hd.endElement("", "", "resultados");
-            hd.endDocument();
-
-        } catch (Exception e) {
-            Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-        }
-    }
-
-    private static void createMultilanguageSiteAnnex(final Connection conn, final Long idObsExecution, final Long idOperation, boolean complet) {
-        FileWriter writer = null;
-        try {
-            if (!complet) {
-                writer = getFileWriter(idOperation, "anexo_portales_multilanguage.xml");
-            } else {
-                writer = getFileWriter(idOperation, "anexo_portales_multilanguage_completo.xml");
-            }
-            final ContentHandler hd = getContentHandler(writer);
-            hd.startDocument();
-            hd.startElement("", "", "resultados", null);
-
-            final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, idObsExecution, Constants.COMPLEXITY_SEGMENT_NONE);
-            for (Long id : listExecutionsIds) {
-                final List<AnalysisForm> analysisList = AnalysisManager.getObservatoryAnalysisList(id);
-                if (analysisList != null && !analysisList.isEmpty()) {
-                    hd.startElement("", "", "portal", null);
-
-                    final FulfilledCrawlingForm fulfilledCrawlingForm = RastreoDAO.getFullfilledCrawlingExecution(conn, Long.parseLong(analysisList.get(0).getIdCrawling()));
-
-                    writeTag(hd, "nombre", fulfilledCrawlingForm.getSeed().getNombre());
-                    final String seed = fulfilledCrawlingForm.getSeed().getListaUrlsString().split(";")[0];
-                    writeTag(hd, "url_semilla", seed);
-                    writeTag(hd, "segmento", fulfilledCrawlingForm.getSeed().getCategoria().getName());
-                    writeTag(hd, "depende_de", fulfilledCrawlingForm.getSeed().getDependencia());
-
-                    final List<SiteTranslationInformationForm> translationLanguagesFormList = MultilanguageUtils.getPortalTraductionInformation(analysisList, complet);
-
-                    for (SiteTranslationInformationForm tLanguage : translationLanguagesFormList) {
-                        hd.startElement("", "", "lenguaje", null);
-
-                        writeTag(hd, "nombre", tLanguage.getName());
-                        final String noTraducidas = tLanguage.getNoTranslationPercentage().toString() + "%";
-                        writeTag(hd, "no_traducidas", noTraducidas);
-                        final String bienTraducidas = tLanguage.getCorrectTranslationPercentage().toString() + "%";
-                        writeTag(hd, "bien_traducidas", bienTraducidas);
-                        final String malTraducidas = tLanguage.getNoCorrectTranslationPercentage().toString() + "%";
-                        writeTag(hd, "mal_traducidas", malTraducidas);
-
-                        if (complet) {
-                            final String codigoIdioma = tLanguage.getDeclarationGreen().toString() + "%";
-                            writeTag(hd, "codigo_idioma", codigoIdioma);
-                            final String noCodigoIdioma = tLanguage.getDeclarationRed().toString() + "%";
-                            writeTag(hd, "no_codigo_idioma", noCodigoIdioma);
-                            final String trTexto = tLanguage.getTextTranslationGreen().toString() + "%";
-                            writeTag(hd, "traduccion_texto", trTexto);
-                            final String noTrTexto = tLanguage.getTextTranslationRed().toString() + "%";
-                            writeTag(hd, "no_traduccion_texto", noTrTexto);
-                            final String traduccion = tLanguage.getTranslationGreen().toString() + "%";
-                            writeTag(hd, "traduccion", traduccion);
-                            final String noTraduccion = tLanguage.getTranslationRed().toString() + "%";
-                            writeTag(hd, "no_traduccion", noTraduccion);
-                        }
-
-                        hd.endElement("", "", "lenguaje");
-                    }
-
-                    hd.endElement("", "", "portal");
-                } else {
-                    final String noResults = "Portal: " + RastreoDAO.getFullfilledCrawlingExecution(conn, id).getSeed().getNombre() + " Sin Resultados";
-                    writeTag(hd, "portal", noResults);
-                }
-            }
-
-            hd.endElement("", "", "resultados");
-            hd.endDocument();
-        } catch (Exception e) {
-            Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                writer.close();
-            } catch (Exception e) {
-                Logger.putLog("Excepción", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-        }
     }
 
 }
