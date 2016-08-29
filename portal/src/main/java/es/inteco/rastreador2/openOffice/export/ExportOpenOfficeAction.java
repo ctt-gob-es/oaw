@@ -58,7 +58,7 @@ public class ExportOpenOfficeAction extends Action {
         }
 
         try {
-            CrawlerUtils.returnFile(filePath, response, "application/vnd.oasis.opendocument.text", false);
+            CrawlerUtils.returnFile(response, filePath, "application/vnd.oasis.opendocument.text", false);
         } catch (Exception e) {
             Logger.putLog("Exception al devolver el PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
         }

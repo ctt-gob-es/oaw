@@ -33,8 +33,8 @@ public class GraficasRastreoAction extends Action {
 
     private ActionForward getGraphic(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String graphic = request.getParameter(Constants.GRAPHIC);
-        String execution_id = request.getParameter(Constants.ID);
-        String crawler_id = request.getParameter(Constants.ID_RASTREO);
+        String executionId = request.getParameter(Constants.ID);
+        String crawlerId = request.getParameter(Constants.ID_RASTREO);
 
         Locale language = getLocale(request);
         if (language == null) {
@@ -43,14 +43,14 @@ public class GraficasRastreoAction extends Action {
 
         if (graphic != null) {
             PropertiesManager pmgr = new PropertiesManager();
-            String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.general.intav.chart.files") + File.separator + crawler_id + File.separator + execution_id + File.separator + language.getLanguage() + File.separator;
+            String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.general.intav.chart.files") + File.separator + crawlerId + File.separator + executionId + File.separator + language.getLanguage() + File.separator;
             String title = "";
             if (graphic.equals(Constants.CRAWLER_GRAPHIC_TOTAL_RESULTS)) {
                 title = getResources(request).getMessage(getLocale(request), "chart.intav.total.results");
             } else if (graphic.equals(Constants.CRAWLER_GRAPHIC_GLOBAL_RESULTS)) {
                 title = getResources(request).getMessage(getLocale(request), "chart.intav.priority.warnings");
             }
-            CrawlerUtils.returnFile(path + title + ".jpg", response, "image/jpeg", false);
+            CrawlerUtils.returnFile(response, path + title + ".jpg", "image/jpeg", false);
         }
 
         return null;

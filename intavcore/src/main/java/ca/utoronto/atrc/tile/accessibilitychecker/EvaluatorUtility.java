@@ -868,6 +868,7 @@ public final class EvaluatorUtility {
                 writer.close();
 
                 connection.connect();
+                //Logger.putLog(StringUtils.getContentAsString(inputStream, "UTF-8"),EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR);
 
                 document = builder.parse(connection.getInputStream());
             } catch (Exception e) {

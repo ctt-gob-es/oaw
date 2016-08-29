@@ -213,24 +213,6 @@ public interface Constants {
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION = "2.2.5";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION = "2.2.6";
 
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_TERMS = "percentageTerms";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_NUMBER_SEG_TERMS = "numberSegTerms";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_NUMBER_SEG_TERMS_1 = "numberSegTerms1";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_NUMBER_SEG_TERMS_2 = "numberSegTerms2";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_NUMBER_SEG_TERMS_3 = "numberSegTerms3";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG_TERMS = "percentageSegTerms";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG_TERMS_1 = "percentageSegTerms1";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG_TERMS_2 = "percentageSegTerms2";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG_TERMS_3 = "percentageSegTerms3";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG1 = "percentageSeg1";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG2 = "percentageSeg2";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_GLOBAL_PERCENTAGE_SEG3 = "percentageSeg3";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_EVOLUTION_HIGH_TERMS = "highEvolTerms";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_EVOLUTION_MEDIUM_TERMS = "mediumEvolTerms";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_EVOLUTION_LOW_TERMS = "lowEvolTerms";
-    public static final String OBSERVATORY_LENOX_GRAPHIC_EVOLUTION_PERCENTAGE_TERMS = "percentageEvolTerms";
-
-
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A = "evolutionDataListA";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA = "evolutionDataListAA";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV = "evolutionDataListNV";
@@ -266,31 +248,6 @@ public interface Constants {
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP = "evolutionDataListAP";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE = "evolutionDataListAE";
     public static final String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN = "evolutionDataListAN";
-
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_INTERNAL = "percentageGlobalLangsInternal";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_HOME = "percentageGlobalLangsHome";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_CORRECT_LINK_INTERNAL = "percentageGlobalCorrectLinkInternal";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_CORRECT_LINK_HOME = "percentageGlobalCorrectLinkHome";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_STACK_INTERNAL = "percentageGlobalLangsStackInternal";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_STACK_HOME = "percentageGlobalLangsStackHome";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_STACK_TR_INTERNAL = "percentageGlobalLangsStackTrInternal";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_STACK_TR_HOME = "percentageGlobalLangsStackTrHome";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_STACK_DEC_INTERNAL = "percentageGlobalLangsStackDecInternal";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_GLOBAL_PERCENTAGE_STACK_DEC_HOME = "percentageGlobalLangsStackDecHome";
-
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_INTERNAL = "percentageGlobalLangsInternalSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_HOME = "percentageGlobalLangsHomeSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_CORRECT_LINK_INTERNAL = "percentageGlobalCorrectLinkInternalSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_CORRECT_LINK_HOME = "percentageGlobalCorrectLinkHomeSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_STACK_INTERNAL = "percentageGlobalLangsStackInternalSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_STACK_HOME = "percentageGlobalLangsStackHomeSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_STACK_TR_INTERNAL = "percentageGlobalLangsStackTrInternalSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_STACK_TR_HOME = "percentageGlobalLangsStackTrHomeSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_STACK_DEC_INTERNAL = "percentageGlobalLangsStackDecInternalSeg";
-    public static final String OBSERVATORY_MULTILANGUAGE_GRAPHIC_SEGMENT_PERCENTAGE_STACK_DEC_HOME = "percentageGlobalLangsStackDecHomeSeg";
-
-    public static final String OBSERVATORY_MULTILANGUAGE_VALID_SUFFIX = "_ok";
-    public static final String OBSERVATORY_MULTILANGUAGE_INVALID_SUFFIX = "_ko";
 
     public static final String OBSERVATORY_GRAPHIC_GLOBAL_FORWARD = "getGlobalGraphics";
     public static final String OBSERVATORY_GRAPHIC_SEGMENT_FORWARD = "getSegmentGraphics";
@@ -501,12 +458,6 @@ public interface Constants {
     public static final String NO_DISPONIBLE = "NO DISPONIBLE";
     public static final String NOMBRE_ANTIGUO2 = "nombre_antiguo";
     public static final String RASTREO_ANTIGUO = "rastreo_antiguo";
-    public static final String ARCHIVO_TITULO_MAY = "001TituloMay";
-    public static final String ARCHIVO_TITULO_MIN = "001TituloMin";
-    public static final String ARCHIVO_TIPO_LISTA = "001TipoLista";
-    public static final String ARCHIVO_NOMBRE = "001NombreArchivo";
-    public static final String NOMBRE_ARCHIVO = "nombre_archivo";
-    public static final String NOMBREARCHIVO = "nombreArchivo";
     public static final String TIPO = "tipo";
     public static final String NUEVO = "nuevo";
     public static final String TIPO_SUBIR_SEMILLA = "tipoSubirSemilla";
@@ -600,10 +551,6 @@ public interface Constants {
     public static final String SUBMENU_GOOGLE = "submenuGoogle";
     public static final String SUBMENU_LISTADO_SEM = "submenuListadoSem";
     public static final String SUBMENU_CATEGORIES = "submenuCategories";
-    public static final String SUBMENU_CONFIG_MALWARE_A = "submenuConfigMalwareA";
-    public static final String SUBMENU_CONFIG_MALWARE_B = "submenuConfigMalwareB";
-    public static final String SUBMENU_CONFIG_MALWARE_C = "submenuConfigMalwareC";
-    public static final String SUBMENU_CONFIG_MALWARE_D = "submenuConfigMalwareD";
     public static final String SUBMENU_OBS_SEMILLA = "submenuSemillaObs";
     public static final String SUBMENU_OBSERVATORIO = "submenuObservatorio";
     public static final String URL = "url";
@@ -633,16 +580,6 @@ public interface Constants {
     public static final int STATUS_LAUNCHED = 2;
     public static final int STATUS_STOPPED = 3;
     public static final int STATUS_FINALIZED = 4;
-
-    public static final int HIGH_LENOX_PRIORITY = 3;
-    public static final int MEDIUM_LENOX_PRIORITY = 2;
-    public static final int LOW_LENOX_PRIORITY = 1;
-
-    public static final String HIGH_LENOX_PRIORITY_LABEL = "Alta";
-    public static final String MEDIUM_LENOX_PRIORITY_LABEL = "Media";
-    public static final String LOW_LENOX_PRIORITY_LABEL = "Baja";
-
-    public static final String LENOX_MAX_CONTEXT = "maxCont";
 
     public static final long ALL_DATA = 0;
 
@@ -707,7 +644,6 @@ public interface Constants {
     public static final String CONFIG_D_FORM = "ConfigDForm";
     public static final String SUBMIT_EDIT = "submitEdit";
     public static final String TERMS = "terms";
-    public static final String LOAD_TERMS = "loadTerms";
     public static final String DELETE_TERMS = "deleteTerms";
     public static final String ID_HIT = "idHit";
     public static final String HEADER = "header";
@@ -722,12 +658,6 @@ public interface Constants {
     public static final String EDIT_TERM = "editTerm";
     public static final String IS_UPDATE = "isUpdate";
     public static final String LOAD = "load";
-    public static final String EDITF = "editF";
-    public static final String EDIT_FILE = "editFile";
-    public static final String EDIT_A = "editA";
-    public static final String EDIT_B = "editB";
-    public static final String EDIT_C = "editC";
-    public static final String EDIT_D = "editD";
     public static final String MULTIMEDIA_FILE = "MultimediaFile";
     public static final String TYPE_LIST_FILE = "typeListFile";
     public static final String TYPE_LIST_FILE_BL = "bl";
@@ -736,47 +666,9 @@ public interface Constants {
     public static final String EDIT_FILE_FORM = "EditFileForm";
     public static final String FILE_CONTENT_LIST = "fileContentList";
     public static final String SHOW_FILE = "showFile";
-    public static final String CONFIG_A = "configA";
-    public static final String CONFIG_B = "configB";
-    public static final String CONFIG_C = "configC";
-    public static final String CONFIG_D = "configD";
     public static final String FILE = "file";
 
-    public static final String HOME_PS = "homePS";
-    public static final String LOAD_PS = "loadPS";
-    public static final String CHOICE_PS = "choicePS";
-    public static final String MODULE_RESULTS_PS = "moduleResultsPS";
-    public static final String TERM_RESULTS_PS = "termResultsPS";
-    public static final String HIT_RESULTS_PS = "hitResultsPS";
-    public static final String TERM_RESULTS_URL = "termResultsUrl";
-    public static final String MODULE_DETAIL_PS = "moduleDetailPS";
-    public static final String TERM_DETAIL_PS = "termDetailPS";
-    public static final String HIT_DETAIL_PS = "hitDetailPS";
-    public static final String VOLVER_HOME = "volerHome";
-    public static final String TYPE_PS_PARAM = "typePS";
-    public static final String TYPE_PS_PARAM_MODULE = "mod";
-    public static final String TYPE_PS_PARAM_HIT = "hit";
-    public static final String TYPE_PS_PARAM_TERM = "term";
-    public static final String MALWARE_HITS_LIST = "malwareHitsList";
-    public static final String MALWARE_TERMS_LIST = "malwareTermsList";
-    public static final String MALWARE_RESULTS_LIST = "malwareResultsList";
-    public static final String MALWARE_RESULTS_FORM = "malwareResultsForm";
-    public static final String MALWARE_HIT_FORM = "malwareHitForm";
-    public static final String ELECTION_LIST = "electionList";
-    public static final String DELETE_RESULT = "deleteResult";
-    public static final String URL_ID = "urlId";
-    public static final String PERSON_STADISTICS_FORM = "personStadisticsForm";
-
-    public static final String COMPLEXITY_LIST = "complexityList";
     public static final int COMPLEXITY_SEGMENT_NONE = 0;
-    public static final int COMPLEXITY_SEGMENT_1 = 1;
-    public static final int COMPLEXITY_SEGMENT_2 = 2;
-    public static final int COMPLEXITY_SEGMENT_3 = 3;
-    public static final String COMPLEXITY_SEGMENT_NAME_1 = "Segmento I";
-    public static final String COMPLEXITY_SEGMENT_NAME_2 = "Segmento II";
-    public static final String COMPLEXITY_SEGMENT_NAME_3 = "Segmento III";
-    public static final String GUIDELINE_TYPE_NORMAL = "normal";
-    public static final String GUIDELINE_TYPE_OBSERVATORY = "observatory";
     public static final String SCORE = "score";
 
     public static final int OBS_VALUE_NOT_SCORE = 0;
@@ -980,32 +872,8 @@ public interface Constants {
     public static final String EXPORT = "export";
     public static final String CONFIRM = "confirm";
 
-    public static final int MULTILANGUAGE_HOME = 0;
-    public static final int MULTILANGUAGE_INTERNAL_PAGES = 1;
-    public static final int MULTILANGUAGE_ALL = 2;
-
-    public static final int MULTILANGUAGE_TOTAL_VALIDATION = 0;
-    public static final int MULTILANGUAGE_DECLARATION_VALIDATION = 1;
-    public static final int MULTILANGUAGE_TRANSLATION_VALIDATION = 2;
-
-    public static final String MULTILANGUAGE_LANG_HOME_INFO = "langHomeInfo";
-    public static final String MULTILANGUAGE_LANG_INPG_INFO = "langImpgInfo";
-    public static final String MULTILANGUAGE_HOME_VAL_INFO = "homeValInfo";
-    public static final String MULTILANGUAGE_INPG_VAL_INFO = "inpgValInfo";
-    public static final String MULTILANGUAGE_HOME_DEC_INFO = "homeDecInfo";
-    public static final String MULTILANGUAGE_INPG_DEC_INFO = "inpgDecInfo";
-    public static final String MULTILANGUAGE_HOME_TR_INFO = "homeTrInfo";
-    public static final String MULTILANGUAGE_INPG_TR_INFO = "inpgTrInfo";
-    public static final String MULTILANGUAGE_INPG_LINK_TR_INFO = "inpgLinkTrInfo";
-    public static final String MULTILANGUAGE_HOME_LINK_TR_INFO = "homeLinkTrInfo";
-
     public static final String OBJECT_TYPE_PARAGRAPH = "paragraph";
     public static final String OBJECT_TYPE_SECTION = "section";
-
-    public static final String CHUNK_TYPE_LINK = "link";
-    public static final String CHUNK_TYPE_ANCHOR = "anchor";
-    public static final String CHUNK_TYPE_BOLD = "bold";
-    public static final String CHUNK_TYPE_UNDERLINE = "underline";
 
     public static final String WCAG_2 = "WCAG 2.0";
     public static final String WCAG_1 = "WCAG 1.0";

@@ -277,9 +277,9 @@
 										</div>
 									</logic:iterate> --%>
 								</div>
-								<div class="divCenter">_foo_<img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_MODALITY_VERIFICATION_N1 %>"></img></div>
+								<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_MODALITY_VERIFICATION_N1 %>"></img></div>
 								
-								<h3>_a_a<bean:message key="observatory.graphic.modality.by.verification.level.2.title" /></h3>
+								<h3><bean:message key="observatory.graphic.modality.by.verification.level.2.title" /></h3>
 								<div class="graphicInfo2">
 									<table>
 										<tr>

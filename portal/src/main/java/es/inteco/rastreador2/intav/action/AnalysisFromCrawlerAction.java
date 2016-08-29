@@ -51,12 +51,8 @@ public class AnalysisFromCrawlerAction extends Action {
         return null;
     }
 
-    private void getResultData(HttpServletRequest request) throws Exception {
-        Connection c = null;
-        Connection conn = null;
-        try {
-            c = DataBaseManager.getConnection();
-            conn = DataBaseManager.getConnection();
+    private void getResultData(final HttpServletRequest request) throws Exception {
+        try (final Connection c = DataBaseManager.getConnection()) {
             // Inicializamos el evaluador
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();
@@ -69,7 +65,7 @@ public class AnalysisFromCrawlerAction extends Action {
                 long id = Long.parseLong(request.getParameter(Constants.CODE));
 
                 Evaluator evaluator = new Evaluator();
-                Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), false);
+                Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false);
 
                 Locale locale = (Locale) request.getSession().getAttribute("org.apache.struts.action.LOCALE");
                 MessageResources messageResources = getResources(request);
@@ -93,9 +89,6 @@ public class AnalysisFromCrawlerAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Excepcion: ", AnalysisFromCrawlerAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(conn);
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -227,7 +220,7 @@ public class AnalysisFromCrawlerAction extends Action {
                 conn = DataBaseManager.getConnection();
                 Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
-                CrawlerUtils.returnText(new String(analysis.getSource().getBytes(CrawlerUtils.getCharset(analysis.getSource()))), response, true);
+                CrawlerUtils.returnText(response, new String(analysis.getSource().getBytes(CrawlerUtils.getCharset(analysis.getSource()))), true);
             }
 
         } catch (Exception e) {

@@ -4,21 +4,17 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.*;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.export.database.*;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -104,18 +100,17 @@ public final class DatabaseExportUtils {
         return observatory;
     }
 
-    public static Category getCategoryInfo(final MessageResources messageResources, CategoriaForm categoriaForm, Observatory observatory) throws Exception {
-//        final MessageResources messageResources = CrawlerUtils.getResources(request);
-        Category category = new Category();
+    public static Category getCategoryInfo(final MessageResources messageResources, final CategoriaForm categoriaForm, final Observatory observatory) throws Exception {
+        final Category category = new Category();
 
         category.setName(categoriaForm.getName());
         category.setObservatory(observatory);
         category.setIdCrawlerCategory(Long.valueOf(categoriaForm.getId()));
 
-        List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(observatory.getIdExecution()), Long.parseLong(categoriaForm.getId()), null);
+        final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(observatory.getIdExecution()), Long.parseLong(categoriaForm.getId()), null);
 
         // Número de portales por modalidad
-        Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
+        final Map<String, Integer> result = ResultadosAnonimosObservatorioIntavUtils.getResultsBySiteLevel(pageExecutionList);
         for (String key : result.keySet()) {
             if (key.equals(Constants.OBS_AA)) {
                 category.setNumAA(result.get(Constants.OBS_AA));
@@ -127,11 +122,11 @@ public final class DatabaseExportUtils {
         }
 
         // Porcentajes de cada modalidad en cada verificación
-        Map<String, BigDecimal> verificationAndModality = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_NONE);
+        final Map<String, BigDecimal> verificationAndModality = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_NONE);
         for (String key : verificationAndModality.keySet()) {
             if (!category.getVerificationModalityList().contains(new VerificationModality(key.replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""))) &&
                     !category.getVerificationModalityList().contains(new VerificationModality(key.replace(Constants.OBS_VALUE_RED_SUFFIX, "")))) {
-                VerificationModality verificationModality = new VerificationModality();
+                final VerificationModality verificationModality = new VerificationModality();
                 verificationModality.setCategory(category);
                 if (key.contains(Constants.OBS_VALUE_RED_SUFFIX)) {
                     verificationModality.setVerification(getVerificationId(key.replace(Constants.OBS_VALUE_RED_SUFFIX, "")));
@@ -155,19 +150,19 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuación de cada verificación
-        Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_NONE);
-        for (String key : verificationAndScore.keySet()) {
-            VerificationScore verificationScore = new VerificationScore();
-            verificationScore.setVerification(getVerificationId(key));
+        final Map<String, BigDecimal> verificationAndScore = ResultadosAnonimosObservatorioIntavUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_NONE);
+        for (Map.Entry<String, BigDecimal> verificationScoreEntry : verificationAndScore.entrySet()) {
+            final VerificationScore verificationScore = new VerificationScore();
+            verificationScore.setVerification(getVerificationId(verificationScoreEntry.getKey()));
             verificationScore.setCategory(category);
-            if (verificationAndScore.get(key).intValue() != -1) {
-                verificationScore.setScore(verificationAndScore.get(key));
+            if (verificationScoreEntry.getValue().intValue() != -1) {
+                verificationScore.setScore(verificationScoreEntry.getValue());
             }
             category.getVerificationScoreList().add(verificationScore);
         }
 
         // Puntuaciones por aspectos
-        Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
+        final Map<String, BigDecimal> aspectAndScore = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
         for (String key : aspectAndScore.keySet()) {
             AspectScore aspectScore = new AspectScore();
             aspectScore.setAspect(key);
@@ -177,9 +172,9 @@ public final class DatabaseExportUtils {
         }
 
         // Puntuación de cada modalidad
-        List<CategoriaForm> categories = new ArrayList<>();
+        final List<CategoriaForm> categories = new ArrayList<>();
         categories.add(categoriaForm);
-        Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(observatory.getIdExecution().toString(), pageExecutionList, categories);
+        final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = ResultadosAnonimosObservatorioIntavUtils.calculateMidPuntuationResultsBySegmentMap(observatory.getIdExecution().toString(), pageExecutionList, categories);
         for (String key : resultDataBySegment.get(categoriaForm).keySet()) {
             if (key.equals(Constants.OBS_AA)) {
                 category.setScoreAA(resultDataBySegment.get(categoriaForm).get(Constants.OBS_AA));
@@ -190,20 +185,16 @@ public final class DatabaseExportUtils {
             }
         }
 
-        Connection conn = null;
         try {
-            List<ObservatorySiteEvaluationForm> observatorySiteEvaluations = ResultadosAnonimosObservatorioIntavUtils.getSitesListByLevel(pageExecutionList);
+            final List<ObservatorySiteEvaluationForm> observatorySiteEvaluations = ResultadosAnonimosObservatorioIntavUtils.getSitesListByLevel(pageExecutionList);
             for (ObservatorySiteEvaluationForm observatorySiteEvaluationForm : observatorySiteEvaluations) {
-                Site site = getSiteInfo(messageResources, observatorySiteEvaluationForm, category);
+                final Site site = getSiteInfo(messageResources, observatorySiteEvaluationForm, category);
                 category.getSiteList().add(site);
             }
         } catch (Exception e) {
             Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
+            throw e;
         }
-
 
         return category;
     }

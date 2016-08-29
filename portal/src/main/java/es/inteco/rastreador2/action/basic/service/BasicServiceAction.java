@@ -82,7 +82,7 @@ public class BasicServiceAction extends Action {
             final BasicServiceQueingThread basicServiceQueingThread = new BasicServiceQueingThread(basicServiceForm);
             basicServiceQueingThread.start();
 
-            CrawlerUtils.returnText(getResources(request).getMessage("basic.service.queued"), response, false);
+            CrawlerUtils.returnText(response, getResources(request).getMessage("basic.service.queued"), false);
         } else if (errors.isEmpty()) {
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_LAUNCHED));
 
@@ -90,7 +90,7 @@ public class BasicServiceAction extends Action {
             final BasicServiceThread basicServiceThread = new BasicServiceThread(basicServiceForm);
             basicServiceThread.start();
 
-            CrawlerUtils.returnText(getResources(request).getMessage("basic.service.launched"), response, false);
+            CrawlerUtils.returnText(response, getResources(request).getMessage("basic.service.launched"), false);
         } else {
             final StringBuilder text = new StringBuilder(getResources(request).getMessage("basic.service.validation.errors"));
 
@@ -101,7 +101,7 @@ public class BasicServiceAction extends Action {
 
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_MISSING_PARAMS));
 
-            CrawlerUtils.returnText(text.toString(), response, false);
+            CrawlerUtils.returnText(response, text.toString(), false);
         }
 
         return null;
@@ -109,8 +109,6 @@ public class BasicServiceAction extends Action {
 
     private ActionForward executeCrawling(final ActionForm form, final HttpServletRequest request) throws Exception {
         Logger.putLog("executeCrawling", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
-
-        Connection conn = null;
 
         String pdfPath = null;
 
@@ -121,8 +119,7 @@ public class BasicServiceAction extends Action {
             basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
         }
 
-        try {
-            conn = DataBaseManager.getConnection();
+        try (final Connection conn = DataBaseManager.getConnection()) {
             //Lanzamos el rastreo de INTAV
             final CrawlerJob crawlerJob = new CrawlerJob();
             final Long idCrawling = System.nanoTime() * (-1);
@@ -198,8 +195,6 @@ public class BasicServiceAction extends Action {
             Logger.putLog("Excepcion: ", BasicServiceAction.class, Logger.LOG_LEVEL_ERROR, e);
             BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_ERROR);
         } finally {
-            DataBaseManager.closeConnection(conn);
-
             if (pdfPath != null && StringUtils.isNotEmpty(pdfPath)) {
                 // Borramos la carpeta con el PDF generado
                 File pdfFile = new File(pdfPath);

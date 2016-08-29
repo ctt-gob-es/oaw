@@ -293,7 +293,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 result.get(messageResources.getMessage("observatory.aspect.general"))));
 
         labelValueList.add(createLabelValueScore(messageResources,
-                messageResources.getMessage("esultados.anonimos.presentacion"),
+                messageResources.getMessage("resultados.anonimos.presentacion"),
                 result.get(messageResources.getMessage("observatory.aspect.presentation"))));
 
         labelValueList.add(createLabelValueScore(messageResources,
