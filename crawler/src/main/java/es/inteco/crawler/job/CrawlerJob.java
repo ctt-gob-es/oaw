@@ -289,6 +289,10 @@ public class CrawlerJob implements InterruptableJob {
 
             try {
                 HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
+                // Initial connection has greater timeout limit than other connections
+                connection.setConnectTimeout(connection.getConnectTimeout()*2);
+                connection.setReadTimeout(connection.getReadTimeout()*2);
+
                 int numRetries = 0;
                 int numRedirections = 0;
                 int responseCode = Integer.MAX_VALUE;
