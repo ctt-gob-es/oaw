@@ -123,60 +123,7 @@
 			</logic:notEqual>
 		</li>
 	</inteco:menu>
-	
-	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
-		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CONFIG_MALWARE %>">
-			<li class="menutit"><html:link forward="configModuloAMenu" titleKey="menu.config.malware.title"><bean:message key="menu.config.malware" /></html:link></li>
-		</logic:notEqual>
-		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CONFIG_MALWARE %>">
-			<li id="submenu"><span><bean:message key="menu.config.malware" /></span>
-				<ul>
-	    		    <li>
-	    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_A %>">
-	    		    		<html:link styleId="subselected" forward="configModuloAMenu" titleKey="menu.config.malware.a.title"><bean:message key="menu.config.malware.a" /></html:link>
-	    		    	</logic:equal>
-	    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_A %>">
-	    		    		<html:link forward="configModuloAMenu" titleKey="menu.config.malware.a.title"><bean:message key="menu.config.malware.a" /></html:link>
-	    		    	</logic:notEqual>
-	    		    </li>
-	    		    <li>
-	    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_B %>">
-	    		    		<html:link styleId="subselected" forward="configModuloBMenu" titleKey="menu.config.malware.b.title"><bean:message key="menu.config.malware.b" /></html:link>
-	    		    	</logic:equal>
-	    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_B %>">
-	    		    		<html:link forward="configModuloBMenu" titleKey="menu.config.malware.b.title"><bean:message key="menu.config.malware.b" /></html:link>
-	    		    	</logic:notEqual>
-	    		    </li>
-	    		    <li>
-	    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_C %>">
-	    		    		<html:link styleId="subselected" forward="configModuloCMenu" titleKey="menu.config.malware.c.title"><bean:message key="menu.config.malware.c" /></html:link>
-	    		    	</logic:equal>
-	    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_C %>">
-	    		    		<html:link forward="configModuloCMenu" titleKey="menu.config.malware.c.title"><bean:message key="menu.config.malware.c" /></html:link>
-	    		    	</logic:notEqual>
-	    		    </li>
-	    		    <li>
-	    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_D %>">
-	    		    		<html:link styleId="subselected" forward="configModuloDMenu" titleKey="menu.config.malware.d.title"><bean:message key="menu.config.malware.d" /></html:link>
-	    		    	</logic:equal>
-	    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CONFIG_MALWARE_D %>">
-	    		    		<html:link forward="configModuloDMenu" titleKey="menu.config.malware.d.title"><bean:message key="menu.config.malware.d" /></html:link>
-	    		    	</logic:notEqual>
-	    		    </li>
-	    		    <inteco:menu roles="<%=rolAdmin%>">
-						<li>
-							<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.MENU_CATEGORIES %>">
-								<html:link styleId="subselected" forward="categoriesMenu" titleKey="menuadmin.categorias.title"><bean:message key="menuadmin.categorias" /></html:link>
-							</logic:equal>
-							<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.MENU_CATEGORIES %>">
-								<html:link forward="categoriesMenu" titleKey="menuadmin.categorias.title"><bean:message key="menuadmin.categorias" /></html:link>
-							</logic:notEqual>
-						</li>
-					</inteco:menu>
-	    		</ul>
-	    	</li>
-	    </logic:equal>
-	</inteco:menu>
+
 	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig + \";\" + rolObservatory%>">	
 		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
 			<li class="menutit"><html:link forward="observatoryMenu" titleKey="menuadmin.observatorio.title"><bean:message key="menuadmin.observatorio" /></html:link></li>

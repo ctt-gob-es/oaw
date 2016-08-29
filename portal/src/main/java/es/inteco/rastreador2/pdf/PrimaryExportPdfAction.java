@@ -58,7 +58,7 @@ public class PrimaryExportPdfAction extends Action {
 
             final File pdfFile = buildPdf(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo, regenerate, request);
             try {
-                CrawlerUtils.returnFile(pdfFile.getPath(), response, "application/pdf", false);
+                CrawlerUtils.returnFile(response, pdfFile.getPath(), "application/pdf", false);
             } catch (Exception e) {
                 Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
                 return mapping.findForward(Constants.ERROR);
@@ -70,15 +70,12 @@ public class PrimaryExportPdfAction extends Action {
     }
 
     private boolean userHasAccess(final String user, final long idRastreo) {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+
+        try (final Connection c = DataBaseManager.getConnection()) {
             return user == null || RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user);
         } catch (Exception e) {
             Logger.putLog("Exception al comprobar permisos para exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
             return false;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -115,9 +112,7 @@ public class PrimaryExportPdfAction extends Action {
         final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
         final PropertiesManager pmgr = new PropertiesManager();
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
             final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idExecutionOb);
 
             if (request.getParameter("reverse") != null && request.getParameter("reverse").equalsIgnoreCase(Boolean.TRUE.toString())) {
@@ -132,8 +127,6 @@ public class PrimaryExportPdfAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

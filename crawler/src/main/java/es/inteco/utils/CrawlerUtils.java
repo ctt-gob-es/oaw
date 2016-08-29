@@ -279,7 +279,14 @@ public final class CrawlerUtils {
         PropertiesManager pmgr = new PropertiesManager();
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         if (connection instanceof HttpsURLConnection) {
-            ((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
+            final HttpsURLConnection httpsConnection =             ((HttpsURLConnection) connection);
+            httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
+            httpsConnection.setHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
         }
         connection.setInstanceFollowRedirects(followRedirects);
         connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
@@ -313,9 +320,25 @@ public final class CrawlerUtils {
         try {
             SSLContext sc = SSLContext.getInstance("SSL");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            return sc.getSocketFactory();
+//            return sc.getSocketFactory();
         } catch (Exception e) {
             Logger.putLog("Excepción: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            SSLContext.setDefault(sc);
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            });
+            return sc.getSocketFactory();
+        } catch (Exception e) {
+            Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return null;
     }

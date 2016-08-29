@@ -101,7 +101,7 @@ public final class StringUtils {
                 out.append(new String(b, 0, n));
             }
         }
-        return out.toString();
+        return out.toString().trim();
     }
 
     public static String removeHtmlTags(String htmlCode) {

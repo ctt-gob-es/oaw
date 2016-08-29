@@ -332,7 +332,7 @@ public final class RastreoDAO {
             pstmt.setInt(paramCount++, pagSize);
             pstmt.setInt(paramCount, resultFrom);
             rst = pstmt.executeQuery();
-            int num_rastreos = 0;
+            int numRastreos = 0;
             boolean firstIteration = true;
             final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
             final List<Rastreo> rastreos = new ArrayList<>();
@@ -342,9 +342,9 @@ public final class RastreoDAO {
                     cargarRastreosForm.setCartucho(rst.getString("aplicacion"));
                     firstIteration = false;
                 }
-                num_rastreos++;
+                numRastreos++;
                 Rastreo r = new Rastreo();
-                int id_rastreo = rst.getInt("id_rastreo");
+                int idRastreo = rst.getInt("id_rastreo");
                 //Código del rastreo
                 String nombreRastreo = rst.getString("nombre_rastreo");
                 if (nombreRastreo.contains("-")) {
@@ -358,7 +358,7 @@ public final class RastreoDAO {
                     r.setCodigo(nombreRastreo);
                 }
                 r.setActivo(rst.getLong("activo"));
-                r.setId_rastreo(String.valueOf(id_rastreo));
+                r.setId_rastreo(String.valueOf(idRastreo));
                 r.setPseudoAleatorio(String.valueOf(rst.getBoolean("pseudoaleatorio")));
                 r.setProfundidad(rst.getInt("profundidad"));
                 //Fecha del rastreo
@@ -381,7 +381,7 @@ public final class RastreoDAO {
             }
 
             cargarRastreosForm.setVr(rastreos);
-            cargarRastreosForm.setNum_rastreos(num_rastreos);
+            cargarRastreosForm.setNum_rastreos(numRastreos);
         } catch (Exception e) {
             Logger.putLog("Error al obtener los datos de la lista de rastreos", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
@@ -392,13 +392,13 @@ public final class RastreoDAO {
         return cargarRastreosForm;
     }
 
-    public static boolean existAccountFromCrawler(Connection c, long id_rastreo) throws Exception {
+    public static boolean existAccountFromCrawler(Connection c, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             ps = c.prepareStatement("SELECT id_cuenta FROM rastreo WHERE id_rastreo = ?");
-            ps.setLong(1, id_rastreo);
+            ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getLong("id_cuenta") != 0;
@@ -412,12 +412,12 @@ public final class RastreoDAO {
         return false;
     }
 
-    public static long getIdLRFromRastreo(Connection c, long id_rastreo) throws Exception {
+    public static long getIdLRFromRastreo(Connection c, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = c.prepareStatement("SELECT lista_rastreable FROM rastreo WHERE id_rastreo = ? ");
-            ps.setLong(1, id_rastreo);
+            ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -433,12 +433,12 @@ public final class RastreoDAO {
         return 0;
     }
 
-    public static long getIdLNRFromRastreo(Connection c, long id_rastreo) throws Exception {
+    public static long getIdLNRFromRastreo(Connection c, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = c.prepareStatement("SELECT lista_no_rastreable FROM rastreo WHERE id_rastreo = ? ");
-            ps.setLong(1, id_rastreo);
+            ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -454,7 +454,7 @@ public final class RastreoDAO {
         return 0;
     }
 
-    public static void borrarRastreo(Connection c, long id_rastreo) throws Exception {
+    public static void borrarRastreo(Connection c, long idRastreo) throws Exception {
         final List<Connection> connections = DAOUtils.getCartridgeConnections();
 
         try {
@@ -463,7 +463,7 @@ public final class RastreoDAO {
                 conn.setAutoCommit(false);
             }
 
-            borrarRastreo(c, connections, id_rastreo);
+            borrarRastreo(c, connections, idRastreo);
             c.commit();
             for (Connection conn : connections) {
                 conn.commit();
@@ -491,15 +491,15 @@ public final class RastreoDAO {
         }
     }
 
-    public static void borrarRastreo(Connection c, List<Connection> connections, long id_rastreo) throws Exception {
+    public static void borrarRastreo(Connection c, List<Connection> connections, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         try {
-            boolean existAccount = existAccountFromCrawler(c, id_rastreo);
-            long idListaRastreable = getIdLRFromRastreo(c, id_rastreo);
-            long idListaNoRastreable = getIdLNRFromRastreo(c, id_rastreo);
-            List<Long> executedCrawlingIdsList = getExecutedCrawlerIds(c, id_rastreo);
+            boolean existAccount = existAccountFromCrawler(c, idRastreo);
+            long idListaRastreable = getIdLRFromRastreo(c, idRastreo);
+            long idListaNoRastreable = getIdLNRFromRastreo(c, idRastreo);
+            List<Long> executedCrawlingIdsList = getExecutedCrawlerIds(c, idRastreo);
             ps = c.prepareStatement("DELETE FROM rastreo WHERE id_rastreo = ?");
-            ps.setLong(1, id_rastreo);
+            ps.setLong(1, idRastreo);
             ps.executeUpdate();
             DAOUtils.closeQueries(ps, null);
             if (!existAccount) {
@@ -527,7 +527,7 @@ public final class RastreoDAO {
         }
     }
 
-    public static void borrarRastreoRealizado(Connection c, long id_rastreo_realizado) throws Exception {
+    public static void borrarRastreoRealizado(Connection c, long idRastreoRealizado) throws Exception {
         final List<Connection> connections = DAOUtils.getCartridgeConnections();
 
         try {
@@ -536,7 +536,7 @@ public final class RastreoDAO {
                 conn.setAutoCommit(false);
             }
 
-            borrarRastreoRealizado(c, connections, id_rastreo_realizado);
+            borrarRastreoRealizado(c, connections, idRastreoRealizado);
             c.commit();
             for (Connection conn : connections) {
                 conn.commit();
@@ -564,14 +564,14 @@ public final class RastreoDAO {
         }
     }
 
-    public static void borrarRastreoRealizado(Connection c, List<Connection> connections, long id_rastreo_realizado) throws Exception {
+    public static void borrarRastreoRealizado(Connection c, List<Connection> connections, long idRastreoRealizado) throws Exception {
         PreparedStatement ps = null;
         try {
             ps = c.prepareStatement("DELETE FROM rastreos_realizados WHERE id = ?");
-            ps.setLong(1, id_rastreo_realizado);
+            ps.setLong(1, idRastreoRealizado);
             ps.executeUpdate();
             List<Long> executedCrawlingIdsList = new ArrayList<>();
-            executedCrawlingIdsList.add(id_rastreo_realizado);
+            executedCrawlingIdsList.add(idRastreoRealizado);
             deleteAnalyse(connections, executedCrawlingIdsList);
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -581,7 +581,7 @@ public final class RastreoDAO {
         }
     }
 
-    public static List<Long> getExecutedCrawlerIds(Connection connR, long id_rastreo) throws Exception {
+    public static List<Long> getExecutedCrawlerIds(Connection connR, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Long> executedCrawlerIds = new ArrayList<>();
@@ -590,7 +590,7 @@ public final class RastreoDAO {
             ps = connR.prepareStatement("SELECT rr.id FROM rastreo r " +
                     "JOIN rastreos_realizados rr ON (r.id_rastreo = rr.id_rastreo) " +
                     "WHERE r.id_rastreo = ?");
-            ps.setLong(1, id_rastreo);
+            ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
             while (rs.next()) {
                 executedCrawlerIds.add(rs.getLong("id"));
@@ -627,7 +627,7 @@ public final class RastreoDAO {
         }
     }
 
-    public static List<Long> getEvolutionExecutedCrawlerIds(Connection connR, long id_rastreo, long idTracking, long id_cartucho) throws Exception {
+    public static List<Long> getEvolutionExecutedCrawlerIds(Connection connR, long idRastreo, long idTracking, long idCartucho) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         int limit;
         try {
@@ -635,7 +635,7 @@ public final class RastreoDAO {
         } catch (NumberFormatException nfe) {
             limit = 4;
         }
-        return getEvolutionExecutedCrawlerIds(connR, id_rastreo, idTracking, id_cartucho, limit);
+        return getEvolutionExecutedCrawlerIds(connR, idRastreo, idTracking, idCartucho, limit);
     }
 
     public static List<Long> getEvolutionExecutedCrawlerIds(final Connection connection, long idRastreo, long idRastreoRealizado, long idCartucho, int limit) throws Exception {
@@ -705,12 +705,6 @@ public final class RastreoDAO {
                 for (Connection conn : connections) {
                     if (conn.getCatalog().contains("intav")) {
                         ps = conn.prepareStatement("DELETE FROM tanalisis WHERE cod_rastreo IN " + executionIdStrList);
-                    } else if (conn.getCatalog().contains("lenox")) {
-                        ps = conn.prepareStatement("DELETE FROM SEXISTA_RASTREOS WHERE id_rastreo IN " + executionIdStrList);
-                    } else if (conn.getCatalog().contains("malware")) {
-                        ps = conn.prepareStatement("DELETE FROM a001_malware_resultados WHERE id_rastreo IN " + executionIdStrList);
-                    } else if (conn.getCatalog().contains("multilanguage")) {
-                        ps = conn.prepareStatement("DELETE FROM analysis WHERE id_crawling IN " + executionIdStrList);
                     }
 
                     if (ps != null) {
@@ -783,12 +777,12 @@ public final class RastreoDAO {
         return datosCartuchoRastreoForm;
     }
 
-    public static void updateRastreo(Connection c, long id_rast) throws SQLException {
+    public static void updateRastreo(Connection c, long idRastreo) throws SQLException {
         PreparedStatement pst = null;
         try {
             pst = c.prepareStatement("UPDATE rastreo SET fecha_lanzado = ? WHERE id_rastreo = ?");
             pst.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            pst.setLong(2, id_rast);
+            pst.setLong(2, idRastreo);
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -799,12 +793,12 @@ public final class RastreoDAO {
         }
     }
 
-    public static void actualizarEstadoRastreo(Connection c, int id_rast, int status) throws SQLException {
+    public static void actualizarEstadoRastreo(Connection c, int idRastreo, int status) throws SQLException {
         PreparedStatement pst = null;
         try {
             pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE id_rastreo = ?");
             pst.setInt(1, status);
-            pst.setInt(2, id_rast);
+            pst.setInt(2, idRastreo);
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -1038,13 +1032,13 @@ public final class RastreoDAO {
     }
 
 
-    public static boolean rastreoValidoParaUsuario(Connection c, int id_rastreo, String user) throws SQLException {
+    public static boolean rastreoValidoParaUsuario(Connection c, int idRastreo, String user) throws SQLException {
         //comprobamos que el rastreo es valido para este usuario
         PreparedStatement pstmt = null;
         ResultSet rst = null;
         try {
             pstmt = c.prepareStatement("SELECT COUNT(*) FROM cartucho_rastreo WHERE id_rastreo = ? and id_cartucho = (SELECT id_cartucho FROM usuario WHERE usuario = ?)");
-            pstmt.setInt(1, id_rastreo);
+            pstmt.setInt(1, idRastreo);
             pstmt.setString(2, user);
             rst = pstmt.executeQuery();
             if (rst.next()) {
@@ -1064,7 +1058,7 @@ public final class RastreoDAO {
         PropertiesManager pmgr = new PropertiesManager();
         PreparedStatement ps = null;
         ResultSet rs = null;
-        int id_cartucho = -1;
+        int idCartucho = -1;
         try {
             c.setAutoCommit(false);
 
@@ -1072,11 +1066,11 @@ public final class RastreoDAO {
             ps.setString(1, insertarRastreoForm.getCartucho());
             rs = ps.executeQuery();
             while (rs.next()) {
-                id_cartucho = rs.getInt(1);
+                idCartucho = rs.getInt(1);
             }
             DAOUtils.closeQueries(ps, rs);
-            insertarRastreoForm.setId_cartucho(id_cartucho);
-            if (!CartuchoDAO.isCartuchoAccesibilidad(c, id_cartucho)) {
+            insertarRastreoForm.setId_cartucho(idCartucho);
+            if (!CartuchoDAO.isCartuchoAccesibilidad(c, idCartucho)) {
                 ps = c.prepareStatement("INSERT INTO rastreo (nombre_rastreo, fecha, profundidad, topn, semillas, lista_no_rastreable, lista_rastreable, estado, id_cuenta, pseudoaleatorio, activo, id_language, id_observatorio, automatico, exhaustive, in_directory) " +
                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             } else {
@@ -1129,19 +1123,19 @@ public final class RastreoDAO {
             ps.executeUpdate();
             DAOUtils.closeQueries(ps, rs);
 
-            int id_rastreo = -1;
+            int idRastreo = -1;
             ps = c.prepareStatement("SELECT * FROM rastreo WHERE nombre_rastreo = ?");
             ps.setString(1, insertarRastreoForm.getCodigo());
             rs = ps.executeQuery();
             while (rs.next()) {
-                id_rastreo = rs.getInt(1);
+                idRastreo = rs.getInt(1);
             }
             DAOUtils.closeQueries(ps, rs);
 
-            insertarRastreoForm.setId_rastreo(id_rastreo);
+            insertarRastreoForm.setId_rastreo(idRastreo);
             ps = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES (?, ?)");
-            ps.setInt(1, id_cartucho);
-            ps.setInt(2, id_rastreo);
+            ps.setInt(1, idCartucho);
+            ps.setInt(2, idRastreo);
             ps.executeUpdate();
 
             c.commit();
@@ -1160,13 +1154,13 @@ public final class RastreoDAO {
         return "";
     }
 
-    public static boolean isAutomaticCrawler(Connection c, long id_rastreo) throws Exception {
+    public static boolean isAutomaticCrawler(Connection c, long idRastreo) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
             ps = c.prepareStatement("SELECT automatico FROM rastreo WHERE id_rastreo = ?");
-            ps.setLong(1, id_rastreo);
+            ps.setLong(1, idRastreo);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getLong("automatico") == 1;
@@ -1514,15 +1508,15 @@ public final class RastreoDAO {
 
             if (seedsResults.size() != 0) {
                 query += "WHERE id_rastreo IN ";
-                StringBuilder IdStrList = new StringBuilder(" (");
+                StringBuilder idStrList = new StringBuilder(" (");
                 for (int i = 1; i <= seedsResults.size(); i++) {
                     if (seedsResults.size() > i) {
-                        IdStrList.append("?,");
+                        idStrList.append("?,");
                     } else if (seedsResults.size() == i) {
-                        IdStrList.append("?) ");
+                        idStrList.append("?) ");
                     }
                 }
-                query += IdStrList;
+                query += idStrList;
                 isWhere = true;
             }
 
@@ -1707,13 +1701,13 @@ public final class RastreoDAO {
         }
     }
 
-    public static Long getCrawlerFromSeedAndObservatory(Connection c, long id_seed, long id_observatory) throws Exception {
+    public static Long getCrawlerFromSeedAndObservatory(Connection c, long idSeed, long idObservatory) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
             ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.semillas = ?");
-            ps.setLong(1, id_observatory);
-            ps.setLong(2, id_seed);
+            ps.setLong(1, idObservatory);
+            ps.setLong(2, idSeed);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getLong(1);
@@ -1728,7 +1722,7 @@ public final class RastreoDAO {
         return null;
     }
 
-    public static List<Long> getCrawlerCategoryIds(Connection connR, long id_observatorio, long id_categoria) throws Exception {
+    public static List<Long> getCrawlerCategoryIds(Connection connR, long idObservatorio, long idCategoria) throws Exception {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Long> crawlerIds = new ArrayList<>();
@@ -1739,9 +1733,9 @@ public final class RastreoDAO {
                     "JOIN observatorio_categoria oc ON (oc.id_observatorio = o.id_observatorio)" +
                     "WHERE r.id_observatorio = ? AND oc.id_categoria = ? AND r.semillas IN (" +
                     "SELECT id_lista FROM lista WHERE id_categoria = ?)");
-            ps.setLong(1, id_observatorio);
-            ps.setLong(2, id_categoria);
-            ps.setLong(3, id_categoria);
+            ps.setLong(1, idObservatorio);
+            ps.setLong(2, idCategoria);
+            ps.setLong(3, idCategoria);
             rs = ps.executeQuery();
             while (rs.next()) {
                 crawlerIds.add(rs.getLong("id_rastreo"));

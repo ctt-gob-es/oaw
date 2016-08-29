@@ -688,19 +688,7 @@
     	<put name="title" value="application.title.resultados" />
         <put name="contents" value="/WEB-INF/pages/front/html/sections/lenox_listAnalysisByUrl.jsp"/>
     </definition>
-    
-    <!-- Resultados análisis por rastreo para Malware -->
-    <definition name=".listAnalysisByTrackingMalware" extends="mainLayout">
-    	<put name="title" value="application.title.resultados" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_listAnalysisByTracking.jsp"/>
-    </definition>
-    
-    <!-- Resultados análisis por rastreo para Malware -->
-    <definition name=".checkResultsMalware" extends="mainLayout">
-    	<put name="title" value="application.title.resultados" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_listAnalysisByUrl.jsp"/>
-    </definition>
-    
+
     <!-- Resultados análisis de enlaces rotos -->
     <definition name=".brokenLinksList" extends="mainLayout">
     	<put name="title" value="application.title.resultados" />
@@ -724,130 +712,7 @@
     	<put name="title" value="application.title.certificados" />
         <put name="contents" value="/WEB-INF/pages/front/html/sections/certificado_borrar.jsp"/>
     </definition>
-    
-    <!-- Configuración del módulo de Malware -->
-    <definition name=".configA" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_configA.jsp"/>
-    </definition>
-	
-    <definition name=".editA" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_editA.jsp"/>
-    </definition>
-    
-    <definition name=".terms" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_terms.jsp"/>
-    </definition>
-        
-    <definition name=".configB" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_configB.jsp"/>
-    </definition>
-    
-     <definition name=".editB" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_editB.jsp"/>
-    </definition>
-    
-    <definition name=".configC" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_configC.jsp"/>
-    </definition>
-    
-    <definition name=".editC" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_editC.jsp"/>
-    </definition>
-    
-    <definition name=".configD" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_configD.jsp"/>
-    </definition>
-    
-     <definition name=".editD" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_editD.jsp"/>
-    </definition>
-    
-    <definition name=".uploadFile" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_uploadFile.jsp"/>
-    </definition>
-    
-    <definition name=".editFile" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_editFile.jsp"/>
-    </definition>
-    
-    <definition name=".showFile" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_showFile.jsp"/>
-    </definition>
-    
-    <definition name=".falseAlarm" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_falseAlarm.jsp"/>
-    </definition>
-    
-    <definition name=".deleteConfirm" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_confirmacionEliminar.jsp"/>
-    </definition>
-    
-    <definition name=".homePS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsHome.jsp"/>
-    </definition>
-    
-    <definition name=".choicePS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsChoice.jsp"/>
-    </definition>
-    
-    <definition name=".moduleResultsPS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsModuleResults.jsp"/>
-    </definition>
-    
-    <definition name=".moduleDetailPS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsModuleDetail.jsp"/>
-    </definition>
-    
-    <definition name=".termResultsPS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsTermResults.jsp"/>
-    </definition>
-    
-    <definition name=".termDetailPS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsTermDetail.jsp"/>
-    </definition>
-    
-    <definition name=".hitResultsPS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsHitResults.jsp"/>
-    </definition>
-    
-     <definition name=".hitDetailPS" extends="mainLayout">
-    	<put name="title" value="application.title.config.malware" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_personStadisticsHitDetail.jsp"/>
-    </definition>
-    
-    <!-- Resultados análisis por rastreo para Malware -->
-    <definition name=".listAnalysisByModuleMalware" extends="mainLayout">
-    	<put name="title" value="application.title.resultados" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_listAnalysisByModule.jsp"/>
-    </definition>
-    
-    <!-- Resultados análisis por rastreo para Malware -->
-    <definition name=".listAnalysisByModuleMalwareDetail" extends="mainLayout">
-    	<put name="title" value="application.title.resultados" />
-        <put name="contents" value="/WEB-INF/pages/front/html/sections/malware_listAnalysisByModuleDetail.jsp"/>
-    </definition>
-    
+
     <!-- Resultados de búsqueda de análisis por rastreo -->
     <definition name=".listAnalysisByTrackingMultilanguage" extends="mainLayout">
     	<put name="title" value="application.title.resultados" />
