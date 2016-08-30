@@ -44,18 +44,18 @@ public class GraphicUtilsTest {
     }
 
     @Test
-    public void testGraphicsPsieChart() throws Exception {
+    public void testGraphicsGlobalEvolution() throws Exception {
         GraphicsUtils.totalPageStr = "N\u00BA Portales: ";
-        GraphicsUtils.totalPage = 35 + 112 + 14;
+        GraphicsUtils.totalPage = 90 + 243 + 22;
         final DefaultPieDataset dataSet = new DefaultPieDataset();
 
-        dataSet.setValue("Emperoran", Integer.valueOf(35));
-        dataSet.setValue("Se mantienen", Integer.valueOf(112));
-        dataSet.setValue("Mejoran", Integer.valueOf(14));
+        dataSet.setValue("Emperoran", Integer.valueOf(22));
+        dataSet.setValue("Se mantienen", Integer.valueOf(243));
+        dataSet.setValue("Mejoran", Integer.valueOf(90));
 
 
         final PropertiesManager pmgr = new PropertiesManager();
-        GraphicsUtils.createPieChart(dataSet, "Distribución según evolución de la puntuación", "/home/mikunis/evol_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
+        GraphicsUtils.createPieChart(dataSet, "", "/home/mikunis/evol_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
     }
 
     @Test

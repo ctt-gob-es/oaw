@@ -259,14 +259,15 @@ public final class CrawlerUtils {
         String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 
         textContent = removeHtmlComments(textContent);
+        // TODO: ¿Close markableInputStream?
 
         return textContent;
     }
 
-    public static InputStream getMarkableInputStream(HttpURLConnection connection) throws Exception {
-        InputStream content = connection.getInputStream();
+    public static InputStream getMarkableInputStream(final HttpURLConnection connection) throws Exception {
+        final InputStream content = connection.getInputStream();
 
-        BufferedInputStream stream = new BufferedInputStream(content);
+        final BufferedInputStream stream = new BufferedInputStream(content);
 
         // mark InputStream so we can restart it for validator
         if (stream.markSupported()) {
@@ -276,10 +277,10 @@ public final class CrawlerUtils {
     }
 
     public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         if (connection instanceof HttpsURLConnection) {
-            final HttpsURLConnection httpsConnection =             ((HttpsURLConnection) connection);
+            final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
             httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
             httpsConnection.setHostnameVerifier(new HostnameVerifier() {
                 @Override
@@ -302,7 +303,7 @@ public final class CrawlerUtils {
 
     private static SSLSocketFactory getNaiveSSLSocketFactory() {
         // Create a trust manager that does not validate certificate chains
-        TrustManager[] trustAllCerts = new TrustManager[] {
+        final TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
@@ -318,15 +319,7 @@ public final class CrawlerUtils {
 
         // Install the all-trusting trust manager
         try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-//            return sc.getSocketFactory();
-        } catch (Exception e) {
-            Logger.putLog("Excepción: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-
-        try {
-            SSLContext sc = SSLContext.getInstance("TLS");
+            final SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             SSLContext.setDefault(sc);
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
@@ -344,18 +337,18 @@ public final class CrawlerUtils {
     }
 
 
-    public static HttpURLConnection followRedirection(HttpURLConnection connection, String cookie, URL url, String redirectTo) throws Exception {
-        URL metaRedirection = new URL(url, redirectTo);
-        Logger.putLog("Siguiendo la redirección de " + connection.getURL() + " a " + metaRedirection, CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-        connection = getConnection(metaRedirection.toString(), url.toString(), false);
+    public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws Exception {
+        final URL metaRedirection = new URL(url, redirectTo);
+        final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
         connection.setRequestProperty("Cookie", cookie);
+        Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
         return connection;
     }
 
-    public static String getCookie(HttpURLConnection connection) {
+    public static String getCookie(final HttpURLConnection connection) {
         // Cogemos la lista de cookies, teniendo en cuenta que el parametro set-cookie no es sensible a mayusculas o minusculas
-        Map<String, List<String>> headerFields = connection.getHeaderFields();
-        List<String> headers = new ArrayList<>();
+        final Map<String, List<String>> headerFields = connection.getHeaderFields();
+        final List<String> headers = new ArrayList<>();
         if (headerFields != null && !headerFields.isEmpty()) {
             for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
                 if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {
@@ -378,11 +371,21 @@ public final class CrawlerUtils {
         return headerText.toString();
     }
 
-    public static boolean isOpenDNSResponse(HttpURLConnection connection) {
+    /**
+     * Comprueba si la conexión se ha realizado a la página de OpenDNS
+     * @param connection la conexión que se quiere comprobar
+     * @return true si la conexión se ha realizado a la página de OpenDNS o false en caso contrario.
+     */
+    public static boolean isOpenDNSResponse(final HttpURLConnection connection) {
         return connection.getHeaderField("Server") != null && connection.getHeaderField("Server").toLowerCase().contains("opendns");
     }
 
-    public static boolean isRss(String content) {
+    /**
+     * Comprueba si un contenido es un RSS
+     * @param content una cadena con un contenido textual
+     * @return true si corresponde a un RSS o false en caso contrario
+     */
+    public static boolean isRss(final String content) {
         return !content.toLowerCase().contains("</html>") && content.toLowerCase().contains("</rss>");
     }
 }
