@@ -310,6 +310,7 @@ public class CrawlerJob implements InterruptableJob {
 
                         final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                         String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                        markableInputStream.close();
                         // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
                         textContent = textContent.replaceAll("(?i)<iframe [^>]*/>", "");
                         final Document document = CrawlerDOMUtils.getDocument(textContent);
@@ -336,12 +337,12 @@ public class CrawlerJob implements InterruptableJob {
                             }
                         } else {
                             numRedirections++;
-                            connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), metaRedirect);
+                            connection = CrawlerUtils.followRedirection(cookie, new URL(url), metaRedirect);
                             responseCode = Integer.MAX_VALUE;
                         }
                     } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                         numRedirections++;
-                        connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), connection.getHeaderField("location"));
+                        connection = CrawlerUtils.followRedirection(cookie, new URL(url), connection.getHeaderField("location"));
                     } else {
                         if (CrawlerUtils.isOpenDNSResponse(connection)) {
                             Logger.putLog("La URL solicitada ha provocado la respuesta del OpenDNS", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
@@ -398,10 +399,16 @@ public class CrawlerJob implements InterruptableJob {
         analyze(crawlingDomains, crawlerData, cookie);
     }
 
-    private boolean incompleteCrawl(final CrawlerData crawlerData, final int chosenDepth) {
+    /**
+     * Comprueba si en el proceso de "crawling" se han obtenido menos páginas de las esperadas
+     * @param crawlerData la información CrawlerData del proceso
+     * @param crawlDepth la profundidad
+     * @return true si no se han alcazado el número esperado de páginas o false en caso contrario.
+     */
+    private boolean incompleteCrawl(final CrawlerData crawlerData, final int crawlDepth) {
         if (!crawlerData.isTest()) {
-            if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && chosenDepth != 1)) {
-                if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * chosenDepth + 1))) {
+            if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && crawlDepth != 1)) {
+                if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * crawlDepth + 1))) {
                     return true;
                 }
             }
@@ -409,6 +416,10 @@ public class CrawlerJob implements InterruptableJob {
         return false;
     }
 
+    /**
+     * Envía un correo de aviso a los administradores de la aplicación si el proceso de "crawling" ha finalizado con menos páginas de las esperadas.
+     * @param crawlerData la información CrawlerDate del proceso de crawling
+     */
     private void warnIncompleteCrawl(final CrawlerData crawlerData) {
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> mailTo = getAdministradoresMails();
@@ -484,6 +495,7 @@ public class CrawlerJob implements InterruptableJob {
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                     String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                    markableInputStream.close();
                     final String textContentHash = CrawlerUtils.getHash(textContent);
 
                     if (!md5Content.contains(textContentHash)) {
@@ -584,15 +596,16 @@ public class CrawlerJob implements InterruptableJob {
                 numRetries++;
             } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                 numRedirections++;
-                connection = CrawlerUtils.followRedirection(connection, cookie, new URL(connectedURL), connection.getHeaderField("location"));
+                connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
             } else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
                 final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                 final String remoteContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                markableInputStream.close();
                 if (!CrawlerUtils.isRss(remoteContent)) {
                     final Document document = CrawlerDOMUtils.getDocument(remoteContent);
                     final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(connectedURL, document);
                     if (StringUtils.isEmpty(metaRedirect)) {
-                        String remoteContentHash = CrawlerUtils.getHash(remoteContent);
+                        final String remoteContentHash = CrawlerUtils.getHash(remoteContent);
                         if (isValidUrl(rootUrl, domain, connectedURL, crawlerData)) {
                             if (!md5Content.contains(remoteContentHash)) {
                                 final CrawledLink crawledLink = new CrawledLink(connectedURL, remoteContent, numRetries, numRedirections);
@@ -624,7 +637,7 @@ public class CrawlerJob implements InterruptableJob {
                         }
                     } else {
                         numRedirections++;
-                        connection = CrawlerUtils.followRedirection(connection, cookie, new URL(connectedURL), metaRedirect);
+                        connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), metaRedirect);
                         responseCode = Integer.MAX_VALUE;
                     }
                 } else {
@@ -633,8 +646,8 @@ public class CrawlerJob implements InterruptableJob {
             } else {
                 Logger.putLog(String.format("La url %s ha respondido con el código %d y no se le pasara al analizador", connectedURL, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
             }
-            connection.disconnect();
         }
+        connection.disconnect();
 
         return false;
     }
