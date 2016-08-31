@@ -130,8 +130,8 @@ public class ExportHTMLAction extends Action {
 
         String htmlPath = pmgr.getValue(CRAWLER_PROPERTIES, "html.path").replace("{0}", request.getParameter(Constants.ID));
         String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "html.path").replace("{0}", request.getParameter(Constants.ID)) + Constants.ZIP_FILE;
-        ZipUtils.generateZip(htmlPath, zipPath, true);
-        es.inteco.rastreador2.utils.CrawlerUtils.returnFile(zipPath, response, "application/zip", true);
+        ZipUtils.generateZipFile(htmlPath, zipPath, true);
+        es.inteco.rastreador2.utils.CrawlerUtils.returnFile(response, zipPath, "application/zip", true);
 
         return null;
     }

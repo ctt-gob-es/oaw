@@ -186,19 +186,17 @@ public final class CrawlerUtils {
         return insertarRastreoForm;
     }
 
-    public static void returnFile(String filename, HttpServletResponse response, String contentype, boolean delete) throws Exception {
-        FileInputStream fileIn = null;
-        OutputStream out = null;
-        File file = new File(filename);
-        try {
-            fileIn = new FileInputStream(file);
-            out = response.getOutputStream();
-            response.setContentType(contentype);
+    public static void returnFile(final HttpServletResponse response, final String filename, final String mimeType, final boolean delete) throws Exception {
+        final File file = new File(filename);
+
+        try (final FileInputStream fileIn = new FileInputStream(file);
+             final OutputStream out = response.getOutputStream()) {
+
+            response.setContentType(mimeType);
             response.setContentLength((int) file.length());
-            response.setHeader("Content-disposition", "attachment; filename=\"" + file.getName()+"\"");
+            response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", file.getName()));
 
-
-            byte[] buffer = new byte[2048];
+            final byte[] buffer = new byte[2048];
             int bytesRead = fileIn.read(buffer);
             while (bytesRead >= 0) {
                 if (bytesRead > 0) {
@@ -206,62 +204,33 @@ public final class CrawlerUtils {
                     bytesRead = fileIn.read(buffer);
                 }
             }
-
+            out.flush();
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            try {
-                if (out != null) {
-                    out.flush();
-                    out.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+            if (delete && !file.delete()) {
+                Logger.putLog("No se ha podido borrar el fichero: " + file.getAbsolutePath(), ExportAction.class, Logger.LOG_LEVEL_ERROR);
             }
-
-            try {
-                if (fileIn != null) {
-                    fileIn.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-        }
-
-        if (delete && !file.delete()) {
-            Logger.putLog("No se ha podido borrar el fichero: " + file.getAbsolutePath(), ExportAction.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 
-    public static void returnStringAsFile(String content, HttpServletResponse response, String filename, String contentype) throws Exception {
-        PrintWriter out = null;
-        try {
-            out = response.getWriter();
-            response.setContentType(contentype);
+    public static void returnStringAsFile(final HttpServletResponse response, final String content, final String filename, final String mimeType) throws Exception {
+        try (final PrintWriter out = response.getWriter()) {
+            response.setContentType(mimeType);
             response.setContentLength(content.length());
-            response.setHeader("Content-disposition", "attachment; filename=\"" + filename+"\"");
+            response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", filename));
 
             out.print(content);
+            out.flush();
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            try {
-                if (out != null) {
-                    out.flush();
-                    out.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
-            }
         }
     }
 
-    public static void returnText(String text, HttpServletResponse response, boolean isHtml) throws Exception {
-        OutputStream out = null;
-        try {
-            out = response.getOutputStream();
+    public static void returnText(final HttpServletResponse response, final String text, final boolean isHtml) throws Exception {
+        try (final OutputStream out = response.getOutputStream()) {
             if (isHtml) {
                 response.setContentType("text/html");
             } else {
@@ -269,17 +238,10 @@ public final class CrawlerUtils {
             }
 
             out.write(text.getBytes());
+            out.flush();
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            try {
-                if (out != null) {
-                    out.flush();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
-            }
         }
     }
 
@@ -309,15 +271,11 @@ public final class CrawlerUtils {
     }
 
     public static List<LenguajeForm> getLanguages() {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
             return LanguageDAO.loadLanguages(c);
         } catch (Exception e) {
             Logger.putLog("Exception: ", CrawlerLoginAction.class, Logger.LOG_LEVEL_ERROR, e);
             return null;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -353,14 +311,10 @@ public final class CrawlerUtils {
     }
 
     public static String getFicheroNorma(long idGuideline) {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
             return es.inteco.plugin.dao.RastreoDAO.recuperarFicheroNorma(c, idGuideline);
         } catch (Exception e) {
             return null;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -371,7 +325,7 @@ public final class CrawlerUtils {
     }
 
     public static String getCharset(final String source) {
-        final String  charset;
+        final String charset;
         final String regexp = "<meta.*charset=(.*?)\"";
         final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 

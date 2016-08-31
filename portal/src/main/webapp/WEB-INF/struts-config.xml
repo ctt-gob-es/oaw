@@ -67,13 +67,6 @@
         <form-bean name="SemillaSearchForm" type="es.inteco.rastreador2.actionform.semillas.SemillaSearchForm"/>
         <form-bean name="CategoriaForm" type="es.inteco.rastreador2.actionform.semillas.CategoriaForm"/>
 
-        <!-- CATEGORIAS -->
-        <form-bean name="CargarCategoriasForm" type="es.inteco.rastreador2.actionform.categoria.CargarCategoriasForm"/>
-        <form-bean name="VerCategoriaForm" type="es.inteco.rastreador2.actionform.categoria.VerCategoriaForm"/>
-        <form-bean name="TratarCategoriasForm" type="es.inteco.rastreador2.actionform.categoria.TratarCategoriasForm"/>
-        <form-bean name="NuevaCategoriaForm" type="es.inteco.rastreador2.actionform.categoria.NuevaCategoriaForm"/>
-        <form-bean name="NuevoTerminoCatForm" type="es.inteco.rastreador2.actionform.categoria.NuevoTerminoCatForm"/>
-
         <!-- COMUN -->
         <form-bean name="LanzarWrapCommandForm" type="es.inteco.rastreador2.actionform.comun.LanzarWrapCommandForm"/>
         <form-bean name="LanzarComandoForm" type="es.inteco.rastreador2.actionform.comun.LanzarComandoForm"/>
@@ -100,21 +93,6 @@
                    type="es.inteco.rastreador2.actionform.cuentausuario.ModificarCuentaUsuarioForm"/>
 
         <form-bean name="CertificateForm" type="es.inteco.rastreador2.actionform.ssl.CertificateForm"/>
-
-        <!-- MALWARE -->
-        <form-bean name="ConfigAForm" type="es.inteco.rastreador2.malware.actionform.ConfigAForm"/>
-        <form-bean name="ConfigBForm" type="es.inteco.rastreador2.malware.actionform.ConfigBForm"/>
-        <form-bean name="ConfigCForm" type="es.inteco.rastreador2.malware.actionform.ConfigCForm"/>
-        <form-bean name="ConfigDForm" type="es.inteco.rastreador2.malware.actionform.ConfigDForm"/>
-        <form-bean name="MalwareTermForm" type="es.inteco.rastreador2.malware.actionform.MalwareTermForm"/>
-        <form-bean name="UploadFileForm" type="es.inteco.rastreador2.malware.actionform.UploadFileForm"/>
-        <form-bean name="EditFileForm" type="es.inteco.rastreador2.malware.actionform.EditFileForm"/>
-        <form-bean name="PersonStadisticsChoiceForm"
-                   type="es.inteco.rastreador2.malware.actionform.PersonStadisticsChoiceForm"/>
-        <form-bean name="UrlSearchForm" type="es.inteco.rastreador2.malware.actionform.UrlSearchForm"/>
-
-        <!-- LENOX -->
-        <form-bean name="InformesSearchForm" type="es.inteco.rastreador2.lenox.form.InformesSearchForm"/>
 
         <!-- SERVICIO BASICO -->
         <form-bean name="BasicServiceForm" type="es.inteco.rastreador2.actionform.basic.service.BasicServiceForm"/>
@@ -162,16 +140,8 @@
         <forward name="listCategory" path="/secure/ResultadosAnonimosObservatorio.do?action=getObservatoryGraphic"/>
         <forward name="getObservatoryGraphicIntav"
                  path="/secure/ResultadosAnonimosObservatorioIntav.do?action=getObservatoryGraphic"/>
-        <forward name="getObservatoryGraphicLenox"
-                 path="/secure/ResultadosAnonimosObservatorioLenox.do?action=getObservatoryGraphic"/>
-        <forward name="getObservatoryGraphicMultilanguage"
-                 path="/secure/ResultadosAnonimosObservatorioMultilanguage.do?action=getObservatoryGraphic"/>
         <forward name="regenerateGraphicIntav"
                  path="/secure/ResultadosAnonimosObservatorioIntav.do?action=regenerateGraphic"/>
-        <forward name="regenerateGraphicLenox"
-                 path="/secure/ResultadosAnonimosObservatorioLenox.do?action=regenerateGraphic"/>
-        <forward name="regenerateGraphicMultilanguage"
-                 path="/secure/ResultadosAnonimosObservatorioMultilanguage.do?action=regenerateGraphic"/>
         <forward name="getGraphicFile" path="/secure/GraficasObservatorio.do"/>
         <forward name="categoriesMenu" path="/secure/CargarCategorias.do"/>
         <forward name="editCategorie" path="/secure/ModificarCategoria.do"/>
@@ -229,13 +199,9 @@
         <forward name="showAnalysisFromCrawlerRecover"
                  path="/secure/showAnalysisFromCrawlerAction.do?action=recoverEvaluation"/>
         <forward name="getHtmlSource" path="/secure/showAnalysisFromCrawlerAction.do?action=getHtmlSource"/>
-        <forward name="showLenoxResultsByUrl" path="/secure/lenoxResultsAction.do?accion=resultsByUrl"/>
         <forward name="deleteObservatoryCrawlerExecutionConf"
                  path="/secure/ResultadosObservatorio.do?action=confirmacionExSeed"/>
         <forward name="deleteObservatoryCrawlerExecution" path="/secure/ResultadosObservatorio.do?action=borrarEx"/>
-        <forward name="showLenoxResultsUrlDetail" path="/secure/lenoxResultsAction.do?accion=urlDetail"/>
-        <forward name="showMalwareResultsByUrl" path="/secure/malwareUrlAction.do?accion=resultsByUrl"/>
-        <forward name="showMalwareResultsUrlDetail" path="/secure/malwareUrlAction.do?accion=urlDetail"/>
         <forward name="getBrokenLinksList" path="/secure/brokenLinksAction.do"/>
         <forward name="loadCertificateForm" path="/secure/certificatesAction.do?accion=loadCertificateForm"/>
         <forward name="uploadCertificate" path="/secure/certificatesAction.do?accion=uploadCertificate"/>
@@ -267,16 +233,6 @@
         <forward name="moduleResultsPS" path="/secure/PersonalStadistics.do?action=moduleResultsPS"/>
         <forward name="termResultsPS" path="/secure/PersonalStadistics.do?action=termResultsPS"/>
         <forward name="hitResultsPS" path="/secure/PersonalStadistics.do?action=hitResultsPS"/>
-        <forward name="falseAlarm" path="/secure/malwareUrlAction.do?accion=deleteConfirmation"/>
-        <forward name="malwareExportCSV" path="/secure/malwareUrlAction.do?accion=exportCSV"/>
-        <forward name="malwareExportPDF" path="/secure/malwareUrlAction.do?accion=exportPDF"/>
-        <forward name="malwareModuleExportCSV" path="/secure/malwareModuleAction.do?accion=exportCSV"/>
-        <forward name="malwareModuleExportPDF" path="/secure/malwareModuleAction.do?accion=exportPDF"/>
-        <forward name="malwareModuleDetailExportCSV" path="/secure/malwareModuleAction.do?accion=exportDetailCSV"/>
-        <forward name="malwareModuleDetailExportPDF" path="/secure/malwareModuleAction.do?accion=exportDetailPDF"/>
-        <forward name="malwareResultsByModule" path="/secure/malwareModuleAction.do?accion=resultsByModule"/>
-        <forward name="malwareResultsByModuleDetail"
-                 path="/secure/malwareModuleAction.do?accion=resultsByModuleDetail"/>
         <forward name="verCuentasUsuario" path="/secure/VerCuentaUsuario.do?accion=listAccounts"/>
         <forward name="verCuentaUsuario" path="/secure/VerCuentaUsuario.do?accion=getDetail"/>
         <forward name="verObservatorio" path="/secure/VerObservatorio.do?accion=getDetail"/>
@@ -291,7 +247,6 @@
         <forward name="getAnnexes" path="/secure/ResultadosObservatorio.do?action=getAnnexes"/>
         <forward name="editMyUserAccount" path="/secure/ModificarMiCuentaUsuario.do?deMenu=true"/>
         <forward name="exportAllPdfs" path="/secure/primaryExportPdfAction.do?action=exportAllPdfs"/>
-        <forward name="exportAllPdfsM" path="/secure/multilanguagePrimaryExportPdfAction.do?action=exportAllPdfs"/>
 
         <forward name="uploadConclusion" path="/secure/ResultadosAnonimosObservatorio.do?action=upLoadPage"/>
 
@@ -312,13 +267,6 @@
 
         <forward name="primaryExportPdfAction" path="/secure/primaryExportPdfAction.do"/>
         <forward name="anonymousExportPdfAction" path="/secure/anonymousExportPdfAction.do"/>
-
-        <forward name="multilanguageListAnalysis" path="/secure/multilanguageAction.do?action=listAnalysis"/>
-        <forward name="getMultilanguageHtmlSource" path="/secure/multilanguageAction.do?action=getHtmlSource"/>
-        <forward name="multilanguageGetAnalysis" path="/secure/multilanguageAction.do?action=getDetail"/>
-        <forward name="multilanguagePrimaryExportPdfAction" path="/secure/multilanguagePrimaryExportPdfAction.do"/>
-        <forward name="getAnnexesMultilanguage"
-                 path="/secure/multilanguagePrimaryExportPdfAction.do?action=getAnnexes"/>
 
         <forward name="databaseExportActionConfirm" path="/secure/databaseExportAction.do?action=confirm"/>
         <forward name="databaseExportActionExport" path="/secure/databaseExportAction.do?action=export"/>
@@ -441,25 +389,6 @@
             <forward name="getSegmentGraphics" path=".graficasObservatorioSegmento"/>
             <forward name="getEvolutionGraphics" path=".graficasObservatorioEvolucion"/>
             <forward name="getEvolutionGraphicsUNE2102" path=".graficasObservatorioEvolucionUNE2012"/>
-            <forward name="categoryList" path=".indiceGraficasCatObservatorio"/>
-        </action>
-
-        <action path="/secure/ResultadosAnonimosObservatorioLenox"
-                type="es.inteco.rastreador2.action.observatorio.ResultadosAnonimosObservatorioAction">
-            <forward name="getEvolutionObservatoryGraphic" path=".indiceGraficasEvolucionObservatorioLenox"/>
-            <forward name="getGlobalGraphics" path=".graficasObservatorioLenoxGlobal"/>
-            <forward name="getSegmentIGraphics" path=".graficasObservatorioLenoxSegmentoI"/>
-            <forward name="getSegmentIIGraphics" path=".graficasObservatorioLenoxSegmentoII"/>
-            <forward name="getSegmentIIIGraphics" path=".graficasObservatorioLenoxSegmentoIII"/>
-            <forward name="getEvolutionGraphics" path=".graficasObservatorioLenoxEvolucion"/>
-        </action>
-
-        <action path="/secure/ResultadosAnonimosObservatorioMultilanguage"
-                type="es.inteco.rastreador2.action.observatorio.ResultadosAnonimosObservatorioAction">
-            <forward name="getEvolutionObservatoryGraphic" path=".indiceGraficasEvolucionObservatorioLenox"/>
-            <forward name="getGlobalGraphics" path=".graficasObservatorioMultilanguageGlobal"/>
-            <forward name="getSegmentGraphics" path=".graficasObservatorioMultilanguageSegmento"/>
-            <forward name="getEvolutionGraphics" path=".graficasObservatorioMultilanguageEvolucion"/>
             <forward name="categoryList" path=".indiceGraficasCatObservatorio"/>
         </action>
 
@@ -1000,39 +929,6 @@
             <forward name="volverCarga" path="/secure/CargarCategorias.do"/>
         </action>
 
-        <action path="/secure/NuevoTerminoCat"
-                type="es.inteco.rastreador2.action.categoria.NuevoTerminoCatAction"
-                scope="request"
-                name="NuevoTerminoCatForm"
-                validate="false"
-                input="/secure/NuevoTerminoCat.do">
-            <forward name="exito" path=".Exito"/>
-            <forward name="volver" path=".nuevoTerminoCat"/>
-            <forward name="exitoNuevo" path=".nuevoTerminoCat"/>
-            <forward name="volverCarga" path="/secure/ModificarCategoria.do"/>
-        </action>
-
-        <action path="/secure/EliminarTerminoCat"
-                type="es.inteco.rastreador2.action.categoria.EliminarTerminoCatAction"
-                scope="request"
-                name="NuevoTerminoCatForm"
-                validate="false">
-            <forward name="volver" path=".eliminarTerminoCat"/>
-            <forward name="exito" path=".Exito"/>
-            <forward name="volverCarga" path="/secure/ModificarCategoria.do"/>
-        </action>
-
-        <action path="/secure/ModificarTerminoCat"
-                type="es.inteco.rastreador2.action.categoria.ModificarTerminoCatAction"
-                scope="request"
-                name="NuevoTerminoCatForm"
-                validate="false"
-                input="/secure/ModificarTerminoCat.do">
-            <forward name="exito" path=".Exito"/>
-            <forward name="volver" path=".modificarTerminoCat"/>
-            <forward name="volverCarga" path="/secure/ModificarCategoria.do"/>
-        </action>
-
         <action path="/secure/chartAction"
                 type="es.inteco.rastreador2.action.rastreo.ChartIntavAction"
                 scope="request"
@@ -1048,12 +944,6 @@
 
         <action path="/secure/primaryExportPdfAction"
                 type="es.inteco.rastreador2.pdf.PrimaryExportPdfAction"
-                scope="request"
-                >
-        </action>
-
-        <action path="/secure/multilanguagePrimaryExportPdfAction"
-                type="es.inteco.rastreador2.pdf.MultilanguagePrimaryExportPdfAction"
                 scope="request"
                 >
         </action>
@@ -1143,31 +1033,6 @@
             <forward name="checkObservatoryResults" path=".checkObservatoryResults"/>
         </action>
 
-        <action path="/secure/lenoxResultsAction"
-                name="InformesSearchForm"
-                scope="request"
-                type="es.inteco.rastreador2.lenox.action.InformesDispatchAction">
-            <forward name="resultsByUrl" path=".listAnalysisByTrackingLenox"/>
-            <forward name="urlDetail" path=".checkResultsLenox"/>
-        </action>
-
-        <action path="/secure/malwareUrlAction"
-                name="UrlSearchForm"
-                scope="request"
-                validate="false"
-                input="/secure/malwareUrlAction.do?accion=resultsByUrl"
-                type="es.inteco.rastreador2.malware.action.MalwareUrlAction">
-            <forward name="resultsByUrl" path=".listAnalysisByTrackingMalware"/>
-            <forward name="urlDetail" path=".checkResultsMalware"/>
-            <forward name="deleteConfirmation" path=".falseAlarm"/>
-        </action>
-
-        <action path="/secure/malwareModuleAction"
-                type="es.inteco.rastreador2.malware.action.MalwareModuleAction">
-            <forward name="resultsByModule" path=".listAnalysisByModuleMalware"/>
-            <forward name="resultsByModuleDetail" path=".listAnalysisByModuleMalwareDetail"/>
-        </action>
-
         <action path="/secure/brokenLinksAction"
                 type="es.inteco.rastreador2.action.rastreo.BrokenLinksAction">
             <forward name="getBrokenLinks" path=".brokenLinksList"/>
@@ -1184,107 +1049,6 @@
             <forward name="deleteConfirmation" path=".deleteConfirmation"/>
             <forward name="exito" path=".Exito"/>
             <forward name="volverCarga" path="/secure/certificatesAction.do?accion=loadCertificateForm"/>
-        </action>
-
-        <action path="/secure/ConfigurarModulo"
-                type="es.inteco.rastreador2.malware.action.ConfigModuloAction"
-                name="MalwareTermForm"
-                validate="false"
-                scope="request"
-                input="/secure/ConfigurarModulo.do?action=loadTerms">
-            <forward name="terms" path=".terms"/>
-            <forward name="confirmacionDelete" path=".deleteConfirm"/>
-        </action>
-
-        <action path="/secure/ConfigurarModuloA"
-                type="es.inteco.rastreador2.malware.action.ConfigModuloAAction"
-                name="ConfigAForm"
-                validate="false">
-            <forward name="config" path=".configA"/>
-            <forward name="edit" path=".editA"/>
-            <forward name="volver" path="/secure/ConfigurarModuloA.do?action=config"/>
-        </action>
-
-        <action path="/secure/ConfigurarModuloB"
-                type="es.inteco.rastreador2.malware.action.ConfigModuloBAction"
-                name="ConfigBForm"
-                validate="false">
-            <forward name="config" path=".configB"/>
-            <forward name="edit" path=".editB"/>
-            <forward name="volver" path="/secure/ConfigurarModuloB.do?action=config"/>
-        </action>
-
-        <action path="/secure/ConfigurarModuloC"
-                type="es.inteco.rastreador2.malware.action.ConfigModuloCAction"
-                name="ConfigCForm"
-                validate="false">
-            <forward name="config" path=".configC"/>
-            <forward name="edit" path=".editC"/>
-            <forward name="volver" path="/secure/ConfigurarModuloC.do?action=config"/>
-        </action>
-
-        <action path="/secure/ConfigurarModuloD"
-                type="es.inteco.rastreador2.malware.action.ConfigModuloDAction"
-                name="ConfigDForm"
-                validate="false">
-            <forward name="config" path=".configD"/>
-            <forward name="edit" path=".editD"/>
-            <forward name="volver" path="/secure/ConfigurarModuloD.do?action=config"/>
-        </action>
-
-        <action path="/secure/UploadFile"
-                type="es.inteco.rastreador2.malware.action.UploadFileAction"
-                name="UploadFileForm"
-                validate="false">
-            <forward name="uploadFile" path=".uploadFile"/>
-            <forward name="editA" path="/secure/ConfigurarModuloA.do?action=edit"/>
-            <forward name="editB" path="/secure/ConfigurarModuloB.do?action=edit"/>
-            <forward name="editC" path="/secure/ConfigurarModuloC.do?action=edit"/>
-            <forward name="editD" path="/secure/ConfigurarModuloD.do?action=edit"/>
-        </action>
-
-        <action path="/secure/EditFile"
-                type="es.inteco.rastreador2.malware.action.EditFileAction"
-                name="EditFileForm"
-                validate="false">
-            <forward name="editFile" path=".editFile"/>
-            <forward name="uploadFile" path=".uploadFile"/>
-            <forward name="editA" path="/secure/ConfigurarModuloA.do?action=edit"/>
-            <forward name="editB" path="/secure/ConfigurarModuloB.do?action=edit"/>
-            <forward name="editC" path="/secure/ConfigurarModuloC.do?action=edit"/>
-            <forward name="editD" path="/secure/ConfigurarModuloD.do?action=edit"/>
-        </action>
-
-        <action path="/secure/ShowFile"
-                type="es.inteco.rastreador2.malware.action.ShowFileAction">
-            <forward name="showFile" path=".showFile"/>
-            <forward name="configA" path="/secure/ConfigurarModuloA.do?action=config"/>
-            <forward name="configB" path="/secure/ConfigurarModuloB.do?action=config"/>
-            <forward name="configC" path="/secure/ConfigurarModuloC.do?action=config"/>
-            <forward name="configD" path="/secure/ConfigurarModuloD.do?action=config"/>
-        </action>
-
-        <action path="/secure/PersonalStadistics"
-                type="es.inteco.rastreador2.malware.action.PersonalStadisticsAction"
-                name="PersonStadisticsChoiceForm"
-                validate="false">
-            <forward name="homePS" path=".homePS"/>
-            <forward name="choicePS" path=".choicePS"/>
-            <forward name="moduleResultsPS" path=".moduleResultsPS"/>
-            <forward name="termResultsPS" path=".termResultsPS"/>
-            <forward name="hitResultsPS" path=".hitResultsPS"/>
-            <forward name="moduleDetailPS" path=".moduleDetailPS"/>
-            <forward name="hitDetailPS" path=".hitDetailPS"/>
-            <forward name="termDetailPS" path=".termDetailPS"/>
-        </action>
-
-        <action path="/secure/multilanguageAction"
-                type="es.inteco.rastreador2.multilanguage.action.MultilanguageAction"
-                scope="request"
-                validate="false">
-            <forward name="listAnalysisByTracking" path=".listAnalysisByTrackingMultilanguage"/>
-            <forward name="analysisDetail" path=".analysisDetailMultilanguage"/>
-            <forward name="getMultilanguageHtmlSource" path=".analysisDetailMultilanguage"/>
         </action>
 
         <!-- SERVICIO DIAGNOSTICO -->

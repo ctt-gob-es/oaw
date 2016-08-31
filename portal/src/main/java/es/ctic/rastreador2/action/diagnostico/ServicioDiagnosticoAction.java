@@ -31,18 +31,15 @@ public class ServicioDiagnosticoAction extends Action {
             final ActionErrors errors = servicioDiagnosticoForm.validate(mapping, request);
             validarRangoFechas(errors, servicioDiagnosticoForm);
             if (errors.isEmpty()) {
-                final Connection conn = DataBaseManager.getConnection();
-                try {
+                try (final Connection conn = DataBaseManager.getConnection()){
                     final DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     final Date startDate = format.parse(servicioDiagnosticoForm.getStartDate() + " 00:00:00");
                     final Date endDate = convertToIncludingEndDate(format, servicioDiagnosticoForm.getEndDate() + " 23:59:59");
 
                     final String csv = DiagnosisDAO.getBasicServiceRequestCSV(conn, startDate, endDate);
-                    CrawlerUtils.returnStringAsFile(csv, response, "servicio_diagnostico_" + servicioDiagnosticoForm.getStartDate() + "-" + servicioDiagnosticoForm.getEndDate() + ".csv", "text/csv");
+                    CrawlerUtils.returnStringAsFile(response, csv, "servicio_diagnostico_" + servicioDiagnosticoForm.getStartDate() + "-" + servicioDiagnosticoForm.getEndDate() + ".csv", "text/csv");
                 } catch (Exception e) {
                     Logger.putLog("ERROR al intentar exportar datos del servicio de diagnóstico", ServicioDiagnosticoAction.class, Logger.LOG_LEVEL_ERROR, e);
-                } finally {
-                    DataBaseManager.closeConnection(conn);
                 }
                 return null;
             } else {

@@ -145,9 +145,6 @@ public final class DAOUtils {
 
         final List<String> datasources = new ArrayList<>();
         datasources.add("datasource.name.intav");
-        datasources.add("datasource.name.malware");
-        datasources.add("datasource.name.lenox");
-        datasources.add("datasource.name.multilanguage");
 
         for (String datasource : datasources) {
             try {

@@ -1,6 +1,3 @@
-import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import es.inteco.common.CheckAccessibility;
-import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -9,41 +6,19 @@ import es.inteco.crawler.ignored.links.Utils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
-import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
-import es.inteco.rastreador2.utils.ChartForm;
-import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 import es.inteco.utils.MailUtils;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.struts.util.MessageResources;
-import org.dom4j.DocumentHelper;
-import org.dom4j.io.DOMWriter;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.XMLWriter;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
  * Created by mikunis on 26/11/14.
@@ -136,13 +111,13 @@ public class TestCrawl {
                             }
                         } else {
                             numRedirections++;
-                            connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), metaRedirect);
+                            connection = CrawlerUtils.followRedirection(cookie, new URL(url), metaRedirect);
                             responseCode = Integer.MAX_VALUE;
                         }
 
                     } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                         numRedirections++;
-                        connection = CrawlerUtils.followRedirection(connection, cookie, new URL(url), connection.getHeaderField("location"));
+                        connection = CrawlerUtils.followRedirection(cookie, new URL(url), connection.getHeaderField("location"));
                     } else {
                         if (CrawlerUtils.isOpenDNSResponse(connection)) {
                             LOG.info("La URL solicitada ha provocado la respuesta del OpenDNS");
@@ -256,7 +231,7 @@ public class TestCrawl {
                 numRetries++;
             } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                 numRedirections++;
-                connection = CrawlerUtils.followRedirection(connection, cookie, new URL(urlLink), connection.getHeaderField("location"));
+                connection = CrawlerUtils.followRedirection(cookie, new URL(urlLink), connection.getHeaderField("location"));
             } else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
                 InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
                 String remoteContent = CrawlerUtils.getTextContent(connection, markableInputStream);
@@ -296,7 +271,7 @@ public class TestCrawl {
                         }
                     } else {
                         numRedirections++;
-                        connection = CrawlerUtils.followRedirection(connection, cookie, new URL(urlLink), metaRedirect);
+                        connection = CrawlerUtils.followRedirection(cookie, new URL(urlLink), metaRedirect);
                         responseCode = Integer.MAX_VALUE;
                     }
                 } else {

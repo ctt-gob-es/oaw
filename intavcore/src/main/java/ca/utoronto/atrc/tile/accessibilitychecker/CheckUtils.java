@@ -65,9 +65,9 @@ public final class CheckUtils {
     /**
      * Comprueba si un documento HTML tiene forma de contacto en la página de declaración de accesibilidad aplicando una serie de patrones sobre los enlaces y texto.
      *
-     * @param document documento HTML en formato DOM a analizar
+     * @param document      documento HTML en formato DOM a analizar
      * @param contactRegExp expresión regular para detectar enlaces a sección de contacto (contactar,contacte,...)
-     * @param emailRegExp expresión regular para detectar si se incluye una dirección de correo directamente en el contenido (contacto@portal.es)
+     * @param emailRegExp   expresión regular para detectar si se incluye una dirección de correo directamente en el contenido (contacto@portal.es)
      * @return true si se ha detectado una forma de contacto, false en caso contrario
      * @throws Exception
      */
@@ -101,7 +101,7 @@ public final class CheckUtils {
     /**
      * Comprueba si un documento HTML tiene la fecha de la última revisión en la página de declaración de accesibilidad aplicando una serie de patrones de fecha sobre el texto.
      *
-     * @param document documento DOM HTML sobre el que buscar la fecha de la última revisión
+     * @param document   documento DOM HTML sobre el que buscar la fecha de la última revisión
      * @param dateRegExp expresión regular que identifica un formato de fecha
      * @return true si se ha detectado la fecha de la última revisión, false en caso contrario
      * @throws Exception
@@ -230,7 +230,7 @@ public final class CheckUtils {
 
             if (allowedPorts.contains(String.valueOf(remoteUrl.getPort()))) {
                 checkedLinks = (CheckedLinks) elementRoot.getUserData("checkedLinks");
-                if (checkedLinks==null) {
+                if (checkedLinks == null) {
                     checkedLinks = new CheckedLinks();
                     elementRoot.setUserData("checkedLinks", checkedLinks, null);
                 }
@@ -274,7 +274,7 @@ public final class CheckUtils {
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
             return false;
         } finally {
-            if (remoteUrl != null && checkedLinks!=null) {
+            if (remoteUrl != null && checkedLinks != null) {
                 checkedLinks.getCheckedLinks().add(remoteUrl.toString());
             }
         }

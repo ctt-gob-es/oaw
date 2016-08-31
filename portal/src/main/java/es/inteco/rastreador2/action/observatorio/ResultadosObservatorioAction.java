@@ -69,10 +69,8 @@ public class ResultadosObservatorioAction extends Action {
         return null;
     }
 
-    private ActionForward deleteObservatoryExecutedSeed(HttpServletRequest request, ActionMapping mapping) {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+    private ActionForward deleteObservatoryExecutedSeed(final HttpServletRequest request, final ActionMapping mapping) {
+        try (final Connection c = DataBaseManager.getConnection()) {
             RastreoDAO.borrarRastreoRealizado(c, Long.parseLong(request.getParameter(Constants.ID)));
             PropertiesManager pmgr = new PropertiesManager();
             String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.ejecutada.eliminada");
@@ -82,52 +80,39 @@ public class ResultadosObservatorioAction extends Action {
             return mapping.findForward(Constants.EXITO2);
         } catch (Exception e) {
             Logger.putLog("Excepcion al borrar la ejecucion de la semilla del Observatorio.", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return mapping.findForward(Constants.ERROR_PAGE);
     }
 
-    private ActionForward showDeleteSeedExecution(HttpServletRequest request, ActionMapping mapping) {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+    private ActionForward showDeleteSeedExecution(final HttpServletRequest request, final ActionMapping mapping) {
+        try (final Connection c = DataBaseManager.getConnection()) {
             request.setAttribute(Constants.SEMILLA_FORM, SemillaDAO.getSeedById(c, Long.parseLong(request.getParameter(Constants.ID_SEMILLA))));
             return mapping.findForward(Constants.CONFIRMACION_DELETE);
         } catch (Exception e) {
             Logger.putLog("Exceción al recuperar los datos de la semilla.", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return mapping.findForward(Constants.ERROR_PAGE);
     }
 
-    private ActionForward deleteSeedConfirmation(ActionMapping mapping, HttpServletRequest request) throws Exception {
-        Connection c = null;
+    private ActionForward deleteSeedConfirmation(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
+        if (request.getParameter(Constants.OBSERVATORY_ID) != null) {
+            request.setAttribute(Constants.OBSERVATORY_ID, request.getParameter(Constants.OBSERVATORY_ID));
+        }
+        final String idSemilla = request.getParameter(Constants.SEMILLA);
 
-        try {
-            if (request.getParameter(Constants.OBSERVATORY_ID) != null) {
-                request.setAttribute(Constants.OBSERVATORY_ID, request.getParameter(Constants.OBSERVATORY_ID));
-            }
-            final String idSemilla = request.getParameter(Constants.SEMILLA);
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
             final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return mapping.findForward(Constants.CONFIRMACION2);
     }
 
-    public ActionForward deleteCrawlerSeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
-        Connection c = null;
-
-        try {
-            String idSemilla = request.getParameter(Constants.SEMILLA);
-            String confirmacion = request.getParameter(Constants.CONFIRMACION);
-            c = DataBaseManager.getConnection();
+    private ActionForward deleteCrawlerSeed(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
+        final String idSemilla = request.getParameter(Constants.SEMILLA);
+        final String confirmacion = request.getParameter(Constants.CONFIRMACION);
+        try (final Connection c = DataBaseManager.getConnection()) {
             if (confirmacion.equals(Constants.CONF_SI)) {
                 SemillaDAO.deleteObservatorySeed(c, Long.parseLong(idSemilla), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 ActionMessages messages = new ActionMessages();
@@ -139,14 +124,12 @@ public class ResultadosObservatorioAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Error: ", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return new ActionForward(mapping.findForward(Constants.GET_SEED_RESULTS_FORWARD));
     }
 
-    public ActionForward throwCrawlerSeedExecution(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward throwCrawlerSeedExecution(ActionMapping mapping, HttpServletRequest request) throws Exception {
         Connection c = null;
         ActionForward forward = null;
 
@@ -231,14 +214,11 @@ public class ResultadosObservatorioAction extends Action {
         crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
     }
 
-    public ActionForward getSeeds(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+    private ActionForward getSeeds(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
         final SemillaForm semillaForm = (SemillaForm) form;
-
         final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
             final PropertiesManager pmgr = new PropertiesManager();
 
             final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
@@ -251,21 +231,16 @@ public class ResultadosObservatorioAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
     }
 
-
     public ActionForward getFulfilledObservatories(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         final Long observatoryId = Long.valueOf(request.getParameter(Constants.OBSERVATORY_ID));
 
-        Connection c = null;
         //Para mostrar todos los Rastreos del Sistema
-        try {
-            c = DataBaseManager.getConnection();
+        try (final Connection c = DataBaseManager.getConnection()) {
 
             final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
             final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
@@ -275,14 +250,12 @@ public class ResultadosObservatorioAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Exception: ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return mapping.findForward(Constants.GET_FULFILLED_OBSERVATORIES);
     }
 
-    public ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+    private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         try {
             final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
             final Long idOperation = System.currentTimeMillis();
@@ -292,16 +265,16 @@ public class ResultadosObservatorioAction extends Action {
 
             final PropertiesManager pmgr = new PropertiesManager();
             final String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
-            ZipUtils.generateZip(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation.toString(), zipPath, true);
+            ZipUtils.generateZipFile(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation.toString(), zipPath, true);
 
-            CrawlerUtils.returnFile(zipPath, response, "application/zip", true);
+            CrawlerUtils.returnFile(response, zipPath, "application/zip", true);
 
             FileUtils.deleteDir(new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation));
 
             return null;
         } catch (Exception e) {
             Logger.putLog("Exception generando los anexos.", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-            ActionErrors errors = new ActionErrors();
+            final ActionMessages errors = new ActionMessages();
             errors.add("usuarioDuplicado", new ActionMessage("data.export"));
             saveErrors(request, errors);
             return getFulfilledObservatories(mapping, request);
