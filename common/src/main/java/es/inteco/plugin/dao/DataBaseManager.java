@@ -4,15 +4,17 @@ import es.inteco.common.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public final class DataBaseManager {
 
     private DataBaseManager() {
     }
 
-    public static Connection getConnection() {
+    public static Connection getConnection() throws SQLException, NamingException {
         Logger.putLog("Conectando a la base de datos OAW", DataBaseManager.class, Logger.LOG_LEVEL_DEBUG);
         try {
             final Context initContext = new InitialContext();
@@ -21,9 +23,8 @@ public final class DataBaseManager {
             return ds.getConnection();
         } catch (Exception e) {
             Logger.putLog("Error al conectar a la base de datos OAW", DataBaseManager.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
         }
-
-        return null;
     }
 
     public static void closeConnection(final Connection conn) {

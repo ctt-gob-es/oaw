@@ -19,7 +19,7 @@ import java.util.List;
 
 public final class AnalisisDatos {
 
-    private AnalisisDatos(){
+    private AnalisisDatos() {
     }
 
     public static int setAnalisis(final Connection conn, final Analysis analisis) {
@@ -46,10 +46,10 @@ public final class AnalisisDatos {
             pstmt.executeUpdate();
 
             pstmt.getGeneratedKeys();
-            int codigoAnalisis =0 ;
+            int codigoAnalisis = 0;
             rs = pstmt.getGeneratedKeys();
-            if (rs.next()){
-                codigoAnalisis=rs.getInt(1);
+            if (rs.next()) {
+                codigoAnalisis = rs.getInt(1);
             }
 
             return codigoAnalisis;
@@ -62,37 +62,27 @@ public final class AnalisisDatos {
     }
 
     public static void updateChecksEjecutados(final String updatedChecks, final long idAnalisis) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
-        try {
-            conn = DataBaseManager.getConnection();
-            pstmt = conn.prepareStatement(query);
+        final String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
+        try (final Connection conn = DataBaseManager.getConnection();
+             final PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, updatedChecks);
             pstmt.setLong(2, idAnalisis);
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Logger.putLog("SQLException: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            close(conn, null, pstmt);
+        } catch (Exception e) {
+            Logger.putLog("Exception: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
-    public static void endAnalysisSuccess(Evaluation eval) {
-        Connection conn = null;
-        PreparedStatement pstmt = null;
-        String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
-        try {
-            conn = DataBaseManager.getConnection();
-            pstmt = conn.prepareStatement(query);
+    public static void endAnalysisSuccess(final Evaluation eval) {
+        final String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
+        try (final Connection conn = DataBaseManager.getConnection();
+             final PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, eval.getChecksExecutedStr());
             pstmt.setInt(2, IntavConstants.STATUS_SUCCESS);
             pstmt.setLong(3, eval.getIdAnalisis());
             pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Logger.putLog("SQLException: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            close(conn, null, pstmt);
+        } catch (Exception e) {
+            Logger.putLog("Exception: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -104,7 +94,7 @@ public final class AnalisisDatos {
         try {
             conn = DataBaseManager.getConnection();
             pstmt = conn.prepareStatement("SELECT COD_GUIDELINE FROM tguidelines WHERE DES_GUIDELINE = ?;");
-            pstmt.setString(1, getGuideline(checkAccessibility.getGuidelineFile().replace("-nobroken","")) );
+            pstmt.setString(1, getGuideline(checkAccessibility.getGuidelineFile().replace("-nobroken", "")));
             rs = pstmt.executeQuery();
             int codGuideline = 0;
             if (rs.next()) {
@@ -121,10 +111,10 @@ public final class AnalisisDatos {
             pstmt.executeUpdate();
 
             pstmt.getGeneratedKeys();
-            int codigoAnalisis = 0 ;
+            int codigoAnalisis = 0;
             rs = pstmt.getGeneratedKeys();
-            if (rs.next()){
-                codigoAnalisis=rs.getInt(1);
+            if (rs.next()) {
+                codigoAnalisis = rs.getInt(1);
             }
 
             return codigoAnalisis;
@@ -318,8 +308,8 @@ public final class AnalisisDatos {
     }
 
     private static String getGuideline(final String guideline) {
-        if ( guideline.contains("-nobroken") ) {
-            return guideline.replace("-nobroken","");
+        if (guideline.contains("-nobroken")) {
+            return guideline.replace("-nobroken", "");
         } else {
             return guideline;
         }

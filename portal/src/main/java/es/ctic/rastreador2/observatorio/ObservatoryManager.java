@@ -33,7 +33,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 /**
  * Clase para manejar Observatorios
  *
- * Creado por miguel.garcia@fundacionctic.org on 19/07/16.
+ * @author miguel.garcia@fundacionctic.org
  */
 public class ObservatoryManager {
 
@@ -57,7 +57,7 @@ public class ObservatoryManager {
      */
     public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(long idObservatoryExecution, final List<Long> evaluationIds) {
         final List<ObservatoryEvaluationForm> evaluationList = new ArrayList<>(evaluationIds.size());
-        try (Connection c = DataBaseManager.getConnection()) {
+        try (final Connection c = DataBaseManager.getConnection()) {
             final Evaluator evaluator = new Evaluator();
             for (Long id : evaluationIds) {
                 try {
@@ -69,14 +69,14 @@ public class ObservatoryManager {
                     Logger.putLog("Exception: ", ObservatoryManager.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Logger.putLog("Exception: ", ObservatoryManager.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return evaluationList;
     }
 
     public RankingInfo calculatePreviousRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
-        try (Connection c = DataBaseManager.getConnection()) {
+        try (final Connection c = DataBaseManager.getConnection()) {
             final Long previousObservatoryExecution = ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution);
             return calculateRanking(previousObservatoryExecution, currentSeed);
         } catch (Exception e) {
@@ -92,7 +92,7 @@ public class ObservatoryManager {
      * @return
      */
     public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
-        try (Connection c = DataBaseManager.getConnection()) {
+        try (final Connection c = DataBaseManager.getConnection()) {
             List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
             final RankingInfo rankingInfo = new RankingInfo();
             rankingInfo.setGlobalSeedsNumber(seedsResults.size());
@@ -137,13 +137,17 @@ public class ObservatoryManager {
         return null;
     }
 
-    public long getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(Long idRastreo, long idObservatoryExecution) {
-        try (Connection c = DataBaseManager.getConnection()) {
+    /**
+     * Obtiene el rastreo previo a un determinado rastreo de un observatorio
+     * @param idRastreo id del rastreo del que se quiere obtener el rastreo previo
+     * @param idObservatoryExecution id del observatorio al que pertenece el rastreo.
+     * @return el id del rastreo o 0 si no existe
+     */
+    public long getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(final Long idRastreo, final long idObservatoryExecution) {
+        try (final Connection c = DataBaseManager.getConnection()) {
             return RastreoDAO.getIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(c, idRastreo, idObservatoryExecution);
-        } catch (SQLException e) {
-            Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return 0;
     }
