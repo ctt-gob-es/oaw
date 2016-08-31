@@ -7,7 +7,10 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
@@ -44,18 +47,36 @@ public class GraphicUtilsTest {
     }
 
     @Test
+    public void testEvolutionAverageScore() throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color");
+
+        final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+        dataSet.addValue(7.61, "", "18/09/15");
+        dataSet.addValue(7.43, "", "23/11/15");
+        dataSet.addValue(7.73, "", "22/08/16");
+        final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, false, false, false, false, true, false, 580, 458, color);
+        observatoryGraphicsForm.setFixedColorBars(true);
+        observatoryGraphicsForm.setOnePixelGraph(false);
+        GraphicsUtils.createStandardBarChart(observatoryGraphicsForm, "/home/mikunis/evolution_average_score.jpg", "", messageResources, false);
+    }
+
+    @Test
     public void testGraphicsPsieChart() throws Exception {
         GraphicsUtils.totalPageStr = "N\u00BA Portales: ";
-        GraphicsUtils.totalPage = 35 + 112 + 14;
-        final DefaultPieDataset dataSet = new DefaultPieDataset();
+        final int empeoran = 20;
+        final int mantienen = 94;
+        final int mejoran = 32;
+        GraphicsUtils.totalPage = empeoran + mantienen + mejoran;
 
-        dataSet.setValue("Emperoran", Integer.valueOf(35));
-        dataSet.setValue("Se mantienen", Integer.valueOf(112));
-        dataSet.setValue("Mejoran", Integer.valueOf(14));
+        final DefaultPieDataset dataSet = new DefaultPieDataset();
+        dataSet.setValue("Empeoran", Integer.valueOf(empeoran));
+        dataSet.setValue("Se mantienen", Integer.valueOf(mantienen));
+        dataSet.setValue("Mejoran", Integer.valueOf(mejoran));
 
 
         final PropertiesManager pmgr = new PropertiesManager();
-        GraphicsUtils.createPieChart(dataSet, "Distribución según evolución de la puntuación", "/home/mikunis/evol_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
+        GraphicsUtils.createPieChart(dataSet, "", "/home/mikunis/evol_1.jpg", "", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
     }
 
     @Test
@@ -90,10 +111,40 @@ public class GraphicUtilsTest {
 
     @Test
     public void testEvaluacionNivelInformeAgregado() throws Exception {
-        final Map<String, Map<String, Double>> data = new HashMap<>();
-        populateEvolutionObservatoryData(data, "16/09/15", new double[]{7.20, 6.80, 7.90, 7.30, 7.90, 8.80, 8.80, 7.80, 9.40, 7.10}, LEVEL_I_VERIFICATIONS);
-        populateEvolutionObservatoryData(data, "27/11/15", new double[]{7.40, 7.10, 8.10, 7.90, 8.00, 8.80, 8.90, 7.90, 9.50, 4.20}, LEVEL_I_VERIFICATIONS);
-        populateEvolutionObservatoryData(data, "19/08/16", new double[]{7.70, 7.40, 8.40, 7.50, 8.20, 9.00, 9.20, 8.30, 9.60, 4.70}, LEVEL_I_VERIFICATIONS);
+        final Map<String, Map<String, Double>> data = new LinkedHashMap<>();
+        populateEvolutionObservatoryData(data, "18/09/15", new double[]{6.70,
+                6.60,
+                7.60,
+                7.20,
+                6.60,
+                8.40,
+                8.60,
+                8.80,
+                9.60,
+                6
+        }, LEVEL_I_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "23/11/15", new double[]{6.70,
+                6.50,
+                7.50,
+                7.10,
+                6.70,
+                8.40,
+                8.70,
+                8.80,
+                9.70,
+                2.60
+        }, LEVEL_I_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "22/08/16", new double[]{6.70,
+                6.60,
+                7.50,
+                7.20,
+                6.90,
+                8.40,
+                8.80,
+                9,
+                9.60,
+                2.90
+        }, LEVEL_I_VERIFICATIONS);
 
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<String, Map<String, Double>> observatoryEntry : data.entrySet()) {
@@ -108,9 +159,39 @@ public class GraphicUtilsTest {
         GraphicsUtils.createStandardBarChart(chartForm, "/home/mikunis/evolucion_agregado_level_i.jpg", "", messageResources, true);
 
         data.clear();
-        populateEvolutionObservatoryData(data, "16/09/15", new double[]{8.80, 10.00, 5.90, 8.60, 6.70, 10.00, 5.50, 8.60, 9.70, 6.10}, LEVEL_II_VERIFICATIONS);
-        populateEvolutionObservatoryData(data, "27/11/15", new double[]{8.90, 10.00, 6.10, 8.80, 6.70, 10.00, 5.60, 8.70, 9.70, 6.40}, LEVEL_II_VERIFICATIONS);
-        populateEvolutionObservatoryData(data, "19/08/16", new double[]{9.10, 10.00, 6.10, 8.90, 6.80, 9.90, 6.00, 8.70, 9.60, 8.90}, LEVEL_II_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "18/09/15", new double[]{8.80,
+                10,
+                5,
+                8.40,
+                5.30,
+                10,
+                4.10,
+                8.90,
+                9.40,
+                6
+        }, LEVEL_II_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "23/11/15", new double[]{8.70,
+                10,
+                5.10,
+                8.40,
+                5.10,
+                10,
+                4.10,
+                8.90,
+                9.50,
+                6.10
+        }, LEVEL_II_VERIFICATIONS);
+        populateEvolutionObservatoryData(data, "22/08/16", new double[]{8.90,
+                10,
+                5.80,
+                8.50,
+                5.60,
+                10,
+                5.10,
+                8.90,
+                9.40,
+                8.40
+        }, LEVEL_II_VERIFICATIONS);
 
         dataSet.clear();
         for (Map.Entry<String, Map<String, Double>> observatoryEntry : data.entrySet()) {
@@ -170,10 +251,26 @@ public class GraphicUtilsTest {
 
     @Test
     public void testEvaluacionPuntuacionMediaAspecto() throws Exception {
-        final Map<String, Map<String, Double>> data = new HashMap<>();
-        populateEvolutionObservatoryData(data, "16/09/15", new double[]{7.90, 9.10, 7.20, 8.40, 7.20}, ASPECTS);
-        populateEvolutionObservatoryData(data, "27/11/15", new double[]{7.50, 9.20, 7.40, 8.50, 7.40}, ASPECTS);
-        populateEvolutionObservatoryData(data, "19/08/16", new double[]{7.80, 9.30, 7.50, 8.90, 7.70}, ASPECTS);
+        final Map<String, Map<String, Double>> data = new LinkedHashMap<>();
+
+        populateEvolutionObservatoryData(data, "18/09/15", new double[]{7.60,
+                9,
+                6.60,
+                8.20,
+                6.70
+        }, ASPECTS);
+        populateEvolutionObservatoryData(data, "23/11/15", new double[]{7,
+                9.10,
+                6.60,
+                8.10,
+                6.70
+        }, ASPECTS);
+        populateEvolutionObservatoryData(data, "22/08/16", new double[]{7.30,
+                9,
+                6.80,
+                8.60,
+                6.70
+        }, ASPECTS);
 
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<String, Map<String, Double>> observatoryEntry : data.entrySet()) {
@@ -192,26 +289,26 @@ public class GraphicUtilsTest {
     @Test
     public void testModalityVerificationSegment() throws Exception {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-        final int[] passPercentages = new int[]{95,
-                100,
-                82,
-                86,
-                71,
-                100,
-                66,
-                84,
+        final int[] passPercentages = new int[]{91,
                 99,
+                52,
+                91,
+                69,
+                100,
+                61,
                 94,
+                100,
+                89
 
 
         };
         for (int i = 0; i < LEVEL_I_VERIFICATIONS.length; i++) {
-            dataSet.addValue(passPercentages[i], "Modalidad pasa", LEVEL_I_VERIFICATIONS[i]);
-            dataSet.addValue(100 - passPercentages[i], "Modalidad falla", LEVEL_I_VERIFICATIONS[i]);
+            dataSet.addValue(passPercentages[i], "Modalidad pasa", LEVEL_II_VERIFICATIONS[i]);
+            dataSet.addValue(100 - passPercentages[i], "Modalidad falla", LEVEL_II_VERIFICATIONS[i]);
         }
 
         final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, 580, 458, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
-        GraphicsUtils.createStackedBarChart(chartForm, "", "/home/mikunis/modality_verification_level_ii_segment.jpg");
+        GraphicsUtils.createStackedBarChart(chartForm, "", "/home/mikunis/modality_verification_level_ii_segment_viii.jpg");
     }
 
 }

@@ -75,34 +75,24 @@ public class CrawlerJob implements InterruptableJob {
     private List<String> getAdministradoresMails() {
         final List<String> mails = new ArrayList<>();
 
-        PreparedStatement ps = null;
         ResultSet rs = null;
-        try (final Connection c = DataBaseManager.getConnection()) {
-            if (c != null) {
-                ps = c.prepareStatement("SELECT email FROM usuario u " +
-                        "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
-                        "WHERE ur.id_rol = ?;");
-                ps.setLong(1, 1);
+        try (final Connection c = DataBaseManager.getConnection();
+             final PreparedStatement ps = c.prepareStatement("SELECT email FROM usuario u " +
+                     "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
+                     "WHERE ur.id_rol = ?;");) {
+            ps.setLong(1, 1);
 
-                rs = ps.executeQuery();
+            rs = ps.executeQuery();
 
-                while (rs.next()) {
-                    mails.add(rs.getString("email"));
-                }
+            while (rs.next()) {
+                mails.add(rs.getString("email"));
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Logger.putLog("Error al obtener los correos de los administradores", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
         } finally {
             try {
                 if (rs != null) {
                     rs.close();
-                }
-            } catch (SQLException e) {
-                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
-            }
-            try {
-                if (ps != null) {
-                    ps.close();
                 }
             } catch (SQLException e) {
                 Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
@@ -289,6 +279,9 @@ public class CrawlerJob implements InterruptableJob {
 
             try {
                 HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
+                // Para la conexión inicial aumentamos los tiempos de espera
+                connection.setConnectTimeout(connection.getConnectTimeout() * 2);
+                connection.setReadTimeout(connection.getReadTimeout() * 2);
                 int numRetries = 0;
                 int numRedirections = 0;
                 int responseCode = Integer.MAX_VALUE;
