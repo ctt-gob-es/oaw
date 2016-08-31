@@ -839,7 +839,7 @@ public final class EvaluatorUtility {
 
     // Devuelve los errores de validación del código HTML
     public static List<ValidationError> getValidationErrors(CheckAccessibility checkAccessibility, InputStream inputStream, String charset) {
-        List<ValidationError> validationErrors = new ArrayList<>();
+        final List<ValidationError> validationErrors = new ArrayList<>();
 
         try {
             // Reseteamos el inputStream a su estado inicial para poder convertirlo a texto

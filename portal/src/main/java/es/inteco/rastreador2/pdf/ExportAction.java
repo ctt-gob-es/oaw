@@ -110,9 +110,9 @@ public class ExportAction extends Action {
         }
 
         if (crawlerType.equals(Constants.EXPORT_PDF_INTAV_SIMPLE)) {
-            CrawlerUtils.returnFile(path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.simple.file.intav.name"), response, "application/pdf", false);
+            CrawlerUtils.returnFile(response, path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.simple.file.intav.name"), "application/pdf", false);
         } else {
-            CrawlerUtils.returnFile(path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.file.intav.name"), response, "application/pdf", false);
+            CrawlerUtils.returnFile(response, path + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.file.intav.name"), "application/pdf", false);
         }
 
         return null;

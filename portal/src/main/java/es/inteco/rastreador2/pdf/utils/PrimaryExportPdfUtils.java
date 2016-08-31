@@ -218,6 +218,7 @@ public final class PrimaryExportPdfUtils {
                     Logger.putLog("Error al cerrar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
+            outputFileStream.close();
         }
     }
 
@@ -541,17 +542,6 @@ public final class PrimaryExportPdfUtils {
     }
 
     private static Image getEvolutionImage(final int actualValue, final int previousValue) {
-        final PropertiesManager pmgr = new PropertiesManager();
-        if (actualValue > previousValue) {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Aumenta");
-        } else if (actualValue < previousValue) {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Disminuye");
-        } else {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene");
-        }
-    }
-
-    private static Image getEvolutionImage(final double actualValue, final double previousValue) {
         final PropertiesManager pmgr = new PropertiesManager();
         if (actualValue > previousValue) {
             return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Aumenta");

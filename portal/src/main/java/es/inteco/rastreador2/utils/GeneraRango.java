@@ -26,14 +26,13 @@ public final class GeneraRango {
         return listaUrls;
     }
 
-    public static String urlsLis(String ip, String listaUrls, int puerto) {
-        InetAddress is = null;
+    public static String urlsLis(final String ip, String listaUrls, final int puerto) {;
         try {
-            is = InetAddress.getByName(ip);
-            URL u = new URL("http://" + is.getCanonicalHostName() + ":" + puerto);
-            URLConnection ur = u.openConnection();
-            ur.setConnectTimeout(4000);
-            ur.connect();
+            final InetAddress is = InetAddress.getByName(ip);
+            final URL url = new URL("http://" + is.getCanonicalHostName() + ":" + puerto);
+            final URLConnection urlConnection = url.openConnection();
+            urlConnection.setConnectTimeout(4000);
+            urlConnection.connect();
             if (listaUrls.isEmpty()) {
                 listaUrls = listaUrls + "http://" + is.getCanonicalHostName() + ":" + puerto;
             } else {
@@ -42,9 +41,9 @@ public final class GeneraRango {
         } catch (UnknownHostException e) {
             Logger.putLog("EXCEPCION DE IP DESCONOCIDA (UnknownHostException) " + ip + ":" + puerto, GeneraRango.class, Logger.LOG_LEVEL_INFO);
         } catch (MalformedURLException e) {
-            Logger.putLog("EXCEPCION DE URL MAL FORMADA" + " http://" + is.getCanonicalHostName() + ":" + puerto, GeneraRango.class, Logger.LOG_LEVEL_INFO);
+            Logger.putLog("EXCEPCION DE URL MAL FORMADA " + ip + ":" + puerto, GeneraRango.class, Logger.LOG_LEVEL_INFO);
         } catch (IOException e) {
-            Logger.putLog("EXCEPCION DE CONEXION" + " http://" + is.getCanonicalHostName() + ":" + puerto, GeneraRango.class, Logger.LOG_LEVEL_INFO);
+            Logger.putLog("EXCEPCION DE CONEXION " + ip + ":" + puerto, GeneraRango.class, Logger.LOG_LEVEL_INFO);
         }
         return listaUrls;
     }

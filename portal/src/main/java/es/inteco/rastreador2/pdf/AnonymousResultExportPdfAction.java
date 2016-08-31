@@ -46,9 +46,8 @@ public class AnonymousResultExportPdfAction extends Action {
 
         String filePath = null;
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+
+        try (final Connection c = DataBaseManager.getConnection()) {
             ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             filePath = path + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".pdf";
             String graphicPath = path + "temp" + File.separator;
@@ -76,12 +75,10 @@ public class AnonymousResultExportPdfAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR_PAGE);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         try {
-            CrawlerUtils.returnFile(filePath, response, "application/pdf", false);
+            CrawlerUtils.returnFile(response, filePath, "application/pdf", false);
         } catch (Exception e) {
             Logger.putLog("Exception al devolver el PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
         }

@@ -29,6 +29,10 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ResultadosAnonimosObservatorioAction extends Action {
 
+    private static final String ERROR_PROPERTY_GRAFICA_OBSERVATORIO = "graficaObservatorio";
+    private static final String OBSERVATORY_NO_RESULTS = "observatorio.no.resultados";
+    private static final String OBSERVATORY_ONE_RESULT = "observatorio.un.resultado";
+
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
@@ -125,16 +129,16 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         }
     }
 
-    private String getFilePath(HttpServletRequest request) {
-        String executionId = request.getParameter(Constants.ID);
-        String observatoryId = request.getParameter(Constants.ID_OBSERVATORIO);
+    private String getFilePath(final HttpServletRequest request) {
+        final String executionId = request.getParameter(Constants.ID);
+        final String observatoryId = request.getParameter(Constants.ID_OBSERVATORIO);
 
         Locale language = getLocale(request);
         if (language == null) {
             language = request.getLocale();
         }
 
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
         String filePath = "";
         if (Integer.valueOf(request.getParameter(Constants.TYPE_OBSERVATORY)) != null) {
             try (final Connection c = DataBaseManager.getConnection()){
@@ -152,11 +156,11 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         return filePath;
     }
 
-    public ActionForward regenerateGraphic(ActionMapping mapping, HttpServletRequest request, String filePath) throws Exception {
-        String graphic = request.getParameter(Constants.GRAPHIC);
-        PropertiesManager pmgr = new PropertiesManager();
+    private ActionForward regenerateGraphic(ActionMapping mapping, HttpServletRequest request, String filePath) throws Exception {
+        final String graphic = request.getParameter(Constants.GRAPHIC);
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        File file;
+        final File file;
         if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_GLOBAL)) {
             file = new File(filePath + pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global"));
         } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_COMPARATIVE)) {
@@ -169,20 +173,19 @@ public class ResultadosAnonimosObservatorioAction extends Action {
             FileUtils.deleteDir(file);
         }
 
-        String idExecution = request.getParameter(Constants.ID);
+        final String idExecution = request.getParameter(Constants.ID);
         CacheUtils.removeFromCache(Constants.OBSERVATORY_KEY_CACHE + idExecution);
 
         return getGraphics(mapping, request, filePath);
     }
 
-    public ActionForward getGraphics(ActionMapping mapping, HttpServletRequest request, String filePath) throws Exception {
-        String graphic = request.getParameter(Constants.GRAPHIC);
-        int observatoryType = Integer.parseInt(request.getParameter(Constants.TYPE_OBSERVATORY));
-        long idExecutionObservatory = Long.parseLong(request.getParameter(Constants.ID));
-
+    private ActionForward getGraphics(final ActionMapping mapping, final HttpServletRequest request, final String filePath) throws Exception {
+        final String graphic = request.getParameter(Constants.GRAPHIC);
+        final int observatoryType = Integer.parseInt(request.getParameter(Constants.TYPE_OBSERVATORY));
+        final long idExecutionObservatory = Long.parseLong(request.getParameter(Constants.ID));
 
         try (final Connection c = DataBaseManager.getConnection()){
-            List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
+            final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
             if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_INITIAL)) {
                 return mapping.findForward(Constants.OBSERVATORY_GRAPHIC);
             } else if (graphic.equals(Constants.OBSERVATORY_GRAPHIC_GLOBAL)) {
@@ -202,18 +205,18 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         return mapping.findForward(Constants.ERROR_PAGE);
     }
 
-    public ActionForward getGlobalGraphic(HttpServletRequest request, ActionMapping mapping, String filePath, int observatoryType, List<CategoriaForm> categories) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        filePath += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
+    private ActionForward getGlobalGraphic(final HttpServletRequest request, final ActionMapping mapping, final String basePath, final int observatoryType, final List<CategoriaForm> categories) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String graphicsPath = basePath + pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.global") + File.separator;
         int haveResults = 0;
         try (final Connection c = DataBaseManager.getConnection()){
-            if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(request.getParameter(Constants.TYPE_OBSERVATORY)))) {
+            if (CartuchoDAO.isCartuchoAccesibilidad(c, observatoryType)) {
                 final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
                 if ("UNE-2012".equalsIgnoreCase(application)) {
-                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateGlobalGraphics(request, filePath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateGlobalGraphics(request, graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
                 } else {
-                    haveResults = ResultadosAnonimosObservatorioIntavUtils.generateGlobalGraphics(request, filePath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    haveResults = ResultadosAnonimosObservatorioIntavUtils.generateGlobalGraphics(request, graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
                 }
             } else {
                 return mapping.findForward(Constants.ERROR);
@@ -223,12 +226,12 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         }
         if (haveResults == Constants.OBSERVATORY_NOT_HAVE_RESULTS) {
             ActionErrors errors = new ActionErrors();
-            errors.add("graficaObservatorio", new ActionMessage("observatorio.no.resultados"));
+            errors.add(ERROR_PROPERTY_GRAFICA_OBSERVATORIO, new ActionMessage(OBSERVATORY_NO_RESULTS));
             saveErrors(request, errors);
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.NO);
         } else if (haveResults == Constants.OBSERVATORY_HAVE_ONE_RESULT) {
             ActionErrors errors = new ActionErrors();
-            errors.add("graficaObservatorio", new ActionMessage("observatorio.un.resultado"));
+            errors.add(ERROR_PROPERTY_GRAFICA_OBSERVATORIO, new ActionMessage(OBSERVATORY_ONE_RESULT));
             saveErrors(request, errors);
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.NO);
         } else {
@@ -237,9 +240,9 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         return mapping.findForward(Constants.OBSERVATORY_GRAPHIC_GLOBAL_FORWARD);
     }
 
-    public ActionForward getCategoryGraphic(HttpServletRequest request, ActionMapping mapping, long idCategory, String filePath, int observatoryType) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
-        filePath += pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + idCategory + File.separator;
+    private ActionForward getCategoryGraphic(final HttpServletRequest request, final ActionMapping mapping, final long idCategory, final String filePath, final int observatoryType) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String graphicsPath = filePath + pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.seg") + idCategory + File.separator;
         int haveResults = 0;
         final Connection c = DataBaseManager.getConnection();
         if (CartuchoDAO.isCartuchoAccesibilidad(c, observatoryType)) {
@@ -247,9 +250,9 @@ public class ResultadosAnonimosObservatorioAction extends Action {
                 final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
                 if ("UNE-2012".equalsIgnoreCase(application)) {
-                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
                 } else {
-                    haveResults = ResultadosAnonimosObservatorioIntavUtils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), filePath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    haveResults = ResultadosAnonimosObservatorioIntavUtils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
                 }
             } catch (Exception e) {
                 Logger.putLog("Error al cargar la categoria del observatorio.", ResultadosAnonimosObservatorioIntavUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -257,16 +260,16 @@ public class ResultadosAnonimosObservatorioAction extends Action {
                 DataBaseManager.closeConnection(c);
             }
         } else {
-            haveResults = 0;
+            haveResults = Constants.OBSERVATORY_NOT_HAVE_RESULTS;
         }
         if (haveResults == Constants.OBSERVATORY_NOT_HAVE_RESULTS) {
             ActionErrors errors = new ActionErrors();
-            errors.add("graficaObservatorio", new ActionMessage("observatorio.no.resultados"));
+            errors.add(ERROR_PROPERTY_GRAFICA_OBSERVATORIO, new ActionMessage(OBSERVATORY_NO_RESULTS));
             saveErrors(request, errors);
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.NO);
         } else if (haveResults == Constants.OBSERVATORY_HAVE_ONE_RESULT) {
             ActionErrors errors = new ActionErrors();
-            errors.add("graficaObservatorio", new ActionMessage("observatorio.un.resultado"));
+            errors.add(ERROR_PROPERTY_GRAFICA_OBSERVATORIO, new ActionMessage(OBSERVATORY_ONE_RESULT));
             saveErrors(request, errors);
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.NO);
         } else {
@@ -276,10 +279,10 @@ public class ResultadosAnonimosObservatorioAction extends Action {
         return mapping.findForward(Constants.OBSERVATORY_GRAPHIC_SEGMENT_FORWARD);
     }
 
-    public ActionForward getEvolutionGraphic(final HttpServletRequest request, final ActionMapping mapping, final String filePath, final int observatoryType) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+    private ActionForward getEvolutionGraphic(final HttpServletRequest request, final ActionMapping mapping, final String filePath, final int observatoryType) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
         final String fileEvolutionPath = filePath + pmgr.getValue(CRAWLER_PROPERTIES, "path.observatory.chart.evolution") + File.separator;
-        int haveResults = 0;
+        final int haveResults;
         final Connection c = DataBaseManager.getConnection();
         String forward = Constants.OBSERVATORY_GRAPHIC_EVOLUTION_FORWARD;
         if (CartuchoDAO.isCartuchoAccesibilidad(c, observatoryType)) {
@@ -298,12 +301,12 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 
         if (haveResults == Constants.OBSERVATORY_NOT_HAVE_RESULTS) {
             ActionErrors errors = new ActionErrors();
-            errors.add("graficaObservatorio", new ActionMessage("observatorio.no.resultados"));
+            errors.add(ERROR_PROPERTY_GRAFICA_OBSERVATORIO, new ActionMessage(OBSERVATORY_NO_RESULTS));
             saveErrors(request, errors);
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.NO);
         } else if (haveResults == Constants.OBSERVATORY_HAVE_ONE_RESULT) {
             ActionErrors errors = new ActionErrors();
-            errors.add("graficaObservatorio", new ActionMessage("observatorio.un.resultado"));
+            errors.add(ERROR_PROPERTY_GRAFICA_OBSERVATORIO, new ActionMessage(OBSERVATORY_ONE_RESULT));
             saveErrors(request, errors);
             request.setAttribute(Constants.OBSERVATORY_RESULTS, Constants.NO);
         } else {
