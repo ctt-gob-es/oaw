@@ -3,17 +3,15 @@ package es.inteco.utils;
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.ignored.links.IgnoredLink;
 import es.inteco.cyberneko.html.HTMLConfiguration;
-import es.inteco.common.utils.StringUtils;
 import org.w3c.dom.*;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
-import java.io.InputStream;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CrawlerDOMUtils {
+public final class CrawlerDOMUtils {
 
     private CrawlerDOMUtils() {
     }
@@ -65,6 +63,14 @@ public class CrawlerDOMUtils {
         return false;
     }
 
+    /**
+     * Obtiene el valor de un atributo para un determinado elemento Element. La búsqueda se hace case insensitive. En caso
+     * de existir múltiples atributos con el mismo nombre buscado no se garantiza cual se devuelve.
+     *
+     * @param element       el elemento Element
+     * @param attributeName el nombre del atributo a buscar de forma case insensitive
+     * @return el valor del atributo o una cadena vacía si no se encuentra.
+     */
     public static String getAttribute(final Element element, final String attributeName) {
         final NamedNodeMap attributes = element.getAttributes();
         for (int i = 0; i < attributes.getLength(); i++) {
@@ -73,7 +79,7 @@ public class CrawlerDOMUtils {
                 return attribute.getTextContent();
             }
         }
-        return null;
+        return "";
     }
 
     public static Document getDocument(final String textContent) throws Exception {
@@ -89,160 +95,7 @@ public class CrawlerDOMUtils {
         return parser.getDocument();
     }
 
-    private static String getFrameContent(final String url) throws Exception {
-        HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
-        InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-        String textContent = StringUtils.getContentAsString(markableInputStream, CrawlerUtils.getCharset(connection, markableInputStream));
-
-        textContent = CrawlerUtils.removeHtmlComments(textContent);
-
-        textContent = getOnlyBody(textContent);
-
-        return textContent;
-    }
-
-    public static String getFramesSource(final String rootUrl, final String textContent) throws Exception {
-        String framesSource = "";
-        Document document = getDocument(textContent);
-        List<Element> frames = getElementsByTagName(document, "frame");
-
-        for (Element frame : frames) {
-            try {
-                if (hasAttribute(frame, "src") && StringUtils.isNotEmpty(getAttribute(frame, "src"))) {
-                    String frameUrl = new URL(new URL(rootUrl), getAttribute(frame, "src")).toString();
-                    String frameSource = "<!-- Código HTML del frame localizado en " + frameUrl + " -->\n\n" +
-                            getFrameContent(frameUrl) +
-                            "<!-- Fin del Código HTML del frame localizado en " + frameUrl + " -->\n\n";
-
-                    frameSource = createAbsoluteHrefs(frameSource, frameUrl);
-
-                    framesSource += frameSource;
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error al recuperar el contenido del FRAME: " + e.getMessage(), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-            }
-        }
-
-        return framesSource;
-    }
-
-    public static String appendFramesSource(final String textContent, String framesSource) throws Exception {
-        Document document = getDocument(textContent);
-
-        List<Element> noframes = getElementsByTagName(document, "noframes");
-        if (noframes.size() == 0) {
-            // Si no tiene NOFRAMES, lo creamos y lo añadimos al final del documento
-            framesSource = "<NOFRAMES>\n<BODY>\n" + framesSource + "</BODY>\n</NOFRAMES>\n";
-            Document frameDocument = getDocument(framesSource);
-            NodeList childNodes = document.getChildNodes();
-            for (int i = childNodes.getLength() - 1; i > 0; i--) {
-                if (childNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    addFrameDocument((Element) childNodes.item(i), frameDocument);
-                    break;
-                }
-            }
-        } else {
-            Element noframe = noframes.get(0);
-            NodeList bodies = noframe.getElementsByTagName("BODY");
-            if (bodies.getLength() == 0) {
-                // Si tiene NOFRAMES sin BODY, lo creamos y lo metemos dentro
-                framesSource = "<BODY>\n" + serializeNodeList(noframe.getChildNodes()) + framesSource + "</BODY>\n";
-
-                Node child = noframe.getFirstChild();
-                while (child != null) {
-                    Node childToRemove = child;
-                    child = child.getNextSibling();
-                    noframe.removeChild(childToRemove);
-                }
-
-                Document frameDocument = getDocument(framesSource);
-                addFrameDocument(noframe, frameDocument);
-            } else {
-                // Si tiene NOFRAMES con BODY, lo metemos dentro
-                Element body = (Element) bodies.item(0);
-                Document frameDocument = getDocument(framesSource);
-                addFrameDocument(body, frameDocument);
-            }
-        }
-
-        return serializeDocument(document);
-    }
-
-    private static void addFrameDocument(final Element element, final Document frameDocument) {
-        final NodeList frameChildren = frameDocument.getChildNodes();
-
-        for (int i = 0; i < frameChildren.getLength(); i++) {
-            if (frameChildren.item(i).getNodeType() == Node.ELEMENT_NODE || frameChildren.item(i).getNodeType() == Node.TEXT_NODE) {
-                element.appendChild(element.getOwnerDocument().importNode(frameChildren.item(i), true));
-            }
-        }
-    }
-
-    private static void addFrameDocumentSibling(final Element parentElement, final Element element, final Document frameDocument) {
-        final NodeList frameChildren = frameDocument.getChildNodes();
-
-        for (int i = 0; i < frameChildren.getLength(); i++) {
-            if (frameChildren.item(i).getNodeType() == Node.ELEMENT_NODE || frameChildren.item(i).getNodeType() == Node.TEXT_NODE) {
-                parentElement.insertBefore(element.getOwnerDocument().importNode(frameChildren.item(i), true), element);
-            }
-        }
-    }
-
-    public static String appendIframesSource(String rootUrl, String textContent) throws Exception {
-        Document document = getDocument(textContent);
-        List<Element> iframes = getElementsByTagName(document, "iframe");
-        if (iframes.size() > 0) {
-            for (Element iframe : iframes) {
-                try {
-                    if (hasAttribute(iframe, "src") && StringUtils.isNotEmpty(getAttribute(iframe, "src"))) {
-                        if (!getAttribute(iframe, "src").equals("#") && !getAttribute(iframe, "src").endsWith(".gif")) {
-                            String frameUrl = new URL(new URL(rootUrl), getAttribute(iframe, "src")).toString();
-                            String frameSource = "<!-- Código HTML del iframe localizado en " + frameUrl + " -->\n\n" +
-                                    getFrameContent(frameUrl) +
-                                    "<!-- Fin del Código HTML del iframe localizado en " + frameUrl + " -->\n\n";
-
-                            frameSource = createAbsoluteHrefs(frameSource, frameUrl);
-
-                            Document frameDocument = getDocument(frameSource);
-
-                            addFrameDocumentSibling((Element) iframe.getParentNode(), iframe, frameDocument);
-                        }
-                    }
-                } catch (Exception e) {
-                    Logger.putLog("Error al recuperar el contenido del IFRAME: " + e.getMessage(), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-                }
-            }
-
-            return serializeDocument(document);
-        } else {
-            return textContent;
-        }
-
-
-    }
-
-    public static String createAbsoluteHrefs(String textContent, String frameUrl) throws Exception {
-        Document frameDocument = getDocument(textContent);
-        List<Element> links = getElementsByTagName(frameDocument, "a");
-        for (Element link : links) {
-            if (hasAttribute(link, "href")) {
-                try {
-                    link.setAttribute("href", new URL(new URL(frameUrl), getAttribute(link, "href")).toString());
-                } catch (Exception e) {
-                    Logger.putLog("Error al crear la URL absoluta de " + getAttribute(link, "href") + " y " + frameUrl, CrawlerUtils.class, Logger.LOG_LEVEL_WARNING);
-                }
-            }
-        }
-        PropertiesManager pmgr = new PropertiesManager();
-        int maxNumElements = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.num.descendants.to.serialize"));
-        if (frameDocument.getElementsByTagName("*").getLength() < maxNumElements) {
-            return serializeDocument(frameDocument);
-        } else {
-            return null;
-        }
-    }
-
-    private static String serializeDocument(Document document) {
+    public static String serializeDocument(final Document document) {
         correctScriptTagSerialization(document);
 
         DOMImplementationLS domImplementationLS = (DOMImplementationLS) document.getImplementation();
@@ -260,7 +113,7 @@ public class CrawlerDOMUtils {
         }
     }
 
-    private static String serializeNodeList(NodeList nodeList) {
+    public static String serializeNodeList(NodeList nodeList) {
         final StringBuilder text = new StringBuilder();
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -276,7 +129,7 @@ public class CrawlerDOMUtils {
         return text.toString();
     }
 
-    private static String getOnlyBody(String textContent) {
+    public static String getOnlyBody(String textContent) {
         PropertiesManager pmgr = new PropertiesManager();
         List<String> regExps = Arrays.asList(pmgr.getValue("crawler.core.properties", "frame.source.reg.exp.matcher").split(";"));
 
@@ -317,17 +170,25 @@ public class CrawlerDOMUtils {
         return null;
     }
 
-    public static List<String> getDomLinks(Document document, List<IgnoredLink> ignoredLinks) {
-        List<String> results = new ArrayList<>();
-        List<Element> links = getElementsByTagName(document, "a");
+    /**
+     * Obtiene una lista de todos los enlaces (a y area) de tipo http (se ignoran, mailto:, javascript:, tel:,...)
+     * de un documento DOM
+     *
+     * @param document    documento del que se extraerán los enlaces
+     * @param ignoreLinks lista de enlaces que se ignorarán y no se incluirán en el resultado
+     * @return una lista con todos los enlaces o la lista vacía si no existen
+     */
+    public static List<String> getDomLinks(final Document document, final List<IgnoredLink> ignoreLinks) {
+        final List<String> results = new ArrayList<>();
+        final List<Element> links = getElementsByTagName(document, "a");
         links.addAll(getElementsByTagName(document, "area"));
 
         for (Element link : links) {
-            if (hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))
-                    && !CrawlerUtils.isSwitchLanguageLink(link, ignoredLinks)) {
-                if (!getAttribute(link, "href").contains("#") && !getAttribute(link, "href").contains("mailto:")) {
-                    if (!results.contains(getAttribute(link, "href").replaceAll("\n", ""))) {
-                        results.add(getAttribute(link, "href").replaceAll("\n", ""));
+            if (!CrawlerUtils.isSwitchLanguageLink(link, ignoreLinks)) {
+                if (CrawlerUtils.isHTTPLink(link)) {
+                    final String normalizedHref = getAttribute(link, "href").replaceAll("\n", "").toLowerCase().trim();
+                    if (!results.contains(normalizedHref)) {
+                        results.add(normalizedHref);
                     }
                 }
             }

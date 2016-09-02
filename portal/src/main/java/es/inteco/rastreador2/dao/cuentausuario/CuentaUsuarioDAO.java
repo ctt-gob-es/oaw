@@ -123,23 +123,17 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    public static int countAccounts(Connection c) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT COUNT(*) FROM cuenta_cliente");
-            rs = ps.executeQuery();
-            int numRes = 0;
+    public static int countAccounts(final Connection connection) throws Exception {
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM cuenta_cliente");
+             final ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
-                numRes = rs.getInt(1);
+                return rs.getInt(1);
+            } else {
+                return 0;
             }
-            return numRes;
         } catch (Exception e) {
-            Logger.putLog("Error al cerrar el preparedStament", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error eb countAccounts ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
@@ -281,32 +275,35 @@ public final class CuentaUsuarioDAO {
         return roleList;
     }
 
-    public static boolean existAccount(Connection c, String accountName) throws SQLException {
+    /**
+     * Comprueba si existe una cuenta con un determinado nombre
+     *
+     * @param connection  conexión Connection a la base de datos
+     * @param accountName nombre de la cuenta a comprobar
+     * @return true si existe una cuenta con ese nombre o false en caso contrario
+     * @throws SQLException
+     */
+    public static boolean existAccount(final Connection connection, final String accountName) throws SQLException {
         //Comprobamos que ese nombre de usuario no existe en la BD
-        PreparedStatement ps = null;
         ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT * FROM cuenta_cliente WHERE nombre = ?");
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT * FROM cuenta_cliente WHERE nombre = ?")) {
             ps.setString(1, accountName);
             rs = ps.executeQuery();
             return rs.next();
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en existAccount", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
     }
 
-    public static NuevaCuentaUsuarioForm getUserAccount(Connection c, Long id_account) throws Exception {
+    public static NuevaCuentaUsuarioForm getUserAccount(Connection connection, Long idAccount) throws Exception {
         NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm = new NuevaCuentaUsuarioForm();
-        PreparedStatement ps = null;
         ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT *, p.nombre AS nombrePeriodicidad, cc.nombre as nombreCuenta FROM cuenta_cliente cc " +
-                    "JOIN periodicidad p ON (cc.id_periodicidad = p.id_periodicidad) WHERE id_cuenta = ?");
-            ps.setLong(1, id_account);
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT *, p.nombre AS nombrePeriodicidad, cc.nombre as nombreCuenta FROM cuenta_cliente cc " +
+                "JOIN periodicidad p ON (cc.id_periodicidad = p.id_periodicidad) WHERE id_cuenta = ?")) {
+            ps.setLong(1, idAccount);
             rs = ps.executeQuery();
             while (rs.next()) {
                 nuevaCuentaUsuarioForm.setNombre(rs.getString("nombreCuenta"));
@@ -324,21 +321,18 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
     }
 
-    public static String usersByAccountType(Connection c, Long id_account) throws Exception {
-        PreparedStatement ps = null;
+    public static String usersByAccountType(Connection connection, Long idAccount) throws Exception {
         ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(cc.id_cuenta), GROUP_CONCAT(DISTINCT(u.usuario)) as usuarios " +
-                    "FROM cuenta_cliente cc " +
-                    "JOIN cuenta_cliente_usuario ccu ON (ccu.id_cuenta = cc.id_cuenta) " +
-                    "JOIN usuario u ON (ccu.id_usuario = u.id_usuario) " +
-                    "WHERE cc.id_cuenta = ? GROUP BY u.usuario;");
-            ps.setLong(1, id_account);
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT DISTINCT(cc.id_cuenta), GROUP_CONCAT(DISTINCT(u.usuario)) as usuarios " +
+                "FROM cuenta_cliente cc " +
+                "JOIN cuenta_cliente_usuario ccu ON (ccu.id_cuenta = cc.id_cuenta) " +
+                "JOIN usuario u ON (ccu.id_usuario = u.id_usuario) " +
+                "WHERE cc.id_cuenta = ? GROUP BY u.usuario;")) {
+            ps.setLong(1, idAccount);
             rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getString("usuarios");
@@ -347,29 +341,25 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
         return null;
     }
 
-    public static VerCuentaUsuarioForm getDatosUsuarioVer(Connection c, VerCuentaUsuarioForm verCuentaUsuarioForm, Long id_account) throws Exception {
-
-        PreparedStatement ps = null;
+    public static VerCuentaUsuarioForm getDatosUsuarioVer(Connection connection, VerCuentaUsuarioForm verCuentaUsuarioForm, Long idAccount) throws Exception {
         ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(cc.nombre) AS nombreCuenta, cc.id_guideline, cc.activo, cc.in_directory, " +
-                    "l.lista AS semilla, l1.lista AS listaRastreable, l2.lista AS listaNoRastreable, p.nombre " +
-                    "AS periodicidad, profundidad, amplitud, pseudoaleatorio, GROUP_CONCAT(DISTINCT(c.aplicacion)) " +
-                    "as cartuchos FROM cuenta_cliente cc " +
-                    "JOIN periodicidad p ON (p.id_periodicidad = cc.id_periodicidad) " +
-                    "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
-                    "JOIN cartucho c ON (c.id_cartucho = ccc.id_cartucho) " +
-                    "JOIN lista l ON (cc.dominio = l.id_lista) " +
-                    "LEFT JOIN lista l1 ON (cc.lista_rastreable = l1.id_lista) " +
-                    "LEFT JOIN lista l2 ON (cc.lista_no_rastreable = l2.id_lista) " +
-                    "WHERE cc.id_cuenta = ? GROUP BY cc.nombre;");
-            ps.setLong(1, id_account);
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT DISTINCT(cc.nombre) AS nombreCuenta, cc.id_guideline, cc.activo, cc.in_directory, " +
+                "l.lista AS semilla, l1.lista AS listaRastreable, l2.lista AS listaNoRastreable, p.nombre " +
+                "AS periodicidad, profundidad, amplitud, pseudoaleatorio, GROUP_CONCAT(DISTINCT(c.aplicacion)) " +
+                "as cartuchos FROM cuenta_cliente cc " +
+                "JOIN periodicidad p ON (p.id_periodicidad = cc.id_periodicidad) " +
+                "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
+                "JOIN cartucho c ON (c.id_cartucho = ccc.id_cartucho) " +
+                "JOIN lista l ON (cc.dominio = l.id_lista) " +
+                "LEFT JOIN lista l1 ON (cc.lista_rastreable = l1.id_lista) " +
+                "LEFT JOIN lista l2 ON (cc.lista_no_rastreable = l2.id_lista) " +
+                "WHERE cc.id_cuenta = ? GROUP BY cc.nombre;")) {
+            ps.setLong(1, idAccount);
             rs = ps.executeQuery();
             if (rs.next()) {
                 verCuentaUsuarioForm.setAmplitud(rs.getString("amplitud"));
@@ -385,8 +375,8 @@ public final class CuentaUsuarioDAO {
                 verCuentaUsuarioForm.setActivo(rs.getBoolean("activo"));
                 verCuentaUsuarioForm.setInDirectory(rs.getBoolean("in_directory"));
 
-                String uCliente = usersByAccountType(c, id_account);
-                String rCliente = usersByAccountType(c, id_account);
+                String uCliente = usersByAccountType(connection, idAccount);
+                String rCliente = usersByAccountType(connection, idAccount);
 
                 if (uCliente != null) {
                     verCuentaUsuarioForm.setUsuarios(listFromString(uCliente, ","));
@@ -400,25 +390,21 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
 
         return verCuentaUsuarioForm;
     }
 
-    public static EliminarCuentaUsuarioForm getDeleteUserAccounts(Connection c, Long id_account, EliminarCuentaUsuarioForm eliminarCuentaUsuarioForm) throws Exception {
-
-        PreparedStatement ps = null;
+    public static EliminarCuentaUsuarioForm getDeleteUserAccounts(Connection connection, Long idAccount, EliminarCuentaUsuarioForm eliminarCuentaUsuarioForm) throws Exception {
         ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(cc.nombre) AS nombreCuenta, cc.*,l.lista, GROUP_CONCAT(DISTINCT(c.aplicacion)) as cartuchos " +
-                    "FROM cuenta_cliente cc " +
-                    "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
-                    "JOIN cartucho c ON (c.id_cartucho = ccc.id_cartucho) " +
-                    "JOIN lista l ON (cc.dominio = l.id_lista) " +
-                    "WHERE cc.id_cuenta = ? GROUP BY cc.nombre");
-            ps.setLong(1, id_account);
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT DISTINCT(cc.nombre) AS nombreCuenta, cc.*,l.lista, GROUP_CONCAT(DISTINCT(c.aplicacion)) as cartuchos " +
+                "FROM cuenta_cliente cc " +
+                "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
+                "JOIN cartucho c ON (c.id_cartucho = ccc.id_cartucho) " +
+                "JOIN lista l ON (cc.dominio = l.id_lista) " +
+                "WHERE cc.id_cuenta = ? GROUP BY cc.nombre")) {
+            ps.setLong(1, idAccount);
             rs = ps.executeQuery();
             while (rs.next()) {
                 if (rs.getString("cartuchos") != null) {
@@ -432,8 +418,8 @@ public final class CuentaUsuarioDAO {
                 eliminarCuentaUsuarioForm.setIdListaRastreable(rs.getLong("lista_rastreable"));
                 eliminarCuentaUsuarioForm.setIdListaNoRastreable(rs.getLong("lista_no_rastreable"));
 
-                String uCliente = usersByAccountType(c, id_account);
-                String rCliente = usersByAccountType(c, id_account);
+                String uCliente = usersByAccountType(connection, idAccount);
+                String rCliente = usersByAccountType(connection, idAccount);
 
                 if (uCliente != null) {
                     eliminarCuentaUsuarioForm.setUsuarios(listFromString(uCliente, ","));
@@ -446,12 +432,12 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
         return eliminarCuentaUsuarioForm;
     }
 
-    public static void deleteUserAccount(Connection c, Long id_account, EliminarCuentaUsuarioForm eliminarCuentaUsuarioForm) throws SQLException {
+    public static void deleteUserAccount(Connection c, Long idAccount, EliminarCuentaUsuarioForm eliminarCuentaUsuarioForm) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         final List<Connection> connections = DAOUtils.getCartridgeConnections();
@@ -469,17 +455,17 @@ public final class CuentaUsuarioDAO {
 
             ps = c.prepareStatement("DELETE FROM usuario WHERE id_usuario IN (" +
                     "SELECT id_usuario FROM cuenta_cliente_usuario WHERE id_cuenta = ?)");
-            ps.setLong(1, id_account);
+            ps.setLong(1, idAccount);
             ps.executeUpdate();
             DAOUtils.closeQueries(ps, rs);
 
             ps = c.prepareStatement("DELETE FROM rastreo WHERE id_cuenta = ? ");
-            ps.setLong(1, id_account);
+            ps.setLong(1, idAccount);
             ps.executeUpdate();
             DAOUtils.closeQueries(ps, rs);
 
             ps = c.prepareStatement("DELETE FROM cuenta_cliente WHERE id_cuenta = ?");
-            ps.setLong(1, id_account);
+            ps.setLong(1, idAccount);
             ps.executeUpdate();
             DAOUtils.closeQueries(ps, rs);
 
@@ -519,16 +505,14 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    public static List<FulFilledCrawling> getFulfilledCrawlings(Connection conn, Long idCrawling, int page) throws Exception {
-        List<FulFilledCrawling> crawlings = new ArrayList<>();
-        PreparedStatement ps = null;
+    public static List<FulFilledCrawling> getFulfilledCrawlings(Connection connection, Long idCrawling, int page) throws Exception {
+        final List<FulFilledCrawling> crawlings = new ArrayList<>();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+        final int resultFrom = pagSize * page;
         ResultSet rs = null;
-        PropertiesManager pmgr = new PropertiesManager();
-        int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-        int resultFrom = pagSize * page;
-        try {
-            ps = conn.prepareStatement("SELECT rr.* FROM rastreos_realizados rr " +
-                    "WHERE id_rastreo = ? ORDER BY fecha DESC LIMIT ? OFFSET ?");
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT rr.* FROM rastreos_realizados rr " +
+                "WHERE id_rastreo = ? ORDER BY fecha DESC LIMIT ? OFFSET ?")) {
             ps.setLong(1, idCrawling);
             ps.setInt(2, pagSize);
             ps.setInt(3, resultFrom);
@@ -547,7 +531,7 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
     }
 
@@ -573,14 +557,11 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    public static int getNumClientCrawlings(Connection c, Long idClient) throws Exception {
-        PreparedStatement ps = null;
+    public static int getNumClientCrawlings(Connection connection, Long idClient) throws Exception {
         ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT COUNT(*) FROM rastreo r " +
-                    "JOIN cuenta_cliente_usuario ccu ON (r.id_cuenta = ccu.id_cuenta) " +
-                    "WHERE ccu.id_usuario = ?");
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT COUNT(*) FROM rastreo r " +
+                "JOIN cuenta_cliente_usuario ccu ON (r.id_cuenta = ccu.id_cuenta) " +
+                "WHERE ccu.id_usuario = ?")) {
             ps.setLong(1, idClient);
             rs = ps.executeQuery();
 
@@ -594,7 +575,7 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Error al obtener los datos de la lista de rastreos de clientes", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
     }
 
@@ -799,14 +780,14 @@ public final class CuentaUsuarioDAO {
         return modificarCuentaUsuarioForm;
     }
 
-    public static void updateUAccount(ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String id_account, boolean fromMenu) throws Exception {
+    public static void updateUAccount(ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String idAccount, boolean fromMenu) throws Exception {
 
         Connection c = null;
         // Editamos los rastreos asociados
         try {
             c = DataBaseManager.getConnection();
             c.setAutoCommit(false);
-            editCrawlings(c, modificarCuentaUsuarioForm, id_account, fromMenu);
+            editCrawlings(c, modificarCuentaUsuarioForm, idAccount, fromMenu);
             modificarCuentaUsuarioForm = CuentaUsuarioDAO.updateUserAccount(c, modificarCuentaUsuarioForm, fromMenu);
             CuentaUsuarioDAO.removeLists(c, modificarCuentaUsuarioForm);
             c.commit();
@@ -826,10 +807,10 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    private static void editCrawlings(Connection c, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String id_account, boolean isMenu) throws Exception {
+    private static void editCrawlings(Connection c, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String idAccount, boolean isMenu) throws Exception {
 
         // Recorremos los rastreos asociados a la cuenta para desactivarlos si no han sido seleccionados de nuevo
-        List<CuentaCliente> cuentasCliente = CuentaUsuarioDAO.getClientAccounts(c, Long.parseLong(id_account), Constants.CLIENT_ACCOUNT_TYPE);
+        List<CuentaCliente> cuentasCliente = CuentaUsuarioDAO.getClientAccounts(c, Long.parseLong(idAccount), Constants.CLIENT_ACCOUNT_TYPE);
 
         if (!isMenu) {
             List<String> cartuchosSelectedList = new ArrayList<>(Arrays.asList(modificarCuentaUsuarioForm.getCartuchosSelected()));
@@ -845,7 +826,7 @@ public final class CuentaUsuarioDAO {
                 InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
                 // Recorremos los cartuchos seleccionados para editarlos si fueron previamente seleccionados
                 // o añadirlos en otro caso
-                insertarRastreoForm.setCuenta_cliente(Long.parseLong(id_account));
+                insertarRastreoForm.setCuenta_cliente(Long.parseLong(idAccount));
                 CrawlerUtils.insertarDatosAutomaticos(insertarRastreoForm, modificarCuentaUsuarioForm, "");
                 insertarRastreoForm.setCartucho(cartuchoSelected);
 
@@ -875,7 +856,7 @@ public final class CuentaUsuarioDAO {
             InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
             insertarRastreoForm.setProfundidad(Integer.parseInt(modificarCuentaUsuarioForm.getProfundidad()));
             insertarRastreoForm.setTopN(Long.parseLong(modificarCuentaUsuarioForm.getAmplitud()));
-            List<CartuchoForm> cartuchosCuenta = CuentaUsuarioDAO.getCartridgeFromClientAccount(c, Long.valueOf(id_account));
+            List<CartuchoForm> cartuchosCuenta = CuentaUsuarioDAO.getCartridgeFromClientAccount(c, Long.valueOf(idAccount));
             for (CartuchoForm cartuchoSelected : cartuchosCuenta) {
                 for (CuentaCliente cuentaCliente : cuentasCliente) {
                     if (String.valueOf(cartuchoSelected.getId()).equals(String.valueOf(cuentaCliente.getDatosRastreo().getId_cartucho()))) {
@@ -886,43 +867,35 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    public static List<CartuchoForm> getCartridgeFromClientAccount(Connection c, Long id_account) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public static List<CartuchoForm> getCartridgeFromClientAccount(Connection connection, Long idAccount) throws Exception {
         List<CartuchoForm> cartuchoList = new ArrayList<>();
-        try {
-            ps = c.prepareStatement("SELECT * FROM cartucho c JOIN cuenta_cliente_cartucho ccc " +
-                    "ON (c.id_cartucho = ccc.id_cartucho) WHERE id_cuenta = ?");
-            ps.setLong(1, id_account);
-            rs = ps.executeQuery();
 
-            while (rs.next()) {
-                CartuchoForm cartuchoForm = new CartuchoForm();
-                cartuchoForm.setId(rs.getLong("id_cartucho"));
-                cartuchoForm.setName(rs.getString("aplicacion"));
-                cartuchoList.add(cartuchoForm);
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT * FROM cartucho c JOIN cuenta_cliente_cartucho ccc " +
+                "ON (c.id_cartucho = ccc.id_cartucho) WHERE id_cuenta = ?")) {
+            ps.setLong(1, idAccount);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CartuchoForm cartuchoForm = new CartuchoForm();
+                    cartuchoForm.setId(rs.getLong("id_cartucho"));
+                    cartuchoForm.setName(rs.getString("aplicacion"));
+                    cartuchoList.add(cartuchoForm);
+                }
             }
-
         } catch (Exception e) {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return cartuchoList;
     }
 
-    public static ModificarCuentaUsuarioForm getAccountDatesToUpdate(Connection c, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm) throws Exception {
-
-        PreparedStatement ps = null;
+    public static ModificarCuentaUsuarioForm getAccountDatesToUpdate(Connection connection, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm) throws Exception {
         ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT *, l.lista AS semilla, l1.lista AS l_lista_rastreable, l2.lista AS l_lista_no_rastreable " +
-                    "FROM cuenta_cliente cc " +
-                    "LEFT JOIN lista l ON (cc.dominio = l.id_lista) " +
-                    "LEFT JOIN lista l1 ON (cc.lista_rastreable = l1.id_lista) " +
-                    "LEFT JOIN lista l2 ON (cc.lista_no_rastreable = l2.id_lista) " +
-                    "WHERE cc.id_cuenta = ? ");
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT *, l.lista AS semilla, l1.lista AS l_lista_rastreable, l2.lista AS l_lista_no_rastreable " +
+                "FROM cuenta_cliente cc " +
+                "LEFT JOIN lista l ON (cc.dominio = l.id_lista) " +
+                "LEFT JOIN lista l1 ON (cc.lista_rastreable = l1.id_lista) " +
+                "LEFT JOIN lista l2 ON (cc.lista_no_rastreable = l2.id_lista) " +
+                "WHERE cc.id_cuenta = ? ")) {
             ps.setLong(1, Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta()));
             rs = ps.executeQuery();
             if (rs.next()) {
@@ -960,8 +933,8 @@ public final class CuentaUsuarioDAO {
                 modificarCuentaUsuarioForm.setHoraInicio(hour);
                 modificarCuentaUsuarioForm.setMinutoInicio(minute);
 
-                modificarCuentaUsuarioForm.setCartuchosList(LoginDAO.getAllUserCartridge(c));
-                List<CartuchoForm> selectedCartuchos = getCartridgeFromClientAccount(c, Long.valueOf(modificarCuentaUsuarioForm.getId_cuenta()));
+                modificarCuentaUsuarioForm.setCartuchosList(LoginDAO.getAllUserCartridge(connection));
+                List<CartuchoForm> selectedCartuchos = getCartridgeFromClientAccount(connection, Long.valueOf(modificarCuentaUsuarioForm.getId_cuenta()));
                 modificarCuentaUsuarioForm.setCartuchosSelected(new String[selectedCartuchos.size()]);
                 int i = 0;
                 for (CartuchoForm cartucho : selectedCartuchos) {
@@ -974,123 +947,72 @@ public final class CuentaUsuarioDAO {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(null, rs);
         }
         return modificarCuentaUsuarioForm;
     }
 
-    public static Long getAccountFromUser(Connection c, String user) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT cc.id_cuenta FROM cuenta_cliente cc " +
-                    "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " +
-                    "JOIN usuario u ON (ccu.id_usuario = u.id_usuario) WHERE usuario = ?");
+    public static Long getAccountFromUser(final Connection connection, final String user) throws Exception {
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT cc.id_cuenta FROM cuenta_cliente cc " +
+                "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " +
+                "JOIN usuario u ON (ccu.id_usuario = u.id_usuario) WHERE usuario = ?")) {
             ps.setString(1, user);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("id_cuenta");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id_cuenta");
+                }
             }
-
         } catch (Exception e) {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return null;
     }
 
-    public static List<LabelValueBean> getAccountsFromUser(Connection c, String user) throws Exception {
-        List<LabelValueBean> results = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT cc.id_cuenta, cc.nombre FROM cuenta_cliente cc " +
-                    "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " +
-                    "JOIN usuario u ON (ccu.id_usuario = u.id_usuario) WHERE usuario = ?");
+    public static List<LabelValueBean> getAccountsFromUser(final Connection connection, final String user) throws Exception {
+        final List<LabelValueBean> results = new ArrayList<>();
+        try (final PreparedStatement ps = connection.prepareStatement("SELECT cc.id_cuenta, cc.nombre FROM cuenta_cliente cc " +
+                "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " +
+                "JOIN usuario u ON (ccu.id_usuario = u.id_usuario) WHERE usuario = ?")) {
             ps.setString(1, user);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                LabelValueBean lvb = new LabelValueBean();
-                lvb.setValue(rs.getString("id_cuenta"));
-                lvb.setLabel(rs.getString("nombre"));
-                results.add(lvb);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final LabelValueBean lvb = new LabelValueBean();
+                    lvb.setValue(rs.getString("id_cuenta"));
+                    lvb.setLabel(rs.getString("nombre"));
+                    results.add(lvb);
+                }
             }
-
         } catch (Exception e) {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return results;
     }
 
-    public static long getIdSemillaFromCA(Connection c, long id_account) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT dominio FROM cuenta_cliente " +
-                    "WHERE id_cuenta = ? ");
-            ps.setLong(1, id_account);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("dominio");
-            }
-
-        } catch (Exception e) {
-            Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-        return 0;
+    public static long getIdSemillaFromCA(final Connection connection, final long idAccount) throws Exception {
+        return getIdFieldFromCuentaCliente(connection, idAccount, "SELECT dominio FROM cuenta_cliente WHERE id_cuenta = ?", "dominio");
     }
 
-    public static long getIdLRFromCA(Connection c, long id_account) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT lista_rastreable FROM cuenta_cliente " +
-                    "WHERE id_cuenta = ? ");
-            ps.setLong(1, id_account);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("lista_rastreable");
-            }
-
-        } catch (Exception e) {
-            Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-        return 0;
+    public static long getIdLRFromCA(final Connection connection, final long idAccount) throws Exception {
+        return getIdFieldFromCuentaCliente(connection, idAccount, "SELECT lista_rastreable FROM cuenta_cliente WHERE id_cuenta = ?", "lista_rastreable");
     }
 
-    public static long getIdLNRFromCA(Connection c, long id_account) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT lista_no_rastreable FROM cuenta_cliente " +
-                    "WHERE id_cuenta = ? ");
-            ps.setLong(1, id_account);
-            rs = ps.executeQuery();
+    public static long getIdLNRFromCA(final Connection connection, final long idAccount) throws Exception {
+        return getIdFieldFromCuentaCliente(connection, idAccount, "SELECT lista_no_rastreable FROM cuenta_cliente WHERE id_cuenta = ?", "lista_no_rastreable");
+    }
 
-            if (rs.next()) {
-                return rs.getLong("lista_no_rastreable");
+    private static long getIdFieldFromCuentaCliente(final Connection connection, final long idAccount, final String query, final String field) throws Exception {
+        try (final PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setLong(1, idAccount);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong(field);
+                }
             }
-
         } catch (Exception e) {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return 0;
     }

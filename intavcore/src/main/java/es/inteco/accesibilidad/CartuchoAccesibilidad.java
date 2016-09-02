@@ -14,10 +14,11 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.Cartucho;
 import es.inteco.plugin.dao.DataBaseManager;
 
-import javax.naming.NamingException;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Implementación de un cartucho que analiza las urls, así como el contenido
@@ -55,30 +56,34 @@ public class CartuchoAccesibilidad extends Cartucho {
             // Calculamos el resultado de la comprobacion titulos diferentes ya que requiere haber realizado el rastreo completo
             if (checkAccesibility.getGuidelineFile().startsWith("observatorio-une-2012")) {
                 final long idRastreo = (Long) datos.get("idFulfilledCrawling");
-                final Set<String> distribucionTitulos = new HashSet<>();
                 final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreo);
-                try (final Connection connection = DataBaseManager.getConnection()) {
-                    for (Long evaluationId : evaluationIds) {
-                        final List<Incidencia> incidencias = IncidenciaDatos.getIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462l);
-                        for (Incidencia incidencia : incidencias) {
-                            distribucionTitulos.add(incidencia.getCodigoFuente());
-                        }
-                    }
-                    // Se verifica que todos los títulos no sean idénticos (para tamaños de muestra >= 10).
-                    if (evaluationIds.size() < 10 || distribucionTitulos.size() > 1) {
-                        // Si hay menos de 10 páginas o hay más de 1 título se borran las incidencias
-                        for (Long evaluationId : evaluationIds) {
-                            final Analysis analysis = AnalisisDatos.getAnalisisFromId(connection, evaluationId);
-                            final String updatedChecks = analysis.getChecksExecutedStr().replace(",462", "");
-                            AnalisisDatos.updateChecksEjecutados(updatedChecks, idRastreo);
-                            IncidenciaDatos.deleteIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462l);
-                        }
-                    }
-                } catch (Exception e) {
-                    Logger.putLog("Exception al intentar comprobar titulos diferentes: ", CartuchoAccesibilidad.class, Logger.LOG_LEVEL_ERROR, e);
-                }
+                processDiferentTitlesCheck(idRastreo, evaluationIds);
             }
 
+        }
+    }
+
+    private void processDiferentTitlesCheck(final long idRastreo, final List<Long> evaluationIds) {
+        final Set<String> distribucionTitulos = new HashSet<>();
+        try (final Connection connection = DataBaseManager.getConnection()) {
+            for (Long evaluationId : evaluationIds) {
+                final List<Incidencia> incidencias = IncidenciaDatos.getIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462);
+                for (Incidencia incidencia : incidencias) {
+                    distribucionTitulos.add(incidencia.getCodigoFuente());
+                }
+            }
+            // Se verifica que todos los títulos no sean idénticos (para tamaños de muestra >= 10).
+            if (evaluationIds.size() < 10 || distribucionTitulos.size() > 1) {
+                // Si hay menos de 10 páginas o hay más de 1 título se borran las incidencias
+                for (Long evaluationId : evaluationIds) {
+                    final Analysis analysis = AnalisisDatos.getAnalisisFromId(connection, evaluationId);
+                    final String updatedChecks = analysis.getChecksExecutedStr().replace(",462", "");
+                    AnalisisDatos.updateChecksEjecutados(updatedChecks, idRastreo);
+                    IncidenciaDatos.deleteIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462);
+                }
+            }
+        } catch (Exception e) {
+            Logger.putLog("Exception al intentar comprobar titulos diferentes: ", CartuchoAccesibilidad.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 

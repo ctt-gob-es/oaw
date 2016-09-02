@@ -14,47 +14,26 @@ public final class WebAnalyzerDao {
     private WebAnalyzerDao() {
     }
 
-    public static List<String> getCartridgeNames(Connection conn, Long idTracking) {
-        List<String> cartridgeNames = new ArrayList<>();
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        try {
-            pstmt = conn.prepareStatement("SELECT nombre FROM cartucho c " +
-                    "JOIN cartucho_rastreo cr ON (c.id_cartucho = cr.id_cartucho) " +
-                    "WHERE cr.id_rastreo = ?");
+    public static List<String> getCartridgeNames(final Connection connection, final Long idTracking) {
+        final List<String> cartridgeNames = new ArrayList<>();
+        try (PreparedStatement pstmt = connection.prepareStatement("SELECT nombre FROM cartucho c " +
+                "JOIN cartucho_rastreo cr ON (c.id_cartucho = cr.id_cartucho) " +
+                "WHERE cr.id_rastreo = ?")) {
             pstmt.setLong(1, idTracking);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                cartridgeNames.add(rs.getString("nombre"));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    cartridgeNames.add(rs.getString("nombre"));
+                }
             }
         } catch (Exception e) {
             Logger.putLog("Error al recuperar los nombres de cartucho", WebAnalyzerDao.class, Logger.LOG_LEVEL_ERROR, e);
-            return null;
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (Exception e) {
-                    Logger.putLog("Error al cerrar el resultset", WebAnalyzerDao.class, Logger.LOG_LEVEL_ERROR, e);
-                }
-            }
-
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (Exception e) {
-                    Logger.putLog("Error al cerrar el preparedStament", WebAnalyzerDao.class, Logger.LOG_LEVEL_ERROR, e);
-                }
-            }
+            return cartridgeNames;
         }
         return cartridgeNames;
     }
 
     public static void saveBrokenLinksList(Connection conn, Long idCrawling, List<BrokenLinks> brokenLinksList) throws Exception {
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement("INSERT INTO enlaces_rotos VALUES (?, ?, ?)");
+        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enlaces_rotos VALUES (?, ?, ?)")) {
             for (BrokenLinks brokenLinks : brokenLinksList) {
                 pstmt.setLong(1, idCrawling);
                 pstmt.setString(2, brokenLinks.getUrl());
@@ -65,21 +44,11 @@ public final class WebAnalyzerDao {
             pstmt.executeBatch();
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (Exception e) {
-                    Logger.putLog("Error al cerrar el preparedStament", WebAnalyzerDao.class, Logger.LOG_LEVEL_ERROR, e);
-                }
-            }
         }
     }
 
     public static void saveBrokenLinks(Connection conn, Long idCrawling, BrokenLinks brokenLinks) throws Exception {
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement("INSERT INTO enlaces_rotos VALUES (?, ?, ?)");
+        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO enlaces_rotos VALUES (?, ?, ?)")) {
             pstmt.setLong(1, idCrawling);
             pstmt.setString(2, brokenLinks.getUrl());
             pstmt.setInt(3, brokenLinks.getNumBrokenLinks());
@@ -87,14 +56,6 @@ public final class WebAnalyzerDao {
             pstmt.executeUpdate();
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            if (pstmt != null) {
-                try {
-                    pstmt.close();
-                } catch (Exception e) {
-                    Logger.putLog("Error al cerrar el preparedStament", WebAnalyzerDao.class, Logger.LOG_LEVEL_ERROR, e);
-                }
-            }
         }
     }
 }

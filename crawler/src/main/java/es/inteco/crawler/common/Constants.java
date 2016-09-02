@@ -50,9 +50,4 @@ public interface Constants {
 
     public static final String DEFAULT_CHARSET = "UTF-8";
 
-    public static final String XML_IGNORED_LINKS = "ignored_links";
-    public static final String XML_LINK = "link";
-    public static final String XML_TEXT = "text";
-    public static final String XML_TITLE = "title";
-
 }
