@@ -9,7 +9,6 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -22,7 +21,6 @@ import es.inteco.rastreador2.utils.ObservatoryUtils;
 import javax.xml.parsers.ParserConfigurationException;
 import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class ObservatoryManager {
      * Devuelve los análisis de las páginas correspondientes a la ejecución de un rastreo con la metodología del observatorio.
      *
      * @param idObservatoryExecution identificador correspondiente a una ejecución (iteración) de un observatorio
-     * @param evaluationIds identificadores de análisis de página que se quieren evaluar
+     * @param evaluationIds          identificadores de análisis de página que se quieren evaluar
      * @return una lista con las evaluaciones de las páginas correspondientes a la ejecución indicada
      */
     public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(long idObservatoryExecution, final List<Long> evaluationIds) {
@@ -87,9 +85,10 @@ public class ObservatoryManager {
 
     /**
      * Calcula el ranking (posición a nivel global y en su segmento) de una semilla
+     *
      * @param idObservatoryExecution el identificador de una iteracción de un observatorio
-     * @param currentSeed la semilla de la que hay que calcular su ranking en la iteracción
-     * @return
+     * @param currentSeed            la semilla de la que hay que calcular su ranking en la iteracción
+     * @return un objeto RankingInfo con la información de ranking
      */
     public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
         try (final Connection c = DataBaseManager.getConnection()) {
@@ -139,7 +138,8 @@ public class ObservatoryManager {
 
     /**
      * Obtiene el rastreo previo a un determinado rastreo de un observatorio
-     * @param idRastreo id del rastreo del que se quiere obtener el rastreo previo
+     *
+     * @param idRastreo              id del rastreo del que se quiere obtener el rastreo previo
      * @param idObservatoryExecution id del observatorio al que pertenece el rastreo.
      * @return el id del rastreo o 0 si no existe
      */

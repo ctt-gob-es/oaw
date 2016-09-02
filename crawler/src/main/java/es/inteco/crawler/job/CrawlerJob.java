@@ -365,22 +365,22 @@ public class CrawlerJob implements InterruptableJob {
                             break;
                         }
                     } catch (Exception e) {
-                        Logger.putLog("Error al intentar introducir la url auxiliar " + auxDomain + ": " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+                        Logger.putLog(String.format("Error al intentar introducir la url auxiliar %s: %s", auxDomain, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                     }
                 }
 
-                Logger.putLog("Terminado el rastreo para " + url + ", se han recogido " + crawlingDomains.size() + " enlaces: ", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog(String.format("Terminado el rastreo para %s, se han recogido %d enlaces: ", url, crawlingDomains.size()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                 for (CrawledLink crawledLink : crawlingDomains) {
                     Logger.putLog(crawledLink.getUrl(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
                 }
 
             } catch (Exception e) {
-                Logger.putLog("Error al rastrear el dominio " + url + ": " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
+                Logger.putLog(String.format("Error al rastrear el dominio %s: %s", url, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
             }
         }
 
-        // Avisa si se han rastreado menos páginas de las debidas
-        if (incompleteCrawl(crawlerData, chosenDepth)) {
+        // Avisa si se han rastreado menos páginas de las debidas y no es un crawling de 'test'
+        if (!crawlerData.isTest() && incompleteCrawl(crawlerData, chosenDepth)) {
             warnIncompleteCrawl(crawlerData);
         }
 
@@ -390,16 +390,15 @@ public class CrawlerJob implements InterruptableJob {
 
     /**
      * Comprueba si en el proceso de "crawling" se han obtenido menos páginas de las esperadas
+     *
      * @param crawlerData la información CrawlerData del proceso
-     * @param crawlDepth la profundidad
+     * @param crawlDepth  la profundidad
      * @return true si no se han alcazado el número esperado de páginas o false en caso contrario.
      */
     private boolean incompleteCrawl(final CrawlerData crawlerData, final int crawlDepth) {
-        if (!crawlerData.isTest()) {
-            if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && crawlDepth != 1)) {
-                if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * crawlDepth + 1))) {
-                    return true;
-                }
+        if ((crawlerData.getUrls().size() != 1) || (crawlerData.getTopN() != 1 && crawlDepth != 1)) {
+            if ((crawlingDomains.size() < crawlerData.getUrls().size()) || (crawlingDomains.size() < (crawlerData.getTopN() * crawlDepth + 1))) {
+                return true;
             }
         }
         return false;
@@ -407,6 +406,7 @@ public class CrawlerJob implements InterruptableJob {
 
     /**
      * Envía un correo de aviso a los administradores de la aplicación si el proceso de "crawling" ha finalizado con menos páginas de las esperadas.
+     *
      * @param crawlerData la información CrawlerDate del proceso de crawling
      */
     private void warnIncompleteCrawl(final CrawlerData crawlerData) {

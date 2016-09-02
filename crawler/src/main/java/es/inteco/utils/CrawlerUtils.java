@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.sql.Connection;
@@ -27,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static es.inteco.utils.CrawlerDOMUtils.getAttribute;
+import static es.inteco.utils.CrawlerDOMUtils.hasAttribute;
 
 public final class CrawlerUtils {
 
@@ -49,7 +53,7 @@ public final class CrawlerUtils {
     }
 
     public static boolean isSwitchLanguageLink(Element link, List<IgnoredLink> ignoredLinks) {
-        if (ignoredLinks != null) {
+        if (ignoredLinks != null && hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))) {
             for (IgnoredLink ignoredLink : ignoredLinks) {
                 if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink) || (link.getNodeName().equalsIgnoreCase("AREA") && matchsAlt(link, ignoredLink))) {
                     return true;
@@ -61,11 +65,11 @@ public final class CrawlerUtils {
 
     private static boolean matchsText(Element link, IgnoredLink ignoredLink) {
         return matchs(removeInlineTags(link.getTextContent()).trim(), ignoredLink.getText())
-                || (CrawlerDOMUtils.hasAttribute(link, "title") && matchs(CrawlerDOMUtils.getAttribute(link, "title").trim(), ignoredLink.getTitle()));
+                || (hasAttribute(link, "title") && matchs(getAttribute(link, "title").trim(), ignoredLink.getTitle()));
     }
 
     private static boolean matchsAlt(Element link, IgnoredLink ignoredLink) {
-        return CrawlerDOMUtils.hasAttribute(link, "alt") && matchs(CrawlerDOMUtils.getAttribute(link, "alt").trim(), ignoredLink.getText());
+        return hasAttribute(link, "alt") && matchs(getAttribute(link, "alt").trim(), ignoredLink.getText());
     }
 
     private static String removeInlineTags(String content) {
@@ -111,9 +115,8 @@ public final class CrawlerUtils {
 
     public static List<String> addDomainsToList(String seedsList, boolean getOnlyDomain, int type) {
         if (StringUtils.isNotEmpty(seedsList)) {
-            List<String> domains = new ArrayList<>();
-
-            String[] seeds = seedsList.split(";");
+            final String[] seeds = seedsList.split(";");
+            final List<String> domains = new ArrayList<>(seeds.length);
             for (int i = 0; i < seeds.length; i++) {
                 if (type == Constants.ID_LISTA_SEMILLA && !seeds[i].startsWith("http://") && !seeds[i].startsWith("https://")) {
                     seeds[i] = "http://" + seeds[i];
@@ -131,18 +134,22 @@ public final class CrawlerUtils {
         }
     }
 
-    public static String convertDomains(String domain) {
-        String convertedDomain = "";
-
+    /**
+     * Obtiene el host de una dirección url
+     *
+     * @param domain cadena que representa una url
+     * @return el host de la url o vacío si no la cadena no representa una url válida
+     */
+    public static String convertDomains(final String domain) {
         try {
-            URL domainUrl = new URL(domain);
+            final URL domainUrl = new URL(domain);
 
-            convertedDomain = domainUrl.getHost();
-        } catch (Exception e) {
+            return domainUrl.getHost();
+        } catch (MalformedURLException e) {
             Logger.putLog("Error al obtener el dominio base de la URL", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
         }
 
-        return convertedDomain;
+        return "";
     }
 
     public static String getHash(String string) {
@@ -185,16 +192,11 @@ public final class CrawlerUtils {
                 .replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&");
     }
 
-    public static List<String> getDomainsList(Long idCrawling, int type, boolean getOnlyDomain) {
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
+    public static List<String> getDomainsList(final Long idCrawling, final int type, final boolean getOnlyDomain) {
+        try (final Connection conn = DataBaseManager.getConnection()) {
             return CrawlerUtils.addDomainsToList(RastreoDAO.getList(conn, idCrawling, type), getOnlyDomain, type);
         } catch (Exception e) {
-            // TODO: ¿Sustituir por lista vacia Collections.emptyList() ?
             return null;
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
     }
 
@@ -259,7 +261,6 @@ public final class CrawlerUtils {
         String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 
         textContent = removeHtmlComments(textContent);
-        // TODO: ¿Close markableInputStream?
 
         return textContent;
     }
@@ -373,6 +374,7 @@ public final class CrawlerUtils {
 
     /**
      * Comprueba si la conexión se ha realizado a la página de OpenDNS
+     *
      * @param connection la conexión que se quiere comprobar
      * @return true si la conexión se ha realizado a la página de OpenDNS o false en caso contrario.
      */
@@ -382,10 +384,20 @@ public final class CrawlerUtils {
 
     /**
      * Comprueba si un contenido es un RSS
+     *
      * @param content una cadena con un contenido textual
      * @return true si corresponde a un RSS o false en caso contrario
      */
     public static boolean isRss(final String content) {
         return !content.toLowerCase().contains("</html>") && content.toLowerCase().contains("</rss>");
+    }
+
+    /**
+     * Comprueba si un enlace es de tipo http: o usa otro protocolo (mailto:, javascript:,...)
+     * @param link enlace a comprobar
+     * @return true si el enlace es de tipo http o false en caso contrario.
+     */
+    public static boolean isHTTPLink(final Element link) {
+        return getAttribute(link, "href").startsWith("http");
     }
 }

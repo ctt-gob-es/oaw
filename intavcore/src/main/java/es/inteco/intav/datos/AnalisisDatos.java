@@ -69,7 +69,7 @@ public final class AnalisisDatos {
             pstmt.setLong(2, idAnalisis);
             pstmt.executeUpdate();
         } catch (Exception e) {
-            Logger.putLog("Exception: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("updateChecksEjecutados: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -82,7 +82,7 @@ public final class AnalisisDatos {
             pstmt.setLong(3, eval.getIdAnalisis());
             pstmt.executeUpdate();
         } catch (Exception e) {
-            Logger.putLog("Exception: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("endAnalysisSuccess: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -273,7 +273,7 @@ public final class AnalisisDatos {
                         analysis.setObservations(analysis.getObservations() + evaluationForm.getPriorities().get(i).getNumInfos());
                     }
                 } catch (Exception e) {
-                    Logger.putLog("Exception: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
+                    Logger.putLog("getAnalysisList: ", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
 
