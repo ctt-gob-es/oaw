@@ -61,11 +61,11 @@ public class CambiarUsuarioPasswordAction extends Action {
 
                     if (deMenu != null) {
                         modificarUsuarioPassForm.setUsername((String) request.getSession().getAttribute(Constants.USER));
-                        DatosForm datosForm = LoginDAO.getUserData(con, modificarUsuarioPassForm.getUsername());
+                        DatosForm datosForm = LoginDAO.getUserDataByName(con, modificarUsuarioPassForm.getUsername());
                         idUsuario = datosForm.getId();
                         request.setAttribute(Constants.DE_MENU, "si");
                     } else {
-                        DatosForm datosForm = LoginDAO.getUserData(con, Long.valueOf(idUsuario));
+                        DatosForm datosForm = LoginDAO.getUserDataById(con, Long.valueOf(idUsuario));
                         modificarUsuarioPassForm.setUsername(datosForm.getUsuario());
                     }
 

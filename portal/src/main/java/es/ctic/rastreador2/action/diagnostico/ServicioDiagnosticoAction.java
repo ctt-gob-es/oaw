@@ -31,7 +31,7 @@ public class ServicioDiagnosticoAction extends Action {
             final ActionErrors errors = servicioDiagnosticoForm.validate(mapping, request);
             validarRangoFechas(errors, servicioDiagnosticoForm);
             if (errors.isEmpty()) {
-                try (final Connection conn = DataBaseManager.getConnection()){
+                try (Connection conn = DataBaseManager.getConnection()){
                     final DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     final Date startDate = format.parse(servicioDiagnosticoForm.getStartDate() + " 00:00:00");
                     final Date endDate = convertToIncludingEndDate(format, servicioDiagnosticoForm.getEndDate() + " 23:59:59");

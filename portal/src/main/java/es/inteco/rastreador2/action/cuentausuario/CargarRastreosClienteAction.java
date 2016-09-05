@@ -57,7 +57,7 @@ public class CargarRastreosClienteAction extends Action {
         try {
             c = DataBaseManager.getConnection();
 
-            DatosForm userData = LoginDAO.getUserData(c, (String) request.getSession().getAttribute(Constants.USER));
+            DatosForm userData = LoginDAO.getUserDataByName(c, (String) request.getSession().getAttribute(Constants.USER));
             int numResult = CuentaUsuarioDAO.getNumClientCrawlings(c, Long.valueOf(userData.getId()));
             int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
             request.setAttribute(Constants.RASTREOS, CuentaUsuarioDAO.getClientCrawlings(c, Long.valueOf(userData.getId()), (pagina - 1)));

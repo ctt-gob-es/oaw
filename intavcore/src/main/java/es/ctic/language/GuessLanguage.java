@@ -5,7 +5,6 @@ import es.inteco.common.logging.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.lang.Character.UnicodeBlock;
 import java.util.*;
 import java.util.Map.Entry;
@@ -182,9 +181,9 @@ public class GuessLanguage {
         }
 
         // Try languages with unique scripts
-        for (UnicodeBlock unicode : SINGLETONS.keySet()) {
-            if (scripts.contains(unicode)) {
-                return SINGLETONS.get(unicode);
+        for (Entry<UnicodeBlock, String> unicode : SINGLETONS.entrySet()) {
+            if (scripts.contains(unicode.getKey())) {
+                return unicode.getValue();
             }
         }
 

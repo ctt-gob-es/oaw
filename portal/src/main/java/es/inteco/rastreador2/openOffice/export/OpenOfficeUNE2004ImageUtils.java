@@ -289,6 +289,9 @@ public final class OpenOfficeUNE2004ImageUtils {
                 }
             });
 
+    private OpenOfficeUNE2004ImageUtils() {
+    }
+
     /**
      * Obtiene para una imagen generada por el observatorio el id con el que está incrustada la imagen en el
      * documento OpenOffice. Se usará para sobreescribir el valor placeholder con la imagen adecuada

@@ -189,7 +189,7 @@ public final class CrawlerUtils {
     public static void returnFile(final HttpServletResponse response, final String filename, final String mimeType, final boolean delete) throws Exception {
         final File file = new File(filename);
 
-        try (final FileInputStream fileIn = new FileInputStream(file);
+        try (FileInputStream fileIn = new FileInputStream(file);
              final OutputStream out = response.getOutputStream()) {
 
             response.setContentType(mimeType);
@@ -216,7 +216,7 @@ public final class CrawlerUtils {
     }
 
     public static void returnStringAsFile(final HttpServletResponse response, final String content, final String filename, final String mimeType) throws Exception {
-        try (final PrintWriter out = response.getWriter()) {
+        try (PrintWriter out = response.getWriter()) {
             response.setContentType(mimeType);
             response.setContentLength(content.length());
             response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", filename));
@@ -230,7 +230,7 @@ public final class CrawlerUtils {
     }
 
     public static void returnText(final HttpServletResponse response, final String text, final boolean isHtml) throws Exception {
-        try (final OutputStream out = response.getOutputStream()) {
+        try (OutputStream out = response.getOutputStream()) {
             if (isHtml) {
                 response.setContentType("text/html");
             } else {
@@ -271,7 +271,7 @@ public final class CrawlerUtils {
     }
 
     public static List<LenguajeForm> getLanguages() {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             return LanguageDAO.loadLanguages(c);
         } catch (Exception e) {
             Logger.putLog("Exception: ", CrawlerLoginAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -311,7 +311,7 @@ public final class CrawlerUtils {
     }
 
     public static String getFicheroNorma(long idGuideline) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             return es.inteco.plugin.dao.RastreoDAO.recuperarFicheroNorma(c, idGuideline);
         } catch (Exception e) {
             return null;

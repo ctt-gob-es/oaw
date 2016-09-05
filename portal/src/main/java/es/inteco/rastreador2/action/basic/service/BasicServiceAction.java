@@ -119,7 +119,7 @@ public class BasicServiceAction extends Action {
             basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
         }
 
-        try (final Connection conn = DataBaseManager.getConnection()) {
+        try (Connection conn = DataBaseManager.getConnection()) {
             //Lanzamos el rastreo de INTAV
             final CrawlerJob crawlerJob = new CrawlerJob();
             final Long idCrawling = System.nanoTime() * (-1);

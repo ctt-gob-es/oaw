@@ -132,7 +132,7 @@ public class ModificarRastreoAction extends Action {
                             insertarRastreoForm.setFecha(getFechaActual());
                             insertarRastreoForm.setHora(getHoraActual());
 
-                            DatosForm userData = LoginDAO.getUserData(c, (String) sesion.getAttribute(Constants.USER));
+                            DatosForm userData = LoginDAO.getUserDataByName(c, (String) sesion.getAttribute(Constants.USER));
 
                             // Recuperamos los cartuchos
                             insertarRastreoForm.setCartuchos(LoginDAO.getUserCartridge(c, Long.valueOf(userData.getId())));

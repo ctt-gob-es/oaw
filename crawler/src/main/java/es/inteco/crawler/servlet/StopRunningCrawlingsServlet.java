@@ -19,7 +19,7 @@ public class StopRunningCrawlingsServlet extends GenericServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        try (final Connection connection = DataBaseManager.getConnection()) {
+        try (Connection connection = DataBaseManager.getConnection()) {
             RastreoDAO.stopRunningCrawlings(connection);
             RastreoDAO.stopRunningObservatories(connection);
             Logger.putLog("Se ha cambiado el estado de los rastreos activos a 'finalizado'", StopRunningCrawlingsServlet.class, Logger.LOG_LEVEL_INFO);

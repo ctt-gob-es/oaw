@@ -556,9 +556,9 @@ public final class EvaluatorUtility {
         try {
             parser.setFeature(feature, value);
         } catch (SAXNotRecognizedException e) {
-            throw new IllegalStateException("SAXNotRecognizedException thrown when setting " + feature + " to " + value);
+            throw new IllegalStateException("SAXNotRecognizedException thrown when setting " + feature + " to " + value, e);
         } catch (SAXNotSupportedException e) {
-            throw new IllegalStateException("SAXNotSupportedException thrown when setting " + feature + " to " + value);
+            throw new IllegalStateException("SAXNotSupportedException thrown when setting " + feature + " to " + value, e);
         }
     }
 

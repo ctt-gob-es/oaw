@@ -70,7 +70,7 @@ public class ResultadosObservatorioAction extends Action {
     }
 
     private ActionForward deleteObservatoryExecutedSeed(final HttpServletRequest request, final ActionMapping mapping) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             RastreoDAO.borrarRastreoRealizado(c, Long.parseLong(request.getParameter(Constants.ID)));
             PropertiesManager pmgr = new PropertiesManager();
             String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.ejecutada.eliminada");
@@ -85,7 +85,7 @@ public class ResultadosObservatorioAction extends Action {
     }
 
     private ActionForward showDeleteSeedExecution(final HttpServletRequest request, final ActionMapping mapping) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             request.setAttribute(Constants.SEMILLA_FORM, SemillaDAO.getSeedById(c, Long.parseLong(request.getParameter(Constants.ID_SEMILLA))));
             return mapping.findForward(Constants.CONFIRMACION_DELETE);
         } catch (Exception e) {
@@ -100,7 +100,7 @@ public class ResultadosObservatorioAction extends Action {
         }
         final String idSemilla = request.getParameter(Constants.SEMILLA);
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public class ResultadosObservatorioAction extends Action {
     private ActionForward deleteCrawlerSeed(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         final String idSemilla = request.getParameter(Constants.SEMILLA);
         final String confirmacion = request.getParameter(Constants.CONFIRMACION);
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             if (confirmacion.equals(Constants.CONF_SI)) {
                 SemillaDAO.deleteObservatorySeed(c, Long.parseLong(idSemilla), Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 ActionMessages messages = new ActionMessages();
@@ -206,7 +206,7 @@ public class ResultadosObservatorioAction extends Action {
             dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
         }
 
-        final DatosForm userData = LoginDAO.getUserData(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
+        final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 
         final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, null, Long.valueOf(userData.getId()));
 
@@ -218,7 +218,7 @@ public class ResultadosObservatorioAction extends Action {
         final SemillaForm semillaForm = (SemillaForm) form;
         final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final PropertiesManager pmgr = new PropertiesManager();
 
             final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
@@ -240,7 +240,7 @@ public class ResultadosObservatorioAction extends Action {
         final Long observatoryId = Long.valueOf(request.getParameter(Constants.OBSERVATORY_ID));
 
         //Para mostrar todos los Rastreos del Sistema
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
 
             final int numResult = ObservatorioDAO.countFulfilledObservatories(c, observatoryId);
             final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);

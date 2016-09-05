@@ -42,8 +42,6 @@ import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
-import org.dom4j.io.DOMReader;
-import org.dom4j.util.UserDataDocumentFactory;
 import org.w3c.dom.*;
 
 import java.io.ByteArrayInputStream;
@@ -302,14 +300,10 @@ public class Evaluator {
         evaluation.setIdProblems();
 
         if (isCrawling) {
-            Connection conn = null;
-            try {
-                conn = DataBaseManager.getConnection();
+            try (Connection conn = DataBaseManager.getConnection()) {
                 IncidenciaDatos.saveIncidenceList(conn, incidenceList);
             } catch (Exception e) {
                 Logger.putLog("Error al guardar las incidencias en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
-            } finally {
-                DataBaseManager.closeConnection(conn);
             }
         }
 
@@ -430,7 +424,7 @@ public class Evaluator {
         if (embeddedStyleSheets != null && embeddedStyleSheets.getLength() > 0) {
             for (int i = 0; i < embeddedStyleSheets.getLength(); i++) {
                 final Element styleElement = (Element) embeddedStyleSheets.item(i);
-                if ( validMedia(styleElement.getAttribute("media"))) {
+                if (validMedia(styleElement.getAttribute("media"))) {
                     cssResources.add(new CSSStyleSheetResource(styleElement));
                 }
             }
@@ -439,7 +433,7 @@ public class Evaluator {
         if (linkedStyleSheets != null && linkedStyleSheets.getLength() > 0) {
             for (int i = 0; i < linkedStyleSheets.getLength(); i++) {
                 final Element linkElement = (Element) linkedStyleSheets.item(i);
-                if ( linkElement.hasAttribute("href")
+                if (linkElement.hasAttribute("href")
                         && "stylesheet".equalsIgnoreCase(linkElement.getAttribute("rel"))
                         && "text/css".equalsIgnoreCase(linkElement.getAttribute("type"))
                         && validMedia(linkElement.getAttribute("media"))) {
@@ -480,14 +474,14 @@ public class Evaluator {
         return media == null || media.trim().isEmpty() || media.contains("all") || media.contains("screen");
     }
 
-    private  List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+    private List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
         final PropertiesManager properties = new PropertiesManager();
         final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
         final List<Element> brokenLinks;
         final String scope = check.getVectorCode().get(0).getFunctionAttribute1();
-        if ( "domain".equalsIgnoreCase(scope) ) {
+        if ("domain".equalsIgnoreCase(scope)) {
             brokenLinks = (List<Element>) evaluation.getHtmlDoc().getDocumentElement().getUserData("domainLinks");
-        } else if ("external".equalsIgnoreCase(scope) ) {
+        } else if ("external".equalsIgnoreCase(scope)) {
             brokenLinks = (List<Element>) evaluation.getHtmlDoc().getDocumentElement().getUserData("externalLinks");
         } else {
             brokenLinks = Collections.emptyList();
@@ -497,7 +491,7 @@ public class Evaluator {
             problem.setDate(format.format(new Date()));
             problem.setCheck(check);
             final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-            problemTextNode.setTextContent("<A href=\""+brokenLink.getAttribute("href")+"\">"+brokenLink.getTextContent()+"</A>");
+            problemTextNode.setTextContent("<A href=\"" + brokenLink.getAttribute("href") + "\">" + brokenLink.getTextContent() + "</A>");
             problem.setNode(problemTextNode);
 
             evaluation.addProblem(problem);
@@ -525,10 +519,10 @@ public class Evaluator {
         final Document docHtml = evaluation.getHtmlDoc();
         final List<String> enWords = (List<String>) docHtml.getUserData("en_words");
         final StringBuilder textContent = new StringBuilder();
-        if ( !enWords.isEmpty() ) {
+        if (!enWords.isEmpty()) {
             final Iterator<String> itr = enWords.iterator();
             textContent.append(itr.next());
-            while ( itr.hasNext() ) {
+            while (itr.hasNext()) {
                 textContent.append(", ").append(itr.next());
             }
         }
@@ -548,6 +542,7 @@ public class Evaluator {
     private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
         return addValidationIncidences(evaluation, check, incidenceList, ALL_HTML_VALIDATION_ERRORS);
     }
+
     private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final String id) {
         final List<Incidencia> validationProblems = new ArrayList<>();
 
@@ -557,7 +552,7 @@ public class Evaluator {
 
         if (vectorValidationErrors != null) {
             for (ValidationError validationError : vectorValidationErrors) {
-                if ( ALL_HTML_VALIDATION_ERRORS.equalsIgnoreCase(id) || validationError.getMessageId().equalsIgnoreCase(id)) {
+                if (ALL_HTML_VALIDATION_ERRORS.equalsIgnoreCase(id) || validationError.getMessageId().equalsIgnoreCase(id)) {
                     final PropertiesManager properties = new PropertiesManager();
                     final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
                     final Problem problem = new Problem();
@@ -715,7 +710,7 @@ public class Evaluator {
                     if (hasDoctype.equals("false")) {
                         final SimpleDateFormat format = new SimpleDateFormat(properties.getValue(IntavConstants.INTAV_PROPERTIES, "complet.date.format.ymd"));
                         final Problem problem = new Problem((Element) nodeGiven);
-                        problem.setDate( format.format(new Date()));
+                        problem.setDate(format.format(new Date()));
                         problem.setCheck(check);
                         problem.setXpath(getXpath(nodeGiven));
 
@@ -813,7 +808,7 @@ public class Evaluator {
 
     // Saves the global information about the analysis in DataBase and return the id of the analysis
     private int setAnalisisDB(final Evaluation eval, final CheckAccessibility checkAccessibility) {
-        try (final Connection conn = DataBaseManager.getConnection()){
+        try (Connection conn = DataBaseManager.getConnection()) {
             final Analysis analysis = new Analysis();
 
             analysis.setDate(new Date());

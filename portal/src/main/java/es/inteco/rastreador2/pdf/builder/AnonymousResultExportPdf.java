@@ -16,7 +16,6 @@ import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import org.apache.struts.util.MessageResources;
 
@@ -280,7 +279,7 @@ public abstract class AnonymousResultExportPdf {
 
         for (ObservatoryEvaluationForm evaluationForm : evaList) {
             scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
-
+// TODO: codigo duplicado en IntavUtils
             final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
             if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
                 scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
@@ -444,10 +443,6 @@ public abstract class AnonymousResultExportPdf {
         return null;
     }
 
-    protected void createMethodologyHeaderTable(final HttpServletRequest request, final PdfPTable table, final String title) {
-        createMethodologyHeaderTable(CrawlerUtils.getResources(request), table, title);
-    }
-
     protected void createMethodologyHeaderTable(final MessageResources messageResources, final PdfPTable table, final String title) {
         table.addCell(PDFUtils.createColSpanTableCell(title, Constants.VERDE_C_MP, ConstantsFont.labelCellFont, 6, Element.ALIGN_LEFT));
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.33.table.header1"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -456,10 +451,6 @@ public abstract class AnonymousResultExportPdf {
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.33.table.header4"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.33.table.header5"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.33.table.header6"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-    }
-
-    protected void createMethodologyTableRow(final HttpServletRequest request, final PdfPTable table, final String id, final String name, final String question, final com.lowagie.text.List answer, final com.lowagie.text.List value, final com.lowagie.text.List modality) {
-        createMethodologyTableRow(CrawlerUtils.getResources(request), table, id, name, question, answer, value, modality);
     }
 
     protected void createMethodologyTableRow(final MessageResources messageResources, final PdfPTable table, final String id, final String name, final String question, final com.lowagie.text.List answer, final com.lowagie.text.List value, final com.lowagie.text.List modality) {
@@ -488,10 +479,6 @@ public abstract class AnonymousResultExportPdf {
         return PDFlist;
     }
 
-    protected com.lowagie.text.List createImageList(final HttpServletRequest request, final String text) {
-        return createImageList(CrawlerUtils.getResources(request), text);
-    }
-
     protected com.lowagie.text.List createImageList(final MessageResources messageResources, final String text) {
         final PropertiesManager pmgr = new PropertiesManager();
         final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
@@ -503,10 +490,12 @@ public abstract class AnonymousResultExportPdf {
             } else {
                 image = PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.mode.green"), messageResources.getMessage("ob.resAnon.intav.report.33.modality.1.alt"));
             }
-            image.scalePercent(65);
-            final ListItem item = new ListItem(new Chunk(image, 0, 0));
-            item.setListSymbol(new Chunk(""));
-            PDFlist.add(item);
+            if (image != null) {
+                image.scalePercent(65);
+                final ListItem item = new ListItem(new Chunk(image, 0, 0));
+                item.setListSymbol(new Chunk(""));
+                PDFlist.add(item);
+            }
         }
         PDFlist.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
         return PDFlist;
@@ -524,7 +513,7 @@ public abstract class AnonymousResultExportPdf {
         int counter = 1;
         for (ObservatoryEvaluationForm page : primaryReportPageList) {
             table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(counter), 2, ' ')), Color.WHITE, ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + counter));
-            table.addCell(PDFUtils.createLinkedTableCell(page.getUrl(), page.getUrl(),Color.WHITE, Element.ALIGN_LEFT, ConstantsFont.DEFAULT_PADDING));
+            table.addCell(PDFUtils.createLinkedTableCell(page.getUrl(), page.getUrl(), Color.WHITE, Element.ALIGN_LEFT, ConstantsFont.DEFAULT_PADDING));
             counter++;
         }
 

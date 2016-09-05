@@ -44,7 +44,7 @@ public final class CheckDescriptionsManager {
     }
 
     private void loadDescriptions(String descriptionsPath) {
-        try (final Reader reader = getFileReader(descriptionsPath)) {
+        try (Reader reader = getFileReader(descriptionsPath)) {
             this.properties.load(reader);
         } catch (IOException e) {
             Logger.putLog("No se ha podido leer el fichero de descripciones de los checks", CheckDescriptionsManager.class, Logger.LOG_LEVEL_WARNING, e);
@@ -63,7 +63,7 @@ public final class CheckDescriptionsManager {
 
     private Properties getDefaultDescriptions() throws IOException {
         final Properties defaultDescriptions = new Properties();
-        try (final Reader reader = new InputStreamReader(this.getClass().getResourceAsStream(DEFAULT_PROPERTIES))) {
+        try (Reader reader = new InputStreamReader(this.getClass().getResourceAsStream(DEFAULT_PROPERTIES))) {
             defaultDescriptions.load(reader);
         }
         return defaultDescriptions;

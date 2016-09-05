@@ -55,7 +55,7 @@ public class ObservatoryManager {
      */
     public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(long idObservatoryExecution, final List<Long> evaluationIds) {
         final List<ObservatoryEvaluationForm> evaluationList = new ArrayList<>(evaluationIds.size());
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final Evaluator evaluator = new Evaluator();
             for (Long id : evaluationIds) {
                 try {
@@ -74,7 +74,7 @@ public class ObservatoryManager {
     }
 
     public RankingInfo calculatePreviousRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final Long previousObservatoryExecution = ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution);
             return calculateRanking(previousObservatoryExecution, currentSeed);
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class ObservatoryManager {
      * @return un objeto RankingInfo con la información de ranking
      */
     public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
             final RankingInfo rankingInfo = new RankingInfo();
             rankingInfo.setGlobalSeedsNumber(seedsResults.size());
@@ -144,7 +144,7 @@ public class ObservatoryManager {
      * @return el id del rastreo o 0 si no existe
      */
     public long getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(final Long idRastreo, final long idObservatoryExecution) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             return RastreoDAO.getIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(c, idRastreo, idObservatoryExecution);
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);

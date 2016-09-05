@@ -54,7 +54,7 @@ public class ExportAction extends Action {
             language = request.getLocale();
         }
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             //Comprobamos que el usuario esta asociado con el rastreo que quiere exportar
             if (user == null || RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user)) {
                 if (crawlerType.equals(Constants.EXPORT_PDF_INTAV) || crawlerType.equals(Constants.EXPORT_PDF_INTAV_SIMPLE)) {
@@ -119,7 +119,7 @@ public class ExportAction extends Action {
     }
 
     public static Map<Long, List<Long>> resultEvolutionData(Long idRastreo, Long idTracking) throws Exception {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             VerRastreoForm vrf = new VerRastreoForm();
             vrf = RastreoDAO.cargarRastreoVer(c, idRastreo, vrf);
             final List<Long> trackingsIds = RastreoDAO.getEvolutionExecutedCrawlerIds(c, idRastreo, idTracking, vrf.getId_cartucho());

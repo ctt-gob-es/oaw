@@ -33,124 +33,97 @@ public final class RastreoDAO {
     }
 
     public static List<Long> getExecutionObservatoryCrawlerIds(Connection c, Long idObservatoryExecution, long idCategory) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-
-        try {
-            String query = "SELECT id FROM rastreos_realizados rr " +
-                    "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " +
-                    "JOIN lista l ON (l.id_lista = r.semillas) " +
-                    "WHERE id_obs_realizado = ?";
-            if (idCategory != 0) {
-                query = query + " AND l.id_categoria = ? ";
-            }
-            ps = c.prepareStatement(query);
+        final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
+        String query = "SELECT id FROM rastreos_realizados rr " +
+                "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " +
+                "JOIN lista l ON (l.id_lista = r.semillas) " +
+                "WHERE id_obs_realizado = ?";
+        if (idCategory != 0) {
+            query = query + " AND l.id_categoria = ? ";
+        }
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(1, idObservatoryExecution);
             if (idCategory != 0) {
                 ps.setLong(2, idCategory);
             }
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                executionObservatoryCrawlersIds.add(rs.getLong(1));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    executionObservatoryCrawlersIds.add(rs.getLong(1));
+                }
+                return executionObservatoryCrawlersIds;
             }
-            return executionObservatoryCrawlersIds;
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
     public static long getIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(Connection c, long idRastreo, long idObservatoryExecution) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            String query = "SELECT id FROM rastreos_realizados rr " +
-                    "WHERE id_rastreo = ? AND " +
-                    "id_obs_realizado = ?";
-            ps = c.prepareStatement(query);
+        final String query = "SELECT id FROM rastreos_realizados rr " +
+                "WHERE id_rastreo = ? AND " +
+                "id_obs_realizado = ?";
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(1, idRastreo);
             ps.setLong(2, idObservatoryExecution);
 
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getLong("id");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id");
+                } else {
+                    return 0;
+                }
             }
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-        return 0;
     }
 
     public static boolean crawlerCanBeThrow(Connection c, String userLogin, int cartuchoID) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
-                    "WHERE u.usuario = ? AND uc.id_cartucho = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
+                "WHERE u.usuario = ? AND uc.id_cartucho = ?")) {
             ps.setString(1, userLogin);
             ps.setLong(2, cartuchoID);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-        return false;
     }
 
     public static boolean crawlerToUser(Connection c, Long idCrawling, String userLogin) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
-                    "JOIN cartucho_rastreo cr ON (uc.id_cartucho = cr.id_cartucho) WHERE u.usuario = ? AND cr.id_rastreo = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
+                "JOIN cartucho_rastreo cr ON (uc.id_cartucho = cr.id_cartucho) WHERE u.usuario = ? AND cr.id_rastreo = ?")) {
             ps.setString(1, userLogin);
             ps.setLong(2, idCrawling);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return true;
+                }
             }
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return false;
     }
 
     public static boolean crawlerToClientAccount(Connection c, Long idCrawling, String clientLogin) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN cuenta_cliente_usuario ccu ON (u.id_usuario = ccu.id_usuario) " +
-                    "JOIN rastreo r ON (r.id_cuenta = ccu.id_cuenta) " +
-                    "WHERE u.usuario = ? AND r.id_rastreo = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN cuenta_cliente_usuario ccu ON (u.id_usuario = ccu.id_usuario) " +
+                "JOIN rastreo r ON (r.id_cuenta = ccu.id_cuenta) " +
+                "WHERE u.usuario = ? AND r.id_rastreo = ?")) {
             ps.setString(1, clientLogin);
             ps.setLong(2, idCrawling);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return true;
+                }
             }
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return false;
     }
@@ -393,218 +366,136 @@ public final class RastreoDAO {
     }
 
     public static boolean existAccountFromCrawler(Connection c, long idRastreo) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT id_cuenta FROM rastreo WHERE id_rastreo = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_cuenta FROM rastreo WHERE id_rastreo = ?")) {
             ps.setLong(1, idRastreo);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getLong("id_cuenta") != 0;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id_cuenta") != 0;
+                }
             }
         } catch (Exception e) {
             Logger.putLog("Error: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return false;
     }
 
     public static long getIdLRFromRastreo(Connection c, long idRastreo) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT lista_rastreable FROM rastreo WHERE id_rastreo = ? ");
+        try (PreparedStatement ps = c.prepareStatement("SELECT lista_rastreable FROM rastreo WHERE id_rastreo = ? ")) {
             ps.setLong(1, idRastreo);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("lista_rastreable");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("lista_rastreable");
+                }
             }
-
         } catch (Exception e) {
             Logger.putLog("Error: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return 0;
     }
 
     public static long getIdLNRFromRastreo(Connection c, long idRastreo) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT lista_no_rastreable FROM rastreo WHERE id_rastreo = ? ");
+        try (PreparedStatement ps = c.prepareStatement("SELECT lista_no_rastreable FROM rastreo WHERE id_rastreo = ? ")) {
             ps.setLong(1, idRastreo);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("lista_no_rastreable");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("lista_no_rastreable");
+                }
             }
-
         } catch (Exception e) {
             Logger.putLog("Error: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return 0;
     }
 
-    public static void borrarRastreo(Connection c, long idRastreo) throws Exception {
-        final List<Connection> connections = DAOUtils.getCartridgeConnections();
-
+    public static void borrarRastreo(Connection c, long idRastreo) throws SQLException {
         try {
             c.setAutoCommit(false);
-            for (Connection conn : connections) {
-                conn.setAutoCommit(false);
-            }
 
-            borrarRastreo(c, connections, idRastreo);
-            c.commit();
-            for (Connection conn : connections) {
-                conn.commit();
-            }
-        } catch (Exception e) {
-            try {
-                c.rollback();
-            } catch (SQLException e1) {
-                Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
-            }
-            for (Connection conn : connections) {
-                try {
-                    conn.rollback();
-                } catch (Exception excep) {
-                    Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM rastreo WHERE id_rastreo = ?")) {
+                final boolean existAccount = existAccountFromCrawler(c, idRastreo);
+                final long idListaRastreable = getIdLRFromRastreo(c, idRastreo);
+                final long idListaNoRastreable = getIdLNRFromRastreo(c, idRastreo);
+                final List<Long> executedCrawlingIdsList = getExecutedCrawlerIds(c, idRastreo);
+
+                ps.setLong(1, idRastreo);
+                ps.executeUpdate();
+
+                try (PreparedStatement deleteListaStatement = c.prepareStatement("DELETE FROM lista WHERE id_lista = ?")) {
+                    if (!existAccount) {
+                        if (idListaRastreable != 0) {
+                            deleteListaStatement.setLong(1, idListaRastreable);
+                            deleteListaStatement.executeUpdate();
+                        }
+                        if (idListaNoRastreable != 0) {
+                            deleteListaStatement.setLong(1, idListaNoRastreable);
+                            deleteListaStatement.executeUpdate();
+                        }
+                    }
+                    if (executedCrawlingIdsList != null && !executedCrawlingIdsList.isEmpty()) {
+                        deleteAnalyse(c, executedCrawlingIdsList);
+                    }
+                } catch (SQLException e) {
+                    c.rollback();
                     throw e;
                 }
             }
-            throw e;
-        } finally {
-            for (Connection conn : connections) {
-                DataBaseManager.closeConnection(conn);
-            }
-        }
-    }
-
-    public static void borrarRastreo(Connection c, List<Connection> connections, long idRastreo) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            boolean existAccount = existAccountFromCrawler(c, idRastreo);
-            long idListaRastreable = getIdLRFromRastreo(c, idRastreo);
-            long idListaNoRastreable = getIdLNRFromRastreo(c, idRastreo);
-            List<Long> executedCrawlingIdsList = getExecutedCrawlerIds(c, idRastreo);
-            ps = c.prepareStatement("DELETE FROM rastreo WHERE id_rastreo = ?");
-            ps.setLong(1, idRastreo);
-            ps.executeUpdate();
-            DAOUtils.closeQueries(ps, null);
-            if (!existAccount) {
-                if (idListaRastreable != 0) {
-                    ps = c.prepareStatement("DELETE FROM lista WHERE id_lista = ?");
-                    ps.setLong(1, idListaRastreable);
-                    ps.executeUpdate();
-                    DAOUtils.closeQueries(ps, null);
-                }
-                if (idListaNoRastreable != 0) {
-                    ps = c.prepareStatement("DELETE FROM lista WHERE id_lista = ?");
-                    ps.setLong(1, idListaNoRastreable);
-                    ps.executeUpdate();
-                    DAOUtils.closeQueries(ps, null);
-                }
-            }
-            if (executedCrawlingIdsList != null && !executedCrawlingIdsList.isEmpty()) {
-                deleteAnalyse(connections, executedCrawlingIdsList);
-            }
-        } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
+            c.commit();
+            c.setAutoCommit(true);
+        } catch (Exception e) {
+            c.rollback();
+            c.setAutoCommit(true);
         }
     }
 
     public static void borrarRastreoRealizado(Connection c, long idRastreoRealizado) throws Exception {
-        final List<Connection> connections = DAOUtils.getCartridgeConnections();
-
         try {
             c.setAutoCommit(false);
-            for (Connection conn : connections) {
-                conn.setAutoCommit(false);
-            }
 
-            borrarRastreoRealizado(c, connections, idRastreoRealizado);
-            c.commit();
-            for (Connection conn : connections) {
-                conn.commit();
-            }
-        } catch (Exception e) {
-            try {
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM rastreos_realizados WHERE id = ?")) {
+                ps.setLong(1, idRastreoRealizado);
+                ps.executeUpdate();
+                List<Long> executedCrawlingIdsList = new ArrayList<>();
+                executedCrawlingIdsList.add(idRastreoRealizado);
+                deleteAnalyse(c, executedCrawlingIdsList);
+            } catch (SQLException e) {
                 c.rollback();
-            } catch (SQLException e1) {
-                Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                c.setAutoCommit(true);
                 throw e;
             }
-            for (Connection conn : connections) {
-                try {
-                    conn.rollback();
-                } catch (Exception excep) {
-                    Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                    throw e;
-                }
-            }
-            throw e;
-        } finally {
-            for (Connection conn : connections) {
-                DataBaseManager.closeConnection(conn);
-            }
-        }
-    }
 
-    public static void borrarRastreoRealizado(Connection c, List<Connection> connections, long idRastreoRealizado) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = c.prepareStatement("DELETE FROM rastreos_realizados WHERE id = ?");
-            ps.setLong(1, idRastreoRealizado);
-            ps.executeUpdate();
-            List<Long> executedCrawlingIdsList = new ArrayList<>();
-            executedCrawlingIdsList.add(idRastreoRealizado);
-            deleteAnalyse(connections, executedCrawlingIdsList);
-        } catch (SQLException e) {
+            c.commit();
+            c.setAutoCommit(true);
+        } catch (Exception e) {
+            c.rollback();
+            c.setAutoCommit(true);
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
-    public static List<Long> getExecutedCrawlerIds(Connection connR, long idRastreo) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<>();
-        try {
-            //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS
-            ps = connR.prepareStatement("SELECT rr.id FROM rastreo r " +
-                    "JOIN rastreos_realizados rr ON (r.id_rastreo = rr.id_rastreo) " +
-                    "WHERE r.id_rastreo = ?");
+    public static List<Long> getExecutedCrawlerIds(Connection connR, long idRastreo) throws SQLException {
+        final List<Long> executedCrawlerIds = new ArrayList<>();
+        //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS
+        try (PreparedStatement ps = connR.prepareStatement("SELECT rr.id FROM rastreo r " +
+                "JOIN rastreos_realizados rr ON (r.id_rastreo = rr.id_rastreo) " +
+                "WHERE r.id_rastreo = ?")) {
             ps.setLong(1, idRastreo);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                executedCrawlerIds.add(rs.getLong("id"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    executedCrawlerIds.add(rs.getLong("id"));
+                }
             }
             return executedCrawlerIds;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static Long getExecutedCrawlerId(Connection connR, long idRastreo, long idExecutedObservatory) throws Exception {
+    public static Long getExecutedCrawlerId(Connection connR, long idRastreo, long idExecutedObservatory) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -619,7 +510,7 @@ public final class RastreoDAO {
                 return rs.getLong("id");
             }
             return null;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -638,57 +529,48 @@ public final class RastreoDAO {
         return getEvolutionExecutedCrawlerIds(connR, idRastreo, idTracking, idCartucho, limit);
     }
 
-    public static List<Long> getEvolutionExecutedCrawlerIds(final Connection connection, long idRastreo, long idRastreoRealizado, long idCartucho, int limit) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+    public static List<Long> getEvolutionExecutedCrawlerIds(final Connection connection, long idRastreo, long idRastreoRealizado, long idCartucho, int limit) throws SQLException {
         final List<Long> executedCrawlerIds = new ArrayList<>();
-        try {
-            ps = connection.prepareStatement("SELECT r.id FROM rastreos_realizados r " +
-                    "WHERE id_rastreo = ? AND " +
-                    "fecha <= (SELECT fecha FROM rastreos_realizados rr WHERE id = ?) AND " +
-                    "id_cartucho = ? " +
-                    "ORDER BY fecha DESC LIMIT ?");
+        try (PreparedStatement ps = connection.prepareStatement("SELECT r.id FROM rastreos_realizados r " +
+                "WHERE id_rastreo = ? AND " +
+                "fecha <= (SELECT fecha FROM rastreos_realizados rr WHERE id = ?) AND " +
+                "id_cartucho = ? " +
+                "ORDER BY fecha DESC LIMIT ?")) {
             ps.setLong(1, idRastreo);
             ps.setLong(2, idRastreoRealizado);
             ps.setLong(3, idCartucho);
             ps.setInt(4, limit);
 
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                executedCrawlerIds.add(rs.getLong("id"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    executedCrawlerIds.add(rs.getLong("id"));
+                }
             }
             return executedCrawlerIds;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
     public static List<Long> getExecutedCrawlerClientAccountsIds(Connection connR, long idClientAccount) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Long> executedCrawlerIds = new ArrayList<>();
-        try {
-            //RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS
-            ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr " +
-                    "JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) WHERE r.id_cuenta = ?");
+        final List<Long> executedCrawlerIds = new ArrayList<>();
+        try (PreparedStatement ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr " +
+                "JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) WHERE r.id_cuenta = ?")) {
             ps.setLong(1, idClientAccount);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                executedCrawlerIds.add(rs.getLong("id"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    executedCrawlerIds.add(rs.getLong("id"));
+                }
             }
             return executedCrawlerIds;
         } catch (SQLException sqle) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, sqle);
             throw sqle;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static void deleteAnalyse(List<Connection> connections, List<Long> idsRastreosRealizados) throws SQLException {
+    public static void deleteAnalyse(Connection connection, List<Long> idsRastreosRealizados) throws SQLException {
         if (idsRastreosRealizados != null && !idsRastreosRealizados.isEmpty()) {
             PreparedStatement ps = null;
 
@@ -702,18 +584,18 @@ public final class RastreoDAO {
                         executionIdStrList.append("?)");
                     }
                 }
-                for (Connection conn : connections) {
-                    if (conn.getCatalog().contains("intav")) {
-                        ps = conn.prepareStatement("DELETE FROM tanalisis WHERE cod_rastreo IN " + executionIdStrList);
-                    }
 
-                    if (ps != null) {
-                        for (int i = 0; i < idsRastreosRealizados.size(); i++) {
-                            ps.setLong(i + 1, idsRastreosRealizados.get(i));
-                        }
-                        ps.executeUpdate();
-                    }
+                if (connection.getCatalog().contains("intav")) {
+                    ps = connection.prepareStatement("DELETE FROM tanalisis WHERE cod_rastreo IN " + executionIdStrList);
                 }
+
+                if (ps != null) {
+                    for (int i = 0; i < idsRastreosRealizados.size(); i++) {
+                        ps.setLong(i + 1, idsRastreosRealizados.get(i));
+                    }
+                    ps.executeUpdate();
+                }
+
             } catch (SQLException e) {
                 Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
                 throw e;
@@ -778,34 +660,24 @@ public final class RastreoDAO {
     }
 
     public static void updateRastreo(Connection c, long idRastreo) throws SQLException {
-        PreparedStatement pst = null;
-        try {
-            pst = c.prepareStatement("UPDATE rastreo SET fecha_lanzado = ? WHERE id_rastreo = ?");
+        try (PreparedStatement pst = c.prepareStatement("UPDATE rastreo SET fecha_lanzado = ? WHERE id_rastreo = ?")) {
             pst.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
             pst.setLong(2, idRastreo);
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(pst, null);
-
         }
     }
 
     public static void actualizarEstadoRastreo(Connection c, int idRastreo, int status) throws SQLException {
-        PreparedStatement pst = null;
-        try {
-            pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE id_rastreo = ?");
+        try (PreparedStatement pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE id_rastreo = ?")) {
             pst.setInt(1, status);
             pst.setInt(2, idRastreo);
             pst.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(pst, null);
-
         }
     }
 
@@ -838,26 +710,18 @@ public final class RastreoDAO {
     }
 
     public static boolean existeRastreo(Connection c, String nombreRastreo) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT 1 FROM rastreo WHERE nombre_rastreo = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM rastreo WHERE nombre_rastreo = ?")) {
             ps.setString(1, nombreRastreo);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
         } catch (SQLException e) {
             Logger.putLog("Exception", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-
         }
-        return false;
     }
 
-    public static String recuperarNombreRastreo(Connection c, Long idCrawling) throws Exception {
+    public static String recuperarNombreRastreo(Connection c, Long idCrawling) throws SQLException {
         PreparedStatement pes = null;
         ResultSet res = null;
         try {
@@ -867,7 +731,7 @@ public final class RastreoDAO {
             if (res.next()) {
                 return res.getString("nombre_rastreo");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -1054,7 +918,7 @@ public final class RastreoDAO {
         return true;
     }
 
-    public static String insertarRastreo(Connection c, InsertarRastreoForm insertarRastreoForm, boolean isAutomatic) throws Exception {
+    public static String insertarRastreo(Connection c, InsertarRastreoForm insertarRastreoForm, boolean isAutomatic) throws SQLException {
         PropertiesManager pmgr = new PropertiesManager();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -1154,7 +1018,7 @@ public final class RastreoDAO {
         return "";
     }
 
-    public static boolean isAutomaticCrawler(Connection c, long idRastreo) throws Exception {
+    public static boolean isAutomaticCrawler(Connection c, long idRastreo) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -1315,7 +1179,7 @@ public final class RastreoDAO {
         }
     }
 
-    public static int getNumActiveCrawlings(Connection conn, int cartridge) throws Exception {
+    public static int getNumActiveCrawlings(Connection conn, int cartridge) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1339,7 +1203,7 @@ public final class RastreoDAO {
     }
 
     public static Long addFulfilledCrawling(Connection conn, DatosCartuchoRastreoForm dcrForm,
-                                            Long idFulfilledObservatory, Long idUser) throws Exception {
+                                            Long idFulfilledObservatory, Long idUser) throws SQLException {
         PreparedStatement pst = null;
         ResultSet rs = null;
         try {
@@ -1775,52 +1639,46 @@ public final class RastreoDAO {
         return null;
     }
 
-    public static FulfilledCrawlingForm getFullfilledCrawlingExecution(Connection conn, long idExecution) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement("SELECT rr.*, l.*, cl.* FROM rastreos_realizados rr " +
-                    "JOIN lista l ON (rr.id_lista = l.id_lista) " +
-                    "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " +
-                    "WHERE id = ? ");
+    public static FulfilledCrawlingForm getFullfilledCrawlingExecution(Connection conn, long idExecution) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT rr.*, l.*, cl.* FROM rastreos_realizados rr " +
+                "JOIN lista l ON (rr.id_lista = l.id_lista) " +
+                "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " +
+                "WHERE id = ? ")) {
             ps.setLong(1, idExecution);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                FulfilledCrawlingForm form = new FulfilledCrawlingForm();
-                form.setId(rs.getString("rr.id"));
-                form.setDate(CrawlerUtils.formatDate(rs.getDate("fecha")));
-                form.setIdCrawling(String.valueOf(rs.getLong("id_rastreo")));
-                form.setIdCartridge(String.valueOf(rs.getLong("id_cartucho")));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    final FulfilledCrawlingForm form = new FulfilledCrawlingForm();
+                    form.setId(rs.getString("rr.id"));
+                    form.setDate(CrawlerUtils.formatDate(rs.getDate("fecha")));
+                    form.setIdCrawling(String.valueOf(rs.getLong("id_rastreo")));
+                    form.setIdCartridge(String.valueOf(rs.getLong("id_cartucho")));
 
-                SemillaForm semilla = new SemillaForm();
-                semilla.setId(rs.getLong("l.id_lista"));
-                semilla.setAcronimo(rs.getString("acronimo"));
-                semilla.setNombre(rs.getString("l.nombre"));
-                semilla.setDependencia(rs.getString("dependencia"));
-                semilla.setListaUrlsString(rs.getString("l.lista"));
+                    final SemillaForm semilla = new SemillaForm();
+                    semilla.setId(rs.getLong("l.id_lista"));
+                    semilla.setAcronimo(rs.getString("acronimo"));
+                    semilla.setNombre(rs.getString("l.nombre"));
+                    semilla.setDependencia(rs.getString("dependencia"));
+                    semilla.setListaUrlsString(rs.getString("l.lista"));
 
-                CategoriaForm categoria = new CategoriaForm();
-                categoria.setName(rs.getString("cl.nombre"));
-                categoria.setId(rs.getString("cl.id_categoria"));
-                categoria.setOrden(rs.getInt("cl.orden"));
-                semilla.setCategoria(categoria);
+                    final CategoriaForm categoria = new CategoriaForm();
+                    categoria.setName(rs.getString("cl.nombre"));
+                    categoria.setId(rs.getString("cl.id_categoria"));
+                    categoria.setOrden(rs.getInt("cl.orden"));
+                    semilla.setCategoria(categoria);
 
-                form.setSeed(semilla);
-                return form;
+                    form.setSeed(semilla);
+                    return form;
+                }
             }
             return null;
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static void setObservatoryExecutionToCrawlerExecution(Connection conn, long idObsExecution, long idExecuteCrawler) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("UPDATE rastreos_realizados SET id_obs_realizado = ? WHERE id = ?");
+    public static void setObservatoryExecutionToCrawlerExecution(Connection conn, long idObsExecution, long idExecuteCrawler) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE rastreos_realizados SET id_obs_realizado = ? WHERE id = ?")) {
             ps.setLong(1, idObsExecution);
             ps.setLong(2, idExecuteCrawler);
             ps.executeUpdate();
@@ -1828,33 +1686,28 @@ public final class RastreoDAO {
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
-    public static FulfilledCrawlingForm getExecutedCrawling(Connection c, Long idCrawling, Long idSeed) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT rr.id, rr.fecha, rr.id_rastreo, rr.id_cartucho FROM rastreos_realizados rr WHERE id_rastreo = ? AND id_lista = ? ORDER BY id DESC");
+    public static FulfilledCrawlingForm getExecutedCrawling(Connection c, Long idCrawling, Long idSeed) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT rr.id, rr.fecha, rr.id_rastreo, rr.id_cartucho FROM rastreos_realizados rr WHERE id_rastreo = ? AND id_lista = ? ORDER BY id DESC")) {
             ps.setLong(1, idCrawling);
             ps.setLong(2, idSeed);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                final FulfilledCrawlingForm form = new FulfilledCrawlingForm();
-                form.setId(rs.getString("id"));
-                form.setDate(CrawlerUtils.formatDate(rs.getDate("fecha")));
-                form.setIdCrawling(String.valueOf(rs.getLong("id_rastreo")));
-                form.setIdCartridge(String.valueOf(rs.getLong("id_cartucho")));
-                return form;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    final FulfilledCrawlingForm form = new FulfilledCrawlingForm();
+                    form.setId(rs.getString("id"));
+                    form.setDate(CrawlerUtils.formatDate(rs.getDate("fecha")));
+                    form.setIdCrawling(String.valueOf(rs.getLong("id_rastreo")));
+                    form.setIdCartridge(String.valueOf(rs.getLong("id_cartucho")));
+                    return form;
+                } else {
+                    return null;
+                }
             }
-            return null;
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 }

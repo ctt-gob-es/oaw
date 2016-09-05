@@ -38,7 +38,7 @@ public final class AnnexUtils {
     //Anexos sin iteraciones *************************************************************************************
 
     public static void createAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (final Connection c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection();
              final FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 
             final ContentHandler hd = getContentHandler(writer);
@@ -155,7 +155,7 @@ public final class AnnexUtils {
     }
 
     public static void createAnnex2Ev(final MessageResources request, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (final Connection c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection();
              final FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 
             final ContentHandler hd = getContentHandler(writer);
