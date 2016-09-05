@@ -135,7 +135,7 @@ public class LanzarComandoAction extends Action {
                     dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
                 }
 
-                DatosForm userData = LoginDAO.getUserData(c, user);
+                DatosForm userData = LoginDAO.getUserDataByName(c, user);
 
                 Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, null, Long.valueOf(userData.getId()));
 

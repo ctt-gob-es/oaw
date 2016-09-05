@@ -67,7 +67,7 @@ public class InsertarRastreoAction extends Action {
                         return (mapping.findForward(Constants.VOLVER));
                     }
 
-                    DatosForm userData = LoginDAO.getUserData(c, (String) sesion.getAttribute(Constants.USER));
+                    DatosForm userData = LoginDAO.getUserDataByName(c, (String) sesion.getAttribute(Constants.USER));
 
                     //Recuperamos el lenguaje
                     List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);

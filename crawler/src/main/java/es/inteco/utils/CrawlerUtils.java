@@ -193,7 +193,7 @@ public final class CrawlerUtils {
     }
 
     public static List<String> getDomainsList(final Long idCrawling, final int type, final boolean getOnlyDomain) {
-        try (final Connection conn = DataBaseManager.getConnection()) {
+        try (Connection conn = DataBaseManager.getConnection()) {
             return CrawlerUtils.addDomainsToList(RastreoDAO.getList(conn, idCrawling, type), getOnlyDomain, type);
         } catch (Exception e) {
             return null;

@@ -41,9 +41,9 @@ public class DOMParser
             setProperty("http://apache.org/xml/properties/dom/document-class-name",
                     "org.apache.html.dom.HTMLDocumentImpl");
         } catch (org.xml.sax.SAXNotRecognizedException e) {
-            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not recognized");
+            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not recognized", e);
         } catch (org.xml.sax.SAXNotSupportedException e) {
-            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not supported");
+            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not supported", e);
         }
         /*** extending AbstractDOMParser ***
          fConfiguration.setProperty("http://apache.org/xml/properties/dom/document-class-name",
@@ -57,9 +57,9 @@ public class DOMParser
             setProperty("http://apache.org/xml/properties/dom/document-class-name",
                     "org.apache.html.dom.HTMLDocumentImpl");
         } catch (org.xml.sax.SAXNotRecognizedException e) {
-            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not recognized");
+            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not recognized", e);
         } catch (org.xml.sax.SAXNotSupportedException e) {
-            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not supported");
+            throw new RuntimeException("http://apache.org/xml/properties/dom/document-class-name property not supported", e);
         }
     }
 

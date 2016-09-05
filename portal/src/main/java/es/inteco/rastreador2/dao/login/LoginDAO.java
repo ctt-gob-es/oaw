@@ -32,7 +32,7 @@ public final class LoginDAO {
      * @return
      * @throws Exception
      */
-    public static Usuario getRegisteredUser(Connection c, String userName, String password) throws Exception {
+    public static Usuario getRegisteredUser(Connection c, String userName, String password) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -53,9 +53,9 @@ public final class LoginDAO {
             } else {
                 return null;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
+            throw e;
         } finally {
             DAOUtils.closeQueries(ps, rs);
         }
@@ -86,7 +86,7 @@ public final class LoginDAO {
         }
     }
 
-    public static List<String> getUserAccount(Connection c, Long idUser) throws Exception {
+    public static List<String> getUserAccount(Connection c, Long idUser) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -102,7 +102,7 @@ public final class LoginDAO {
                 nombreCuenta.addAll(listFromString(rs.getString("nombre")));
             }
             return nombreCuenta;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -110,7 +110,7 @@ public final class LoginDAO {
         }
     }
 
-    public static List<String> getUserAccountIds(Connection c, Long idUser) throws Exception {
+    public static List<String> getUserAccountIds(Connection c, Long idUser) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -123,7 +123,7 @@ public final class LoginDAO {
                 idsCuenta.add(rs.getString("id_cuenta"));
             }
             return idsCuenta;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -131,7 +131,7 @@ public final class LoginDAO {
         }
     }
 
-    public static List<String> getUserObservatoryIds(Connection c, Long idUser) throws Exception {
+    public static List<String> getUserObservatoryIds(Connection c, Long idUser) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -144,7 +144,7 @@ public final class LoginDAO {
                 idsObservatorio.add(rs.getString("id_observatorio"));
             }
             return idsObservatorio;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -176,7 +176,7 @@ public final class LoginDAO {
         }
     }
 
-    public static List<CartuchoForm> getUserCartridge(Connection c, Long idUser) throws Exception {
+    public static List<CartuchoForm> getUserCartridge(Connection c, Long idUser) throws SQLException {
         List<CartuchoForm> cartridgeList = new ArrayList<>();
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -193,7 +193,7 @@ public final class LoginDAO {
                 cartridgeList.add(cartucho);
             }
             return cartridgeList;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -201,39 +201,25 @@ public final class LoginDAO {
         }
     }
 
-    public static List<Role> getUserRoles(Connection c, Long idUser) throws SQLException {
-        List<Role> roleList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT * FROM usuario_rol ur " +
-                    "JOIN roles r ON (r.id_rol = ur.id_rol) WHERE ur.usuario = ?");
+    public static List<Role> getUserRoles(final Connection c, final Long idUser) throws SQLException {
+        final List<Role> roleList = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario_rol ur " +
+                "JOIN roles r ON (r.id_rol = ur.id_rol) WHERE ur.usuario = ?")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Role role = new Role();
-                role.setId(rs.getLong("id_rol"));
-                role.setName(rs.getString("rol"));
-                roleList.add(role);
+            try (ResultSet rs = ps.executeQuery()) {
+                buildRoleListFromResultSet(roleList, rs);
             }
             return roleList;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new SQLException(e);
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
+            throw e;
         }
     }
 
-    public static List<CartuchoForm> getAllUserCartridge(Connection c) throws Exception {
+    public static List<CartuchoForm> getAllUserCartridge(Connection c) throws SQLException {
         final List<CartuchoForm> cartridgeList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM cartucho c");
-            rs = ps.executeQuery();
-
+        try (PreparedStatement ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM cartucho c");
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 final CartuchoForm cartucho = new CartuchoForm();
                 cartucho.setId(rs.getLong("id_cartucho"));
@@ -241,53 +227,37 @@ public final class LoginDAO {
                 cartridgeList.add(cartucho);
             }
             return cartridgeList;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar la lista de roles", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static List<Role> getAllUserRoles(Connection c, int userRolType) throws Exception {
-        List<Role> roleList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT * FROM roles WHERE id_tipo = ?");
+    public static List<Role> getAllUserRoles(Connection c, int userRolType) throws SQLException {
+        final List<Role> roleList = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM roles WHERE id_tipo = ?")) {
             ps.setInt(1, userRolType);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Role role = new Role();
-                role.setId(rs.getLong("id_rol"));
-                role.setName(rs.getString("rol"));
-                roleList.add(role);
+            try (ResultSet rs = ps.executeQuery()) {
+                buildRoleListFromResultSet(roleList, rs);
             }
             return roleList;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar la lista de roles", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static void deleteUsers(String idCartridge, Connection c) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = c.prepareStatement("DELETE FROM usuario WHERE Id_Cartucho = ?");
+    public static void deleteUsers(String idCartridge, Connection c) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("DELETE FROM usuario WHERE Id_Cartucho = ?")) {
             ps.setString(1, idCartridge);
             ps.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
-    public static int countUsers(Connection c) throws Exception {
+    public static int countUsers(Connection c) throws SQLException {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -299,7 +269,7 @@ public final class LoginDAO {
                 numRes = rs.getInt(1);
             }
             return numRes;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
@@ -383,60 +353,44 @@ public final class LoginDAO {
     }
 
     public static void deleteUser(Connection c, Long idUser) throws SQLException {
-        PreparedStatement ps = null;
-        try {
-            // Borramos los datos del usuario
-            ps = c.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?");
+        try (PreparedStatement ps = c.prepareStatement("DELETE FROM usuario WHERE id_usuario = ?")) {
             ps.setLong(1, idUser);
             ps.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception: ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
 
     }
 
     public static boolean existUserWithKey(Connection c, String passwold, Long idUser) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT 1 from usuario where id_usuario = ? AND password = md5(?);");
+        try (PreparedStatement ps = c.prepareStatement("SELECT 1 from usuario where id_usuario = ? AND password = md5(?);")) {
             ps.setLong(1, idUser);
             ps.setString(2, passwold);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return true;
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
             }
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-        return false;
     }
 
-    public static void updatePassword(Connection c, ModificarUsuarioPassForm modificarUsuarioPassForm, Long idUser) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = c.prepareStatement("UPDATE usuario SET Password = md5(?) where id_usuario = ?;");
+    public static void updatePassword(Connection c, ModificarUsuarioPassForm modificarUsuarioPassForm, Long idUser) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("UPDATE usuario SET Password = md5(?) where id_usuario = ?;")) {
             ps.setString(1, modificarUsuarioPassForm.getPassword());
             ps.setLong(2, idUser);
             ps.executeUpdate();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
 
     }
 
     public static void getUserDatesToUpdate(Connection c, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, Long idUser, int userRolType) throws Exception {
         try {
-            DatosForm dataForm = getUserData(c, idUser);
+            DatosForm dataForm = getUserDataById(c, idUser);
             modificarUsuarioSistemaForm.setNombre2(dataForm.getNombre());
             modificarUsuarioSistemaForm.setApellidos(dataForm.getApellidos());
             modificarUsuarioSistemaForm.setDepartamento(dataForm.getDepartamento());
@@ -474,7 +428,7 @@ public final class LoginDAO {
 
     public static void getUserDataToSee(Connection c, VerUsuarioSistemaForm verUsuarioSistemaForm, Long idUser) throws Exception {
         try {
-            DatosForm dataForm = getUserData(c, idUser);
+            DatosForm dataForm = getUserDataById(c, idUser);
             verUsuarioSistemaForm.setNombre(dataForm.getNombre());
             verUsuarioSistemaForm.setUsuario(dataForm.getUsuario());
             verUsuarioSistemaForm.setApellidos(dataForm.getApellidos());
@@ -490,74 +444,62 @@ public final class LoginDAO {
         }
     }
 
-    public static DatosForm getUserData(Connection c, Long idUser) throws Exception {
-
-        DatosForm dataForm = new DatosForm();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.id_usuario = ?");
+    public static DatosForm getUserDataById(Connection c, Long idUser) throws SQLException {
+        final DatosForm datosForm = new DatosForm();
+        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.id_usuario = ?")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                dataForm.setNombre(rs.getString("Nombre").trim());
-                dataForm.setUsuario(rs.getString("Usuario").trim());
-                dataForm.setApellidos(rs.getString("Apellidos").trim());
-                dataForm.setDepartamento(rs.getString("Departamento").trim());
-                dataForm.setEmail(rs.getString("Email").trim());
-                dataForm.setId(rs.getString("id_usuario"));
+            try (ResultSet rs = ps.executeQuery()) {
+                populateUserDataFromResultSet(datosForm, rs);
             }
-        } catch (Exception e) {
+            return datosForm;
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-        return dataForm;
     }
 
-    public static DatosForm getUserData(Connection c, String user) throws Exception {
-
-        DatosForm datosForm = new DatosForm();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.usuario = ?");
+    public static DatosForm getUserDataByName(Connection c, String user) throws SQLException {
+        final DatosForm datosForm = new DatosForm();
+        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.usuario = ?")) {
             ps.setString(1, user);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                datosForm.setNombre(rs.getString("Nombre").trim());
-                datosForm.setUsuario(rs.getString("Usuario").trim());
-                datosForm.setApellidos(rs.getString("Apellidos").trim());
-                datosForm.setDepartamento(rs.getString("Departamento").trim());
-                datosForm.setEmail(rs.getString("Email").trim());
-                datosForm.setId(rs.getString("id_usuario"));
+            try (ResultSet rs = ps.executeQuery()) {
+                populateUserDataFromResultSet(datosForm, rs);
             }
-        } catch (Exception e) {
+            return datosForm;
+        } catch (SQLException e) {
             Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-        return datosForm;
     }
 
-    public static boolean existUser(Connection c, String name) throws SQLException {
-        //Comprobamos que ese nombre de usuario no existe en la BD
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT 1 FROM usuario WHERE usuario = ?");
+    private static void populateUserDataFromResultSet(final DatosForm userData, final ResultSet resultado) throws SQLException {
+        while (resultado.next()) {
+            userData.setNombre(resultado.getString("Nombre").trim());
+            userData.setUsuario(resultado.getString("Usuario").trim());
+            userData.setApellidos(resultado.getString("Apellidos").trim());
+            userData.setDepartamento(resultado.getString("Departamento").trim());
+            userData.setEmail(resultado.getString("Email").trim());
+            userData.setId(resultado.getString("id_usuario"));
+        }
+    }
+
+    /**
+     * Comprueba si ya existe una cuenta de usuario con un determinado nombre
+     *
+     * @param c    conexión Connection a la BD
+     * @param name cadena String con el nombre de usuario a comprobar
+     * @return true si ya existe una cuenta de usuario con ese nombre o false en caso contrario
+     * @throws SQLException
+     */
+    public static boolean existUser(final Connection c, final String name) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario WHERE usuario = ?")) {
             ps.setString(1, name);
-            rs = ps.executeQuery();
-            return rs.next();
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
@@ -738,24 +680,20 @@ public final class LoginDAO {
     }
 
     public static RedireccionConfigForm loadUserData(Connection c, String user, RedireccionConfigForm redireccionConfigForm) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT id_cartucho, password, tipo FROM usuario WHERE usuario = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_cartucho, password, tipo FROM usuario WHERE usuario = ?")) {
             ps.setString(1, user);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                redireccionConfigForm.setId_cartucho(rs.getInt(1));
-                redireccionConfigForm.setPass(EncryptUtils.encrypt(rs.getString(2)));
-                redireccionConfigForm.setTipo(rs.getString(3));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    redireccionConfigForm.setId_cartucho(rs.getInt(1));
+                    redireccionConfigForm.setPass(EncryptUtils.encrypt(rs.getString(2)));
+                    redireccionConfigForm.setTipo(rs.getString(3));
+                }
+                redireccionConfigForm.setNumCartuchos(1);
+                redireccionConfigForm.setSeleccionados(1);
             }
-            redireccionConfigForm.setNumCartuchos(1);
-            redireccionConfigForm.setSeleccionados(1);
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return redireccionConfigForm;
     }
@@ -805,28 +743,30 @@ public final class LoginDAO {
     }
 
     public static List<String> getMailsByRole(Connection c, Long idRole) throws SQLException {
-        List<String> mails = new ArrayList<>();
-
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT email FROM usuario u " +
-                    "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
-                    "WHERE ur.id_rol = ?;");
+        final List<String> mails = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement("SELECT email FROM usuario u " +
+                "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
+                "WHERE ur.id_rol = ?;")) {
             ps.setLong(1, idRole);
-
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                mails.add(rs.getString("email"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    mails.add(rs.getString("email"));
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return mails;
+    }
+
+    private static void buildRoleListFromResultSet(final List<Role> roleList, final ResultSet rs) throws SQLException {
+        while (rs.next()) {
+            final Role role = new Role();
+            role.setId(rs.getLong("id_rol"));
+            role.setName(rs.getString("rol"));
+            roleList.add(role);
+        }
     }
 
 }

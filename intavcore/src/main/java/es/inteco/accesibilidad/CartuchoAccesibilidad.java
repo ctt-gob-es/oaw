@@ -65,7 +65,7 @@ public class CartuchoAccesibilidad extends Cartucho {
 
     private void processDiferentTitlesCheck(final long idRastreo, final List<Long> evaluationIds) {
         final Set<String> distribucionTitulos = new HashSet<>();
-        try (final Connection connection = DataBaseManager.getConnection()) {
+        try (Connection connection = DataBaseManager.getConnection()) {
             for (Long evaluationId : evaluationIds) {
                 final List<Incidencia> incidencias = IncidenciaDatos.getIncidenciasByAnalisisAndComprobacion(connection, evaluationId, 462);
                 for (Incidencia incidencia : incidencias) {

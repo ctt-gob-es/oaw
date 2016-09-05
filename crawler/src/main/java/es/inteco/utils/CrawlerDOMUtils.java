@@ -69,7 +69,7 @@ public final class CrawlerDOMUtils {
      *
      * @param element       el elemento Element
      * @param attributeName el nombre del atributo a buscar de forma case insensitive
-     * @return el valor del atributo o una cadena vacía si no se encuentra.
+     * @return el valor del atributo o un si no existe el atributo.
      */
     public static String getAttribute(final Element element, final String attributeName) {
         final NamedNodeMap attributes = element.getAttributes();
@@ -79,7 +79,7 @@ public final class CrawlerDOMUtils {
                 return attribute.getTextContent();
             }
         }
-        return "";
+        return null;
     }
 
     public static Document getDocument(final String textContent) throws Exception {

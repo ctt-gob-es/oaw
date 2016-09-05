@@ -1,7 +1,6 @@
 package es.inteco.crawler.ignored.links;
 
 import es.inteco.common.logging.Logger;
-import es.inteco.crawler.common.Constants;
 import org.apache.commons.digester.Digester;
 
 import java.io.InputStream;
@@ -19,7 +18,7 @@ public final class Utils {
     }
 
     public static List<IgnoredLink> getIgnoredLinks() throws Exception {
-        try (final InputStream inputStream = Utils.class.getResourceAsStream("/ignored_links.xml")) {
+        try (InputStream inputStream = Utils.class.getResourceAsStream("/ignored_links.xml")) {
             final Digester digester = new Digester();
             digester.setValidating(false);
             digester.push(new ArrayList<IgnoredLink>());

@@ -52,7 +52,7 @@ public class AnalysisFromCrawlerAction extends Action {
     }
 
     private void getResultData(final HttpServletRequest request) throws Exception {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             // Inicializamos el evaluador
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();

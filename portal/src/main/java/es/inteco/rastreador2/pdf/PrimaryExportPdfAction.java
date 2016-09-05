@@ -71,7 +71,7 @@ public class PrimaryExportPdfAction extends Action {
 
     private boolean userHasAccess(final String user, final long idRastreo) {
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             return user == null || RastreoDAO.crawlerToUser(c, idRastreo, user) || RastreoDAO.crawlerToClientAccount(c, idRastreo, user);
         } catch (Exception e) {
             Logger.putLog("Exception al comprobar permisos para exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -112,7 +112,7 @@ public class PrimaryExportPdfAction extends Action {
         final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
         final PropertiesManager pmgr = new PropertiesManager();
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idExecutionOb);
 
             if (request.getParameter("reverse") != null && request.getParameter("reverse").equalsIgnoreCase(Boolean.TRUE.toString())) {

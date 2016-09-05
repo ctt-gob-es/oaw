@@ -53,7 +53,7 @@ public final class ZipUtils {
             file.getParentFile().mkdirs();
         }
 
-        try (final ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
             generateZipEntries(directoryPath, "", zos, excludeZipFiles);
             zos.flush();
             zos.finish();
@@ -95,7 +95,7 @@ public final class ZipUtils {
         final byte[] readBuffer = new byte[1024];
 
         int bytesIn;
-        try (final FileInputStream fis = new FileInputStream(file)) {
+        try (FileInputStream fis = new FileInputStream(file)) {
             final ZipEntry entry = new ZipEntry(zipDirectory + file.getName());
             zos.putNextEntry(entry);
             // Copiamos en el fichero zip el contenido

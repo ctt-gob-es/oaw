@@ -76,7 +76,7 @@ public class CrawlerJob implements InterruptableJob {
         final List<String> mails = new ArrayList<>();
 
         ResultSet rs = null;
-        try (final Connection c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection();
              final PreparedStatement ps = c.prepareStatement("SELECT email FROM usuario u " +
                      "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
                      "WHERE ur.id_rol = ?;");) {
@@ -116,7 +116,7 @@ public class CrawlerJob implements InterruptableJob {
     }
 
     public void launchCrawler(final CrawlerData crawlerData) {
-        try (final Connection conn = DataBaseManager.getConnection()) {
+        try (Connection conn = DataBaseManager.getConnection()) {
 
             RastreoDAO.actualizarEstadoRastreo(conn, crawlerData.getIdCrawling(), Constants.STATUS_LAUNCHED);
 

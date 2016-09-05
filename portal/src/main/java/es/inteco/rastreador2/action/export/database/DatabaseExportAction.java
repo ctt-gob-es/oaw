@@ -55,7 +55,7 @@ public class DatabaseExportAction extends Action {
     private ActionForward export(ActionMapping mapping, HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final List<ObservatorioRealizadoForm> fulfilledObservatories = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, null);
 
             for (ObservatorioRealizadoForm fulfilledObservatory : fulfilledObservatories) {
@@ -106,7 +106,7 @@ public class DatabaseExportAction extends Action {
     private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             request.setAttribute(Constants.OBSERVATORY_FORM, observatorioForm);
         } catch (Exception e) {

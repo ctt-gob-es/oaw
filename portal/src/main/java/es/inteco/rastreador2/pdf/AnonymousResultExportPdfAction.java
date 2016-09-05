@@ -47,7 +47,7 @@ public class AnonymousResultExportPdfAction extends Action {
         String filePath = null;
 
 
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
             filePath = path + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".pdf";
             String graphicPath = path + "temp" + File.separator;

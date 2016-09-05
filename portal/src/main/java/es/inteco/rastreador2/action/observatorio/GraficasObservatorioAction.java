@@ -25,7 +25,7 @@ public class GraficasObservatorioAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
-            try (final Connection c = DataBaseManager.getConnection()){
+            try (Connection c = DataBaseManager.getConnection()){
                 if (CartuchoDAO.isCartuchoAccesibilidad(c, Long.parseLong(request.getParameter(Constants.TYPE_OBSERVATORY)))) {
                     return getIntavGraphic(request, response);
                 }
@@ -127,7 +127,7 @@ public class GraficasObservatorioAction extends Action {
     }
 
     private String getSegmentName(final String graphicType) {
-        try (final Connection c = DataBaseManager.getConnection()) {
+        try (Connection c = DataBaseManager.getConnection()) {
             final CategoriaForm category = ObservatorioDAO.getCategoryById(c, Long.parseLong(graphicType));
             return String.valueOf(category.getOrden());
         } catch (Exception e) {

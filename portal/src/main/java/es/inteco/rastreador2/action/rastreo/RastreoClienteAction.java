@@ -48,7 +48,7 @@ public class RastreoClienteAction extends Action {
                     request.setAttribute(Constants.LISTADO_CUENTAS_CLIENTE, cargarCuentasUsuarioForm.getListadoCuentasUsuario());
 
                     // Cargamos los cartuchos
-                    DatosForm userData = LoginDAO.getUserData(c, (String) request.getSession().getAttribute(Constants.USER));
+                    DatosForm userData = LoginDAO.getUserDataByName(c, (String) request.getSession().getAttribute(Constants.USER));
                     request.setAttribute(Constants.LISTADO_CARTUCHOS, LoginDAO.getUserCartridge(c, Long.valueOf(userData.getId())));
 
                     //Cargamos las normas

@@ -63,7 +63,7 @@ public final class AnalisisDatos {
 
     public static void updateChecksEjecutados(final String updatedChecks, final long idAnalisis) {
         final String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ? WHERE COD_ANALISIS = ?;";
-        try (final Connection conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection();
              final PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, updatedChecks);
             pstmt.setLong(2, idAnalisis);
@@ -75,7 +75,7 @@ public final class AnalisisDatos {
 
     public static void endAnalysisSuccess(final Evaluation eval) {
         final String query = "UPDATE tanalisis SET CHECKS_EJECUTADOS = ?, ESTADO = ? WHERE COD_ANALISIS = ?;";
-        try (final Connection conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection();
              final PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, eval.getChecksExecutedStr());
             pstmt.setInt(2, IntavConstants.STATUS_SUCCESS);

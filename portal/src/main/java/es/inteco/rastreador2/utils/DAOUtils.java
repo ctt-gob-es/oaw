@@ -39,26 +39,19 @@ public final class DAOUtils {
     }
 
     public static List<String> getMailsByRol(long idRol) throws SQLException {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             return LoginDAO.getMailsByRole(c, idRol);
         } catch (Exception e) {
             Logger.putLog("Exception al recuperar la lista de direcciones de correo.", DAOUtils.class, Logger.LOG_LEVEL_ERROR, e);
             throw new SQLException(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 
     public static List<NormaForm> getNormas(Connection conn, boolean enlacesRotos) throws SQLException {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<NormaForm> normas = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement("SELECT * FROM tguidelines;");
-            rs = ps.executeQuery();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final List<NormaForm> normas = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM tguidelines;");
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 final long codGuideline = rs.getLong("cod_guideline");
                 if (codGuideline != Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"))) {
@@ -86,20 +79,15 @@ public final class DAOUtils {
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
     public static List<LenguajeForm> getLenguaje(Connection conn) throws SQLException {
-        List<LenguajeForm> lenguajes = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = conn.prepareStatement("SELECT * FROM languages;");
-            rs = ps.executeQuery();
+        final List<LenguajeForm> lenguajes = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM languages;");
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                LenguajeForm lenguajeForm = new LenguajeForm();
+                final LenguajeForm lenguajeForm = new LenguajeForm();
                 lenguajeForm.setId(rs.getLong("id_language"));
                 lenguajeForm.setKeyName(rs.getString("key_name"));
                 lenguajeForm.setCodice(rs.getString("codice"));
@@ -110,21 +98,15 @@ public final class DAOUtils {
         } catch (SQLException e) {
             Logger.putLog("Exception: ", DAOUtils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
     public static List<PeriodicidadForm> getRecurrence(Connection c) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT * FROM periodicidad;");
-            rs = ps.executeQuery();
-            List<PeriodicidadForm> recurrenceVector = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM periodicidad;");
+             ResultSet rs = ps.executeQuery()) {
+            final List<PeriodicidadForm> recurrenceVector = new ArrayList<>();
             while (rs.next()) {
-                PeriodicidadForm periodicidadForm = new PeriodicidadForm();
+                final PeriodicidadForm periodicidadForm = new PeriodicidadForm();
                 periodicidadForm.setId(rs.getLong("id_periodicidad"));
                 periodicidadForm.setNombre(rs.getString("nombre"));
                 periodicidadForm.setCronExpression(rs.getString("cronExpression"));
@@ -135,31 +117,7 @@ public final class DAOUtils {
         } catch (Exception e) {
             Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-    }
-
-    public static List<Connection> getCartridgeConnections() {
-        final List<Connection> results = new ArrayList<>();
-
-        final List<String> datasources = new ArrayList<>();
-        datasources.add("datasource.name.intav");
-
-        for (String datasource : datasources) {
-            try {
-                Connection connection = DataBaseManager.getConnection();
-                if (connection != null) {
-                    results.add(connection);
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error al conectar a la base de datos: ", DAOUtils.class, Logger.LOG_LEVEL_ERROR, e);
-                // Avisamos a los administradores, que esto no es muy normal
-                CrawlerUtils.warnAdministrators(e, DAOUtils.class);
-            }
-        }
-
-        return results;
     }
 
 }

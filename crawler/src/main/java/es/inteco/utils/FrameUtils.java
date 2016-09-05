@@ -36,10 +36,10 @@ public final class FrameUtils {
     }
 
     public static String getFramesSource(final String rootUrl, final String textContent) throws Exception {
-        String framesSource = "";
         Document document = getDocument(textContent);
         List<Element> frames = getElementsByTagName(document, "frame");
 
+        final StringBuilder framesSources = new StringBuilder();
         for (Element frame : frames) {
             try {
                 if (hasAttribute(frame, "src") && StringUtils.isNotEmpty(getAttribute(frame, "src"))) {
@@ -50,21 +50,21 @@ public final class FrameUtils {
 
                     frameSource = createAbsoluteHrefs(frameSource, frameUrl);
 
-                    framesSource += frameSource;
+                    framesSources.append(frameSource);
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al recuperar el contenido del FRAME: " + e.getMessage(), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("Error al recuperar el contenido del FRAME: ", CrawlerUtils.class, Logger.LOG_LEVEL_INFO, e);
             }
         }
 
-        return framesSource;
+        return framesSources.toString();
     }
 
     public static String appendFramesSource(final String textContent, final String framesSource) throws Exception {
         Document document = getDocument(textContent);
 
         List<Element> noframes = getElementsByTagName(document, "noframes");
-        if (noframes.size() == 0) {
+        if (noframes.isEmpty()) {
             Document frameDocument = getDocument("<NOFRAMES>\n<BODY>\n" + framesSource + "</BODY>\n</NOFRAMES>\n");
             NodeList childNodes = document.getChildNodes();
             for (int i = childNodes.getLength() - 1; i > 0; i--) {
@@ -120,27 +120,25 @@ public final class FrameUtils {
     }
 
     public static String appendIframesSource(String rootUrl, String textContent) throws Exception {
-        Document document = getDocument(textContent);
-        List<Element> iframes = getElementsByTagName(document, "iframe");
-        if (iframes.size() > 0) {
+        final Document document = getDocument(textContent);
+        final List<Element> iframes = getElementsByTagName(document, "iframe");
+        if (!iframes.isEmpty()) {
             for (Element iframe : iframes) {
                 try {
-                    if (hasAttribute(iframe, "src") && StringUtils.isNotEmpty(getAttribute(iframe, "src"))) {
-                        if (!getAttribute(iframe, "src").equals("#") && !getAttribute(iframe, "src").endsWith(".gif")) {
-                            String frameUrl = new URL(new URL(rootUrl), getAttribute(iframe, "src")).toString();
-                            String frameSource = "<!-- Código HTML del iframe localizado en " + frameUrl + " -->\n\n" +
-                                    getFrameContent(frameUrl) +
-                                    "<!-- Fin del Código HTML del iframe localizado en " + frameUrl + " -->\n\n";
+                    if (hasAttribute(iframe, "src") && !"#".equals(getAttribute(iframe, "src")) && !getAttribute(iframe, "src").endsWith(".gif")) {
+                        final String frameUrl = new URL(new URL(rootUrl), getAttribute(iframe, "src")).toString();
+                        String frameSource = "<!-- Código HTML del iframe localizado en " + frameUrl + " -->\n\n" +
+                                getFrameContent(frameUrl) +
+                                "<!-- Fin del Código HTML del iframe localizado en " + frameUrl + " -->\n\n";
 
-                            frameSource = createAbsoluteHrefs(frameSource, frameUrl);
+                        frameSource = createAbsoluteHrefs(frameSource, frameUrl);
 
-                            Document frameDocument = getDocument(frameSource);
+                        Document frameDocument = getDocument(frameSource);
 
-                            addFrameDocumentSibling((Element) iframe.getParentNode(), iframe, frameDocument);
-                        }
+                        addFrameDocumentSibling((Element) iframe.getParentNode(), iframe, frameDocument);
                     }
                 } catch (Exception e) {
-                    Logger.putLog("Error al recuperar el contenido del IFRAME: " + e.getMessage(), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
+                    Logger.putLog("Error al recuperar el contenido del IFRAME: ", CrawlerUtils.class, Logger.LOG_LEVEL_INFO, e);
                 }
             }
 
@@ -159,7 +157,7 @@ public final class FrameUtils {
                 try {
                     link.setAttribute("href", new URL(new URL(frameUrl), getAttribute(link, "href")).toString());
                 } catch (Exception e) {
-                    Logger.putLog(String.format("Error al crear la URL absoluta de %s y %s", getAttribute(link, "href"), frameUrl), CrawlerUtils.class, Logger.LOG_LEVEL_WARNING);
+                    Logger.putLog(String.format("Error al crear la URL absoluta de %s y %s", getAttribute(link, "href"), frameUrl), CrawlerUtils.class, Logger.LOG_LEVEL_WARNING, e);
                 }
             }
         }
