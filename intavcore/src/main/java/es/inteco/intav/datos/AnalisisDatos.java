@@ -45,7 +45,6 @@ public final class AnalisisDatos {
             pstmt.setString(7, analisis.getSource());
             pstmt.executeUpdate();
 
-            pstmt.getGeneratedKeys();
             int codigoAnalisis = 0;
             rs = pstmt.getGeneratedKeys();
             if (rs.next()) {
@@ -110,7 +109,6 @@ public final class AnalisisDatos {
             pstmt.setInt(6, IntavConstants.STATUS_ERROR);
             pstmt.executeUpdate();
 
-            pstmt.getGeneratedKeys();
             int codigoAnalisis = 0;
             rs = pstmt.getGeneratedKeys();
             if (rs.next()) {

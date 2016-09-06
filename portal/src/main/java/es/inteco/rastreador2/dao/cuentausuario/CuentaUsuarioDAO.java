@@ -171,7 +171,13 @@ public final class CuentaUsuarioDAO {
             insertCuentaCliente.setLong(11, nuevaCuentaUsuarioForm.getLenguaje());
             insertCuentaCliente.setBoolean(12, nuevaCuentaUsuarioForm.isActivo());
             insertCuentaCliente.setBoolean(13, nuevaCuentaUsuarioForm.isInDirectory());
-            final long idAccount = insertCuentaCliente.executeUpdate();
+            insertCuentaCliente.executeUpdate();
+            long idAccount = 0;
+            try (ResultSet rs = insertCuentaCliente.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idAccount = rs.getLong(1);
+                }
+            }
 
             try (PreparedStatement insertCuentaClienteCartucho = connection.prepareStatement("INSERT INTO cuenta_cliente_cartucho VALUES (?,?)")) {
                 for (int i = 0; i < nuevaCuentaUsuarioForm.getCartuchosSelected().length; i++) {
