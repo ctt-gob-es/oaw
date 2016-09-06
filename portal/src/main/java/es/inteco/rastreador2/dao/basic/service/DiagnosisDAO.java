@@ -58,7 +58,12 @@ public final class DiagnosisDAO {
                 ps.setTimestamp(10, null);
             }
             ps.setBoolean(12, basicServiceForm.isInDirectory());
-            return ps.executeUpdate();
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
         } catch (Exception e) {
             Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }

@@ -806,11 +806,17 @@ public final class SemillaDAO {
         try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, categoriaForm.getName());
             ps.setInt(2, categoriaForm.getOrden());
-            return ps.executeUpdate();
+            ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
+        return 0;
     }
 
     public static void updateSeedCategory(Connection c, CategoriaForm categoriaForm) throws SQLException {

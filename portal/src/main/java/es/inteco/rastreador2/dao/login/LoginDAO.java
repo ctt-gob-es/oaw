@@ -8,10 +8,7 @@ import es.inteco.rastreador2.utils.DAOUtils;
 import es.inteco.rastreador2.utils.EncryptUtils;
 import es.inteco.rastreador2.utils.ListadoUsuario;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -504,101 +501,96 @@ public final class LoginDAO {
     }
 
     public static void updateUser(Connection c, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
             c.setAutoCommit(false);
 
             // Borramos los roles antiguos
-            ps = c.prepareStatement("DELETE FROM usuario_rol WHERE usuario = ?");
-            ps.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-            ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            try (PreparedStatement deteleUsuarioRolStatement = c.prepareStatement("DELETE FROM usuario_rol WHERE usuario = ?")) {
+                deteleUsuarioRolStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                deteleUsuarioRolStatement.executeUpdate();
+            }
 
             // Borramos las cuentas de usuario antiguas
-            ps = c.prepareStatement("DELETE FROM cuenta_cliente_usuario WHERE id_usuario = ?");
-            ps.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-            ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            try (PreparedStatement deleteCuentaClienteUsuarioStatement = c.prepareStatement("DELETE FROM cuenta_cliente_usuario WHERE id_usuario = ?")) {
+                deleteCuentaClienteUsuarioStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                deleteCuentaClienteUsuarioStatement.executeUpdate();
+            }
 
             // Borramos los cartuchos antiguos
-            ps = c.prepareStatement("DELETE FROM usuario_cartucho WHERE id_usuario = ?");
-            ps.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-            ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            try (PreparedStatement deleteUsuarioCartuchoStatement = c.prepareStatement("DELETE FROM usuario_cartucho WHERE id_usuario = ?")) {
+                deleteUsuarioCartuchoStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                deleteUsuarioCartuchoStatement.executeUpdate();
+            }
 
-            ps = c.prepareStatement("UPDATE usuario SET Usuario = ?, Nombre = ?, Apellidos = ?, Departamento = ?, Email = ? WHERE id_usuario = ?");
-            ps.setString(1, modificarUsuarioSistemaForm.getNombre());
-            ps.setString(2, modificarUsuarioSistemaForm.getNombre2());
-            ps.setString(3, modificarUsuarioSistemaForm.getApellidos());
-            ps.setString(4, modificarUsuarioSistemaForm.getDepartamento());
-            ps.setString(5, modificarUsuarioSistemaForm.getEmail());
-            ps.setLong(6, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-            ps.executeUpdate();
-            DAOUtils.closeQueries(ps, rs);
+            // Actualizamos los datos de usuario
+            try (PreparedStatement updateUsuarioStatement = c.prepareStatement("UPDATE usuario SET Usuario = ?, Nombre = ?, Apellidos = ?, Departamento = ?, Email = ? WHERE id_usuario = ?")) {
+                updateUsuarioStatement.setString(1, modificarUsuarioSistemaForm.getNombre());
+                updateUsuarioStatement.setString(2, modificarUsuarioSistemaForm.getNombre2());
+                updateUsuarioStatement.setString(3, modificarUsuarioSistemaForm.getApellidos());
+                updateUsuarioStatement.setString(4, modificarUsuarioSistemaForm.getDepartamento());
+                updateUsuarioStatement.setString(5, modificarUsuarioSistemaForm.getEmail());
+                updateUsuarioStatement.setLong(6, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                updateUsuarioStatement.executeUpdate();
+            }
 
             // Insertamos los roles nuevos
             if (modificarUsuarioSistemaForm.getSelectedRoles() != null
                     && modificarUsuarioSistemaForm.getSelectedRoles().length > 0 && Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()) != 0) {
-                ps = c.prepareStatement("INSERT INTO usuario_rol VALUES (?,?)");
-                for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedRoles().length; i++) {
-                    ps.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-                    ps.setInt(2, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedRoles()[i]));
-                    ps.addBatch();
-                }
+                try (PreparedStatement insertUsuarioRolStatement = c.prepareStatement("INSERT INTO usuario_rol VALUES (?,?)")) {
+                    for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedRoles().length; i++) {
+                        insertUsuarioRolStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                        insertUsuarioRolStatement.setInt(2, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedRoles()[i]));
+                        insertUsuarioRolStatement.addBatch();
+                    }
 
-                ps.executeBatch();
+                    insertUsuarioRolStatement.executeBatch();
+                }
             }
 
             // Insertamos los cartuchos nuevos
             if (modificarUsuarioSistemaForm.getSelectedCartuchos() != null
                     && modificarUsuarioSistemaForm.getSelectedCartuchos().length > 0 && Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()) != 0) {
-                ps = c.prepareStatement("INSERT INTO usuario_cartucho VALUES (?,?)");
-                for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedCartuchos().length; i++) {
-                    ps.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-                    ps.setInt(2, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedCartuchos()[i]));
-                    ps.addBatch();
-                }
+                try (PreparedStatement insertUsuarioCartuchoStatement = c.prepareStatement("INSERT INTO usuario_cartucho VALUES (?,?)")) {
+                    for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedCartuchos().length; i++) {
+                        insertUsuarioCartuchoStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                        insertUsuarioCartuchoStatement.setInt(2, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedCartuchos()[i]));
+                        insertUsuarioCartuchoStatement.addBatch();
+                    }
 
-                ps.executeBatch();
+                    insertUsuarioCartuchoStatement.executeBatch();
+                }
             }
 
             //Insertamos las cuenta cliente nuevas
             if (modificarUsuarioSistemaForm.getSelectedCuentaCliente() != null
                     && modificarUsuarioSistemaForm.getSelectedCuentaCliente().length > 0 && Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()) != 0) {
-                ps = c.prepareStatement("INSERT INTO cuenta_cliente_usuario VALUES (?,?)");
-                for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedCuentaCliente().length; i++) {
-                    ps.setInt(1, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedCuentaCliente()[i]));
-                    ps.setLong(2, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-                    ps.addBatch();
-                }
+                try (PreparedStatement insertCuentaClientStatement = c.prepareStatement("INSERT INTO cuenta_cliente_usuario VALUES (?,?)")) {
+                    for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedCuentaCliente().length; i++) {
+                        insertCuentaClientStatement.setInt(1, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedCuentaCliente()[i]));
+                        insertCuentaClientStatement.setLong(2, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                        insertCuentaClientStatement.addBatch();
+                    }
 
-                ps.executeBatch();
+                    insertCuentaClientStatement.executeBatch();
+                }
             }
 
             c.commit();
         } catch (Exception e) {
             Logger.putLog("Error al cerrar modificar el usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            try {
-                c.rollback();
-            } catch (Exception excep) {
-                Logger.putLog("Error al volver al estado anterior de la base de datos", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
-            }
+            c.rollback();
+            c.setAutoCommit(true);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
     }
 
     public static void insertUser(Connection c, NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm) throws Exception {
         PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
             c.setAutoCommit(false);
 
-            ps = c.prepareStatement("INSERT INTO usuario(Usuario, Password,  Nombre, Apellidos, Departamento, Email) VALUES (?, md5(?), ?, ?, ?, ?)");
+            ps = c.prepareStatement("INSERT INTO usuario(Usuario, Password,  Nombre, Apellidos, Departamento, Email) VALUES (?, md5(?), ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, nuevoUsuarioSistemaForm.getNombre());
             ps.setString(2, nuevoUsuarioSistemaForm.getPassword());
             ps.setString(3, nuevoUsuarioSistemaForm.getNombre2());
@@ -606,13 +598,11 @@ public final class LoginDAO {
             ps.setString(5, nuevoUsuarioSistemaForm.getDepartamento());
             ps.setString(6, nuevoUsuarioSistemaForm.getEmail());
             ps.executeUpdate();
-
             long idUser = 0;
-            ps = c.prepareStatement("SELECT id_usuario FROM usuario WHERE usuario = ?");
-            ps.setString(1, nuevoUsuarioSistemaForm.getNombre());
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                idUser = rs.getLong("id_usuario");
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idUser = rs.getLong(1);
+                }
             }
 
             if (nuevoUsuarioSistemaForm.getObservatorio() != null &&
@@ -675,7 +665,7 @@ public final class LoginDAO {
             }
             throw e;
         } finally {
-            DAOUtils.closeQueries(ps, rs);
+            DAOUtils.closeQueries(ps, null);
         }
     }
 
@@ -711,33 +701,29 @@ public final class LoginDAO {
     }
 
     public static List<DatosForm> getClientAccount(Connection c, Long idAccount) throws SQLException {
-        List<DatosForm> results = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT u.id_usuario, u.nombre, u.usuario, u.apellidos, u.departamento, u.email FROM usuario u " +
-                    "INNER JOIN usuario_rol ur ON (ur.usuario = u.id_usuario) " +
-                    "INNER JOIN cuenta_cliente_usuario ccu ON (ccu.id_usuario = u.id_usuario) " +
-                    "INNER JOIN cuenta_cliente cc ON (cc.id_cuenta = ccu.id_cuenta) " +
-                    "WHERE cc.id_cuenta = ?;");
+        final List<DatosForm> results = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.id_usuario, u.nombre, u.usuario, u.apellidos, u.departamento, u.email FROM usuario u " +
+                "INNER JOIN usuario_rol ur ON (ur.usuario = u.id_usuario) " +
+                "INNER JOIN cuenta_cliente_usuario ccu ON (ccu.id_usuario = u.id_usuario) " +
+                "INNER JOIN cuenta_cliente cc ON (cc.id_cuenta = ccu.id_cuenta) " +
+                "WHERE cc.id_cuenta = ?;")) {
             ps.setLong(1, idAccount);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                DatosForm userData = new DatosForm();
-                userData.setNombre(rs.getString("Nombre").trim());
-                userData.setUsuario(rs.getString("Usuario").trim());
-                userData.setApellidos(rs.getString("Apellidos").trim());
-                userData.setDepartamento(rs.getString("Departamento").trim());
-                userData.setEmail(rs.getString("Email").trim());
-                userData.setId(rs.getString("id_usuario"));
-                userData.setRoles(getUserRoles(c, rs.getLong("id_usuario")));
-                results.add(userData);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    DatosForm userData = new DatosForm();
+                    userData.setNombre(rs.getString("Nombre").trim());
+                    userData.setUsuario(rs.getString("Usuario").trim());
+                    userData.setApellidos(rs.getString("Apellidos").trim());
+                    userData.setDepartamento(rs.getString("Departamento").trim());
+                    userData.setEmail(rs.getString("Email").trim());
+                    userData.setId(rs.getString("id_usuario"));
+                    userData.setRoles(getUserRoles(c, rs.getLong("id_usuario")));
+                    results.add(userData);
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return results;
     }
