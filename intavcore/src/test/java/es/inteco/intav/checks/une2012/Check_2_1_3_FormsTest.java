@@ -883,12 +883,56 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
     }
 
+    @Test
+    public void evaluateMultipleSelects() throws Exception {
+        final String markup ="<select id=\"MesDesde\">\n" +
+                "\t\t<option value=\"01\">enero</option>\n" +
+                "\t\t<option value=\"02\">febrero</option>\n" +
+                "\t\t<option value=\"03\">marzo</option>\n" +
+                "\t\t<option value=\"04\">abril</option>\n" +
+                "\t\t<option value=\"05\">mayo</option>\n" +
+                "\t\t<option value=\"06\">junio</option>\n" +
+                "\t\t<option value=\"07\">julio</option>\n" +
+                "\t\t<option value=\"08\">agosto</option>\n" +
+                "\t\t<option value=\"09\">septiembre</option>\n" +
+                "\t\t<option value=\"10\">octubre</option>\n" +
+                "\t\t<option value=\"11\">noviembre</option>\n" +
+                "\t\t<option value=\"12\">diciembre</option>\n" +
+                "\t\t<option selected=\"selected\" value=\"\">Mes desde\n" +
+                "\t</select>\n" +
+                "<label for=\"AnyoDesde\">Año desde</label><select id=\"AnyoDesde\">\n" +
+                "\t\t<option value=\"2013\">2013</option>\n" +
+                "\t\t<option value=\"2014\">2014</option>\n" +
+                "\t\t<option value=\"2015\">2015</option>\n" +
+                "\t\t<option value=\"2016\">2016</option>\n" +
+                "\t\t<option selected=\"selected\" value=\"\">A&#241;o desde\n" +
+                "\t</select>\n" +
+                "<label for=\"MesHasta\">Mes hasta</label><select id=\"ddlMesHasta\">\n" +
+                "\t\t<option value=\"01\">enero\n" +
+                "\t\t<option value=\"02\">febrero\n" +
+                "\t\t<option value=\"03\">marzo\n" +
+                "\t\t<option value=\"04\">abril\n" +
+                "\t\t<option value=\"05\">mayo\n" +
+                "\t\t<option value=\"06\">junio\n" +
+                "\t\t<option value=\"07\">julio\n" +
+                "\t\t<option value=\"08\">agosto\n" +
+                "\t\t<option value=\"09\">septiembre\n" +
+                "\t\t<option value=\"10\">octubre\n" +
+                "\t\t<option value=\"11\">noviembre\n" +
+                "\t\t<option value=\"12\">diciembre\n" +
+                "\t\t<option selected=\"selected\" value=\"\">Mes hasta\n" +
+                "\t</select>\n";
+        checkAccessibility.setContent(markup);
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OPTGROUP));
+    }
+
 //    @Test
 //    public void evaluateURL() throws Exception {
-//        checkAccessibility.setUrl("http://www.exteriores.gob.es/Portal/es/Paginas/inicio.aspx");
+//        checkAccessibility.setUrl("http://www.minhap.gob.es/es-ES/Prensa/Paginas/Eventos.aspx");
 //        final Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND));
-//        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_AS_LEGEND_SHAREPOINT));
+//        TestUtils.printProblems(evaluation.getProblems(), OPTGROUP);
+//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OPTGROUP));
 //        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
 //    }
 

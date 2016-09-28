@@ -1860,7 +1860,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="148" key="html" confidence="high">
+    <check id="148" key="html" confidence="medium">
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra la forma de contactar</name>
         <error>check.148.error</error>
@@ -1874,7 +1874,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="149" key="html" confidence="high">
+    <check id="149" key="html" confidence="medium">
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra la última fecha de revisión</name>
         <error>check.149.error</error>
@@ -4481,7 +4481,7 @@ Telephone: (416) 978-4360
             <trigger element="select"/>
             <condition type="and">
                 <function call="element-count-equals" node="." value="optgroup" number="0"/>
-                <function call="element-count-greater-than" node="." value="option" number="25"/>
+                <function call="element-count-greater-than" node="." value="option" attribute1="1" number="25"/>
             </condition>
         </machine>
     </check>
@@ -5223,7 +5223,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="463" key="html" confidence="high">
+    <check id="463" key="html" confidence="medium">
         <prerequisite id="126"/>
         <name>La declaración de accesibilidad no muestra el nivel de conformidad</name>
         <error>check.463.error</error>
