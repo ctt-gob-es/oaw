@@ -4481,7 +4481,7 @@ Telephone: (416) 978-4360
             <trigger element="select"/>
             <condition type="and">
                 <function call="element-count-equals" node="." value="optgroup" number="0"/>
-                <function call="element-count-greater-than" node="." value="option" number="25"/>
+                <function call="element-count-greater-than" node="." value="option" attribute1="1" number="25"/>
             </condition>
         </machine>
     </check>
