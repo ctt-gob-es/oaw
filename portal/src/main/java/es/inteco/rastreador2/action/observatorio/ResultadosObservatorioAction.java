@@ -153,7 +153,7 @@ public class ResultadosObservatorioAction extends Action {
                     lanzarRastreo(c, String.valueOf(idCrawling));
                     Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, Long.valueOf(request.getParameter(Constants.ID_SEMILLA))).getId());
                     //Borramos el rastreo ejecutado antigüo
-                    RastreoUtils.borrarArchivosAsociados(request, c, String.valueOf(idOldExecution));
+                    RastreoUtils.borrarArchivosAsociados(c, String.valueOf(idOldExecution));
                     RastreoDAO.borrarRastreoRealizado(c, idOldExecution);
                     //Le asiganmos el nuevo a la ejecución del observatorio
                     RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(request.getParameter(Constants.ID_EX_OBS)), idNewExecution);

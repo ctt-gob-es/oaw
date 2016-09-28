@@ -1,11 +1,14 @@
 package es.inteco.rastreador2.utils;
 
+import es.inteco.common.properties.PropertiesManager;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static es.inteco.rastreador2.utils.CrawlerUtils.getResources;
 
 public final class ActionUtils {
 
@@ -28,6 +31,19 @@ public final class ActionUtils {
         }
 
         return false;
+    }
+
+    /**
+     * Asigna a la petición request el mensaje de éxito y la acción de volver para Actions que han sido ejecutadas sin
+     * ningún error.
+     * @param request la petición
+     * @param mensajeKey el identificador del mensaje de éxito a mostrar, se leerá del fichero Application.properties
+     * @param returnPathKey el identificador de la acción volver, se leerá del fichero returnPaths.properties
+     */
+    public static void setSuccesActionAttributes(final HttpServletRequest request, final String mensajeKey, final String returnPathKey) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        request.setAttribute("mensajeExito", getResources(request).getMessage(mensajeKey));
+        request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", returnPathKey));
     }
 
     /**

@@ -81,9 +81,7 @@ public final class BasicServiceExport {
     public static Map<String, List<EvaluationForm>> getResultData(final List<Long> evaluationIds, final String language) throws Exception {
         final Map<String, List<EvaluationForm>> evolutionMap = new HashMap<>();
 
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection()) {
 
             // Inicializamos el evaluador si hace falta
             if (!EvaluatorUtility.isInitialized()) {
@@ -111,8 +109,6 @@ public final class BasicServiceExport {
         } catch (Exception e) {
             Logger.putLog("Excepción genérica al generar el pdf", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
     }
 
@@ -125,13 +121,9 @@ public final class BasicServiceExport {
         }
 
         final byte[] buffer = new byte[1024];
-        ZipOutputStream zos = null;
-        BufferedInputStream in = null;
-        try {
-            zos = new ZipOutputStream(new FileOutputStream(reportCompressFile));
-            in = new BufferedInputStream(new FileInputStream(reportFile));
-
-            ZipEntry ze = new ZipEntry(new File(reportFile).getName());
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(reportCompressFile));
+             BufferedInputStream in = new BufferedInputStream(new FileInputStream(reportFile))) {
+            final ZipEntry ze = new ZipEntry(new File(reportFile).getName());
             zos.putNextEntry(ze);
 
             int len;
@@ -142,21 +134,6 @@ public final class BasicServiceExport {
             zos.closeEntry();
         } catch (Exception e) {
             Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-                }
-            }
-            if (zos != null) {
-                try {
-                    zos.close();
-                } catch (IOException e) {
-                    Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
-                }
-            }
         }
         Logger.putLog("PDF comprimido a ZIP correctamente", BasicServiceExport.class, Logger.LOG_LEVEL_INFO);
         return reportCompressFile;
@@ -165,7 +142,7 @@ public final class BasicServiceExport {
     private static void createPdf(final MessageResources messageResources, List<Long> evaluationIds, BasicServiceForm basicServiceForm, Long idCrawling, String pdfPath) throws Exception {
         final Map<String, List<EvaluationForm>> resultData = getResultData(evaluationIds, basicServiceForm.getLanguage());
 
-        File file = new File(pdfPath);
+        final File file = new File(pdfPath);
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             Logger.putLog("No se han podido crear los directorios para la exportación en PDF", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR);
         }
@@ -461,7 +438,7 @@ public final class BasicServiceExport {
         int i = 1;
         for (EvaluationForm page : primaryReportPageList) {
             table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatory.graphic.score.by.page.label", i++), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
-            table.addCell(PDFUtils.createLinkedTableCell(page.getUrl(), page.getUrl(),Color.WHITE, Element.ALIGN_LEFT, 0));
+            table.addCell(PDFUtils.createLinkedTableCell(page.getUrl(), page.getUrl(), Color.WHITE, Element.ALIGN_LEFT, 0));
         }
 
         return table;
@@ -628,7 +605,7 @@ public final class BasicServiceExport {
                     table.addCell(PDFUtils.createTableCell(specificProblem.getColumn(), Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
                 }
                 String text = HTMLEntities.unhtmlAngleBrackets(code.toString());
-                String message =specificProblem.getMessage();
+                String message = specificProblem.getMessage();
 
                 java.util.List<String> boldWords = new ArrayList<>();
                 if (!StringUtils.isEmpty(message)) {

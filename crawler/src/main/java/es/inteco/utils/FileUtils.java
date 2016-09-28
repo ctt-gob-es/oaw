@@ -48,8 +48,8 @@ public final class FileUtils {
         }
     }
 
-    public static void removeFile(String tablePath) {
-        File file = new File(tablePath);
+    public static void removeFile(final String tablePath) {
+        final File file = new File(tablePath);
         if (file.exists()) {
             FileUtils.deleteDir(file);
         }
@@ -57,10 +57,8 @@ public final class FileUtils {
 
     public static void copyDirectory(File sourceLocation, File targetLocation) throws IOException {
         if (sourceLocation.isDirectory()) {
-            if (!targetLocation.exists()) {
-                if (!targetLocation.mkdirs()) {
-                    Logger.putLog(String.format("Error al crear los directorios en la operación copyDirectory de %s a %s", sourceLocation, targetLocation), FileUtils.class, Logger.LOG_LEVEL_ERROR);
-                }
+            if (!targetLocation.exists() && !targetLocation.mkdirs()) {
+                Logger.putLog(String.format("Error al crear los directorios en la operación copyDirectory de %s a %s", sourceLocation, targetLocation), FileUtils.class, Logger.LOG_LEVEL_ERROR);
             }
             final String[] children = sourceLocation.list();
             if (children != null) {
@@ -69,31 +67,21 @@ public final class FileUtils {
                 }
             }
         } else {
-            if (!targetLocation.exists()) {
-                if (!targetLocation.createNewFile()) {
-                    Logger.putLog(String.format("Error al crear el fichero de destino copyDirectory de %s a %s", sourceLocation, targetLocation), FileUtils.class, Logger.LOG_LEVEL_ERROR);
-                }
+            if (!targetLocation.exists() && !targetLocation.createNewFile()) {
+                Logger.putLog(String.format("Error al crear el fichero de destino copyDirectory de %s a %s", sourceLocation, targetLocation), FileUtils.class, Logger.LOG_LEVEL_ERROR);
             }
-            FileChannel source = null;
-            FileChannel destination = null;
 
-            try {
-                source = new FileInputStream(sourceLocation).getChannel();
-                destination = new FileOutputStream(targetLocation).getChannel();
+            try (FileInputStream fis = new FileInputStream(sourceLocation);
+                 FileOutputStream fos = new FileOutputStream(targetLocation);
+                 FileChannel source = fis.getChannel();
+                 FileChannel destination = fos.getChannel()) {
                 destination.transferFrom(source, 0, source.size());
-            } finally {
-                if (source != null) {
-                    source.close();
-                }
-                if (destination != null) {
-                    destination.close();
-                }
             }
         }
     }
 
-    public static File openDirectory(String name) {
-        File file = new File(name);
+    public static File openDirectory(final String name) {
+        final File file = new File(name);
         if (!(name.endsWith("/"))) {
             if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
                 Logger.putLog(String.format("Error al recuperar los contenidos del fichero %s", name), FileUtils.class, Logger.LOG_LEVEL_ERROR);
@@ -108,6 +96,7 @@ public final class FileUtils {
 
     /**
      * Replaces acute vocals and puntuaction characters for safe ones.
+     *
      * @param originalFileName a string
      * @return the original file name where problematic characters are replaced by safe ones.
      */

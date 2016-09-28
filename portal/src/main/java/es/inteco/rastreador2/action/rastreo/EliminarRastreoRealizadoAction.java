@@ -55,7 +55,7 @@ public class EliminarRastreoRealizadoAction extends Action {
                             return mapping.findForward(Constants.VOLVER);
                         } else {
                             for (int i = 0; i < rastreosSeleccionados.getSelect().length; i++) {
-                                RastreoUtils.borrarArchivosAsociados(request, c, rastreosSeleccionados.getSelect()[i]);
+                                RastreoUtils.borrarArchivosAsociados(c, rastreosSeleccionados.getSelect()[i]);
                                 RastreoDAO.borrarRastreoRealizado(c, Long.parseLong((rastreosSeleccionados.getSelect()[i])));
                             }
                             PropertiesManager pmgr = new PropertiesManager();

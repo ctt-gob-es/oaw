@@ -10,6 +10,7 @@ import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.ComprobadorCaracteres;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
@@ -84,11 +85,7 @@ public class InsertarRastreoAction extends Action {
 
                     if (insertarRastreoForm.getCartuchos() == null || insertarRastreoForm.getCartuchos().isEmpty()) {
                         //error, no puede crear un rastreo si no hay cartuchos instalados para el usuario
-                        String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.noCartuchos");
-                        PropertiesManager pmgr = new PropertiesManager();
-                        String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                        request.setAttribute("mensajeExito", mensaje);
-                        request.setAttribute("accionVolver", volver);
+                        ActionUtils.setSuccesActionAttributes(request, "mensaje.error.noCartuchos", "volver.cargar.rastreos");
                         return mapping.findForward(Constants.NO_CARTUCHO_NO_CREATE);
                     }
 
@@ -135,11 +132,8 @@ public class InsertarRastreoAction extends Action {
                             RastreoDAO.insertarRastreo(c, insertarRastreoForm, false);
 
                             request.getSession().removeAttribute("InsertarRastreoForm");
-                            String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.rastreo.insertado");
-                            PropertiesManager pmgr = new PropertiesManager();
-                            String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                            request.setAttribute("mensajeExito", mensaje);
-                            request.setAttribute("accionVolver", volver);
+
+                            ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.rastreo.insertado", "volver.cargar.rastreos");
                             return mapping.findForward(Constants.EXITO);
                         } else {
                             ActionForward forward = new ActionForward();

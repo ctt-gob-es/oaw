@@ -2,11 +2,11 @@ package es.inteco.rastreador2.action.comun;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.comun.LanzarWrapCommandForm;
 import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.*;
 
@@ -54,10 +54,7 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
                     lanzarWrapCommandForm.setC_rastreo((String) sesion.getAttribute(Constants.RASTREO_INTERMEDIO));
                 }
 
-                Connection c = null;
-                try {
-                    PropertiesManager pmgr = new PropertiesManager();
-                    c = DataBaseManager.getConnection();
+                try (Connection c = DataBaseManager.getConnection()) {
                     String user = (String) request.getSession().getAttribute(Constants.USER);
 
                     //Conseguimos el Id de Cartucho
@@ -73,10 +70,7 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
                             destino = Constants.EXITO_INTERMEDIO;
                             if (RastreoDAO.getNumActiveCrawlings(c, datosCartuchoRastreoForm.getId_cartucho()) >= datosCartuchoRastreoForm.getNumRastreos() &&
                                     lanzarWrapCommandForm.getOpcion().equals(Constants.OPCION_LANZAR)) {
-                                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.numMax.rastreo");
-                                String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                                request.setAttribute("mensajeExito", mensaje);
-                                request.setAttribute("accionVolver", volver);
+                                ActionUtils.setSuccesActionAttributes(request, "mensaje.error.numMax.rastreo", "volver.cargar.rastreos");
                                 return mapping.findForward(Constants.ERROR1);
                             }
                         } else {
@@ -88,7 +82,7 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
                                 return mapping.findForward(Constants.VOLVER);
                             } else if (lanzarWrapCommandForm.getOpcion().equals(Constants.OPCION_LANZAR)) {
                                 //Modifica la fecha de lanzado del rastreo
-                                RastreoDAO.updateRastreo(c, datosCartuchoRastreoForm.getId_rastreo());
+                                RastreoDAO.actualizarFechaRastreo(c, datosCartuchoRastreoForm.getId_rastreo());
                             }
                         }
 
@@ -114,10 +108,7 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
                         lanzarWrapCommandForm.setMensaje(mensaje);
 
                         if (!RastreoDAO.rastreoValidoParaUsuario(c, datosCartuchoRastreoForm.getId_rastreo(), lanzarWrapCommandForm.getUser())) {
-                            String mensaje1 = getResources(request).getMessage(getLocale(request), "mensaje.error.noPermisos");
-                            String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                            request.setAttribute("mensajeExito", mensaje1);
-                            request.setAttribute("accionVolver", volver);
+                            ActionUtils.setSuccesActionAttributes(request, "mensaje.error.noPermisos", "volver.cargar.rastreos");
                             return mapping.findForward(Constants.NO_RASTREO_PERMISO);
                         }
 
@@ -133,8 +124,6 @@ public class LanzarWrapCommandAction extends org.apache.struts.action.Action {
                 } catch (Exception e) {
                     Logger.putLog("Exception: ", LanzarWrapCommandAction.class, Logger.LOG_LEVEL_ERROR, e);
                     throw new Exception(e);
-                } finally {
-                    DataBaseManager.closeConnection(c);
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);

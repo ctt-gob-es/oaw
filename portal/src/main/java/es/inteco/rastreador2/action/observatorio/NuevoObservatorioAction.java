@@ -12,10 +12,7 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.servlets.ScheduleObservatoryServlet;
-import es.inteco.rastreador2.utils.CrawlerUtils;
-import es.inteco.rastreador2.utils.DAOUtils;
-import es.inteco.rastreador2.utils.ObservatoryUtils;
-import es.inteco.rastreador2.utils.Pagination;
+import es.inteco.rastreador2.utils.*;
 import org.apache.struts.action.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,14 +74,14 @@ public class NuevoObservatorioAction extends Action {
                                 // y el id de la semilla que se quiere añadir o desvincular al observatorio
                             } else {
                                 String accion = request.getParameter(Constants.ACTION);
-                                String id_seed = request.getParameter(Constants.SEMILLA);
+                                String idSeed = request.getParameter(Constants.SEMILLA);
 
                                 //Si se desvincula la semilla
                                 if ((accion != null) && (accion.equals(Constants.ACCION_SEPARATE_SEED))) {
-                                    return ObservatoryUtils.separeSeedToObservatory(request, mapping, id_seed, true, addSeeds, otherObsvSeedList);
+                                    return ObservatoryUtils.separeSeedToObservatory(request, mapping, idSeed, true, addSeeds, otherObsvSeedList);
                                     //Si se añade la semilla
                                 } else if ((accion != null) && (accion.equals(Constants.ACCION_ADD_SEED))) {
-                                    return ObservatoryUtils.addSeedToObservatory(request, mapping, id_seed, true, addSeeds, otherObsvSeedList);
+                                    return ObservatoryUtils.addSeedToObservatory(request, mapping, idSeed, true, addSeeds, otherObsvSeedList);
                                     //Si acabamos ya de añadir y desvincular y queremos volver a la pantalla de crear observatorio
                                 } else if ((accion != null) && (accion.equals(Constants.ACCION_ACEPTAR))) {
                                     return addListToObservatory(mapping, request);
@@ -116,11 +113,11 @@ public class NuevoObservatorioAction extends Action {
 
 
     private void newObservatoryWindowPagination(HttpServletRequest request, NuevoObservatorioForm nuevoObservatorioForm) {
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        int pagSizeNU = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatory.results.size"));
-        int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-        int resultFrom = pagSizeNU * (pagina - 1);
+        final int pagSizeNU = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatory.results.size"));
+        final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+        final int resultFrom = pagSizeNU * (pagina - 1);
 
         request.getSession().setAttribute(Constants.OBS_PAGINATION_RESULT_FROM, resultFrom);
         request.getSession().setAttribute(Constants.OBS_PAGINATION, pagSizeNU);
@@ -128,13 +125,7 @@ public class NuevoObservatorioAction extends Action {
     }
 
     private NuevoObservatorioForm inicializeData(NuevoObservatorioForm nuevoObservatorioForm, HttpServletRequest request) throws Exception {
-        Connection c = null;
-        Connection con = null;
-
-        try {
-            c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection();
-
+        try (Connection c = DataBaseManager.getConnection()) {
             nuevoObservatorioForm.setPeriodicidadVector(DAOUtils.getRecurrence(c));
 
             final List<LenguajeForm> lenguajeFormList = DAOUtils.getLenguaje(c);
@@ -156,27 +147,15 @@ public class NuevoObservatorioAction extends Action {
         } catch (Exception e) {
             Logger.putLog("Exception: ", NuevoObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
-            DataBaseManager.closeConnection(con);
         }
-
     }
 
     private ActionForward insertObservatory(ActionMapping mapping, NuevoObservatorioForm nuevoObservatorioForm, HttpServletRequest request) throws Exception {
-        PropertiesManager pmgr = new PropertiesManager();
+        if (nuevoObservatorioForm.getAddSeeds() != null) {
+            newObservatoryWindowPagination(request, nuevoObservatorioForm);
+        }
 
-        Connection c = null;
-        Connection con = null;
-
-        try {
-            if (nuevoObservatorioForm.getAddSeeds() != null) {
-                newObservatoryWindowPagination(request, nuevoObservatorioForm);
-            }
-
-            c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection();
-
+        try (Connection c = DataBaseManager.getConnection()) {
             ActionErrors errors = nuevoObservatorioForm.validate(mapping, request);
 
             if (errors.isEmpty()) {
@@ -204,12 +183,9 @@ public class NuevoObservatorioAction extends Action {
                             nuevoObservatorioForm.getCartucho().getId());
                 }
 
-                if (idObservatorio != null && !idObservatorio.equals((long) 0)) {
+                if (!idObservatorio.equals((long) 0)) {
                     ObservatoryUtils.removeSessionAttributes(request);
-                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.observatorio");
-                    String volver = pmgr.getValue("returnPaths.properties", "volver.carga.observatorio");
-                    request.setAttribute("mensajeExito", mensaje);
-                    request.setAttribute("accionVolver", volver);
+                    ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.observatorio", "volver.carga.observatorio");
                     ActionForward forward = new ActionForward(mapping.findForward(Constants.EXITO));
                     forward.setRedirect(true);
                     return forward;
@@ -225,10 +201,7 @@ public class NuevoObservatorioAction extends Action {
             }
         } catch (Exception e) {
             Logger.putLog("Exception: ", NuevoObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
-            DataBaseManager.closeConnection(con);
+            throw e;
         }
     }
 

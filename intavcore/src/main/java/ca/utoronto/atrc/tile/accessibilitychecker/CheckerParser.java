@@ -38,6 +38,7 @@ import org.w3c.dom.Node;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -131,28 +132,26 @@ public class CheckerParser extends DOMParser {
     }
 
     /*   We override startElement callback  from DocumentHandler */
-    public void startElement(QName elementQName, XMLAttributes attrList, Augmentations augs)
-            throws XNIException {
+    public void startElement(QName elementQName, XMLAttributes attrList, Augmentations augs) {
         super.startElement(elementQName, attrList, augs);
 
-        Node node = null;
+        Node node;
         try {
             node = (Node) this.getProperty("http://apache.org/xml/properties/dom/current-element-node");
         } catch (org.xml.sax.SAXException ex) {
             Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, ex);
+            throw new XNIException(ex);
         }
-        // Logger.putLog(node.getClass().getName(), CheckerParser.class, Logger.LOG_LEVEL_INFO);
-        if (node != null) {
-            node.setUserData("startLine", String.valueOf(locator.getLineNumber()), null);
-            node.setUserData("startColumn", String.valueOf(locator.getColumnNumber()), null);
-        }
+
+        node.setUserData("startLine", String.valueOf(locator.getLineNumber()), null);
+        node.setUserData("startColumn", String.valueOf(locator.getColumnNumber()), null);
 
         // are we looking for a d-link?
         // (We're doing this here before the DOM structure is created because the d-link
         // must follow within 5 elements of the IMG.)
 
         if (dlinkCounter > 0) {
-            if (node.getNodeName().equalsIgnoreCase("a")) {
+            if ("a".equalsIgnoreCase(node.getNodeName())) {
                 if (EvaluatorUtility.getAttributeNoSession((Element) node, "href").equalsIgnoreCase(longdescValue)) {
                     nodeImgWithLongdesc.setUserData("dlink", "true", null);
                     dlinkCounter = 0;
@@ -169,7 +168,7 @@ public class CheckerParser extends DOMParser {
         // (We're doing this here before the DOM structure is created because the NOSCRIPT
         // must follow within 5 elements of the SCRIPT.)
         if (noscriptCounter > 0) {
-            if (node.getNodeName().equalsIgnoreCase("noscript")) {
+            if ("noscript".equalsIgnoreCase(node.getNodeName())) {
                 nodeScript.setUserData("noscript", "true", null);
                 noscriptCounter = 0;
                 nodeScript = null;
@@ -182,7 +181,7 @@ public class CheckerParser extends DOMParser {
         // (We're doing this here before the DOM structure is created because the NOEMBED
         // must follow within 5 elements of the EMBED.)
         if (noembedCounter > 0) {
-            if (node.getNodeName().equalsIgnoreCase("noembed")) {
+            if ("noembed".equalsIgnoreCase(node.getNodeName())) {
                 nodeEmbed.setUserData("noembed", "true", null);
                 noembedCounter = 0;
                 nodeEmbed = null;
@@ -210,19 +209,19 @@ public class CheckerParser extends DOMParser {
         }
 
         // count the tables
-        if (node.getNodeName().equalsIgnoreCase("table")) {
+        if ("table".equalsIgnoreCase(node.getNodeName())) {
             tableCounter++;
             rowCounter = 0;
             cellCounter = 0;
         }
 
         // count the rows
-        else if (node.getNodeName().equalsIgnoreCase("tr")) {
+        else if ("tr".equalsIgnoreCase(node.getNodeName())) {
             rowCounter++;
         }
 
         // store the "action" attribute of the current form (needed for "input" elements)
-        else if (node.getNodeName().equalsIgnoreCase("form")) {
+        else if ("form".equalsIgnoreCase(node.getNodeName())) {
             formCounter++;
             // the form identifier is the 'action' attribute
             formname = EvaluatorUtility.getAttributeNoSession((Element) node, "action");
@@ -233,50 +232,50 @@ public class CheckerParser extends DOMParser {
         }
 
         // input element - associate with its form and its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("input")) {
+        else if ("input".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("form", formname, null);
             node.setUserData("pos", position, null);
             position++;
         }
 
         // select element - associate with its form and its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("select")) {
+        else if ("select".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("form", formname, null);
             node.setUserData("pos", position, null);
             position++;
         }
 
         // a element - associate with its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("a")) {
+        else if ("a".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("pos", position, null);
             position++;
         }
 
         // area area - associate with its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("area")) {
+        else if ("area".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("pos", position, null);
             position++;
         }
 
         // button element - associate with its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("button")) {
+        else if ("button".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("pos", position, null);
             position++;
         }
 
         // object element - associate with its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("object")) {
+        else if ("object".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("pos", position, null);
             position++;
         }
         // textarea element - associate its position in the document
-        else if (node.getNodeName().equalsIgnoreCase("textarea")) {
+        else if ("textarea".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("pos", position, null);
             position++;
         }
 
         // label element - associate with its form
-        else if (node.getNodeName().equalsIgnoreCase("label")) {
+        else if ("label".equalsIgnoreCase(node.getNodeName())) {
             node.setUserData("form", formname, null);
 
             // check for non-unique FOR attribute values
@@ -299,70 +298,28 @@ public class CheckerParser extends DOMParser {
         }
 
         // store the 'base' (needed when loading images)
-        else if (node.getNodeName().equalsIgnoreCase("base")) {
+        else if ("base".equalsIgnoreCase(node.getNodeName())) {
             base = EvaluatorUtility.getAttributeNoSession((Element) node, "href");
         }
 
         // look at heading levels here too
         // store the previous and next heading level on each header
-        else if (node.getNodeName().equalsIgnoreCase("h1")) {
-            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
-            headingLevel = 1;
-            inHeading = true;
-            if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 1, null);
-                nodePreviousHeader.setUserData("nextheader", node, null);
-            }
-            nodePreviousHeader = node;
-        } else if (node.getNodeName().equalsIgnoreCase("h2")) {
-            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
-            headingLevel = 2;
-            inHeading = true;
-            if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 2, null);
-                nodePreviousHeader.setUserData("nextheader", node, null);
-            }
-            nodePreviousHeader = node;
-        } else if (node.getNodeName().equalsIgnoreCase("h3")) {
-            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
-            headingLevel = 3;
-            inHeading = true;
-            if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 3, null);
-                nodePreviousHeader.setUserData("nextheader", node, null);
-            }
-            nodePreviousHeader = node;
-        } else if (node.getNodeName().equalsIgnoreCase("h4")) {
-            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
-            headingLevel = 4;
-            inHeading = true;
-            if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 4, null);
-                nodePreviousHeader.setUserData("nextheader", node, null);
-            }
-            nodePreviousHeader = node;
-        } else if (node.getNodeName().equalsIgnoreCase("h5")) {
-            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
-            headingLevel = 5;
-            inHeading = true;
-            if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 5, null);
-                nodePreviousHeader.setUserData("nextheader", node, null);
-            }
-            nodePreviousHeader = node;
-        } else if (node.getNodeName().equalsIgnoreCase("h6")) {
-            node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
-            headingLevel = 6;
-            inHeading = true;
-            if (nodePreviousHeader != null) {
-                nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, 6, null);
-                nodePreviousHeader.setUserData("nextheader", node, null);
-            }
-            nodePreviousHeader = node;
+        else if ("h1".equalsIgnoreCase(node.getNodeName())) {
+            adjustHeadingLevels(node, 1);
+        } else if ("h2".equalsIgnoreCase(node.getNodeName())) {
+            adjustHeadingLevels(node, 2);
+        } else if ("h3".equalsIgnoreCase(node.getNodeName())) {
+            adjustHeadingLevels(node, 3);
+        } else if ("h4".equalsIgnoreCase(node.getNodeName())) {
+            adjustHeadingLevels(node, 4);
+        } else if ("h5".equalsIgnoreCase(node.getNodeName())) {
+            adjustHeadingLevels(node, 5);
+        } else if ("h6".equalsIgnoreCase(node.getNodeName())) {
+            adjustHeadingLevels(node, 6);
         }
 
         // is this an IMG?
-        else if (node.getNodeName().equalsIgnoreCase("img")) {
+        else if ("img".equalsIgnoreCase(node.getNodeName())) {
             parseImg(node);
             if (!((Element) node).getAttribute("alt").trim().isEmpty()) {
                 if (nodePreviousHeader != null) {
@@ -372,14 +329,14 @@ public class CheckerParser extends DOMParser {
         }
 
         // is this an SCRIPT (and requires a NOSCRIPT)?
-        else if (node.getNodeName().equalsIgnoreCase("script")) {
+        else if ("script".equalsIgnoreCase(node.getNodeName())) {
             noscriptCounter = 5; // noscript must occur within the next 5 elements
             node.setUserData("noscript", "false", null);
             nodeScript = node;
         }
 
         // is this an EMBED (and requires a NOEMBED)?
-        else if (node.getNodeName().equalsIgnoreCase("embed")) {
+        else if ("embed".equalsIgnoreCase(node.getNodeName())) {
             noembedCounter = 5; // noembed must occur within the next 5 elements
             node.setUserData("noembed", "false", null);
             nodeEmbed = node;
@@ -395,6 +352,17 @@ public class CheckerParser extends DOMParser {
         node.setUserData("count", intCount, null);
 
     } //startElement
+
+    private void adjustHeadingLevels(final Node node, final int nextHeadingLevel) {
+        node.setUserData(IntavConstants.PREVIOUS_LEVEL, headingLevel, null);
+        headingLevel = nextHeadingLevel;
+        inHeading = true;
+        if (nodePreviousHeader != null) {
+            nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, nextHeadingLevel, null);
+            nodePreviousHeader.setUserData("nextheader", node, null);
+        }
+        nodePreviousHeader = node;
+    }
 
     private void parseImg(Node node) {
         // does it require a d-link?
@@ -465,7 +433,7 @@ public class CheckerParser extends DOMParser {
 //                                throw new Exception();
                             }
 //							}
-                        } catch (Exception e) {
+                        } catch (IOException e) {
                             // exception will be generated if image size can't be found
                             // System.out.println ("Exception in open URL: " + stringSrc);
                             //Dimension dimensionDefault = new Dimension(200, 200); // default size
@@ -482,7 +450,7 @@ public class CheckerParser extends DOMParser {
 
     /* We override startDocument callback from DocumentHandler */
     public void startDocument(XMLLocator locator, String encoding,
-                              NamespaceContext namespaceContext, Augmentations augs) throws XNIException {
+                              NamespaceContext namespaceContext, Augmentations augs) {
         super.startDocument(locator, encoding, namespaceContext, augs);
         this.locator = locator;
         Node node = null;
@@ -506,15 +474,14 @@ public class CheckerParser extends DOMParser {
     public void doctypeDecl(java.lang.String rootElement,
                             java.lang.String publicId,
                             java.lang.String systemId,
-                            org.apache.xerces.xni.Augmentations augs)
-            throws org.apache.xerces.xni.XNIException {
+                            org.apache.xerces.xni.Augmentations augs) {
 
         // store the systemId
         doctypePublicId = publicId;
         doctypeSystemId = systemId;
 
         if (publicId == null) {
-            super.doctypeDecl(rootElement, publicId, systemId, augs);
+            super.doctypeDecl(rootElement, null, systemId, augs);
             return;
         }
 
@@ -547,17 +514,17 @@ public class CheckerParser extends DOMParser {
     }
 
     @Override
-    public void endElement(QName qName, Augmentations augmentations) throws XNIException {
+    public void endElement(QName qName, Augmentations augmentations) {
         super.endElement(qName, augmentations);
-        if (qName.rawname.equals("h1") || qName.rawname.equals("h2")
-                || qName.rawname.equals("h3") || qName.rawname.equals("h4")
-                || qName.rawname.equals("h5") || qName.rawname.equals("h6")) {
+        if ("h1".equals(qName.rawname) || "h2".equals(qName.rawname)
+                || "h3".equals(qName.rawname) || "h4".equals(qName.rawname)
+                || "h5".equals(qName.rawname) || "h6".equals(qName.rawname)) {
             inHeading = false;
         }
     }
 
     @Override
-    public void characters(XMLString xmlString, Augmentations augmentations) throws XNIException {
+    public void characters(XMLString xmlString, Augmentations augmentations) {
         super.characters(xmlString, augmentations);
         if (nodePreviousHeader != null && !inHeading && !xmlString.toString().trim().isEmpty()) {
             nodePreviousHeader.setUserData("headerHasContents", true, null);

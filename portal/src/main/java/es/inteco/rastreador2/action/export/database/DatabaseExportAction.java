@@ -13,6 +13,7 @@ import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
 import org.apache.struts.action.Action;
@@ -73,11 +74,7 @@ public class DatabaseExportAction extends Action {
             throw e;
         }
 
-        PropertiesManager pmgr = new PropertiesManager();
-        String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.observatorio.resultados.exportados");
-        String volver = pmgr.getValue("returnPaths.properties", "volver.carga.observatorio");
-        request.setAttribute("mensajeExito", mensaje);
-        request.setAttribute("accionVolver", volver);
+        ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.observatorio.resultados.exportados", "volver.carga.observatorio");
         return mapping.findForward(Constants.EXITO);
     }
 

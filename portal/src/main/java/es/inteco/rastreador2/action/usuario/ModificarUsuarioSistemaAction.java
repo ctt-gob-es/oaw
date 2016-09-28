@@ -2,7 +2,6 @@ package es.inteco.rastreador2.action.usuario;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.CargarCuentasUsuarioForm;
 import es.inteco.rastreador2.actionform.observatorio.CargarObservatorioForm;
@@ -10,10 +9,9 @@ import es.inteco.rastreador2.actionform.usuario.ModificarUsuarioSistemaForm;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.ComprobadorCaracteres;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,16 +21,13 @@ import java.util.Arrays;
 
 public class ModificarUsuarioSistemaAction extends Action {
 
-    private Log log = LogFactory.getLog(ModificarUsuarioSistemaAction.class);
-
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            if (CrawlerUtils.hasAccess(request, "edit.user")) {
-
-                if (request.getAttribute(Constants.DE_PASS) == null && isCancelled(request)) {
-                    return (mapping.findForward(Constants.VOLVER_CARGA));
-                } else {
-                    String valem = request.getParameter(Constants.VALEMAIL);
+        if (CrawlerUtils.hasAccess(request, "edit.user")) {
+            if (request.getAttribute(Constants.DE_PASS) == null && isCancelled(request)) {
+                return (mapping.findForward(Constants.VOLVER_CARGA));
+            } else {
+                String valem = request.getParameter(Constants.VALEMAIL);
+                try {
                     ModificarUsuarioSistemaForm modificarUsuarioSistemaForm = (ModificarUsuarioSistemaForm) form;
                     loadInitialData(modificarUsuarioSistemaForm, request);
                     if (valem == null || valem.trim().equals("")) {
@@ -41,75 +36,58 @@ public class ModificarUsuarioSistemaAction extends Action {
                     } else {
                         return editUser(mapping, modificarUsuarioSistemaForm, request);
                     }
+                } catch (Exception e) {
+                    CrawlerUtils.warnAdministrators(e, this.getClass());
+                    return mapping.findForward(Constants.ERROR_PAGE);
                 }
-            } else {
-                return mapping.findForward(Constants.NO_PERMISSION);
             }
-        } catch (Exception e) {
-            CrawlerUtils.warnAdministrators(e, this.getClass());
-            return mapping.findForward(Constants.ERROR_PAGE);
+        } else {
+            return mapping.findForward(Constants.NO_PERMISSION);
         }
     }
 
     private ModificarUsuarioSistemaForm loadUserData(ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, HttpServletRequest request) throws Exception {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
-
+        try (Connection c = DataBaseManager.getConnection()) {
             //Comprobamos si estamos en inicio o se a pulsado al submit del formulario
-            String id_usuario = request.getParameter(Constants.USER);
-            modificarUsuarioSistemaForm.setIdUsuario(id_usuario);
+            String idUsuario = request.getParameter(Constants.USER);
+            modificarUsuarioSistemaForm.setIdUsuario(idUsuario);
 
-            int userRolType = LoginDAO.getUserRolType(c, Long.valueOf(id_usuario));
+            int userRolType = LoginDAO.getUserRolType(c, Long.valueOf(idUsuario));
 
-            LoginDAO.getUserDatesToUpdate(c, modificarUsuarioSistemaForm, Long.valueOf(id_usuario), userRolType);
+            LoginDAO.getUserDatesToUpdate(c, modificarUsuarioSistemaForm, Long.valueOf(idUsuario), userRolType);
 
             return modificarUsuarioSistemaForm;
         } catch (Exception e) {
-            log.error("Excepción genérica al crear un nuevo usuario");
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
+            Logger.putLog("Excepción en loadUserData", ModificarUsuarioSistemaAction.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
         }
     }
 
     private ModificarUsuarioSistemaForm loadInitialData(ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, HttpServletRequest request) throws Exception {
-
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
-
+        try (Connection c = DataBaseManager.getConnection()) {
             modificarUsuarioSistemaForm.setCartuchosList(LoginDAO.getAllUserCartridge(c));
-            String id_usuario = request.getParameter(Constants.USER);
+            final String idUsuario = request.getParameter(Constants.USER);
 
-            modificarUsuarioSistemaForm.setIdUsuario(id_usuario);
-            int userRolType = LoginDAO.getUserRolType(c, Long.valueOf(id_usuario));
+            modificarUsuarioSistemaForm.setIdUsuario(idUsuario);
+            final int userRolType = LoginDAO.getUserRolType(c, Long.valueOf(idUsuario));
 
             modificarUsuarioSistemaForm.setRoles(LoginDAO.getAllUserRoles(c, userRolType));
 
-            CargarCuentasUsuarioForm cargarCuentasUsuarioForm = new CargarCuentasUsuarioForm();
+            final CargarCuentasUsuarioForm cargarCuentasUsuarioForm = new CargarCuentasUsuarioForm();
             modificarUsuarioSistemaForm.setCuenta_clienteV(CuentaUsuarioDAO.userList(c, cargarCuentasUsuarioForm, -1));
 
-            CargarObservatorioForm cargarObservatorioForm = new CargarObservatorioForm();
+            final CargarObservatorioForm cargarObservatorioForm = new CargarObservatorioForm();
             modificarUsuarioSistemaForm.setObservatorioV(ObservatorioDAO.userList(c, cargarObservatorioForm));
 
             return modificarUsuarioSistemaForm;
-
         } catch (Exception e) {
-            log.error("Excepción genérica al crear un nuevo usuario");
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
+            Logger.putLog("Excepción en loadInitialData", ModificarUsuarioSistemaAction.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
         }
     }
 
     private ActionForward editUser(ActionMapping mapping, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm, HttpServletRequest request) throws Exception {
-        Connection c = null;
-
         try {
-            PropertiesManager pmgr = new PropertiesManager();
-            c = DataBaseManager.getConnection();
-
             ActionErrors errors = modificarUsuarioSistemaForm.validate(mapping, request);
 
             if (errors != null && !errors.isEmpty()) {
@@ -127,7 +105,7 @@ public class ModificarUsuarioSistemaAction extends Action {
                 if (errors == null) {
                     errors = new ActionErrors();
                 }
-                try {
+                try (Connection c = DataBaseManager.getConnection()) {
                     //Comprobamos que el nombre usa caracteres correctos
                     ComprobadorCaracteres cc = new ComprobadorCaracteres(modificarUsuarioSistemaForm.getNombre());
                     boolean result = cc.isNombreValido();
@@ -150,16 +128,11 @@ public class ModificarUsuarioSistemaAction extends Action {
                     throw new Exception(e);
                 }
             }
-            String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.usuario.editado");
-            String volver = pmgr.getValue("returnPaths.properties", "volver.carga.usuarios");
-            request.setAttribute("mensajeExito", mensaje);
-            request.setAttribute("accionVolver", volver);
+            ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.usuario.editado", "volver.carga.usuarios");
             return mapping.findForward(Constants.EXITO);
         } catch (Exception e) {
-            log.error("Excepción genérica al crear un nuevo usuario");
+            Logger.putLog("Excepción en editUser", ModificarUsuarioSistemaAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

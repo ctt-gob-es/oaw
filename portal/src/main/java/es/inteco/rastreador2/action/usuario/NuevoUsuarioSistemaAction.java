@@ -9,6 +9,7 @@ import es.inteco.rastreador2.actionform.usuario.NuevoUsuarioSistemaForm;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.ComprobadorCaracteres;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.commons.logging.Log;
@@ -55,11 +56,9 @@ public class NuevoUsuarioSistemaAction extends Action {
     }
 
     private NuevoUsuarioSistemaForm loadInitialData(NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm, HttpServletRequest request) throws Exception {
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        Connection c = null;
-        try {
-            PropertiesManager pmgr = new PropertiesManager();
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
 
             String userRoleType = request.getParameter(Constants.ROLE_TYPE);
 
@@ -80,19 +79,12 @@ public class NuevoUsuarioSistemaAction extends Action {
             return nuevoUsuarioSistemaForm;
         } catch (Exception e) {
             log.error("Excepción genérica al crear un nuevo usuario");
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
+            throw e;
         }
     }
 
     private ActionForward newSystemUser(ActionMapping mapping, NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm, HttpServletRequest request) throws Exception {
-        Connection c = null;
-        PropertiesManager pmgr = new PropertiesManager();
-
-        try {
-            c = DataBaseManager.getConnection();
-
+        try (Connection c = DataBaseManager.getConnection()) {
             ActionErrors errors = nuevoUsuarioSistemaForm.validate(mapping, request);
             if (!errors.isEmpty()) {
                 saveErrors(request, errors);
@@ -133,16 +125,11 @@ public class NuevoUsuarioSistemaAction extends Action {
 
             LoginDAO.insertUser(c, nuevoUsuarioSistemaForm);
 
-            String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.crear.usuario");
-            String volver = pmgr.getValue("returnPaths.properties", "volver.carga.usuarios");
-            request.setAttribute("mensajeExito", mensaje);
-            request.setAttribute("accionVolver", volver);
+            ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.crear.usuario", "volver.carga.usuarios");
             return mapping.findForward(Constants.EXITO);
         } catch (Exception e) {
             log.error("Excepción genérica al crear un nuevo usuario");
             throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

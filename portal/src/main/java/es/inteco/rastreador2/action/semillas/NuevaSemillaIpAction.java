@@ -1,10 +1,10 @@
 package es.inteco.rastreador2.action.semillas;
 
 import es.inteco.common.Constants;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.NuevaSemillaIpForm;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GeneraRango;
 import org.apache.struts.action.*;
@@ -23,7 +23,6 @@ public class NuevaSemillaIpAction extends Action {
         Connection c = null;
 
         try {
-            PropertiesManager pmgr = new PropertiesManager();
             c = DataBaseManager.getConnection();
 
             if (CrawlerUtils.hasAccess(request, "ip.range.seed")) {
@@ -46,8 +45,6 @@ public class NuevaSemillaIpAction extends Action {
                 }
 
                 ActionErrors errors = nuevaSemillaIpForm.validate(mapping, request);
-
-                c = DataBaseManager.getConnection();
 
                 if (SemillaDAO.existSeed(c, nuevaSemillaIpForm.getNombreSemilla(), Constants.ID_LISTA_ALL)) {
                     errors.add("nombreDuplicado", new ActionMessage("mensaje.error.nombre.semilla.duplicado"));
@@ -110,10 +107,7 @@ public class NuevaSemillaIpAction extends Action {
 
                     SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaIpForm.getNombreSemilla(), listaUrls, nuevaSemillaIpForm.getCategoria().getId(), null, null);
 
-                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.generada");
-                    String volver = pmgr.getValue("returnPaths.properties", "volver.nueva.semilla.ip");
-                    request.setAttribute("mensajeExito", mensaje);
-                    request.setAttribute("accionVolver", volver);
+                    ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.generada", "volver.nueva.semilla.ip");
                     return mapping.findForward(Constants.EXITO);
 
                 } else {

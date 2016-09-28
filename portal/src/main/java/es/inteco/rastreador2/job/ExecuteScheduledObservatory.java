@@ -42,10 +42,8 @@ public class ExecuteScheduledObservatory implements StatefulJob {
 
         final PropertiesManager pmgr = new PropertiesManager();
 
-        Connection c = null;
         String url = "";
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
 
             // Si se ha editado la categoría de semillas para añadir más, se añaden ahora.
             createNewCrawlings(c, observatoryId);
@@ -77,7 +75,7 @@ public class ExecuteScheduledObservatory implements StatefulJob {
                         CrawlerData crawlerData = CrawlerUtils.getCrawlerData(observatory.getDatosRastreo(),
                                 idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null);
                         url = crawlerData.getUrls().get(0);
-                        RastreoDAO.updateRastreo(c, crawlerData.getIdCrawling());
+                        RastreoDAO.actualizarFechaRastreo(c, crawlerData.getIdCrawling());
 
 
                         if (isFirst) {
@@ -103,8 +101,6 @@ public class ExecuteScheduledObservatory implements StatefulJob {
             }
         } catch (Exception e) {
             Logger.putLog("Error ejecutar los rastreos programados del observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 
@@ -139,18 +135,14 @@ public class ExecuteScheduledObservatory implements StatefulJob {
     }
 
     private void saveMethodology(Long idExecution, String methodologyFile) {
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();
             }
-            String methodology = EvaluatorUtils.serializeGuidelineToXml(EvaluatorUtility.loadGuideline(methodologyFile));
+            final String methodology = EvaluatorUtils.serializeGuidelineToXml(EvaluatorUtility.loadGuideline(methodologyFile));
             ObservatorioDAO.saveMethodology(c, idExecution, methodology);
         } catch (Exception e) {
             Logger.putLog("Error al guardar la metodología en base de datos", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

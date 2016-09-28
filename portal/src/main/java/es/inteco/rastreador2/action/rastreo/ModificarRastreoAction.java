@@ -12,6 +12,7 @@ import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.ComprobadorCaracteres;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
@@ -91,8 +92,6 @@ public class ModificarRastreoAction extends Action {
                 String id_rastreo = request.getParameter(Constants.ID_RASTREO);
 
                 try (Connection c = DataBaseManager.getConnection()) {
-                    PropertiesManager pmgr = new PropertiesManager();
-
 
                     request.setAttribute(Constants.ID_RASTREO, id_rastreo);
                     //Si se ha pulsado Cargar Semilla
@@ -150,19 +149,13 @@ public class ModificarRastreoAction extends Action {
 
                             if (insertarRastreoForm.getCartuchos() == null || insertarRastreoForm.getCartuchos().isEmpty()) {
                                 //error, no puede crear un rastreo si no hay cartuchos instalados para el usuario
-                                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.noCartuchos");
-                                String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                                request.setAttribute("mensajeExito", mensaje);
-                                request.setAttribute("accionVolver", volver);
+                                ActionUtils.setSuccesActionAttributes(request, "mensaje.error.noCartuchos", "volver.cargar.rastreos");
                                 return mapping.findForward(Constants.NO_CARTUCHO_NO_CREATE);
                             }
 
                             //comprobamos que el rastreo es valido para este usuario
                             if (!RastreoDAO.rastreoValidoParaUsuario(c, Integer.parseInt(id_rastreo), (String) sesion.getAttribute(Constants.USER))) {
-                                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.noPermisos");
-                                String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                                request.setAttribute("mensajeExito", mensaje);
-                                request.setAttribute("accionVolver", volver);
+                                ActionUtils.setSuccesActionAttributes(request, "mensaje.error.noPermisos", "volver.cargar.rastreos");
                                 return mapping.findForward(Constants.NO_RASTREO_PERMISO);
                             }
 
@@ -185,7 +178,7 @@ public class ModificarRastreoAction extends Action {
                         } else {
                             ActionErrors errors = insertarRastreoForm.validate(mapping, request);
                             if (errors.isEmpty()) {
-                                String rastreo_antiguo = request.getParameter(Constants.RASTREO_ANTIGUO);
+                                String rastreoAntiguo = request.getParameter(Constants.RASTREO_ANTIGUO);
 
                                 //Comprobamos que el rastreo usa caracteres correctos
                                 ComprobadorCaracteres cc = new ComprobadorCaracteres(insertarRastreoForm.getCodigo());
@@ -196,14 +189,14 @@ public class ModificarRastreoAction extends Action {
                                 }
 
                                 //Comprobamos que no existe el rastreo
-                                if (!rastreo_antiguo.equals(insertarRastreoForm.getCodigo()) && RastreoDAO.existeRastreo(c, insertarRastreoForm.getCodigo())) {
+                                if (!rastreoAntiguo.equals(insertarRastreoForm.getCodigo()) && RastreoDAO.existeRastreo(c, insertarRastreoForm.getCodigo())) {
                                     errors.add("errorObligatorios", new ActionMessage("rastreo.duplicado"));
                                     saveErrors(request, errors);
                                     return mapping.findForward(Constants.VOLVER);
                                 }
                                 if (insertarRastreoForm.getCuenta_cliente() != null && insertarRastreoForm.getCuenta_cliente() != 0) {
                                     insertarRastreoForm.setCodigo(insertarRastreoForm.getCodigo() + "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho())));
-                                    rastreo_antiguo += "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho()));
+                                    rastreoAntiguo += "-" + CartuchoDAO.getApplication(c, Long.valueOf(insertarRastreoForm.getCartucho()));
                                 }
 
                                 //necesitamos los ids
@@ -216,10 +209,7 @@ public class ModificarRastreoAction extends Action {
 
                                 RastreoDAO.updateRastreo(insertarRastreoForm);
 
-                                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.rastreo.editado");
-                                String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                                request.setAttribute("mensajeExito", mensaje);
-                                request.setAttribute("accionVolver", volver);
+                                ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.rastreo.editado", "volver.cargar.rastreos");
                                 return mapping.findForward(Constants.EXITO);
 
                             } else {

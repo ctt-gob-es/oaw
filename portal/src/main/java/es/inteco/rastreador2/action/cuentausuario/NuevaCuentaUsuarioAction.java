@@ -2,7 +2,6 @@ package es.inteco.rastreador2.action.cuentausuario;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.NuevaCuentaUsuarioForm;
 import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
@@ -13,6 +12,7 @@ import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.servlets.ScheduleClientAccountsServlet;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
 import org.apache.struts.action.*;
@@ -30,19 +30,13 @@ public class NuevaCuentaUsuarioAction extends Action {
 
         try {
             if (CrawlerUtils.hasAccess(request, "new.client.account")) {
-
-                PropertiesManager pmgr = new PropertiesManager();
-                NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm = (NuevaCuentaUsuarioForm) form;
+                final NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm = (NuevaCuentaUsuarioForm) form;
 
                 if (isCancelled(request)) {
                     return (mapping.findForward(Constants.VOLVER_CARGA));
                 }
 
-                Connection c = null;
-                Connection con = null;
-                try {
-                    c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection();
+                try (Connection c = DataBaseManager.getConnection()) {
 
                     String esPrimera = request.getParameter(Constants.ES_PRIMERA);
 
@@ -60,7 +54,7 @@ public class NuevaCuentaUsuarioAction extends Action {
                     request.setAttribute(Constants.HOURS, CrawlerUtils.getHours());
 
                     //Cargamos las normas
-                    request.setAttribute(Constants.LISTADO_NORMAS, DAOUtils.getNormas(con, false));
+                    request.setAttribute(Constants.LISTADO_NORMAS, DAOUtils.getNormas(c, false));
 
                     if (esPrimera == null || esPrimera.trim().equals("")) {
                         return mapping.findForward(Constants.VOLVER);
@@ -141,10 +135,7 @@ public class NuevaCuentaUsuarioAction extends Action {
                                     }
                                 }
                                 if (hayError) {
-                                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.cartucho", errorC);
-                                    String volver = pmgr.getValue("returnPaths.properties", "volver.carga.cuentas.cliente");
-                                    request.setAttribute("mensajeExito", mensaje);
-                                    request.setAttribute("accionVolver", volver);
+                                    ActionUtils.setSuccesActionAttributes(request, "mensaje.error.cartucho", "volver.carga.cuentas.cliente");
                                     return mapping.findForward(Constants.EXITO);
                                 }
 
@@ -152,18 +143,12 @@ public class NuevaCuentaUsuarioAction extends Action {
                                     try {
                                         ScheduleClientAccountsServlet.scheduleJob(idCuenta, Constants.CLIENT_ACCOUNT_TYPE);
                                     } catch (Exception e) {
-                                        String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.nueva.cuenta.error.job");
-                                        String volver = pmgr.getValue("returnPaths.properties", "volver.carga.cuentas.cliente");
-                                        request.setAttribute("mensajeExito", mensaje);
-                                        request.setAttribute("accionVolver", volver);
+                                        ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.nueva.cuenta.error.job", "volver.carga.cuentas.cliente");
                                         return mapping.findForward(Constants.EXITO);
                                     }
                                 }
 
-                                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.nueva.cuenta");
-                                String volver = pmgr.getValue("returnPaths.properties", "volver.carga.cuentas.cliente");
-                                request.setAttribute("mensajeExito", mensaje);
-                                request.setAttribute("accionVolver", volver);
+                                ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.nueva.cuenta", "volver.carga.cuentas.cliente");
                                 return mapping.findForward(Constants.EXITO);
                             } else {
                                 errors.add("cuentaCliente", new ActionMessage("fallo.cuenta.cliente"));
@@ -179,9 +164,6 @@ public class NuevaCuentaUsuarioAction extends Action {
                 } catch (Exception e) {
                     Logger.putLog("Exception: ", NuevaCuentaUsuarioAction.class, Logger.LOG_LEVEL_ERROR, e);
                     throw new Exception(e);
-                } finally {
-                    DataBaseManager.closeConnection(c);
-                    DataBaseManager.closeConnection(con);
                 }
             } else {
                 return mapping.findForward(Constants.NO_PERMISSION);

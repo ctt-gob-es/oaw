@@ -2,13 +2,13 @@ package es.inteco.rastreador2.action.cuentausuario;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.usuario.EliminarUsuarioSistemaAction;
 import es.inteco.rastreador2.actionform.cuentausuario.EliminarCuentaUsuarioForm;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.servlets.ScheduleClientAccountsServlet;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -34,48 +34,32 @@ public class EliminarCuentaUsuarioAction extends Action {
 
                 EliminarCuentaUsuarioForm eliminarCuentaUsuarioForm = (EliminarCuentaUsuarioForm) form;
                 //comprobamos de donde viene
-                Connection c = null;
-                Connection con = null;
                 if (request.getParameter(Constants.CUENTA_ELIMINAR) == null) {
                     //no viene del submit de eliminar, hay que mostrar la pantalla de confiramcion de eliminado
-                    String id_cuenta = request.getParameter(Constants.ID_CUENTA);
+                    String idCuenta = request.getParameter(Constants.ID_CUENTA);
 
-                    try {
-                        c = DataBaseManager.getConnection();
-                        con = DataBaseManager.getConnection();
-                        eliminarCuentaUsuarioForm = CuentaUsuarioDAO.getDeleteUserAccounts(c, Long.valueOf(id_cuenta), eliminarCuentaUsuarioForm);
-                        eliminarCuentaUsuarioForm.setNormaAnalisisSt(RastreoDAO.getNombreNorma(con, Long.parseLong(eliminarCuentaUsuarioForm.getNormaAnalisis())));
+                    try (Connection c = DataBaseManager.getConnection()) {
+                        eliminarCuentaUsuarioForm = CuentaUsuarioDAO.getDeleteUserAccounts(c, Long.valueOf(idCuenta), eliminarCuentaUsuarioForm);
+                        eliminarCuentaUsuarioForm.setNormaAnalisisSt(RastreoDAO.getNombreNorma(c, Long.parseLong(eliminarCuentaUsuarioForm.getNormaAnalisis())));
                     } catch (Exception e) {
                         Logger.putLog("Exception: ", EliminarUsuarioSistemaAction.class, Logger.LOG_LEVEL_ERROR, e);
                         throw new Exception(e);
-                    } finally {
-                        DataBaseManager.closeConnection(c);
-                        DataBaseManager.closeConnection(con);
                     }
                     return mapping.findForward(Constants.EXITO_ELIMINAR);
-
                 } else {
-                    Long id_cuenta = Long.valueOf(request.getParameter(Constants.ID_CUENTA));
-                    try {
-                        c = DataBaseManager.getConnection();
-
+                    try (Connection c = DataBaseManager.getConnection()) {
+                        Long idCuenta = Long.valueOf(request.getParameter(Constants.ID_CUENTA));
                         // Eliminamos los rastreos programados
-                        ScheduleClientAccountsServlet.deleteJobs(id_cuenta, Constants.CLIENT_ACCOUNT_TYPE);
+                        ScheduleClientAccountsServlet.deleteJobs(idCuenta, Constants.CLIENT_ACCOUNT_TYPE);
 
                         // Eliminamos los datos de la base de datos
-                        CuentaUsuarioDAO.deleteUserAccount(c, id_cuenta, eliminarCuentaUsuarioForm);
+                        CuentaUsuarioDAO.deleteUserAccount(c, idCuenta, eliminarCuentaUsuarioForm);
                     } catch (Exception e) {
                         Logger.putLog("Exception: ", EliminarCuentaUsuarioAction.class, Logger.LOG_LEVEL_ERROR, e);
                         throw new Exception(e);
-                    } finally {
-                        DataBaseManager.closeConnection(c);
                     }
 
-                    PropertiesManager pmgr = new PropertiesManager();
-                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.cuenta.usuario.eliminado");
-                    String volver = pmgr.getValue("returnPaths.properties", "volver.carga.cuentas.cliente");
-                    request.setAttribute("mensajeExito", mensaje);
-                    request.setAttribute("accionVolver", volver);
+                    ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.cuenta.usuario.eliminado", "volver.carga.cuentas.cliente");
                     return mapping.findForward(Constants.EXITO);
                 }
             } else {
