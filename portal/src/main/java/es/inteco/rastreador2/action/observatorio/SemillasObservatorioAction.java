@@ -2,13 +2,13 @@ package es.inteco.rastreador2.action.observatorio;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
 import org.apache.struts.action.*;
@@ -58,33 +58,25 @@ public class SemillasObservatorioAction extends Action {
     }
 
     private ActionForward loadSeeds(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-        Connection c = null;
+        try (Connection c = DataBaseManager.getConnection()) {
+            final SemillaSearchForm searchForm = (SemillaSearchForm) form;
 
-        try {
-            SemillaSearchForm searchForm = (SemillaSearchForm) form;
+            final int numResult = SemillaDAO.countObservatorySeeds(c, searchForm);
+            final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 
-            c = DataBaseManager.getConnection();
-
-            int numResult = SemillaDAO.countObservatorySeeds(c, searchForm);
-            int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
             request.setAttribute(Constants.OBSERVATORY_SEED_LIST, SemillaDAO.getObservatorySeeds(c, (pagina - 1), searchForm));
             request.setAttribute(Constants.CATEGORIES_LIST, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
             request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
             return mapping.findForward(Constants.EXITO);
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return null;
     }
 
     private ActionForward addSeed(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-        Connection c = null;
-
-        try {
-            SemillaForm semillaForm = (SemillaForm) form;
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
+            final SemillaForm semillaForm = (SemillaForm) form;
 
             if (request.getParameter(Constants.ES_PRIMERA) != null && request.getParameter(Constants.ES_PRIMERA).equals(Constants.CONF_SI)) {
                 request.setAttribute(Constants.SEED_CATEGORIES, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
@@ -99,11 +91,7 @@ public class SemillasObservatorioAction extends Action {
                         return mapping.findForward(Constants.NUEVA_SEMILLA_FORWARD);
                     } else {
                         SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA_OBSERVATORIO, semillaForm.getNombre(), semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), semillaForm.getAcronimo(), semillaForm.getDependencia(), semillaForm.isActiva(), semillaForm.isInDirectory());
-                        PropertiesManager pmgr = new PropertiesManager();
-                        String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.creada");
-                        String volver = pmgr.getValue("returnPaths.properties", "volver.listado.semillas.observatorio");
-                        request.setAttribute("mensajeExito", mensaje);
-                        request.setAttribute("accionVolver", volver);
+                        ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.creada", "volver.listado.semillas.observatorio");
                         return mapping.findForward(Constants.EXITO2);
                     }
                 } else {
@@ -112,11 +100,8 @@ public class SemillasObservatorioAction extends Action {
                     return mapping.getInputForward();
                 }
             }
-
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return null;
@@ -129,14 +114,12 @@ public class SemillasObservatorioAction extends Action {
             return forward;
         }
 
-        Connection c = null;
         ActionErrors errors = new ActionErrors();
 
-        try {
-            String idSemilla = request.getParameter(Constants.SEMILLA);
-            String modificada = request.getParameter(Constants.ES_PRIMERA);
-            c = DataBaseManager.getConnection();
 
+        String idSemilla = request.getParameter(Constants.SEMILLA);
+        String modificada = request.getParameter(Constants.ES_PRIMERA);
+        try (Connection c = DataBaseManager.getConnection()) {
             request.setAttribute(Constants.SEED_CATEGORIES, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
             if (modificada == null) {
                 SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
@@ -164,54 +147,41 @@ public class SemillasObservatorioAction extends Action {
                 forward.setRedirect(true);
                 return forward;
             }
-
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return mapping.findForward(Constants.EDIT_SEED);
 
     }
 
     private ActionForward confirmDeleteSeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
-        Connection c = null;
+        try (Connection c = DataBaseManager.getConnection()) {
+            final String idSemilla = request.getParameter(Constants.SEMILLA);
 
-        try {
-            String idSemilla = request.getParameter(Constants.SEMILLA);
-            c = DataBaseManager.getConnection();
-            List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
+            final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
+            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
             request.setAttribute(Constants.OBSERVATORY_SEED_LIST, observatoryFormList);
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return mapping.findForward(Constants.CONFIRMACION);
     }
 
     private ActionForward deleteSeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
-        Connection c = null;
+        final ActionErrors errors = new ActionErrors();
+        final String idSemilla = request.getParameter(Constants.SEMILLA);
+        final String confirmacion = request.getParameter(Constants.CONFIRMACION);
 
-        try {
-            ActionErrors errors = new ActionErrors();
-            String idSemilla = request.getParameter(Constants.SEMILLA);
-            String confirmacion = request.getParameter(Constants.CONFIRMACION);
-
-            if (confirmacion.equals(Constants.CONF_SI)) {
-                c = DataBaseManager.getConnection();
+        if (confirmacion.equals(Constants.CONF_SI)) {
+            try (Connection c = DataBaseManager.getConnection()) {
                 List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
                 SemillaDAO.deleteObservatorySeed(c, Long.parseLong(idSemilla), observatoryFormList);
                 errors.add("semillaEliminada", new ActionMessage("mensaje.exito.semilla.eliminada"));
                 saveErrors(request.getSession(), errors);
+            } catch (Exception e) {
+                Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             }
-
-        } catch (Exception e) {
-            Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         ActionForward forward = new ActionForward(mapping.findForward(Constants.LOAD_SEEDS_FORWARD));
@@ -219,15 +189,10 @@ public class SemillasObservatorioAction extends Action {
         return forward;
     }
 
-    private ActionForward seedDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
-        Connection c = null;
-
-        try {
-            String idSemilla = request.getParameter(Constants.SEMILLA);
-
-            c = DataBaseManager.getConnection();
-
-            SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
+    private ActionForward seedDetail(final ActionMapping mapping, final HttpServletRequest request) {
+        final String idSemilla = request.getParameter(Constants.SEMILLA);
+        try (Connection c = DataBaseManager.getConnection()) {
+            final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
             request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
             if (request.getParameter(Constants.RETURN_OBSERVATORY_RESULTS) != null) {
                 request.setAttribute(Constants.RETURN_OBSERVATORY_RESULTS, request.getAttribute(Constants.RETURN_OBSERVATORY_RESULTS));
@@ -235,11 +200,8 @@ public class SemillasObservatorioAction extends Action {
             if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
                 request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
             }
-
         } catch (Exception e) {
             Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
         return mapping.findForward(Constants.SEED_DETAIL);
     }

@@ -1,10 +1,10 @@
 package es.inteco.rastreador2.action.semillas;
 
 import es.inteco.common.Constants;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.NuevaSemillaGoogleForm;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GeneradorGoogle;
 import org.apache.struts.action.*;
@@ -20,10 +20,8 @@ public class NuevaSemillaGoogleAction extends Action {
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         // Marcamos el menú
         request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_GOOGLE);
-        Connection c = null;
-        try {
-            PropertiesManager pmgr = new PropertiesManager();
-            c = DataBaseManager.getConnection();
+
+        try (Connection c = DataBaseManager.getConnection()) {
 
             if (CrawlerUtils.hasAccess(request, "google.results.seed")) {
                 NuevaSemillaGoogleForm nuevaSemillaGoogleForm = (NuevaSemillaGoogleForm) form;
@@ -82,10 +80,7 @@ public class NuevaSemillaGoogleAction extends Action {
                     }
                     SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaGoogleForm.getNombreSemilla(), listaUrls, nuevaSemillaGoogleForm.getCategoria().getId(), null, null);
 
-                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.generada");
-                    String volver = pmgr.getValue("returnPaths.properties", "volver.nueva.semilla.google");
-                    request.setAttribute("mensajeExito", mensaje);
-                    request.setAttribute("accionVolver", volver);
+                    ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.generada", "volver.nueva.semilla.google");
                     return mapping.findForward(Constants.EXITO);
                 } else {
                     ActionForward forward = new ActionForward();
@@ -100,8 +95,6 @@ public class NuevaSemillaGoogleAction extends Action {
         } catch (Exception e) {
             CrawlerUtils.warnAdministrators(e, this.getClass());
             return mapping.findForward(Constants.ERROR_PAGE);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

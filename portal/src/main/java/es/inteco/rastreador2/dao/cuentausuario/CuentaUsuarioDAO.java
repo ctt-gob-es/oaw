@@ -16,7 +16,6 @@ import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import es.inteco.rastreador2.utils.DAOUtils;
 import es.inteco.rastreador2.utils.ListadoCuentasUsuario;
 import es.inteco.rastreador2.utils.Rastreo;
 import org.apache.struts.util.LabelValueBean;
@@ -179,19 +178,8 @@ public final class CuentaUsuarioDAO {
                 }
             }
 
-            try (PreparedStatement insertCuentaClienteCartucho = connection.prepareStatement("INSERT INTO cuenta_cliente_cartucho VALUES (?,?)")) {
-                for (int i = 0; i < nuevaCuentaUsuarioForm.getCartuchosSelected().length; i++) {
-                    insertCuentaClienteCartucho.setLong(1, idAccount);
-                    insertCuentaClienteCartucho.setLong(2, Integer.parseInt(nuevaCuentaUsuarioForm.getCartuchosSelected()[i]));
-                    insertCuentaClienteCartucho.addBatch();
-                }
-                insertCuentaClienteCartucho.executeBatch();
-            } catch (Exception e) {
-                connection.rollback();
-                connection.setAutoCommit(true);
-                Logger.putLog("Exception: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
-            }
+            insertCuentaClienteCartucho(connection, idAccount, nuevaCuentaUsuarioForm.getCartuchosSelected());
+
             connection.commit();
             connection.setAutoCommit(true);
             return idAccount;
@@ -203,50 +191,61 @@ public final class CuentaUsuarioDAO {
         }
     }
 
+    private static void insertCuentaClienteCartucho(final Connection c, final long idAccount, final String[] selectedCartuchos) throws SQLException {
+        try (PreparedStatement insertCuentaClienteCartucho = c.prepareStatement("INSERT INTO cuenta_cliente_cartucho VALUES (?,?)")) {
+            for (String selectedCartucho : selectedCartuchos) {
+                insertCuentaClienteCartucho.setLong(1, idAccount);
+                insertCuentaClienteCartucho.setLong(2, Integer.parseInt(selectedCartucho));
+                insertCuentaClienteCartucho.addBatch();
+            }
+
+            insertCuentaClienteCartucho.executeBatch();
+        }
+    }
+
     public static CargarCuentasUsuarioForm userList(Connection c, CargarCuentasUsuarioForm cargarCuentasUsuarioForm, int page) throws SQLException {
-        List<ListadoCuentasUsuario> userAccountList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        PropertiesManager pmgr = new PropertiesManager();
-        int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-        int resultFrom = pagSize * page;
-        try {
-            if (page == Constants.NO_PAGINACION) {
-                ps = c.prepareStatement("SELECT DISTINCT(cc.nombre), l.lista, cc.id_cuenta, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos " +
-                        "FROM cuenta_cliente cc " +
-                        "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
-                        "JOIN lista l ON (cc.dominio = l.id_lista)" +
-                        "JOIN cartucho c ON (ccc.id_cartucho = c.id_cartucho) GROUP BY cc.nombre ORDER BY cc.nombre");
-            } else {
-                ps = c.prepareStatement("SELECT DISTINCT(cc.nombre), l.lista, cc.id_cuenta, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos " +
-                        "FROM cuenta_cliente cc " +
-                        "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
-                        "JOIN lista l ON (cc.dominio = l.id_lista)" +
-                        "JOIN cartucho c ON (ccc.id_cartucho = c.id_cartucho) GROUP BY cc.nombre ORDER BY cc.nombre LIMIT ? OFFSET ?");
+        final List<ListadoCuentasUsuario> userAccountList = new ArrayList<>();
+        final String query;
+        if (page == Constants.NO_PAGINACION) {
+            query = "SELECT DISTINCT(cc.nombre), l.lista, cc.id_cuenta, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos " +
+                    "FROM cuenta_cliente cc " +
+                    "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
+                    "JOIN lista l ON (cc.dominio = l.id_lista)" +
+                    "JOIN cartucho c ON (ccc.id_cartucho = c.id_cartucho) GROUP BY cc.nombre ORDER BY cc.nombre";
+        } else {
+            query = "SELECT DISTINCT(cc.nombre), l.lista, cc.id_cuenta, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos " +
+                    "FROM cuenta_cliente cc " +
+                    "JOIN cuenta_cliente_cartucho ccc ON (ccc.id_cuenta = cc.id_cuenta) " +
+                    "JOIN lista l ON (cc.dominio = l.id_lista)" +
+                    "JOIN cartucho c ON (ccc.id_cartucho = c.id_cartucho) GROUP BY cc.nombre ORDER BY cc.nombre LIMIT ? OFFSET ?";
+        }
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+        final int resultFrom = pagSize * page;
+        try (PreparedStatement ps = c.prepareStatement(query)) {
+            if (page != Constants.NO_PAGINACION) {
                 ps.setInt(1, pagSize);
                 ps.setInt(2, resultFrom);
             }
-            rs = ps.executeQuery();
-
-            int numCuentas = 0;
-            while (rs.next()) {
-                numCuentas++;
-                ListadoCuentasUsuario ls = new ListadoCuentasUsuario();
-                ls.setNombreCuenta(rs.getString("nombre"));
-                ls.setDominio(listFromString(rs.getString("lista"), ";"));
-                ls.setId_cuenta(rs.getLong("id_cuenta"));
-                if (rs.getString("cartuchos") != null) {
-                    ls.setCartucho(listFromString(rs.getString("cartuchos"), ","));
+            try (ResultSet rs = ps.executeQuery()) {
+                int numCuentas = 0;
+                while (rs.next()) {
+                    numCuentas++;
+                    ListadoCuentasUsuario ls = new ListadoCuentasUsuario();
+                    ls.setNombreCuenta(rs.getString("nombre"));
+                    ls.setDominio(listFromString(rs.getString("lista"), ";"));
+                    ls.setId_cuenta(rs.getLong("id_cuenta"));
+                    if (rs.getString("cartuchos") != null) {
+                        ls.setCartucho(listFromString(rs.getString("cartuchos"), ","));
+                    }
+                    userAccountList.add(ls);
                 }
-                userAccountList.add(ls);
+                cargarCuentasUsuarioForm.setListadoCuentasUsuario(userAccountList);
+                cargarCuentasUsuarioForm.setNumCuentasUsuario(numCuentas);
             }
-            cargarCuentasUsuarioForm.setListadoCuentasUsuario(userAccountList);
-            cargarCuentasUsuarioForm.setNumCuentasUsuario(numCuentas);
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return cargarCuentasUsuarioForm;
@@ -257,7 +256,7 @@ public final class CuentaUsuarioDAO {
         if (listString == null) {
             return null;
         }
-        StringTokenizer tokenizer = new StringTokenizer(listString, separator);
+        final StringTokenizer tokenizer = new StringTokenizer(listString, separator);
         while (tokenizer.hasMoreTokens()) {
             roleList.add(tokenizer.nextToken());
         }
@@ -284,8 +283,8 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    public static NuevaCuentaUsuarioForm getUserAccount(Connection connection, Long idAccount) throws SQLException {
-        NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm = new NuevaCuentaUsuarioForm();
+    public static NuevaCuentaUsuarioForm getUserAccount(final Connection connection, final Long idAccount) throws SQLException {
+        final NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm = new NuevaCuentaUsuarioForm();
         try (PreparedStatement ps = connection.prepareStatement("SELECT *, p.nombre AS nombrePeriodicidad, cc.nombre as nombreCuenta FROM cuenta_cliente cc " +
                 "JOIN periodicidad p ON (cc.id_periodicidad = p.id_periodicidad) WHERE id_cuenta = ?")) {
             ps.setLong(1, idAccount);
@@ -432,28 +431,16 @@ public final class CuentaUsuarioDAO {
                     "SELECT id_usuario FROM cuenta_cliente_usuario WHERE id_cuenta = ?)")) {
                 deleteUsuarioStatement.setLong(1, idAccount);
                 deleteUsuarioStatement.executeUpdate();
-            } catch (SQLException e) {
-                c.rollback();
-                c.setAutoCommit(true);
-                throw e;
             }
 
             try (PreparedStatement deleteRastreoStatement = c.prepareStatement("DELETE FROM rastreo WHERE id_cuenta = ? ")) {
                 deleteRastreoStatement.setLong(1, idAccount);
                 deleteRastreoStatement.executeUpdate();
-            } catch (SQLException e) {
-                c.rollback();
-                c.setAutoCommit(true);
-                throw e;
             }
 
             try (PreparedStatement deleteCuentaClienteStatement = c.prepareStatement("DELETE FROM cuenta_cliente WHERE id_cuenta = ?")) {
                 deleteCuentaClienteStatement.setLong(1, idAccount);
                 deleteCuentaClienteStatement.executeUpdate();
-            } catch (SQLException e) {
-                c.rollback();
-                c.setAutoCommit(true);
-                throw e;
             }
 
             try (PreparedStatement deleteListaStatement = c.prepareStatement("DELETE FROM lista WHERE id_lista IN (?,?,?)")) {
@@ -461,13 +448,10 @@ public final class CuentaUsuarioDAO {
                 deleteListaStatement.setLong(2, eliminarCuentaUsuarioForm.getIdListaRastreable());
                 deleteListaStatement.setLong(3, eliminarCuentaUsuarioForm.getIdListaNoRastreable());
                 deleteListaStatement.executeUpdate();
-            } catch (SQLException e) {
-                c.rollback();
-                c.setAutoCommit(true);
-                throw e;
             }
 
             c.commit();
+            c.setAutoCommit(true);
         } catch (SQLException e) {
             c.rollback();
             c.setAutoCommit(true);
@@ -522,7 +506,6 @@ public final class CuentaUsuarioDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next() ? rs.getInt(1) : 0;
             }
-
         } catch (SQLException e) {
             Logger.putLog("Error al obtener los datos de la lista de rastreos de clientes", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
@@ -629,6 +612,7 @@ public final class CuentaUsuarioDAO {
 
             modificarCuentaUsuarioForm = updateLists(c, modificarCuentaUsuarioForm);
 
+            final long idAccount = Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta());
             if (!fromMenu) {
                 try (PreparedStatement updateCuentaClienteStatement = c.prepareStatement("UPDATE cuenta_cliente SET Nombre = ?, Id_Periodicidad = ?, Profundidad = ?, Amplitud = ?, Fecha_Inicio = ?, lista_rastreable = ?, lista_no_rastreable = ?, id_guideline = ?, pseudoaleatorio = ?, id_language = ?, activo = ?, in_directory = ? WHERE id_cuenta = ?")) {
                     if (hasIntav) {
@@ -671,7 +655,7 @@ public final class CuentaUsuarioDAO {
                     updateCuentaClienteStatement.setLong(10, modificarCuentaUsuarioForm.getLenguaje());
                     updateCuentaClienteStatement.setBoolean(11, modificarCuentaUsuarioForm.isActivo());
                     updateCuentaClienteStatement.setBoolean(12, modificarCuentaUsuarioForm.isInDirectory());
-                    updateCuentaClienteStatement.setLong(13, Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta()));
+                    updateCuentaClienteStatement.setLong(13, idAccount);
 
                     updateCuentaClienteStatement.executeUpdate();
                 } catch (SQLException e) {
@@ -684,7 +668,7 @@ public final class CuentaUsuarioDAO {
             if (!fromMenu) {
                 // Borramos los roles antiguos
                 try (PreparedStatement deleteCuentaClienteStatement = c.prepareStatement("DELETE FROM cuenta_cliente_cartucho WHERE id_cuenta = ?")) {
-                    deleteCuentaClienteStatement.setLong(1, Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta()));
+                    deleteCuentaClienteStatement.setLong(1, idAccount);
                     deleteCuentaClienteStatement.executeUpdate();
                 } catch (Exception e) {
                     c.rollback();
@@ -694,26 +678,15 @@ public final class CuentaUsuarioDAO {
 
                 // Insertamos los cartuchos nuevos
                 if (modificarCuentaUsuarioForm.getCartuchosSelected() != null
-                        && modificarCuentaUsuarioForm.getCartuchosSelected().length > 0 && !modificarCuentaUsuarioForm.getId_cuenta().equals("0")) {
-                    try (PreparedStatement insertCuentaClienteStatement = c.prepareStatement("INSERT INTO cuenta_cliente_cartucho VALUES (?,?)")) {
-                        for (int i = 0; i < modificarCuentaUsuarioForm.getCartuchosSelected().length; i++) {
-                            insertCuentaClienteStatement.setInt(2, Integer.parseInt(modificarCuentaUsuarioForm.getCartuchosSelected()[i]));
-                            insertCuentaClienteStatement.setLong(1, Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta()));
-                            insertCuentaClienteStatement.addBatch();
-                        }
-                        insertCuentaClienteStatement.executeBatch();
-                    } catch (SQLException e) {
-                        c.rollback();
-                        c.setAutoCommit(true);
-                        throw e;
-                    }
+                        && modificarCuentaUsuarioForm.getCartuchosSelected().length > 0 && idAccount != 0) {
+                    insertCuentaClienteCartucho(c, idAccount, modificarCuentaUsuarioForm.getCartuchosSelected());
                 }
 
                 try (PreparedStatement updateListaStatement = c.prepareStatement("UPDATE lista SET lista = ?, nombre = ?  WHERE id_lista = (" +
                         "SELECT dominio FROM cuenta_cliente WHERE id_cuenta= ?) ")) {
                     updateListaStatement.setString(1, modificarCuentaUsuarioForm.getDominio());
                     updateListaStatement.setString(2, modificarCuentaUsuarioForm.getNombre() + "-Semilla");
-                    updateListaStatement.setLong(3, Long.parseLong(modificarCuentaUsuarioForm.getId_cuenta()));
+                    updateListaStatement.setLong(3, idAccount);
                     updateListaStatement.executeUpdate();
                 } catch (SQLException e) {
                     c.rollback();
@@ -722,6 +695,7 @@ public final class CuentaUsuarioDAO {
                 }
             }
             c.commit();
+            c.setAutoCommit(true);
         } catch (SQLException e) {
             Logger.putLog("Error al cerrar modificar el usuario", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             c.rollback();
@@ -739,6 +713,7 @@ public final class CuentaUsuarioDAO {
                 modificarCuentaUsuarioForm = CuentaUsuarioDAO.updateUserAccount(c, modificarCuentaUsuarioForm, fromMenu);
                 CuentaUsuarioDAO.removeLists(c, modificarCuentaUsuarioForm);
                 c.commit();
+                c.setAutoCommit(true);
             } catch (Exception e) {
                 Logger.putLog("Error: ", CuentaUsuarioDAO.class, Logger.LOG_LEVEL_ERROR, e);
                 c.rollback();
@@ -923,20 +898,20 @@ public final class CuentaUsuarioDAO {
     }
 
     public static long getIdSemillaFromCA(final Connection connection, final long idAccount) throws SQLException {
-        return getIdFieldFromCuentaCliente(connection, idAccount, "SELECT dominio FROM cuenta_cliente WHERE id_cuenta = ?", "dominio");
+        return getFieldFromCuentaClienteByIdCuenta(connection, idAccount, "SELECT dominio FROM cuenta_cliente WHERE id_cuenta = ?", "dominio");
     }
 
     public static long getIdLRFromCA(final Connection connection, final long idAccount) throws SQLException {
-        return getIdFieldFromCuentaCliente(connection, idAccount, "SELECT lista_rastreable FROM cuenta_cliente WHERE id_cuenta = ?", "lista_rastreable");
+        return getFieldFromCuentaClienteByIdCuenta(connection, idAccount, "SELECT lista_rastreable FROM cuenta_cliente WHERE id_cuenta = ?", "lista_rastreable");
     }
 
     public static long getIdLNRFromCA(final Connection connection, final long idAccount) throws SQLException {
-        return getIdFieldFromCuentaCliente(connection, idAccount, "SELECT lista_no_rastreable FROM cuenta_cliente WHERE id_cuenta = ?", "lista_no_rastreable");
+        return getFieldFromCuentaClienteByIdCuenta(connection, idAccount, "SELECT lista_no_rastreable FROM cuenta_cliente WHERE id_cuenta = ?", "lista_no_rastreable");
     }
 
-    private static long getIdFieldFromCuentaCliente(final Connection connection, final long idAccount, final String query, final String field) throws SQLException {
+    private static long getFieldFromCuentaClienteByIdCuenta(final Connection connection, final long idCuenta, final String query, final String field) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setLong(1, idAccount);
+            ps.setLong(1, idCuenta);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getLong(field);

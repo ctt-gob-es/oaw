@@ -14,6 +14,7 @@ import org.w3c.dom.Element;
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
@@ -277,7 +278,7 @@ public final class CrawlerUtils {
         return stream;
     }
 
-    public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws Exception {
+    public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws IOException {
         final PropertiesManager pmgr = new PropertiesManager();
         final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         if (connection instanceof HttpsURLConnection) {

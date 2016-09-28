@@ -2,7 +2,6 @@ package es.inteco.rastreador2.action.comun;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.comun.LanzarComandoForm;
@@ -11,6 +10,7 @@ import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.*;
 
@@ -33,12 +33,12 @@ public class LanzarComandoAction extends Action {
                     return (mapping.findForward(Constants.VOLVER_CARGA));
                 }
 
-                String estado_antiguo = (String) sesion.getAttribute(Constants.ESTADO_ANTERIOR);
+                String estadoAntiguo = (String) sesion.getAttribute(Constants.ESTADO_ANTERIOR);
 
-                if (estado_antiguo == null) {
-                    estado_antiguo = "";
+                if (estadoAntiguo == null) {
+                    estadoAntiguo = "";
                 }
-                lanzarComandoForm.setEstado_antiguo(estado_antiguo);
+                lanzarComandoForm.setEstado_antiguo(estadoAntiguo);
 
                 String rastreo;
                 if (request.getParameter(Constants.RASTREO) != null) {
@@ -74,13 +74,9 @@ public class LanzarComandoAction extends Action {
                 lanzarComandoForm.setComando(comando);
 
                 //COMPROBAMOS TIMEOUT
-                PropertiesManager pmgr = new PropertiesManager();
                 int vecesTimeout = (Integer) sesion.getAttribute(Constants.VECES_TIMEOUT);
                 if (vecesTimeout > 50) {
-                    String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.tMaxEspera.superado");
-                    String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                    request.setAttribute("mensajeExito", mensaje);
-                    request.setAttribute("accionVolver", volver);
+                    ActionUtils.setSuccesActionAttributes(request, "mensaje.error.tMaxEspera.superado", "volver.cargar.rastreos");
                     return mapping.findForward(Constants.ERROR_TIMEOUT);
                 } else {
                     vecesTimeout++;
@@ -111,11 +107,7 @@ public class LanzarComandoAction extends Action {
     public boolean control(LanzarComandoForm lanzarComandoForm, String user) {
         boolean control = false;
 
-        Connection c = null;
-
-        try {
-            c = DataBaseManager.getConnection();
-
+        try (Connection c = DataBaseManager.getConnection()) {
             //Si el comando está LAUNCH
             if (lanzarComandoForm.getComando().equals(Constants.LAUNCH)) {
                 DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, lanzarComandoForm.getRastreo());
@@ -147,17 +139,13 @@ public class LanzarComandoAction extends Action {
                 //Si el comando está STOP
             } else {
                 DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, lanzarComandoForm.getRastreo());
-
                 RastreoDAO.actualizarEstadoRastreo(c, dcrForm.getId_rastreo(), Constants.STATUS_STOPPED);
-
                 CrawlerJobManager.endJob(dcrForm.getId_rastreo());
 
                 control = true;
             }
         } catch (Exception e) {
             Logger.putLog("Excepcion ", LanzarComandoAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
         return control;

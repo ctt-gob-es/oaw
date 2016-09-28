@@ -2,7 +2,6 @@ package es.inteco.rastreador2.action.observatorio;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm;
 import es.inteco.rastreador2.actionform.rastreo.LenguajeForm;
@@ -13,11 +12,10 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.servlets.ScheduleObservatoryServlet;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.struts.action.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,7 @@ public class ModificarObservatorioAction extends Action {
         try {
             if (CrawlerUtils.hasAccess(request, "edit.observatory")) {
                 String esPrimera = request.getParameter(Constants.ES_PRIMERA);
-                String id_observatorio = request.getParameter(Constants.ID_OBSERVATORIO);
+                String idObservatorio = request.getParameter(Constants.ID_OBSERVATORIO);
 
                 if (isCancelled(request)) {
                     return (mapping.findForward(Constants.VOLVER_CARGA));
@@ -46,7 +44,7 @@ public class ModificarObservatorioAction extends Action {
 
                     if ((esPrimera == null || esPrimera.trim().equals("")) && (request.getParameter(Constants.PAG_PARAM) == null) && (request.getParameter(Constants.PAG_PARAM2) == null)) {
                         ModificarObservatorioForm modificarObservatorioForm = new ModificarObservatorioForm();
-                        modificarObservatorioForm = loadData(modificarObservatorioForm, request, true, id_observatorio);
+                        modificarObservatorioForm = loadData(modificarObservatorioForm, request, true, idObservatorio);
                         ObservatoryUtils.removeSessionAttributes(request);
                         ObservatoryUtils.putSessionAttributes(request, modificarObservatorioForm);
                         return ObservatoryUtils.returnLists(request, mapping, modificarObservatorioForm.getSemillasAnadidas(), modificarObservatorioForm.getSemillasNoAnadidas(), false);
@@ -54,7 +52,7 @@ public class ModificarObservatorioAction extends Action {
                         request.setAttribute(Constants.IS_UPDATE, Constants.CONF_SI);
                         if ((request.getParameter(Constants.PAG_PARAM) != null) || (request.getParameter(Constants.PAG_PARAM2) != null)) {
                             ModificarObservatorioForm modificarObservatorioForm = new ModificarObservatorioForm();
-                            modificarObservatorioForm = loadData(modificarObservatorioForm, request, false, id_observatorio);
+                            modificarObservatorioForm = loadData(modificarObservatorioForm, request, false, idObservatorio);
                             if ((request.getParameter(Constants.ACTION) == null) || !(request.getParameter(Constants.ACTION)).equals(Constants.ACCION_ACEPTAR)) {
                                 return ObservatoryUtils.returnLists(request, mapping, addSeeds, otherObservSeedList, true);
                             } else {
@@ -62,7 +60,7 @@ public class ModificarObservatorioAction extends Action {
                             }
                         } else {
                             ModificarObservatorioForm modificarObservatorioForm = (ModificarObservatorioForm) form;
-                            modificarObservatorioForm = loadData(modificarObservatorioForm, request, false, id_observatorio);
+                            modificarObservatorioForm = loadData(modificarObservatorioForm, request, false, idObservatorio);
                             if ((modificarObservatorioForm.getButtonAction() != null) && (modificarObservatorioForm.getButtonAction().equals(getResources(request).getMessage(getLocale(request), "boton.aceptar.anadir.semilla")))) {
                                 modificarObservatorioForm.setButtonAction(null);
                                 return ObservatoryUtils.returnLists(request, mapping, addSeeds, otherObservSeedList, true);
@@ -70,13 +68,13 @@ public class ModificarObservatorioAction extends Action {
                                 modificarObservatorioForm = (ModificarObservatorioForm) request.getSession().getAttribute(Constants.MODIFICAR_OBSERVATORIO_FORM);
                                 return editObservatory(mapping, modificarObservatorioForm, request);
                             } else {
-                                final String id_seed = request.getParameter(Constants.SEMILLA);
+                                final String idSeed = request.getParameter(Constants.SEMILLA);
                                 final String action = request.getParameter(Constants.ACTION);
 
                                 if ((action != null) && (action.equals(Constants.ACCION_SEPARATE_SEED))) {
-                                    return ObservatoryUtils.separeSeedToObservatory(request, mapping, id_seed, true, addSeeds, otherObservSeedList);
+                                    return ObservatoryUtils.separeSeedToObservatory(request, mapping, idSeed, true, addSeeds, otherObservSeedList);
                                 } else if ((action != null) && (action.equals(Constants.ACCION_ADD_SEED))) {
-                                    return ObservatoryUtils.addSeedToObservatory(request, mapping, id_seed, true, addSeeds, otherObservSeedList);
+                                    return ObservatoryUtils.addSeedToObservatory(request, mapping, idSeed, true, addSeeds, otherObservSeedList);
                                 } else if ((action != null) && (action.equals(Constants.ACCION_ACEPTAR))) {
                                     return addListToObservatory(mapping, request);
                                 }
@@ -104,18 +102,12 @@ public class ModificarObservatorioAction extends Action {
         return ObservatoryUtils.returnLists(request, mapping, modificarObservatorioForm.getSemillasAnadidas(), modificarObservatorioForm.getSemillasNoAnadidas(), false);
     }
 
-    private ModificarObservatorioForm loadData(ModificarObservatorioForm modificarObservatorioForm, HttpServletRequest request, boolean esPrimera, String id_observatorio) throws Exception {
-        Connection c = null;
-        Connection con = null;
-
-        try {
-            c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection();
-
-            if (id_observatorio != null) {
-                modificarObservatorioForm.setId_observatorio(id_observatorio);
+    private ModificarObservatorioForm loadData(ModificarObservatorioForm modificarObservatorioForm, HttpServletRequest request, boolean esPrimera, String idObservatorio) throws Exception {
+        try (Connection c = DataBaseManager.getConnection()) {
+            if (idObservatorio != null) {
+                modificarObservatorioForm.setId_observatorio(idObservatorio);
             }
-            modificarObservatorioForm.setNormaV(DAOUtils.getNormas(con, false));
+            modificarObservatorioForm.setNormaV(DAOUtils.getNormas(c, false));
 
             modificarObservatorioForm.setPeriodicidadVector(DAOUtils.getRecurrence(c));
 
@@ -139,74 +131,53 @@ public class ModificarObservatorioAction extends Action {
             modificarObservatorioForm.setNombre_antiguo(modificarObservatorioForm.getNombre());
             return modificarObservatorioForm;
         } catch (Exception e) {
-            Logger.putLog("Excepción genérica al modificar observatorio", ModificarObservatorioAction.class,Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Excepción genérica al modificar observatorio", ModificarObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
-            DataBaseManager.closeConnection(con);
         }
     }
 
     private ActionForward editObservatory(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-        ModificarObservatorioForm modificarObservatorioForm = (ModificarObservatorioForm) form;
+        final ModificarObservatorioForm modificarObservatorioForm = (ModificarObservatorioForm) form;
         modificarObservatorioForm.setNombre_antiguo(request.getParameter(Constants.NOMBRE_ANTIGUO));
 
-        Connection c = null;
+        final String idObservatorio = request.getParameter(Constants.ID_OBSERVATORIO);
+        request.setAttribute(Constants.ID_OBSERVATORIO, idObservatorio);
 
-        try {
-            PropertiesManager pmgr = new PropertiesManager();
-            c = DataBaseManager.getConnection();
-
-            String id_observatorio = request.getParameter(Constants.ID_OBSERVATORIO);
-            request.setAttribute(Constants.ID_OBSERVATORIO, id_observatorio);
-
-            final ActionErrors errors = modificarObservatorioForm.validate(mapping, request);
-            if (!errors.isEmpty()) {
-                saveErrors(request, errors);
-                return (mapping.findForward(Constants.VOLVER));
-            } else {
-                try {
-                    //Comprobamos que el nombre usa caracteres correctos
-                    if (modificarObservatorioForm.getNombre() != null && !modificarObservatorioForm.getNombre().equals("")) {
-                        if (!modificarObservatorioForm.getNombre().trim().equals(modificarObservatorioForm.getNombre_antiguo())) {
-                            if (CuentaUsuarioDAO.existAccount(c, modificarObservatorioForm.getNombre())) {
-                                Logger.putLog("Usuario Duplicado", ModificarObservatorioAction.class, Logger.LOG_LEVEL_INFO);
-                                errors.add("usuarioDuplicado", new ActionMessage("usuario.duplicado"));
-                                saveErrors(request, errors);
-                                return mapping.findForward(Constants.USUARIO_DUPLICADO);
-                            }
-                        }
+        final ActionErrors errors = modificarObservatorioForm.validate(mapping, request);
+        if (!errors.isEmpty()) {
+            saveErrors(request, errors);
+            return mapping.findForward(Constants.VOLVER);
+        } else {
+            try (Connection c = DataBaseManager.getConnection()) {
+                //Comprobamos que el nombre usa caracteres correctos
+                if (modificarObservatorioForm.getNombre() != null && !modificarObservatorioForm.getNombre().trim().equals(modificarObservatorioForm.getNombre_antiguo())) {
+                    if (CuentaUsuarioDAO.existAccount(c, modificarObservatorioForm.getNombre())) {
+                        Logger.putLog("Usuario Duplicado", ModificarObservatorioAction.class, Logger.LOG_LEVEL_INFO);
+                        errors.add("usuarioDuplicado", new ActionMessage("usuario.duplicado"));
+                        saveErrors(request, errors);
+                        return mapping.findForward(Constants.USUARIO_DUPLICADO);
                     }
-
-                    modificarObservatorioForm.setId_observatorio(id_observatorio);
-                    ObservatorioDAO.updateObservatory(c, modificarObservatorioForm);
-
-                    // Cambiamos los rastreos programados
-                    ScheduleObservatoryServlet.deleteJob(Long.parseLong(modificarObservatorioForm.getId_observatorio()));
-
-                    if (modificarObservatorioForm.isActivo()) {
-                        ScheduleObservatoryServlet.scheduleJob(modificarObservatorioForm.getNombre(), Long.parseLong(modificarObservatorioForm.getId_observatorio()),
-                                modificarObservatorioForm.getFecha(), RastreoDAO.getRecurrence(c, Long.parseLong(modificarObservatorioForm.getPeriodicidad())),
-                                modificarObservatorioForm.getCartucho().getId());
-                    }
-                } catch (Exception e) {
-                    Logger.putLog("Exception: ", ModificarObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-                    throw new Exception(e);
                 }
+
+                modificarObservatorioForm.setId_observatorio(idObservatorio);
+                ObservatorioDAO.updateObservatory(c, modificarObservatorioForm);
+
+                // Cambiamos los rastreos programados
+                ScheduleObservatoryServlet.deleteJob(Long.parseLong(modificarObservatorioForm.getId_observatorio()));
+
+                if (modificarObservatorioForm.isActivo()) {
+                    ScheduleObservatoryServlet.scheduleJob(modificarObservatorioForm.getNombre(), Long.parseLong(modificarObservatorioForm.getId_observatorio()),
+                            modificarObservatorioForm.getFecha(), RastreoDAO.getRecurrence(c, Long.parseLong(modificarObservatorioForm.getPeriodicidad())),
+                            modificarObservatorioForm.getCartucho().getId());
+                }
+            } catch (Exception e) {
+                Logger.putLog("Exception al modificar observatorio", ModificarObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
             }
-            String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.observatorio.editado");
-
-            String volver = pmgr.getValue("returnPaths.properties", "volver.carga.observatorio");
-            request.setAttribute("mensajeExito", mensaje);
-            request.setAttribute("accionVolver", volver);
-            return mapping.findForward(Constants.EXITO);
-
-        } catch (Exception e) {
-            Logger.putLog("Excepción genérica al modificar observatorio", ModificarObservatorioAction.class,Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
 
+        ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.observatorio.editado", "volver.carga.observatorio");
+        return mapping.findForward(Constants.EXITO);
     }
+
 }

@@ -16,6 +16,7 @@ import org.quartz.*;
 import org.w3c.dom.Document;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -545,7 +546,7 @@ public class CrawlerJob implements InterruptableJob {
      * @return true si la URL corresponde a un recurso text/html o false en caso contrario
      * @throws Exception
      */
-    private boolean isHtmlTextContent(final String refererUrl, final String urlLink, final String cookie) throws Exception {
+    private boolean isHtmlTextContent(final String refererUrl, final String urlLink, final String cookie) throws IOException {
         final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, refererUrl, true);
         connection.setRequestProperty("Cookie", cookie);
         connection.connect();

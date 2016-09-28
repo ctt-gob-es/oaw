@@ -7,6 +7,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.rastreo.EliminarRastreoForm;
 import es.inteco.rastreador2.actionform.rastreo.VerRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -25,15 +26,12 @@ public class EliminarRastreoAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) {
-
         try {
-
             if (CrawlerUtils.hasAccess(request, "delete.crawler")) {
+                final EliminarRastreoForm eliminarRastreoForm = (EliminarRastreoForm) form;
 
-                EliminarRastreoForm eliminarRastreoForm = (EliminarRastreoForm) form;
-
-                PropertiesManager pmgr = new PropertiesManager();
-                HttpSession sesion = request.getSession();
+                final PropertiesManager pmgr = new PropertiesManager();
+                final HttpSession sesion = request.getSession();
 
                 if (isCancelled(request)) {
                     return (mapping.findForward(Constants.VOLVER_CARGA));
@@ -46,13 +44,8 @@ public class EliminarRastreoAction extends Action {
                 }
 
                 //comprobamos de dodne viene, si no tiene el confirmacion igual a si entonces hay que mostrarle la ventana de confirmacion
-                Connection c = null;
-                Connection con = null;
                 String confeli = request.getParameter(Constants.CONFIRMACION);
-                try {
-                    c = DataBaseManager.getConnection();
-                    con = DataBaseManager.getConnection();
-
+                try (Connection c = DataBaseManager.getConnection()) {
                     String user = (String) request.getSession().getAttribute(Constants.USER);
                     long idRastreo = 0;
                     if (request.getParameter(Constants.ID_RASTREO) != null) {
@@ -66,10 +59,7 @@ public class EliminarRastreoAction extends Action {
                             //comprobamos que el rastreo es valido para este usuario
                             boolean userValido = RastreoDAO.rastreoValidoParaUsuario(c, Integer.parseInt(id_rastreo), (String) sesion.getAttribute("user"));
                             if (!userValido) {
-                                String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.error.noPermisos");
-                                String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                                request.setAttribute("mensajeExito", mensaje);
-                                request.setAttribute("accionVolver", volver);
+                                ActionUtils.setSuccesActionAttributes(request, "mensaje.error.noPermisos", "volver.cargar.rastreos");
                                 return mapping.findForward(Constants.NO_RASTREO_PERMISO);
                             }
                         }
@@ -85,16 +75,12 @@ public class EliminarRastreoAction extends Action {
                             eliminarRastreoForm.setCodigo(verRastreoForm.getRastreo());
                             eliminarRastreoForm.setCartucho(verRastreoForm.getNombre_cartucho());
                             eliminarRastreoForm.setIdrastreo(id_rastreo);
-                            eliminarRastreoForm.setNormaAnalisis(RastreoDAO.getNombreNorma(con, verRastreoForm.getNormaAnalisis()));
+                            eliminarRastreoForm.setNormaAnalisis(RastreoDAO.getNombreNorma(c, verRastreoForm.getNormaAnalisis()));
 
                         } else {
-
                             RastreoDAO.borrarRastreo(c, Integer.parseInt(id_rastreo));
 
-                            String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.rastreo.eliminado");
-                            String volver = pmgr.getValue("returnPaths.properties", "volver.cargar.rastreos");
-                            request.setAttribute("mensajeExito", mensaje);
-                            request.setAttribute("accionVolver", volver);
+                            ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.rastreo.eliminado", "volver.cargar.rastreos");
                             return mapping.findForward(Constants.EXITO);
                         }
                     } else {
@@ -103,9 +89,6 @@ public class EliminarRastreoAction extends Action {
                 } catch (Exception e) {
                     Logger.putLog("Exception: ", EliminarRastreoAction.class, Logger.LOG_LEVEL_ERROR, e);
                     throw new Exception(e);
-                } finally {
-                    DataBaseManager.closeConnection(c);
-                    DataBaseManager.closeConnection(con);
                 }
 
                 return mapping.findForward(Constants.VENTANA_CONFIRMACION);

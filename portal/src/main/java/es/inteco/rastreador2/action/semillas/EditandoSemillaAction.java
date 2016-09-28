@@ -1,10 +1,10 @@
 package es.inteco.rastreador2.action.semillas;
 
 import es.inteco.common.Constants;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.action.*;
 
@@ -16,13 +16,8 @@ import java.util.List;
 public class EditandoSemillaAction extends Action {
 
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-        Connection c = null;
-        try {
+        try (Connection c = DataBaseManager.getConnection()) {
             if (CrawlerUtils.hasAccess(request, "edit.crawler")) {
-
-                PropertiesManager pmgr = new PropertiesManager();
-                c = DataBaseManager.getConnection();
-
                 if (isCancelled(request)) {
                     ActionForward forward = new ActionForward();
                     forward.setPath(mapping.findForward(Constants.VOLVER_CARGA).getPath());
@@ -63,10 +58,8 @@ public class EditandoSemillaAction extends Action {
                         semillaForm.setListaUrlsString(SeedUtils.getSeedUrlsForDatabase(validUrls));
 
                         SemillaDAO.editSeed(c, semillaForm);
-                        String mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.semilla.editada");
-                        request.setAttribute("mensajeExito", mensaje);
-                        String volver = pmgr.getValue("returnPaths.properties", "volver.listado.semillas");
-                        request.setAttribute("accionVolver", volver);
+
+                        ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.editada", "volver.listado.semillas");
                         return mapping.findForward(Constants.SEMILLA_EDITADA);
                     } else {
                         ActionForward forward = new ActionForward();
@@ -82,8 +75,6 @@ public class EditandoSemillaAction extends Action {
         } catch (Exception e) {
             CrawlerUtils.warnAdministrators(e, this.getClass());
             return mapping.findForward(Constants.ERROR_PAGE);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 }

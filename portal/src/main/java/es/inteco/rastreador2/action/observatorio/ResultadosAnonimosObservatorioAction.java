@@ -107,25 +107,16 @@ public class ResultadosAnonimosObservatorioAction extends Action {
     private static void loadFile(HttpServletRequest request, SubirConclusionesForm subirConclusionesForm) {
         final PropertiesManager pmgr = new PropertiesManager();
         final String path = pmgr.getValue(CRAWLER_PROPERTIES, "conclusion.path") + request.getParameter(Constants.ID_OBSERVATORIO) + File.separator + request.getParameter(Constants.ID_EX_OBS) + File.separator;
-        FileOutputStream fileD = null;
-        try {
-            final File file = new File(path + "conclusion.xml");
-            if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
-                Logger.putLog("Error al crear los directorios para subir el archivo de conclusiones. ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR);
-            }
-            fileD = new FileOutputStream(file);
+
+        final File file = new File(path + "conclusion.xml");
+        if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+            Logger.putLog("Error al crear los directorios para subir el archivo de conclusiones. ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR);
+        }
+        try (FileOutputStream fileD = new FileOutputStream(file)) {
             fileD.write(subirConclusionesForm.getFile().getFileData());
             fileD.flush();
         } catch (Exception e) {
             Logger.putLog("Error al subir el archivo de conclusiones. ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                if (fileD != null) {
-                    fileD.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error al subir el archivo de conclusiones. ", ResultadosAnonimosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-            }
         }
     }
 

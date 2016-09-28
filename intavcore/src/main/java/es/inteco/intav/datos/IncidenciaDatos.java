@@ -3,12 +3,12 @@ package es.inteco.intav.datos;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.comun.Incidencia;
-import es.inteco.plugin.dao.DataBaseManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public final class IncidenciaDatos {
@@ -16,15 +16,9 @@ public final class IncidenciaDatos {
     private IncidenciaDatos() {
     }
 
-    public static void saveIncidenceList(Connection conn, List<Incidencia> incidenceList) {
-        /*Thread savingThread = new SavingThread(incidenceList);
-        savingThread.start();
-		
-		return 0;*/
+    public static void saveIncidenceList(final Connection conn, final List<Incidencia> incidenceList) {
         long time = System.currentTimeMillis();
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement("INSERT INTO tincidencia (COD_COMPROBACION, COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, DES_FUENTE) VALUES (?, ?, ?, ?, ?)");
+        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tincidencia (COD_COMPROBACION, COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, DES_FUENTE) VALUES (?, ?, ?, ?, ?)")) {
             for (Incidencia incidencia : incidenceList) {
                 pstmt.setInt(1, incidencia.getCodigoComprobacion());
                 pstmt.setLong(2, incidencia.getCodigoAnalisis());
@@ -39,205 +33,124 @@ public final class IncidenciaDatos {
             Logger.putLog("Tiempo de guardado de incidencias en base de datos: " + (System.currentTimeMillis() - time) + " milisegundos", Evaluator.class, Logger.LOG_LEVEL_INFO);
         } catch (Exception ex) {
             Logger.putLog("Exception: ", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, e);
-            }
         }
     }
 
-    public static int setIncidencia(Connection conn, Incidencia incidencia) {
-        PreparedStatement pstmt = null;
-        try {
-            pstmt = conn.prepareStatement("INSERT INTO tincidencia (COD_COMPROBACION, COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, DES_FUENTE) VALUES (?, ?, ?, ?, ?)");
-            pstmt.setInt(1, incidencia.getCodigoComprobacion());
-            pstmt.setLong(2, incidencia.getCodigoAnalisis());
-            pstmt.setInt(3, incidencia.getCodigoLineaFuente());
-            pstmt.setInt(4, incidencia.getCodigoColumnaFuente());
-            pstmt.setString(5, incidencia.getCodigoFuente());
-            pstmt.executeUpdate();
-
-            return 0;
-        } catch (Exception ex) {
-            Logger.putLog("Exception: ", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return -1;
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            } catch (Exception e) {
-                Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-        }
-    }
-
-    public static List<Incidencia> getIncidenciasFromAnalisisId(final Connection conn, final long id, final boolean getOnlyChecks) {
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        final String query;
+    public static List<Incidencia> getIncidenciasFromAnalisisId(final Connection conn, final long idAnalisis, final boolean getOnlyChecks) {
         if (getOnlyChecks) {
-            query = "SELECT COD_COMPROBACION FROM tincidencia WHERE COD_ANALISIS = ?";
+            return getIncidenciasIdFromAnalisisId(conn, idAnalisis);
         } else {
-            query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE COD_ANALISIS = ?";
+            return getIncidenciasFromAnalisisId(conn, idAnalisis);
         }
+    }
 
-        try {
-            pstmt = conn.prepareStatement(query);
-            pstmt.setLong(1, id);
-            rs = pstmt.executeQuery();
-            final List<Incidencia> incidencias = new ArrayList<>();
+    private static List<Incidencia> getIncidenciasIdFromAnalisisId(final Connection conn, final long idAnalisis) {
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_COMPROBACION FROM tincidencia WHERE COD_ANALISIS = ?")) {
+            pstmt.setLong(1, idAnalisis);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                final List<Incidencia> incidencias = new ArrayList<>();
 
-            while (rs.next()) {
-                final Incidencia incidencia = new Incidencia();
-                incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
-                if (!getOnlyChecks) {
+                while (rs.next()) {
+                    final Incidencia incidencia = new Incidencia();
+                    incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
+                    incidencias.add(incidencia);
+                }
+
+                return incidencias;
+            }
+        } catch (Exception ex) {
+            Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
+            return Collections.emptyList();
+        }
+    }
+
+    public static List<Incidencia> getIncidenciasFromAnalisisId(final Connection conn, final long idAnalisis) {
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE COD_ANALISIS = ?")) {
+            pstmt.setLong(1, idAnalisis);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                final List<Incidencia> incidencias = new ArrayList<>();
+
+                while (rs.next()) {
+                    final Incidencia incidencia = new Incidencia();
+                    incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
+
                     incidencia.setCodigoAnalisis(rs.getInt("COD_ANALISIS"));
                     incidencia.setCodigoLineaFuente(rs.getInt("COD_LINEA_FUENTE"));
                     incidencia.setCodigoColumnaFuente(rs.getInt("COD_COLUMNA_FUENTE"));
                     incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
                     incidencia.setCodigoFuente(rs.getString("DES_FUENTE"));
+
+                    incidencias.add(incidencia);
                 }
-                incidencias.add(incidencia);
+
+                return incidencias;
             }
-
-            return incidencias;
-
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return null;
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar el resultSet", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
+            return Collections.emptyList();
         }
     }
 
     public static List<Incidencia> getIncidenciasByAnalisisAndComprobacion(final Connection conn, final long idAnalisis, final long idComprobacion) {
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        //String query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, SUBSTRING(DES_FUENTE, -LENGTH(DES_FUENTE), 400) AS DES_FUENTE_TRUNC FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?";
-        String query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?";
+        final String query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?";
 
-        try {
-            pstmt = conn.prepareStatement(query);
+        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setLong(1, idAnalisis);
             pstmt.setLong(2, idComprobacion);
-            rs = pstmt.executeQuery();
-            final ArrayList<Incidencia> arrlist = new ArrayList<>();
+            try (ResultSet rs = pstmt.executeQuery()) {
+                final ArrayList<Incidencia> arrlist = new ArrayList<>();
 
-            while (rs.next()) {
-                final Incidencia incidencia = new Incidencia();
-                incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
-                incidencia.setCodigoAnalisis(rs.getInt("COD_ANALISIS"));
-                incidencia.setCodigoLineaFuente(rs.getInt("COD_LINEA_FUENTE"));
-                incidencia.setCodigoColumnaFuente(rs.getInt("COD_COLUMNA_FUENTE"));
-                incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
-                //incidencia.setCodigoFuente(rs.getString("DES_FUENTE_TRUNC"));
-                incidencia.setCodigoFuente(rs.getString("DES_FUENTE"));
+                while (rs.next()) {
+                    final Incidencia incidencia = new Incidencia();
+                    incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
+                    incidencia.setCodigoAnalisis(rs.getInt("COD_ANALISIS"));
+                    incidencia.setCodigoLineaFuente(rs.getInt("COD_LINEA_FUENTE"));
+                    incidencia.setCodigoColumnaFuente(rs.getInt("COD_COLUMNA_FUENTE"));
+                    incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
+                    incidencia.setCodigoFuente(rs.getString("DES_FUENTE"));
 
-                arrlist.add(incidencia);
+                    arrlist.add(incidencia);
+                }
+
+                return arrlist;
             }
-
-            return arrlist;
 
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
             return null;
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar el resultSet", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
         }
     }
 
     public static void deleteIncidenciasByAnalisisAndComprobacion(final Connection conn, final long idAnalisis, final long idComprobacion) {
-        PreparedStatement pstmt = null;
-
-        try {
-            pstmt = conn.prepareStatement("DELETE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?");
+        try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?")) {
             pstmt.setLong(1, idAnalisis);
             pstmt.setLong(2, idComprobacion);
             pstmt.executeUpdate();
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
-
         }
     }
 
-    public static List<Incidencia> getObservatoryIncidenciasFromAnalisisId(Connection conn, long id) {
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String query = " SELECT COD_ANALISIS, COD_COMPROBACION, COD_INCIDENCIA" +
-                " FROM tincidencia WHERE COD_ANALISIS = " + id;
+    public static List<Incidencia> getObservatoryIncidenciasFromAnalisisId(Connection conn, long idAnalisis) {
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_COMPROBACION, COD_INCIDENCIA FROM tincidencia WHERE COD_ANALISIS = ?")) {
+            pstmt.setLong(1, idAnalisis);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                final ArrayList<Incidencia> incidencias = new ArrayList<>();
 
-        try {
-            pstmt = conn.prepareStatement(query);
-            rs = pstmt.executeQuery();
-            ArrayList<Incidencia> arrlist = new ArrayList<>();
+                while (rs.next()) {
+                    final Incidencia incidencia = new Incidencia();
+                    incidencia.setCodigoAnalisis(rs.getInt("COD_ANALISIS"));
+                    incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
+                    incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
+                    incidencias.add(incidencia);
+                }
 
-            while (rs.next()) {
-                Incidencia incidencia = new Incidencia();
-                incidencia.setCodigoAnalisis(rs.getInt("COD_ANALISIS"));
-                incidencia.setCodigoComprobacion(rs.getInt("COD_COMPROBACION"));
-                incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
-                arrlist.add(incidencia);
+                return incidencias;
             }
-
-            return arrlist;
 
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
             return null;
-        } finally {
-            try {
-                if (pstmt != null) {
-                    pstmt.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar la llamada al procedimiento", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (Exception ex) {
-                Logger.putLog("Error al cerrar el resultSet", IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            }
         }
     }
 

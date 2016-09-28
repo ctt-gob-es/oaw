@@ -3,6 +3,7 @@ package es.inteco.rastreador2.utils;
 import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.PageForm;
+import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -16,15 +17,16 @@ public final class Pagination {
     }
 
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult, int currentPage) {
-        PropertiesManager properties = new PropertiesManager();
+        final PropertiesManager properties = new PropertiesManager();
         return createPagination(request, numResult, properties.getValue(CRAWLER_PROPERTIES, "pagination.size"), currentPage, Constants.PAG_PARAM);
     }
 
     public static List<PageForm> createPagination(HttpServletRequest request, int numResult, String pageSize, int currentPage, String parameter) {
-        PropertiesManager pmgr = new PropertiesManager();
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        int numPages = (int) Math.ceil((float) numResult / (float) Integer.parseInt(pageSize));
-        int numShowedPages = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.showed.pages"));
+        final int numPages = (int) Math.ceil((float) numResult / (float) Integer.parseInt(pageSize));
+        final int numShowedPages = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.showed.pages"));
+
         int begin = 1;
         int end = numPages;
 
@@ -53,14 +55,15 @@ public final class Pagination {
         path = removeParameterP(path, parameter);
 
         PageForm pForm;
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
         if (currentPage != 1) {
             if (begin != 1) {
-                pForm = new PageForm(CrawlerUtils.getResources(request).getMessage("linkList.beginning"),
+                pForm = new PageForm(messageResources.getMessage("linkList.beginning"),
                         calculatePath(path, parameter).concat("1"), Constants.PAGINATION_PF_STYLE, true);
                 pageFormList.add(pForm);
             }
 
-            pForm = new PageForm(CrawlerUtils.getResources(request).getMessage("linkList.previous"),
+            pForm = new PageForm(messageResources.getMessage("linkList.previous"),
                     calculatePath(path, parameter).concat(String.valueOf((currentPage - 1))), Constants.PAGINATION_PF_STYLE, true);
             pageFormList.add(pForm);
         }
@@ -80,12 +83,12 @@ public final class Pagination {
         }
 
         if (currentPage != numPages) {
-            pForm = new PageForm(CrawlerUtils.getResources(request).getMessage("linkList.following"),
+            pForm = new PageForm(messageResources.getMessage("linkList.following"),
                     calculatePath(path, parameter).concat(String.valueOf((currentPage + 1))), Constants.PAGINATION_PF_STYLE, true);
             pageFormList.add(pForm);
 
             if (end < numPages) {
-                pForm = new PageForm(CrawlerUtils.getResources(request).getMessage("linkList.end"),
+                pForm = new PageForm(messageResources.getMessage("linkList.end"),
                         calculatePath(path, parameter).concat(String.valueOf(numPages)), Constants.PAGINATION_PF_STYLE, true);
                 pageFormList.add(pForm);
             }
@@ -94,25 +97,28 @@ public final class Pagination {
         return pageFormList;
     }
 
-    private static String calculatePath(String path, String param) {
+    private static String calculatePath(final String path, final String param) {
         if (path.charAt(path.length() - 1) == '?') {
-            path = path.concat(param + "=");
+            return path.concat(param + "=");
         } else {
-            path = path.concat("&" + param + "=");
+            return path.concat("&" + param + "=");
         }
-        return path;
     }
 
-    private static String removeParameterP(String parameterP, String parameter) {
+    private static String removeParameterP(final String parameterP, final String parameter) {
         return parameterP.replaceAll("&*" + parameter + "=\\d+", "");
     }
 
-    public static int getPage(HttpServletRequest request, String param) {
-        int pagina = 1;
+    public static int getPage(final HttpServletRequest request, final String param) {
         if (request.getParameter(param) != null) {
-            pagina = Integer.parseInt(request.getParameter(param));
+            try {
+                return Integer.parseInt(request.getParameter(param));
+            } catch (NumberFormatException nfe) {
+                return 1;
+            }
+        } else {
+            return 1;
         }
-        return pagina;
     }
 
 }

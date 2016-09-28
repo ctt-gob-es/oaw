@@ -4,7 +4,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.actionform.comun.RedireccionConfigForm;
 import es.inteco.rastreador2.actionform.usuario.*;
-import es.inteco.rastreador2.utils.DAOUtils;
 import es.inteco.rastreador2.utils.EncryptUtils;
 import es.inteco.rastreador2.utils.ListadoUsuario;
 
@@ -29,172 +28,117 @@ public final class LoginDAO {
      * @return
      * @throws Exception
      */
-    public static Usuario getRegisteredUser(Connection c, String userName, String password) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.usuario = ? AND Password = md5(?)");
+    public static Usuario getRegisteredUser(final Connection c, final String userName, final String password) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT * FROM usuario u WHERE u.usuario = ? AND Password = md5(?)")) {
             ps.setString(1, userName);
             ps.setString(2, password);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                Usuario user = new Usuario();
-                user.setId(rs.getLong("id_usuario"));
-                user.setName(rs.getString("Nombre"));
-                user.setSurname(rs.getString("Apellidos"));
-                user.setLogin(rs.getString("Usuario"));
-                user.setEmail(rs.getString("Email"));
-                user.setDepartment(rs.getString("Departamento"));
-                return user;
-            } else {
-                return null;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Usuario user = new Usuario();
+                    user.setId(rs.getLong("id_usuario"));
+                    user.setName(rs.getString("Nombre"));
+                    user.setSurname(rs.getString("Apellidos"));
+                    user.setLogin(rs.getString("Usuario"));
+                    user.setEmail(rs.getString("Email"));
+                    user.setDepartment(rs.getString("Departamento"));
+                    return user;
+                } else {
+                    return null;
+                }
             }
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getRegisteredUser", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static int getUserRolType(Connection c, Long idUser) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT id_tipo FROM roles r " +
-                    "JOIN usuario_rol ur ON (ur.id_rol = r.id_rol) " +
-                    "JOIN usuario u ON (ur.usuario = u.id_usuario) " +
-                    "WHERE u.id_usuario = ?");
+    public static int getUserRolType(final Connection c, final Long idUser) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_tipo FROM roles r " +
+                "JOIN usuario_rol ur ON (ur.id_rol = r.id_rol) " +
+                "JOIN usuario u ON (ur.usuario = u.id_usuario) " +
+                "WHERE u.id_usuario = ?")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("id_tipo");
-            } else {
-                throw new Exception("Usuario no encontrado");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_tipo");
+                } else {
+                    throw new SQLException("Usuario no encontrado");
+                }
             }
-
-        } catch (Exception e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-    }
-
-    public static List<String> getUserAccount(Connection c, Long idUser) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT  DISTINCT(ccu.id_usuario), GROUP_CONCAT(DISTINCT(cc.nombre)) as nombre " +
-                    "FROM cuenta_cliente cc " +
-                    "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " +
-                    "WHERE ccu.id_usuario = ? GROUP BY ccu.id_usuario");
-            ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            List<String> nombreCuenta = new ArrayList<>();
-            if (rs.next()) {
-                nombreCuenta.addAll(listFromString(rs.getString("nombre")));
-            }
-            return nombreCuenta;
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserRolType", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static List<String> getUserAccountIds(Connection c, Long idUser) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT id_cuenta FROM cuenta_cliente_usuario WHERE id_usuario = ?");
+    public static List<String> getUserAccount(final Connection c, final Long idUser) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT  DISTINCT(ccu.id_usuario), GROUP_CONCAT(DISTINCT(cc.nombre)) as nombre " +
+                "FROM cuenta_cliente cc " +
+                "JOIN cuenta_cliente_usuario ccu ON (cc.id_cuenta = ccu.id_cuenta) " +
+                "WHERE ccu.id_usuario = ? GROUP BY ccu.id_usuario")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            List<String> idsCuenta = new ArrayList<>();
-            while (rs.next()) {
-                idsCuenta.add(rs.getString("id_cuenta"));
+            try (ResultSet rs = ps.executeQuery()) {
+                final List<String> nombreCuenta = new ArrayList<>();
+                if (rs.next()) {
+                    nombreCuenta.addAll(listFromString(rs.getString("nombre")));
+                }
+                return nombreCuenta;
             }
-            return idsCuenta;
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserAccount", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static List<String> getUserObservatoryIds(Connection c, Long idUser) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT id_observatorio FROM observatorio_usuario WHERE id_usuario = ?");
+    public static List<String> getUserAccountIds(final Connection c, final Long idUser) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_cuenta FROM cuenta_cliente_usuario WHERE id_usuario = ?")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            List<String> idsObservatorio = new ArrayList<>();
-            if (rs.next()) {
-                idsObservatorio.add(rs.getString("id_observatorio"));
+            try (ResultSet rs = ps.executeQuery()) {
+                List<String> idsCuenta = new ArrayList<>();
+                while (rs.next()) {
+                    idsCuenta.add(rs.getString("id_cuenta"));
+                }
+                return idsCuenta;
+            } catch (SQLException e) {
+                Logger.putLog("Error en getUserAccountIds", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
             }
-            return idsObservatorio;
+        }
+    }
+
+    public static List<String> getUserObservatoryIds(final Connection c, final Long idUser) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_observatorio FROM observatorio_usuario WHERE id_usuario = ?")) {
+            ps.setLong(1, idUser);
+            try (ResultSet rs = ps.executeQuery()) {
+                List<String> idsObservatorio = new ArrayList<>();
+                if (rs.next()) {
+                    idsObservatorio.add(rs.getString("id_observatorio"));
+                }
+                return idsObservatorio;
+            }
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserObservatoryIds", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
-    public static List<String> getUserObservatory(Connection c, Long idUser) throws Exception {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(ou.id_usuario), GROUP_CONCAT(DISTINCT(o.nombre)) as nombre " +
-                    "FROM observatorio o " +
-                    "JOIN observatorio_usuario ou ON (o.id_observatorio = ou.id_observatorio) " +
-                    "WHERE ou.id_usuario = ? GROUP BY ou.id_usuario");
+    public static List<CartuchoForm> getUserCartridge(final Connection c, final Long idUser) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM usuario_cartucho uc " +
+                "JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) WHERE uc.id_usuario = ? AND c.instalado = true")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            List<String> nombreObservatorio = new ArrayList<>();
-            if (rs.next()) {
-                nombreObservatorio.addAll(listFromString(rs.getString("nombre")));
+            try (ResultSet rs = ps.executeQuery()) {
+                final List<CartuchoForm> cartridgeList = new ArrayList<>();
+                while (rs.next()) {
+                    final CartuchoForm cartucho = new CartuchoForm();
+                    cartucho.setId(rs.getLong("id_cartucho"));
+                    cartucho.setName(rs.getString("aplicacion"));
+                    cartridgeList.add(cartucho);
+                }
+                return cartridgeList;
             }
-            return nombreObservatorio;
-        } catch (Exception e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
-        }
-    }
-
-    public static List<CartuchoForm> getUserCartridge(Connection c, Long idUser) throws SQLException {
-        List<CartuchoForm> cartridgeList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM usuario_cartucho uc " +
-                    "JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) WHERE uc.id_usuario = ? AND c.instalado = true");
-            ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                CartuchoForm cartucho = new CartuchoForm();
-                cartucho.setId(rs.getLong("id_cartucho"));
-                cartucho.setName(rs.getString("aplicacion"));
-                cartridgeList.add(cartucho);
-            }
-            return cartridgeList;
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserCartridge", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
@@ -204,11 +148,11 @@ public final class LoginDAO {
                 "JOIN roles r ON (r.id_rol = ur.id_rol) WHERE ur.usuario = ?")) {
             ps.setLong(1, idUser);
             try (ResultSet rs = ps.executeQuery()) {
-                buildRoleListFromResultSet(roleList, rs);
+                populateRoleListFromResultSet(roleList, rs);
             }
             return roleList;
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserRoles", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
@@ -235,7 +179,7 @@ public final class LoginDAO {
         try (PreparedStatement ps = c.prepareStatement("SELECT * FROM roles WHERE id_tipo = ?")) {
             ps.setInt(1, userRolType);
             try (ResultSet rs = ps.executeQuery()) {
-                buildRoleListFromResultSet(roleList, rs);
+                populateRoleListFromResultSet(roleList, rs);
             }
             return roleList;
         } catch (SQLException e) {
@@ -244,107 +188,82 @@ public final class LoginDAO {
         }
     }
 
-    public static void deleteUsers(String idCartridge, Connection c) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement("DELETE FROM usuario WHERE Id_Cartucho = ?")) {
-            ps.setString(1, idCartridge);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        }
-    }
-
     public static int countUsers(Connection c) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT COUNT(*) FROM usuario u WHERE u.id_usuario != 1");
-            rs = ps.executeQuery();
-            int numRes = 0;
-            if (rs.next()) {
-                numRes = rs.getInt(1);
+        try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM usuario u WHERE u.id_usuario != 1")) {
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    return 0;
+                }
             }
-            return numRes;
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en countUsers", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
     }
 
     public static List<ListadoUsuario> userList(Connection c, int page) throws Exception {
-        List<ListadoUsuario> userList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        PropertiesManager pmgr = new PropertiesManager();
-        int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-        int resultFrom = pagSize * page;
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(u.usuario), u.id_usuario , r.id_tipo, GROUP_CONCAT(DISTINCT(r.rol)) AS grupo, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos " +
-                    "FROM usuario u	" +
-                    "LEFT JOIN usuario_rol ur ON (ur.usuario = u.id_usuario) " +
-                    "LEFT JOIN roles r ON (r.id_rol = ur.id_rol) " +
-                    "LEFT JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
-                    "LEFT JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) " +
-                    "WHERE u.id_usuario != 1 " +
-                    "GROUP BY u.usuario ORDER BY u.usuario LIMIT ? OFFSET ?");
+        final List<ListadoUsuario> userList = new ArrayList<>();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+        final int resultFrom = pagSize * page;
+        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(u.usuario), u.id_usuario , r.id_tipo, GROUP_CONCAT(DISTINCT(r.rol)) AS grupo, GROUP_CONCAT(DISTINCT(c.aplicacion)) AS cartuchos " +
+                "FROM usuario u	" +
+                "LEFT JOIN usuario_rol ur ON (ur.usuario = u.id_usuario) " +
+                "LEFT JOIN roles r ON (r.id_rol = ur.id_rol) " +
+                "LEFT JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " +
+                "LEFT JOIN cartucho c ON (c.id_cartucho = uc.id_cartucho) " +
+                "WHERE u.id_usuario != 1 " +
+                "GROUP BY u.usuario ORDER BY u.usuario LIMIT ? OFFSET ?")) {
             ps.setInt(1, pagSize);
             ps.setInt(2, resultFrom);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                ListadoUsuario ls = new ListadoUsuario();
-                ls.setUsuario(rs.getString("usuario"));
-                ls.setId_usuario(rs.getLong("id_usuario"));
-                ls.setTipo(listFromString(rs.getString("grupo")));
-                ls.setTipoRol(rs.getInt("id_tipo"));
-                if (rs.getString("cartuchos") != null) {
-                    ls.setCartucho(listFromString(rs.getString("cartuchos")));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    ListadoUsuario ls = new ListadoUsuario();
+                    ls.setUsuario(rs.getString("usuario"));
+                    ls.setId_usuario(rs.getLong("id_usuario"));
+                    ls.setTipo(listFromString(rs.getString("grupo")));
+                    ls.setTipoRol(rs.getInt("id_tipo"));
+                    if (rs.getString("cartuchos") != null) {
+                        ls.setCartucho(listFromString(rs.getString("cartuchos")));
+                    }
+                    userList.add(ls);
                 }
-                userList.add(ls);
             }
         } catch (Exception e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en userList", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return userList;
     }
 
-    public static EliminarUsuarioSistemaForm getDeleteUser(Connection c, Long idUser, EliminarUsuarioSistemaForm eliminarUsuarioSistemaForm) throws Exception {
-
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT u.*, GROUP_CONCAT(DISTINCT(cc.nombre)) AS nombreCuentas " +
-                    "FROM usuario u " +
-                    "LEFT JOIN cuenta_cliente_usuario ccu ON (ccu.id_usuario = u.id_usuario) " +
-                    "LEFT JOIN cuenta_cliente cc ON (ccu.id_cuenta = cc.id_cuenta) " +
-                    "WHERE u.id_usuario = ? GROUP BY u.id_usuario;");
+    public static EliminarUsuarioSistemaForm getDeleteUser(final Connection c, final Long idUser, final EliminarUsuarioSistemaForm eliminarUsuarioSistemaForm) throws Exception {
+        try (PreparedStatement ps = c.prepareStatement("SELECT u.*, GROUP_CONCAT(DISTINCT(cc.nombre)) AS nombreCuentas " +
+                "FROM usuario u " +
+                "LEFT JOIN cuenta_cliente_usuario ccu ON (ccu.id_usuario = u.id_usuario) " +
+                "LEFT JOIN cuenta_cliente cc ON (ccu.id_cuenta = cc.id_cuenta) " +
+                "WHERE u.id_usuario = ? GROUP BY u.id_usuario;")) {
             ps.setLong(1, idUser);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                eliminarUsuarioSistemaForm.setNombre(rs.getString("nombre"));
-                eliminarUsuarioSistemaForm.setApellidos(rs.getString("apellidos"));
-                eliminarUsuarioSistemaForm.setDepartamento(rs.getString("departamento"));
-                eliminarUsuarioSistemaForm.setEmail(rs.getString("email"));
-                eliminarUsuarioSistemaForm.setId(rs.getLong("id_usuario"));
-                if ((rs.getString("nombreCuentas") != null)) {
-                    eliminarUsuarioSistemaForm.setNombreCuenta(listFromString(rs.getString("nombreCuentas")));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    eliminarUsuarioSistemaForm.setNombre(rs.getString("nombre"));
+                    eliminarUsuarioSistemaForm.setApellidos(rs.getString("apellidos"));
+                    eliminarUsuarioSistemaForm.setDepartamento(rs.getString("departamento"));
+                    eliminarUsuarioSistemaForm.setEmail(rs.getString("email"));
+                    eliminarUsuarioSistemaForm.setId(rs.getLong("id_usuario"));
+                    if ((rs.getString("nombreCuentas") != null)) {
+                        eliminarUsuarioSistemaForm.setNombreCuenta(listFromString(rs.getString("nombreCuentas")));
+                    }
+                    eliminarUsuarioSistemaForm.setUsuario(rs.getString("usuario"));
                 }
-                eliminarUsuarioSistemaForm.setUsuario(rs.getString("usuario"));
+                eliminarUsuarioSistemaForm.setRoles(getUserRoles(c, eliminarUsuarioSistemaForm.getId()));
+                eliminarUsuarioSistemaForm.setCartuchos(getUserCartridge(c, eliminarUsuarioSistemaForm.getId()));
             }
-            eliminarUsuarioSistemaForm.setRoles(getUserRoles(c, eliminarUsuarioSistemaForm.getId()));
-            eliminarUsuarioSistemaForm.setCartuchos(getUserCartridge(c, eliminarUsuarioSistemaForm.getId()));
         } catch (SQLException e) {
             Logger.putLog("Exception: ", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return eliminarUsuarioSistemaForm;
     }
@@ -368,7 +287,7 @@ public final class LoginDAO {
                 return rs.next();
             }
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en existUserWithKey", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
@@ -379,7 +298,7 @@ public final class LoginDAO {
             ps.setLong(2, idUser);
             ps.executeUpdate();
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en updatePassword", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
 
@@ -436,7 +355,7 @@ public final class LoginDAO {
             verUsuarioSistemaForm.setTipos(getUserRoles(c, Long.valueOf(dataForm.getId())));
             verUsuarioSistemaForm.setNombreCuenta(getUserAccount(c, Long.valueOf(dataForm.getId())));
         } catch (Exception e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserDataToSee", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
@@ -450,7 +369,7 @@ public final class LoginDAO {
             }
             return datosForm;
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserDataById", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
@@ -464,7 +383,7 @@ public final class LoginDAO {
             }
             return datosForm;
         } catch (SQLException e) {
-            Logger.putLog("Error al recuperar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getUserDataByName", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
@@ -495,30 +414,31 @@ public final class LoginDAO {
                 return rs.next();
             }
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en existUser", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
 
-    public static void updateUser(Connection c, ModificarUsuarioSistemaForm modificarUsuarioSistemaForm) throws Exception {
+    public static void updateUser(final Connection c, final ModificarUsuarioSistemaForm modificarUsuarioSistemaForm) throws Exception {
         try {
             c.setAutoCommit(false);
 
             // Borramos los roles antiguos
+            final long idUsuario = Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario());
             try (PreparedStatement deteleUsuarioRolStatement = c.prepareStatement("DELETE FROM usuario_rol WHERE usuario = ?")) {
-                deteleUsuarioRolStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                deteleUsuarioRolStatement.setLong(1, idUsuario);
                 deteleUsuarioRolStatement.executeUpdate();
             }
 
             // Borramos las cuentas de usuario antiguas
             try (PreparedStatement deleteCuentaClienteUsuarioStatement = c.prepareStatement("DELETE FROM cuenta_cliente_usuario WHERE id_usuario = ?")) {
-                deleteCuentaClienteUsuarioStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                deleteCuentaClienteUsuarioStatement.setLong(1, idUsuario);
                 deleteCuentaClienteUsuarioStatement.executeUpdate();
             }
 
             // Borramos los cartuchos antiguos
             try (PreparedStatement deleteUsuarioCartuchoStatement = c.prepareStatement("DELETE FROM usuario_cartucho WHERE id_usuario = ?")) {
-                deleteUsuarioCartuchoStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                deleteUsuarioCartuchoStatement.setLong(1, idUsuario);
                 deleteUsuarioCartuchoStatement.executeUpdate();
             }
 
@@ -529,54 +449,30 @@ public final class LoginDAO {
                 updateUsuarioStatement.setString(3, modificarUsuarioSistemaForm.getApellidos());
                 updateUsuarioStatement.setString(4, modificarUsuarioSistemaForm.getDepartamento());
                 updateUsuarioStatement.setString(5, modificarUsuarioSistemaForm.getEmail());
-                updateUsuarioStatement.setLong(6, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
+                updateUsuarioStatement.setLong(6, idUsuario);
                 updateUsuarioStatement.executeUpdate();
             }
 
             // Insertamos los roles nuevos
             if (modificarUsuarioSistemaForm.getSelectedRoles() != null
-                    && modificarUsuarioSistemaForm.getSelectedRoles().length > 0 && Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()) != 0) {
-                try (PreparedStatement insertUsuarioRolStatement = c.prepareStatement("INSERT INTO usuario_rol VALUES (?,?)")) {
-                    for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedRoles().length; i++) {
-                        insertUsuarioRolStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-                        insertUsuarioRolStatement.setInt(2, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedRoles()[i]));
-                        insertUsuarioRolStatement.addBatch();
-                    }
-
-                    insertUsuarioRolStatement.executeBatch();
-                }
+                    && modificarUsuarioSistemaForm.getSelectedRoles().length > 0 && idUsuario != 0) {
+                insertUsuarioRoles(c, idUsuario, modificarUsuarioSistemaForm.getSelectedRoles());
             }
 
             // Insertamos los cartuchos nuevos
             if (modificarUsuarioSistemaForm.getSelectedCartuchos() != null
-                    && modificarUsuarioSistemaForm.getSelectedCartuchos().length > 0 && Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()) != 0) {
-                try (PreparedStatement insertUsuarioCartuchoStatement = c.prepareStatement("INSERT INTO usuario_cartucho VALUES (?,?)")) {
-                    for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedCartuchos().length; i++) {
-                        insertUsuarioCartuchoStatement.setLong(1, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-                        insertUsuarioCartuchoStatement.setInt(2, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedCartuchos()[i]));
-                        insertUsuarioCartuchoStatement.addBatch();
-                    }
-
-                    insertUsuarioCartuchoStatement.executeBatch();
-                }
+                    && modificarUsuarioSistemaForm.getSelectedCartuchos().length > 0 && idUsuario != 0) {
+                insertUsuarioCartucho(c, idUsuario, modificarUsuarioSistemaForm.getSelectedCartuchos());
             }
 
             //Insertamos las cuenta cliente nuevas
             if (modificarUsuarioSistemaForm.getSelectedCuentaCliente() != null
-                    && modificarUsuarioSistemaForm.getSelectedCuentaCliente().length > 0 && Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()) != 0) {
-                try (PreparedStatement insertCuentaClientStatement = c.prepareStatement("INSERT INTO cuenta_cliente_usuario VALUES (?,?)")) {
-                    for (int i = 0; i < modificarUsuarioSistemaForm.getSelectedCuentaCliente().length; i++) {
-                        insertCuentaClientStatement.setInt(1, Integer.parseInt(modificarUsuarioSistemaForm.getSelectedCuentaCliente()[i]));
-                        insertCuentaClientStatement.setLong(2, Long.parseLong(modificarUsuarioSistemaForm.getIdUsuario()));
-                        insertCuentaClientStatement.addBatch();
-                    }
-
-                    insertCuentaClientStatement.executeBatch();
-                }
+                    && modificarUsuarioSistemaForm.getSelectedCuentaCliente().length > 0 && idUsuario != 0) {
+                insertCuentaClienteUsuario(c, idUsuario, modificarUsuarioSistemaForm.getSelectedCuentaCliente());
             }
 
             c.commit();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al cerrar modificar el usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             c.rollback();
             c.setAutoCommit(true);
@@ -585,87 +481,112 @@ public final class LoginDAO {
 
     }
 
-    public static void insertUser(Connection c, NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm) throws Exception {
-        PreparedStatement ps = null;
+    private static void insertUsuarioCartucho(final Connection c, final long idUsuario, final String[] selectedCartuchos) throws SQLException {
+        try (PreparedStatement insertUsuarioCartuchoStatement = c.prepareStatement("INSERT INTO usuario_cartucho VALUES (?,?)")) {
+            for (String selectedCartucho : selectedCartuchos) {
+                insertUsuarioCartuchoStatement.setLong(1, idUsuario);
+                insertUsuarioCartuchoStatement.setInt(2, Integer.parseInt(selectedCartucho));
+                insertUsuarioCartuchoStatement.addBatch();
+            }
+
+            insertUsuarioCartuchoStatement.executeBatch();
+        }
+    }
+
+    private static void insertUsuarioRoles(final Connection c, final long idUsuario, final String[] selectedRoles) throws SQLException {
+        try (PreparedStatement insertUsuarioRolStatement = c.prepareStatement("INSERT INTO usuario_rol VALUES (?,?)")) {
+            for (String selectedRole : selectedRoles) {
+                insertUsuarioRolStatement.setLong(1, idUsuario);
+                insertUsuarioRolStatement.setInt(2, Integer.parseInt(selectedRole));
+                insertUsuarioRolStatement.addBatch();
+            }
+
+            insertUsuarioRolStatement.executeBatch();
+        }
+    }
+
+    private static void insertCuentaClienteUsuario(final Connection c, final long idUsuario, final String[] selectedCuentaCliente) throws SQLException {
+        try (PreparedStatement insertCuentaClientStatement = c.prepareStatement("INSERT INTO cuenta_cliente_usuario VALUES (?,?)")) {
+            for (String aSelectedCuentaCliente : selectedCuentaCliente) {
+                insertCuentaClientStatement.setInt(1, Integer.parseInt(aSelectedCuentaCliente));
+                insertCuentaClientStatement.setLong(2, idUsuario);
+                insertCuentaClientStatement.addBatch();
+            }
+
+            insertCuentaClientStatement.executeBatch();
+        }
+    }
+
+    public static void insertUser(final Connection c, final NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm) throws Exception {
         try {
             c.setAutoCommit(false);
 
-            ps = c.prepareStatement("INSERT INTO usuario(Usuario, Password,  Nombre, Apellidos, Departamento, Email) VALUES (?, md5(?), ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, nuevoUsuarioSistemaForm.getNombre());
-            ps.setString(2, nuevoUsuarioSistemaForm.getPassword());
-            ps.setString(3, nuevoUsuarioSistemaForm.getNombre2());
-            ps.setString(4, nuevoUsuarioSistemaForm.getApellidos());
-            ps.setString(5, nuevoUsuarioSistemaForm.getDepartamento());
-            ps.setString(6, nuevoUsuarioSistemaForm.getEmail());
-            ps.executeUpdate();
-            long idUser = 0;
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    idUser = rs.getLong(1);
-                }
-            }
+            final long idUsuario = insertIntoUsuario(c, nuevoUsuarioSistemaForm);
 
             if (nuevoUsuarioSistemaForm.getObservatorio() != null &&
-                    nuevoUsuarioSistemaForm.getObservatorio().length != 0 && idUser != 0) {
-                for (int i = 0; i < nuevoUsuarioSistemaForm.getObservatorio().length; i++) {
-                    ps = c.prepareStatement("INSERT INTO observatorio_usuario VALUES (?,?)");
-                    ps.setInt(1, Integer.parseInt(nuevoUsuarioSistemaForm.getObservatorio()[i]));
-                    ps.setLong(2, idUser);
-                    ps.executeUpdate();
-                }
-                PropertiesManager pmgr = new PropertiesManager();
-                String[] roles = new String[]{
+                    nuevoUsuarioSistemaForm.getObservatorio().length != 0 && idUsuario != 0) {
+                insertObservatorioUsuario(c, idUsuario, nuevoUsuarioSistemaForm.getObservatorio());
+                final PropertiesManager pmgr = new PropertiesManager();
+                final String[] roles = new String[]{
                         pmgr.getValue(CRAWLER_PROPERTIES, "role.observatory.id")
                 };
                 nuevoUsuarioSistemaForm.setSelectedRoles(roles);
             }
 
             if (nuevoUsuarioSistemaForm.getSelectedRoles() != null
-                    && nuevoUsuarioSistemaForm.getSelectedRoles().length > 0 && idUser != 0) {
-                ps = c.prepareStatement("INSERT INTO usuario_rol VALUES (?,?)");
-                for (int i = 0; i < nuevoUsuarioSistemaForm.getSelectedRoles().length; i++) {
-                    ps.setLong(1, idUser);
-                    ps.setInt(2, Integer.parseInt(nuevoUsuarioSistemaForm.getSelectedRoles()[i]));
-                    ps.addBatch();
-                }
-
-                ps.executeBatch();
+                    && nuevoUsuarioSistemaForm.getSelectedRoles().length > 0 && idUsuario != 0) {
+                insertUsuarioRoles(c, idUsuario, nuevoUsuarioSistemaForm.getSelectedRoles());
             }
 
             if (nuevoUsuarioSistemaForm.getSelectedCartuchos() != null
-                    && nuevoUsuarioSistemaForm.getSelectedCartuchos().length > 0 && idUser != 0) {
-                ps = c.prepareStatement("INSERT INTO usuario_cartucho VALUES (?,?)");
-                for (int i = 0; i < nuevoUsuarioSistemaForm.getSelectedCartuchos().length; i++) {
-                    ps.setInt(2, Integer.parseInt(nuevoUsuarioSistemaForm.getSelectedCartuchos()[i]));
-                    ps.setLong(1, idUser);
-                    ps.addBatch();
-                }
-
-                ps.executeBatch();
+                    && nuevoUsuarioSistemaForm.getSelectedCartuchos().length > 0 && idUsuario != 0) {
+                insertUsuarioCartucho(c, idUsuario, nuevoUsuarioSistemaForm.getSelectedCartuchos());
             }
 
             if (nuevoUsuarioSistemaForm.getCuenta_cliente() != null &&
-                    nuevoUsuarioSistemaForm.getCuenta_cliente().length != 0 && idUser != 0) {
-                for (int i = 0; i < nuevoUsuarioSistemaForm.getCuenta_cliente().length; i++) {
-                    ps = c.prepareStatement("INSERT INTO cuenta_cliente_usuario VALUES (?,?)");
-                    ps.setInt(1, Integer.parseInt(nuevoUsuarioSistemaForm.getCuenta_cliente()[i]));
-                    ps.setLong(2, idUser);
-                    ps.executeUpdate();
-                }
+                    nuevoUsuarioSistemaForm.getCuenta_cliente().length != 0 && idUsuario != 0) {
+                insertCuentaClienteUsuario(c, idUsuario, nuevoUsuarioSistemaForm.getCuenta_cliente());
             }
 
             c.commit();
+            c.setAutoCommit(true);
         } catch (Exception e) {
+            c.rollback();
+            c.setAutoCommit(true);
             Logger.putLog("Error al insertar los datos del usuario", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            try {
-                c.rollback();
-            } catch (Exception excep) {
-                Logger.putLog("Error al volver al estado anterior de la base de datos", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
-            }
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
+        }
+    }
+
+    private static long insertIntoUsuario(final Connection c, NuevoUsuarioSistemaForm nuevoUsuarioSistemaForm) throws SQLException {
+        try (PreparedStatement insertUsuarioStatement = c.prepareStatement("INSERT INTO usuario(Usuario, Password,  Nombre, Apellidos, Departamento, Email) VALUES (?, md5(?), ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+            insertUsuarioStatement.setString(1, nuevoUsuarioSistemaForm.getNombre());
+            insertUsuarioStatement.setString(2, nuevoUsuarioSistemaForm.getPassword());
+            insertUsuarioStatement.setString(3, nuevoUsuarioSistemaForm.getNombre2());
+            insertUsuarioStatement.setString(4, nuevoUsuarioSistemaForm.getApellidos());
+            insertUsuarioStatement.setString(5, nuevoUsuarioSistemaForm.getDepartamento());
+            insertUsuarioStatement.setString(6, nuevoUsuarioSistemaForm.getEmail());
+            insertUsuarioStatement.executeUpdate();
+
+            try (ResultSet rs = insertUsuarioStatement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                } else {
+                    return 0;
+                }
+            }
+        }
+    }
+
+    private static void insertObservatorioUsuario(final Connection c, final long idUsuario, final String[] selectedObservatorios) throws SQLException {
+        try (PreparedStatement insertObservatorioUsuarioStatement = c.prepareStatement("INSERT INTO observatorio_usuario VALUES (?,?)")) {
+            for (String selectedObservatorio : selectedObservatorios) {
+                insertObservatorioUsuarioStatement.setInt(1, Integer.parseInt(selectedObservatorio));
+                insertObservatorioUsuarioStatement.setLong(2, idUsuario);
+                insertObservatorioUsuarioStatement.addBatch();
+            }
+
+            insertObservatorioUsuarioStatement.executeBatch();
         }
     }
 
@@ -682,7 +603,7 @@ public final class LoginDAO {
                 redireccionConfigForm.setSeleccionados(1);
             }
         } catch (Exception e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en loadUserData", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
         return redireccionConfigForm;
@@ -722,7 +643,7 @@ public final class LoginDAO {
                 }
             }
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getClientAccount", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
         return results;
@@ -740,13 +661,13 @@ public final class LoginDAO {
                 }
             }
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getMailsByRole", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
         return mails;
     }
 
-    private static void buildRoleListFromResultSet(final List<Role> roleList, final ResultSet rs) throws SQLException {
+    private static void populateRoleListFromResultSet(final List<Role> roleList, final ResultSet rs) throws SQLException {
         while (rs.next()) {
             final Role role = new Role();
             role.setId(rs.getLong("id_rol"));

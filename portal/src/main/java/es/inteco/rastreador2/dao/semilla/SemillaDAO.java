@@ -41,11 +41,7 @@ public final class SemillaDAO {
                 ps.setLong(2, type);
             }
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return rs.next();
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -58,11 +54,7 @@ public final class SemillaDAO {
     }
 
     public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String acronimo, String dependencia, boolean activa, boolean inDirectory) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?)");
+        try (PreparedStatement ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             ps.setLong(1, tipoLista);
             ps.setString(2, nombreSemilla);
             ps.setString(3, listaUrls);
@@ -84,19 +76,15 @@ public final class SemillaDAO {
             ps.setBoolean(7, activa);
             ps.setBoolean(8, inDirectory);
             ps.executeUpdate();
-            DAOUtils.closeQueries(ps, null);
 
-            ps = c.prepareStatement("SELECT id_lista FROM lista WHERE nombre like ? ORDER BY id_lista DESC LIMIT 1");
-            ps.setString(1, nombreSemilla);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getLong("id_lista");
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return null;
@@ -137,33 +125,30 @@ public final class SemillaDAO {
     }
 
     public static List<SemillaForm> getObservatorySeeds(Connection c, int pagina, SemillaSearchForm searchForm) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<SemillaForm> seedList = new ArrayList<>();
+        final List<SemillaForm> seedList = new ArrayList<>();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+        final int resultFrom = pagSize * pagina;
 
-        try {
-            PropertiesManager pmgr = new PropertiesManager();
-            int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-            int resultFrom = pagSize * pagina;
-            int count = 1;
+        int count = 1;
 
-            String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
+        String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
 
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND l.nombre like ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            query += " AND l.nombre like ? ";
+        }
 
-            if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-                query += " AND l.id_categoria = ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
+            query += " AND l.id_categoria = ? ";
+        }
 
-            if (StringUtils.isNotEmpty(searchForm.getUrl())) {
-                query += " AND l.lista like ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getUrl())) {
+            query += " AND l.lista like ? ";
+        }
 
-            query += " LIMIT ? OFFSET ?";
-            ps = c.prepareStatement(query);
+        query += " LIMIT ? OFFSET ?";
 
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 
             if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -180,57 +165,52 @@ public final class SemillaDAO {
 
             ps.setLong(count++, pagSize);
             ps.setLong(count, resultFrom);
-            rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final SemillaForm semillaForm = new SemillaForm();
+                    semillaForm.setId(rs.getLong("l.id_lista"));
+                    semillaForm.setNombre(rs.getString("l.nombre"));
+                    semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
 
-            while (rs.next()) {
-                SemillaForm semillaForm = new SemillaForm();
-                semillaForm.setId(rs.getLong("l.id_lista"));
-                semillaForm.setNombre(rs.getString("l.nombre"));
-                semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+                    final CategoriaForm categoriaForm = new CategoriaForm();
+                    categoriaForm.setId(rs.getString("id_categoria"));
+                    categoriaForm.setName(rs.getString("cl.nombre"));
+                    categoriaForm.setOrden(rs.getInt("cl.orden"));
+                    semillaForm.setCategoria(categoriaForm);
+                    if (rs.getLong("l.activa") == 0) {
+                        semillaForm.setActiva(false);
+                    } else {
+                        semillaForm.setActiva(true);
+                    }
 
-                CategoriaForm categoriaForm = new CategoriaForm();
-                categoriaForm.setId(rs.getString("id_categoria"));
-                categoriaForm.setName(rs.getString("cl.nombre"));
-                categoriaForm.setOrden(rs.getInt("cl.orden"));
-                semillaForm.setCategoria(categoriaForm);
-                if (rs.getLong("l.activa") == 0) {
-                    semillaForm.setActiva(false);
-                } else {
-                    semillaForm.setActiva(true);
+                    seedList.add(semillaForm);
                 }
-
-                seedList.add(semillaForm);
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return seedList;
     }
 
     public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            int count = 1;
-            String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
+        int count = 1;
+        String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
 
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND l.nombre like ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            query += " AND l.nombre like ? ";
+        }
 
-            if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-                query += " AND l.id_categoria = ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
+            query += " AND l.id_categoria = ? ";
+        }
 
-            if (StringUtils.isNotEmpty(searchForm.getUrl())) {
-                query += " AND l.lista like ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getUrl())) {
+            query += " AND l.lista like ? ";
+        }
 
-            ps = c.prepareStatement(query);
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 
             if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -245,43 +225,38 @@ public final class SemillaDAO {
                 ps.setString(count, "%" + searchForm.getUrl() + "%");
             }
 
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return (rs.getInt(1));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    return 0;
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-
-        return 0;
     }
 
     public static List<SemillaForm> getSeedsChoose(Connection c, int pagina, SemillaSearchForm searchForm) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<SemillaForm> seedList = new ArrayList<>();
+        final List<SemillaForm> seedList = new ArrayList<>();
+        final PropertiesManager pmgr = new PropertiesManager();
+        final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+        final int resultFrom = pagSize * pagina;
 
-        try {
-            PropertiesManager pmgr = new PropertiesManager();
-            int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-            int resultFrom = pagSize * pagina;
-            int count = 1;
-            String query = "SELECT l.*, COUNT(r.id_rastreo) AS rastreos_asociados FROM lista l " +
-                    "LEFT JOIN rastreo r ON (l.id_lista = r.semillas) " +
-                    "WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
-                    "SELECT DISTINCT(dominio) FROM cuenta_cliente) ";
+        int count = 1;
+        String query = "SELECT l.*, COUNT(r.id_rastreo) AS rastreos_asociados FROM lista l " +
+                "LEFT JOIN rastreo r ON (l.id_lista = r.semillas) " +
+                "WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
+                "SELECT DISTINCT(dominio) FROM cuenta_cliente) ";
 
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND nombre like ? ";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            query += " AND nombre like ? ";
+        }
 
-            query += " GROUP BY id_lista LIMIT ? OFFSET ?";
-            ps = c.prepareStatement(query);
+        query += " GROUP BY id_lista LIMIT ? OFFSET ?";
 
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(count++, Constants.ID_LISTA_SEMILLA);
 
             if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -290,63 +265,72 @@ public final class SemillaDAO {
 
             ps.setLong(count++, pagSize);
             ps.setLong(count, resultFrom);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                SemillaForm semillaForm = new SemillaForm();
-                semillaForm.setId(rs.getLong("id_lista"));
-                semillaForm.setNombre(rs.getString("nombre"));
-                semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
-                if (rs.getInt("rastreos_asociados") > 0) {
-                    semillaForm.setAsociada(true);
-                } else {
-                    semillaForm.setAsociada(false);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    SemillaForm semillaForm = new SemillaForm();
+                    semillaForm.setId(rs.getLong("id_lista"));
+                    semillaForm.setNombre(rs.getString("nombre"));
+                    semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+                    if (rs.getInt("rastreos_asociados") > 0) {
+                        semillaForm.setAsociada(true);
+                    } else {
+                        semillaForm.setAsociada(false);
+                    }
+                    seedList.add(semillaForm);
                 }
-                seedList.add(semillaForm);
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return seedList;
     }
 
     public static int countSeedsChoose(Connection c, int type, SemillaSearchForm searchForm) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            return countSeedsChooseFilteredByName(c, type, searchForm);
+        } else {
+            try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
+                    "SELECT DISTINCT(dominio) FROM cuenta_cliente)")) {
+                ps.setLong(1, type);
 
-        try {
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
-                        "SELECT DISTINCT(dominio) FROM cuenta_cliente)  AND nombre like ?");
-                ps.setString(2, "%" + searchForm.getNombre() + "%");
-            } else {
-                ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
-                        "SELECT DISTINCT(dominio) FROM cuenta_cliente)");
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return (rs.getInt(1));
+                    }
+                }
+            } catch (SQLException e) {
+                Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
             }
-            ps.setLong(1, type);
-
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return (rs.getInt(1));
-            }
-        } catch (SQLException e) {
-            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return 0;
     }
 
-    private static List<String> convertStringToList(String lista) {
-        List<String> urlsList = new ArrayList<>();
-        StringTokenizer tokenizer = new StringTokenizer(lista, ";");
+    private static int countSeedsChooseFilteredByName(Connection c, int type, SemillaSearchForm searchForm) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
+                "SELECT DISTINCT(dominio) FROM cuenta_cliente)  AND nombre like ?")) {
+            ps.setLong(1, type);
+            ps.setString(2, "%" + searchForm.getNombre() + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return (rs.getInt(1));
+                }
+            }
+        } catch (SQLException e) {
+            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
+
+        return 0;
+    }
+
+    private static List<String> convertStringToList(final String lista) {
+        final List<String> urlsList = new ArrayList<>();
+        final StringTokenizer tokenizer = new StringTokenizer(lista, ";");
         while (tokenizer.hasMoreTokens()) {
             urlsList.add(tokenizer.nextToken());
         }
@@ -484,40 +468,40 @@ public final class SemillaDAO {
     }
 
     private static void editList(Connection c, long idLista, String lista, String nameList) throws SQLException {
-        PreparedStatement ps = null;
-        try {
+        final String query;
+        if (nameList.isEmpty()) {
+            query = "UPDATE lista SET lista = ? WHERE id_lista = ?";
+        } else {
+            query = "UPDATE lista SET lista = ?, nombre = ? WHERE id_lista = ?";
+        }
+
+        try (PreparedStatement ps = c.prepareStatement(query)) {
+            ps.setString(1, lista);
             if (nameList.isEmpty()) {
-                ps = c.prepareStatement("UPDATE lista SET lista = ? WHERE id_lista = ? ");
                 ps.setLong(2, idLista);
             } else {
-                ps = c.prepareStatement("UPDATE lista SET lista = ?, nombre = ? WHERE id_lista = ? ");
                 ps.setString(2, nameList);
                 ps.setLong(3, idLista);
             }
 
-            ps.setString(1, lista);
             ps.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
     public static void removeLists(Connection c, UpdateListDataForm updateListDataForm) throws SQLException {
-        if (updateListDataForm.getListaRastreable() == null || updateListDataForm.getListaRastreable().isEmpty()) {
-            if (updateListDataForm.getIdRastreableAntiguo() != 0) {
-                //Si hemos eliminado la lista rastreable, se borra de bbdd
-                SemillaDAO.removeListById(c, updateListDataForm.getIdRastreableAntiguo());
-            }
+        if ((updateListDataForm.getListaRastreable() == null || updateListDataForm.getListaRastreable().isEmpty())
+                && updateListDataForm.getIdRastreableAntiguo() != 0) {
+            //Si hemos eliminado la lista rastreable, se borra de bbdd
+            SemillaDAO.removeListById(c, updateListDataForm.getIdRastreableAntiguo());
         }
 
-        if (updateListDataForm.getListaNoRastreable() == null || updateListDataForm.getListaNoRastreable().isEmpty()) {
-            if (updateListDataForm.getIdNoRastreableAntiguo() != 0) {
-                //Si hemos eliminado la lista no rastreable, se borra de bbdd
-                SemillaDAO.removeListById(c, updateListDataForm.getIdNoRastreableAntiguo());
-            }
+        if ((updateListDataForm.getListaNoRastreable() == null || updateListDataForm.getListaNoRastreable().isEmpty())
+                && updateListDataForm.getIdNoRastreableAntiguo() != 0) {
+            //Si hemos eliminado la lista no rastreable, se borra de bbdd
+            SemillaDAO.removeListById(c, updateListDataForm.getIdNoRastreableAntiguo());
         }
     }
 
@@ -560,62 +544,50 @@ public final class SemillaDAO {
     }
 
     public static void deleteObservatorySeed(Connection c, long idSeed, long idObservatory) throws SQLException {
-        try {
-            c.setAutoCommit(false);
-
-            //Se recupera el id del rastreo asociado a la semilla
-            try (PreparedStatement ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ? AND semillas = ? ")) {
-                ps.setLong(2, idSeed);
-                ps.setLong(1, idObservatory);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        RastreoDAO.borrarRastreo(c, rs.getLong("id_rastreo"));
-                    }
-                    c.commit();
-                } catch (SQLException e) {
-                    c.rollback();
-                    c.setAutoCommit(true);
-                    throw e;
+        //Se recupera el id del rastreo asociado a la semilla
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ? AND semillas = ? ")) {
+            ps.setLong(2, idSeed);
+            ps.setLong(1, idObservatory);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    RastreoDAO.borrarRastreo(c, rs.getLong("id_rastreo"));
                 }
-                c.setAutoCommit(true);
             }
         } catch (SQLException e) {
-            c.rollback();
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
 
     public static List<CategoriaForm> getSeedCategories(Connection c, int page) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<CategoriaForm> categories = new ArrayList<>();
-
-        try {
-            if (page == Constants.NO_PAGINACION) {
-                ps = c.prepareStatement("SELECT * FROM categorias_lista");
-            } else {
-                PropertiesManager pmgr = new PropertiesManager();
-                int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-                int resultFrom = pagSize * page;
-                ps = c.prepareStatement("SELECT * FROM categorias_lista LIMIT ? OFFSET ?");
+        final List<CategoriaForm> categories = new ArrayList<>();
+        final String query;
+        if (page == Constants.NO_PAGINACION) {
+            query = "SELECT * FROM categorias_lista";
+        } else {
+            query = "SELECT * FROM categorias_lista LIMIT ? OFFSET ?";
+        }
+        try (PreparedStatement ps = c.prepareStatement(query)) {
+            if (page != Constants.NO_PAGINACION) {
+                final PropertiesManager pmgr = new PropertiesManager();
+                final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+                final int resultFrom = pagSize * page;
                 ps.setInt(1, pagSize);
                 ps.setInt(2, resultFrom);
             }
-            rs = ps.executeQuery();
 
-            while (rs.next()) {
-                CategoriaForm categoriaForm = new CategoriaForm();
-                categoriaForm.setId(rs.getString("id_categoria"));
-                categoriaForm.setName(rs.getString("nombre"));
-                categoriaForm.setOrden(rs.getInt("orden"));
-                categories.add(categoriaForm);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    CategoriaForm categoriaForm = new CategoriaForm();
+                    categoriaForm.setId(rs.getString("id_categoria"));
+                    categoriaForm.setName(rs.getString("nombre"));
+                    categoriaForm.setOrden(rs.getInt("orden"));
+                    categories.add(categoriaForm);
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return categories;
     }
@@ -640,7 +612,7 @@ public final class SemillaDAO {
     }
 
     public static List<SemillaForm> getSeedsByCategory(Connection c, long idCategory, int page, SemillaForm searchForm) throws SQLException {
-        List<SemillaForm> results = new ArrayList<>();
+        final List<SemillaForm> results = new ArrayList<>();
         String query = "SELECT * FROM lista l WHERE id_categoria = ? ";
 
         if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -653,10 +625,7 @@ public final class SemillaDAO {
             query += "LIMIT ? OFFSET ?";
         }
 
-        PreparedStatement ps = c.prepareStatement(query);
-        ResultSet rs = null;
-
-        try {
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             int count = 1;
             ps.setLong(count++, idCategory);
 
@@ -671,59 +640,53 @@ public final class SemillaDAO {
                 ps.setInt(count++, pagSize);
                 ps.setInt(count, resultFrom);
             }
-            rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                SemillaForm semillaForm = new SemillaForm();
-                semillaForm.setId(rs.getLong("id_lista"));
-                semillaForm.setNombre(rs.getString("nombre"));
-                semillaForm.setListaUrlsString(rs.getString("lista"));
-                semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
-                semillaForm.setAcronimo(rs.getString("acronimo"));
-                semillaForm.setDependencia(rs.getString("dependencia"));
-                semillaForm.setActiva(rs.getBoolean("activa"));
-                semillaForm.setInDirectory(rs.getBoolean("in_directory"));
-                results.add(semillaForm);
+                while (rs.next()) {
+                    SemillaForm semillaForm = new SemillaForm();
+                    semillaForm.setId(rs.getLong("id_lista"));
+                    semillaForm.setNombre(rs.getString("nombre"));
+                    semillaForm.setListaUrlsString(rs.getString("lista"));
+                    semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+                    semillaForm.setAcronimo(rs.getString("acronimo"));
+                    semillaForm.setDependencia(rs.getString("dependencia"));
+                    semillaForm.setActiva(rs.getBoolean("activa"));
+                    semillaForm.setInDirectory(rs.getBoolean("in_directory"));
+                    results.add(semillaForm);
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return results;
     }
 
     public static Integer countSeedsByCategory(Connection c, long idCategory, SemillaForm searchForm) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        int count = 1;
+        String query = "SELECT COUNT(*) AS numSeeds FROM lista WHERE id_categoria = ? ";
 
-        try {
-            int count = 1;
-            String query = "SELECT COUNT(*) AS numSeeds FROM lista WHERE id_categoria = ? ";
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            query += " AND nombre like ? ";
+        }
 
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND nombre like ? ";
-            }
-
-            ps = c.prepareStatement(query);
-
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(count++, idCategory);
             if (StringUtils.isNotEmpty(searchForm.getNombre())) {
                 ps.setString(count, "%" + searchForm.getNombre() + "%");
             }
 
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("numSeeds");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("numSeeds");
+                } else {
+                    return 0;
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
-        return 0;
     }
 
     public static Integer countSeedCategories(Connection c) throws Exception {
@@ -873,27 +836,27 @@ public final class SemillaDAO {
     }
 
     public static void updateCategorySeeds(Connection c, List<SemillaForm> semillas) throws SQLException {
-        PreparedStatement ps = null;
-        try {
-            if (!semillas.isEmpty()) {
+        if (!semillas.isEmpty()) {
+            try {
                 c.setAutoCommit(false);
-                ps = c.prepareStatement("UPDATE lista SET nombre = ? WHERE id_lista = ?");
-                for (SemillaForm semillaForm : semillas) {
-                    ps.setString(1, semillaForm.getNombre());
-                    ps.setLong(2, semillaForm.getId());
-                    ps.addBatch();
+                try (PreparedStatement ps = c.prepareStatement("UPDATE lista SET nombre = ? WHERE id_lista = ?")) {
+                    for (SemillaForm semillaForm : semillas) {
+                        ps.setString(1, semillaForm.getNombre());
+                        ps.setLong(2, semillaForm.getId());
+                        ps.addBatch();
+                    }
+
+                    ps.executeBatch();
                 }
 
-                ps.executeBatch();
-
                 c.commit();
+                c.setAutoCommit(true);
+            } catch (SQLException e) {
+                c.rollback();
+                c.setAutoCommit(true);
+                Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
             }
-        } catch (SQLException e) {
-            c.rollback();
-            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 

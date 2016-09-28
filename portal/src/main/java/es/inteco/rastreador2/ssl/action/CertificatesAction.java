@@ -4,6 +4,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.actionform.ssl.CertificateForm;
+import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
 import org.apache.struts.action.*;
@@ -141,10 +142,7 @@ public class CertificatesAction extends Action {
                     }
                 }
 
-                PropertiesManager pmgr = new PropertiesManager();
-                String volver = pmgr.getValue("returnPaths.properties", "volver.insertar.certificado");
-                request.setAttribute("mensajeExito", mensaje);
-                request.setAttribute("accionVolver", volver);
+                ActionUtils.setSuccesActionAttributes(request, mensaje, "volver.insertar.certificado");
                 return mapping.findForward(Constants.EXITO);
             } else {
                 saveErrors(request, errors);
@@ -185,9 +183,7 @@ public class CertificatesAction extends Action {
             }
         }
 
-        PropertiesManager pmgr = new PropertiesManager();
-        request.setAttribute("mensajeExito", getResources(request).getMessage(getLocale(request), "mensaje.exito.certificado.borrado"));
-        request.setAttribute("accionVolver", pmgr.getValue("returnPaths.properties", "volver.insertar.certificado"));
+        ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.certificado.borrado", "volver.insertar.certificado");
         return mapping.findForward(Constants.EXITO);
     }
 
@@ -255,18 +251,13 @@ public class CertificatesAction extends Action {
             String alias = certificateForm.getHost() + "-" + (k + 1);
             keyStore.setCertificateEntry(alias, cert);
 
-            OutputStream out = null;
-            try {
-                out = new FileOutputStream(file);
+
+            try (OutputStream out = new FileOutputStream(file)){
                 keyStore.store(out, passphrase);
                 Logger.putLog("Añadido al almacén de claves el certificado de " + alias, CertificatesAction.class, Logger.LOG_LEVEL_INFO);
             } catch (Exception e) {
                 Logger.putLog("Error al añadidir el certificado de " + alias, CertificatesAction.class, Logger.LOG_LEVEL_ERROR, e);
                 throw e;
-            } finally {
-                if (out != null) {
-                    out.close();
-                }
             }
         }
     }

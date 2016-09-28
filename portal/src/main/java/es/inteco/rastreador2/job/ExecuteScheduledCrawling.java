@@ -28,22 +28,18 @@ public class ExecuteScheduledCrawling implements StatefulJob {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        CuentaCliente cuentaCliente = (CuentaCliente) jobDataMap.get(Constants.CUENTA_CLIENTE);
+        final JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+        final CuentaCliente cuentaCliente = (CuentaCliente) jobDataMap.get(Constants.CUENTA_CLIENTE);
+        final PropertiesManager pmgr = new PropertiesManager();
 
-        Connection c = null;
-        try {
-            PropertiesManager pmgr = new PropertiesManager();
+        Logger.putLog("Lanzando rastreo programado para la cuenta cliente " + cuentaCliente.getNombre(), ExecuteScheduledCrawling.class, Logger.LOG_LEVEL_INFO);
+        try (Connection c = DataBaseManager.getConnection()) {
+            final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, cuentaCliente.getDatosRastreo(), null, (long) 1);
 
-            Logger.putLog("Lanzando rastreo programado para la cuenta cliente " + cuentaCliente.getNombre(), ExecuteScheduledCrawling.class, Logger.LOG_LEVEL_INFO);
+            final List<DatosForm> users = LoginDAO.getClientAccount(c, cuentaCliente.getIdCuenta());
 
-            c = DataBaseManager.getConnection();
-            Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, cuentaCliente.getDatosRastreo(), null, (long) 1);
-
-            List<DatosForm> users = LoginDAO.getClientAccount(c, cuentaCliente.getIdCuenta());
-
-            List<String> mailTo = getMailsFromRole(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.customer.user.id")), users);
-            List<String> mailToResponsibles = getMailsFromRole(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.customer.responsible.id")), users);
+            final List<String> mailTo = getMailsFromRole(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.customer.user.id")), users);
+            final List<String> mailToResponsibles = getMailsFromRole(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.customer.responsible.id")), users);
 
             cuentaCliente.getDatosRastreo().setCartuchos(CartuchoDAO.getNombreCartucho(cuentaCliente.getDatosRastreo().getId_rastreo()));
             cuentaCliente.getDatosRastreo().setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) cuentaCliente.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_SEMILLA, false));
@@ -54,22 +50,19 @@ public class ExecuteScheduledCrawling implements StatefulJob {
             if (CartuchoDAO.isCartuchoAccesibilidad(c, cuentaCliente.getDatosRastreo().getId_cartucho())) {
                 cuentaCliente.getDatosRastreo().setFicheroNorma(CrawlerUtils.getFicheroNorma(cuentaCliente.getDatosRastreo().getId_guideline()));
             }
-            CrawlerData crawlerData = CrawlerUtils.getCrawlerData(cuentaCliente.getDatosRastreo(),
+            final CrawlerData crawlerData = CrawlerUtils.getCrawlerData(cuentaCliente.getDatosRastreo(),
                     idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), mailTo, mailToResponsibles);
-            RastreoDAO.updateRastreo(c, crawlerData.getIdCrawling());
+            RastreoDAO.actualizarFechaRastreo(c, crawlerData.getIdCrawling());
 
             // Lanzamos el hilo del rastreo
             SchedulingUtils.start(crawlerData);
         } catch (Exception e) {
             Logger.putLog("Error al programar los jobs para los rastreos de las cuentas de cliente", ScheduleClientAccountsServlet.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
-
     }
 
-    private List<String> getMailsFromRole(Long idRole, List<DatosForm> users) {
-        List<String> mails = new ArrayList<>();
+    private List<String> getMailsFromRole(final Long idRole, final List<DatosForm> users) {
+        final List<String> mails = new ArrayList<>();
 
         for (DatosForm userData : users) {
             for (Role role : userData.getRoles()) {
