@@ -28,6 +28,59 @@ public final class CheckUtils {
     private CheckUtils() {
     }
 
+    /**
+     * Comprueba si un nodo DOM Node es de tipo Element y con un determinado nombre
+     *
+     * @param node el nodo DOM a comprobar
+     * @param name el nombre que debe coincidir si el nodo es de tipo Element
+     * @return true si el nodo es Element y su coincide con el indicado o false en caso contrario
+     */
+    public static boolean isElementTagName(final Node node, final String name) {
+        if (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
+            return node.getNodeName().equalsIgnoreCase(name);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Obtiene el primer nodo de tipo Element que es hijo de un determinado nodo Element
+     *
+     * @param element el nodo Element del que obtener el primer hijo de tipo Element
+     * @return el nodo Element si se encuentra o null en caso contrario
+     */
+    public static Element getFirstChildElement(final Element element) {
+        Node node = element.getFirstChild();
+        while (node != null && node.getNodeType() != Node.ELEMENT_NODE) {
+            node = node.getNextSibling();
+        }
+
+        if (node != null) {
+            return (Element) node;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Obtiene el primer nodo de tipo Element que es hermano de un determinado nodo Element
+     *
+     * @param element el nodo Element del que obtener el primer hermano de tipo Element
+     * @return el nodo Element si se encuentra o null en caso contrario
+     */
+    public static Element getFirstSiblingElement(final Element element) {
+        Node node = element.getNextSibling();
+        while (node != null && node.getNodeType() != Node.ELEMENT_NODE) {
+            node = node.getNextSibling();
+        }
+
+        if (node != null) {
+            return (Element) node;
+        } else {
+            return null;
+        }
+    }
+
     public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
         final Set<String> includedLinks = new HashSet<>();
         final List<Element> linksFound = new ArrayList<>();
@@ -211,7 +264,7 @@ public final class CheckUtils {
             }
 
             // Consideramos que cualquier enlace a W3C (Internacional o España) o al portal TAW funcionan siempre además
-            // de enlaces a las redes sociales más famosas (twitter, faceboo, flickr, tuenti,...).
+            // de enlaces a las redes sociales más famosas (twitter, facebook, flickr, tuenti,...).
             if ("jigsaw.w3.org".equals(remoteUrl.getHost())
                     || "validator.w3.org".equals(remoteUrl.getHost())
                     || "www.w3.org".equals(remoteUrl.getHost())
@@ -416,7 +469,8 @@ public final class CheckUtils {
         if (index != -1) {
             // Comprobamos si la url tiene dominios superiores a nivel 2
             // (ej http://www.algo.es o sólo http://algo.es)
-            if ((index = domain.lastIndexOf('.', index - 1)) != -1) {
+            index = domain.lastIndexOf('.', index - 1);
+            if (index != -1) {
                 domain = domain.substring(index);
             } else {
                 // Si la url comenzó directamente con el dominio de 2º nivel
@@ -436,7 +490,8 @@ public final class CheckUtils {
         index = newHost.lastIndexOf('.');
 
         if (index != -1) {
-            if ((index = newHost.lastIndexOf('.', index - 1)) != -1) {
+            index = newHost.lastIndexOf('.', index - 1);
+            if (index != -1) {
                 newHost = newHost.substring(index);
             } else {
                 newHost = "." + newHost;
