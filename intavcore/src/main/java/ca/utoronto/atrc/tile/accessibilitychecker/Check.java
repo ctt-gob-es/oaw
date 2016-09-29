@@ -905,15 +905,16 @@ public class Check {
         } else {
             Node currentNode = firstChild;
             while (currentNode.getNodeType() == Node.TEXT_NODE && currentNode.getTextContent().trim().isEmpty()) {
-                    currentNode = currentNode.getNextSibling();
+                currentNode = currentNode.getNextSibling();
             }
             if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
                 final List allowedTags = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
                 if (allowedTags.contains(currentNode.getNodeName().toLowerCase())) {
-                    currentNode = currentNode.getNextSibling();
-                }
-                if (checkCode.getFunctionValue().equalsIgnoreCase(currentNode.getNodeName())) {
-                    return false;
+                    boolean isFirstChild = CheckUtils.isElementTagName(CheckUtils.getFirstChildElement((Element) currentNode), checkCode.getFunctionValue());
+                    boolean isNextSibling = CheckUtils.isElementTagName(CheckUtils.getFirstSiblingElement((Element) currentNode), checkCode.getFunctionValue());
+                    return !isFirstChild && !isNextSibling;
+                } else {
+                    return !CheckUtils.isElementTagName(currentNode, checkCode.getFunctionValue());
                 }
             }
             return true;
@@ -993,7 +994,7 @@ public class Check {
      * @return una cadena que representa el idioma base
      */
     private String extractLanguageCode(final String lang) {
-        if ( lang==null ) {
+        if (lang == null) {
             return "";
         } else if (lang.contains("-")) {
             return lang.substring(0, lang.indexOf('-'));
@@ -1760,7 +1761,7 @@ public class Check {
 
         if (elementGiven.hasAttribute("aria-labelledby")) {
             final Element labelledBy = elementGiven.getOwnerDocument().getElementById(elementGiven.getAttribute("aria-labelledby"));
-            if (labelledBy!=null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
+            if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
                 return false;
             }
         }
@@ -3299,7 +3300,7 @@ public class Check {
 
         final Document document = elementGiven.getOwnerDocument();
 
-        if (document!= null) {
+        if (document != null) {
             if (controlsNumIds(document.getElementsByTagName("input"), attributeFor) +
                     controlsNumIds(document.getElementsByTagName("select"), attributeFor) +
                     controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) == 1) {
