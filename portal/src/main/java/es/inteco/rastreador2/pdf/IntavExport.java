@@ -30,6 +30,7 @@ import es.inteco.rastreador2.utils.ChartForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.utils.FileUtils;
+import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import javax.servlet.http.HttpServletRequest;
@@ -125,27 +126,27 @@ public final class IntavExport {
             chapter1.setNumberDepth(0);
 
             for (IntavSimplePDFForm ISPDFform : results) {
-                Paragraph title_l1 = new Paragraph(getPriorityName(request, ISPDFform.getPriority()), ConstantsFont.sectionFont);
-                title_l1.setSpacingBefore(10);
-                Section section1 = chapter1.addSection(title_l1);
+                final Paragraph titleL1 = new Paragraph(getPriorityName(request, ISPDFform.getPriority()), ConstantsFont.sectionFont);
+                titleL1.setSpacingBefore(10);
+                final Section section1 = chapter1.addSection(titleL1);
                 for (ISPDFGuidelineForm guideline : ISPDFform.getGuidelinesList()) {
                     for (ISPDFPautaForm pauta : guideline.getPautaList()) {
                         boolean hasProblem = false;
-                        Paragraph title_l2 = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), pauta.getPauta().getName()), ConstantsFont.guidelineDescFont);
-                        title_l2.setSpacingBefore(10);
-                        section1.add(title_l2);
+                        final Paragraph titleL2 = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), pauta.getPauta().getName()), ConstantsFont.guidelineDescFont);
+                        titleL2.setSpacingBefore(10);
+                        section1.add(titleL2);
                         for (ISPDFProblemForm problem : pauta.getProblemList()) {
                             hasProblem = true;
                             String description = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.problem") + ": ";
                             description += StringUtils.removeHtmlTags(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), problem.getProblem().getError()));
-                            Paragraph title_l3 = new Paragraph(description, ConstantsFont.descriptionFont);
-                            title_l3.setSpacingBefore(10);
-                            section1.add(title_l3);
+                            final Paragraph titleL3 = new Paragraph(description, ConstantsFont.descriptionFont);
+                            titleL3.setSpacingBefore(10);
+                            section1.add(titleL3);
                             for (String url : problem.getUrls()) {
-                                Paragraph title_l4 = new Paragraph(url, ConstantsFont.descriptionFont);
-                                title_l4.setIndentationLeft(25);
-                                title_l4.setSpacingBefore(5);
-                                section1.add(title_l4);
+                                final Paragraph titleL4 = new Paragraph(url, ConstantsFont.descriptionFont);
+                                titleL4.setIndentationLeft(25);
+                                titleL4.setSpacingBefore(5);
+                                section1.add(titleL4);
                             }
                         }
                         if (!hasProblem) {
@@ -180,6 +181,7 @@ public final class IntavExport {
 
     //Creación del PDF para el responsable. PDF Detallado
     public static void exportIntavToPdf(Map<Long, List<Long>> evaluationIds, HttpServletRequest request, String generalExpPath, long idTracking) throws Exception {
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
         String pathExports = generalExpPath + File.separator + pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.file.intav.name");
 
         File file = new File(pathExports);
@@ -247,18 +249,18 @@ public final class IntavExport {
                 chapter.newPage();
 
                 for (PriorityForm priority : evaluationForm.getPriorities()) {
-                    Paragraph title_l1 = new Paragraph(getPriorityName(request, priority), ConstantsFont.sectionFont);
-                    title_l1.setSpacingBefore(10);
-                    Section section_l1 = chapter.addSection(title_l1);
-                    section_l1.setNumberDepth(0);
+                    final Paragraph titleL1 = new Paragraph(getPriorityName(request, priority), ConstantsFont.sectionFont);
+                    titleL1.setSpacingBefore(10);
+                    final Section sectionL1 = chapter.addSection(titleL1);
+                    sectionL1.setNumberDepth(0);
                     boolean anyProblem = false;
                     for (GuidelineForm guideline : priority.getGuidelines()) {
                         for (PautaForm pautaForm : guideline.getPautas()) {
                             boolean problems = false;
-                            Paragraph title_l2 = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), pautaForm.getName()), ConstantsFont.guidelineDescFont);
-                            title_l2.setSpacingBefore(10);
-                            Section section_l2 = section_l1.addSection(title_l2);
-                            section_l2.setNumberDepth(0);
+                            final Paragraph titleL2 = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), pautaForm.getName()), ConstantsFont.guidelineDescFont);
+                            titleL2.setSpacingBefore(10);
+                            final Section sectionL2 = sectionL1.addSection(titleL2);
+                            sectionL2.setNumberDepth(0);
                             for (ProblemForm problem : pautaForm.getProblems()) {
                                 if (!problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
                                     problems = true;
@@ -272,10 +274,10 @@ public final class IntavExport {
                                         description += CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.info") + ": ";
 									}*/
                                     description += StringUtils.removeHtmlTags(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), problem.getError()));
-                                    Paragraph title_l3 = new Paragraph(description, ConstantsFont.descriptionFont);
-                                    title_l3.setSpacingBefore(10);
-                                    title_l3.setSpacingAfter(10);
-                                    Section subSubsection = section_l2.addSection(title_l3);
+                                    final Paragraph titleL3 = new Paragraph(description, ConstantsFont.descriptionFont);
+                                    titleL3.setSpacingBefore(10);
+                                    titleL3.setSpacingAfter(10);
+                                    final Section subSubsection = sectionL2.addSection(titleL3);
                                     subSubsection.setNumberDepth(0);
                                     addSpecificProblems(subSubsection, problem.getSpecificProblems(), request);
 
@@ -286,12 +288,12 @@ public final class IntavExport {
                                 }
                             }
                             if (!problems) {
-                                section_l1.remove(section_l2);
+                                sectionL1.remove(sectionL2);
                             }
                         }
                     }
                     if (!anyProblem) {
-                        chapter.remove(section_l1);
+                        chapter.remove(sectionL1);
                     }
                 }
                 document.add(chapter);
@@ -304,7 +306,7 @@ public final class IntavExport {
             }
 
             ExportPageEvents.setLastPage(true);
-            IndexUtils.createIndex(writer, document, request, index, ConstantsFont.chapterTitleFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleFont);
             ExportPageEvents.setLastPage(false);
 
             FileUtils.removeFile(globalPath);
@@ -565,11 +567,11 @@ public final class IntavExport {
         return summaryPriorities;
     }
 
-    private static void generateGraphic(List<PriorityForm> priorityFormList, HttpServletRequest request, String tableName, String tempPath, boolean WCAG2) {
+    private static void generateGraphic(List<PriorityForm> priorityFormList, HttpServletRequest request, String tableName, String tempPath, boolean isWCAG2) {
 
         DefaultCategoryDataset priorityDataSet;
 
-        if (!WCAG2) {
+        if (!isWCAG2) {
             priorityDataSet = createDataSet(request, priorityFormList);
         } else {
             priorityDataSet = createDataSetWCAG2(request, priorityFormList);
@@ -968,7 +970,6 @@ public final class IntavExport {
     }
 
     private static Map<String, List<EvaluationForm>> generateEvaluationMap(HttpServletRequest request, Map<Long, List<Long>> evaluationIds, boolean getOnlyChecks) throws Exception {
-
         TreeMap<String, List<EvaluationForm>> evolutionMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
@@ -985,12 +986,8 @@ public final class IntavExport {
 
         });
 
-        Connection conn = null;
-        Connection c = null;
-        try {
-            conn = DataBaseManager.getConnection();
 
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             // Inicializamos el evaluador si hace falta
             if (!EvaluatorUtility.isInitialized()) {
                 try {
@@ -1004,7 +1001,7 @@ public final class IntavExport {
                 List<EvaluationForm> evaList = new ArrayList<>();
                 for (Long id : entry.getValue()) {
                     Evaluator evaluator = new Evaluator();
-                    Evaluation evaluation = evaluator.getAnalisisDB(conn, id, EvaluatorUtils.getDocList(), getOnlyChecks);
+                    Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), getOnlyChecks);
                     EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, EvaluatorUtility.getLanguage(request));
                     evaList.add(evaluationForm);
                 }
@@ -1020,9 +1017,6 @@ public final class IntavExport {
         } catch (Exception e) {
             Logger.putLog("Excepción genérica al generar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DataBaseManager.closeConnection(conn);
-            DataBaseManager.closeConnection(c);
         }
     }
 

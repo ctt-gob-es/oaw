@@ -11,10 +11,8 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryBS;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,18 +22,14 @@ public final class IndexUtils {
     private IndexUtils() {
     }
 
-    public static void createIndex(final PdfWriter writer, final Document document, final HttpServletRequest request, final IndexEvents index, final Font titleFont) throws DocumentException {
-        createIndex(writer, document, CrawlerUtils.getResources(request), index, titleFont);
-    }
-
     public static void createIndex(final PdfWriter writer, final Document document, final MessageResources resources, final IndexEvents index, final Font titleFont) throws DocumentException {
         int beforeIndex = writer.getPageNumber();
         document.newPage();
-        Paragraph indexTitle = new Paragraph(resources.getMessage("pdf.accessibility.index.title"), titleFont);
+        final Paragraph indexTitle = new Paragraph(resources.getMessage("pdf.accessibility.index.title"), titleFont);
         indexTitle.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(indexTitle);
 
-        PdfPTable indexTable = createIndexTable(index);
+        final PdfPTable indexTable = createIndexTable(index);
         document.add(indexTable);
 
         try {
@@ -89,28 +83,19 @@ public final class IndexUtils {
                 Collections.sort(list, new Comparator<Entry>() {
                     @Override
                     public int compare(Entry o1, Entry o2) {
-                        int o1Num;
-                        if (o1.getKey().contains("@&")) {
-                            o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@&")));
-                        } else if (o1.getKey().contains("@1&")) {
-                            o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@1&")));
-                        } else {
-                            o1Num = Integer.valueOf(o1.getKey().substring(0, o1.getKey().indexOf("@2&")));
-                        }
+                        final int o1Num = getIndexNumberFromEntry(o1);
+                        final int o2Num = getIndexNumberFromEntry(o2);
 
-                        int o2Num;
-                        if (o2.getKey().contains("@&")) {
-                            o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@&")));
-                        } else if (o2.getKey().contains("@1&")) {
-                            o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@1&")));
-                        } else {
-                            o2Num = Integer.valueOf(o2.getKey().substring(0, o2.getKey().indexOf("@2&")));
-                        }
+                        return o1Num - o2Num;
+                    }
 
-                        if (o1Num < o2Num) {
-                            return -1;
+                    private int getIndexNumberFromEntry(final Entry entry) {
+                        if (entry.getKey().contains("@&")) {
+                            return Integer.valueOf(entry.getKey().substring(0, entry.getKey().indexOf("@&")));
+                        } else if (entry.getKey().contains("@1&")) {
+                            return Integer.valueOf(entry.getKey().substring(0, entry.getKey().indexOf("@1&")));
                         } else {
-                            return 1;
+                            return Integer.valueOf(entry.getKey().substring(0, entry.getKey().indexOf("@2&")));
                         }
                     }
                 });

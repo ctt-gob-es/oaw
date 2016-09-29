@@ -202,7 +202,7 @@ public final class PrimaryExportPdfUtils {
             countSections = pdfBuilder.createMethodologyChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, currentEvaluationPageList, observatoryType, pdfBuilder.isBasicService());
 
             //Ponemos la variable a true para que no se escriba el footer en el índice
-            IndexUtils.createIndex(writer, document, request, index, ConstantsFont.chapterTitleMPFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleMPFont);
             ExportPageEventsObservatoryMP.setPrintFooter(true);
         } catch (DocumentException e) {
             Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
