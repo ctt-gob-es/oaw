@@ -155,7 +155,7 @@ public final class PrimaryExportPdfUtils {
             // Resumen de las puntuaciones del Observatorio
             final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRanking(idObservatoryExecution, crawling.getSeed()) : null;
             final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRanking(idObservatoryExecution, crawling.getSeed()) : null;
-            countSections = addObservatoryScoreSummary(pdfBuilder, messageResources, request, document, index, currentEvaluationPageList, previousEvaluationPageList, numChapter, countSections, file, rankingActual, rankingPrevio);
+            countSections = addObservatoryScoreSummary(pdfBuilder, messageResources, document, index, currentEvaluationPageList, previousEvaluationPageList, numChapter, countSections, file, rankingActual, rankingPrevio);
 
             numChapter++;
 
@@ -395,7 +395,7 @@ public final class PrimaryExportPdfUtils {
         }
     }
 
-    private static int addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, final HttpServletRequest request, Document document, IndexEvents index, final List<ObservatoryEvaluationForm> currentEvaluationPageList, List<ObservatoryEvaluationForm> previousEvaluationPageList, int numChapter, int countSections, final File file, final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
+    private static int addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, IndexEvents index, final List<ObservatoryEvaluationForm> currentEvaluationPageList, List<ObservatoryEvaluationForm> previousEvaluationPageList, int numChapter, int countSections, final File file, final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
         final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
         final ArrayList<String> boldWord = new ArrayList<>();
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -479,12 +479,12 @@ public final class PrimaryExportPdfUtils {
 
         Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.PARAGRAPH, section);
-        addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, request, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
+        addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
 
         section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.PARAGRAPH, section);
-        addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, request, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
+        addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
         section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 
         PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
@@ -630,7 +630,7 @@ public final class PrimaryExportPdfUtils {
         section.add(table);
     }
 
-    private static void addMidsComparationByVerificationLevelGraphic(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, final HttpServletRequest request, final Section section, final File file, final List<ObservatoryEvaluationForm> evaList, final String noDataMess, final String level) throws Exception {
+    private static void addMidsComparationByVerificationLevelGraphic(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, final Section section, final File file, final List<ObservatoryEvaluationForm> evaList, final String noDataMess, final String level) throws Exception {
         final String title;
         final String filePath;
         if (level.equals(Constants.OBS_PRIORITY_1)) {
