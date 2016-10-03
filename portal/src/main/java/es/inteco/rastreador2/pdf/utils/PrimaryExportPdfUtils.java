@@ -127,7 +127,7 @@ public final class PrimaryExportPdfUtils {
 
             final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 
-            final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] {seed, crawlingDate});
+            final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[]{seed, crawlingDate});
             writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate, pdfBuilder.isBasicService()));
             ExportPageEventsObservatoryMP.setPrintFooter(true);
 
@@ -480,12 +480,12 @@ public final class PrimaryExportPdfUtils {
         Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, request, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
-        section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
+        section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
 
         section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, request, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
-        section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
+        section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 
         PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
         addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
@@ -890,19 +890,49 @@ public final class PrimaryExportPdfUtils {
     }
 
     private static PdfPTable createObservatoryVerificationScoreTable(final MessageResources messageResources, final ScoreForm actualScore, final ScoreForm previousScore, final String level, boolean basicService) {
-        final float[] columnsWidths;
-        if (!basicService) {
-            columnsWidths = new float[]{0.55f, 0.25f, 0.20f};
+        if (!basicService && previousScore != null) {
+            return createObservatoryVerificationScoreTableWithEvolution(messageResources, actualScore, previousScore, level);
         } else {
-            columnsWidths = new float[]{0.65f, 0.35f};
+            return createObservatoryVerificationScoreTableNoEvolution(messageResources, actualScore, level);
         }
+    }
+
+    private static PdfPTable createObservatoryVerificationScoreTableNoEvolution(final MessageResources messageResources, final ScoreForm actualScore, final String level) {
+        final float[] columnsWidths = new float[]{0.65f, 0.35f};
         final PdfPTable table = new PdfPTable(columnsWidths);
 
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.puntuacion.media"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-        if (!basicService) {
-            table.addCell(PDFUtils.createTableCell("Evolución", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        table.setHeaderRows(1);
+
+        if (level.equals(Constants.OBS_PRIORITY_1)) {
+            for (LabelValueBean actualLabelValueBean : actualScore.getVerifications1()) {
+                table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+                table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            }
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.puntuacion.nivel.1"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            table.addCell(PDFUtils.createTableCell(actualScore.getScoreLevel1().toString(), Constants.GRIS_MUY_CLARO, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        } else if (level.equals(Constants.OBS_PRIORITY_2)) {
+            for (LabelValueBean actualLabelValueBean : actualScore.getVerifications2()) {
+                table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+                table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            }
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.puntuacion.nivel.2"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            table.addCell(PDFUtils.createTableCell(actualScore.getScoreLevel2().toString(), Constants.GRIS_MUY_CLARO, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         }
+
+        table.setSpacingBefore(ConstantsFont.LINE_SPACE);
+        table.setSpacingAfter(0);
+        return table;
+    }
+
+    private static PdfPTable createObservatoryVerificationScoreTableWithEvolution(final MessageResources messageResources, final ScoreForm actualScore, final ScoreForm previousScore, final String level) {
+        final float[] columnsWidths = new float[]{0.55f, 0.25f, 0.20f};
+        final PdfPTable table = new PdfPTable(columnsWidths);
+
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.puntuacion.media"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        table.addCell(PDFUtils.createTableCell("Evolución", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         table.setHeaderRows(1);
 
         if (level.equals(Constants.OBS_PRIORITY_1)) {
@@ -913,15 +943,11 @@ public final class PrimaryExportPdfUtils {
                 final LabelValueBean previousLabelValueBean = previousScoreIterator.next();
                 table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
                 table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-                if (!basicService) {
-                    table.addCell(createEvolutionDifferenceCellValue(actualLabelValueBean.getValue(), previousLabelValueBean.getValue(), Color.WHITE));
-                }
+                table.addCell(createEvolutionDifferenceCellValue(actualLabelValueBean.getValue(), previousLabelValueBean.getValue(), Color.WHITE));
             }
             table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.puntuacion.nivel.1"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
             table.addCell(PDFUtils.createTableCell(actualScore.getScoreLevel1().toString(), Constants.GRIS_MUY_CLARO, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-            if (!basicService) {
-                table.addCell(createEvolutionDifferenceCellValue(actualScore.getScoreLevel1(), previousScore.getScoreLevel1(), Color.WHITE));
-            }
+            table.addCell(createEvolutionDifferenceCellValue(actualScore.getScoreLevel1(), previousScore.getScoreLevel1(), Color.WHITE));
         } else if (level.equals(Constants.OBS_PRIORITY_2)) {
             final ListIterator<LabelValueBean> actualScoreIterator = actualScore.getVerifications2().listIterator();
             final ListIterator<LabelValueBean> previousScoreIterator = previousScore.getVerifications2().listIterator();
@@ -930,15 +956,11 @@ public final class PrimaryExportPdfUtils {
                 final LabelValueBean previousLabelValueBean = previousScoreIterator.next();
                 table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
                 table.addCell(PDFUtils.createTableCell(actualLabelValueBean.getValue(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-                if (!basicService) {
-                    table.addCell(createEvolutionDifferenceCellValue(actualLabelValueBean.getValue(), previousLabelValueBean.getValue(), Color.WHITE));
-                }
+                table.addCell(createEvolutionDifferenceCellValue(actualLabelValueBean.getValue(), previousLabelValueBean.getValue(), Color.WHITE));
             }
             table.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.puntuacion.nivel.2"), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
             table.addCell(PDFUtils.createTableCell(actualScore.getScoreLevel2().toString(), Constants.GRIS_MUY_CLARO, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
-            if (!basicService) {
-                table.addCell(createEvolutionDifferenceCellValue(actualScore.getScoreLevel2(), previousScore.getScoreLevel2(), Color.WHITE));
-            }
+            table.addCell(createEvolutionDifferenceCellValue(actualScore.getScoreLevel2(), previousScore.getScoreLevel2(), Color.WHITE));
         }
 
         table.setSpacingBefore(ConstantsFont.LINE_SPACE);
