@@ -20,7 +20,6 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.BasicServiceExport;
-import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.pdf.PrimaryExportPdfAction;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
@@ -96,14 +95,18 @@ public final class PrimaryExportPdfUtils {
 
     public static void exportToPdf(final AnonymousResultExportPdf pdfBuilder, final Long idRastreoRealizado, final List<Long> evaluationIds, final List<Long> previousEvaluationIds, final HttpServletRequest request, final String generalExpPath, final String seed, final String content,
                                    final long idObservatoryExecution, final long observatoryType) throws Exception {
-        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, CrawlerUtils.getResources(request), request, generalExpPath, seed, content, idObservatoryExecution, observatoryType);
+    }
+
+    public static void exportToPdf(final AnonymousResultExportPdf pdfBuilder, final Long idRastreoRealizado, final List<Long> evaluationIds, final List<Long> previousEvaluationIds, final MessageResources messageResources, final HttpServletRequest request, final String generalExpPath, final String seed, final String content,
+                                   final long idObservatoryExecution, final long observatoryType) throws Exception {
         final File file = new File(generalExpPath);
         file.setReadable(true, false);
         file.setWritable(true, false);
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             file.getParentFile().setReadable(true, false);
             file.getParentFile().setWritable(true, false);
-            Logger.putLog("Exception: No se ha podido crear los directorios al exportar a PDF", ExportAction.class, Logger.LOG_LEVEL_ERROR);
+            Logger.putLog("Exception: No se ha podido crear los directorios al exportar a PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR);
         }
         Logger.putLog("Exportando a PDF PrimaryExportPdfUtils.exportToPdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_DEBUG);
         final FileOutputStream outputFileStream = new FileOutputStream(file);
@@ -124,7 +127,7 @@ public final class PrimaryExportPdfUtils {
 
             final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 
-            final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", seed, crawlingDate);
+            final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] {seed, crawlingDate});
             writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate, pdfBuilder.isBasicService()));
             ExportPageEventsObservatoryMP.setPrintFooter(true);
 
@@ -205,17 +208,17 @@ public final class PrimaryExportPdfUtils {
             IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleMPFont);
             ExportPageEventsObservatoryMP.setPrintFooter(true);
         } catch (DocumentException e) {
-            Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } catch (Exception e) {
-            Logger.putLog("Excepción genérica al generar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Excepción genérica al generar el pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         } finally {
             if (document.isOpen()) {
                 try {
                     document.close();
                 } catch (Exception e) {
-                    Logger.putLog("Error al cerrar el pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+                    Logger.putLog("Error al cerrar el pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
             outputFileStream.close();
@@ -307,7 +310,7 @@ public final class PrimaryExportPdfUtils {
 
                                     if (isBasicService) {
                                         final String rationaleMessage = checkDescriptionsManager.getRationaleMessage(problem.getCheck());
-                                        if (rationaleMessage !=null && StringUtils.isNotEmpty(rationaleMessage)) {
+                                        if (rationaleMessage != null && StringUtils.isNotEmpty(rationaleMessage)) {
                                             final Paragraph rationale = new Paragraph();
                                             boolean isFirst = true;
                                             for (String phraseText : Arrays.asList(rationaleMessage.split("<p>|</p>"))) {
@@ -493,9 +496,10 @@ public final class PrimaryExportPdfUtils {
 
     /**
      * Crea una celda PdfPCell para una tabla del informa PDF con la evolución del nivel de accesibilidad.
+     *
      * @param messageResources
-     * @param currentLevel String nivel de accesibilidad actual.
-     * @param previousLevel String nivel de accesibilidad de la iteración anterior.
+     * @param currentLevel     String nivel de accesibilidad actual.
+     * @param previousLevel    String nivel de accesibilidad de la iteración anterior.
      * @return una celda PdfPCell con una imagen que indica la evolución y una cadena con la misma información complementando la imagen.
      */
     private static PdfPCell createEvolutionLevelCell(final MessageResources messageResources, final String currentLevel, final String previousLevel) {
@@ -637,7 +641,7 @@ public final class PrimaryExportPdfUtils {
             filePath = file.getParentFile().getPath() + File.separator + "temp" + File.separator + "test3.jpg";
         }
         final PropertiesManager pmgr = new PropertiesManager();
-        pdfBuilder.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), true);
+        pdfBuilder.getMidsComparationByVerificationLevelGraphic(messageResources, level, title, filePath, noDataMess, evaList, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), true);
         final Image image = PDFUtils.createImage(filePath, null);
         if (image != null) {
             image.scalePercent(60);

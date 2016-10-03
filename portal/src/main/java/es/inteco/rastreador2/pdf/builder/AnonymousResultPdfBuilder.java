@@ -68,7 +68,7 @@ public abstract class AnonymousResultPdfBuilder {
         writer.setLinearPageMode();
     }
 
-    public abstract void generateGraphics(HttpServletRequest request, String filePath) throws Exception;
+    public abstract void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath) throws Exception;
 
     public void buildDocument(final MessageResources resources, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList, String graphicPath, String idObservatory, String idExecution, java.util.List<CategoriaForm> categories, boolean includeEvolution) throws Exception {
         Logger.putLog("Creando informe PDF", AnonymousResultPdfBuilder.class, Logger.LOG_LEVEL_INFO);

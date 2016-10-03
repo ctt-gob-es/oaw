@@ -554,8 +554,9 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
     }
 
     @Override
-    public void getMidsComparationByVerificationLevelGraphic(HttpServletRequest request, String level, String title, String filePath, String noDataMess, java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean regenerate) throws Exception {
-        ResultadosAnonimosObservatorioIntavUtils.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList, value, regenerate);
+    public void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess, java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception {
+        // FIXME: Refactor
+        //ResultadosAnonimosObservatorioIntavUtils.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList, value, regenerate);
     }
 
     @Override

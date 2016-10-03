@@ -35,44 +35,38 @@ public final class ObservatorioDAO {
     }
 
     public static ObservatorioRealizadoForm getFulfilledObservatory(Connection c, long idObservatory, long idObservatoryExecution) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
+        final ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
 
-        PropertiesManager pmgr = new PropertiesManager();
-        DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
 
-        try {
-            ps = c.prepareStatement("SELECT oreal.*, c.aplicacion, o.nombre FROM observatorios_realizados oreal " +
-                    "LEFT JOIN cartucho c ON (c.id_cartucho = oreal.id_cartucho) " +
-                    "JOIN observatorio o ON (oreal.id_observatorio = o.id_observatorio) " +
-                    "WHERE oreal.id_observatorio = ? AND oreal.id = ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT oreal.*, c.aplicacion, o.nombre FROM observatorios_realizados oreal " +
+                "LEFT JOIN cartucho c ON (c.id_cartucho = oreal.id_cartucho) " +
+                "JOIN observatorio o ON (oreal.id_observatorio = o.id_observatorio) " +
+                "WHERE oreal.id_observatorio = ? AND oreal.id = ?")) {
             ps.setLong(1, idObservatory);
             ps.setLong(2, idObservatoryExecution);
 
-            rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    observatorioRealizadoForm.setId(rs.getLong("id"));
+                    observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
+                    observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
 
-            if (rs.next()) {
-                observatorioRealizadoForm.setId(rs.getLong("id"));
-                observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
-                observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
+                    ObservatorioForm observatorio = new ObservatorioForm();
+                    observatorio.setEstado(rs.getInt("estado"));
+                    observatorio.setNombre(rs.getString("nombre"));
+                    observatorioRealizadoForm.setObservatorio(observatorio);
 
-                ObservatorioForm observatorio = new ObservatorioForm();
-                observatorio.setEstado(rs.getInt("estado"));
-                observatorio.setNombre(rs.getString("nombre"));
-                observatorioRealizadoForm.setObservatorio(observatorio);
-
-                CartuchoForm cartucho = new CartuchoForm();
-                cartucho.setId(rs.getLong("id_cartucho"));
-                cartucho.setName(rs.getString("aplicacion"));
-                observatorioRealizadoForm.setCartucho(cartucho);
+                    CartuchoForm cartucho = new CartuchoForm();
+                    cartucho.setId(rs.getLong("id_cartucho"));
+                    cartucho.setName(rs.getString("aplicacion"));
+                    observatorioRealizadoForm.setCartucho(cartucho);
+                }
             }
-
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return observatorioRealizadoForm;
@@ -184,38 +178,31 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioRealizadoForm> getAllFulfilledObservatories(Connection c) throws SQLException {
-        List<ObservatorioRealizadoForm> results = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        final List<ObservatorioRealizadoForm> results = new ArrayList<>();
 
-        PropertiesManager pmgr = new PropertiesManager();
-        DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
 
-        try {
-            ps = c.prepareStatement("SELECT o.id, o.fecha, o.id_cartucho, c.aplicacion FROM observatorios_realizados o " +
-                    "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho)");
+        try (Statement s = c.createStatement()) {
+            try (ResultSet rs = s.executeQuery("SELECT o.id, o.fecha, o.id_cartucho, c.aplicacion FROM observatorios_realizados o " +
+                    "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho)")) {
+                while (rs.next()) {
+                    final ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
+                    observatorioRealizadoForm.setId(rs.getLong("id"));
+                    observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
+                    observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
 
-            rs = ps.executeQuery();
+                    final CartuchoForm cartucho = new CartuchoForm();
+                    cartucho.setId(rs.getLong("id_cartucho"));
+                    cartucho.setName(rs.getString("aplicacion"));
+                    observatorioRealizadoForm.setCartucho(cartucho);
 
-            while (rs.next()) {
-                ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
-                observatorioRealizadoForm.setId(rs.getLong("id"));
-                observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
-                observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
-
-                CartuchoForm cartucho = new CartuchoForm();
-                cartucho.setId(rs.getLong("id_cartucho"));
-                cartucho.setName(rs.getString("aplicacion"));
-                observatorioRealizadoForm.setCartucho(cartucho);
-
-                results.add(observatorioRealizadoForm);
+                    results.add(observatorioRealizadoForm);
+                }
             }
-
         } catch (SQLException e) {
-            Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getAllFulfilledObservatories", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return results;
@@ -259,41 +246,34 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioForm> getObservatoryList(Connection c) throws Exception {
-        List<ObservatorioForm> results = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        final List<ObservatorioForm> results = new ArrayList<>();
 
-        try {
-            ps = c.prepareStatement("SELECT o.id_observatorio, o.nombre, o.fecha_inicio, o.id_cartucho, p.dias, p.cronExpression " +
+        try (Statement s = c.createStatement()) {
+            try (ResultSet rs = s.executeQuery("SELECT o.id_observatorio, o.nombre, o.fecha_inicio, o.id_cartucho, p.dias, p.cronExpression " +
                     "FROM observatorio o " +
                     "JOIN periodicidad p ON (o.id_periodicidad = p.id_periodicidad) " +
-                    "WHERE o.activo = true;");
+                    "WHERE o.activo = true;")) {
+                while (rs.next()) {
+                    ObservatorioForm observatorioForm = new ObservatorioForm();
+                    observatorioForm.setId(rs.getLong("id_observatorio"));
+                    observatorioForm.setNombre(rs.getString("nombre"));
+                    observatorioForm.setFecha_inicio(rs.getTimestamp("fecha_inicio"));
 
-            rs = ps.executeQuery();
+                    PeriodicidadForm periodicidadForm = new PeriodicidadForm();
+                    periodicidadForm.setCronExpression(rs.getString("cronExpression"));
+                    periodicidadForm.setDias(rs.getInt("dias"));
+                    observatorioForm.setPeriodicidadForm(periodicidadForm);
 
-            while (rs.next()) {
-                ObservatorioForm observatorioForm = new ObservatorioForm();
-                observatorioForm.setId(rs.getLong("id_observatorio"));
-                observatorioForm.setNombre(rs.getString("nombre"));
-                observatorioForm.setFecha_inicio(rs.getTimestamp("fecha_inicio"));
+                    CartuchoForm cartuchoForm = new CartuchoForm();
+                    cartuchoForm.setId(rs.getLong("id_cartucho"));
+                    observatorioForm.setCartucho(cartuchoForm);
 
-                PeriodicidadForm periodicidadForm = new PeriodicidadForm();
-                periodicidadForm.setCronExpression(rs.getString("cronExpression"));
-                periodicidadForm.setDias(rs.getInt("dias"));
-                observatorioForm.setPeriodicidadForm(periodicidadForm);
-
-                CartuchoForm cartuchoForm = new CartuchoForm();
-                cartuchoForm.setId(rs.getLong("id_cartucho"));
-                observatorioForm.setCartucho(cartuchoForm);
-
-                results.add(observatorioForm);
+                    results.add(observatorioForm);
+                }
             }
-
         } catch (Exception e) {
-            Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error en getObservatoryList", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return results;
@@ -343,80 +323,68 @@ public final class ObservatorioDAO {
     }
 
     public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws Exception {
-        List<ObservatorioForm> observatoryFormList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
 
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(o.id_observatorio), o.nombre, o.id_language, o.profundidad, o.amplitud, o.id_cartucho FROM observatorio o " +
-                    "JOIN rastreo r ON (o.id_observatorio = r.id_observatorio) " +
-                    "JOIN observatorio_categoria oc ON (o.id_observatorio = oc.id_observatorio) " +
-                    "WHERE oc.id_categoria = ? OR r.id_rastreo IN (SELECT " +
-                    "id_rastreo FROM rastreo WHERE semillas IN (SELECT " +
-                    "id_lista FROM lista WHERE id_categoria = ?))");
+        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.id_observatorio), o.nombre, o.id_language, o.profundidad, o.amplitud, o.id_cartucho FROM observatorio o " +
+                "JOIN rastreo r ON (o.id_observatorio = r.id_observatorio) " +
+                "JOIN observatorio_categoria oc ON (o.id_observatorio = oc.id_observatorio) " +
+                "WHERE oc.id_categoria = ? OR r.id_rastreo IN (SELECT " +
+                "id_rastreo FROM rastreo WHERE semillas IN (SELECT " +
+                "id_lista FROM lista WHERE id_categoria = ?))")) {
             ps.setLong(1, Long.parseLong(idCategoria));
             ps.setLong(2, Long.parseLong(idCategoria));
-            rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                ObservatorioForm observatorioForm = new ObservatorioForm();
-                observatorioForm.setId(rs.getLong("id_observatorio"));
-                observatorioForm.setNombre(rs.getString("nombre"));
-                observatorioForm.setLenguaje(rs.getLong("id_language"));
-                observatorioForm.setProfundidad(rs.getInt("profundidad"));
-                observatorioForm.setAmplitud(rs.getInt("amplitud"));
+                while (rs.next()) {
+                    ObservatorioForm observatorioForm = new ObservatorioForm();
+                    observatorioForm.setId(rs.getLong("id_observatorio"));
+                    observatorioForm.setNombre(rs.getString("nombre"));
+                    observatorioForm.setLenguaje(rs.getLong("id_language"));
+                    observatorioForm.setProfundidad(rs.getInt("profundidad"));
+                    observatorioForm.setAmplitud(rs.getInt("amplitud"));
 
-                CartuchoForm cartuchoForm = new CartuchoForm();
-                cartuchoForm.setId(rs.getLong("id_cartucho"));
-                observatorioForm.setCartucho(cartuchoForm);
+                    CartuchoForm cartuchoForm = new CartuchoForm();
+                    cartuchoForm.setId(rs.getLong("id_cartucho"));
+                    observatorioForm.setCartucho(cartuchoForm);
 
-                List<CategoriaForm> selectedCategories = getObservatoryCategories(c, observatorioForm.getId());
-                observatorioForm.setCategoria(new String[selectedCategories.size()]);
-                int i = 0;
-                for (CategoriaForm categoria : selectedCategories) {
-                    observatorioForm.getCategoria()[i] = categoria.getId();
-                    i++;
+                    List<CategoriaForm> selectedCategories = getObservatoryCategories(c, observatorioForm.getId());
+                    observatorioForm.setCategoria(new String[selectedCategories.size()]);
+                    int i = 0;
+                    for (CategoriaForm categoria : selectedCategories) {
+                        observatorioForm.getCategoria()[i] = categoria.getId();
+                        i++;
+                    }
+
+                    observatoryFormList.add(observatorioForm);
                 }
-
-                observatoryFormList.add(observatorioForm);
             }
-
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return observatoryFormList;
     }
 
     public static CargarObservatorioForm userList(Connection c, CargarObservatorioForm cargarObservatorioForm) throws Exception {
-        List<ListadoObservatorio> observatoryUserList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        final List<ListadoObservatorio> observatoryUserList = new ArrayList<>();
 
-        try {
-            ps = c.prepareStatement("SELECT nombre, id_observatorio FROM observatorio o");
-
-            rs = ps.executeQuery();
-
-            int numObs = 0;
-            while (rs.next()) {
-                numObs++;
-                ListadoObservatorio ls = new ListadoObservatorio();
-                ls.setNombreObservatorio(rs.getString("nombre"));
-                ls.setId_observatorio(rs.getLong("id_observatorio"));
-                observatoryUserList.add(ls);
+        try (Statement s = c.createStatement()) {
+            try (ResultSet rs = s.executeQuery("SELECT nombre, id_observatorio FROM observatorio o")) {
+                int numObs = 0;
+                while (rs.next()) {
+                    numObs++;
+                    ListadoObservatorio ls = new ListadoObservatorio();
+                    ls.setNombreObservatorio(rs.getString("nombre"));
+                    ls.setId_observatorio(rs.getLong("id_observatorio"));
+                    observatoryUserList.add(ls);
+                }
+                cargarObservatorioForm.setListadoObservatorio(observatoryUserList);
+                cargarObservatorioForm.setNumObservatorios(numObs);
             }
-            cargarObservatorioForm.setListadoObservatorio(observatoryUserList);
-            cargarObservatorioForm.setNumObservatorios(numObs);
-
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return cargarObservatorioForm;
@@ -448,32 +416,27 @@ public final class ObservatorioDAO {
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
         final int resultFrom = pagSize * page;
 
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion" +
-                    " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) " +
-                    " LIMIT ? OFFSET ?");
+        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion" +
+                " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) " +
+                " LIMIT ? OFFSET ?")) {
             ps.setInt(1, pagSize);
             ps.setInt(2, resultFrom);
 
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                final ListadoObservatorio ls = new ListadoObservatorio();
-                ls.setNombreObservatorio(rs.getString("nombre"));
-                ls.setId_observatorio(rs.getLong("id_observatorio"));
-                ls.setId_cartucho(rs.getLong("id_cartucho"));
-                ls.setCartucho(rs.getString("aplicacion"));
-                observatoryList.add(ls);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final ListadoObservatorio ls = new ListadoObservatorio();
+                    ls.setNombreObservatorio(rs.getString("nombre"));
+                    ls.setId_observatorio(rs.getLong("id_observatorio"));
+                    ls.setId_cartucho(rs.getLong("id_cartucho"));
+                    ls.setCartucho(rs.getString("aplicacion"));
+                    observatoryList.add(ls);
+                }
+                cargarObservatorioForm.setListadoObservatorio(observatoryList);
+                cargarObservatorioForm.setNumObservatorios(observatoryList.size());
             }
-            cargarObservatorioForm.setListadoObservatorio(observatoryList);
-            cargarObservatorioForm.setNumObservatorios(observatoryList.size());
         } catch (Exception e) {
             Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
 
         return cargarObservatorioForm;
@@ -1608,8 +1571,7 @@ public final class ObservatorioDAO {
      *
      * @param c                      Conexión a la base de datos
      * @param idObservatoryExecution Identificador de la iteración (ejecución) de un observatorio
-     * @return El identificador de la iteración anterior de ese observatorio o null si no existe
-     * @throws Exception
+     * @return El identificador de la iteración anterior de ese observatorio o -1 si no existe
      */
     public static Long getPreviousObservatoryExecution(final Connection c, final Long idObservatoryExecution) {
         try (PreparedStatement ps = c.prepareStatement("SELECT id FROM observatorios_realizados " +
@@ -1627,6 +1589,6 @@ public final class ObservatorioDAO {
             Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
         Logger.putLog("getPreviousObservatoryExecution: null (" + idObservatoryExecution + ")", ObservatorioDAO.class, Logger.LOG_LEVEL_WARNING);
-        return null;
+        return -1l;
     }
 }
