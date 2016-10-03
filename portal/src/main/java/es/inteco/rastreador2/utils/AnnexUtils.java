@@ -156,7 +156,7 @@ public final class AnnexUtils {
 
     public static void createAnnex2Ev(final MessageResources request, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection();
-             final FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
+             final FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
 
             final ContentHandler hd = getContentHandler(writer);
             hd.startDocument();
