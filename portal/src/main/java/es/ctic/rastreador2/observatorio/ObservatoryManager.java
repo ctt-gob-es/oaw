@@ -93,6 +93,9 @@ public class ObservatoryManager {
     public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
         try (Connection c = DataBaseManager.getConnection()) {
             List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
+            if ( seedsResults.isEmpty()) {
+                return null;
+            }
             final RankingInfo rankingInfo = new RankingInfo();
             rankingInfo.setGlobalSeedsNumber(seedsResults.size());
             rankingInfo.setCategorySeedsNumber(0);

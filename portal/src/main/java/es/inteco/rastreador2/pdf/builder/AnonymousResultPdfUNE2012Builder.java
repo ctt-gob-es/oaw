@@ -5,11 +5,9 @@ import com.lowagie.text.Font;
 import es.inteco.common.Constants;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.List;
 
@@ -22,8 +20,8 @@ public class AnonymousResultPdfUNE2012Builder extends  AnonymousResultPdfBuilder
     }
 
     @Override
-    public void generateGraphics(HttpServletRequest request, String filePath) throws Exception {
-        ResultadosAnonimosObservatorioUNE2012Utils.generateGraphics(request, filePath, Constants.MINISTERIO_P, true);
+    public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath) throws Exception {
+        ResultadosAnonimosObservatorioUNE2012Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
     }
 
     @Override

@@ -19,7 +19,6 @@ import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.util.*;
@@ -270,7 +269,7 @@ public abstract class AnonymousResultExportPdf {
         return countSections;
     }
 
-    public abstract void getMidsComparationByVerificationLevelGraphic(HttpServletRequest request, String level, String title, String filePath, String noDataMess, List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception;
+    public abstract void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess, List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception;
 
     public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) throws Exception {
         final ScoreForm scoreForm = new ScoreForm();

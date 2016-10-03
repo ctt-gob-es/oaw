@@ -59,7 +59,8 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
     }
 
     public OdfTextDocument buildDocument(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
-        ResultadosAnonimosObservatorioUNE2012Utils.generateGraphics(request, graphicPath, Constants.MINISTERIO_P, true);
+        final MessageResources messageResources = CrawlerUtils.getResources(request);
+        ResultadosAnonimosObservatorioUNE2012Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)),observatoryId, graphicPath, Constants.MINISTERIO_P, true);
         final OdfTextDocument odt = getOdfTemplate();
         final OdfFileDom odfFileContent = odt.getContentDom();
         final OdfFileDom odfStyles = odt.getStylesDom();
@@ -67,7 +68,7 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         replaceText(odt, odfFileContent, "[fecha]", date);
         replaceText(odt, odfStyles, "[fecha]", date, "text:span");
 
-        final MessageResources messageResources = CrawlerUtils.getResources(request);
+
         replaceSection41(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
         replaceSection42(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
         replaceSection43(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
@@ -96,7 +97,7 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
                 resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
             }
 
-            ResultadosAnonimosObservatorioUNE2012Utils.generateEvolutionSuitabilityChart(request, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap);
+            ResultadosAnonimosObservatorioUNE2012Utils.generateEvolutionSuitabilityChart(observatoryId,executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap);
             replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
             replaceImg(odt, graphicPath + "EvolucionNivelConformidadCombinada.jpg", "image/jpg");
 

@@ -85,6 +85,7 @@ public interface Constants {
     public static final String RASTREO_TEST_RESULTS = "rastreoTestResults";
     public static final String CRAWLINGS_MENU = "crawlingsMenu";
     public static final String SECTION_FORM = "sectionForm";
+    public static final String GENERATE_ALL_REPORTS = "generateAllReports";
 
     // XML semillas
     public static final String XML_LISTA = "lista";

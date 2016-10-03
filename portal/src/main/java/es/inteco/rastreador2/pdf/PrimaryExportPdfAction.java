@@ -6,6 +6,8 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.login.DatosForm;
+import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
@@ -26,13 +28,14 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class PrimaryExportPdfAction extends Action {
 
-    public ActionForward execute(final ActionMapping mapping, final ActionForm form,
-                                 final HttpServletRequest request, final HttpServletResponse response) {
+    public final ActionForward execute(final ActionMapping mapping, final ActionForm form,
+                                       final HttpServletRequest request, final HttpServletResponse response) {
         if (request.getSession().getAttribute(Constants.ROLE) == null || CrawlerUtils.hasAccess(request, "export.observatory")) {
             final String action = request.getParameter(Constants.ACTION);
             if (Constants.EXPORT_ALL_PDFS.equals(action)) {
@@ -57,16 +60,18 @@ public class PrimaryExportPdfAction extends Action {
             final boolean regenerate = Boolean.parseBoolean(request.getParameter(Constants.EXPORT_PDF_REGENERATE));
 
             final File pdfFile = buildPdf(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo, regenerate, request);
-            try {
-                CrawlerUtils.returnFile(response, pdfFile.getPath(), "application/pdf", false);
-            } catch (Exception e) {
-                Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
-                return mapping.findForward(Constants.ERROR);
+            if (pdfFile != null) {
+                try {
+                    CrawlerUtils.returnFile(response, pdfFile.getPath(), "application/pdf", false);
+                } catch (Exception e) {
+                    Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
+                    return mapping.findForward(Constants.ERROR);
+                }
             }
         } else {
             return mapping.findForward(Constants.NO_PERMISSION);
         }
-        return null;
+        return mapping.findForward(Constants.ERROR);
     }
 
     private boolean userHasAccess(final String user, final long idRastreo) {
@@ -80,23 +85,17 @@ public class PrimaryExportPdfAction extends Action {
     }
 
     private File buildPdf(long idObservatory, long idExecutionOb, long idRastreoRealizado, long idRastreo, boolean regenerate, final HttpServletRequest request) {
-        final PropertiesManager pmgr = new PropertiesManager();
         final int countAnalisis = AnalisisDatos.countAnalysisByTracking(idRastreoRealizado);
 
         if (countAnalisis > 0) {
             try (Connection c = DataBaseManager.getConnection()) {
                 final SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
-                String dependOn = PDFUtils.formatSeedName(seed.getDependencia());
-                if (dependOn == null || dependOn.isEmpty()) {
-                    dependOn = Constants.NO_DEPENDENCE;
-                }
-                final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn;
-                final File pdfFile = new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
+                final File pdfFile = getReportFile(idObservatory, idExecutionOb, seed);
                 // Si el pdf no ha sido creado lo creamos
                 if (regenerate || !pdfFile.exists()) {
                     final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
                     PrimaryExportPdfUtils.exportToPdf(idRastreo, idRastreoRealizado, request, pdfFile.getPath(), seed.getNombre(), null, idExecutionOb, observatoryType);
-                    FileUtils.deleteDir(new File(path + File.separator + "temp"));
+                    FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
                 }
                 return pdfFile;
             } catch (Exception e) {
@@ -110,7 +109,6 @@ public class PrimaryExportPdfAction extends Action {
         // Url de invocacion: http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id_observatorio=8&idExObs=33&action=exportAllPdfs
         final long idExecutionOb = request.getParameter(Constants.ID_EX_OBS) != null ? Long.parseLong(request.getParameter(Constants.ID_EX_OBS)) : 0;
         final long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
-        final PropertiesManager pmgr = new PropertiesManager();
 
         try (Connection c = DataBaseManager.getConnection()) {
             final List<FulFilledCrawling> fulfilledCrawlings = ObservatorioDAO.getFulfilledCrawlingByObservatoryExecution(c, idExecutionOb);
@@ -119,15 +117,44 @@ public class PrimaryExportPdfAction extends Action {
                 Collections.reverse(fulfilledCrawlings);
             }
 
+            int reportsToGenerate = 0;
             for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
-                buildPdf(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(), false, request);
+                final File pdfFile = getReportFile(idObservatory, idExecutionOb, SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, fulfilledCrawling.getIdCrawling())));
+                final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(fulfilledCrawling.getId());
+                // Contabilizamos los informes que no están creados entre los portales para los que tenemos resultados (los portales no analizados no cuentan)
+                if (!pdfFile.exists() && evaluationIds!=null && !evaluationIds.isEmpty()) {
+                    reportsToGenerate++;
+                }
             }
-
-            return ZipUtils.pdfsZip(mapping, response, idObservatory, idExecutionOb, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav"));
+            if (reportsToGenerate < 5) {
+                for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
+                    buildPdf(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(), false, request);
+                }
+                final PropertiesManager pmgr = new PropertiesManager();
+                return ZipUtils.pdfsZip(mapping, response, idObservatory, idExecutionOb, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav"));
+            } else {
+                request.setAttribute("GENERATE_TIME", String.format("%d", TimeUnit.SECONDS.toMinutes(Math.max(60, reportsToGenerate * 2))));
+                final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
+                request.setAttribute("EMAIL", userData.getEmail());
+                // TODO: Lanzar proceso de generación de informes en hilo separado
+                final PdfGeneratorThread pdfGeneratorThread = new PdfGeneratorThread(idObservatory, idExecutionOb, fulfilledCrawlings, userData.getEmail());
+                pdfGeneratorThread.start();
+                return mapping.findForward(Constants.GENERATE_ALL_REPORTS);
+            }
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
             return mapping.findForward(Constants.ERROR);
         }
+    }
+
+    private File getReportFile(final long idObservatory, final long idExecutionOb, final SemillaForm seed) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        String dependOn = PDFUtils.formatSeedName(seed.getDependencia());
+        if (dependOn == null || dependOn.isEmpty()) {
+            dependOn = Constants.NO_DEPENDENCE;
+        }
+        final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn;
+        return new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
     }
 
 }

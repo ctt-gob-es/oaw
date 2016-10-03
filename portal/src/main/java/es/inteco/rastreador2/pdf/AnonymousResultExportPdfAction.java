@@ -61,7 +61,7 @@ public class AnonymousResultExportPdfAction extends Action {
                     checkFile.createNewFile();
                     final boolean includeEvolution = includeEvolution(c, idObservatory, idExecution);
                     final AnonymousResultPdfBuilder pdfBuilder = getPdfBuilder(checkFile, observatoryForm.getTipo(), version);
-                    pdfBuilder.generateGraphics(request, graphicPath);
+                    pdfBuilder.generateGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID), idExecution, request.getParameter(Constants.ID_OBSERVATORIO), graphicPath);
                     List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecution);
                     pdfBuilder.buildDocument(CrawlerUtils.getResources(request), null, graphicPath, Long.toString(idObservatory), Long.toString(idExecution), categories, includeEvolution);
                     FileUtils.deleteDir(new File(graphicPath));

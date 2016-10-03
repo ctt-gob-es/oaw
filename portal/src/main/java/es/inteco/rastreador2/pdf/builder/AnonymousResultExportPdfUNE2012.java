@@ -19,7 +19,6 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -175,10 +174,12 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
     }
 
     private int createMuestraPaginasChapter(final MessageResources messageResources, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, final java.util.List<ObservatoryEvaluationForm> evaList) throws DocumentException {
+        assert evaList != null;
         final Chapter chapter = PDFUtils.createChapterWithTitle("Muestra de páginas", index, countSections++, numChapter, titleFont, true);
         PDFUtils.addParagraph("A continuación, se incluye la muestra de páginas incluidas en este análisis:", ConstantsFont.PARAGRAPH, chapter);
 
         //createChapter2(messageResources, index, countSections++, chapter, evaList, observatoryType);
+
         chapter.add(addURLTable(messageResources, evaList));
         if (isBasicService()) {
             PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
@@ -189,7 +190,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
             externalLink.setAnchor(basicServiceForm.getDomain());
             final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
             specialChunkMap.put(1, externalLink);
-            listaConfiguracionRastreo.add(new ListItem(PDFUtils.createParagraphAnchor("Origen: [anchor1]", specialChunkMap ,ConstantsFont.PARAGRAPH, false)));
+            listaConfiguracionRastreo.add(new ListItem(PDFUtils.createParagraphAnchor("Origen: [anchor1]", specialChunkMap, ConstantsFont.PARAGRAPH, false)));
             PDFUtils.addListItem("Forma de selección de páginas: aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Profundidad: " + basicServiceForm.getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
             PDFUtils.addListItem("Amplitud: " + basicServiceForm.getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
@@ -229,7 +230,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         chapter.setNumberDepth(0);
 
         //final String anexoMetodologiaParrafo1 = "La revisión de accesibilidad de los estudios del Observatorio de Accesibilidad Web se realiza mediante una metodología automática desarrollada expresamente para este observatorio. Esta metodología tiene en cuenta únicamente 20 verificaciones de accesibilidad. Cada verificación está compuesta por varias comprobaciones realizadas automáticamente. Mediante métricas especializadas se pudieron incluir algunas comprobaciones de revisión habitualmente manual.";
-        final String anexoMetodologiaParrafo1 ="La revisión de accesibilidad de los estudios del Observatorio de Accesibilidad Web se realiza mediante una metodología automática desarrollada expresamente para este observatorio. Esta metodología tiene en cuenta únicamente 20 verificaciones de accesibilidad. Cada verificación está compuesta por varias comprobaciones realizadas automáticamente. Se ha hecho un esfuerzo importante en que las verificaciones realizadas sobre cada página no solo consistan en aquellas puramente automáticas, sino que a través de distintos algoritmos y métricas especializadas se han automatizado mediante estimaciones un buen número de comprobaciones cuya revisión es tradicionalmente manual.";
+        final String anexoMetodologiaParrafo1 = "La revisión de accesibilidad de los estudios del Observatorio de Accesibilidad Web se realiza mediante una metodología automática desarrollada expresamente para este observatorio. Esta metodología tiene en cuenta únicamente 20 verificaciones de accesibilidad. Cada verificación está compuesta por varias comprobaciones realizadas automáticamente. Se ha hecho un esfuerzo importante en que las verificaciones realizadas sobre cada página no solo consistan en aquellas puramente automáticas, sino que a través de distintos algoritmos y métricas especializadas se han automatizado mediante estimaciones un buen número de comprobaciones cuya revisión es tradicionalmente manual.";
         PDFUtils.addParagraph(anexoMetodologiaParrafo1, ConstantsFont.PARAGRAPH, chapter);
         final String anexoMetodologiaParrafo2 = "La metodología usando el estándar UNE 139803:2012 (WCAG 2.0) se aprobó por el grupo de Trabajo de Sitios Web de la Administración General del Estado y por el Grupo \"Observatorio, Indicadores y Medidas\" del Comité Sectorial de Administración Electrónica (gobiernos regionales y locales).";
         PDFUtils.addParagraph(anexoMetodologiaParrafo2, ConstantsFont.PARAGRAPH, chapter);
@@ -249,16 +250,16 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         //PDFUtils.addParagraph(messageResources.getMessage("une2012.resAnon.intav.report.3.p3"), ConstantsFont.PARAGRAPH, chapter);
 
         //if (!isBasicService) {
-            Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
-            PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.31.intro"), ConstantsFont.PARAGRAPH, section1);
+        Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.31.intro"), ConstantsFont.PARAGRAPH, section1);
 
-            //if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-                createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_AGE, "AGE");
-            //} else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
-                createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_CCAA, "CCAA");
-            //} else if (observatoryType == Constants.OBSERVATORY_TYPE_EELL) {
-                createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_EELL, "EELL");
-            //}
+        //if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
+        createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_AGE, "AGE");
+        //} else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
+        createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_CCAA, "CCAA");
+        //} else if (observatoryType == Constants.OBSERVATORY_TYPE_EELL) {
+        createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_EELL, "EELL");
+        //}
         //}
 
         Section section2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter32.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
@@ -694,8 +695,8 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
     }
 
     @Override
-    public void getMidsComparationByVerificationLevelGraphic(HttpServletRequest request, String level, String title, String filePath, String noDataMess, java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean regenerate) throws Exception {
-        ResultadosAnonimosObservatorioUNE2012Utils.getMidsComparationByVerificationLevelGraphic(request, level, title, filePath, noDataMess, evaList, value, regenerate);
+    public void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess, java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean regenerate) throws Exception {
+        ResultadosAnonimosObservatorioUNE2012Utils.getMidsComparationByVerificationLevelGraphic(messageResources, level, title, filePath, noDataMess, evaList, value, regenerate);
     }
 
     @Override

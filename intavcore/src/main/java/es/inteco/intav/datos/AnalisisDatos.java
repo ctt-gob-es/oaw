@@ -239,7 +239,7 @@ public final class AnalisisDatos {
             }
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return null;
+            return evaluationIds;
         }
 
         return evaluationIds;
