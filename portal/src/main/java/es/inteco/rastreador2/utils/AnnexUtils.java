@@ -37,9 +37,9 @@ public final class AnnexUtils {
 
     //Anexos sin iteraciones *************************************************************************************
 
-    public static void createAnnex(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
+    public static void createAnnexPaginas(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection();
-             final FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
+             FileWriter writer = getFileWriter(idOperation, "anexo_paginas.xml")) {
 
             final ContentHandler hd = getContentHandler(writer);
             hd.startDocument();
@@ -81,6 +81,41 @@ public final class AnnexUtils {
             hd.endDocument();
         } catch (Exception e) {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+    }
+
+    public static void createAnnexPortales(final MessageResources request, final Long idObsExecution, final Long idOperation) throws Exception {
+        try (Connection c = DataBaseManager.getConnection();
+             FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
+
+            final ContentHandler hd = getContentHandler(writer);
+            hd.startDocument();
+            hd.startElement("", "", "resultados", null);
+
+            final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
+
+            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
+                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
+                if (semillaForm.getId() != 0) {
+                    hd.startElement("", "", "portal", null);
+
+                    writeTag(hd, "nombre", semillaForm.getNombre());
+                    writeTag(hd, "categoria", semillaForm.getCategoria().getName());
+                    writeTag(hd, "depende_de", semillaForm.getDependencia());
+                    writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
+
+                    for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
+                        final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
+                        writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
+                        writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), request));
+                    }
+                    hd.endElement("", "", "portal");
+                }
+            }
+            hd.endElement("", "", "resultados");
+            hd.endDocument();
+        } catch (Exception e) {
+            Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
     }
 
@@ -152,42 +187,6 @@ public final class AnnexUtils {
         } else {
             return "";
         }
-    }
-
-    public static void createAnnex2Ev(final MessageResources request, final Long idObsExecution, final Long idOperation) throws Exception {
-        try (Connection c = DataBaseManager.getConnection();
-             final FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
-
-            final ContentHandler hd = getContentHandler(writer);
-            hd.startDocument();
-            hd.startElement("", "", "resultados", null);
-
-            final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
-
-            for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
-                final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
-                if (semillaForm.getId() != 0) {
-                    hd.startElement("", "", "portal", null);
-
-                    writeTag(hd, "nombre", semillaForm.getNombre());
-                    writeTag(hd, "categoria", semillaForm.getCategoria().getName());
-                    writeTag(hd, "depende_de", semillaForm.getDependencia());
-                    writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
-
-                    for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
-                        final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
-                        writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
-                        writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), request));
-                    }
-                    hd.endElement("", "", "portal");
-                }
-            }
-            hd.endElement("", "", "resultados");
-            hd.endDocument();
-        } catch (Exception e) {
-            Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-
     }
 
 }
