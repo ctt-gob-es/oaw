@@ -1,14 +1,23 @@
 package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 import es.inteco.common.CheckAccessibility;
+import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.TestUtils;
+import es.inteco.intav.form.*;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -354,6 +363,17 @@ public final class Check_1_1_3_ListTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), P_SIMULATING_OL));
 
+
+
+        final List<ProblemForm> problemsFromGuideline = EvaluatorUtils.getProblemsFromGuideline(evaluation.getProblems(), null, evaluation, "");
+        for (ProblemForm problemForm : problemsFromGuideline) {
+            if ( problemForm.getCheck().equals("101") ) {
+                Assert.assertEquals("high", problemForm.getType());
+                System.out.println(problemForm.getCode());
+                System.out.println(problemForm.getNote());
+            }
+        }
+
         checkAccessibility.setContent("<p>1- Opción 1 - Lorem ipsum</p>" +
                 "<p>2- Opción 2</p>" +
                 "<p>3- Opción 3</p>" +
@@ -403,6 +423,14 @@ public final class Check_1_1_3_ListTest {
                 "5- Opción 2<br/>" +
                 "6 Opción 3<br/>" +
                 "7-) Opción 4</p>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
+
+        checkAccessibility.setContent("<blockquote>\n" +
+                "<p>a)&nbsp;La declaración de inadmisibilidad de la petición.<br>\n" +
+                "b)&nbsp;La omisión de la obligación de contestar en el plazo establecido.<br>\n" +
+                "c)&nbsp;La ausencia en la contestación de los requisitos mínimos establecidos en el artículo 11 de la Ley Orgánica 4/2001.</p>\n" +
+                "</blockquote>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
     }
