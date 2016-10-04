@@ -4687,7 +4687,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="421" key="html" confidence="high">
+    <check id="421" key="html" confidence="medium">
         <name>Inexistencia de encabezado H1</name>
         <error>check.421.error</error>
         <rationale>check.421.rationale</rationale>
