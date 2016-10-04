@@ -260,8 +260,8 @@ public class ResultadosObservatorioAction extends Action {
             final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
             final Long idOperation = System.currentTimeMillis();
 
-            AnnexUtils.createAnnex(CrawlerUtils.getResources(request), idObsExecution, idOperation);
-            AnnexUtils.createAnnex2Ev(CrawlerUtils.getResources(request), idObsExecution, idOperation);
+            AnnexUtils.createAnnexPaginas(CrawlerUtils.getResources(request), idObsExecution, idOperation);
+            AnnexUtils.createAnnexPortales(CrawlerUtils.getResources(request), idObsExecution, idOperation);
 
             final PropertiesManager pmgr = new PropertiesManager();
             final String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
