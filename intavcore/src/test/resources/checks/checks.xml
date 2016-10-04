@@ -400,7 +400,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="32" key="frame" confidence="cannottell" status="4">
+    <check id="32" key="frame" confidence="medium" status="4">
         <prerequisite id="31"/>
         <name>Todos los
             <code>titles</code>
@@ -4499,7 +4499,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="408" key="ul" confidence="medium" occurrence="first">
+    <check id="408" key="ul" confidence="high" occurrence="first">
         <name>Listas mal creadas con elementos
             <code>br</code>
         </name>
@@ -4511,7 +4511,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="409" key="ul" confidence="medium" occurrence="first">
+    <check id="409" key="ul" confidence="high" occurrence="first">
         <name>Listas no ordenadas mal creadas con elementos
             <code>p</code>
         </name>
@@ -4523,7 +4523,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="410" key="ol" confidence="medium" occurrence="first">
+    <check id="410" key="ol" confidence="high" occurrence="first">
         <name>Listas ordenadas mal creadas con elementos <code>br</code>
         </name>
         <error>check.410.error</error>
@@ -4538,7 +4538,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="411" key="ol" confidence="medium" occurrence="first">
+    <check id="411" key="ol" confidence="high" occurrence="first">
         <name>Listas ordenadas mal creadas con elementos <code>p</code>
         </name>
         <error>check.411.error</error>
@@ -4890,7 +4890,7 @@ Telephone: (416) 978-4360
     </check>
 
 
-    <check id="434" key="html" confidence="high">
+    <check id="434" key="html" confidence="medium">
         <name>Más de 3 elementos con atributo tabindex</name>
         <error>check.434.error</error>
         <rationale>check.434.rationale</rationale>
