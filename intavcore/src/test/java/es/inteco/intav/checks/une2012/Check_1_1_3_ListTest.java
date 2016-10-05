@@ -1,22 +1,16 @@
 package es.inteco.intav.checks.une2012;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 import es.inteco.common.CheckAccessibility;
-import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.TestUtils;
-import es.inteco.intav.form.*;
+import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -364,10 +358,9 @@ public final class Check_1_1_3_ListTest {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), P_SIMULATING_OL));
 
 
-
         final List<ProblemForm> problemsFromGuideline = EvaluatorUtils.getProblemsFromGuideline(evaluation.getProblems(), null, evaluation, "");
         for (ProblemForm problemForm : problemsFromGuideline) {
-            if ( problemForm.getCheck().equals("101") ) {
+            if (problemForm.getCheck().equals("101")) {
                 Assert.assertEquals("high", problemForm.getType());
                 System.out.println(problemForm.getCode());
                 System.out.println(problemForm.getNote());
@@ -518,6 +511,18 @@ public final class Check_1_1_3_ListTest {
                 "</ol>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), INCORRECT_SORTED_LIST));
+
+        // Según HTML5 las listas admiten etiquetas scripting (script y template)
+        checkAccessibility.setContent("<ol>" +
+                "<li>Item 1</li>" +
+                "<li>Item 2</li>" +
+                "<li>Item 3</li>" +
+                "<script type=\"text/javascript\"> aux = 0</script>" +
+                "<template><strong>foo</strong></template>" +
+                "</ol>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), INCORRECT_SORTED_LIST));
+
     }
 
     @Test
@@ -566,7 +571,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateULIncorrectOrderedList() throws Exception {
+    public void evaluateIncorrectUnorderedList() throws Exception {
         checkAccessibility.setContent("<ul>" +
                 "<li>Item 1</li>" +
                 "<div>Item 2</div>" +
@@ -590,6 +595,17 @@ public final class Check_1_1_3_ListTest {
                 "</ul>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), INCORRECT_UNSORTED_LIST));
+
+        // Según HTML5 las listas admiten etiquetas scripting (script y template)
+        checkAccessibility.setContent("<ul>" +
+                "<li>Item 1</li>" +
+                "<li>Item 2</li>" +
+                "<li>Item 3</li>" +
+                "<script type=\"text/javascript\"> aux = 0</script>" +
+                "<template><strong>foo</strong></template>" +
+                "</ul>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), INCORRECT_UNSORTED_LIST));
     }
 
     @Test
