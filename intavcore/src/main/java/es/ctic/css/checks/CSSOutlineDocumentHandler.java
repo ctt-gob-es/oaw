@@ -6,7 +6,6 @@ import com.helger.css.decl.CSSStyleRule;
 import com.helger.css.writer.CSSWriterSettings;
 import es.ctic.css.OAWCSSVisitor;
 import es.ctic.css.utils.CSSSACUtils;
-import org.w3c.css.sac.LexicalUnit;
 
 import javax.annotation.Nonnull;
 
@@ -54,7 +53,7 @@ public class CSSOutlineDocumentHandler extends OAWCSSVisitor {
 
     @Override
     public void onEndStyleRule(@Nonnull CSSStyleRule cssStyleRule) {
-        if ( focusHidden && !borderVisible && !backgroundVisible) {
+        if (focusHidden && !borderVisible && !backgroundVisible) {
             getProblems().add(createCSSProblem("", outlineDeclaration));
         }
         focusHidden = false;
@@ -68,8 +67,12 @@ public class CSSOutlineDocumentHandler extends OAWCSSVisitor {
     }
 
     private boolean isFocusPseudoClass() {
-        final String selector = currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0);
-        return selector.contains(":focus");
+        if (currentStyleRule != null) {
+            final String selector = currentStyleRule.getSelectorsAsCSSString(new CSSWriterSettings(ECSSVersion.CSS30), 0);
+            return selector.contains(":focus");
+        } else {
+            return false;
+        }
     }
 
 }
