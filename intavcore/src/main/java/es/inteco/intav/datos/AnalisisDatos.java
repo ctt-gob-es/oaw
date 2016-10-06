@@ -58,10 +58,11 @@ public final class AnalisisDatos {
     }
 
     private static void saveCSSResources(final Connection connection, final int codigoAnalisis, final List<CSSResource> cssResources) throws SQLException {
-        try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (codigo, cod_analisis) VALUES (?,?);")){
+        try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (url, codigo, cod_analisis) VALUES (?,?,?);")){
             for (CSSResource cssResource : cssResources) {
-                pstmt.setString(1,cssResource.getContent());
-                pstmt.setInt(2, codigoAnalisis);
+                pstmt.setString(1,cssResource.getStringSource());
+                pstmt.setString(2,cssResource.getContent());
+                pstmt.setInt(3, codigoAnalisis);
 
                 pstmt.addBatch();
             }

@@ -6,6 +6,7 @@ USE OAW;
 
 CREATE TABLE IF NOT EXISTS `tanalisis_css` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `url` varchar(500) NOT NULL,
   `codigo` mediumtext,
   `cod_analisis` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
