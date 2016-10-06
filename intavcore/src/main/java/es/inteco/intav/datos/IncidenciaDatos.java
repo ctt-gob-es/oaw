@@ -16,12 +16,12 @@ public final class IncidenciaDatos {
     private IncidenciaDatos() {
     }
 
-    public static void saveIncidenceList(final Connection conn, final List<Incidencia> incidenceList) {
+    public static void saveIncidenceList(final Connection conn, int idAnalisis, final List<Incidencia> incidenceList) {
         long time = System.currentTimeMillis();
         try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tincidencia (COD_COMPROBACION, COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, DES_FUENTE) VALUES (?, ?, ?, ?, ?)")) {
             for (Incidencia incidencia : incidenceList) {
                 pstmt.setInt(1, incidencia.getCodigoComprobacion());
-                pstmt.setLong(2, incidencia.getCodigoAnalisis());
+                pstmt.setLong(2, idAnalisis);
                 pstmt.setInt(3, incidencia.getCodigoLineaFuente());
                 pstmt.setInt(4, incidencia.getCodigoColumnaFuente());
                 pstmt.setString(5, incidencia.getCodigoFuente());

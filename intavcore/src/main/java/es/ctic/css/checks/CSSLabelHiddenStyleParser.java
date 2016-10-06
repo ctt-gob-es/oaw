@@ -31,6 +31,7 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
     public List<CSSProblem> evaluate(final org.dom4j.Document dom4jDocument, final List<CSSResource> cssResources) {
         final List<CSSProblem> cssProblems = new ArrayList<>();
         try {
+            CSSFactory.setAutoImportMedia(new MediaSpecNone());
             final StyleSheet styleSheet = CSSFactory.getUsedStyles(document, "utf-8", new URL(String.valueOf(document.getDocumentElement().getUserData("url"))), new MediaSpecAll());
             final Analyzer analyzer = new Analyzer(styleSheet);
             final StyleMap styleMap = analyzer.evaluateDOM(document, new MediaSpecAll(), true);
@@ -77,17 +78,13 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
             if (control != null) {
                 final String title = control.getAttribute("title");
                 final String ariaLabel = control.getAttribute("aria-label");
-                if ((title != null && !title.isEmpty()) || (ariaLabel != null && !ariaLabel.isEmpty())) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return !disponeAtributo(title) && !disponeAtributo(ariaLabel);
             }
         }
         return false;
     }
 
-    protected CSSProblem createCSSProblem(final Element element, final Declaration declaration) {
+    private CSSProblem createCSSProblem(final Element element, final Declaration declaration) {
         final CSSProblem cssProblem = new CSSProblem();
         cssProblem.setDate(new Date());
         cssProblem.setLineNumber(declaration.getSource().getLine());
@@ -98,4 +95,7 @@ public class CSSLabelHiddenStyleParser implements CSSAnalyzer {
         return cssProblem;
     }
 
+    private boolean disponeAtributo(final String atributo) {
+        return atributo!=null && !atributo.trim().isEmpty();
+    }
 }

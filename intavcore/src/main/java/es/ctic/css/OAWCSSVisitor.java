@@ -55,7 +55,7 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
                     CSSVisitor.visitCSS(aCSS, this);
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO, e);
             }
         }
         return problems;
@@ -102,7 +102,7 @@ public class OAWCSSVisitor extends DefaultCSSVisitor implements CSSAnalyzer {
     }
 
     protected boolean isValidMedia() {
-        return currentMedia.peek();
+        return currentMedia.empty() || currentMedia.peek();
     }
 
     protected CSSProblem createCSSProblem(final String textContent, final CSSDeclaration cssDeclaration) {

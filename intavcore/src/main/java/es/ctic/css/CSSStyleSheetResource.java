@@ -1,8 +1,10 @@
 package es.ctic.css;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import es.inteco.intav.utils.EvaluatorUtils;
 import org.w3c.dom.Element;
+
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 
 /**
  * Clase que simula un recurso CSS que representa una hoja de estilos completa. Esta clase contendrá los estilos de
@@ -13,13 +15,15 @@ public class CSSStyleSheetResource implements CSSResource {
 
     private final Element htmlElement;
     private final String content;
+    private final String baseURL;
 
     /**
      * Instancia un nuevo recurso que representa los estilos definidos mediante un bloque style o una etiqueta link
      *
      * @param htmlElement el elemento (Element) que utiliza el atributo style
      */
-    public CSSStyleSheetResource(final Element htmlElement) {
+    public CSSStyleSheetResource(final String baseUrl, final Element htmlElement) {
+        this.baseURL = baseUrl;
         this.htmlElement = htmlElement;
         this.content = extractContent(htmlElement);
     }
@@ -56,7 +60,12 @@ public class CSSStyleSheetResource implements CSSResource {
         if ("style".equalsIgnoreCase(htmlElement.getNodeName())) {
             return "Bloque <style>";
         } else if ("link".equalsIgnoreCase(htmlElement.getNodeName())) {
-            return "CSS enlazada " + htmlElement.getAttribute("href");
+            //return "CSS enlazada " + htmlElement.getAttribute("href");
+            try {
+                return new URL(new URL(baseURL), htmlElement.getAttribute("href")).toString();
+            } catch (MalformedURLException e) {
+                return htmlElement.getAttribute("href");
+            }
         } else {
             return "";
         }
@@ -67,4 +76,23 @@ public class CSSStyleSheetResource implements CSSResource {
         return htmlElement==null;
     }
 
+    @Override
+    public int hashCode() {
+        return getStringSource().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof CSSResource)) {
+            return false;
+        }
+
+        CSSResource that = (CSSResource) o;
+
+        return getStringSource().equals(that.getStringSource());
+    }
 }

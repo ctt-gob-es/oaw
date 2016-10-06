@@ -28,9 +28,8 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import es.ctic.css.CSSProblem;
-import es.ctic.css.CSSResource;
-import es.ctic.css.CSSStyleSheetResource;
 import es.ctic.css.utils.CSSUtils;
+import es.ctic.css.utils.ImportedCSSExtractor;
 import es.inteco.common.*;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -43,6 +42,7 @@ import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import org.w3c.dom.*;
+import org.w3c.dom.html.HTMLDocument;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -278,15 +278,8 @@ public class Evaluator {
         evaluation.setBase();
         evaluation.setEntidad(checkAccesibility.getEntity());
         evaluation.setRastreo(0);
-        if (isCrawling) {
-            // create a global analysis in database
-            int idAnalisis = setAnalisisDB(evaluation, checkAccesibility);
-
-            // register DB analysis id in evaluation object
-            evaluation.setIdAnalisis(idAnalisis);
-        }
-
         evaluation.addGuideline(checkAccesibility.getGuidelineFile());
+
         // perform the evaluation
         final List<Incidencia> incidenceList = evaluateLoop(nodeHTML, evaluation, elementsMap, isCrawling);
 
@@ -298,10 +291,18 @@ public class Evaluator {
 
         // give each problem an ID number
         evaluation.setIdProblems();
+        if (isCrawling) {
+
+        }
 
         if (isCrawling) {
             try (Connection conn = DataBaseManager.getConnection()) {
-                IncidenciaDatos.saveIncidenceList(conn, incidenceList);
+                // create a global analysis in database
+                int idAnalisis = setAnalisisDB(evaluation, checkAccesibility);
+                // register DB analysis id in evaluation object
+                evaluation.setIdAnalisis(idAnalisis);
+                // save incidences
+                IncidenciaDatos.saveIncidenceList(conn, idAnalisis, incidenceList);
             } catch (Exception e) {
                 Logger.putLog("Error al guardar las incidencias en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -361,6 +362,15 @@ public class Evaluator {
         // keep track of the checks that have run (needed for prerequisites)
         final List<Integer> vectorChecksRun = new ArrayList<>();
 
+        // Ejecutamos las comprobaciones de HTML
+        performEvaluationHTMLChecks(node, vectorChecks, evaluation, incidenceList, isCrawling, vectorChecksRun);
+
+        // Una vez acabadas las comprobaciones sobre HTML, ejecutamos las comprobaciones de CSS (que tienen estructura distinta)
+        performEvaluationCSSChecks(node, vectorChecks, evaluation, incidenceList, vectorChecksRun);
+    }
+
+
+    private void performEvaluationHTMLChecks(Node node, List<Check> vectorChecks, Evaluation evaluation, List<Incidencia> incidenceList, boolean isCrawling, List<Integer> vectorChecksRun) {
         for (Check check : vectorChecks) {
             // Comprobamos que el check está activo
             if (check.getCheckOkCode() != CheckFunctionConstants.CHECK_STATUS_OK) {
@@ -417,37 +427,16 @@ public class Evaluator {
                 Logger.putLog("Exception: ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             }
         } // end for (Check check : vectorChecks)
+    }
 
-        // Una vez acabadas las comprobaciones sobre HTML, ejecutamos las comprobaciones de CSS (que tienen estructura distinta)
-        final List<CSSResource> cssResources = new ArrayList<>();
-        final NodeList embeddedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("style");
-        if (embeddedStyleSheets != null && embeddedStyleSheets.getLength() > 0) {
-            for (int i = 0; i < embeddedStyleSheets.getLength(); i++) {
-                final Element styleElement = (Element) embeddedStyleSheets.item(i);
-                if (validMedia(styleElement.getAttribute("media"))) {
-                    cssResources.add(new CSSStyleSheetResource(styleElement));
-                }
-            }
-        }
-        final NodeList linkedStyleSheets = node.getOwnerDocument().getDocumentElement().getElementsByTagName("link");
-        if (linkedStyleSheets != null && linkedStyleSheets.getLength() > 0) {
-            for (int i = 0; i < linkedStyleSheets.getLength(); i++) {
-                final Element linkElement = (Element) linkedStyleSheets.item(i);
-                if (linkElement.hasAttribute("href")
-                        && "stylesheet".equalsIgnoreCase(linkElement.getAttribute("rel"))
-                        && "text/css".equalsIgnoreCase(linkElement.getAttribute("type"))
-                        && validMedia(linkElement.getAttribute("media"))) {
-                    cssResources.add(new CSSStyleSheetResource(linkElement));
-                }
-            }
-        }
+    private void performEvaluationCSSChecks(Node node, List<Check> vectorChecks, Evaluation evaluation, List<Incidencia> incidenceList, List<Integer> vectorChecksRun) {
         for (Check check : vectorChecks) {
             if ("html".equalsIgnoreCase(node.getNodeName()) && "css".equalsIgnoreCase(check.getTriggerElement())) {
                 for (CheckCode checkCode : check.getVectorCode()) {
                     if (checkCode.getType() == CheckFunctionConstants.CODE_TYPE_FUNCTION) {
-                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(node.getOwnerDocument().getDocumentElement(), checkCode, cssResources);
-                        // Ha pasado el check, lo metemos en la lista de checks pasados con éxito
+                        final List<CSSProblem> cssProblems = CSSUtils.evaluate(node.getOwnerDocument().getDocumentElement(), checkCode, evaluation.getCssResources());
                         if (cssProblems.isEmpty()) {
+                            // Ha pasado el check, lo metemos en la lista de checks pasados con éxito
                             vectorChecksRun.add(check.getId());
                         } else {
                             // Se ha encontrado un error y se va a registrar en la base de datos
@@ -468,10 +457,6 @@ public class Evaluator {
                 }
             }
         }
-    }
-
-    private boolean validMedia(final String media) {
-        return media == null || media.trim().isEmpty() || media.contains("all") || media.contains("screen");
     }
 
     private List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
@@ -670,6 +655,13 @@ public class Evaluator {
         long time = System.currentTimeMillis();
         final List<Incidencia> incidenceList = new ArrayList<>();
         if (rootNode != null) {
+            // Extract all CSS
+            if (rootNode instanceof HTMLDocument) {
+                final HTMLDocument rootElement = (HTMLDocument) rootNode;
+                final ImportedCSSExtractor cssExtractor = new ImportedCSSExtractor();
+                evaluation.setCssResources(cssExtractor.extractFromHTMLDocument(evaluation.getFilename(), rootElement));
+            }
+
             final List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
             int counter = 0;
             for (Node node : nodeList) {
@@ -807,21 +799,21 @@ public class Evaluator {
     }
 
     // Saves the global information about the analysis in DataBase and return the id of the analysis
-    private int setAnalisisDB(final Evaluation eval, final CheckAccessibility checkAccessibility) {
+    private int setAnalisisDB(final Evaluation evaluation, final CheckAccessibility checkAccessibility) {
         try (Connection conn = DataBaseManager.getConnection()) {
             final Analysis analysis = new Analysis();
 
             analysis.setDate(new Date());
             analysis.setFile("");
-            analysis.setUrl(eval.getFilename());
-            analysis.setEntity(eval.getEntidad());
-            analysis.setTracker(eval.getRastreo());
+            analysis.setUrl(evaluation.getFilename());
+            analysis.setEntity(evaluation.getEntidad());
+            analysis.setTracker(evaluation.getRastreo());
             analysis.setGuideline(checkAccessibility.getGuidelineFile());
             analysis.setTracker(checkAccessibility.getIdRastreo());
 
             analysis.setSource(checkAccessibility.getContent());
 
-            return AnalisisDatos.setAnalisis(conn, analysis);
+            return AnalisisDatos.setAnalisis(conn, analysis, evaluation.getCssResources());
         } catch (Exception e) {
             Logger.putLog("Error al guardar el análisis en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             return -1;
