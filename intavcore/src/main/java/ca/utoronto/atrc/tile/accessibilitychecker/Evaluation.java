@@ -26,6 +26,7 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import es.ctic.css.CSSResource;
 import es.inteco.common.CheckFunctionConstants;
 import es.inteco.common.logging.Logger;
 import org.w3c.dom.Document;
@@ -33,10 +34,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Evaluation {
 
@@ -60,6 +58,7 @@ public class Evaluation {
     private List<Problem> vectorProblemsSorted;
     private List<Integer> checksExecuted;
     private String checksExecutedStr;
+    private List<CSSResource> cssResources;
 
     private Document docHtml;
     private int sortOrderSummary;
@@ -82,6 +81,7 @@ public class Evaluation {
         vectorChecksRun = new ArrayList<>();
         vectorProblemsSorted = new ArrayList<>();
         docHtml = null;
+        cssResources = Collections.emptyList();
     }
 
     public String getSource() {
@@ -448,5 +448,17 @@ public class Evaluation {
 
     public void setRastreo(long rastreo) {
         this.rastreo = rastreo;
+    }
+
+    public List<CSSResource> getCssResources() {
+        return cssResources;
+    }
+
+    public void setCssResources(List<CSSResource> cssResources) {
+        if (cssResources!=null) {
+            this.cssResources = cssResources;
+        } else {
+            this.cssResources = Collections.emptyList();
+        }
     }
 }

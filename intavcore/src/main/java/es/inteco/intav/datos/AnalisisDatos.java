@@ -3,6 +3,7 @@ package es.inteco.intav.datos;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.ctic.css.CSSResource;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
@@ -22,28 +23,52 @@ public final class AnalisisDatos {
     private AnalisisDatos() {
     }
 
-    public static int setAnalisis(final Connection conn, final Analysis analisis) {
-        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO tanalisis (fec_analisis, cod_url, num_duracion, nom_entidad, cod_rastreo, cod_guideline, estado, cod_fuente)" +
+    public static int setAnalisis(final Connection connection, final Analysis analisis, final List<CSSResource> cssResources) throws SQLException {
+        try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis (fec_analisis, cod_url, num_duracion, nom_entidad, cod_rastreo, cod_guideline, estado, cod_fuente)" +
                 " VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+            connection.setAutoCommit(false);
             pstmt.setString(1, analisis.getUrl());
             pstmt.setLong(2, analisis.getTime());
             pstmt.setString(3, analisis.getEntity());
             pstmt.setLong(4, analisis.getTracker());
-            pstmt.setInt(5, getCodGuideline(conn, analisis.getGuideline()));
+            pstmt.setInt(5, getCodGuideline(connection, analisis.getGuideline()));
             pstmt.setInt(6, IntavConstants.STATUS_EXECUTING);
             pstmt.setString(7, analisis.getSource());
             pstmt.executeUpdate();
 
-            int codigoAnalisis = 0;
+            final int codigoAnalisis;
             try (ResultSet rs = pstmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     codigoAnalisis = rs.getInt(1);
+                } else {
+                    return 0;
                 }
             }
+
+            saveCSSResources(connection, codigoAnalisis, cssResources);
+            connection.commit();
+            connection.setAutoCommit(true);
             return codigoAnalisis;
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
+            connection.rollback();
+            connection.setAutoCommit(true);
             return -1;
+        }
+    }
+
+    private static void saveCSSResources(final Connection connection, final int codigoAnalisis, final List<CSSResource> cssResources) throws SQLException {
+        try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (codigo, cod_analisis) VALUES (?,?);")){
+            for (CSSResource cssResource : cssResources) {
+                pstmt.setString(1,cssResource.getContent());
+                pstmt.setInt(2, codigoAnalisis);
+
+                pstmt.addBatch();
+            }
+            pstmt.executeBatch();
+        } catch (SQLException e) {
+            Logger.putLog("Error en saveCSSResources", AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
         }
     }
 
