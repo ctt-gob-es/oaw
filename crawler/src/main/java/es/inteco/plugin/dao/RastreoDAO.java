@@ -2,8 +2,6 @@ package es.inteco.plugin.dao;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.crawler.common.Constants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,13 +10,17 @@ import java.sql.SQLException;
 
 public final class RastreoDAO {
 
-    private static final Log LOG = LogFactory.getLog(RastreoDAO.class);
-
     private RastreoDAO() {
     }
 
+    /**
+     * Actualiza el estado de todos los observatorios que están activos (OBS_LAUNCHED_STATUS) a finalizados con error (OBS_ERROR_STATUS).
+     *
+     * @param connection conexión (Connection) a la base de datos
+     * @throws SQLException
+     */
     public static void stopRunningObservatories(final Connection connection) throws SQLException {
-        try (PreparedStatement pst = connection.prepareStatement("UPDATE observatorios_realizados SET Estado = ? WHERE Estado = ?")) {
+        try (PreparedStatement pst = connection.prepareStatement("UPDATE observatorios_realizados SET estado = ? WHERE estado = ?")) {
             pst.setInt(1, Constants.OBS_ERROR_STATUS);
             pst.setInt(2, Constants.OBS_LAUNCHED_STATUS);
             pst.executeUpdate();
@@ -28,41 +30,62 @@ public final class RastreoDAO {
         }
     }
 
-    public static void actualizarEstadoRastreo(Connection c, long idRastreo, int status) {
+    /**
+     * Actualiza el estado de un rastreo.
+     *
+     * @param c         conexión (Connection) a la base de datos
+     * @param idRastreo identificador (long) del rastreo a actualizar
+     * @param status    nuevo estado del rastreo
+     */
+    public static void actualizarEstadoRastreo(final Connection c, final long idRastreo, final int status) {
         if (idRastreo != -1) {
             try (PreparedStatement pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE id_rastreo = ?")) {
                 pst.setInt(1, status);
                 pst.setLong(2, idRastreo);
                 pst.executeUpdate();
             } catch (SQLException e) {
-                LOG.error("Error al actualizar el estado del rastreo");
+                Logger.putLog("Error al actualizar el estado del rastreo", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             }
         }
     }
 
-    public static void stopRunningCrawlings(Connection c) throws SQLException {
+    /**
+     * Actualiza el estado de todos los rastreos que están activos (LAUNCHED) a parados (STOPPED).
+     *
+     * @param c conexión (Connection) a la base de datos
+     * @throws SQLException
+     */
+    public static void stopRunningCrawlings(final Connection c) throws SQLException {
         try (PreparedStatement pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE estado = ?")) {
             pst.setInt(1, Constants.STATUS_STOPPED);
             pst.setInt(2, Constants.STATUS_LAUNCHED);
             pst.executeUpdate();
         } catch (SQLException e) {
-            LOG.error("Error al actualizar el estado del rastreo");
+            Logger.putLog("Error al parar crawlings activos", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
 
-    public static String getList(Connection conn, Long idCrawling, int type) throws SQLException {
-        String onClause = "";
+    /**
+     * Obtiene las urls (una si es crawling aleatorio o hasta 17 separadas por ';') de una semilla.
+     *
+     * @param conn       conexión (Connection) a la base de datos
+     * @param idCrawling identificador del rastreo
+     * @param type       tipo de lista (semilla, rastreable, no rastreable u observatorio) a la que pertenece la semilla
+     * @return una cadena que contiene la url inicial si es un crawling aleatorio o hasta 17 urls separadas por el token ';'
+     * @throws SQLException
+     */
+    public static String getList(final Connection conn, final Long idCrawling, final int type) throws SQLException {
+        String query = "";
         if (type == Constants.ID_LISTA_SEMILLA || type == Constants.ID_LISTA_OBSERVATORIO) {
-            onClause = "ON (r.semillas = l.id_lista) ";
+            query = "SELECT l.lista FROM lista l JOIN rastreo r ON (r.semillas = l.id_lista) WHERE id_rastreo = ? and l.id_tipo_lista = ?";
         } else if (type == Constants.ID_LISTA_RASTREABLE) {
-            onClause = "ON (r.lista_rastreable = l.id_lista) ";
+            query = "SELECT l.lista FROM lista l JOIN rastreo r ON (r.lista_rastreable = l.id_lista) WHERE id_rastreo = ? and l.id_tipo_lista = ?";
         } else if (type == Constants.ID_LISTA_NO_RASTREABLE) {
-            onClause = "ON (r.lista_no_rastreable = l.id_lista) ";
+            query = "SELECT l.lista FROM lista l JOIN rastreo r ON (r.lista_no_rastreable = l.id_lista) WHERE id_rastreo = ? and l.id_tipo_lista = ?";
         }
 
-        try (PreparedStatement pst = conn.prepareStatement("SELECT l.lista FROM lista l JOIN rastreo r " +
-                onClause + " WHERE id_rastreo = ? and l.id_tipo_lista = ?")) {
+        try (PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setLong(1, idCrawling);
             pst.setInt(2, type);
             try (ResultSet rs = pst.executeQuery()) {
@@ -73,12 +96,20 @@ public final class RastreoDAO {
                 }
             }
         } catch (SQLException e) {
-            LOG.error("Error al recuperar la semilla del rastreo con id " + idCrawling);
+            Logger.putLog("Error al recuperar la semilla del rastreo con id " + idCrawling, RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
     }
 
-    public static int recuperarCartuchoPorRastreo(Connection c, long idRastreo) throws SQLException {
+    /**
+     * Obtiene el identificador del cartucho asociado a un rastreo.
+     *
+     * @param c         conexión (Connection) a la base de datos
+     * @param idRastreo identificador (long) del rastreo
+     * @return el identificador (int) del cartucho utilizado en ese rastreo
+     * @throws SQLException
+     */
+    public static int recuperarCartuchoPorRastreo(final Connection c, final long idRastreo) throws SQLException {
         try (PreparedStatement pst = c.prepareStatement("SELECT id_cartucho FROM cartucho_rastreo WHERE id_rastreo = ?")) {
             pst.setLong(1, idRastreo);
             try (ResultSet rs = pst.executeQuery()) {
@@ -94,7 +125,15 @@ public final class RastreoDAO {
         }
     }
 
-    public static Long recuperarIdNorma(Connection c, long idRastreo) throws SQLException {
+    /**
+     * Obtiene el identificador de la normativa asociada a un rastreo.
+     *
+     * @param c         conexión (Connection) a la base de datos
+     * @param idRastreo identificador (long) del rastreo
+     * @return el identificador (Long) de la normativa utilizada en ese rastreo
+     * @throws SQLException
+     */
+    public static Long recuperarIdNorma(final Connection c, final long idRastreo) throws SQLException {
         try (PreparedStatement pes = c.prepareStatement("SELECT id_guideline FROM rastreo WHERE id_rastreo = ?")) {
             pes.setLong(1, idRastreo);
             try (ResultSet res = pes.executeQuery()) {
@@ -109,7 +148,15 @@ public final class RastreoDAO {
         return null;
     }
 
-    public static String recuperarFicheroNorma(Connection c, long idGuideline) throws SQLException {
+    /**
+     * Obtiene el nombre del fichero de una normativa.
+     *
+     * @param c           conexión (Connection) a la base de datos
+     * @param idGuideline identificador (long) de la normativa
+     * @return el nombre del fichero (String) que de la normativa
+     * @throws SQLException
+     */
+    public static String recuperarFicheroNorma(final Connection c, final long idGuideline) throws SQLException {
         try (PreparedStatement pes = c.prepareStatement("SELECT des_guideline FROM tguidelines WHERE cod_guideline = ?")) {
             pes.setLong(1, idGuideline);
             try (ResultSet res = pes.executeQuery()) {
@@ -125,14 +172,14 @@ public final class RastreoDAO {
     }
 
     /**
-     * Método que dado un id de cartucho indica si el cartucho pertenece a una normativa de accesibilidad o no
+     * Método que dado un id de cartucho indica si el cartucho pertenece a una normativa de accesibilidad o no.
      *
-     * @param c          Connection a la base de datos
-     * @param idCartucho long id del cartucho
+     * @param c          conexión (Connection) a la base de datos
+     * @param idCartucho identificador (long) del cartucho
      * @return true si el cartucho pertenece a un cartucho de accesibilidad
      * @throws SQLException
      */
-    public static boolean isCartuchoAccesibilidad(Connection c, long idCartucho) throws SQLException {
+    public static boolean isCartuchoAccesibilidad(final Connection c, final long idCartucho) throws SQLException {
         try (PreparedStatement pes = c.prepareStatement("SELECT nombre FROM cartucho WHERE id_cartucho = ?")) {
             pes.setLong(1, idCartucho);
             try (ResultSet res = pes.executeQuery()) {
