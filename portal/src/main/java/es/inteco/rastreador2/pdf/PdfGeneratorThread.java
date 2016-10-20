@@ -15,6 +15,7 @@ import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
+import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.utils.FileUtils;
 import es.inteco.utils.MailUtils;
 import org.apache.struts.util.PropertyMessageResources;
@@ -98,6 +99,8 @@ public class PdfGeneratorThread extends Thread {
                         fw.flush();
                         fw.close();
                     }
+                    ZipUtils.generateZipFile(pdfFile.getParentFile().toString()+ "/sources", pdfFile.getParentFile().toString()+"/sources.zip" , true);
+                    FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "sources"));
                     FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
                 }
             }
