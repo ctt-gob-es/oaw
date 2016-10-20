@@ -58,13 +58,15 @@ public final class AnalisisDatos {
     }
 
     private static void saveCSSResources(final Connection connection, final int codigoAnalisis, final List<CSSResource> cssResources) throws SQLException {
-        try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (url, codigo, cod_analisis) VALUES (?,?,?);")){
+        try (PreparedStatement pstmt = connection.prepareStatement("INSERT INTO tanalisis_css (url, codigo, cod_analisis) VALUES (?,?,?);")) {
             for (CSSResource cssResource : cssResources) {
-                pstmt.setString(1,cssResource.getStringSource());
-                pstmt.setString(2,cssResource.getContent());
-                pstmt.setInt(3, codigoAnalisis);
+                if(cssResource.isImported()) {
+                    pstmt.setString(1, cssResource.getStringSource());
+                    pstmt.setString(2, cssResource.getContent());
+                    pstmt.setInt(3, codigoAnalisis);
 
-                pstmt.addBatch();
+                    pstmt.addBatch();
+                }
             }
             pstmt.executeBatch();
         } catch (SQLException e) {
@@ -258,7 +260,6 @@ public final class AnalisisDatos {
              PreparedStatement pstmt = conn.prepareStatement("SELECT cod_analisis FROM tanalisis t WHERE cod_rastreo = ? ORDER by cod_analisis")) {
             pstmt.setLong(1, idRastreoRealizado);
             try (ResultSet rs = pstmt.executeQuery()) {
-
                 while (rs.next()) {
                     evaluationIds.add(rs.getLong(1));
                 }
@@ -266,6 +267,30 @@ public final class AnalisisDatos {
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
             return evaluationIds;
+        }
+
+        return evaluationIds;
+    }
+
+    /**
+     * Obtiene todos los recursos CSS (CSSDTO) que están asociados a una evaluación, análisis de una página.
+     *
+     * @param idCodAnalisis el identificador de la evaluación.
+     * @return una lista con todos los recursos CSS (CSSDTO) que se analizaron para esa evaluación.
+     */
+    public static List<CSSDTO> getCSSResourcesFromEvaluation(final long idCodAnalisis) {
+        final List<CSSDTO> evaluationIds = new ArrayList<>();
+
+        try (Connection conn = DataBaseManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement("SELECT url, codigo FROM tanalisis_css t WHERE cod_analisis = ?")) {
+            pstmt.setLong(1, idCodAnalisis);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    evaluationIds.add(new CSSDTO(rs.getString(1), rs.getString(2)));
+                }
+            }
+        } catch (Exception ex) {
+            Logger.putLog(ex.getMessage(), AnalisisDatos.class, Logger.LOG_LEVEL_ERROR, ex);
         }
 
         return evaluationIds;
