@@ -136,7 +136,6 @@ public class PrimaryExportPdfAction extends Action {
                 request.setAttribute("GENERATE_TIME", String.format("%d", TimeUnit.SECONDS.toMinutes(Math.max(60, reportsToGenerate * 2))));
                 final DatosForm userData = LoginDAO.getUserDataByName(c, request.getSession().getAttribute(Constants.USER).toString());
                 request.setAttribute("EMAIL", userData.getEmail());
-                // TODO: Lanzar proceso de generación de informes en hilo separado
                 final PdfGeneratorThread pdfGeneratorThread = new PdfGeneratorThread(idObservatory, idExecutionOb, fulfilledCrawlings, userData.getEmail());
                 pdfGeneratorThread.start();
                 return mapping.findForward(Constants.GENERATE_ALL_REPORTS);
@@ -153,7 +152,7 @@ public class PrimaryExportPdfAction extends Action {
         if (dependOn == null || dependOn.isEmpty()) {
             dependOn = Constants.NO_DEPENDENCE;
         }
-        final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn;
+        final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn + File.separator + PDFUtils.formatSeedName(seed.getNombre());
         return new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
     }
 

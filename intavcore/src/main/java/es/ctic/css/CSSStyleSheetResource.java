@@ -73,7 +73,7 @@ public class CSSStyleSheetResource implements CSSResource {
 
     @Override
     public boolean isImported() {
-        return htmlElement==null;
+        return "link".equalsIgnoreCase(htmlElement.getNodeName());
     }
 
     @Override
