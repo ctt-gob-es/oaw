@@ -4,6 +4,7 @@ import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
@@ -1233,5 +1234,186 @@ public final class Check_1_1_3_ListTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
     }
 
+    @Test
+    public void evaluateListOfTables() throws Exception {
+        // Codigo extraido de: http://www.minhap.gob.es/es-ES/CDI/Paginas/InformacionPresupuestaria/InformacionPresupuestaria.aspx
+        final String content = "<h2 class=\"titulo\">Información Presupuestaria </h2>\n" +
+                "            <div id=\"contSubCDI\">\n" +
+                "                <ul class=\"listadoCanalesSubCanales\">\n" +
+                "                    <li>\n" +
+                "                        <div class=\"expand_capa\" id=\"tabla113\">\n" +
+                "                            <div class=\"cabCeldaSubcanales cabSinJs\" style=\"height: 55px;\"><p><span\n" +
+                "                                    class=\"imgSubcanales\"><img\n" +
+                "                                    src=\"/Style%20Library/MINHAC.SP.Portal/img/ico-ArrowCircle.png\"\n" +
+                "                                    alt=\"Desplegar\"></span><span class=\"enlacesSubcanales\">Información Administración Central</span>\n" +
+                "                            </p></div>\n" +
+                "                        </div>\n" +
+                "                            <div class=\"bloqueCont\">\n" +
+                "                                        <table class=\"tabla cellpadding5 tablaestadisticas breakcadena colum7\"\n" +
+                "                                               id=\"tabla113\">\n" +
+                "                                            <caption class=\"oculto\">Tabla con información acerca de Información\n" +
+                "                                                Administración Central\n" +
+                "                                            </caption>\n" +
+                "                                            <colgroup></colgroup>\n" +
+                "                                            <colgroup>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                            </colgroup>\n" +
+                "                                            <thead>\n" +
+                "                                            <tr class=\"tabla_titulo2 bordesup encabezadotabla\">\n" +
+                "                                                <th class=\"celldatos\"\n" +
+                "                                                    style=\"&#xD;&#xA;                        word-wrap: normal;&#xD;&#xA;                      \">\n" +
+                "                                                    Información Administración Central\n" +
+                "                                                </th>\n" +
+                "                                                <th id=\"tabla113th_author\">Autor</th>\n" +
+                "                                                <th id=\"tabla113th_periodicity\">Periodicidad</th>\n" +
+                "                                                <th id=\"tabla113th_lastData\">Últimos datos</th>\n" +
+                "                                                <th id=\"tabla113th_nextUpdate\">Próxima actualización</th>\n" +
+                "                                                <th id=\"tabla113th_support\">Soporte</th>\n" +
+                "                                                <th class=\"celldatos2\" id=\"tabla113th_moreInfo\">Más Información</th>\n" +
+                "                                            </tr>\n" +
+                "                                            </thead>\n" +
+                "                                            <tbody>\n" +
+                "                                            <tr class=\"bordesup\">\n" +
+                "                                                <td class=\"cuadro subcabecera\" id=\"tabla113257\"\n" +
+                "                                                    style=\"&#xD;&#xA;          word-wrap: normal;&#xD;&#xA;        \">\n" +
+                "                                                    <div class=\"divdatos\"><p><a\n" +
+                "                                                            title=\"Abre nueva ventana: Presupuestos Generales del Estado del año en curso\"\n" +
+                "                                                            target=\"_blank\"\n" +
+                "                                                            href=\"http://www.sepg.pap.minhap.gob.es/sitios/sepg/es-ES/Presupuestos/pge2015/Paginas/pge2015.aspx\">Presupuestos\n" +
+                "                                                        Generales del Estado del año en curso<img\n" +
+                "                                                                class=\"Technositepopup\" alt=\"Abre nueva ventana\"\n" +
+                "                                                                src=\"/Style%20Library/MINHAC.SP.Portal/img/popup.gif\"></a>\n" +
+                "                                                    </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_author\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_author\">\n" +
+                "                                                    <div><p>DGP </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_periodicity\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_periodicity\">\n" +
+                "                                                    <div><p>Anual </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_lastData\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_lastData\">\n" +
+                "                                                    <div><p>Año 2016 </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_nextUpdate\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_nextUpdate\">\n" +
+                "                                                    <div><p>30/12/2016</p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_support\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_support\">\n" +
+                "                                                    <div><p>html, pdf </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td class=\"celldatos2\">\n" +
+                "                                                    <ul>\n" +
+                "                                                        <li>\n" +
+                "                                                            <a href=\"http://www.minhap.gob.es/Documentacion/Publico/GabineteMinistro/Notas%20Prensa/2015/S.E.%20PRESUPUESTOS%20Y%20GASTOS/20-10-15%20NP%20Aprobación%20PGE%202016.pdf\"\n" +
+                "                                                               target=\"_blank\">Nota de prensa</a></li>\n" +
+                "                                                        <li>\n" +
+                "                                                            <a href=\"http://www.minhap.gob.es/Documentacion/Publico/GabineteMinistro/Notas%20Prensa/2015/S.E.%20PRESUPUESTOS%20Y%20GASTOS/04-08-15%20Presentaci%c3%b3n%20PGE%202016.pdf\"\n" +
+                "                                                               target=\"_blank\">Presupuestos Generales del Estado\n" +
+                "                                                                2016</a></li>\n" +
+                "                                                    </ul>\n" +
+                "                                                </td>\n" +
+                "                                            </tr>\n" +
+                "                                       </table>\n" +
+                "                                   </div>" +
+                "                               </li>" +
+                "                               <li>" +
+                "                               <div class=\"expand_capa\" id=\"tabla113\">" +
+                "                            <div class=\"cabCeldaSubcanales cabSinJs\" style=\"height: 55px;\"><p><span\n" +
+                "                                    class=\"imgSubcanales\"><img\n" +
+                "                                    src=\"/Style%20Library/MINHAC.SP.Portal/img/ico-ArrowCircle.png\"\n" +
+                "                                    alt=\"Desplegar\"></span><span class=\"enlacesSubcanales\">Información Administración Central</span>\n" +
+                "                            </p></div>\n" +
+                "                        </div>\n" +
+                "                            <div class=\"bloqueCont\">\n" +
+                "                                        <table class=\"tabla cellpadding5 tablaestadisticas breakcadena colum7\"\n" +
+                "                                               id=\"tabla113\">\n" +
+                "                                            <caption class=\"oculto\">Tabla con información acerca de Información\n" +
+                "                                                Administración Central\n" +
+                "                                            </caption>\n" +
+                "                                            <colgroup></colgroup>\n" +
+                "                                            <colgroup>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                                <col>\n" +
+                "                                            </colgroup>\n" +
+                "                                            <thead>\n" +
+                "                                            <tr class=\"tabla_titulo2 bordesup encabezadotabla\">\n" +
+                "                                                <th class=\"celldatos\"\n" +
+                "                                                    style=\"&#xD;&#xA;                        word-wrap: normal;&#xD;&#xA;                      \">\n" +
+                "                                                    Información Administración Central\n" +
+                "                                                </th>\n" +
+                "                                                <th id=\"tabla113th_author\">Autor</th>\n" +
+                "                                                <th id=\"tabla113th_periodicity\">Periodicidad</th>\n" +
+                "                                                <th id=\"tabla113th_lastData\">Últimos datos</th>\n" +
+                "                                                <th id=\"tabla113th_nextUpdate\">Próxima actualización</th>\n" +
+                "                                                <th id=\"tabla113th_support\">Soporte</th>\n" +
+                "                                                <th class=\"celldatos2\" id=\"tabla113th_moreInfo\">Más Información</th>\n" +
+                "                                            </tr>\n" +
+                "                                            </thead>\n" +
+                "                                            <tbody>\n" +
+                "                                            <tr class=\"bordesup\">\n" +
+                "                                                <td class=\"cuadro subcabecera\" id=\"tabla113257\"\n" +
+                "                                                    style=\"&#xD;&#xA;          word-wrap: normal;&#xD;&#xA;        \">\n" +
+                "                                                    <div class=\"divdatos\"><p><a\n" +
+                "                                                            title=\"Abre nueva ventana: Presupuestos Generales del Estado del año en curso\"\n" +
+                "                                                            target=\"_blank\"\n" +
+                "                                                            href=\"http://www.sepg.pap.minhap.gob.es/sitios/sepg/es-ES/Presupuestos/pge2015/Paginas/pge2015.aspx\">Presupuestos\n" +
+                "                                                        Generales del Estado del año en curso<img\n" +
+                "                                                                class=\"Technositepopup\" alt=\"Abre nueva ventana\"\n" +
+                "                                                                src=\"/Style%20Library/MINHAC.SP.Portal/img/popup.gif\"></a>\n" +
+                "                                                    </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_author\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_author\">\n" +
+                "                                                    <div><p>DGP </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_periodicity\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_periodicity\">\n" +
+                "                                                    <div><p>Anual </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_lastData\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_lastData\">\n" +
+                "                                                    <div><p>Año 2016 </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_nextUpdate\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_nextUpdate\">\n" +
+                "                                                    <div><p>30/12/2016</p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td id=\"tabla113257 tabla113th_support\"\n" +
+                "                                                    headers=\"tabla113257 tabla113th_support\">\n" +
+                "                                                    <div><p>html, pdf </p></div>\n" +
+                "                                                </td>\n" +
+                "                                                <td class=\"celldatos2\">\n" +
+                "                                                    <ul>\n" +
+                "                                                        <li>\n" +
+                "                                                            <a href=\"http://www.minhap.gob.es/Documentacion/Publico/GabineteMinistro/Notas%20Prensa/2015/S.E.%20PRESUPUESTOS%20Y%20GASTOS/20-10-15%20NP%20Aprobación%20PGE%202016.pdf\"\n" +
+                "                                                               target=\"_blank\">Nota de prensa</a></li>\n" +
+                "                                                        <li>\n" +
+                "                                                            <a href=\"http://www.minhap.gob.es/Documentacion/Publico/GabineteMinistro/Notas%20Prensa/2015/S.E.%20PRESUPUESTOS%20Y%20GASTOS/04-08-15%20Presentaci%c3%b3n%20PGE%202016.pdf\"\n" +
+                "                                                               target=\"_blank\">Presupuestos Generales del Estado\n" +
+                "                                                                2016</a></li>\n" +
+                "                                                    </ul>\n" +
+                "                                                </td>\n" +
+                "                                            </tr>\n" +
+                "                                       </table>\n" +
+                "                               </li>" +
+                "                           </ul>" +
+                "                       </div>";
+        checkAccessibility.setContent(content);
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LI_PARENT_UL_OL));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_3, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 }
-

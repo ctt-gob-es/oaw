@@ -29,9 +29,9 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.cyberneko.html.HTMLConfiguration;
-import es.inteco.cyberneko.html.parsers.DOMParser;
 import org.apache.xerces.xni.*;
+
+import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -114,18 +114,19 @@ public class CheckerParser extends DOMParser {
     }
 
     public CheckerParser() {
-        super();
-        try {
-            this.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-        } catch (org.xml.sax.SAXException e) {
-            Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, e);
-        }
+        this(true);
     }
 
-    public CheckerParser(HTMLConfiguration htmlConfiguration) {
-        super(htmlConfiguration);
+    public CheckerParser(final boolean balanceTags) {
+        super();
         try {
-            this.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            // Activar o no el balanceado de etiquetas
+            setFeature("http://cyberneko.org/html/features/balance-tags", balanceTags);
+            setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-tags", true);
+            // No se alteran las mayúsculas ni minúsculas de los nombres de elementos y atributos
+            setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+            setProperty("http://cyberneko.org/html/properties/names/attrs", "no-change");
         } catch (org.xml.sax.SAXException e) {
             Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, e);
         }
