@@ -1364,22 +1364,18 @@ public final class RastreoDAO {
         return urlsList;
     }
 
-    public static void enableDisableCrawler(Connection conn, long idCrawler, boolean activo) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = conn.prepareStatement("UPDATE rastreo SET activo = ? WHERE id_rastreo = ?");
+    public static void enableDisableCrawler(Connection conn, long idCrawler, boolean activo) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE rastreo SET activo = ? WHERE id_rastreo = ?")) {
             ps.setBoolean(1, activo);
             ps.setLong(2, idCrawler);
             ps.executeUpdate();
         } catch (SQLException e) {
             Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
-    public static long getIdSeedByIdRastreo(Connection c, long idRastreo) throws Exception {
+    public static long getIdSeedByIdRastreo(Connection c, long idRastreo) throws SQLException {
         try (PreparedStatement ps = c.prepareStatement("SELECT semillas FROM rastreo WHERE id_rastreo = ?")) {
             ps.setLong(1, idRastreo);
             try (ResultSet rs = ps.executeQuery()) {
@@ -1395,17 +1391,13 @@ public final class RastreoDAO {
     }
 
     public static void updateCrawlerName(Connection c, String name, long crawlerId) throws Exception {
-        PreparedStatement ps = null;
-        try {
-            ps = c.prepareStatement("UPDATE rastreo SET nombre_rastreo = ? WHERE id_rastreo = ?");
+        try (PreparedStatement ps = c.prepareStatement("UPDATE rastreo SET nombre_rastreo = ? WHERE id_rastreo = ?")) {
             ps.setString(1, name);
             ps.setLong(2, crawlerId);
             ps.executeUpdate();
         } catch (Exception e) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 

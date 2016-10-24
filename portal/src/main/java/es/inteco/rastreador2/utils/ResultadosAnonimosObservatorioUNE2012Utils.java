@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -53,7 +54,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath, final String type, final boolean regenerate) throws Exception {
-        //        final String observatoryId = request.getParameter(Constants.ID_OBSERVATORIO);
         try (Connection c = DataBaseManager.getConnection()) {
             final PropertiesManager pmgr = new PropertiesManager();
             String color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors");
@@ -62,7 +62,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
             //recuperamos las categorias del observatorio
             final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
-            //request.getParameter(Constants.ID)
+
             generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate);
             //iteramos sobre ellas y genermos las gráficas
             for (CategoriaForm categoryForm : categories) {
@@ -76,7 +76,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static int generateGlobalGraphics(final MessageResources messageResources, final String executionId, final String filePath, final List<CategoriaForm> categories, final String color, final boolean regenerate) throws Exception {
-        //final String executionId = request.getParameter(Constants.ID);
         final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, Constants.COMPLEXITY_SEGMENT_NONE, null);
 
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
@@ -114,8 +113,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static int generateCategoryGraphics(final MessageResources messageResources, final String idExecution, final CategoriaForm category, final String filePath, final String color, final boolean regenerate) throws Exception {
         try {
-            //final String idExecution = request.getParameter(Constants.ID);
-
             final String noDataMess = messageResources.getMessage("grafica.sin.datos");
             final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(category.getId()), null);
 
@@ -160,8 +157,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static int generateEvolutionGraphics(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color, boolean regenerate) throws Exception {
-//        final String observatoryId = request.getParameter(Constants.ID_OBSERVATORIO);
-//        final String executionId = request.getParameter(Constants.ID);
         final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId));
 
         if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
@@ -532,7 +527,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     public static void getGlobalMarkBySegmentsGroupGraphic(final MessageResources messageResources,
                                                            final String executionId,
                                                            final String filePath, final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate) throws Exception {
-        //final String executionId = request.getParameter(Constants.ID);
         final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
         final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 
@@ -849,7 +843,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                         }
                     }
                 }
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
                 throw e;
             }

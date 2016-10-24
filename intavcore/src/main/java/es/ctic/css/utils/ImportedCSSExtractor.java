@@ -4,9 +4,9 @@ import com.helger.css.ECSSVersion;
 import com.helger.css.decl.CSSImportRule;
 import com.helger.css.decl.CSSMediaQuery;
 import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.handler.DoNothingCSSParseExceptionCallback;
 import com.helger.css.reader.CSSReader;
-import cz.vutbr.web.css.CSSFactory;
-import cz.vutbr.web.css.MediaSpecNone;
+import com.helger.css.reader.errorhandler.DoNothingCSSParseErrorHandler;
 import es.ctic.css.CSSImportedResource;
 import es.ctic.css.CSSResource;
 import es.ctic.css.CSSStyleSheetResource;
@@ -77,17 +77,15 @@ public class ImportedCSSExtractor {
         return extractedCSSResources;
     }
 
-    private List<CSSResource> extract(final CSSResource cssResource) {
+    public List<CSSResource> extract(final CSSResource cssResource) {
         final List<CSSResource> importedCSSResources = new LinkedList<>();
         if (!cssResource.getContent().isEmpty()) {
             try {
-                //do not import any style sheets automatically
-                CSSFactory.setAutoImportMedia(new MediaSpecNone());
-                // La librería que se utiliza no maneja contenido UTF-8 con la marca BOM por lo que extraemos el contenido eliminando el BOM si existe
+                // La librería que se utiliza no maneja contenido UTF-8 con la marca BOM por lo que eliminamos el BOM si existe
                 final String cssContent = getCSSContentWithoutBOM(cssResource.getContent());
 
-                final CascadingStyleSheet aCSS = CSSReader.readFromString(cssContent, ECSSVersion.CSS30);
-                if (aCSS != null && aCSS.getAllImportRules().size() > 0) {
+                final CascadingStyleSheet aCSS = CSSReader.readFromString(cssContent, ECSSVersion.CSS30, new DoNothingCSSParseErrorHandler(), new DoNothingCSSParseExceptionCallback());
+                if (aCSS != null && !aCSS.getAllImportRules().isEmpty()) {
                     for (CSSImportRule cssImportRule : aCSS.getAllImportRules()) {
                         if (isScreenMedia(cssImportRule.getAllMediaQueries())) {
                             CSSImportedResource cssImportedResource = new CSSImportedResource(cssResource.getStringSource(), cssImportRule.getLocationString());
@@ -96,7 +94,7 @@ public class ImportedCSSExtractor {
                     }
                 }
             } catch (Exception e) {
-                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("Error al intentar parsear el CSS", OAWCSSVisitor.class, Logger.LOG_LEVEL_INFO, e);
             }
         }
         return importedCSSResources;
@@ -106,7 +104,7 @@ public class ImportedCSSExtractor {
      * Elimina la marca utf-8 BOM de una cadena si esta existe.
      *
      * @param content una cadena que puede contener la marca BOM.
-     * @return la cadena si la marca BOM si esta existia o la cadena original en caso contrario
+     * @return la cadena sin la marca BOM si esta existia o la cadena original en caso contrario
      */
     private String getCSSContentWithoutBOM(final String content) {
         if (content.startsWith(UTF8_BOM)) {
@@ -118,10 +116,10 @@ public class ImportedCSSExtractor {
 
     private List<CSSResource> extractImportedCSSResources(final List<CSSResource> cssResources) {
         List<CSSResource> importedCSS = extract(cssResources);
-        while (importedCSS.size() > 0) {
+        while (!importedCSS.isEmpty()) {
             importedCSS.removeAll(cssResources);
             cssResources.addAll(importedCSS);
-            if (importedCSS.size() > 0) {
+            if (!importedCSS.isEmpty()) {
                 importedCSS = extract(importedCSS);
             }
         }
@@ -130,7 +128,7 @@ public class ImportedCSSExtractor {
     }
 
     private boolean isScreenMedia(final List<CSSMediaQuery> allMediaQueries) {
-        if (allMediaQueries == null || allMediaQueries.size() == 0) {
+        if (allMediaQueries == null || allMediaQueries.isEmpty()) {
             return true;
         } else {
             for (CSSMediaQuery allMediaQuery : allMediaQueries) {
