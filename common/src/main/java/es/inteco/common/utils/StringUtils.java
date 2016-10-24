@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 
 public final class StringUtils {
 
-    public static final byte[] NBSP_BYTE = {-62, -96};
-    public static final byte[] WHITE_CHARS_BYTE = {-62, -96, 10, 9};
+    private static final byte[] NBSP_BYTE = {-62, -96};
+    private static final byte[] WHITE_CHARS_BYTE = {-62, -96, 10, 9};
 
     private StringUtils() {
     }
@@ -51,12 +51,11 @@ public final class StringUtils {
     // Cuando en el html detecta un &nbsp;, en lugar de devolver el caracter vacío devuelve un caracter con
     // código -96
     public static boolean hasOnlyNbspEntities(String string) {
-        if ( string.length()==1 ) {
-          if ( string.codePointAt(0)==0xA0 ) {
-              return true;
-          }
+        if (string.length() == 1 && string.codePointAt(0) == 0xA0) {
+            return true;
         }
-        byte[] bytes = string.trim().getBytes();
+
+        final byte[] bytes = string.trim().getBytes();
         for (byte aByte : bytes) {
             boolean isNbsp = false;
             for (byte nbspByte : NBSP_BYTE) {
@@ -70,6 +69,20 @@ public final class StringUtils {
         }
 
         return true;
+    }
+
+    /**
+     * Comprueba si en un texto existen al menos n repeticiones (o más) seguidas de la entidad &amp;nbsp;.
+     *
+     * @param text           el texto a comprobar.
+     * @param numRepetitions el número de repeticiones seguidas que al menos deben ocurrir.
+     * @return true si se repite la entidad &amp;nbsp; al menos el numero de repeticiones indicado seguidas o false en caso contrario.
+     */
+    public static boolean hasNbspRepetitions(final String text, final int numRepetitions) {
+        final String regexp = "(" + new String(NBSP_BYTE) + "){" + numRepetitions + ",}";
+        final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+        final Matcher matcher = pattern.matcher(text);
+        return matcher.find();
     }
 
     /**
@@ -91,15 +104,17 @@ public final class StringUtils {
      * @return una cadena con el contenido del InputStream de entrada
      * @throws IOException si se produce algún fallo durante la lectura del stream de entrada o si la codificación de caracteres indicada no está soportada
      */
-    public static String getContentAsString(InputStream in, String charset) throws IOException {
+    public static String getContentAsString(final InputStream in, final String charset) throws IOException {
         final StringBuilder out = new StringBuilder();
         final byte[] b = new byte[4096];
-        for (int n; (n = in.read(b)) != -1; ) {
+        int n = in.read(b);
+        while (n != -1) {
             if (charset != null) {
                 out.append(new String(b, 0, n, charset));
             } else {
                 out.append(new String(b, 0, n));
             }
+            n = in.read(b);
         }
         return out.toString().trim();
     }
@@ -147,12 +162,11 @@ public final class StringUtils {
         }
     }
 
-    public static String normalizeWhiteSpaces(String text) {
-        text = text.replace("&nbsp;", " ").replace("&#160;"," ");
-        final StringBuilder sb = new StringBuilder(text);
-        for (int i=0; i<sb.length(); i++) {
-            if (Character.isWhitespace(sb.charAt(i)) || sb.charAt(i)==0xA0) {
-                sb.setCharAt(i,' ');
+    public static String normalizeWhiteSpaces(final String text) {
+        final StringBuilder sb = new StringBuilder(text.replace("&nbsp;", " ").replace("&#160;", " "));
+        for (int i = 0; i < sb.length(); i++) {
+            if (Character.isWhitespace(sb.charAt(i)) || sb.charAt(i) == 0xA0) {
+                sb.setCharAt(i, ' ');
             }
         }
         return sb.toString();

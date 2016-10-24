@@ -125,8 +125,8 @@ public class CheckerParser extends DOMParser {
             setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
             setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-tags", true);
             // No se alteran las mayúsculas ni minúsculas de los nombres de elementos y atributos
-            setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-            setProperty("http://cyberneko.org/html/properties/names/attrs", "no-change");
+            setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+            setProperty("http://cyberneko.org/html/properties/names/attrs", "lower");
         } catch (org.xml.sax.SAXException e) {
             Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, e);
         }
