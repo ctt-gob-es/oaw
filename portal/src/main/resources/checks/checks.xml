@@ -553,7 +553,7 @@ Telephone: (416) 978-4360
                 <condition type="or">
                     <function call="element-count-greater-than" node="." value="th" number="0" attribute2="table"/>
                     <function call="element-count-equals" node="." value="thead" number="1" attribute2="table"/>
-                    <function call="element-count-equals" node="." value="tbody" number="1" attribute2="table"/>
+                    <!--<function call="element-count-equals" node="." value="tbody" number="1" attribute2="table"/>-->
                     <function call="element-count-equals" node="." value="tfoot" number="1" attribute2="table"/>
                     <function call="element-count-equals" node="." value="caption" number="1" attribute2="table"/>
                 </condition>
@@ -3056,8 +3056,8 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="li"/>
             <condition type="and">
-                <function call="container-not" node="." element="ol"/>
-                <function call="container-not" node="." element="ul"/>
+                <function call="container-not" node="." element="ol" value="1"/>
+                <function call="container-not" node="." element="ul" value="1"/>
             </condition>
         </machine>
     </check>
