@@ -4,7 +4,6 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.apache.xerces.parsers.DOMParser;
@@ -13,11 +12,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.*;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -122,9 +124,8 @@ public final class CheckUtils {
      * @param contactRegExp expresión regular para detectar enlaces a sección de contacto (contactar,contacte,...)
      * @param emailRegExp   expresión regular para detectar si se incluye una dirección de correo directamente en el contenido (contacto@portal.es)
      * @return true si se ha detectado una forma de contacto, false en caso contrario
-     * @throws Exception
      */
-    public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) throws Exception {
+    public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) {
         // Texto de correo electrónico en el texto normal
         final Pattern patternEmail = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
         final Matcher matcher = patternEmail.matcher(getDocumentText(document));
@@ -155,9 +156,8 @@ public final class CheckUtils {
      * @param document   documento DOM HTML sobre el que buscar la fecha de la última revisión
      * @param dateRegExp expresión regular que identifica un formato de fecha
      * @return true si se ha detectado la fecha de la última revisión, false en caso contrario
-     * @throws Exception
      */
-    public static boolean hasRevisionDate(final Document document, final String dateRegExp) throws Exception {
+    public static boolean hasRevisionDate(final Document document, final String dateRegExp) {
         final Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
         final Matcher matcher = pattern.matcher(getDocumentText(document));
 
@@ -176,7 +176,7 @@ public final class CheckUtils {
         return documentText.toString();
     }
 
-    public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws Exception {
+    public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws IOException, SAXException {
         try {
             final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
             connection.setRequestProperty("referer", documentUrlStr);
@@ -336,7 +336,7 @@ public final class CheckUtils {
         return url.startsWith("http");
     }
 
-    private static String encodeUrl(String path) throws Exception {
+    private static String encodeUrl(String path) throws UnsupportedEncodingException {
         path = path.replaceAll("[ \\+]", "%20");
         String[] pathArray = path.split("[:\\./?&=#(%20)]");
         for (String aPathArray : pathArray) {
@@ -428,7 +428,7 @@ public final class CheckUtils {
         return IntavConstants.HAS_NOT_CONTENT;
     }
 
-    public static ImageReader getImageReader(final Element img, final URL url) throws Exception {
+    public static ImageReader getImageReader(final Element img, final URL url) throws IOException {
         if (img.getUserData(IntavConstants.GIF_VERIFICATED) == null && img.getUserData(IntavConstants.GIF_READER) == null) {
             img.setUserData(IntavConstants.GIF_VERIFICATED, Boolean.TRUE, null);
 

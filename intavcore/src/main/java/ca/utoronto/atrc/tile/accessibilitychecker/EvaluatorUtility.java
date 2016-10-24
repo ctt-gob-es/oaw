@@ -34,7 +34,6 @@ import es.inteco.common.ValidationError;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.cyberneko.html.HTMLConfiguration;
 import es.inteco.intav.iana.IanaLanguages;
 import es.inteco.intav.iana.IanaUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
@@ -199,7 +198,7 @@ public final class EvaluatorUtility {
 //                buffer2.append(text.charAt(x));
 //            }
         }
-        return buffer2.toString().replaceAll("\\s{2,}"," ").trim();
+        return buffer2.toString().replaceAll("\\s{2,}", " ").trim();
     }
 
     // returns the text that is contained by the given element
@@ -223,10 +222,8 @@ public final class EvaluatorUtility {
                     continue;
                 }
                 // comments within scripts are treated as 'text' nodes so ignore them
-                if (nodeChild.getNodeType() == Node.ELEMENT_NODE) {
-                    if (nodeChild.getNodeName().equalsIgnoreCase("script")) {
-                        continue;
-                    }
+                if (nodeChild.getNodeType() == Node.ELEMENT_NODE && nodeChild.getNodeName().equalsIgnoreCase("script")) {
+                    continue;
                 }
                 if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                     buffer.append(nodeChild.getNodeValue());
@@ -388,37 +385,36 @@ public final class EvaluatorUtility {
     private static void findChecksInMasterFile(final Element nodeRoot) {
         // find all the checks in the master file
         final NodeList childNodes = nodeRoot.getChildNodes();
-        for (int x = 0; x < childNodes.getLength(); x++) {
-            if (childNodes.item(x).getNodeType() == Node.ELEMENT_NODE) {
-                if (childNodes.item(x).getNodeName().equals("check")) {
-                    // get the check ID number
-                    final String stringId = ((Element) childNodes.item(x)).getAttribute("id");
-                    if ((stringId == null) || (stringId.length() < 1)) {
-                        Logger.putLog("Warning: Check has no ID in checks file ", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
-                        continue;
-                    }
-                    int idNumber;
-                    try {
-                        idNumber = Integer.parseInt(stringId);
-                    } catch (NumberFormatException nfe) {
-                        Logger.putLog("Warning: Check has bad ID (" + stringId + ") in checks file", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
-                        continue;
-                    }
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            final Node node = childNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("check")) {
+                // get the check ID number
+                final String stringId = ((Element) node).getAttribute("id");
+                if ((stringId == null) || (stringId.length() < 1)) {
+                    Logger.putLog("Warning: Check has no ID in checks file ", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
+                    continue;
+                }
+                int idNumber;
+                try {
+                    idNumber = Integer.parseInt(stringId);
+                } catch (NumberFormatException nfe) {
+                    Logger.putLog("Warning: Check has bad ID (" + stringId + ") in checks file", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
+                    continue;
+                }
 
-                    // have we already created this check?
-                    Check check = allChecks.getCheck(idNumber);
-                    if (check == null) {
-                        // no, so create a new check
-                        check = new Check();
+                // have we already created this check?
+                Check check = allChecks.getCheck(idNumber);
+                if (check == null) {
+                    // no, so create a new check
+                    check = new Check();
 
-                        // initialize the check and add it to the list of checks
-                        if (check.initialize((Element) childNodes.item(x), idNumber)) {
-                            allChecks.addCheck(check);
-                        }
-                    } else { // we already have the check
-                        // add new language text to the check
-                        check.setCheckText(childNodes.item(x));
+                    // initialize the check and add it to the list of checks
+                    if (check.initialize((Element) node, idNumber)) {
+                        allChecks.addCheck(check);
                     }
+                } else { // we already have the check
+                    // add new language text to the check
+                    check.setCheckText(node);
                 }
             }
         }
@@ -671,7 +667,7 @@ public final class EvaluatorUtility {
                 for (int x = 0; x < listMaps.getLength(); x++) {
                     Element elementMap = (Element) listMaps.item(x);
                     String stringNameMap = "#" + elementMap.getAttribute("name");
-                    if ( stringNameMap.length() == 0) {
+                    if (stringNameMap.length() == 0) {
                         continue;
                     }
 
@@ -736,7 +732,7 @@ public final class EvaluatorUtility {
 
             // return the document
             return doc;
-        } catch (Exception e) {
+        } catch (IOException e) {
             Logger.putLog("Exception al evaluar " + checkAccessibility.getUrl() + ": ", EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
             return null;
         }
@@ -1050,7 +1046,7 @@ public final class EvaluatorUtility {
     }
 
     private static void addCssValidationSummary(final List<CssValidationError> cssValidationErrors, final String filename, final String language) throws Exception {
-        if ( filename!=null && language!=null ) {
+        if (filename != null && language != null) {
             final CssValidationError cssValidationError = new CssValidationError();
             final PropertiesManager pmgr = new PropertiesManager();
             final String urlHuman = pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator.human")
@@ -1104,10 +1100,8 @@ public final class EvaluatorUtility {
         if (slashLast < 9) {
             filenameURL = filenameURL.concat("/");
         } else {
-            if (slashLast != filenameURL.length()) {
-                if (filenameURL.lastIndexOf('.') < slashLast) {
-                    filenameURL = filenameURL.concat("/");
-                }
+            if (slashLast != filenameURL.length() && filenameURL.lastIndexOf('.') < slashLast) {
+                filenameURL = filenameURL.concat("/");
             }
         }
 

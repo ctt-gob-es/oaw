@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -1069,7 +1070,7 @@ public final class EvaluatorUtils {
         return true;
     }
 
-    public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects) throws Exception {
+    public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects) throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setInstanceFollowRedirects(followRedirects);
         connection.setRequestMethod(method);

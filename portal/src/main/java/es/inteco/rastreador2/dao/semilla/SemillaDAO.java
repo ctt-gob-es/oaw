@@ -291,21 +291,24 @@ public final class SemillaDAO {
         if (StringUtils.isNotEmpty(searchForm.getNombre())) {
             return countSeedsChooseFilteredByName(c, type, searchForm);
         } else {
-            try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
-                    "SELECT DISTINCT(dominio) FROM cuenta_cliente)")) {
-                ps.setLong(1, type);
-
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        return (rs.getInt(1));
-                    }
-                }
-            } catch (SQLException e) {
-                Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
-            }
+            return countSeedsByTipoLista(c, type);
         }
+    }
 
+    private static int countSeedsByTipoLista(final Connection c, final int type) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" +
+                "SELECT DISTINCT(dominio) FROM cuenta_cliente)")) {
+            ps.setLong(1, type);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
         return 0;
     }
 
@@ -317,7 +320,7 @@ public final class SemillaDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return (rs.getInt(1));
+                    return rs.getInt(1);
                 }
             }
         } catch (SQLException e) {

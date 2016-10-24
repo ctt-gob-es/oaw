@@ -291,9 +291,6 @@ public class Evaluator {
 
         // give each problem an ID number
         evaluation.setIdProblems();
-        if (isCrawling) {
-
-        }
 
         if (isCrawling) {
             try (Connection conn = DataBaseManager.getConnection()) {

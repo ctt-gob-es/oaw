@@ -5,7 +5,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.ignored.links.IgnoredLink;
-import es.inteco.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.*;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;

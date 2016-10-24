@@ -60,7 +60,6 @@ public class CSSStyleSheetResource implements CSSResource {
         if ("style".equalsIgnoreCase(htmlElement.getNodeName())) {
             return "Bloque <style>";
         } else if ("link".equalsIgnoreCase(htmlElement.getNodeName())) {
-            //return "CSS enlazada " + htmlElement.getAttribute("href");
             try {
                 return new URL(new URL(baseURL), htmlElement.getAttribute("href")).toString();
             } catch (MalformedURLException e) {

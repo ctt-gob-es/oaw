@@ -22,9 +22,9 @@ public final class CheckDescriptionsManager {
 
     /**
      * Obtiene una instancia de esta clase utilizando como fichero de recursos la entrada file.descriptions del fichero
-     * de configuración propertiesmanager.properties
+     * de configuración propertiesmanager.properties.
      *
-     * @throws IOException si no existe el fichero o no se ha podido le
+     * @throws IOException si no existe el fichero o no se ha podido leer.
      */
     public CheckDescriptionsManager() throws IOException {
         this.properties = new Properties(getDefaultDescriptions());
@@ -32,10 +32,10 @@ public final class CheckDescriptionsManager {
     }
 
     /**
-     * Obtiene una instancia de esta clase utilizando como fichero de recursos el fichero indicado por el path
+     * Obtiene una instancia de esta clase utilizando como fichero de recursos el fichero indicado por el path.
      *
      * @param path cadena al fichero de recursos. Si empieza por el protocolo file:/ entonces se considera absoluta si
-     *             no se considera relativa al classpath
+     *             no se considera relativa al classpath.
      * @throws IOException si no existe el fichero o no se ha podido leer.
      */
     public CheckDescriptionsManager(final String path) throws IOException {
@@ -43,7 +43,7 @@ public final class CheckDescriptionsManager {
         loadDescriptions(path);
     }
 
-    private void loadDescriptions(String descriptionsPath) {
+    private void loadDescriptions(final String descriptionsPath) {
         try (Reader reader = getFileReader(descriptionsPath)) {
             this.properties.load(reader);
         } catch (IOException e) {
@@ -76,6 +76,7 @@ public final class CheckDescriptionsManager {
             try {
                 return new InputStreamReader(new URL(file).openStream(), encoding);
             } catch (IOException e) {
+                Logger.putLog("No se ha podido leer el fichero", CheckDescriptionsManager.class, Logger.LOG_LEVEL_WARNING, e);
                 return new InputStreamReader(CheckDescriptionsManager.class.getResourceAsStream(DEFAULT_PROPERTIES));
             }
         } else {
@@ -84,14 +85,32 @@ public final class CheckDescriptionsManager {
     }
 
 
+    /**
+     * Obtiene el valor de una propiedad.
+     *
+     * @param key el identificador de una propiedad.
+     * @return el valor para esa propiedad o null si no existe.
+     */
     public String getString(final String key) {
         return properties.getProperty(key);
     }
 
+    /**
+     * Obtiene el mensaje de error de una comprobación.
+     *
+     * @param idCheck el identificador de la comprobación.
+     * @return el mensaje de error para esa comprobación o null si no existe.
+     */
     public String getErrorMessage(final String idCheck) {
         return properties.getProperty("check." + idCheck + ".error");
     }
 
+    /**
+     * Obtiene la descripción larga de una comprobación.
+     *
+     * @param idCheck el identificador de la comprobación.
+     * @return la descripción para esa comprobación o null si no existe.
+     */
     public String getRationaleMessage(final String idCheck) {
         return properties.getProperty("check." + idCheck + ".rationale");
     }
