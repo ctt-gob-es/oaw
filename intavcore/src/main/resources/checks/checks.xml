@@ -553,7 +553,7 @@ Telephone: (416) 978-4360
                 <condition type="or">
                     <function call="element-count-greater-than" node="." value="th" number="0" attribute2="table"/>
                     <function call="element-count-equals" node="." value="thead" number="1" attribute2="table"/>
-                    <function call="element-count-equals" node="." value="tbody" number="1" attribute2="table"/>
+                    <!--<function call="element-count-equals" node="." value="tbody" number="1" attribute2="table"/>-->
                     <function call="element-count-equals" node="." value="tfoot" number="1" attribute2="table"/>
                     <function call="element-count-equals" node="." value="caption" number="1" attribute2="table"/>
                 </condition>
@@ -3056,8 +3056,8 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="li"/>
             <condition type="and">
-                <function call="container-not" node="." element="ol"/>
-                <function call="container-not" node="." element="ul"/>
+                <function call="container-not" node="." element="ol" value="1"/>
+                <function call="container-not" node="." element="ul" value="1"/>
             </condition>
         </machine>
     </check>
@@ -5143,7 +5143,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="455" key="html" confidence="medium" status="5">
+    <check id="455" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces internos rotos</name>
         <error>check.455.error</error>
         <rationale>check.455.rationale</rationale>
@@ -5163,7 +5163,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="457" key="html" confidence="medium" status="5">
+    <check id="457" key="html" confidence="high" status="5">
         <name>La página contiene algunos enlaces externos rotos</name>
         <error>check.457.error</error>
         <rationale>check.457.rationale</rationale>
