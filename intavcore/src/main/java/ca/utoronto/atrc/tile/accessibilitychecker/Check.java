@@ -3243,20 +3243,13 @@ public class Check {
         for (int i = 0; i < nodeList.getLength(); i++) {
             if (nodeList.item(i).getNodeType() == Node.TEXT_NODE) {
                 if (nodeList.item(i).getTextContent() != null) {
-                    if (hasNRepetitions(nodeList.item(i).getTextContent(), numRepetitions)) {
+                    if (StringUtils.hasNbspRepetitions(nodeList.item(i).getTextContent(), numRepetitions)) {
                         return true;
                     }
                 }
             }
         }
         return false;
-    }
-
-    private boolean hasNRepetitions(String text, int numRepetitions) {
-        final String regexp = "(" + new String(StringUtils.NBSP_BYTE) + "){" + numRepetitions + ",}";
-        final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        final Matcher matcher = pattern.matcher(text);
-        return matcher.find();
     }
 
     private boolean functionMetadataMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -3456,7 +3449,6 @@ public class Check {
             elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
         }
 
-        boolean found = false;
         if (accessibilityLinks.isEmpty()) {
             // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
             try {
@@ -3469,16 +3461,15 @@ public class Check {
             for (Element accessibilityLink : accessibilityLinks) {
                 try {
                     final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
-                    if (document != null && CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2())) {
-                        found = true;
-                        return !found;
+                    if (document != null) {
+                        return !CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
 
-            return !found;
+            return true;
         }
     }
 

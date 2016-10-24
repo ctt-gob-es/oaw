@@ -126,8 +126,8 @@ public final class CheckUtils {
      */
     public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) throws Exception {
         // Texto de correo electrónico en el texto normal
-        final Pattern pattern = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        final Matcher matcher = pattern.matcher(getDocumentText(document));
+        final Pattern patternEmail = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+        final Matcher matcher = patternEmail.matcher(getDocumentText(document));
         if (matcher.find()) {
             // Hemos encontrado una dirección de correo electrónico en la página
             return true;
@@ -135,14 +135,12 @@ public final class CheckUtils {
 
         // Enlaces a la sección de contacto
         final List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
-        final NodeList links = document.getElementsByTagName("a");
-
-        for (int i = 0; i < links.getLength(); i++) {
-            final Element link = (Element) links.item(i);
+        final List<Element> links     = EvaluatorUtils.getElementsByTagName(document, "a");
+        for (Element link : links) {
             final String linkText = link.getTextContent().toLowerCase().trim();
             final String linkTitle = link.getAttribute("title").toLowerCase().trim();
             for (String contactText : contactTexts) {
-                if (linkText.toUpperCase().contains(contactText.toUpperCase()) || linkTitle.toUpperCase().contains(contactText.toUpperCase())) {
+                if (linkText.contains(contactText) || linkTitle.contains(contactText)) {
                     return true;
                 }
             }
@@ -185,7 +183,7 @@ public final class CheckUtils {
             connection.connect();
             final int responseCode = connection.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                final DOMParser parser = new DOMParser(new HTMLConfiguration());
+                final DOMParser parser = new CheckerParser(true);
                 parser.parse(new InputSource(connection.getInputStream()));
                 return parser.getDocument();
             } else {
