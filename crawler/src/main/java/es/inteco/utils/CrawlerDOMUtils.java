@@ -83,12 +83,12 @@ public final class CrawlerDOMUtils {
     }
 
     public static Document getDocument(final String textContent) throws Exception {
-        CheckerParser parser = new CheckerParser(new HTMLConfiguration());
+        CheckerParser parser = new CheckerParser();
 
         try {
             parser.parse(new InputSource(new StringReader(textContent)));
         } catch (Exception e) {
-            parser = new CheckerParser(new HTMLConfiguration(true));
+            parser = new CheckerParser(true);
             parser.parse(new InputSource(new StringReader(textContent)));
         }
 

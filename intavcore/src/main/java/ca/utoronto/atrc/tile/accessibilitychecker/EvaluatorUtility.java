@@ -594,7 +594,7 @@ public final class EvaluatorUtility {
                     // store the doctype status on the root element
                     elementRoot = doc.getDocumentElement();
                 } catch (Exception e) {
-                    parser = new CheckerParser(new HTMLConfiguration(true));
+                    parser = new CheckerParser(true);
                     Logger.putLog("Error al parsear al documento. Se intentará de nuevo con el balanceo de etiquetas", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                 }
 

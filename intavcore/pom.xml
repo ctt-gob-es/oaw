@@ -37,7 +37,7 @@
         <dependency>
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
-            <version>1.9.15</version>
+            <version>1.9.22</version>
         </dependency>
 
         <dependency>
@@ -68,6 +68,18 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
         </dependency>
 
         <dependency>
@@ -88,8 +100,6 @@
             <version>0.9.14</version>
         </dependency>
 
-        <!-- Aunque el parseador de CSS va a ser mediante SAC y la implementacion de cssparser
-        mantenemos las dependencias del resto de librerías como test para posteriores pruebas puntuales -->
         <dependency>
             <groupId>net.sf.cssbox</groupId>
             <artifactId>jstyleparser</artifactId>
