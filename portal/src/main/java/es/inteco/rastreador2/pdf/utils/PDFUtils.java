@@ -570,7 +570,7 @@ public final class PDFUtils {
 
     public static String formatSeedName(final String seedName) {
         if (seedName != null) {
-            return replaceAccent(seedName.trim().toLowerCase()).replaceAll("[\\s,.]+", "_");
+            return replaceAccent(seedName.trim().toLowerCase()).replaceAll("[\\s,./\\\\]+", "_");
         }
         return seedName;
     }
