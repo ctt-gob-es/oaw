@@ -44,7 +44,7 @@ public class ExtractTextHandler extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        final String lang = normalizeLang(attributes.getValue("lang"));
+        final String lang = normalizeLang(attributes.getValue("lang")!=null?attributes.getValue("lang"):attributes.getValue("xml:lang"));
         languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek());
         if ("img".equalsIgnoreCase(localName) && attributes.getValue("alt") != null) {
             extractedText.append(" ");
@@ -76,11 +76,15 @@ public class ExtractTextHandler extends DefaultHandler {
         if (!skipCharacters) {
             if (extractSameLanguage) {
                 if (webpageLanguage.equals(languages.peek())) {
-                    extractedText.append(ch, start, length);
+                    final String string = new String(ch, start, length);
+                    extractedText.append(string.trim());
+                    extractedText.append(" ");
                 }
             } else {
                 if (!webpageLanguage.equals(languages.peek())) {
-                    extractedText.append(ch, start, length);
+                    final String string = new String(ch, start, length);
+                    extractedText.append(string.trim());
+                    extractedText.append(" ");
                 }
             }
         }
