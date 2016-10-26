@@ -60,8 +60,7 @@ public final class Check_1_1_2_HeadersTest {
 
         checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content</p><h3>Ipsum</h3><p>Some content</p><h5>Ipsum</h5><p>Some content</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        // La comprobacion es global al documento y binaria (es correcto o incorrecto, no contabiliza el número de encabezados incorrectos)
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+        Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
     }
 
     @Test
@@ -313,12 +312,14 @@ public final class Check_1_1_2_HeadersTest {
 
         checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content</p><h3>Ipsum</h3><p>Some content</p><h5>Ipsum</h5><p>Some content</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        // La comprobacion es global al documento y binaria (es correcto o incorrecto, no contabiliza el número de encabezados incorrectos)
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+        Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
 
         checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content<p><h3>foo</h3><h5>Ipsum</h5><p>Some content<p><h6>Ipsum</h6><p>Some content<p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        // La comprobacion es global al documento y binaria (es correcto o incorrecto, no contabiliza el número de encabezados incorrectos)
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+        Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
+
+        checkAccessibility.setContent("<html><body><h1>foo</h1><h3>Loren</h3><p>Some content<p><h3>foo</h3><h5>Ipsum</h5><p>Some content<p><h2>Foo</h2><p>bar</p><h6>Ipsum</h6><p>Some content<p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(3, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_NESTING_ID));
     }
 }

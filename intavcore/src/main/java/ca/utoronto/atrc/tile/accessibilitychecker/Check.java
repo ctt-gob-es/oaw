@@ -1670,18 +1670,10 @@ public class Check {
     // done before the DOM structure is created.
     private boolean functionPreviousHeadingWrong(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         try {
-            String stringHeading = elementGiven.getNodeName().trim();
-            int thisHeading = Integer.parseInt(stringHeading.substring(1));
-            int previousHeading = (Integer) elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL);
-
-            if (previousHeading == 0) {
-                // no previous heading
-                return false;
-            }
-            if ((previousHeading >= thisHeading) || (previousHeading == (thisHeading - 1))) {
-                return false;
-            }
-            return true;
+            final String stringHeading = elementGiven.getNodeName().trim();
+            final int previousHeading = (Integer) elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL);
+            // if no previous heading return false
+            return previousHeading != 0 && CheckUtils.compareHeadingsLevel((Element) elementGiven.getUserData("prevheader"), elementGiven) > 1;
         } catch (Exception e) {
             return false;
         }

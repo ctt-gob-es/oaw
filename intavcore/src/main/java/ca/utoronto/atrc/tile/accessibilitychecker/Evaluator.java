@@ -46,6 +46,7 @@ import org.w3c.dom.html.HTMLDocument;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
@@ -88,7 +89,7 @@ public class Evaluator {
 
     // evaluates the given file for accessibility problems from the crawler application
     // filename - URL of the page
-    public Evaluation evaluateContent(final CheckAccessibility checkAccesibility, final String language) throws Exception {
+    public Evaluation evaluateContent(final CheckAccessibility checkAccesibility, final String language) throws UnsupportedEncodingException {
         return evaluateWorkFromContent(checkAccesibility, language);
     }
 
@@ -126,7 +127,7 @@ public class Evaluator {
         }
     }
 
-    private Evaluation evaluateWorkFromContent(final CheckAccessibility checkAccessibility, final String language) throws Exception {
+    private Evaluation evaluateWorkFromContent(final CheckAccessibility checkAccessibility, final String language) throws UnsupportedEncodingException {
         final AllChecks allChecks = EvaluatorUtility.getAllChecks();
         final Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
 
@@ -414,6 +415,8 @@ public class Evaluator {
                     addLanguageIncidences(evaluation, check, incidenceList);
                 } else if (check.getId() == 455 || check.getId() == 456 || check.getId() == 457 || check.getId() == 458) {
                     addBrokenLinksIncidences(evaluation, check, incidenceList);
+                } else if (check.getId() == 37) {
+                    addHeaderNestingIncidences(evaluation, check, incidenceList);
                 } else {
                     // Se ha encontrado un error y se va a registrar en la base de datos
                     if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
@@ -424,6 +427,30 @@ public class Evaluator {
                 Logger.putLog("Exception: ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             }
         } // end for (Check check : vectorChecks)
+    }
+
+    private void addHeaderNestingIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
+        for (int i = 1; i < 7; i++) {
+            // Obtenemos los encabezados
+            final NodeList headers = evaluation.getHtmlDoc().getElementsByTagName("h" + i);
+            if (headers != null && headers.getLength() > 0) {
+                for (int j = 0; j < headers.getLength(); j++) {
+                    final Element currentHeader = (Element) headers.item(j);
+                    if (CheckUtils.compareHeadingsLevel((Element) currentHeader.getUserData("prevheader"), currentHeader) > 1) {
+                        final Problem problem = new Problem(currentHeader);
+                        problem.setSummary(true);
+                        problem.setCheck(check);
+                        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+                        problemTextNode.setTextContent(EvaluatorUtils.serializeXmlElement(currentHeader, true));
+                        problem.setNode(problemTextNode);
+
+                        evaluation.addProblem(problem);
+
+                        addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+                    }
+                }
+            }
+        }
     }
 
     private void performEvaluationCSSChecks(Node node, List<Check> vectorChecks, Evaluation evaluation, List<Incidencia> incidenceList, List<Integer> vectorChecksRun) {
@@ -457,8 +484,6 @@ public class Evaluator {
     }
 
     private List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
-        final PropertiesManager properties = new PropertiesManager();
-        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
         final List<Element> brokenLinks;
         final String scope = check.getVectorCode().get(0).getFunctionAttribute1();
         if ("domain".equalsIgnoreCase(scope)) {
@@ -470,7 +495,6 @@ public class Evaluator {
         }
         for (Element brokenLink : brokenLinks) {
             final Problem problem = new Problem(brokenLink);
-            problem.setDate(format.format(new Date()));
             problem.setCheck(check);
             final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
             problemTextNode.setTextContent("<A href=\"" + brokenLink.getAttribute("href") + "\">" + brokenLink.getTextContent() + "</A>");
@@ -490,10 +514,7 @@ public class Evaluator {
     }
 
     private List<Incidencia> addLanguageIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
-        final PropertiesManager properties = new PropertiesManager();
-        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
         final Problem problem = new Problem();
-        problem.setDate(format.format(new Date()));
         problem.setCheck(check);
         problem.setColumnNumber(-1);
         problem.setLineNumber(-1);
@@ -511,7 +532,7 @@ public class Evaluator {
 
         problemTextNode.setTextContent(textContent.toString());
         problem.setNode(problemTextNode);
-        problem.setSummary(false);
+        problem.setSummary(true);
 
         evaluation.addProblem(problem);
 
@@ -535,10 +556,7 @@ public class Evaluator {
         if (vectorValidationErrors != null) {
             for (ValidationError validationError : vectorValidationErrors) {
                 if (ALL_HTML_VALIDATION_ERRORS.equalsIgnoreCase(id) || validationError.getMessageId().equalsIgnoreCase(id)) {
-                    final PropertiesManager properties = new PropertiesManager();
-                    final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
                     final Problem problem = new Problem();
-                    problem.setDate(format.format(new Date()));
                     problem.setCheck(check);
                     problem.setColumnNumber(validationError.getColumn());
                     problem.setLineNumber(validationError.getLine());
@@ -614,32 +632,28 @@ public class Evaluator {
     }
 
     // Añade los checks especificos de un elemento
-    private void addSpecificChecks(final List<Check> vectorChecks, final Map<String, List<Check>> elementsMap, final String nameElement) {
-        final List<Check> vectorTemp = elementsMap.get(nameElement);
-        if (vectorTemp != null) {
-            for (Check check : vectorTemp) {
-                vectorChecks.add(check);
-            }
-        }
+    private void addSpecificChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap, final String nameElement) {
+        final List<Check> specificChecks = elementsMap.get(nameElement);
+        addChecks(checks, specificChecks);
     }
 
     // Añade los checks generales de todos los elementos
     private void addGeneralChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap) {
         // add the checks that apply to all elements
         final List<Check> allElementsChecks = elementsMap.get("*");
-        if (allElementsChecks != null) {
-            for (Check check : allElementsChecks) {
-                checks.add(check);
-            }
-        }
+        addChecks(checks, allElementsChecks);
     }
 
     // Añade los checks específicos de CSS
     private void addCssChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap) {
         // add the checks that apply to css
         final List<Check> cssChecks = elementsMap.get("css");
-        if (cssChecks != null) {
-            for (Check check : cssChecks) {
+        addChecks(checks, cssChecks);
+    }
+
+    private void addChecks(final List<Check> checks, final List<Check> newChecks) {
+        if (newChecks != null) {
+            for (Check check : newChecks) {
                 checks.add(check);
             }
         }
@@ -652,12 +666,7 @@ public class Evaluator {
         long time = System.currentTimeMillis();
         final List<Incidencia> incidenceList = new ArrayList<>();
         if (rootNode != null) {
-            // Extract all CSS
-            if (rootNode instanceof HTMLDocument) {
-                final HTMLDocument rootElement = (HTMLDocument) rootNode;
-                final ImportedCSSExtractor cssExtractor = new ImportedCSSExtractor();
-                evaluation.setCssResources(cssExtractor.extractFromHTMLDocument(evaluation.getFilename(), rootElement));
-            }
+            extractCSSResources(rootNode, evaluation);
 
             final List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
             int counter = 0;
@@ -668,12 +677,12 @@ public class Evaluator {
                         continue;
                     }
                     // get a list of checks for this element
-                    final List<Check> vectorChecks = new ArrayList<>();
-                    addSpecificChecks(vectorChecks, elementsMap, nameElement);
-                    addGeneralChecks(vectorChecks, elementsMap);
-                    addCssChecks(vectorChecks, elementsMap);
-                    if (vectorChecks.size() > 0) {
-                        performEvaluation(node, vectorChecks, evaluation, incidenceList, isCrawling);
+                    final List<Check> checks = new ArrayList<>();
+                    addSpecificChecks(checks, elementsMap, nameElement);
+                    addGeneralChecks(checks, elementsMap);
+                    addCssChecks(checks, elementsMap);
+                    if (checks.size() > 0) {
+                        performEvaluation(node, checks, evaluation, incidenceList, isCrawling);
                     }
 
                     counter++;
@@ -684,6 +693,14 @@ public class Evaluator {
 
         Logger.putLog("Tiempo de evaluación de '" + evaluation.getFilename() + "': " + (System.currentTimeMillis() - time) + " milisegundos", Evaluator.class, Logger.LOG_LEVEL_INFO);
         return incidenceList;
+    }
+
+    private void extractCSSResources(final Node rootNode, final Evaluation evaluation) {
+        if (rootNode instanceof HTMLDocument) {
+            final HTMLDocument rootElement = (HTMLDocument) rootNode;
+            final ImportedCSSExtractor cssExtractor = new ImportedCSSExtractor();
+            evaluation.setCssResources(cssExtractor.extractFromHTMLDocument(evaluation.getFilename(), rootElement));
+        }
     }
 
     // Evaluates any special tests (doctype etc.)

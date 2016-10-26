@@ -361,6 +361,7 @@ public class CheckerParser extends DOMParser {
         if (nodePreviousHeader != null) {
             nodePreviousHeader.setUserData(IntavConstants.NEXT_LEVEL, nextHeadingLevel, null);
             nodePreviousHeader.setUserData("nextheader", node, null);
+            node.setUserData("prevheader", nodePreviousHeader, null);
         }
         nodePreviousHeader = node;
     }
