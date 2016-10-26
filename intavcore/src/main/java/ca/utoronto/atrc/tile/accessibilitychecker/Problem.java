@@ -26,8 +26,12 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import es.inteco.common.properties.PropertiesManager;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Problem {
     private Check check;
@@ -46,16 +50,19 @@ public class Problem {
     private boolean summary;
 
     public Problem() {
+        final PropertiesManager properties = new PropertiesManager();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
+        date = dateFormat.format(new Date());
     }
 
     // standard constructor using an element from the HTML document
     public Problem(Element anElement) {
+        this();
         element = anElement;
         nameElement = anElement.getNodeName();
         stringLineNumber = (String) anElement.getUserData("startLine");
         stringColumnNumber = (String) anElement.getUserData("startColumn");
         identifier = (Identifier) anElement.getUserData("identifier");
-        date = "";
         check = null;
         xpath = "";
         group = "";
@@ -195,8 +202,8 @@ public class Problem {
         return summary;
     }
 
-    public void setSummary(boolean summary) {
-        this.summary = summary;
+    public void setSummary(boolean isSummary) {
+        this.summary = isSummary;
     }
 }
 

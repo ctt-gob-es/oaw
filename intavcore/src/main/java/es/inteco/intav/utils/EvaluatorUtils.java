@@ -257,6 +257,10 @@ public final class EvaluatorUtils {
                 code = getHtmlHeaders(elementProblem);
             }
 
+            if (check.getId() == 37) {
+                code.add(problem.getNode().getTextContent());
+            }
+
         } else if ("legend".equals(nameProblemElement)) {
             code = getHtml(elementProblem, true, false);
         } /*else if ("doctype".equals(nameProblemElement)) {

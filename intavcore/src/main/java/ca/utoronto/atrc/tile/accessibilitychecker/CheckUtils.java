@@ -83,6 +83,23 @@ public final class CheckUtils {
         }
     }
 
+    /**
+     * Obtiene la diferencia de nivel existente entre dos encabezados.
+     *
+     * @param previousHeading encabezado precedente.
+     * @param currentHeading  encabezado actual.
+     * @return la diferencia entre niveles siendo positiva si aumentamos el nivel (h1->h3) o negativa si disminuimos el nivel (h3->h1).
+     */
+    public static int compareHeadingsLevel(final Element previousHeading, final Element currentHeading) {
+        if (previousHeading != null && currentHeading != null) {
+            final int previousHeadingLevel = Integer.parseInt(previousHeading.getTagName().substring(1));
+            final int currentHeadingLevel = Integer.parseInt(currentHeading.getTagName().substring(1));
+            return currentHeadingLevel - previousHeadingLevel;
+        } else {
+            return 0;
+        }
+    }
+
     public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
         final Set<String> includedLinks = new HashSet<>();
         final List<Element> linksFound = new ArrayList<>();
@@ -136,7 +153,7 @@ public final class CheckUtils {
 
         // Enlaces a la sección de contacto
         final List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
-        final List<Element> links     = EvaluatorUtils.getElementsByTagName(document, "a");
+        final List<Element> links = EvaluatorUtils.getElementsByTagName(document, "a");
         for (Element link : links) {
             final String linkText = link.getTextContent().toLowerCase().trim();
             final String linkTitle = link.getAttribute("title").toLowerCase().trim();
