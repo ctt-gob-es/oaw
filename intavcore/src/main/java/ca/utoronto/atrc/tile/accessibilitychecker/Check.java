@@ -1334,7 +1334,7 @@ public class Check {
                 final Element element = (Element) node;
                 if (element.hasAttribute("tabindex")) {
                     try {
-                        final int tabindex = Integer.parseInt(element.getAttribute("tabindex"));
+                        final int tabindex = Integer.parseInt(element.getAttribute("tabindex").trim());
                         if (tabindex > 0) {
                             counter++;
                         }
@@ -1670,7 +1670,6 @@ public class Check {
     // done before the DOM structure is created.
     private boolean functionPreviousHeadingWrong(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         try {
-            final String stringHeading = elementGiven.getNodeName().trim();
             final int previousHeading = (Integer) elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL);
             // if no previous heading return false
             return previousHeading != 0 && CheckUtils.compareHeadingsLevel((Element) elementGiven.getUserData("prevheader"), elementGiven) > 1;
