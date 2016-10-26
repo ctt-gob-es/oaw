@@ -74,7 +74,7 @@ public final class Check_2_2_2_FocusTest {
         checkAccessibility.setContent("<html><p><a tabindex=\"1\">Lorem ipsum</a>, <a tabindex=\"2\">Lorem ipsum</a>, <a tabindex=\"3\">Lorem ipsum</a>, <a tabindex=\"4\">Lorem ipsum</a></p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
+        Assert.assertEquals(4, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_EXCESSIVE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ZERO);
     }
@@ -84,7 +84,7 @@ public final class Check_2_2_2_FocusTest {
         checkAccessibility.setContent("<html><p><a tabindex=\"1\">Lorem ipsum</a>, <a tabindex=\"-1\">Lorem ipsum</a>, <a tabindex=\"2\">Lorem ipsum</a>, <a tabindex=\"3\">Lorem ipsum</a>, <a tabindex=\"4\">Lorem ipsum</a></p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getVectorProblems(), TABINDEX_USSAGE_LOW));
+        Assert.assertEquals(4, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_EXCESSIVE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ZERO);
     }
@@ -106,8 +106,8 @@ public final class Check_2_2_2_FocusTest {
                 "</p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_EXCESSIVE));
+        Assert.assertEquals(11, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_LOW));
+        Assert.assertEquals(11, TestUtils.getNumProblems(evaluation.getProblems(), TABINDEX_USSAGE_EXCESSIVE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_RED_ZERO);
     }
 

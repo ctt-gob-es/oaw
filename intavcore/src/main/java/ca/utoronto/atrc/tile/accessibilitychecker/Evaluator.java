@@ -417,6 +417,8 @@ public class Evaluator {
                     addBrokenLinksIncidences(evaluation, check, incidenceList);
                 } else if (check.getId() == 37) {
                     addHeaderNestingIncidences(evaluation, check, incidenceList);
+                } else if (check.getId() == 434 || check.getId() == 435) {
+                    addTabIndexIncidences(evaluation, check, incidenceList);
                 } else {
                     // Se ha encontrado un error y se va a registrar en la base de datos
                     if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
@@ -427,6 +429,35 @@ public class Evaluator {
                 Logger.putLog("Exception: ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
             }
         } // end for (Check check : vectorChecks)
+    }
+
+    private void addTabIndexIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        final NodeList nodeList = evaluation.getHtmlDoc().getElementsByTagName("*");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            final Node node = nodeList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                final Element element = (Element) node;
+                if (element.hasAttribute("tabindex")) {
+                    try {
+                        final int tabindex = Integer.parseInt(element.getAttribute("tabindex").trim());
+                        if (tabindex > 0) {
+                            final Problem problem = new Problem(element);
+                            problem.setSummary(true);
+                            problem.setCheck(check);
+                            final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+                            problemTextNode.setTextContent(EvaluatorUtils.serializeXmlElement(element));
+                            problem.setNode(problemTextNode);
+
+                            evaluation.addProblem(problem);
+
+                            addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+                        }
+                    } catch (NumberFormatException nfe) {
+
+                    }
+                }
+            }
+        }
     }
 
     private void addHeaderNestingIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {

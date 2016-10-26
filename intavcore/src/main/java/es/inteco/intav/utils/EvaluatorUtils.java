@@ -261,6 +261,9 @@ public final class EvaluatorUtils {
                 code.add(problem.getNode().getTextContent());
             }
 
+            if (check.getId() == 434 || check.getId() == 435) {
+                code.add(problem.getNode().getTextContent());
+            }
         } else if ("legend".equals(nameProblemElement)) {
             code = getHtml(elementProblem, true, false);
         } /*else if ("doctype".equals(nameProblemElement)) {
