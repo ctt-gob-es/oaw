@@ -580,13 +580,13 @@ public final class BasicServiceExport {
     }
 
     public static void addSpecificProblems(final MessageResources messageResources, final Section subSubSection, final List<SpecificProblemForm> specificProblems) {
-        float[] widths = {8f, 12f, 80f};
-        PdfPTable table = new PdfPTable(widths);
+        final float[] widths = {8f, 12f, 80f};
+        final PdfPTable table = new PdfPTable(widths);
         table.setHorizontalAlignment(Element.ALIGN_RIGHT);
         table.setWidthPercentage(86);
         table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
         table.setSpacingAfter(ConstantsFont.HALF_LINE_SPACE);
-        table.addCell(PDFUtils.createTableCell("Linea", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+        table.addCell(PDFUtils.createTableCell("Línea", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         table.addCell(PDFUtils.createTableCell("Columna", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         table.addCell(PDFUtils.createTableCell("Código", Constants.GRIS_MUY_CLARO, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         // Indicamos que la primera fila es de  encabezados para que la repita si la tabla se parte en varias páginas.
@@ -598,14 +598,17 @@ public final class BasicServiceExport {
                 final StringBuilder code = new StringBuilder();
                 for (int i = 0; i < specificProblem.getCode().size(); i++) {
                     code.append(specificProblem.getCode().get(i)).append("\n");
-
                 }
+
                 if (!specificProblem.getLine().isEmpty() && !"-1".equalsIgnoreCase(specificProblem.getLine())) {
                     table.addCell(PDFUtils.createTableCell(specificProblem.getLine(), Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
                     table.addCell(PDFUtils.createTableCell(specificProblem.getColumn(), Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
+                } else {
+                    table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
+                    table.addCell(PDFUtils.createTableCell("-", Color.WHITE, ConstantsFont.codeCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING));
                 }
                 String text = HTMLEntities.unhtmlAngleBrackets(code.toString());
-                String message = specificProblem.getMessage();
+                final String message = specificProblem.getMessage();
 
                 java.util.List<String> boldWords = new ArrayList<>();
                 if (!StringUtils.isEmpty(message)) {
@@ -613,20 +616,20 @@ public final class BasicServiceExport {
                     boldWords.add(message);
                 }
 
-                PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.codeCellFont, ConstantsFont.codeCellFont, false));
+                final PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.codeCellFont, ConstantsFont.codeCellFont, false));
                 labelCell.setPadding(0);
                 labelCell.setBackgroundColor(new Color(255, 244, 223));
                 labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 labelCell.setPadding(DEFAULT_PADDING);
                 table.addCell(labelCell);
             } else if (specificProblem.getNote() != null) {
-                String linkCode = getMatch(specificProblem.getNote().get(0), "(<a.*?</a>)");
-                String paragraphText = specificProblem.getNote().get(0).replace(linkCode, "");
+                final String linkCode = getMatch(specificProblem.getNote().get(0), "(<a.*?</a>)");
+                final String paragraphText = specificProblem.getNote().get(0).replace(linkCode, "");
 
-                String linkHref = getMatch(specificProblem.getNote().get(0), "href='(.*?)'");
+                final String linkHref = getMatch(specificProblem.getNote().get(0), "href='(.*?)'");
 
-                Paragraph p = new Paragraph(paragraphText, ConstantsFont.noteCellFont);
-                Anchor anchor = new Anchor(getMatch(specificProblem.getNote().get(0), "<a.*?>(.*?)</a>"), ConstantsFont.noteAnchorCellFont);
+                final Paragraph p = new Paragraph(paragraphText, ConstantsFont.noteCellFont);
+                final Anchor anchor = new Anchor(getMatch(specificProblem.getNote().get(0), "<a.*?>(.*?)</a>"), ConstantsFont.noteAnchorCellFont);
                 anchor.setReference(linkHref);
                 p.add(anchor);
                 subSubSection.add(p);
@@ -634,10 +637,10 @@ public final class BasicServiceExport {
 
             if (maxNumErrors < 0) {
                 if (specificProblems.size() > Integer.parseInt(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"))) {
-                    String[] arguments = new String[2];
+                    final String[] arguments = new String[2];
                     arguments[0] = PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number");
                     arguments[1] = String.valueOf(specificProblems.size());
-                    Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
+                    final Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
                     p.setAlignment(Paragraph.ALIGN_RIGHT);
                     subSubSection.add(p);
                 }
