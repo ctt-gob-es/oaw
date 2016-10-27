@@ -311,14 +311,12 @@
                 <!-- Enlaces descriptivos -->
                 <name>minhap.observatory.2_0.subgroup.2.1.5</name>
                 <checks>
-                    <!-- Enlaces con solo una imagen que no tenga atributo alt -->
+                    <!-- Enlaces con texto vacío que no contengan una imagen sin atributo alt -->
                     <check id="69"/>
                     <!-- Enlaces con textos demasiado largos, excepto si el texto del enlace es el nombre de una ley -->
                     <check id="181"/>
                     <!-- Enlaces no descriptivos (pincha aqui, haz click...) -->
                     <check id="79"/>
-                    <!-- Enlace con texto vacío (se comprueba que haya imagen con alt (pero no si es vacio) -->
-                    <check id="142"/>
                     <!-- Enlace de texto con imagen que repite el texto del enlace como alternativa -->
                     <check id="428"/>
                 </checks>

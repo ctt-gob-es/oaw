@@ -317,8 +317,6 @@
                     <check id="181"/>
                     <!-- Enlaces no descriptivos (pincha aqui, haz click...) -->
                     <check id="79"/>
-                    <!-- Enlace con texto vacío (se comprueba que haya imagen con alt (pero no si es vacio) -->
-                    <check id="142"/>
                     <!-- Enlace de texto con imagen que repite el texto del enlace como alternativa -->
                     <check id="428"/>
                 </checks>

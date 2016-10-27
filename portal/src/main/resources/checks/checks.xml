@@ -5193,7 +5193,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <check id="460" key="text" confidence="medium" ocurrence="first">
+    <check id="460" key="html" confidence="medium" ocurrence="first">
         <name>Detección de términos en otros idiomas</name>
         <error>check.460.error</error>
         <rationale>check.460.rationale</rationale>
