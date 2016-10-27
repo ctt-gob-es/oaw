@@ -126,8 +126,32 @@ public final class Check_1_2_1_OtherLanguagesTest {
     }
 
     @Test
+    public void evaluateOtherXMLLang() throws Exception {
+        checkAccessibility.setContent("<html xml:lang=\"es\"><body><p>Lorem <strong>You are welcome and get well</strong> and some others english words being\n" +
+                " not " +
+                " by " +
+                " one " +
+                " who " +
+                " take " +
+                " other</p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
     public void evaluateOtherLangMarked() throws Exception {
         checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong lang=\"en\">You are welcome</strong></p></body></html>");
+        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateOtherLangXMLMarked() throws Exception {
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <strong xml:lang=\"en\">You are welcome and some others english words</strong></p></body></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
@@ -202,7 +226,6 @@ public final class Check_1_2_1_OtherLanguagesTest {
         // Menos de 4 palabras
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
-
     }
 
     @Test
