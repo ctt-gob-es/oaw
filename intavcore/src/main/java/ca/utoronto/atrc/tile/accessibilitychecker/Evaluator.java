@@ -547,13 +547,14 @@ public class Evaluator {
         problem.setLineNumber(-1);
         final Document docHtml = evaluation.getHtmlDoc();
         final List<String> enWords = (List<String>) docHtml.getUserData("en_words");
-        final StringBuilder textContent = new StringBuilder();
+        final StringBuilder textContent = new StringBuilder("Se han detectado las siguientes palabras en inglés:\n");
         if (!enWords.isEmpty()) {
             final Iterator<String> itr = enWords.iterator();
             textContent.append(itr.next());
             while (itr.hasNext()) {
                 textContent.append(", ").append(itr.next());
             }
+            textContent.append(".");
         }
         final Element problemTextNode = createProblemTextElement(evaluation, textContent.toString());
         problem.setNode(problemTextNode);
