@@ -232,10 +232,10 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
         checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"../path/index.html#foo\"></p></body></html>");
         Assert.assertEquals("URL relativa que empieza por ../", 0, getNumProblems(checkAccessibility, IMG_LONGDESC_ID));
 
-        checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"/actividad/ambitos-tecnologicos#foo\"></p></body></html>");
+        checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"/lineas-de-especializacion/analisis-inteligente-de-datos#foo\"></p></body></html>");
         Assert.assertEquals("URL relativa que empieza por /", 0, getNumProblems(checkAccessibility, IMG_LONGDESC_ID));
 
-        checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"actividad/ambitos-tecnologicos#bar\"></p></body></html>");
+        checkAccessibility.setContent("<html><body><p>Esto es una prueba <img src=\"\" longdesc=\"lineas-de-especializacion/analisis-inteligente-de-datos#bar\"></p></body></html>");
         Assert.assertEquals("URL relativa que empieza por letra", 0, getNumProblems(checkAccessibility, IMG_LONGDESC_ID));
     }
 
