@@ -35,15 +35,12 @@ import java.util.Date;
 
 public class Problem {
     private Check check;
-    private Identifier identifier;
     private Element element;
     private String date;
     private String xpath;
-    private String group;
     private String nameElement;
     private String stringLineNumber;
     private String stringColumnNumber;
-    private int idDecision;
     private boolean decisionPass;
     private int lineOffset;
     private int id;
@@ -62,11 +59,8 @@ public class Problem {
         nameElement = anElement.getNodeName();
         stringLineNumber = (String) anElement.getUserData("startLine");
         stringColumnNumber = (String) anElement.getUserData("startColumn");
-        identifier = (Identifier) anElement.getUserData("identifier");
         check = null;
         xpath = "";
-        group = "";
-        idDecision = -1;
         decisionPass = false;
         lineOffset = 0;
         id = -1;
@@ -98,22 +92,6 @@ public class Problem {
 
     public String getElement() {
         return nameElement;
-    }
-
-    public Identifier getIdentifier() {
-        return identifier;
-    }
-
-    public String getIdentifierEncoded() {
-        return identifier.getStringEncoded();
-    }
-
-    public String getDisplayString() {
-        return identifier.getDisplayString();
-    }
-
-    public String getDisplayStringWithElement() {
-        return identifier.getDisplayStringWithElement();
     }
 
     public void setLineOffset(int offset) {
@@ -150,24 +128,8 @@ public class Problem {
         return stringColumnNumber;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String aGroup) {
-        group = aGroup;
-    }
-
     public Node getNode() {
         return element;
-    }
-
-    public int getIdDecision() {
-        return idDecision;
-    }
-
-    public void setIdDecision(int number) {
-        idDecision = number;
     }
 
     public boolean getDecisionPass() {

@@ -11,6 +11,8 @@ import java.util.Stack;
  */
 public class ExtractTextHandler extends DefaultHandler {
 
+    private static final String WHITE_SPACE = " ";
+
     /**
      * Idioma de la página web
      */
@@ -27,6 +29,7 @@ public class ExtractTextHandler extends DefaultHandler {
     private final StringBuilder extractedText;
 
     private final boolean extractSameLanguage;
+
     private boolean skipCharacters;
 
     public ExtractTextHandler(final String language) {
@@ -36,27 +39,18 @@ public class ExtractTextHandler extends DefaultHandler {
     public ExtractTextHandler(final String language, final boolean extractSameLanguage) {
         this.webpageLanguage = language;
         this.extractSameLanguage = extractSameLanguage;
-        languages = new Stack<>();
-        languages.push(language);
-        extractedText = new StringBuilder(200);
-        skipCharacters = false;
+        this.languages = new Stack<>();
+        this.languages.push(language);
+        this.extractedText = new StringBuilder(200);
+        this.skipCharacters = false;
     }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        final String lang = normalizeLang(attributes.getValue("lang")!=null?attributes.getValue("lang"):attributes.getValue("xml:lang"));
+        final String lang = normalizeLang(attributes.getValue("lang") != null ? attributes.getValue("lang") : attributes.getValue("xml:lang"));
         languages.push(lang != null && !lang.isEmpty() ? lang : languages.peek());
         if ("img".equalsIgnoreCase(localName) && attributes.getValue("alt") != null) {
-            extractedText.append(" ");
-            if (extractSameLanguage) {
-                if (webpageLanguage.equals(languages.peek())) {
-                    extractedText.append(attributes.getValue("alt"));
-                }
-            } else {
-                if (!webpageLanguage.equals(languages.peek())) {
-                    extractedText.append(attributes.getValue("alt"));
-                }
-            }
+            processText(attributes.getValue("alt").trim());
         } else if ("script".equalsIgnoreCase(localName) || "style".equalsIgnoreCase(localName)) {
             skipCharacters = true;
         }
@@ -68,25 +62,13 @@ public class ExtractTextHandler extends DefaultHandler {
         if ("script".equalsIgnoreCase(localName) || "style".equalsIgnoreCase(localName)) {
             skipCharacters = false;
         }
-        extractedText.append(" ");
+        extractedText.append(WHITE_SPACE);
     }
 
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (!skipCharacters) {
-            if (extractSameLanguage) {
-                if (webpageLanguage.equals(languages.peek())) {
-                    final String string = new String(ch, start, length);
-                    extractedText.append(string.trim());
-                    extractedText.append(" ");
-                }
-            } else {
-                if (!webpageLanguage.equals(languages.peek())) {
-                    final String string = new String(ch, start, length);
-                    extractedText.append(string.trim());
-                    extractedText.append(" ");
-                }
-            }
+            processText(new String(ch, start, length).trim());
         }
     }
 
@@ -94,6 +76,21 @@ public class ExtractTextHandler extends DefaultHandler {
         return extractedText.toString();
     }
 
+    private void processText(final String text) {
+        if (!text.isEmpty()) {
+            if (extractSameLanguage) {
+                if (webpageLanguage.equals(languages.peek())) {
+                    extractedText.append(text.trim());
+                    extractedText.append(WHITE_SPACE);
+                }
+            } else {
+                if (!webpageLanguage.equals(languages.peek())) {
+                    extractedText.append(text.trim());
+                    extractedText.append(WHITE_SPACE);
+                }
+            }
+        }
+    }
 
     /**
      * Eliminamos las variantes idiomáticas para quedarnos únicamente con el idioma base (ej. en-us pasa a en)
