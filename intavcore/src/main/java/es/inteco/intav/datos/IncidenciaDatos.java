@@ -92,13 +92,11 @@ public final class IncidenciaDatos {
     }
 
     public static List<Incidencia> getIncidenciasByAnalisisAndComprobacion(final Connection conn, final long idAnalisis, final long idComprobacion) {
-        final String query = "SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?";
-
-        try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+        try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_LINEA_FUENTE, COD_COLUMNA_FUENTE, COD_COMPROBACION, COD_INCIDENCIA, DES_FUENTE FROM tincidencia WHERE cod_analisis = ? AND cod_comprobacion = ?")) {
             pstmt.setLong(1, idAnalisis);
             pstmt.setLong(2, idComprobacion);
             try (ResultSet rs = pstmt.executeQuery()) {
-                final ArrayList<Incidencia> arrlist = new ArrayList<>();
+                final ArrayList<Incidencia> incidencias = new ArrayList<>();
 
                 while (rs.next()) {
                     final Incidencia incidencia = new Incidencia();
@@ -109,15 +107,14 @@ public final class IncidenciaDatos {
                     incidencia.setCodigoIncidencia(rs.getInt("COD_INCIDENCIA"));
                     incidencia.setCodigoFuente(rs.getString("DES_FUENTE"));
 
-                    arrlist.add(incidencia);
+                    incidencias.add(incidencia);
                 }
 
-                return arrlist;
+                return incidencias;
             }
-
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -131,7 +128,7 @@ public final class IncidenciaDatos {
         }
     }
 
-    public static List<Incidencia> getObservatoryIncidenciasFromAnalisisId(Connection conn, long idAnalisis) {
+    public static List<Incidencia> getObservatoryIncidenciasFromAnalisisId(final Connection conn, final long idAnalisis) {
         try (PreparedStatement pstmt = conn.prepareStatement("SELECT COD_ANALISIS, COD_COMPROBACION, COD_INCIDENCIA FROM tincidencia WHERE COD_ANALISIS = ?")) {
             pstmt.setLong(1, idAnalisis);
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -147,10 +144,9 @@ public final class IncidenciaDatos {
 
                 return incidencias;
             }
-
         } catch (Exception ex) {
             Logger.putLog(ex.getMessage(), IncidenciaDatos.class, Logger.LOG_LEVEL_ERROR, ex);
-            return null;
+            return Collections.emptyList();
         }
     }
 

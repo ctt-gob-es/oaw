@@ -41,7 +41,10 @@ import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.html.HTMLDocument;
 
 import java.io.ByteArrayInputStream;
@@ -56,18 +59,10 @@ import java.util.*;
  *
  */
 public class Evaluator {
-    // error codes returned if evaluation document could not be created
-    public static final int ERRORCODE_NO_GUIDELINES = 1;
-    public static final int ERRORCODE_BAD_DOCUMENT = 2;
-    public static final int ERRORCODE_EVALUATOR_ERROR1 = 3;
-    public static final int ERRORCODE_NO_CHECKS = 4;
-    public static final int ERRORCODE_EMPTY_DOCUMENT = 5;
-    public static final int ERRORCODE_EVALUATOR_ERROR2 = 6;
-    public static final int ERRORCODE_BAD_LOCAL_FILE = 7;
-    public static final int ERRORCODE_AUTH_FAILED = 8;
-    public static final int ERRORCODE_NO_AUTHENTICATION = 9;
 
     private static final String ALL_HTML_VALIDATION_ERRORS = "_ALL_ERRORS_";
+
+    private final XPathGenerator xPathGenerator = new XPathGenerator();
 
     // evaluates the given file for accessibility problems
     // filename - URL of the page
@@ -315,7 +310,7 @@ public class Evaluator {
         final Problem problem = new Problem((Element) node);
         problem.setDate(format.format(new Date()));
         problem.setCheck(check);
-        problem.setXpath(getXpath(node));
+        problem.setXpath(xPathGenerator.getXpath(node));
 
         evaluation.addProblem(problem);
 
@@ -355,7 +350,6 @@ public class Evaluator {
     }
 
     // Realiza la evaluación de un conjunto de checks sobre un nodo
-
     private void performEvaluation(final Node node, final List<Check> vectorChecks, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
         // keep track of the checks that have run (needed for prerequisites)
         final List<Integer> vectorChecksRun = new ArrayList<>();
@@ -404,9 +398,8 @@ public class Evaluator {
                 }
             } catch (AccessibilityError ae) {
                 // Añadimos los problemas de validación de código HTML
-                final PropertiesManager pmgr = new PropertiesManager();
-                if (check.getId() == Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif"))) {
-                    addValidationIncidences(evaluation, check, incidenceList);
+                if (check.getId() == 232) {
+                    addValidationIncidences(evaluation, check, incidenceList, ALL_HTML_VALIDATION_ERRORS);
                 } else if (EvaluatorUtils.isCssValidationNeeded(check.getId())) {
                     addCssValidationIncidences(evaluation, check, incidenceList);
                 } else if (check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) {
@@ -444,8 +437,7 @@ public class Evaluator {
                             final Problem problem = new Problem(element);
                             problem.setSummary(true);
                             problem.setCheck(check);
-                            final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-                            problemTextNode.setTextContent(EvaluatorUtils.serializeXmlElement(element));
+                            final Element problemTextNode = createProblemTextElement(evaluation, EvaluatorUtils.serializeXmlElement(element));
                             problem.setNode(problemTextNode);
 
                             evaluation.addProblem(problem);
@@ -460,6 +452,12 @@ public class Evaluator {
         }
     }
 
+    private Element createProblemTextElement(final Evaluation evaluation, final String text) {
+        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+        problemTextNode.setTextContent(text);
+        return problemTextNode;
+    }
+
     private void addHeaderNestingIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
         for (int i = 1; i < 7; i++) {
             // Obtenemos los encabezados
@@ -471,8 +469,7 @@ public class Evaluator {
                         final Problem problem = new Problem(currentHeader);
                         problem.setSummary(true);
                         problem.setCheck(check);
-                        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-                        problemTextNode.setTextContent(EvaluatorUtils.serializeXmlElement(currentHeader, true));
+                        final Element problemTextNode = createProblemTextElement(evaluation, EvaluatorUtils.serializeXmlElement(currentHeader, true));
                         problem.setNode(problemTextNode);
 
                         evaluation.addProblem(problem);
@@ -527,8 +524,7 @@ public class Evaluator {
         for (Element brokenLink : brokenLinks) {
             final Problem problem = new Problem(brokenLink);
             problem.setCheck(check);
-            final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-            problemTextNode.setTextContent("<A href=\"" + brokenLink.getAttribute("href") + "\">" + brokenLink.getTextContent() + "</A>");
+            final Element problemTextNode = createProblemTextElement(evaluation, "<A href=\"" + brokenLink.getAttribute("href") + "\">" + brokenLink.getTextContent() + "</A>");
             problem.setNode(problemTextNode);
 
             evaluation.addProblem(problem);
@@ -549,7 +545,6 @@ public class Evaluator {
         problem.setCheck(check);
         problem.setColumnNumber(-1);
         problem.setLineNumber(-1);
-        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
         final Document docHtml = evaluation.getHtmlDoc();
         final List<String> enWords = (List<String>) docHtml.getUserData("en_words");
         final StringBuilder textContent = new StringBuilder();
@@ -560,8 +555,7 @@ public class Evaluator {
                 textContent.append(", ").append(itr.next());
             }
         }
-
-        problemTextNode.setTextContent(textContent.toString());
+        final Element problemTextNode = createProblemTextElement(evaluation, textContent.toString());
         problem.setNode(problemTextNode);
         problem.setSummary(true);
 
@@ -572,16 +566,10 @@ public class Evaluator {
         return incidenceList;
     }
 
-    // Añade los problemas de validación HTML
-    private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
-        return addValidationIncidences(evaluation, check, incidenceList, ALL_HTML_VALIDATION_ERRORS);
-    }
-
     private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final String id) {
         final List<Incidencia> validationProblems = new ArrayList<>();
 
-        final Document docHtml = evaluation.getHtmlDoc();
-        final Element elementHtmlRoot = docHtml.getDocumentElement();
+        final Element elementHtmlRoot = evaluation.getHtmlDoc().getDocumentElement();
         final List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementHtmlRoot.getUserData("validationErrors");
 
         if (vectorValidationErrors != null) {
@@ -591,8 +579,7 @@ public class Evaluator {
                     problem.setCheck(check);
                     problem.setColumnNumber(validationError.getColumn());
                     problem.setLineNumber(validationError.getLine());
-                    final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-                    problemTextNode.setTextContent(validationError.getCode());
+                    final Element problemTextNode = createProblemTextElement(evaluation, validationError.getCode());
                     problem.setNode(problemTextNode);
                     problem.setSummary(validationError.isSummary());
 
@@ -615,21 +602,16 @@ public class Evaluator {
     private List<Incidencia> addCssValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
         final List<Incidencia> validationProblems = new ArrayList<>();
 
-        final Document docHtml = evaluation.getHtmlDoc();
-        final Element elementHtmlRoot = docHtml.getDocumentElement();
+        final Element elementHtmlRoot = evaluation.getHtmlDoc().getDocumentElement();
         final List<CssValidationError> vectorValidationErrors = (List<CssValidationError>) elementHtmlRoot.getUserData("cssValidationErrors");
 
         if (vectorValidationErrors != null) {
             for (CssValidationError cssValidationError : vectorValidationErrors) {
-                final PropertiesManager properties = new PropertiesManager();
-                final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
                 final Problem problem = new Problem();
-                problem.setDate(format.format(new Date()));
                 problem.setCheck(check);
                 problem.setColumnNumber(0);
                 problem.setLineNumber(cssValidationError.getLine());
-                Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-                problemTextNode.setTextContent(cssValidationError.getCode());
+                final Element problemTextNode = createProblemTextElement(evaluation, cssValidationError.getCode());
                 problem.setNode(problemTextNode);
                 problem.setSummary(cssValidationError.isSummary());
 
@@ -749,7 +731,7 @@ public class Evaluator {
                         final Problem problem = new Problem((Element) nodeGiven);
                         problem.setDate(format.format(new Date()));
                         problem.setCheck(check);
-                        problem.setXpath(getXpath(nodeGiven));
+                        problem.setXpath(xPathGenerator.getXpath(nodeGiven));
 
                         evaluation.addProblem(problem);
                     }
@@ -768,79 +750,6 @@ public class Evaluator {
                 check.setAppropriateData(language);
             }
         }
-    }
-
-    // Returns the Xpath expression that identifies the given node.
-    public static String getXpath(Node node) {
-        String expression;
-        String attribute = "";
-
-        if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
-            attribute = "/@" + node.getNodeName();
-            node = ((Attr) node).getOwnerElement();
-            expression = node.getNodeName();
-        } else if (node.getNodeType() == Node.TEXT_NODE) {
-            expression = "text()";
-        } else {
-            expression = node.getNodeName();
-        }
-
-        String suffix = getXpathSuffix(node);
-        expression = expression.concat(suffix);
-        expression = expression.concat(attribute);
-
-        String fullExpression = "/" + getXpathLoop(node, expression);
-        return fullExpression.toLowerCase();
-    }
-
-    // Recursive function that creates the Xpath expression
-    private static String getXpathLoop(final Node node, final String expression) {
-        Node nodeParent = node.getParentNode();
-        if ((nodeParent == null) ||
-                (nodeParent.getNodeType() == Node.DOCUMENT_NODE)) {
-            return expression;
-        }
-
-        String stringParentName;
-        if (nodeParent.getNodeType() == Node.TEXT_NODE) {
-            stringParentName = "text()";
-        } else {
-            stringParentName = nodeParent.getNodeName();
-        }
-        stringParentName = stringParentName.concat(getXpathSuffix(nodeParent));
-
-        String newExpression = stringParentName + "/" + expression;
-        return getXpathLoop(nodeParent, newExpression);
-    }
-
-    private static String getXpathSuffix(final Node node) {
-        final Node nodeParent = node.getParentNode();
-        if (nodeParent == null) {
-            return "";
-        }
-
-        if (node.getNodeName().equalsIgnoreCase("html")) {
-            return "";
-        }
-
-        final NodeList childNodes = nodeParent.getChildNodes();
-        int count = 0; // number of elements that are the same as the given element
-        int index = 1; // the index of the given element amongst all same elements
-        for (int x = 0; x < childNodes.getLength(); x++) {
-
-            if (childNodes.item(x) == node) {
-                index = count + 1;
-                count++;
-            } else if (childNodes.item(x).getNodeName().compareToIgnoreCase(node.getNodeName()) == 0) {
-                count++;
-            }
-        }
-
-        if (count <= 1) {
-            return "";
-        }
-
-        return String.format("[%s]", Integer.toString(index));
     }
 
     // Saves the global information about the analysis in DataBase and return the id of the analysis
@@ -936,8 +845,7 @@ public class Evaluator {
             problem.setCheck(check);
             problem.setLineNumber(inc.getCodigoLineaFuente());
             problem.setColumnNumber(inc.getCodigoColumnaFuente());
-            final Element nodeRoot = eval.getHtmlDoc().createElement("problem-text");
-            nodeRoot.setTextContent(inc.getCodigoFuente());
+            final Element nodeRoot = createProblemTextElement(eval, inc.getCodigoFuente());
             nodeRoot.setAttribute(IntavConstants.GETTING_FROM_BD, IntavConstants.TRUE);
             problem.setNode(nodeRoot);
             eval.addProblem(problem);
