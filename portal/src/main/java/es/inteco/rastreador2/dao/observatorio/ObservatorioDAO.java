@@ -1134,7 +1134,7 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String idObservatory) throws Exception {
+    private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String idObservatory) throws SQLException {
         for (SemillaForm semillaForm : seeds) {
             //Desactivamos los rastreos de las semilla sque han sido desasignadas al observatorio
             Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, Long.parseLong(idObservatory), semillaForm.getId());

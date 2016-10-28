@@ -16,7 +16,7 @@ import java.util.Properties;
  * @author miguel.garcia
  */
 public final class CheckDescriptionsManager {
-    private final static String DEFAULT_PROPERTIES = "/default.check.descriptions";
+    private static final String DEFAULT_PROPERTIES = "/default.check.descriptions";
 
     private final Properties properties;
 

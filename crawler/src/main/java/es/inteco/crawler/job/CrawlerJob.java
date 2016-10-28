@@ -299,10 +299,8 @@ public class CrawlerJob implements InterruptableJob {
                         domain = connection.getURL().getHost();
 
                         final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-                        String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                        final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
                         markableInputStream.close();
-                        // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
-                        textContent = textContent.replaceAll("(?i)<iframe [^>]*/>", "");
                         final Document document = CrawlerDOMUtils.getDocument(textContent);
 
                         final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
