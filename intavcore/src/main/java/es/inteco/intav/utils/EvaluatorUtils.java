@@ -20,7 +20,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.net.ssl.*;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,37 +41,38 @@ public final class EvaluatorUtils {
     private EvaluatorUtils() {
     }
 
-    public static EvaluationForm generateEvaluationForm(Evaluation evaluation, String language) {
-        EvaluationForm evaluationForm = new EvaluationForm();
-        Guideline guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
+    public static EvaluationForm generateEvaluationForm(final Evaluation evaluation, final String language) {
+        final EvaluationForm evaluationForm = new EvaluationForm();
+        final Guideline guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
+        if (guideline!=null) {
+            evaluationForm.setEntity(evaluation.getEntidad());
+            evaluationForm.setUrl(evaluation.getFilename());
+            evaluationForm.setGuideline(guideline.getName());
+            evaluationForm.setSource(evaluation.getSource());
 
-        evaluationForm.setEntity(evaluation.getEntidad());
-        evaluationForm.setUrl(evaluation.getFilename());
-        evaluationForm.setGuideline(guideline.getName());
-        evaluationForm.setSource(evaluation.getSource());
-
-        evaluationForm.setPriorities(new ArrayList<PriorityForm>());
-        for (int i = 0; i < guideline.getGroups().size(); i++) {
-            GuidelineGroup group = guideline.getGroups().get(i);
-            PriorityForm priorityForm = new PriorityForm();
-            priorityForm.setPriorityName(group.getName());
-            priorityForm.setGuidelines(new ArrayList<GuidelineForm>());
-            priorityForm.getGuidelines().addAll(getGuidelinesFromGroup(group, evaluation, language));
-            boolean hasContent = false;
-            if (!priorityForm.getGuidelines().isEmpty()) {
-                for (GuidelineForm guidelineForm : priorityForm.getGuidelines()) {
-                    if (!guidelineForm.getPautas().isEmpty()) {
-                        hasContent = true;
+            evaluationForm.setPriorities(new ArrayList<PriorityForm>());
+            for (int i = 0; i < guideline.getGroups().size(); i++) {
+                final GuidelineGroup group = guideline.getGroups().get(i);
+                final PriorityForm priorityForm = new PriorityForm();
+                priorityForm.setPriorityName(group.getName());
+                priorityForm.setGuidelines(new ArrayList<GuidelineForm>());
+                priorityForm.getGuidelines().addAll(getGuidelinesFromGroup(group, evaluation, language));
+                boolean hasContent = false;
+                if (!priorityForm.getGuidelines().isEmpty()) {
+                    for (GuidelineForm guidelineForm : priorityForm.getGuidelines()) {
+                        if (!guidelineForm.getPautas().isEmpty()) {
+                            hasContent = true;
+                        }
                     }
                 }
-            }
 
-            if (hasContent) {
-                evaluationForm.getPriorities().add(priorityForm);
-            }
+                if (hasContent) {
+                    evaluationForm.getPriorities().add(priorityForm);
+                }
 
-            // Contamos los problemas
-            countProblems(priorityForm);
+                // Contamos los problemas
+                countProblems(priorityForm);
+            }
         }
 
         return evaluationForm;
@@ -107,7 +107,7 @@ public final class EvaluatorUtils {
             GuidelineForm guidelineForm = new GuidelineForm();
             guidelineForm.setDescription(subgroup.getName());
             guidelineForm.setPautas(new ArrayList<PautaForm>());
-            guidelineForm.setPautas(getPautasFromGroup(subgroup, evaluation, language));
+            guidelineForm.setPautas(getPautasFromGroup(subgroup, evaluation));
             // Añadimos la pauta a la lista
             guidelines.add(guidelineForm);
         }
@@ -116,7 +116,7 @@ public final class EvaluatorUtils {
     }
 
     // Devuelve la lista de pautas que tienen algún problema asociado.
-    private static List<PautaForm> getPautasFromGroup(GuidelineGroup group, Evaluation evaluation, String language) {
+    private static List<PautaForm> getPautasFromGroup(GuidelineGroup group, Evaluation evaluation) {
         List<PautaForm> pautas = new ArrayList<>();
         // iterate any check in the group (priority)
         for (int i = 0; i < group.getGroupsVector().size(); i++) {
@@ -129,7 +129,7 @@ public final class EvaluatorUtils {
 
                 vProblems = sortVectorProblems(vProblems);
 
-                pautaForm.setProblems(getProblemsFromGuideline(vProblems, subgroup, evaluation, language));
+                pautaForm.setProblems(getProblemsFromGuideline(vProblems, evaluation));
 
                 // Añadimos la pauta a la lista
                 pautas.add(pautaForm);
@@ -140,7 +140,7 @@ public final class EvaluatorUtils {
     }
 
     // Devuelve los tipos de problemas asociados a una pauta concreta
-    public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, GuidelineGroup subgroup, Evaluation evaluation, String language) {
+    public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, Evaluation evaluation) {
         final List<ProblemForm> problems = new ArrayList<>();
 
         int lastProblem = 0;
@@ -191,9 +191,9 @@ public final class EvaluatorUtils {
             specificProblem.setColumn(problem.getColumnNumber() != -1 ? problem.getColumnNumberString() : "");
 
             if (problem.isSummary()) {
-                specificProblem.setNote(getCode(problem, evaluation));
+                specificProblem.setNote(getCode(problem));
             } else {
-                List<String> code = getCode(problem, evaluation);
+                List<String> code = getCode(problem);
                 if (code.size() == 1 && code.get(0) != null && code.get(0).contains("<|>")) {
                     specificProblem.setMessage(getMessage(code.get(0)));
                     String codeFiltered = getCode(code.get(0));
@@ -215,45 +215,39 @@ public final class EvaluatorUtils {
     }
 
     // Adds information to the document that is used to display the accessibility problem.
-    public static List<String> getCode(Problem problem, Evaluation evaluation) {
+    public static List<String> getCode(final Problem problem) {
         List<String> code = new ArrayList<>();
 
-        PropertiesManager properties = new PropertiesManager();
-        Check check = problem.getCheck();
-        Element elementProblem = (Element) problem.getNode();
-        String nameProblemElement = check.getKeyElement();
+        final PropertiesManager properties = new PropertiesManager();
+        final Check check = problem.getCheck();
+        final Element elementProblem = (Element) problem.getNode();
+        final String checkKeyElement = check.getKeyElement();
 
-        if ("a".equals(nameProblemElement)) {
+        if ("a".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("img".equals(nameProblemElement)) {
+        } else if ("img".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if ("area".equals(nameProblemElement)) {
+        } else if ("area".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if ("body".equals(nameProblemElement)) {
+        } else if ("body".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if ("title".equals(nameProblemElement)) {
+        } else if ("title".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("input".equals(nameProblemElement)) {
+        } else if ("input".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if ("html".equals(nameProblemElement)) {
-            if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "doc.codIdioma.valido"))) { // valid language code
+        } else if ("html".equals(checkKeyElement)) {
+            if (check.getId() == 49) { // valid language code
                 code = getHtml(elementProblem, false, false);
-            } else if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif")) ||
+            } else if (check.getId() == 232 || //Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif")) ||
                     check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) { // valid document
-                if (evaluation != null) {
-                    code.add(problem.getNode().getTextContent());
-                }
+                code.add(problem.getNode().getTextContent());
             }
 
             if (check.getId() == 455 || check.getId() == 456 || check.getId() == 457 || check.getId() == 458) {
                 code.add(problem.getNode().getTextContent());
             }
 
-            if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "ordenLect.attrDir.siIdiomPrimDI"))) { // valid "dir" attribute
-                code = getHtml(elementProblem, false, false);
-            }
-
-            if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "html.estructure"))) { // valid "estructure" attribute
+            if (check.getId() == 42) { // valid "estructure" attribute
                 code = getHtmlHeaders(elementProblem);
             }
 
@@ -272,40 +266,40 @@ public final class EvaluatorUtils {
             if (check.getId() == 436) {
                 code.add(problem.getNode().getTextContent());
             }
-        } else if ("legend".equals(nameProblemElement)) {
+        } else if ("legend".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
         } /*else if ("doctype".equals(nameProblemElement)) {
 
-        }*/ else if ("form".equals(nameProblemElement)) {
+        }*/ else if ("form".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if (("h1".equals(nameProblemElement)) || ("h2".equals(nameProblemElement)) || ("h3".equals(nameProblemElement)) ||
-                ("h4".equals(nameProblemElement)) || ("h5".equals(nameProblemElement)) || ("h6".equals(nameProblemElement))) {
-            if ((check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2.trasH1"))) ||
-                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3.trasH2"))) ||
-                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3H4.trasH3"))) ||
-                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3H4H5.trasH4"))) ||
-                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H2H6.trasH5")))) {
-                code = getHtml(elementProblem, false, false);
-            } else {
-                code = getHtml(elementProblem, true, false);
-            }
-        } else if ("select".equals(nameProblemElement)) {
+//        } else if (("h1".equals(nameProblemElement)) || ("h2".equals(nameProblemElement)) || ("h3".equals(nameProblemElement)) ||
+//                ("h4".equals(nameProblemElement)) || ("h5".equals(nameProblemElement)) || ("h6".equals(nameProblemElement))) {
+//            if ((check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2.trasH1"))) ||
+//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3.trasH2"))) ||
+//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3H4.trasH3"))) ||
+//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3H4H5.trasH4"))) ||
+//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H2H6.trasH5")))) {
+//                code = getHtml(elementProblem, false, false);
+//            } else {
+//                code = getHtml(elementProblem, true, false);
+//            }
+        } else if ("select".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if ("table".equals(nameProblemElement)) {
+        } else if ("table".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-        } else if ("caption".equals(nameProblemElement)) {
+        } else if ("caption".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("p".equals(nameProblemElement)) {
+        } else if ("p".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("color".equals(nameProblemElement)) {
+        } else if ("color".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("validation".equals(nameProblemElement)) {
+        } else if ("validation".equals(checkKeyElement)) {
             code.add(problem.getNode().getTextContent());
-        } else if ("texto".equals(nameProblemElement)) {
+        } else if ("texto".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("headers".equals(nameProblemElement)) {
+        } else if ("headers".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } else if ("problem-text".equals(nameProblemElement)) {
+        } else if ("problem-text".equals(checkKeyElement)) {
             Logger.putLog("Creando código a partir de PROBLEM-TEXT", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
             code = Collections.singletonList(elementProblem.getTextContent());
         } else {
@@ -413,7 +407,7 @@ public final class EvaluatorUtils {
     }
 
     public static String serializeXmlElement(final Node node) {
-        if (node!=null ) {
+        if (node != null) {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 return serializeXmlElement((Element) node, false);
             } else {
@@ -536,50 +530,6 @@ public final class EvaluatorUtils {
         }
 
         return formList;
-    }
-
-    public static List<PageForm> createPagination(HttpServletRequest request, int numResult) {
-        int currentPage = 1;
-        if (request.getParameter(IntavConstants.PAG_PARAM) != null) {
-            currentPage = Integer.parseInt(request.getParameter(IntavConstants.PAG_PARAM));
-        }
-
-        PropertiesManager properties = new PropertiesManager();
-        List<PageForm> pageFormList = new ArrayList<>();
-        String path = request.getRequestURL() + "?" + request.getQueryString();
-        path = removeParameterP(path);
-        int numPages = (int) Math.ceil((float) numResult / (float) Integer.parseInt(properties.getValue("intav.properties", "pagination.size")));
-
-        for (int i = 1; i <= numPages; i++) {
-            PageForm pForm = new PageForm();
-            pForm.setTitle(String.valueOf(i));
-            if (i != currentPage) {
-                pForm.setPath(path);
-            }
-            pageFormList.add(pForm);
-        }
-        return pageFormList;
-    }
-
-    public static List<PageForm> createPagination(HttpServletRequest request, int numResult, int pagSize, int currentPage) {
-        List<PageForm> pageFormList = new ArrayList<>();
-        String path = request.getRequestURL() + "?" + request.getQueryString();
-        path = removeParameterP(path);
-        int numPages = (int) Math.ceil((float) numResult / (float) pagSize);
-
-        for (int i = 1; i <= numPages; i++) {
-            PageForm pForm = new PageForm();
-            pForm.setTitle(String.valueOf(i));
-            if (i != currentPage) {
-                pForm.setPath(path);
-            }
-            pageFormList.add(pForm);
-        }
-        return pageFormList;
-    }
-
-    private static String removeParameterP(String parameterP) {
-        return parameterP.replaceAll("&p=\\d+", "").replaceAll("&prefolP=foll+", "").replaceAll("&prefolP=prev+", "");
     }
 
     // Crea un objeto de tipo Documento
@@ -810,7 +760,7 @@ public final class EvaluatorUtils {
                         List<Problem> vProblems = evaluation.getHashCheckProblem().get(subgroup.getName());
                         if (vProblems != null) {
                             vProblems = sortVectorProblems(vProblems);
-                            List<ProblemForm> problemsForm = getProblemsFromGuideline(vProblems, subgroup, evaluation, "es");
+                            List<ProblemForm> problemsForm = getProblemsFromGuideline(vProblems, evaluation);
                             for (ProblemForm problemForm : problemsForm) {
                                 if ((observatorySubgroupForm.getFailChecks().contains(Integer.parseInt(problemForm.getCheck())) ||
                                         observatorySubgroupForm.getOnlyWarningChecks().contains(Integer.parseInt(problemForm.getCheck()))) &&
@@ -934,14 +884,14 @@ public final class EvaluatorUtils {
      * @param aspects
      * @return
      */
-    private static List<AspectScoreForm> getAspectScore(Map<String, List<Integer>> aspects) {
-        List<AspectScoreForm> aspectScore = new ArrayList<>();
-        PropertiesManager pmgr = new PropertiesManager();
+    private static List<AspectScoreForm> getAspectScore(final Map<String, List<Integer>> aspects) {
+        final List<AspectScoreForm> aspectScore = new ArrayList<>();
+        final PropertiesManager pmgr = new PropertiesManager();
         for (Map.Entry<String, List<Integer>> entry : aspects.entrySet()) {
-            AspectScoreForm aspectScoreForm = new AspectScoreForm();
+            final AspectScoreForm aspectScoreForm = new AspectScoreForm();
             aspectScoreForm.setName(entry.getKey());
             aspectScoreForm.setId(Long.valueOf(pmgr.getValue("intav.properties", entry.getKey())));
-            List<Integer> scores = entry.getValue();
+            final List<Integer> scores = entry.getValue();
             if (scores.isEmpty()) {
                 aspectScoreForm.setScore(new BigDecimal(IntavConstants.OBS_VALUE_ASPECT_NOT_SCORE));
             } else {
@@ -1041,7 +991,7 @@ public final class EvaluatorUtils {
         }
     }
 
-    private static BigDecimal calculateScore(int score, int numChecks) throws ArithmeticException {
+    private static BigDecimal calculateScore(final int score, final int numChecks) {
         if (numChecks != 0) {
             return new BigDecimal(score).divide(new BigDecimal(numChecks), 2, BigDecimal.ROUND_HALF_UP).
                     multiply(BigDecimal.TEN).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -1055,38 +1005,6 @@ public final class EvaluatorUtils {
         } else {
             return evaList.get(0).getEntity();
         }
-    }
-
-    public static String getObservatoryEntityName(List<ObservatoryEvaluationForm> evaList) {
-        if (evaList.get(0).getEntity().contains("-")) {
-            return evaList.get(0).getEntity().substring(0, evaList.get(0).getEntity().indexOf("-"));
-        } else {
-            return evaList.get(0).getEntity();
-        }
-    }
-
-    public static boolean passConcurrence() {
-        PropertiesManager pmgr = new PropertiesManager();
-        int concurrentUsers = EvaluatorUtility.getConcurrentUsers();
-        int counter = 0;
-        while (concurrentUsers >= Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "max.num.concurrent.users"))) {
-            try {
-                Logger.putLog("Hay demasiados usuarios concurrentes, se va a esperar para atender la solicitud del usuario", EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
-                concurrentUsers = EvaluatorUtility.getConcurrentUsers();
-
-                if (counter >= Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "num.retries.check.concurrence"))) {
-                    Logger.putLog("Se va a desatender la solicitud debido a que hay demasiados usuarios concurrentes", EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
-                    return false;
-                }
-
-                Random r = new Random(System.currentTimeMillis());
-                Thread.sleep(r.nextInt(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "time.retry.check.concurrence"))));
-                counter++;
-            } catch (Exception e) {
-                Logger.putLog("Exception: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            }
-        }
-        return true;
     }
 
     public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects) throws IOException {
@@ -1132,7 +1050,7 @@ public final class EvaluatorUtils {
         return null;
     }
 
-    public static String getResponseCharset(final HttpURLConnection connection, final InputStream markableInputStream) throws Exception {
+    public static String getResponseCharset(final HttpURLConnection connection, final InputStream markableInputStream) throws IOException {
         String charset = IntavConstants.DEFAULT_ENCODING;
         boolean found = false;
 
@@ -1210,8 +1128,8 @@ public final class EvaluatorUtils {
         return null;
     }
 
-    public static String serializeGuidelineToXml(Guideline guideline) throws Exception {
-        StringWriter sw = new StringWriter();
+    public static String serializeGuidelineToXml(final Guideline guideline) {
+        final StringWriter sw = new StringWriter();
         try {
             OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
             XMLSerializer serializer = new XMLSerializer(sw, of);
