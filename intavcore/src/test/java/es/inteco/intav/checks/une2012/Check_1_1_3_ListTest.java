@@ -358,16 +358,6 @@ public final class Check_1_1_3_ListTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), P_SIMULATING_OL));
 
-
-        final List<ProblemForm> problemsFromGuideline = EvaluatorUtils.getProblemsFromGuideline(evaluation.getProblems(), null, evaluation, "");
-        for (ProblemForm problemForm : problemsFromGuideline) {
-            if (problemForm.getCheck().equals("101")) {
-                Assert.assertEquals("high", problemForm.getType());
-                System.out.println(problemForm.getCode());
-                System.out.println(problemForm.getNote());
-            }
-        }
-
         checkAccessibility.setContent("<p>1- Opción 1 - Lorem ipsum</p>" +
                 "<p>2- Opción 2</p>" +
                 "<p>3- Opción 3</p>" +

@@ -85,7 +85,7 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
                 "</p></html>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
+        Assert.assertEquals(11, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
         ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
         TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_RED_ZERO);
     }
