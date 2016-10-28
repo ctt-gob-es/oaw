@@ -325,17 +325,8 @@ public class Evaluator {
     }
 
     private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList) {
-        final Incidencia incidencia = new Incidencia();
-
-        incidencia.setCodigoAnalisis(eval.getIdAnalisis());
-        incidencia.setCodigoComprobacion(prob.getCheck().getId());
-        incidencia.setCodigoLineaFuente(prob.getLineNumber());
-        incidencia.setCodigoColumnaFuente(prob.getColumnNumber());
-        incidencia.setCodigoFuente(es.inteco.intav.negocio.SourceManager.getSourceInfo(prob));
-
-        incidenceList.add(incidencia);
+        addIncidence(eval, prob, incidenceList, es.inteco.intav.negocio.SourceManager.getSourceInfo(prob));
     }
-
 
     private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList, final String text) {
         final Incidencia incidencia = new Incidencia();
@@ -412,6 +403,8 @@ public class Evaluator {
                     addHeaderNestingIncidences(evaluation, check, incidenceList);
                 } else if (check.getId() == 434 || check.getId() == 435) {
                     addTabIndexIncidences(evaluation, check, incidenceList);
+                } else if (check.getId() == 436) {
+                    addBrIncidences(evaluation, check, incidenceList);
                 } else {
                     // Se ha encontrado un error y se va a registrar en la base de datos
                     if (!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) {
@@ -424,6 +417,19 @@ public class Evaluator {
         } // end for (Check check : vectorChecks)
     }
 
+    private void addBrIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
+        final NodeList nodeList = evaluation.getHtmlDoc().getElementsByTagName("br");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            final Element element = (Element) nodeList.item(i);
+            final String text = EvaluatorUtils.serializeXmlElement(element.getPreviousSibling()) + EvaluatorUtils.serializeXmlElement(element) + EvaluatorUtils.serializeXmlElement(element.getNextSibling());
+
+            final Problem problem = createSummaryProblem(evaluation, check, element, text);
+            evaluation.addProblem(problem);
+
+            addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
+        }
+    }
+
     private void addTabIndexIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
         final NodeList nodeList = evaluation.getHtmlDoc().getElementsByTagName("*");
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -434,12 +440,7 @@ public class Evaluator {
                     try {
                         final int tabindex = Integer.parseInt(element.getAttribute("tabindex").trim());
                         if (tabindex > 0) {
-                            final Problem problem = new Problem(element);
-                            problem.setSummary(true);
-                            problem.setCheck(check);
-                            final Element problemTextNode = createProblemTextElement(evaluation, EvaluatorUtils.serializeXmlElement(element));
-                            problem.setNode(problemTextNode);
-
+                            final Problem problem = createSummaryProblem(evaluation, check, element, EvaluatorUtils.serializeXmlElement(element));
                             evaluation.addProblem(problem);
 
                             addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
@@ -450,6 +451,17 @@ public class Evaluator {
                 }
             }
         }
+    }
+
+    private Problem createSummaryProblem(final Evaluation evaluation, final Check check, final Element element, final String text) {
+        final Problem problem = new Problem(element);
+        problem.setSummary(true);
+        problem.setCheck(check);
+
+        final Element problemTextNode = createProblemTextElement(evaluation, text);
+        problem.setNode(problemTextNode);
+
+        return problem;
     }
 
     private Element createProblemTextElement(final Evaluation evaluation, final String text) {
@@ -466,12 +478,7 @@ public class Evaluator {
                 for (int j = 0; j < headers.getLength(); j++) {
                     final Element currentHeader = (Element) headers.item(j);
                     if (CheckUtils.compareHeadingsLevel((Element) currentHeader.getUserData("prevheader"), currentHeader) > 1) {
-                        final Problem problem = new Problem(currentHeader);
-                        problem.setSummary(true);
-                        problem.setCheck(check);
-                        final Element problemTextNode = createProblemTextElement(evaluation, EvaluatorUtils.serializeXmlElement(currentHeader, true));
-                        problem.setNode(problemTextNode);
-
+                        final Problem problem = createSummaryProblem(evaluation, check, currentHeader, EvaluatorUtils.serializeXmlElement(currentHeader, true));
                         evaluation.addProblem(problem);
 
                         addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());

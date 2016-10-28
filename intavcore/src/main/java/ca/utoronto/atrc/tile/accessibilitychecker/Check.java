@@ -1974,9 +1974,10 @@ public class Check {
         }
         if (nodeList != null && nodeList.getLength() > 0) {
             for (int i = 1; i < nodeList.getLength(); i++) {
-                if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                    if (!nodeList.item(i).getNodeName().equalsIgnoreCase(checkCode.getFunctionElement())) {
-                        if (!exceptions.contains(nodeList.item(i).getNodeName().toLowerCase())) {
+                final Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    if (!node.getNodeName().equalsIgnoreCase(checkCode.getFunctionElement())) {
+                        if (!exceptions.contains(node.getNodeName().toLowerCase())) {
                             return true;
                         }
                     }
