@@ -44,7 +44,7 @@ public final class EvaluatorUtils {
     public static EvaluationForm generateEvaluationForm(final Evaluation evaluation, final String language) {
         final EvaluationForm evaluationForm = new EvaluationForm();
         final Guideline guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
-        if (guideline!=null) {
+        if (guideline != null) {
             evaluationForm.setEntity(evaluation.getEntidad());
             evaluationForm.setUrl(evaluation.getFilename());
             evaluationForm.setGuideline(guideline.getName());
@@ -56,7 +56,7 @@ public final class EvaluatorUtils {
                 final PriorityForm priorityForm = new PriorityForm();
                 priorityForm.setPriorityName(group.getName());
                 priorityForm.setGuidelines(new ArrayList<GuidelineForm>());
-                priorityForm.getGuidelines().addAll(getGuidelinesFromGroup(group, evaluation, language));
+                priorityForm.getGuidelines().addAll(getGuidelinesFromGroup(group, evaluation));
                 boolean hasContent = false;
                 if (!priorityForm.getGuidelines().isEmpty()) {
                     for (GuidelineForm guidelineForm : priorityForm.getGuidelines()) {
@@ -99,7 +99,7 @@ public final class EvaluatorUtils {
     }
 
     // Devuelve la lista de guidelines que tienen algún problema asociado.
-    private static List<GuidelineForm> getGuidelinesFromGroup(GuidelineGroup group, Evaluation evaluation, String language) {
+    private static List<GuidelineForm> getGuidelinesFromGroup(GuidelineGroup group, Evaluation evaluation) {
         List<GuidelineForm> guidelines = new ArrayList<>();
         // iterate any check in the group (priority)
         for (int i = 0; i < group.getGroupsVector().size(); i++) {
@@ -157,10 +157,10 @@ public final class EvaluatorUtils {
                 problemForm = new ProblemForm();
 
                 // Copyrights del W3C
-                if (problem.getCheck().getId() == Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif"))) {
+                if (problem.getCheck().getId() == 232 ) { //Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif"))) {
                     problemForm.setNote("w3c.html.copyright");
                 }
-                if (EvaluatorUtils.isCssValidationNeeded(problem.getCheck().getId())) {
+                if (EvaluatorUtils.isCssValidationCheck(problem.getCheck().getId())) {
                     problemForm.setNote("w3c.css.copyright");
                 }
 
@@ -218,7 +218,6 @@ public final class EvaluatorUtils {
     public static List<String> getCode(final Problem problem) {
         List<String> code = new ArrayList<>();
 
-        final PropertiesManager properties = new PropertiesManager();
         final Check check = problem.getCheck();
         final Element elementProblem = (Element) problem.getNode();
         final String checkKeyElement = check.getKeyElement();
@@ -239,7 +238,8 @@ public final class EvaluatorUtils {
             if (check.getId() == 49) { // valid language code
                 code = getHtml(elementProblem, false, false);
             } else if (check.getId() == 232 || //Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif")) ||
-                    check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) { // valid document
+                    //check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) { // valid document
+                    check.getId() >= 438 || check.getId() <= 441) {
                 code.add(problem.getNode().getTextContent());
             }
 
@@ -1115,14 +1115,18 @@ public final class EvaluatorUtils {
         return linkText.toString();
     }
 
-    // returns the HTML element for this document
-    public static Node getHtmlElement(Node nodeDocument) {
-        NodeList childNodes = nodeDocument.getChildNodes();
-        for (int x = 0; x < childNodes.getLength(); x++) {
-            if (childNodes.item(x).getNodeType() == Node.ELEMENT_NODE) {
-                if (childNodes.item(x).getNodeName().compareToIgnoreCase("html") == 0) {
-                    return childNodes.item(x);
-                }
+    /**
+     * Obtiene el nodo HTML del documento.
+     *
+     * @param nodeDocument un documento DOM.
+     * @return el nodo correspondiente al elemento html o null si no existe.
+     */
+    public static Node getHtmlElement(final Document nodeDocument) {
+        final NodeList childNodes = nodeDocument.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            final Node node = childNodes.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equalsIgnoreCase("html")) {
+                return node;
             }
         }
         return null;
@@ -1234,34 +1238,18 @@ public final class EvaluatorUtils {
 
     // Es necesaria la validación html
     public static boolean isHtmlValidationNeeded(List<Integer> checkSelected) {
-        PropertiesManager pmgr = new PropertiesManager();
-        return checkSelected.contains(Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif")))
-                || checkSelected.contains(Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif.observatory")))
-                || checkSelected.contains(440);
+        return checkSelected.contains(232) || checkSelected.contains(152)
+                || checkSelected.contains(438) || checkSelected.contains(439) || checkSelected.contains(440) || checkSelected.contains(441);
     }
 
     // Es necesaria la validación css
     public static boolean isCssValidationNeeded(List<Integer> checkSelected) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> cssValidationChecks = Arrays.asList(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "css.valida.especif").split(";"));
-        for (String cssValidationCheck : cssValidationChecks) {
-            if (checkSelected.contains(Integer.parseInt(cssValidationCheck))) {
-                return true;
-            }
-        }
-        return false;
+        return checkSelected.contains(78) || checkSelected.contains(119);
     }
 
     // Es necesaria la validación css
-    public static boolean isCssValidationNeeded(Integer check) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> cssValidationChecks = Arrays.asList(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "css.valida.especif").split(";"));
-        for (String cssValidationCheck : cssValidationChecks) {
-            if (check.equals(Integer.parseInt(cssValidationCheck))) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isCssValidationCheck(final int check) {
+        return check == 78 || check == 119;
     }
 
     public static Element getFirstElement(Element elementGiven, boolean filterInlineElements) {

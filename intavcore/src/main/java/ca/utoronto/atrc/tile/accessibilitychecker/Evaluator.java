@@ -391,7 +391,7 @@ public class Evaluator {
                 // Añadimos los problemas de validación de código HTML
                 if (check.getId() == 232) {
                     addValidationIncidences(evaluation, check, incidenceList, ALL_HTML_VALIDATION_ERRORS);
-                } else if (EvaluatorUtils.isCssValidationNeeded(check.getId())) {
+                } else if (EvaluatorUtils.isCssValidationCheck(check.getId())) {
                     addCssValidationIncidences(evaluation, check, incidenceList);
                 } else if (check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) {
                     addValidationIncidences(evaluation, check, incidenceList, String.valueOf(check.getId()));
@@ -727,17 +727,14 @@ public class Evaluator {
     // Evaluates any special tests (doctype etc.)
     private void evaluateSpecial(final Node nodeGiven, final Evaluation evaluation, final Map<String, List<Check>> elementsMap) {
         // get a list of checks for this element
-        final PropertiesManager properties = new PropertiesManager();
         final List<Check> vectorChecks = elementsMap.get("doctype");
         if (vectorChecks != null) {
             for (Check check : vectorChecks) {
-                if (check.getId() == Integer.parseInt(properties.getValue("check.properties", "contHTML.decDoctype"))) {
+                if (check.getId() == 29) { //Integer.parseInt(properties.getValue("check.properties", "contHTML.decDoctype"))) {
                     final Element elementRoot = nodeGiven.getOwnerDocument().getDocumentElement();
                     final String hasDoctype = (String) elementRoot.getUserData("doctype");
                     if (hasDoctype.equals("false")) {
-                        final SimpleDateFormat format = new SimpleDateFormat(properties.getValue(IntavConstants.INTAV_PROPERTIES, "complet.date.format.ymd"));
                         final Problem problem = new Problem((Element) nodeGiven);
-                        problem.setDate(format.format(new Date()));
                         problem.setCheck(check);
                         problem.setXpath(xPathGenerator.getXpath(nodeGiven));
 

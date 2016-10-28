@@ -278,8 +278,8 @@ public final class BasicServiceExport {
 
                                 addSpecificProblems(messageResources, subSection, problem.getSpecificProblems());
 
-                                if (problem.getCheck().equals(PMGR.getValue("check.properties", "doc.valida.especif")) ||
-                                        problem.getCheck().equals(PMGR.getValue("check.properties", "css.valida.especif"))) {
+                                if (problem.getCheck().equals("232") || //PMGR.getValue("check.properties", "doc.valida.especif")) ||
+                                        EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
                                     addW3CCopyright(subSection, problem.getCheck());
                                 }
                             }
@@ -662,10 +662,10 @@ public final class BasicServiceExport {
         Paragraph p = new Paragraph();
         p.setAlignment(Paragraph.ALIGN_RIGHT);
         Anchor anchor = null;
-        if (check.equals(PMGR.getValue("check.properties", "doc.valida.especif"))) {
+        if (check.equals("232") ) { //PMGR.getValue("check.properties", "doc.valida.especif"))) {
             anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.moreInfoFont);
             anchor.setReference(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
-        } else if (check.equals(PMGR.getValue("check.properties", "css.valida.especif"))) {
+        } else if (EvaluatorUtils.isCssValidationCheck(Integer.parseInt(check))) {
             anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.moreInfoFont);
             anchor.setReference(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
         }

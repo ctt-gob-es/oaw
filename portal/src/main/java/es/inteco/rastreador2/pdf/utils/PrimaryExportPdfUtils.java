@@ -13,6 +13,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.*;
+import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
@@ -338,8 +339,8 @@ public final class PrimaryExportPdfUtils {
                                         BasicServiceExport.addSpecificProblems(messageResources, levelSection, problem.getSpecificProblems());
                                     }
 
-                                    if (problem.getCheck().equals(pmgr.getValue("check.properties", "doc.valida.especif")) ||
-                                            problem.getCheck().equals(pmgr.getValue("check.properties", "css.valida.especif"))) {
+                                    if (problem.getCheck().equals("232") || //pmgr.getValue("check.properties", "doc.valida.especif")) ||
+                                            EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
                                         BasicServiceExport.addW3CCopyright(levelSection, problem.getCheck());
                                     }
                                 }

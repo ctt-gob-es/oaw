@@ -281,8 +281,8 @@ public final class IntavExport {
                                     subSubsection.setNumberDepth(0);
                                     addSpecificProblems(subSubsection, problem.getSpecificProblems(), request);
 
-                                    if (problem.getCheck().equals(pmgr.getValue("check.properties", "doc.valida.especif")) ||
-                                            problem.getCheck().equals(pmgr.getValue("check.properties", "css.valida.especif"))) {
+                                    if (problem.getCheck().equals("232") || //pmgr.getValue("check.properties", "doc.valida.especif")) ||
+                                            EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
                                         addW3CCopyright(subSubsection, problem.getCheck());
                                     }
                                 }
@@ -958,10 +958,10 @@ public final class IntavExport {
         Paragraph p = new Paragraph();
         p.setAlignment(Paragraph.ALIGN_RIGHT);
         Anchor anchor = null;
-        if (check.equals(pmgr.getValue("check.properties", "doc.valida.especif"))) {
+        if (check.equals("232") ) {//pmgr.getValue("check.properties", "doc.valida.especif"))) {
             anchor = new Anchor(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.moreInfoFont);
             anchor.setReference(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
-        } else if (check.equals(pmgr.getValue("check.properties", "css.valida.especif"))) {
+        } else if (EvaluatorUtils.isCssValidationCheck(Integer.parseInt(check))) {
             anchor = new Anchor(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.moreInfoFont);
             anchor.setReference(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
         }
