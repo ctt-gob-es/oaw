@@ -187,8 +187,8 @@ public final class EvaluatorUtils {
             }
 
             SpecificProblemForm specificProblem = new SpecificProblemForm();
-            specificProblem.setLine(problem.getLineNumber()!=-1?problem.getLineNumberString():"");
-            specificProblem.setColumn(problem.getColumnNumber()!=-1?problem.getColumnNumberString():"");
+            specificProblem.setLine(problem.getLineNumber() != -1 ? problem.getLineNumberString() : "");
+            specificProblem.setColumn(problem.getColumnNumber() != -1 ? problem.getColumnNumberString() : "");
 
             if (problem.isSummary()) {
                 specificProblem.setNote(getCode(problem, evaluation));
@@ -245,7 +245,7 @@ public final class EvaluatorUtils {
                 }
             }
 
-            if (check.getId()==455 || check.getId()==456 || check.getId()==457 || check.getId()==458) {
+            if (check.getId() == 455 || check.getId() == 456 || check.getId() == 457 || check.getId() == 458) {
                 code.add(problem.getNode().getTextContent());
             }
 
@@ -266,6 +266,10 @@ public final class EvaluatorUtils {
             }
 
             if (check.getId() == 460) {
+                code.add(problem.getNode().getTextContent());
+            }
+
+            if (check.getId() == 436) {
                 code.add(problem.getNode().getTextContent());
             }
         } else if ("legend".equals(nameProblemElement)) {
@@ -408,11 +412,15 @@ public final class EvaluatorUtils {
         return serialization.toString();
     }
 
-    public static String serializeXmlElement(Node node) {
-        if (node.getNodeType() == Node.ELEMENT_NODE) {
-            return serializeXmlElement((Element) node, false);
+    public static String serializeXmlElement(final Node node) {
+        if (node!=null ) {
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                return serializeXmlElement((Element) node, false);
+            } else {
+                return node.getTextContent();
+            }
         } else {
-            return node.getTextContent();
+            return "";
         }
     }
 
@@ -434,7 +442,7 @@ public final class EvaluatorUtils {
                     if (!noSangrado) {
                         final String regexp = "(.*?\\\n)|(<.*?>)|([^<>]*)";
                         final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-                        final Matcher matcher = pattern.matcher(codigoString.replaceAll("\\s{2,}",""));
+                        final Matcher matcher = pattern.matcher(codigoString.replaceAll("\\s{2,}", ""));
 
                         int numChar = 0;
 
@@ -467,7 +475,7 @@ public final class EvaluatorUtils {
                             }
                         }
                     } else {
-                        codigo.add(HTMLEntities.htmlAngleBrackets(codigoString.trim().replaceAll("\\s{2,}","")));
+                        codigo.add(HTMLEntities.htmlAngleBrackets(codigoString.trim().replaceAll("\\s{2,}", "")));
                     }
                 }
 
@@ -481,7 +489,7 @@ public final class EvaluatorUtils {
         }
     }
 
-    public static Evaluation evaluate(CheckAccessibility checkAccessibility, String language) throws Exception {
+    public static Evaluation evaluate(CheckAccessibility checkAccessibility, String language) {
         Logger.putLog("Iniciando evaluación de accesibilidad de la url: " + checkAccessibility.getUrl(), EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
 
         Evaluator evaluator = EvaluatorUtility.getEvaluator();
@@ -489,7 +497,7 @@ public final class EvaluatorUtils {
         return evaluator.evaluate(checkAccessibility, language);
     }
 
-    public static Evaluation evaluateContent(CheckAccessibility checkAccessibility, String language) throws Exception {
+    public static Evaluation evaluateContent(CheckAccessibility checkAccessibility, String language) {
         Evaluator evaluator = EvaluatorUtility.getEvaluator();
         long inicio = System.currentTimeMillis();
         Evaluation evaluation = null;
@@ -581,7 +589,7 @@ public final class EvaluatorUtils {
         return docBuilder.newDocument();
     }
 
-    public static List<String> getFramesUrl(String content) throws Exception {
+    public static List<String> getFramesUrl(String content) {
         List<String> frames = new ArrayList<>();
 
         PropertiesManager pmgr = new PropertiesManager();
@@ -601,7 +609,7 @@ public final class EvaluatorUtils {
 
     }
 
-    public static List<String> getFramesUrl(URL url) throws Exception {
+    public static List<String> getFramesUrl(URL url) throws IOException {
         HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", false);
         connection.connect();
         int responseCode = connection.getResponseCode();
@@ -1099,7 +1107,7 @@ public final class EvaluatorUtils {
 
     private static SSLSocketFactory getNaiveSSLSocketFactory() {
         // Create a trust manager that does not validate certificate chains
-        final TrustManager[] trustAllCerts = new TrustManager[] {
+        final TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
