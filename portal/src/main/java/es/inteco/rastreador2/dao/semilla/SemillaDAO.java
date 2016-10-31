@@ -407,17 +407,16 @@ public final class SemillaDAO {
     }
 
     public static long getIdList(Connection c, String nombreLista, Long idCategoria) throws SQLException {
-        String query = "SELECT id_lista FROM lista WHERE nombre = ?";
-        if (idCategoria != null) {
-            query = query + " AND id_categoria = ?";
+        if (idCategoria!=null) {
+            return getIdListByNombreAndCategoria(c, nombreLista, idCategoria);
+        } else {
+            return getIdListByNombre(c, nombreLista);
         }
-        query += " ORDER BY id_lista DESC LIMIT 1";
+    }
 
-        try (PreparedStatement ps = c.prepareStatement(query)) {
+    private static long getIdListByNombre(Connection c, String nombreLista) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_lista FROM lista WHERE nombre = ? ORDER BY id_lista DESC LIMIT 1")) {
             ps.setString(1, nombreLista);
-            if (idCategoria != null) {
-                ps.setLong(2, idCategoria);
-            }
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getLong("id_lista");
@@ -427,7 +426,22 @@ public final class SemillaDAO {
             Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
+        return 0;
+    }
 
+    private static long getIdListByNombreAndCategoria(Connection c, String nombreLista, Long idCategoria) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT id_lista FROM lista WHERE nombre = ? AND id_categoria = ? ORDER BY id_lista DESC LIMIT 1")) {
+            ps.setString(1, nombreLista);
+            ps.setLong(2, idCategoria);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getLong("id_lista");
+                }
+            }
+        } catch (SQLException e) {
+            Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
         return 0;
     }
 

@@ -116,11 +116,6 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DIV_MORE_THAN_150_CHARS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
-
-        checkAccessibility.setUrl("http://www.ine.es/ss/Satellite?L=0&c=Page&cid=1254735849170&p=1254735849170&pagename=Ayuda%2FINELayout#");
-        evaluation = EvaluatorUtils.evaluate(checkAccessibility,"es");
-        TestUtils.printProblems(evaluation.getProblems(), DIV_MORE_THAN_150_CHARS);
-        TestUtils.printHtml(evaluation.getHtmlDoc());
     }
 
     @Test

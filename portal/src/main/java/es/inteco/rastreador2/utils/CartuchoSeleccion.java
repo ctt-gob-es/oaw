@@ -1,9 +1,11 @@
 package es.inteco.rastreador2.utils;
 
-public class CartuchoSeleccion {
+import java.io.Serializable;
+
+public class CartuchoSeleccion implements Serializable {
+
     private String cartucho;
     private String aplicacion;
-
 
     public String getCartucho() {
         return cartucho;

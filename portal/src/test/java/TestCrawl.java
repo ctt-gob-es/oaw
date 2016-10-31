@@ -9,7 +9,6 @@ import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 import es.inteco.utils.MailUtils;
-import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
@@ -18,7 +17,10 @@ import org.w3c.dom.Document;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by mikunis on 26/11/14.
@@ -37,18 +39,18 @@ public class TestCrawl {
         final CrawlerData crawlerData = new CrawlerData();
 //        crawlerData.setUrls(Collections.singletonList("http://www.mjusticia.gob.es/cs/Satellite/Portal/es/inicio"));
 //        crawlerData.setUrls(Collections.singletonList("http://www.aytoalamedasagra.com/"));
-        crawlerData.setUrls(Collections.singletonList("http://www.ayuntamientodeoyon.com/es/"));
-        crawlerData.setProfundidad(4);
-        crawlerData.setTopN(4);
-        crawlerData.setPseudoaleatorio(true);
-        crawlerData.setTest(true);
-        crawlerData.setIdCrawling(-1);
-        makeCrawl(crawlerData);
-
-        for (CrawledLink cl: crawlingDomains) {
-            System.out.println(cl.getUrl());
-        }
-        Assert.assertEquals(17, crawlingDomains.size());
+//        crawlerData.setUrls(Collections.singletonList("http://www.ayuntamientodeoyon.com/es/"));
+//        crawlerData.setProfundidad(4);
+//        crawlerData.setTopN(4);
+//        crawlerData.setPseudoaleatorio(true);
+//        crawlerData.setTest(true);
+//        crawlerData.setIdCrawling(-1);
+//        makeCrawl(crawlerData);
+//
+//        for (CrawledLink cl: crawlingDomains) {
+//            System.out.println(cl.getUrl());
+//        }
+//        Assert.assertEquals(17, crawlingDomains.size());
     }
 
     private void makeCrawl(CrawlerData crawlerData) throws Exception {
@@ -143,7 +145,7 @@ public class TestCrawl {
                 Collections.reverse(auxDomains);
                 for (String auxDomain : auxDomains) {
                     try {
-                        if ( (crawlingDomains.size() <= (chosenDepth * crawlerData.getTopN()))) {
+                        if ((crawlingDomains.size() <= (chosenDepth * crawlerData.getTopN()))) {
                             if (!contains(crawlingDomains, auxDomain) && !rejectedDomains.contains(auxDomain)) {
                                 isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks);
                             }
@@ -161,7 +163,6 @@ public class TestCrawl {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
                 LOG.info("Error al rastrear el dominio " + url + ": " + e.getMessage());
             }
         }
@@ -191,6 +192,7 @@ public class TestCrawl {
     private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks, List<IgnoredLink> ignoredLinks) throws Exception {
         return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
     }
+
     private boolean isHtmlTextContent(String domain, String urlLink, String cookie) throws Exception {
         HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
         connection.setRequestProperty("Cookie", cookie);
@@ -286,10 +288,11 @@ public class TestCrawl {
 
         return false;
     }
+
     private void makeCrawl(String domain, String rootUrl, String url, String cookie, CrawlerData crawlerData, List<IgnoredLink> ignoredLinks) throws Exception {
         PropertiesManager pmgr = new PropertiesManager();
         int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
-        if (crawlerData.getProfundidad() > 0 ) {
+        if (crawlerData.getProfundidad() > 0) {
             List<CrawledLink> levelLinks = new ArrayList<CrawledLink>();
             HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
             try {
@@ -346,6 +349,7 @@ public class TestCrawl {
             }
         }
     }
+
     private boolean isValidUrl(String urlRoot, String domain, String urlLink, CrawlerData crawlerData) {
         PropertiesManager pmgr = new PropertiesManager();
 
@@ -381,6 +385,7 @@ public class TestCrawl {
 
         return false;
     }
+
     private static boolean isOuterDomain(String domain, String url) {
         try {
             if (domain.equalsIgnoreCase(new URL(url).getHost())) {

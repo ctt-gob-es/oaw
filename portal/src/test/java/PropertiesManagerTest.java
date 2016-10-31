@@ -25,9 +25,7 @@ public class PropertiesManagerTest {
 
         Assert.assertNotNull(pm.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator"));
 
-        Assert.assertEquals("observ.accesibilidad@correo.gob.es", pm.getValue("crawler.core.properties", "incomplete.crawler.warning.emails"));
-
-
+        Assert.assertEquals("miguel.garcia@fundacionctic.org", pm.getValue("crawler.core.properties", "incomplete.crawler.warning.emails"));
     }
 
 }

@@ -32,9 +32,11 @@ import org.jfree.util.Rotation;
 import java.awt.*;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -51,7 +53,7 @@ public final class GraphicsUtils {
     public static String totalPageStr;
     public static long totalPage;
     private static Font TITLE_FONT;
-    public static Font TICK_LABEL_FONT;
+    private static Font TICK_LABEL_FONT;
     private static Font ITEM_LABEL_FONT;
     private static Font LEGEND_FONT;
     private static Font NO_DATA_FONT;
@@ -66,7 +68,7 @@ public final class GraphicsUtils {
             TICK_LABEL_FONT = new Font("Roboto", Font.PLAIN, 14);
             ITEM_LABEL_FONT = new java.awt.Font("Roboto", Font.BOLD, 12);
             NO_DATA_FONT = new java.awt.Font("Roboto", Font.BOLD, 30);
-        } catch (Exception e) {
+        } catch (FontFormatException | IOException e) {
             TITLE_FONT  = new java.awt.Font("Arial", Font.BOLD, 22);
             LEGEND_FONT = new java.awt.Font("Arial", Font.PLAIN, 14);
             TICK_LABEL_FONT = new java.awt.Font("Arial", Font.PLAIN, 14);
@@ -204,7 +206,7 @@ public final class GraphicsUtils {
         }
     }
 
-    public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws Exception {
+    public static void createStackedBarChart(final ChartForm chartForm, final String noDataMess, final String filePath) throws IOException {
         final JFreeChart chart = ChartFactory.createStackedBarChart3D(chartForm.getTitle(), chartForm.getColumnTitle(), chartForm.getRowTitle(), chartForm.getDataSet(),
                 PlotOrientation.VERTICAL, chartForm.isPrintLegend(), true, false);
 
@@ -498,11 +500,11 @@ public final class GraphicsUtils {
         barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
     }
 
-    public static void saveChartToFile(final String filePath, final JFreeChart chart, int x, int y) throws Exception {
+    public static void saveChartToFile(final String filePath, final JFreeChart chart, int x, int y) throws IOException {
        saveChartToFile(filePath, chart, x, y, GraphicFormatType.JPG);
     }
 
-    public static void saveChartToFile(final String filePath, final JFreeChart chart, final int x, final int y, final GraphicFormatType mimeType) throws Exception {
+    public static void saveChartToFile(final String filePath, final JFreeChart chart, final int x, final int y, final GraphicFormatType mimeType) throws IOException {
         final File file = new File(filePath);
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             Logger.putLog("Error al crear el archivo con la imagen de la gráfica", GraphicsUtils.class, Logger.LOG_LEVEL_ERROR);
@@ -535,8 +537,8 @@ public final class GraphicsUtils {
     public static class PieRenderer {
         private Color[] color;
 
-        public PieRenderer(Color[] color) {
-            this.color = color;
+        public PieRenderer(Color[] colors) {
+            this.color = Arrays.copyOf(colors, colors.length);
         }
 
         public void setColor(PiePlot plot, DefaultPieDataset dataset) {
@@ -660,7 +662,7 @@ public final class GraphicsUtils {
         private Paint[] colors;
 
         public CustomRenderer3D(final Paint[] colors) {
-            this.colors = colors;
+            this.colors = Arrays.copyOf(colors, colors.length);
         }
 
         public Paint getItemPaint(final int row, final int column) {
@@ -673,7 +675,7 @@ public final class GraphicsUtils {
         private Paint[] colors;
 
         public CustomRenderer(final Paint[] colors) {
-            this.colors = colors;
+            this.colors = Arrays.copyOf(colors, colors.length);;
         }
 
         public Paint getItemPaint(final int row, final int column) {

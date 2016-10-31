@@ -215,7 +215,6 @@ public class SeedCategoriesAction extends Action {
                         mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", categoriaForm.getName());
                     }
                 }
-
                 request.setAttribute("mensajeExito", mensaje);
                 request.setAttribute("accionVolver", volver);
                 return mapping.findForward(Constants.EXITO);

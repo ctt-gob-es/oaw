@@ -25,7 +25,6 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
 
     private static boolean printFooter = false;
 
-    private final boolean basicService;
     private final String footText;
     private final String date;
 
@@ -38,10 +37,9 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
         ExportPageEventsObservatoryMP.printFooter = printFooter;
     }
 
-    public ExportPageEventsObservatoryMP(final String footText, final String date, boolean basicService) {
+    public ExportPageEventsObservatoryMP(final String footText, final String date) {
         this.footText = footText;
         this.date = date;
-        this.basicService = basicService;
     }
 
     /**
@@ -49,20 +47,14 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
      *
      * @param w A PdfWriter object.
      * @param d A Document object.
-     * @throws Exception
      */
-
     public final void onEndPage(final PdfWriter w, final Document d) {
         try {
             final PropertiesManager pmgr = new PropertiesManager();
             final PdfContentByte cb = w.getDirectContent();
             final BaseFont baseFont = BaseFont.createFont(pmgr.getValue(Constants.PDF_PROPERTIES, "path.pdf.font"), BaseFont.CP1252, BaseFont.EMBEDDED);
 
-            if (!basicService) {
-                createHeader(cb, baseFont, d);
-            } else {
-                createBasicServiceHeader(cb, baseFont, d);
-            }
+            createHeader(cb, d);
 
             if (printFooter) {
                 createFooter(cb, w, baseFont, d);
@@ -73,27 +65,7 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
         }
     }
 
-    private void createHeader(PdfContentByte cb, BaseFont texto, Document d) throws DocumentException {
-        PropertiesManager pmgr = new PropertiesManager();
-        int posX = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posX"));
-        int posY = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posY"));
-
-        Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Informe de Accesibilidad. Logotipo Ministerio de la Presidencia.");
-        if (logoMinisterio != null) {
-            logoMinisterio.setAbsolutePosition(posX, posY);
-            cb.addImage(logoMinisterio);
-            cb.endMarkedContentSequence();
-        }
-
-        Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Informe de Accesibilidad. Logotipo Observatorio INTECO.");
-        if (logoObservatorio != null) {
-            logoObservatorio.setAbsolutePosition(d.getPageSize().getWidth() - logoObservatorio.getScaledWidth() - posX, posY);
-            cb.addImage(logoObservatorio);
-            cb.endMarkedContentSequence();
-        }
-    }
-
-    private void createBasicServiceHeader(PdfContentByte cb, BaseFont texto, Document d) throws DocumentException {
+    private void createHeader(final PdfContentByte pdfContentByte, final Document document) throws DocumentException {
         PropertiesManager pmgr = new PropertiesManager();
         int posX = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posX"));
         int posY = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posY"));
@@ -101,37 +73,34 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
         Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Ministerio de Hacienda y Administraciones Públicas");
         if (logoMinisterio != null) {
             logoMinisterio.setAbsolutePosition(posX, posY);
-            cb.addImage(logoMinisterio);
-            cb.endMarkedContentSequence();
+            pdfContentByte.addImage(logoMinisterio);
+            pdfContentByte.endMarkedContentSequence();
         }
 
         Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Observatorio de Accesibilidad Web");
         if (logoObservatorio != null) {
-            //logoObservatorio.setAbsolutePosition(posX + logoMinisterio.getScaledWidth(), posY);
-            logoObservatorio.setAbsolutePosition(d.getPageSize().getWidth() - logoMinisterio.getScaledWidth() - posX - 70, posY);
-            cb.addImage(logoObservatorio);
-            cb.endMarkedContentSequence();
+            logoObservatorio.setAbsolutePosition(document.getPageSize().getWidth() - logoObservatorio.getScaledWidth() - posX, posY);
+            pdfContentByte.addImage(logoObservatorio);
+            pdfContentByte.endMarkedContentSequence();
         }
     }
 
-    private void createFooter(PdfContentByte cb, PdfWriter w, BaseFont texto, Document d) throws DocumentException {
-        PropertiesManager pmgr = new PropertiesManager();
+    private void createFooter(final PdfContentByte pdfContentByte, final PdfWriter pdfWriter, final BaseFont baseFont, final Document document) throws DocumentException {
+        if (pdfWriter.getPageNumber() == 1) {
+            final PropertiesManager pmgr = new PropertiesManager();
+            ExportPageEventsUtils.addText(pdfContentByte, Float.parseFloat(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.dateX")), Float.parseFloat(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.dateY")),
+                    date, Color.WHITE, baseFont, Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.date.size")));
 
-        if (w.getPageNumber() == 1) {
-            ExportPageEventsUtils.addText(cb, Float.parseFloat(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.dateX")), Float.parseFloat(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.dateY")),
-                    date, Color.WHITE, texto, Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.date.size")));
-
-            Image observatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.titlePage.MP"), 600, 98, "Imagen logo Observatorio");
+            final Image observatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.titlePage.MP"), 600, 98, "Observatorio de Accesibilidad Web");
             if (observatorio != null) {
                 observatorio.setAbsolutePosition(0, 150);
-                cb.addImage(observatorio);
-                cb.endMarkedContentSequence();
+                pdfContentByte.addImage(observatorio);
+                pdfContentByte.endMarkedContentSequence();
             }
 
-            d.add(ExportPageEventsUtils.createRectangle(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.recWidthFooterFirstPage")), Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.recHeightFooterFirstPage")), Constants.VERDE_O_MP));
-
+            document.add(ExportPageEventsUtils.createRectangle(Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.recWidthFooterFirstPage")), Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.recHeightFooterFirstPage")), Constants.VERDE_O_MP));
         } else {
-            ExportPageEventsUtils.addFooter(d, w, cb, texto, footText, Constants.VERDE_O_MP);
+            ExportPageEventsUtils.addFooter(document, pdfWriter, pdfContentByte, baseFont, footText, Constants.VERDE_O_MP);
         }
     }
 

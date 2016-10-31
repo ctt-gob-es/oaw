@@ -142,7 +142,7 @@ public class Evaluator {
             inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes());
         }
 
-        final Document docHtml = EvaluatorUtility.loadHtmlFile(inputStream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, fromCrawler, IntavConstants.DEFAULT_ENCODING);
+        final Document docHtml = EvaluatorUtility.loadHtmlFile(inputStream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, IntavConstants.DEFAULT_ENCODING);
         if (docHtml == null) {
             return null;
         } else {
@@ -453,23 +453,6 @@ public class Evaluator {
         }
     }
 
-    private Problem createSummaryProblem(final Evaluation evaluation, final Check check, final Element element, final String text) {
-        final Problem problem = new Problem(element);
-        problem.setSummary(true);
-        problem.setCheck(check);
-
-        final Element problemTextNode = createProblemTextElement(evaluation, text);
-        problem.setNode(problemTextNode);
-
-        return problem;
-    }
-
-    private Element createProblemTextElement(final Evaluation evaluation, final String text) {
-        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
-        problemTextNode.setTextContent(text);
-        return problemTextNode;
-    }
-
     private void addHeaderNestingIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
         for (int i = 1; i < 7; i++) {
             // Obtenemos los encabezados
@@ -652,6 +635,23 @@ public class Evaluator {
         }
     }
 
+    private Problem createSummaryProblem(final Evaluation evaluation, final Check check, final Element element, final String text) {
+        final Problem problem = new Problem(element);
+        problem.setSummary(true);
+        problem.setCheck(check);
+
+        final Element problemTextNode = createProblemTextElement(evaluation, text);
+        problem.setNode(problemTextNode);
+
+        return problem;
+    }
+
+    private Element createProblemTextElement(final Evaluation evaluation, final String text) {
+        final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
+        problemTextNode.setTextContent(text);
+        return problemTextNode;
+    }
+
     // Añade los checks especificos de un elemento
     private void addSpecificChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap, final String nameElement) {
         final List<Check> specificChecks = elementsMap.get(nameElement);
@@ -730,7 +730,8 @@ public class Evaluator {
         final List<Check> vectorChecks = elementsMap.get("doctype");
         if (vectorChecks != null) {
             for (Check check : vectorChecks) {
-                if (check.getId() == 29) { //Integer.parseInt(properties.getValue("check.properties", "contHTML.decDoctype"))) {
+                // check.properties -> contHTML.decDoctype
+                if (check.getId() == 29) {
                     final Element elementRoot = nodeGiven.getOwnerDocument().getDocumentElement();
                     final String hasDoctype = (String) elementRoot.getUserData("doctype");
                     if (hasDoctype.equals("false")) {

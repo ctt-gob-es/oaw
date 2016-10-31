@@ -9,7 +9,6 @@ import com.lowagie.text.pdf.events.IndexEvents.Entry;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
-import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryBS;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import org.apache.struts.util.MessageResources;
 
@@ -67,7 +66,6 @@ public final class IndexUtils {
 
     private static PdfPTable createIndexTable(IndexEvents index) {
         ExportPageEventsObservatoryMP.setPrintFooter(false);
-        ExportPageEventsObservatoryBS.setLastPage(true);
 
         float[] tamTabla = {30f, 3f};
         PdfPTable indexTable = new PdfPTable(tamTabla);

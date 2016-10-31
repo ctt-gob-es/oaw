@@ -125,11 +125,11 @@ public final class IntavExport {
             Chapter chapter1 = new Chapter(cTitle, 2);
             chapter1.setNumberDepth(0);
 
-            for (IntavSimplePDFForm ISPDFform : results) {
-                final Paragraph titleL1 = new Paragraph(getPriorityName(request, ISPDFform.getPriority()), ConstantsFont.sectionFont);
+            for (IntavSimplePDFForm ispdfform : results) {
+                final Paragraph titleL1 = new Paragraph(getPriorityName(request, ispdfform.getPriority()), ConstantsFont.sectionFont);
                 titleL1.setSpacingBefore(10);
                 final Section section1 = chapter1.addSection(titleL1);
-                for (ISPDFGuidelineForm guideline : ISPDFform.getGuidelinesList()) {
+                for (ISPDFGuidelineForm guideline : ispdfform.getGuidelinesList()) {
                     for (ISPDFPautaForm pauta : guideline.getPautaList()) {
                         boolean hasProblem = false;
                         final Paragraph titleL2 = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), pauta.getPauta().getName()), ConstantsFont.guidelineDescFont);
@@ -281,7 +281,7 @@ public final class IntavExport {
                                     subSubsection.setNumberDepth(0);
                                     addSpecificProblems(subSubsection, problem.getSpecificProblems(), request);
 
-                                    if (problem.getCheck().equals("232") || //pmgr.getValue("check.properties", "doc.valida.especif")) ||
+                                    if (EvaluatorUtils.isHtmlValidationCheck(Integer.parseInt(problem.getCheck())) ||
                                             EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
                                         addW3CCopyright(subSubsection, problem.getCheck());
                                     }
