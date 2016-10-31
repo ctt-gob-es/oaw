@@ -536,24 +536,32 @@ public final class PrimaryExportPdfUtils {
     }
 
     private static Image getEvolutionImage(final BigDecimal actualValue, final BigDecimal previousValue) {
+        return getEvolutionImage(actualValue.compareTo(previousValue));
+    }
+
+    private static Image getEvolutionImage(final int actualValue, final int previousValue) {
+        return getEvolutionImage(actualValue - previousValue);
+    }
+
+    private static Image getEvolutionImage(final int compareValue) {
         final PropertiesManager pmgr = new PropertiesManager();
-        if (actualValue.compareTo(previousValue) > 0) {
+        if (compareValue > 0) {
             return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Aumenta");
-        } else if (actualValue.compareTo(previousValue) < 0) {
+        } else if (compareValue < 0) {
             return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Disminuye");
         } else {
             return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene");
         }
     }
 
-    private static Image getEvolutionImage(final int actualValue, final int previousValue) {
+    private static Image getEvolutionNeutralImage(final BigDecimal actualValue, final BigDecimal previousValue) {
         final PropertiesManager pmgr = new PropertiesManager();
-        if (actualValue > previousValue) {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Aumenta");
-        } else if (actualValue < previousValue) {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Disminuye");
+        if (actualValue.compareTo(previousValue) > 0) {
+            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase.neutral"), "Aumenta");
+        } else if (actualValue.compareTo(previousValue) < 0) {
+            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease.neutral"), "Disminuye");
         } else {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene");
+            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same.neutral"), "Se mantiene");
         }
     }
 
@@ -616,7 +624,7 @@ public final class PrimaryExportPdfUtils {
             table.addCell(PDFUtils.createTableCell(actualData.getPercentageP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             if (!previousEvaluationPageList.isEmpty()) {
                 try {
-                    table.addCell(PDFUtils.createTableCell(getEvolutionImage(actualData.getRawPercentage(), previousData.getRawPercentage()), new DecimalFormat("+0.00;-0.00").format(actualData.getRawPercentage().subtract(previousData.getRawPercentage())) + "%", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
+                    table.addCell(PDFUtils.createTableCell(getEvolutionNeutralImage(actualData.getRawPercentage(), previousData.getRawPercentage()), new DecimalFormat("+0.00;-0.00").format(actualData.getRawPercentage().subtract(previousData.getRawPercentage())) + "%", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
                 } catch (NumberFormatException nfe) {
                     table.addCell(PDFUtils.createTableCell("Errror", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
                 }
