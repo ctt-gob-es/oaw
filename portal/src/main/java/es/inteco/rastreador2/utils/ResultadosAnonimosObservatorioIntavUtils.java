@@ -1421,8 +1421,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
         final MessageResources messageResources = CrawlerUtils.getResources(request);
         if (!file.exists() || regenerate) {
-            GraphicsUtils.totalPageStr = messageResources.getMessage(CrawlerUtils.getLocale(request), "observatory.graphic.site.number");
-            GraphicsUtils.totalPage = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
+            final int total = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
 
             DefaultPieDataset dataSet = new DefaultPieDataset();
 
@@ -1430,7 +1429,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
             dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
             dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
 
-            GraphicsUtils.createPieChart(dataSet, title, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
+            GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
         }
         request.setAttribute(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalAccessibilityLevel(messageResources, result));
     }
