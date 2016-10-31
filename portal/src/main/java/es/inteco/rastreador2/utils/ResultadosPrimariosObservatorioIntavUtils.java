@@ -9,6 +9,7 @@ import org.jfree.data.general.DefaultPieDataset;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -32,15 +33,14 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
     }
 
     public static void getGlobalAccessibilityLevelAllocationSegmentGraphic(final MessageResources messageResources,
-                                                                           final List<ObservatoryEvaluationForm> pageExecutionList, final String title, final String filePath, final String noDataMess) throws Exception {
+                                                                           final List<ObservatoryEvaluationForm> pageExecutionList, final String title, final String filePath, final String noDataMess) throws IOException {
         final PropertiesManager pmgr = new PropertiesManager();
         final File file = new File(filePath);
 
         final Map<String, Integer> result = getResultsByLevel(pageExecutionList);
 
         if (!file.exists()) {
-            GraphicsUtils.totalPageStr = messageResources.getMessage("observatory.graphic.page.number");
-            GraphicsUtils.totalPage = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
+            final int total = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
 
             final DefaultPieDataset dataSet = new DefaultPieDataset();
 
@@ -48,7 +48,7 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
             dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
             dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
 
-            GraphicsUtils.createPieChart(dataSet, title, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
+            GraphicsUtils.createPieChart(dataSet, title, messageResources.getMessage("observatory.graphic.page.number"), total, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
         }
     }
 
@@ -67,7 +67,7 @@ public final class ResultadosPrimariosObservatorioIntavUtils {
     }
 
     public static void getScoreByPageGraphic(final MessageResources request,
-                                             final List<ObservatoryEvaluationForm> pageExecutionList, final String title, final String filePath, final String noDataMess) throws Exception {
+                                             final List<ObservatoryEvaluationForm> pageExecutionList, final String title, final String filePath, final String noDataMess) throws IOException {
         final File file = new File(filePath);
         //Si no existe la gráfica, la creamos
         if (!file.exists()) {

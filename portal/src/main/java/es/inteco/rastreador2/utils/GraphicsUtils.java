@@ -50,31 +50,27 @@ public final class GraphicsUtils {
     private static final Color RED_COLOR = new Color(225, 18, 13);
     private static final Color GREEN_COLOR = new Color(38, 187, 8);
     private static final Color BLUE_COLOR = new Color(15, 91, 255);
-    public static String totalPageStr;
-    public static long totalPage;
-    private static Font TITLE_FONT;
-    private static Font TICK_LABEL_FONT;
-    private static Font ITEM_LABEL_FONT;
-    private static Font LEGEND_FONT;
-    private static Font NO_DATA_FONT;
+    private static final Font TITLE_FONT;
+    private static final Font TICK_LABEL_FONT;
+    private static final Font ITEM_LABEL_FONT;
+    private static final Font LEGEND_FONT;
+    private static final Font NO_DATA_FONT;
 
     static {
+        final PropertiesManager pmgr = new PropertiesManager();
+        String fontFamily = "Arial";
         try {
-            final PropertiesManager pmgr = new PropertiesManager();
             final Font robotoFont = Font.createFont(Font.TRUETYPE_FONT, new File(pmgr.getValue("pdf.properties", "path.pdf.font.monospaced")));
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(robotoFont);
-            TITLE_FONT = new Font("Roboto", Font.BOLD, 22);
-            LEGEND_FONT = new Font("Roboto", Font.PLAIN, 14);
-            TICK_LABEL_FONT = new Font("Roboto", Font.PLAIN, 14);
-            ITEM_LABEL_FONT = new java.awt.Font("Roboto", Font.BOLD, 12);
-            NO_DATA_FONT = new java.awt.Font("Roboto", Font.BOLD, 30);
+            fontFamily = "Roboto";
         } catch (FontFormatException | IOException e) {
-            TITLE_FONT  = new java.awt.Font("Arial", Font.BOLD, 22);
-            LEGEND_FONT = new java.awt.Font("Arial", Font.PLAIN, 14);
-            TICK_LABEL_FONT = new java.awt.Font("Arial", Font.PLAIN, 14);
-            ITEM_LABEL_FONT = new java.awt.Font("Arial", Font.BOLD, 12);
-            NO_DATA_FONT = new java.awt.Font("Arial", Font.BOLD, 30);
+            Logger.putLog("No se ha podido cargar la fuente Roboto ubicada en " + pmgr.getValue("pdf.properties", "path.pdf.font.monospaced"), GraphicsUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
+        TITLE_FONT = new Font(fontFamily, Font.BOLD, 22);
+        LEGEND_FONT = new Font(fontFamily, Font.PLAIN, 14);
+        TICK_LABEL_FONT = new Font(fontFamily, Font.PLAIN, 14);
+        ITEM_LABEL_FONT = new Font(fontFamily, Font.BOLD, 12);
+        NO_DATA_FONT = new Font(fontFamily, Font.BOLD, 30);
     }
 
     public enum GraphicFormatType {
@@ -84,9 +80,8 @@ public final class GraphicsUtils {
     private GraphicsUtils() {
     }
 
-    public static void createPieChart(DefaultPieDataset dataSet, String title,
-                                      String filePath, String noDataMessage, String colorsKey, int x, int y) throws Exception {
-
+    public static void createPieChart(DefaultPieDataset dataSet, String title, String sectionLabel, long total,
+                                      String filePath, String noDataMessage, String colorsKey, int x, int y) throws IOException {
         JFreeChart chart = ChartFactory.createPieChart3D(title, dataSet, true, true, false);
         chart.getTitle().setFont(TITLE_FONT);
         formatLegend(chart);
@@ -94,9 +89,8 @@ public final class GraphicsUtils {
         PiePlot3D plot = (PiePlot3D) chart.getPlot();
         plot.setBackgroundPaint(Color.WHITE);
 
+        configNoDataMessage(plot);
         plot.setNoDataMessage(noDataMessage);
-        plot.setNoDataMessageFont(NO_DATA_FONT);
-        plot.setNoDataMessagePaint(Color.RED);
 
         final Color[] colors = getColors(colorsKey).toArray(new Color[0]);
         PieRenderer renderer = new PieRenderer(colors);
@@ -113,8 +107,8 @@ public final class GraphicsUtils {
         Shape shape = new Rectangle(15, 15);
         plot.setLegendItemShape(shape);
 
-        plot.setLabelGenerator(new CustomLabelGenerator(false));
-        plot.setLegendLabelGenerator(new CustomLabelGenerator(true));
+        plot.setLabelGenerator(new CustomLabelGenerator(sectionLabel, total));
+        plot.setLegendLabelGenerator(new CustomLegendLabelGenerator());
         plot.setLabelFont(LEGEND_FONT);
 
         for (int i = 0; i < plot.getLegendItems().getItemCount(); i++) {
@@ -125,10 +119,15 @@ public final class GraphicsUtils {
         saveChartToFile(filePath, chart, x, y);
     }
 
+    private static void configNoDataMessage(final Plot plot) {
+        plot.setNoDataMessageFont(NO_DATA_FONT);
+        plot.setNoDataMessagePaint(Color.RED);
+    }
+
     //labelPosition true 45 grados false normal
     public static void createBarChart(Map<String, BigDecimal> result, String title, String rowTitle, String columnTitle,
                                       String color, boolean withLegend, boolean percentage, boolean labelRotated,
-                                      String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws Exception {
+                                      String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws IOException {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<String, BigDecimal> entry : result.entrySet()) {
             dataSet.addValue(entry.getValue(), "", parseLevelLabel(entry.getKey(), messageResources));
@@ -139,18 +138,18 @@ public final class GraphicsUtils {
     //labelRotated true 45 grados false normal
     public static void createBarChart(DefaultCategoryDataset dataSet, String title, String rowTitle, String columnTitle,
                                       String color, boolean withLegend, boolean percentage, boolean labelRotated,
-                                      String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws Exception {
+                                      String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws IOException {
         final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, true, false, false, percentage, withLegend, labelRotated, false, x, y, color);
         createStandardBarChart(observatoryGraphicsForm, filePath, noDataMessage, messageResources, true);
     }
 
     public static void createSeriesBarChart(ChartForm observatoryGraphicsForm,
-                                            String filePath, String noDataMessage, final MessageResources messageResources, boolean withRange) throws Exception {
+                                            String filePath, String noDataMessage, final MessageResources messageResources, boolean withRange) throws IOException {
         createStandardBarChart(observatoryGraphicsForm, filePath, noDataMessage, messageResources, withRange);
     }
 
     public static void createBar1PxChart(final List<ObservatorySiteEvaluationForm> result, String title, String rowTitle, String columnTitle,
-                                         final String filePath, final String noDataMessage, final MessageResources messageResources, int x, int y, boolean showColumnsLabels) throws Exception {
+                                         final String filePath, final String noDataMessage, final MessageResources messageResources, int x, int y, boolean showColumnsLabels) throws IOException {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         final StringBuilder colors = new StringBuilder();
         for (ObservatorySiteEvaluationForm observatorySiteEvaluationForm : result) {
@@ -171,7 +170,7 @@ public final class GraphicsUtils {
     }
 
     public static void createBarPageByLevelChart(List<ObservatoryEvaluationForm> result, String title, String rowTitle, String columnTitle,
-                                                 String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws Exception {
+                                                 String filePath, String noDataMessage, final MessageResources messageResources, int x, int y) throws IOException {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         final StringBuilder colors = new StringBuilder();
         int i = 1;
@@ -189,8 +188,9 @@ public final class GraphicsUtils {
 
     /**
      * Builds a comma (,) separated string with the required colors
+     *
      * @param colors a StringBuilder object where append the colors
-     * @param level a String representing the suitability (conformance level)
+     * @param level  a String representing the suitability (conformance level)
      */
     private static void getRequiredColors(final StringBuilder colors, final String level) {
         final PropertiesManager pmgr = new PropertiesManager();
@@ -216,8 +216,7 @@ public final class GraphicsUtils {
         plot.setBackgroundPaint(Color.WHITE);
 
         plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessageFont(NO_DATA_FONT);
-        plot.setNoDataMessagePaint(Color.RED);
+        configNoDataMessage(plot);
 
         List<Paint> colors = getColors(chartForm.getColor());
 
@@ -273,7 +272,7 @@ public final class GraphicsUtils {
     }
 
     public static void createStandardBarChart(ChartForm observatoryGraphicsForm,
-                                              String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws Exception {
+                                              String filePath, String noDataMess, MessageResources messageResources, boolean withRange) throws IOException {
 
         final JFreeChart chart;
 
@@ -290,8 +289,7 @@ public final class GraphicsUtils {
 
         CategoryPlot plot = chart.getCategoryPlot();
         plot.setNoDataMessage(noDataMess);
-        plot.setNoDataMessageFont(NO_DATA_FONT);
-        plot.setNoDataMessagePaint(Color.RED);
+        configNoDataMessage(plot);
 
         //Elimina la transparencia de las gráficas
         plot.setForegroundAlpha(1.0f);
@@ -386,23 +384,20 @@ public final class GraphicsUtils {
             plot.setRangeGridlinePaint(Color.black);
         }
 
-        List<Paint> colors;
+        final List<Paint> colors;
         if (chartForm.getColor() != null && !chartForm.getColor().equals("")) {
             colors = getColors(chartForm.getColor());
         } else {
-            colors = getColors("chart.observatory.graphic.intav.colors");
+            final PropertiesManager pmgr = new PropertiesManager();
+            colors = getColors(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
         }
 
-        CategoryItemRenderer renderer = plot.getRenderer();
+        final CategoryItemRenderer renderer = plot.getRenderer();
         if (chartForm.isPrintLegend()) {
-            if (chartForm.isFixedLegend()) {
+            if (chartForm.isFixedLegend() || chartForm.isOnePixelGraph()) {
                 plot.setFixedLegendItems(generateOnePixelLegend(messageResources));
             } else {
-                if (!chartForm.isOnePixelGraph()) {
-                    plot.setFixedLegendItems(generateLegend(colors, plot));
-                } else {
-                    plot.setFixedLegendItems(generateOnePixelLegend(messageResources));
-                }
+                plot.setFixedLegendItems(generateLegend(colors, plot));
             }
         }
 
@@ -411,12 +406,8 @@ public final class GraphicsUtils {
                 renderer.setSeriesPaint(i, colors.get(i));
             }
         } else {
-            Paint[] paintArray = new Paint[colors.size()];
-            int i = 0;
-            for (Paint p : colors) {
-                paintArray[i++] = p;
-            }
-            CategoryItemRenderer rendererC;
+            final Paint[] paintArray = colors.toArray(new Paint[colors.size()]);
+            final CategoryItemRenderer rendererC;
             if (chartForm.isTridimensional()) {
                 rendererC = new CustomRenderer3D(paintArray);
             } else {
@@ -437,7 +428,6 @@ public final class GraphicsUtils {
     }
 
     private static LegendItemCollection generateLegend(List<Paint> colors, CategoryPlot plot) {
-
         LegendItemCollection newLegend = new LegendItemCollection();
         LegendItemCollection legend = plot.getLegendItems();
         Shape shape = new Rectangle(15, 15);
@@ -452,7 +442,6 @@ public final class GraphicsUtils {
     }
 
     private static LegendItemCollection generateOnePixelLegend(final MessageResources messageResources) {
-
         PropertiesManager pmgr = new PropertiesManager();
         String[] labels = {parseLevelLabel(Constants.OBS_NV, messageResources), parseLevelLabel(Constants.OBS_A, messageResources), parseLevelLabel(Constants.OBS_AA, messageResources)};
         List<Paint> colors = getColors(pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
@@ -481,7 +470,7 @@ public final class GraphicsUtils {
 
         if (chartForm.isOnePixelGraph()) {
             barRenderer.setMaximumBarWidth(0.005);
-        } else if (chartForm.isShowColumsLabels()){
+        } else if (chartForm.isShowColumsLabels()) {
             barRenderer.setMaximumBarWidth(0.1);
             barRenderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
             barRenderer.setBaseItemLabelGenerator(new LabelGenerator(chartForm.isPercentage()));
@@ -493,18 +482,18 @@ public final class GraphicsUtils {
                 final CategoryItemRenderer renderer = chart.getCategoryPlot().getRenderer();
                 renderer.setBaseItemLabelFont(ITEM_LABEL_FONT);
                 renderer.setBasePositiveItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
-                ((BarRenderer3D) renderer).setItemLabelAnchorOffset(10D);
+                ((BarRenderer3D) renderer).setItemLabelAnchorOffset(10d);
             }
         }
 
         barRenderer.setBaseNegativeItemLabelPosition(new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.BASELINE_LEFT));
     }
 
-    public static void saveChartToFile(final String filePath, final JFreeChart chart, int x, int y) throws IOException {
-       saveChartToFile(filePath, chart, x, y, GraphicFormatType.JPG);
+    private static void saveChartToFile(final String filePath, final JFreeChart chart, int x, int y) throws IOException {
+        saveChartToFile(filePath, chart, x, y, GraphicFormatType.JPG);
     }
 
-    public static void saveChartToFile(final String filePath, final JFreeChart chart, final int x, final int y, final GraphicFormatType mimeType) throws IOException {
+    private static void saveChartToFile(final String filePath, final JFreeChart chart, final int x, final int y, final GraphicFormatType mimeType) throws IOException {
         final File file = new File(filePath);
         if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
             Logger.putLog("Error al crear el archivo con la imagen de la gráfica", GraphicsUtils.class, Logger.LOG_LEVEL_ERROR);
@@ -517,8 +506,6 @@ public final class GraphicsUtils {
             } else {
                 ChartUtilities.writeChartAsPNG(out, chart, x, y);
             }
-        } catch (Exception e) {
-            Logger.putLog("Error guardar el archivo con la imagen de la gráfica: " + e.getMessage(), GraphicsUtils.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 
@@ -554,32 +541,43 @@ public final class GraphicsUtils {
 
     public static class CustomLabelGenerator implements PieSectionLabelGenerator {
 
-        private boolean legendLabel;
+        private final String sectionLabel;
+        private final long total;
 
-        public CustomLabelGenerator(boolean legendLabel) {
-            this.legendLabel = legendLabel;
+        public CustomLabelGenerator(final String sectionLabel, final long total) {
+            this.sectionLabel = sectionLabel;
+            this.total = total;
         }
 
         public String generateSectionLabel(final PieDataset dataset, final Comparable key) {
-            if (!legendLabel) {
-                float p = (float) Math.pow(10, 2);
-                if (!dataset.getValue(key).toString().equals("0")) {
-                    Float value = ((Float.valueOf(dataset.getValue(key).toString()) / (float) totalPage) * 100);
-                    value = value * p;
-                    float tmp = Math.round(value);
-                    value = tmp / p;
-                    return key + "\n" + totalPageStr + dataset.getValue(key).toString() + "\n" + " (" + value.toString() + "%)";
-                } else {
-                    return null;
-                }
+            final float p = (float) Math.pow(10, 2);
+            if (!dataset.getValue(key).toString().equals("0")) {
+                Float value = Float.valueOf(dataset.getValue(key).toString()) / (float) total * 100;
+                value = value * p;
+                float tmp = Math.round(value);
+                value = tmp / p;
+                return key + "\n" + sectionLabel + dataset.getValue(key).toString() + "\n" + " (" + value.toString() + "%)";
             } else {
-                return key + LABEL_SPACE;
+                return null;
             }
+
         }
 
         @Override
         public AttributedString generateAttributedSectionLabel(PieDataset arg0, Comparable arg1) {
-            // TODO Auto-generated method stub
+            return null;
+        }
+    }
+
+    public static class CustomLegendLabelGenerator implements PieSectionLabelGenerator {
+
+        @Override
+        public String generateSectionLabel(final PieDataset dataset, final Comparable key) {
+            return key + LABEL_SPACE;
+        }
+
+        @Override
+        public AttributedString generateAttributedSectionLabel(PieDataset arg0, Comparable arg1) {
             return null;
         }
     }
@@ -594,46 +592,37 @@ public final class GraphicsUtils {
         }
 
         public String generateLabel(CategoryDataset dataset, int series, int category) {
-            String result = null;
-
             if (isPercentage) {
-                if ((dataset.getValue(series, category).toString().contains(".0")) && (
-                        (dataset.getValue(series, category).toString().indexOf('.') + 2) == dataset.getValue(series, category).toString().length())) {
-                    return dataset.getValue(series, category).toString().replace(".0", "") + "%";
-                } else if ((dataset.getValue(series, category).toString().contains(".00")) && (
-                        (dataset.getValue(series, category).toString().indexOf('.') + 3) == dataset.getValue(series, category).toString().length())) {
-                    return dataset.getValue(series, category).toString().replace(".00", "") + "%";
-                } else {
-                    return dataset.getValue(series, category).toString() + "%";
-                }
+                final String stringValue = dataset.getValue(series, category).toString();
+                return truncateDecimalPart(stringValue) + "%";
             } else {
-                Number value = dataset.getValue(series, category);
-                if (value != null && !(value.intValue() == -1)) {
-                    if ((value.toString().contains(".0")) && (
-                            (value.toString().indexOf('.') + 2) == value.toString().length())) {
-                        return value.toString().replace(".0", "");
-                    } else if ((value.toString().contains(".00")) && (
-                            (value.toString().indexOf('.') + 3) == value.toString().length())) {
-                        return value.toString().replace(".00", "");
-                    } else {
-                        return value.toString();
-                    }
-                } else if (value == null || value.intValue() == -1) {
+                final Number value = dataset.getValue(series, category);
+                if (value != null && value.intValue() != -1) {
+                    final String stringValue = value.toString();
+                    return truncateDecimalPart(stringValue);
+                } else { //if (value == null || value.intValue() == -1) {
                     return "NP";
                 }
-                return result;
+            }
+        }
+
+        private String truncateDecimalPart(final String stringValue) {
+            if (stringValue.contains(".0") && stringValue.indexOf('.') + 2 == stringValue.length()) {
+                return stringValue.replace(".0", "");
+            } else if (stringValue.contains(".00") && stringValue.indexOf('.') + 3 == stringValue.length()) {
+                return stringValue.replace(".00", "");
+            } else {
+                return stringValue;
             }
         }
 
         @Override
         public String generateColumnLabel(CategoryDataset arg0, int arg1) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public String generateRowLabel(CategoryDataset arg0, int arg1) {
-            // TODO Auto-generated method stub
             return null;
         }
 
@@ -665,6 +654,7 @@ public final class GraphicsUtils {
             this.colors = Arrays.copyOf(colors, colors.length);
         }
 
+        @Override
         public Paint getItemPaint(final int row, final int column) {
             return this.colors[column % this.colors.length];
         }
@@ -675,9 +665,10 @@ public final class GraphicsUtils {
         private Paint[] colors;
 
         public CustomRenderer(final Paint[] colors) {
-            this.colors = Arrays.copyOf(colors, colors.length);;
+            this.colors = Arrays.copyOf(colors, colors.length);
         }
 
+        @Override
         public Paint getItemPaint(final int row, final int column) {
             return this.colors[column % this.colors.length];
         }
