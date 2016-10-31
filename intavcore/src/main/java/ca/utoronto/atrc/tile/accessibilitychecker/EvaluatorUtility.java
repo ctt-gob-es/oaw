@@ -168,13 +168,16 @@ public final class EvaluatorUtility {
 
         if (text.length() == 0) {
             return "";
+        } else {
+            // remove any tabs, lineends, multiple spaces, and leading/trailing whitespace
+            return normalizeString(text);
         }
+    }
 
-        // remove any tabs, lineends, multiple spaces, and leading/trailing whitespace
-        final StringBuilder buffer2 = new StringBuilder(text.length());
+    private static String normalizeString(String text) {
+        final StringBuilder stringBuilder = new StringBuilder(text.length());
         boolean space = false;
         for (int x = 0; x < text.length(); x++) {
-
             if (text.charAt(x) != '\t' && text.charAt(x) != '\n') {
                 if (text.charAt(x) == ' ') {
                     if (space) {
@@ -184,21 +187,10 @@ public final class EvaluatorUtility {
                 } else {
                     space = false;
                 }
-                buffer2.append(text.charAt(x));
+                stringBuilder.append(text.charAt(x));
             }
-//            if (Character.isWhitespace(text.charAt(x))) {
-//                if ( space ) {
-//                    continue;
-//                } else {
-//                    buffer2.append(text.charAt(x));
-//                }
-//                space = true;
-//            } else {
-//                space = false;
-//                buffer2.append(text.charAt(x));
-//            }
         }
-        return buffer2.toString().replaceAll("\\s{2,}", " ").trim();
+        return stringBuilder.toString().replaceAll("\\s{2,}", " ").trim();
     }
 
     // returns the text that is contained by the given element
@@ -242,30 +234,15 @@ public final class EvaluatorUtility {
         final String text = getLabelTextLoop(node);
         if (text.length() == 0) {
             return "";
+        } else {
+            // remove any tabs, lineends, multiple spaces, and leading/trailing whitespace
+            return normalizeString(text);
         }
-
-        // remove any tabs, lineends, multiple spaces, and leading/trailing whitespace
-        final StringBuilder buffer2 = new StringBuilder(text.length());
-        boolean space = false;
-        for (int x = 0; x < text.length(); x++) {
-            if ((text.charAt(x) != '\t') && (text.charAt(x) != '\n')) {
-                if (text.charAt(x) == ' ') {
-                    if (space) {
-                        continue;
-                    }
-                    space = true;
-                } else {
-                    space = false;
-                }
-                buffer2.append(text.charAt(x));
-            }
-        }
-        return buffer2.toString().trim();
     }
 
     // Recursive function that returns a string containing all the text within the node.
     // Any text within a 'select' element is ignored.
-    public static String getLabelTextLoop(final Node node) {
+    private static String getLabelTextLoop(final Node node) {
         final StringBuilder buffer = new StringBuilder();
 
         final NodeList childNodes = node.getChildNodes();
@@ -301,7 +278,7 @@ public final class EvaluatorUtility {
 
     // looks through the given node for first child instance of a given node
     // Returns the first instance of the node or null if not found.
-    public static Node findNode(final Node parent, final String nameNode) {
+    private static Node findNode(final Node parent, final String nameNode) {
         final NodeList childNodes = parent.getChildNodes();
 
         for (int x = 0; x < childNodes.getLength(); x++) {
@@ -318,7 +295,7 @@ public final class EvaluatorUtility {
     }
 
     // Loads all the checks
-    private static boolean loadAllChecks() throws Exception {
+    private static boolean loadAllChecks() {
         final PropertiesManager pmgr = new PropertiesManager();
         // checks should only be loaded once but can be reloaded
         if (!allChecks.isEmpty()) {
@@ -345,15 +322,6 @@ public final class EvaluatorUtility {
                 final Check checkPrerequisite = allChecks.getCheck(prerequisiteId);
                 if (checkPrerequisite == null) {
                     Logger.putLog("Warning: prerequisite check " + prerequisiteId + " on test " + check.getId() + " does not exist!", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
-                    continue;
-                }
-                final String stringPrereqTrigger = checkPrerequisite.getTriggerElement();
-                if (stringPrereqTrigger == null) {
-                    continue;
-                }
-                final String stringTrigger = check.getTriggerElement();
-                if (stringTrigger == null) {
-                    continue;
                 }
             }
         }
@@ -432,40 +400,32 @@ public final class EvaluatorUtility {
     }
 
     // Returns the guideline from the guideline filename.
-    public static Guideline loadGuideline(String filename) {
+    public static Guideline loadGuideline(final String filename) {
+        final String fullFilename;
         // check for .xml extension
         int indexDotxml = filename.indexOf(".xml");
         if (indexDotxml == -1) {
             // doesn't have .xml extension so add it
-            filename += ".xml";
+            fullFilename = filename + ".xml";
+        } else {
+            fullFilename = filename;
         }
 
-        if (guidelineMap.containsKey(filename)) {
-            return guidelineMap.get(filename);
+        if (guidelineMap.containsKey(fullFilename)) {
+            return guidelineMap.get(fullFilename);
         } else {
-            //ClassLoader cl = ClassLoader.getSystemClassLoader();
-            InputStream inputStream = null;
             final Guideline guideline = new Guideline();
-            try {
-                inputStream = EvaluatorUtility.class.getClassLoader().getResourceAsStream("guidelines/" + filename);
-                if (!guideline.initialize(inputStream, filename)) {
-                    Logger.putLog("Error: guideline did not initialize: " + filename, EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
+            try (InputStream inputStream = EvaluatorUtility.class.getClassLoader().getResourceAsStream("guidelines/" + fullFilename)) {
+                if (!guideline.initialize(inputStream, fullFilename)) {
+                    Logger.putLog("Error: guideline did not initialize: " + fullFilename, EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
                     return null;
                 } else {
-                    guidelineMap.put(filename, guideline);
+                    guidelineMap.put(fullFilename, guideline);
                     return guideline;
                 }
             } catch (Exception e) {
                 Logger.putLog("Excepción: ", EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
                 return null;
-            } finally {
-                try {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                } catch (Exception e) {
-                    Logger.putLog("Excepción: ", EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
-                }
             }
         }
     }
@@ -537,7 +497,7 @@ public final class EvaluatorUtility {
                 long tiempo = System.currentTimeMillis() - inicio;
                 // Registramos en el log el tiempo de la conexión
                 Logger.putLog("Tiempo tardado en cargar el HTML remoto: " + tiempo + " milisegundos", Evaluator.class, Logger.LOG_LEVEL_INFO);
-                return loadHtmlFile(stream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, fromCrawler, charset);
+                return loadHtmlFile(stream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, charset);
             } catch (Exception e) {
                 Logger.putLog("Exception: " + checkAccessibility.getUrl(), EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
                 return null;
@@ -559,23 +519,23 @@ public final class EvaluatorUtility {
     }
 
     public static Document loadHtmlFile(final InputStream inputStream, final CheckAccessibility checkAccessibility,
-                                        boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, boolean fromCrawler, String charset) {
+                                        boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, String charset) {
         try {
             // create a DOM of the HTML file
             CheckerParser parser = new CheckerParser();
             Document doc = null;
             Element elementRoot = null;
 
-            String inStr = StringUtils.getContentAsString(inputStream, charset);
-            // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
-            inStr = inStr.replaceAll("(?i)<iframe [^>]*/>", "");
+            String content = StringUtils.getContentAsString(inputStream, charset);
+//            // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
+//            inStr = inStr.replaceAll("(?i)<iframe [^>]*/>", "");
             for (int i = 0; i < 2 && (doc == null || elementRoot == null); i++) {
                 parser.setFilename(checkAccessibility.getUrl());
 
                 setFeature(parser, "http://xml.org/sax/features/namespaces", false);
 
-                inStr = addFinalTags(inStr);
-                final InputStream newInputStream = new ByteArrayInputStream(inStr.getBytes(charset));
+                content = addFinalTags(content);
+                final InputStream newInputStream = new ByteArrayInputStream(content.getBytes(charset));
                 if (newInputStream.markSupported()) {
                     newInputStream.mark(Integer.MAX_VALUE);
                 }
@@ -596,7 +556,7 @@ public final class EvaluatorUtility {
 
             }
 
-            if (!inStr.toUpperCase().contains("<HTML") && doc.getElementsByTagName("html") != null && doc.getElementsByTagName("html").getLength() > 0) {
+            if (!content.toUpperCase().contains("<HTML") && doc.getElementsByTagName("html") != null && doc.getElementsByTagName("html").getLength() > 0) {
                 doc.getElementsByTagName("html").item(0).setUserData("realHtml", "false", null);
             }
 

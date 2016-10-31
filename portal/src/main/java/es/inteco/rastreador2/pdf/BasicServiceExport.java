@@ -20,7 +20,7 @@ import es.inteco.intav.form.*;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
-import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryBS;
+import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.ChartForm;
@@ -162,8 +162,8 @@ public final class BasicServiceExport {
             final FileOutputStream fileOut = new FileOutputStream(file);
             final PdfWriter writer = PdfWriter.getInstance(document, fileOut);
             writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
-            writer.setPageEvent(new ExportPageEventsObservatoryBS(messageResources.getMessage("pdf.accessibility.bs.foot.text") + basicServiceForm.getName().toUpperCase() + " (" + sdf.format(new Date()) + ")", sdf.format(new Date())));
-            ExportPageEventsObservatoryBS.setLastPage(false);
+            writer.setPageEvent(new ExportPageEventsObservatoryMP(messageResources.getMessage("pdf.accessibility.bs.foot.text") + basicServiceForm.getName().toUpperCase() + " (" + sdf.format(new Date()) + ")", sdf.format(new Date())));
+            ExportPageEventsObservatoryMP.setPrintFooter(true);
 
             final IndexEvents index = new IndexEvents();
             writer.setPageEvent(index);
@@ -296,7 +296,7 @@ public final class BasicServiceExport {
             }
 
             IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleMPFont);
-            ExportPageEventsObservatoryBS.setLastPage(false);
+            ExportPageEventsObservatoryMP.setPrintFooter(true);
 
             FileUtils.removeFile(chartsTempPath);
             Logger.putLog("PDF generado correctamente.", BasicServiceExport.class, Logger.LOG_LEVEL_INFO);

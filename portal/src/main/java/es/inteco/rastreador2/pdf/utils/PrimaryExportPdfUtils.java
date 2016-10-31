@@ -129,7 +129,7 @@ public final class PrimaryExportPdfUtils {
             final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 
             final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[]{seed, crawlingDate});
-            writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate, pdfBuilder.isBasicService()));
+            writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate));
             ExportPageEventsObservatoryMP.setPrintFooter(true);
 
             final IndexEvents index = new IndexEvents();

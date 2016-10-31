@@ -1,7 +1,6 @@
 package es.inteco.rastreador2.action.cuentausuario;
 
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.VerCuentaUsuarioForm;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
@@ -16,21 +15,13 @@ public final class CuentaClienteUtils {
 
     public static VerCuentaUsuarioForm getCuentaUsuarioForm(long idCuenta) throws Exception {
         VerCuentaUsuarioForm verCuentaClienteForm = new VerCuentaUsuarioForm();
-        Connection c = null;
-        Connection con = null;
-        try {
-            c = DataBaseManager.getConnection();
-            con = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             CuentaUsuarioDAO.getDatosUsuarioVer(c, verCuentaClienteForm, idCuenta);
 
-            verCuentaClienteForm.setNormaAnalisisSt(RastreoDAO.getNombreNorma(con, verCuentaClienteForm.getNormaAnalisis()));
-
+            verCuentaClienteForm.setNormaAnalisisSt(RastreoDAO.getNombreNorma(c, verCuentaClienteForm.getNormaAnalisis()));
         } catch (Exception e) {
             Logger.putLog("Exception", CuentaClienteUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(c);
-            DataBaseManager.closeConnection(con);
+            throw e;
         }
 
         return verCuentaClienteForm;

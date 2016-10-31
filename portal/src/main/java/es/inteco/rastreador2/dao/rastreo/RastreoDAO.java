@@ -243,7 +243,7 @@ public final class RastreoDAO {
      * @return
      * @throws Exception
      */
-    public static CargarRastreosForm getLoadCrawlingForm(Connection c, String user, CargarRastreosSearchForm searchForm, int pagina) throws Exception {
+    public static CargarRastreosForm getLoadCrawlingForm(Connection c, String user, CargarRastreosSearchForm searchForm, int pagina) throws SQLException {
         final CargarRastreosForm cargarRastreosForm = new CargarRastreosForm();
         final PropertiesManager pmgr = new PropertiesManager();
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
@@ -314,7 +314,7 @@ public final class RastreoDAO {
                         r.setCodigo(nombreRastreo);
                     }
                     r.setActivo(rst.getLong("activo"));
-                    r.setId_rastreo(String.valueOf(idRastreo));
+                    r.setIdRastreo(String.valueOf(idRastreo));
                     r.setPseudoAleatorio(String.valueOf(rst.getBoolean("pseudoaleatorio")));
                     r.setProfundidad(rst.getInt("profundidad"));
                     //Fecha del rastreo
@@ -332,14 +332,14 @@ public final class RastreoDAO {
                     //int est = -1;
                     r.setEstado(rst.getInt("estado"));
                     r.setEstadoTexto("rastreo.estado." + r.getEstado());
-                    r.setId_cuenta(rst.getLong("id_cuenta"));
+                    r.setIdCuenta(rst.getLong("id_cuenta"));
                     rastreos.add(r);
                 }
 
                 cargarRastreosForm.setVr(rastreos);
                 cargarRastreosForm.setNum_rastreos(numRastreos);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al obtener los datos de la lista de rastreos", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }
@@ -1005,7 +1005,7 @@ public final class RastreoDAO {
         }
     }
 
-    public static void modificarRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws Exception {
+    public static void modificarRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws SQLException {
         PreparedStatement ps = null;
         try {
             PropertiesManager pmgr = new PropertiesManager();

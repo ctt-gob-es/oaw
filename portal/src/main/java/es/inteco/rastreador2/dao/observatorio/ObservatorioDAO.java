@@ -1004,7 +1004,7 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static void updateObservatoryCrawlings(final Connection c, final ModificarObservatorioForm newObservatory, final ObservatorioForm oldObservatory) throws Exception {
+    private static void updateObservatoryCrawlings(final Connection c, final ModificarObservatorioForm newObservatory, final ObservatorioForm oldObservatory) throws SQLException {
         final List<String> newCategories = Arrays.asList(newObservatory.getCategoria());
         final List<String> oldCategories = Arrays.asList(oldObservatory.getCategoria());
 
@@ -1112,7 +1112,7 @@ public final class ObservatorioDAO {
         insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
     }
 
-    public static void insertNewCrawlers(final Connection c, final long idObservatory, final List<SemillaForm> seeds) throws Exception {
+    public static void insertNewCrawlers(final Connection c, final long idObservatory, final List<SemillaForm> seeds) throws SQLException {
         final InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
         final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
         putDataToInsert(insertarRastreoForm, observatorioForm);
@@ -1154,26 +1154,16 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static void addObservatorySeeds(Connection c, List<SemillaForm> seeds, long idObservatory) throws SQLException {
-        PreparedStatement ps = null;
-        try {
+    private static void addObservatorySeeds(final Connection c, final List<SemillaForm> seeds, final long idObservatory) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)")) {
             for (SemillaForm semillaForm : seeds) {
-                ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)");
                 ps.setLong(1, idObservatory);
                 ps.setLong(2, semillaForm.getId());
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            try {
-                c.rollback();
-            } catch (SQLException e1) {
-                Logger.putLog("Error", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
-                throw e;
-            }
             Logger.putLog("Error", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
@@ -1200,28 +1190,20 @@ public final class ObservatorioDAO {
         return observatoryExecutionIdsList;
     }
 
-    private static long existObservatoryCrawl(Connection c, long idObservatory, long idSeed) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs;
-        try {
-            ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " +
-                    "JOIN lista l ON (r.semillas = l.id_lista) " +
-                    "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio) " +
-                    "WHERE l.id_lista = ? AND o.id_observatorio = ?");
+    private static long existObservatoryCrawl(final Connection c, final long idObservatory, final long idSeed) throws SQLException {
+        try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " +
+                "JOIN lista l ON (r.semillas = l.id_lista) " +
+                "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio) " +
+                "WHERE l.id_lista = ? AND o.id_observatorio = ?")) {
             ps.setLong(1, idSeed);
             ps.setLong(2, idObservatory);
-            rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("id_rastreo");
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getLong("id_rastreo") : -1;
             }
         } catch (SQLException e) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
-        return -1;
     }
 
     /**
@@ -1244,26 +1226,20 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static List<Long> getCrawlerFromCategory(Connection c, long idObservatory) throws SQLException {
-        List<Long> idCrawlerList = new ArrayList<>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " +
-                    "JOIN lista l ON (r.semillas = l.id_lista) " +
-                    "WHERE l.id_categoria = ?");
+    private static List<Long> getCrawlerFromCategory(final Connection c, final long idObservatory) throws SQLException {
+        final List<Long> idCrawlerList = new ArrayList<>();
+        try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " +
+                "JOIN lista l ON (r.semillas = l.id_lista) " +
+                "WHERE l.id_categoria = ?")) {
             ps.setLong(1, idObservatory);
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                idCrawlerList.add(rs.getLong("id_rastreo"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    idCrawlerList.add(rs.getLong("id_rastreo"));
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return idCrawlerList;
     }
@@ -1287,7 +1263,7 @@ public final class ObservatorioDAO {
         }
     }
 
-    private static void editCrawlings(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws Exception {
+    private static void editCrawlings(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws SQLException {
         InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
         insertarRastreoForm.setProfundidad(Integer.parseInt(modificarObservatorioForm.getProfundidad()));
         insertarRastreoForm.setTopN(Long.parseLong(modificarObservatorioForm.getAmplitud()));

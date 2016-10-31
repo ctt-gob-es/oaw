@@ -25,7 +25,6 @@ import org.apache.struts.util.MessageResources;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -219,7 +218,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static List<GraphicData> infoGlobalAccessibilityLevel(final MessageResources messageResources,
-                                                                 final Map<String, Integer> result) throws Exception {
+                                                                 final Map<String, Integer> result) {
         final List<GraphicData> labelValueList = new ArrayList<>();
         final int totalPort = result.get(Constants.OBS_A) + result.get(Constants.OBS_AA) + result.get(Constants.OBS_NV);
 

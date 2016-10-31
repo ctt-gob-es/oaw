@@ -5,10 +5,11 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.ValidatorForm;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SemillaForm extends ValidatorForm {
+public class SemillaForm extends ValidatorForm implements Serializable {
 
     /**
      *

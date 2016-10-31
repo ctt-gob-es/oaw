@@ -28,9 +28,9 @@ public class VerCuentaClienteAction extends Action {
                 String action = request.getParameter(Constants.ACCION);
                 if (action != null) {
                     if (action.equals(Constants.LIST_ACCOUNTS)) {
-                        return listAccounts(mapping, form, request, response);
+                        return listAccounts(mapping, request);
                     } else if (action.equals(Constants.GET_DETAIL)) {
-                        return getDetail(mapping, form, request, response);
+                        return getDetail(mapping, request);
                     }
                 }
             } else {
@@ -44,28 +44,20 @@ public class VerCuentaClienteAction extends Action {
         return null;
     }
 
-    public ActionForward listAccounts(ActionMapping mapping, ActionForm form,
-                                      HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    private ActionForward listAccounts(ActionMapping mapping, HttpServletRequest request) throws Exception {
         request.getSession().setAttribute(Constants.MENU, Constants.MENU_CLIENT_CRAWLINGS_ACCOUNT);
 
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection()) {
             request.setAttribute(Constants.LIST_ACCOUNTS, CuentaUsuarioDAO.getAccountsFromUser(conn, (String) request.getSession().getAttribute(Constants.USER)));
         } catch (Exception e) {
             Logger.putLog("Exception", CuentaClienteUtils.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
+            throw e;
         }
 
         return mapping.findForward(Constants.LIST_ACCOUNTS);
     }
 
-    public ActionForward getDetail(ActionMapping mapping, ActionForm form,
-                                   HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+    private ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
         long idCuenta = 0;
         if (request.getParameter(Constants.ID_CUENTA) != null) {
             idCuenta = Long.parseLong(request.getParameter(Constants.ID_CUENTA));

@@ -14,6 +14,8 @@ import java.util.List;
 
 public final class MailUtils {
 
+    private static final String CRAWLER_CORE_PROPERTIES = "crawler.core.properties";
+
     private MailUtils() {
     }
 
@@ -155,25 +157,30 @@ public final class MailUtils {
             Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
 
-        if (pmgr.getValue("crawler.core.properties", "mail.smtp.host") == null || pmgr.getValue("crawler.core.properties", "mail.smtp.host").trim().isEmpty()) {
+        if (pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.host") == null || pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.host").trim().isEmpty()) {
             throw new Exception("No se configurado el servidor de correo");
         }
-        email.setHostName(pmgr.getValue("crawler.core.properties", "mail.smtp.host"));
-        if (pmgr.getValue("crawler.core.properties", "mail.smtp.user") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.user").trim().isEmpty()) {
-            email.setAuthenticator(new DefaultAuthenticator(pmgr.getValue("crawler.core.properties", "mail.smtp.user").trim(), pmgr.getValue("crawler.core.properties", "mail.smtp.pass").trim()));
+        email.setHostName(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.host"));
+        if (pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.user") != null && !pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.user").trim().isEmpty()) {
+            email.setAuthenticator(new DefaultAuthenticator(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.user").trim(), pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.pass").trim()));
         }
-        if (pmgr.getValue("crawler.core.properties", "mail.smtp.port") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.port").trim().isEmpty()) {
-            Logger.putLog("Configurando el port " + pmgr.getValue("crawler.core.properties", "mail.smtp.port"), MailUtils.class, Logger.LOG_LEVEL_INFO);
-            email.setSmtpPort(Integer.parseInt(pmgr.getValue("crawler.core.properties", "mail.smtp.port").trim()));
+
+        final String mailSmtpPort = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.port");
+        if (mailSmtpPort != null && !mailSmtpPort.trim().isEmpty()) {
+            Logger.putLog("Configurando el port " + mailSmtpPort, MailUtils.class, Logger.LOG_LEVEL_INFO);
+            email.setSmtpPort(Integer.parseInt(mailSmtpPort));
         }
-        if (pmgr.getValue("crawler.core.properties", "mail.smtp.sslport") != null && !pmgr.getValue("crawler.core.properties", "mail.smtp.sslport").trim().isEmpty()) {
-            Logger.putLog("Configurando el sslport " + pmgr.getValue("crawler.core.properties", "mail.smtp.sslport"), MailUtils.class, Logger.LOG_LEVEL_INFO);
+
+        final String mailSmtpSslPort = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.sslport");
+        if (mailSmtpSslPort != null && !mailSmtpSslPort.trim().isEmpty()) {
+            Logger.putLog("Configurando el sslport " + mailSmtpSslPort, MailUtils.class, Logger.LOG_LEVEL_INFO);
             email.setSSLOnConnect(true);
-            email.setSslSmtpPort(pmgr.getValue("crawler.core.properties", "mail.smtp.sslport").trim());
+            email.setSslSmtpPort(mailSmtpSslPort.trim());
         }
-        Logger.putLog("Configurando TLS a " + pmgr.getValue("crawler.core.properties", "mail.smtp.tls"), MailUtils.class, Logger.LOG_LEVEL_INFO);
-        email.setStartTLSEnabled(Boolean.parseBoolean(pmgr.getValue("crawler.core.properties", "mail.smtp.tls")));
-        email.setStartTLSRequired(Boolean.parseBoolean(pmgr.getValue("crawler.core.properties", "mail.smtp.tls")));
+
+        Logger.putLog("Configurando TLS a " + pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.tls"), MailUtils.class, Logger.LOG_LEVEL_INFO);
+        email.setStartTLSEnabled(Boolean.parseBoolean(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.tls")));
+        email.setStartTLSRequired(Boolean.parseBoolean(pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.smtp.tls")));
         email.setSSLCheckServerIdentity(false);
 
         return email;

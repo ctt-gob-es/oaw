@@ -1,8 +1,10 @@
 package es.inteco.rastreador2.utils;
 
-public class Rastreo {
+import java.io.Serializable;
 
-    private String id_rastreo;
+public class Rastreo implements Serializable {
+
+    private String idRastreo;
     private String codigo;
     private String codigoTitle;
     private String fecha;
@@ -10,7 +12,7 @@ public class Rastreo {
     private int estado;
     private String estadoTexto;
     private int profundidad = 0;
-    private long id_cuenta;
+    private long idCuenta;
     private long activo;
     private String pseudoAleatorio;
 
@@ -62,12 +64,12 @@ public class Rastreo {
         this.estado = estado;
     }
 
-    public String getId_rastreo() {
-        return id_rastreo;
+    public String getIdRastreo() {
+        return idRastreo;
     }
 
-    public void setId_rastreo(String id_rastreo) {
-        this.id_rastreo = id_rastreo;
+    public void setIdRastreo(String idRastreo) {
+        this.idRastreo = idRastreo;
     }
 
     public int getProfundidad() {
@@ -78,12 +80,12 @@ public class Rastreo {
         this.profundidad = profundidad;
     }
 
-    public long getId_cuenta() {
-        return id_cuenta;
+    public long getIdCuenta() {
+        return idCuenta;
     }
 
-    public void setId_cuenta(long id_cuenta) {
-        this.id_cuenta = id_cuenta;
+    public void setIdCuenta(long idCuenta) {
+        this.idCuenta = idCuenta;
     }
 
     public String getPseudoAleatorio() {

@@ -5,10 +5,11 @@ import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoriaForm extends ValidatorForm {
+public class CategoriaForm extends ValidatorForm implements Serializable {
     private String id;
     private String name;
     private FormFile fileSeeds;

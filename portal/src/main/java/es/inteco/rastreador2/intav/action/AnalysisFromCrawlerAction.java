@@ -42,7 +42,7 @@ public class AnalysisFromCrawlerAction extends Action {
                 } else if (request.getParameter(Constants.ACTION).equals(Constants.ACTION_RECOVER_EVALUATION)) {
                     return recoverEvaluation(mapping, request);
                 } else if (request.getParameter(Constants.ACTION).equals(Constants.ACTION_GET_HTML_SOURCE)) {
-                    return getHtmlSource(request, response);
+                    return getHtmlSource(mapping, request, response);
                 }
             }
         } else {
@@ -140,7 +140,7 @@ public class AnalysisFromCrawlerAction extends Action {
         }
     }
 
-    public ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
 
         String idCheck = request.getParameter(Constants.ID_CHECK);
         request.setAttribute(Constants.ID_RASTREO, request.getParameter(Constants.ID_RASTREO));
@@ -188,7 +188,6 @@ public class AnalysisFromCrawlerAction extends Action {
     }
 
     private ActionForward getEvaluationCall(ActionMapping mapping, HttpServletRequest request) throws Exception {
-
         if (request.getParameter(Constants.CODE) != null && request.getParameter(Constants.ID_RASTREO) != null) {
             return resultsToShow(mapping, request);
         } else {
@@ -210,27 +209,19 @@ public class AnalysisFromCrawlerAction extends Action {
         return mapping.findForward(Constants.CHECK_RESULTS);
     }
 
-    private ActionForward getHtmlSource(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        Connection conn = null;
-        try {
-            if (request.getParameter(Constants.CODE) != null) {
-                long id = Long.parseLong(request.getParameter(Constants.CODE));
-
-                conn = DataBaseManager.getConnection();
-                Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
+    private ActionForward getHtmlSource(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getParameter(Constants.CODE) != null) {
+            final long id = Long.parseLong(request.getParameter(Constants.CODE));
+            try (Connection conn = DataBaseManager.getConnection()) {
+                final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
                 CrawlerUtils.returnText(response, new String(analysis.getSource().getBytes(CrawlerUtils.getCharset(analysis.getSource()))), true);
+            } catch (Exception e) {
+                Logger.putLog("Excepcion: ", AnalysisFromCrawlerAction.class, Logger.LOG_LEVEL_ERROR, e);
+                throw e;
             }
-
-        } catch (Exception e) {
-            Logger.putLog("Excepcion: ", AnalysisFromCrawlerAction.class, Logger.LOG_LEVEL_ERROR, e);
-            throw e;
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
-
-        return null;
+        return mapping.findForward(Constants.ERROR);
     }
 
 }

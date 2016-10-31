@@ -129,7 +129,7 @@ public final class EvaluatorUtils {
 
                 vProblems = sortVectorProblems(vProblems);
 
-                pautaForm.setProblems(getProblemsFromGuideline(vProblems, evaluation));
+                pautaForm.setProblems(getProblemsFromGuideline(vProblems));
 
                 // Añadimos la pauta a la lista
                 pautas.add(pautaForm);
@@ -140,13 +140,10 @@ public final class EvaluatorUtils {
     }
 
     // Devuelve los tipos de problemas asociados a una pauta concreta
-    public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems, Evaluation evaluation) {
+    public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems) {
         final List<ProblemForm> problems = new ArrayList<>();
 
         int lastProblem = 0;
-
-        final PropertiesManager pmgr = new PropertiesManager();
-
         // now iterate for every problem in the check
         for (int j = 0; j < vProblems.size(); j++) {
             Problem problem = vProblems.get(j);
@@ -157,7 +154,7 @@ public final class EvaluatorUtils {
                 problemForm = new ProblemForm();
 
                 // Copyrights del W3C
-                if (problem.getCheck().getId() == 232 ) { //Integer.parseInt(pmgr.getValue(IntavConstants.CHECK_PROPERTIES, "doc.valida.especif"))) {
+                if (EvaluatorUtils.isHtmlValidationCheck(problem.getCheck().getId())) {
                     problemForm.setNote("w3c.html.copyright");
                 }
                 if (EvaluatorUtils.isCssValidationCheck(problem.getCheck().getId())) {
@@ -760,7 +757,7 @@ public final class EvaluatorUtils {
                         List<Problem> vProblems = evaluation.getHashCheckProblem().get(subgroup.getName());
                         if (vProblems != null) {
                             vProblems = sortVectorProblems(vProblems);
-                            List<ProblemForm> problemsForm = getProblemsFromGuideline(vProblems, evaluation);
+                            List<ProblemForm> problemsForm = getProblemsFromGuideline(vProblems);
                             for (ProblemForm problemForm : problemsForm) {
                                 if ((observatorySubgroupForm.getFailChecks().contains(Integer.parseInt(problemForm.getCheck())) ||
                                         observatorySubgroupForm.getOnlyWarningChecks().contains(Integer.parseInt(problemForm.getCheck()))) &&
@@ -1237,13 +1234,19 @@ public final class EvaluatorUtils {
     }
 
     // Es necesaria la validación html
-    public static boolean isHtmlValidationNeeded(List<Integer> checkSelected) {
+    public static boolean isHtmlValidationNeeded(final List<Integer> checkSelected) {
         return checkSelected.contains(232) || checkSelected.contains(152)
                 || checkSelected.contains(438) || checkSelected.contains(439) || checkSelected.contains(440) || checkSelected.contains(441);
     }
 
+    // Es necesaria la validación html
+    public static boolean isHtmlValidationCheck(final int check) {
+        // Códigos de checks que requieren la validación HTML son: 232, 152, 438, 439, 440, 441
+        return check == 232 || check == 152 || (check >= 438 && check <= 441);
+    }
+
     // Es necesaria la validación css
-    public static boolean isCssValidationNeeded(List<Integer> checkSelected) {
+    public static boolean isCssValidationNeeded(final List<Integer> checkSelected) {
         return checkSelected.contains(78) || checkSelected.contains(119);
     }
 

@@ -541,7 +541,7 @@ public final class CuentaUsuarioDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     final Rastreo rastreo = new Rastreo();
-                    rastreo.setId_rastreo(rs.getString("id_rastreo"));
+                    rastreo.setIdRastreo(rs.getString("id_rastreo"));
                     rastreo.setCartucho(rs.getString("aplicacion"));
                     rastreo.setEstado(rs.getInt("estado"));
                     rastreo.setEstadoTexto("rastreo.estado." + rastreo.getEstado());
@@ -724,7 +724,7 @@ public final class CuentaUsuarioDAO {
         }
     }
 
-    private static void editCrawlings(Connection c, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String idAccount, boolean isMenu) throws Exception {
+    private static void editCrawlings(Connection c, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String idAccount, boolean isMenu) throws SQLException {
         // Recorremos los rastreos asociados a la cuenta para desactivarlos si no han sido seleccionados de nuevo
         List<CuentaCliente> cuentasCliente = CuentaUsuarioDAO.getClientAccounts(c, Long.parseLong(idAccount), Constants.CLIENT_ACCOUNT_TYPE);
 
