@@ -556,7 +556,7 @@
             <field property="fechaInicio" depends="required, date">
                 <arg0 key="error.fecha.inicio"/>
                 <var>
-                    <var-name>datePattern</var-name>
+                    <var-name>datePatternStrict</var-name>
                     <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>
@@ -584,7 +584,7 @@
             <field property="fechaInicio" depends="required, date">
                 <arg0 key="error.fecha.inicio"/>
                 <var>
-                    <var-name>datePattern</var-name>
+                    <var-name>datePatternStrict</var-name>
                     <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>
@@ -621,7 +621,7 @@
             <field property="fechaInicio" depends="required, date">
                 <arg0 key="error.fecha.inicio"/>
                 <var>
-                    <var-name>datePattern</var-name>
+                    <var-name>datePatternStrict</var-name>
                     <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>
@@ -646,7 +646,7 @@
             <field property="fechaInicio" depends="required, date">
                 <arg0 key="error.fecha.inicio"/>
                 <var>
-                    <var-name>datePattern</var-name>
+                    <var-name>datePatternStrict</var-name>
                     <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>
@@ -724,14 +724,14 @@
             <field property="startDate" depends="required, date">
                 <arg0 key="error.fecha.inicio"/>
                 <var>
-                    <var-name>datePattern</var-name>
+                    <var-name>datePatternStrict</var-name>
                     <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>
             <field property="endDate" depends="required, date">
                 <arg0 key="error.fecha.inicio"/>
                 <var>
-                    <var-name>datePattern</var-name>
+                    <var-name>datePatternStrict</var-name>
                     <var-value>dd/MM/yyyy</var-value>
                 </var>
             </field>
