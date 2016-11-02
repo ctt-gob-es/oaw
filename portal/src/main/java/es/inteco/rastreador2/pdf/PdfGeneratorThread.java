@@ -55,26 +55,29 @@ public class PdfGeneratorThread extends Thread {
         final String alertFromAddress = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.address");
         final String alertFromName = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.name");
         MailUtils.sendSimpleMail(alertFromAddress, alertFromName, Collections.singletonList(email), "Generación de informes completado", "El proceso de generación de informes ha finalizado. Para descargar los informes vuelva a ejecutar la acción");
-
     }
 
     private void buildPdf(final long idRastreoRealizado, final long idRastreo) {
         try (Connection c = DataBaseManager.getConnection()) {
             final SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
             final File pdfFile = getReportFile(seed);
+            final File sources = new File(pdfFile.getParentFile(), "sources.zip");
             // Si el pdf no ha sido creado lo creamos
-            if (!pdfFile.exists()) {
+            if (!pdfFile.exists() || !sources.exists()) {
                 final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
                 final List<Long> previousEvaluationIds;
                 if (evaluationIds != null && !evaluationIds.isEmpty()) {
-                    final es.ctic.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.ctic.rastreador2.observatorio.ObservatoryManager();
-                    previousEvaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(observatoryManager.getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(idRastreo, ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution)));
-                    final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
+                    if (!pdfFile.exists()) {
+                        final es.ctic.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.ctic.rastreador2.observatorio.ObservatoryManager();
+                        previousEvaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(observatoryManager.getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(idRastreo, ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution)));
+                        final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
 
-                    PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds, PropertyMessageResources.getMessageResources("ApplicationResources"), null, pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
-                    writeSourceFiles(c, evaluationIds, pdfFile);
-
-                    ZipUtils.generateZipFile(pdfFile.getParentFile().toString() + "/sources", pdfFile.getParentFile().toString() + "/sources.zip", true);
+                        PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds, PropertyMessageResources.getMessageResources("ApplicationResources"), null, pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
+                    }
+                    if (!sources.exists()) {
+                        writeSourceFiles(c, evaluationIds, pdfFile);
+                        ZipUtils.generateZipFile(pdfFile.getParentFile().toString() + "/sources", pdfFile.getParentFile().toString() + "/sources.zip", true);
+                    }
                     FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "sources"));
                     FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
                 }

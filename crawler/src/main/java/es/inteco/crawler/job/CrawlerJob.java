@@ -23,7 +23,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -76,28 +75,19 @@ public class CrawlerJob implements InterruptableJob {
     private List<String> getAdministradoresMails() {
         final List<String> mails = new ArrayList<>();
 
-        ResultSet rs = null;
         try (Connection c = DataBaseManager.getConnection();
              final PreparedStatement ps = c.prepareStatement("SELECT email FROM usuario u " +
                      "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
                      "WHERE ur.id_rol = ?;");) {
             ps.setLong(1, 1);
 
-            rs = ps.executeQuery();
-
-            while (rs.next()) {
-                mails.add(rs.getString("email"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    mails.add(rs.getString("email"));
+                }
             }
         } catch (Exception e) {
             Logger.putLog("Error al obtener los correos de los administradores", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException e) {
-                Logger.putLog("Error al cerrar el objeto PreparedStatement", RastreoDAO.class, Logger.LOG_LEVEL_WARNING, e);
-            }
         }
         // Ademas de avisar a los usuarios administrador se avisa a los correos indicados en el fichero crawler.core.properties
         final PropertiesManager pmg = new PropertiesManager();
@@ -490,9 +480,6 @@ public class CrawlerJob implements InterruptableJob {
                         md5Content.add(textContentHash);
                     }
 
-                    connection.disconnect();
-                    // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
-                    textContent = textContent.replaceAll("(?i)<iframe [^>]*/>", "");
                     final Document document = CrawlerDOMUtils.getDocument(textContent);
                     final List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
 
@@ -542,7 +529,7 @@ public class CrawlerJob implements InterruptableJob {
      * @param urlLink    cadena la URL de la página a comprobar
      * @param cookie     cadena con las cookies enviadas por el servidor
      * @return true si la URL corresponde a un recurso text/html o false en caso contrario
-     * @throws Exception
+     * @throws IOException
      */
     private boolean isHtmlTextContent(final String refererUrl, final String urlLink, final String cookie) throws IOException {
         final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, refererUrl, true);

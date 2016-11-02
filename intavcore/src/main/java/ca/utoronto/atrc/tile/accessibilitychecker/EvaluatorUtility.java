@@ -276,24 +276,6 @@ public final class EvaluatorUtility {
         return buffer.toString();
     }
 
-    // looks through the given node for first child instance of a given node
-    // Returns the first instance of the node or null if not found.
-    private static Node findNode(final Node parent, final String nameNode) {
-        final NodeList childNodes = parent.getChildNodes();
-
-        for (int x = 0; x < childNodes.getLength(); x++) {
-            if (childNodes.item(x).getNodeName().compareToIgnoreCase(nameNode) == 0) {
-                return childNodes.item(x);
-            }
-
-            Node node = findNode(childNodes.item(x), nameNode);
-            if (node != null) {
-                return node;
-            }
-        }
-        return null;
-    }
-
     // Loads all the checks
     private static boolean loadAllChecks() {
         final PropertiesManager pmgr = new PropertiesManager();
@@ -463,10 +445,8 @@ public final class EvaluatorUtility {
         }
 
         try {
-            URI srcUri = new URI(filename);
-            URL srcUrl = srcUri.toURL();
-
-            return srcUrl;
+            final URI srcUri = new URI(filename);
+            return srcUri.toURL();
         } catch (Exception e) {
             Logger.putLog("Note: Can't open file: " + filename, EvaluatorUtility.class, Logger.LOG_LEVEL_ERROR, e);
             return null;
@@ -508,16 +488,6 @@ public final class EvaluatorUtility {
         }
     }
 
-    private static void setFeature(final CheckerParser parser, final String feature, final boolean value) {
-        try {
-            parser.setFeature(feature, value);
-        } catch (SAXNotRecognizedException e) {
-            throw new IllegalStateException("SAXNotRecognizedException thrown when setting " + feature + " to " + value, e);
-        } catch (SAXNotSupportedException e) {
-            throw new IllegalStateException("SAXNotSupportedException thrown when setting " + feature + " to " + value, e);
-        }
-    }
-
     public static Document loadHtmlFile(final InputStream inputStream, final CheckAccessibility checkAccessibility,
                                         boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, String charset) {
         try {
@@ -527,12 +497,8 @@ public final class EvaluatorUtility {
             Element elementRoot = null;
 
             String content = StringUtils.getContentAsString(inputStream, charset);
-//            // Si se utiliza iframe como etiqueta simple (sin cuerpo) se produce problema al parsear, las eliminamos sin más
-//            inStr = inStr.replaceAll("(?i)<iframe [^>]*/>", "");
             for (int i = 0; i < 2 && (doc == null || elementRoot == null); i++) {
                 parser.setFilename(checkAccessibility.getUrl());
-
-                setFeature(parser, "http://xml.org/sax/features/namespaces", false);
 
                 content = addFinalTags(content);
                 final InputStream newInputStream = new ByteArrayInputStream(content.getBytes(charset));
@@ -998,7 +964,7 @@ public final class EvaluatorUtility {
                 if (childLevel == -1) {
                     count += countElements((Element) listChildren.item(x), nameElement, nameElementIgnore, childLevel);
                 } else if (childLevel != 0) {
-                    count += countElements((Element) listChildren.item(x), nameElement, nameElementIgnore, childLevel--);
+                    count += countElements((Element) listChildren.item(x), nameElement, nameElementIgnore, childLevel-1);
                 }
             }
         }

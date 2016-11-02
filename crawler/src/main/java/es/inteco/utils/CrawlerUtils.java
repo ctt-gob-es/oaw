@@ -56,7 +56,7 @@ public final class CrawlerUtils {
     public static boolean isSwitchLanguageLink(Element link, List<IgnoredLink> ignoredLinks) {
         if (ignoredLinks != null && hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))) {
             for (IgnoredLink ignoredLink : ignoredLinks) {
-                if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink) || (link.getNodeName().equalsIgnoreCase("AREA") && matchsAlt(link, ignoredLink))) {
+                if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink) || (link.getNodeName().equalsIgnoreCase("area") && matchsAlt(link, ignoredLink))) {
                     return true;
                 }
             }
@@ -109,7 +109,7 @@ public final class CrawlerUtils {
         return textContent.replaceAll("(?s)<!--.*?-->", "");
     }
 
-    public static URL getAbsoluteUrl(Document document, String rootUrl, String urlLink) throws Exception {
+    public static URL getAbsoluteUrl(Document document, String rootUrl, String urlLink) throws MalformedURLException {
         String base = CrawlerDOMUtils.getBaseUrl(document);
         return StringUtils.isEmpty(base) ? new URL(new URL(rootUrl), urlLink) : new URL(new URL(base), urlLink);
     }
@@ -201,7 +201,7 @@ public final class CrawlerUtils {
         }
     }
 
-    public static String getCharset(HttpURLConnection connection, InputStream markableInputStream) throws Exception {
+    public static String getCharset(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
         String charset = Constants.DEFAULT_CHARSET;
         boolean found = false;
 
@@ -230,14 +230,15 @@ public final class CrawlerUtils {
         return charset;
     }
 
-    private static String getCharsetWithUniversalDetector(InputStream markableInputStream) {
+    private static String getCharsetWithUniversalDetector(final InputStream markableInputStream) {
         try {
-            UniversalDetector detector = new UniversalDetector(null);
-            byte[] buf = new byte[4096];
+            final UniversalDetector detector = new UniversalDetector(null);
+            final byte[] buf = new byte[4096];
 
-            int nread;
-            while ((nread = markableInputStream.read(buf)) > 0 && !detector.isDone()) {
+            int nread = markableInputStream.read(buf);
+            while (nread > 0 && !detector.isDone()) {
                 detector.handleData(buf, 0, nread);
+                nread = markableInputStream.read(buf);
             }
             detector.dataEnd();
 
@@ -258,7 +259,7 @@ public final class CrawlerUtils {
         }
     }
 
-    public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws Exception {
+    public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
         String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 
         textContent = removeHtmlComments(textContent);
@@ -266,7 +267,7 @@ public final class CrawlerUtils {
         return textContent;
     }
 
-    public static InputStream getMarkableInputStream(final HttpURLConnection connection) throws Exception {
+    public static InputStream getMarkableInputStream(final HttpURLConnection connection) throws IOException {
         final InputStream content = connection.getInputStream();
 
         final BufferedInputStream stream = new BufferedInputStream(content);
@@ -339,7 +340,7 @@ public final class CrawlerUtils {
     }
 
 
-    public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws Exception {
+    public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
         final URL metaRedirection = new URL(url, redirectTo);
         final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
         connection.setRequestProperty("Cookie", cookie);
@@ -399,6 +400,6 @@ public final class CrawlerUtils {
      * @return true si el enlace es de tipo http o false en caso contrario.
      */
     public static boolean isHTTPLink(final Element link) {
-        return getAttribute(link, "href").startsWith("http");
+        return link.hasAttribute("href") && link.getAttribute("href").startsWith("http");
     }
 }

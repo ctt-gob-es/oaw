@@ -236,50 +236,25 @@ public final class EvaluatorUtils {
                 code = getHtml(elementProblem, false, false);
             } else if (check.getId() == 232 || //Integer.parseInt(properties.getValue("check.properties", "doc.valida.especif")) ||
                     //check.getId() == 438 || check.getId() == 439 || check.getId() == 440 || check.getId() == 441) { // valid document
-                    check.getId() >= 438 || check.getId() <= 441) {
+                    (check.getId() >= 438 && check.getId() <= 441)) {
                 code.add(problem.getNode().getTextContent());
-            }
-
-            if (check.getId() == 455 || check.getId() == 456 || check.getId() == 457 || check.getId() == 458) {
+            } else if (check.getId() == 455 || check.getId() == 456 || check.getId() == 457 || check.getId() == 458) {
                 code.add(problem.getNode().getTextContent());
-            }
-
-            if (check.getId() == 42) { // valid "estructure" attribute
+            } else if (check.getId() == 42) { // valid "estructure" attribute
                 code = getHtmlHeaders(elementProblem);
-            }
-
-            if (check.getId() == 37) {
+            } else if (check.getId() == 37) {
                 code.add(problem.getNode().getTextContent());
-            }
-
-            if (check.getId() == 434 || check.getId() == 435) {
+            } else if (check.getId() == 434 || check.getId() == 435) {
                 code.add(problem.getNode().getTextContent());
-            }
-
-            if (check.getId() == 460) {
+            } else if (check.getId() == 460) {
                 code.add(problem.getNode().getTextContent());
-            }
-
-            if (check.getId() == 436) {
+            } else if (check.getId() == 436) {
                 code.add(problem.getNode().getTextContent());
             }
         } else if ("legend".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
-        } /*else if ("doctype".equals(nameProblemElement)) {
-
-        }*/ else if ("form".equals(checkKeyElement)) {
+        } else if ("form".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
-//        } else if (("h1".equals(nameProblemElement)) || ("h2".equals(nameProblemElement)) || ("h3".equals(nameProblemElement)) ||
-//                ("h4".equals(nameProblemElement)) || ("h5".equals(nameProblemElement)) || ("h6".equals(nameProblemElement))) {
-//            if ((check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2.trasH1"))) ||
-//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3.trasH2"))) ||
-//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3H4.trasH3"))) ||
-//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H3H4H5.trasH4"))) ||
-//                    (check.getId() == Integer.parseInt(properties.getValue("check.properties", "cabeceraH1H2H2H6.trasH5")))) {
-//                code = getHtml(elementProblem, false, false);
-//            } else {
-//                code = getHtml(elementProblem, true, false);
-//            }
         } else if ("select".equals(checkKeyElement)) {
             code = getHtml(elementProblem, false, false);
         } else if ("table".equals(checkKeyElement)) {
@@ -297,7 +272,7 @@ public final class EvaluatorUtils {
         } else if ("headers".equals(checkKeyElement)) {
             code = getHtml(elementProblem, true, false);
         } else if ("problem-text".equals(checkKeyElement)) {
-            Logger.putLog("Creando código a partir de PROBLEM-TEXT", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
+            Logger.putLog("Creando código a partir de PROBLEM-TEXT", EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
             code = Collections.singletonList(elementProblem.getTextContent());
         } else {
             if ("*".equals(check.getTriggerElement())) {

@@ -4,6 +4,8 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.datos.AnalisisDatos;
+import es.inteco.intav.datos.CSSDTO;
+import es.inteco.intav.persistence.Analysis;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.login.DatosForm;
@@ -21,16 +23,18 @@ import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.tika.io.FilenameUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
+import java.io.*;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.Constants.FILE;
 
 public class PrimaryExportPdfAction extends Action {
 
@@ -95,7 +99,12 @@ public class PrimaryExportPdfAction extends Action {
                 if (regenerate || !pdfFile.exists()) {
                     final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
                     PrimaryExportPdfUtils.exportToPdf(idRastreo, idRastreoRealizado, request, pdfFile.getPath(), seed.getNombre(), null, idExecutionOb, observatoryType);
+                    final File sources = new File(pdfFile.getParentFile(), "sources.zip");
+                    final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
+                    writeSourceFiles(c, evaluationIds, pdfFile);
+                    ZipUtils.generateZipFile(pdfFile.getParentFile().toString() + File.separator + "sources", pdfFile.getParentFile().toString() + File.separator + "sources.zip", true);
                     FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
+                    FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "sources"));
                 }
                 return pdfFile;
             } catch (Exception e) {
@@ -120,9 +129,10 @@ public class PrimaryExportPdfAction extends Action {
             int reportsToGenerate = 0;
             for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
                 final File pdfFile = getReportFile(idObservatory, idExecutionOb, SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, fulfilledCrawling.getIdCrawling())));
+                final File sources = new File(pdfFile.getParentFile(), "sources.zip");
                 final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(fulfilledCrawling.getId());
                 // Contabilizamos los informes que no están creados entre los portales para los que tenemos resultados (los portales no analizados no cuentan)
-                if (!pdfFile.exists() && evaluationIds!=null && !evaluationIds.isEmpty()) {
+                if (!pdfFile.exists() || !sources.exists() && evaluationIds!=null && !evaluationIds.isEmpty()) {
                     reportsToGenerate++;
                 }
             }
@@ -154,6 +164,41 @@ public class PrimaryExportPdfAction extends Action {
         }
         final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn + File.separator + PDFUtils.formatSeedName(seed.getNombre());
         return new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
+    }
+
+    private void writeSourceFiles(final Connection c, final List<Long> evaluationIds, final File pdfFile) throws IOException {
+        int index = 1;
+        for (Long evaluationId : evaluationIds) {
+            final File pageSourcesDirectory = new File(pdfFile.getParentFile(), "sources/" + index);
+            if (!pageSourcesDirectory.mkdirs()) {
+                Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
+            }
+            try (PrintWriter fw = new PrintWriter(new FileWriter(new File(pageSourcesDirectory, "references.txt"), true))) {
+                final Analysis analysis = AnalisisDatos.getAnalisisFromId(c, evaluationId);
+                final File htmlTempFile = File.createTempFile("oaw_", "_" + getURLFileName(analysis.getUrl(), "html.html"), pageSourcesDirectory);
+                fw.println(writeTempFile(htmlTempFile, analysis.getSource(), analysis.getUrl()));
+                final List<CSSDTO> cssResourcesFromEvaluation = AnalisisDatos.getCSSResourcesFromEvaluation(evaluationId);
+                for (CSSDTO cssdto : cssResourcesFromEvaluation) {
+                    final File stylesheetTempFile = File.createTempFile("oaw_", "_" + getURLFileName(cssdto.getUrl(), "css.css"), pageSourcesDirectory);
+                    fw.println(writeTempFile(stylesheetTempFile, cssdto.getCodigo(), cssdto.getUrl()));
+                }
+                index++;
+                fw.flush();
+            }
+        }
+    }
+
+    private String writeTempFile(final File tempFile, final String source, final String url) throws FileNotFoundException {
+        try (PrintWriter writer = new PrintWriter(tempFile)) {
+            writer.print(source);
+            writer.flush();
+        }
+        return tempFile.getName() + " --> " + url;
+    }
+
+    private String getURLFileName(final String url, final String defaultValue) {
+        final String fileName = FilenameUtils.getName(FilenameUtils.normalize(url));
+        return fileName.isEmpty() ? defaultValue : fileName;
     }
 
 }

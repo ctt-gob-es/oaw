@@ -432,6 +432,7 @@ public final class RastreoDAO {
     }
 
     public static void borrarRastreoRealizado(final Connection c, final long idRastreoRealizado) throws Exception {
+        final boolean isAutoCommit = c.getAutoCommit();
         try (PreparedStatement ps = c.prepareStatement("DELETE FROM rastreos_realizados WHERE id = ?")) {
             c.setAutoCommit(false);
             ps.setLong(1, idRastreoRealizado);
@@ -439,11 +440,13 @@ public final class RastreoDAO {
             final List<Long> executedCrawlingIdsList = new ArrayList<>();
             executedCrawlingIdsList.add(idRastreoRealizado);
             deleteAnalyse(c, executedCrawlingIdsList);
-            c.commit();
-            c.setAutoCommit(true);
+            if (isAutoCommit) {
+                c.commit();
+            }
+            c.setAutoCommit(isAutoCommit);
         } catch (SQLException e) {
             c.rollback();
-            c.setAutoCommit(true);
+            c.setAutoCommit(isAutoCommit);
             Logger.putLog("Error al borrarRastreoRealizado", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
         }

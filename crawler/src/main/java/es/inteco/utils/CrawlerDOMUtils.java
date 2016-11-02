@@ -82,7 +82,7 @@ public final class CrawlerDOMUtils {
     }
 
     public static Document getDocument(final String textContent) throws Exception {
-        CheckerParser parser = new CheckerParser();
+        CheckerParser parser = new CheckerParser(false);
 
         try {
             parser.parse(new InputSource(new StringReader(textContent)));
@@ -183,12 +183,10 @@ public final class CrawlerDOMUtils {
         links.addAll(getElementsByTagName(document, "area"));
 
         for (Element link : links) {
-            if (!CrawlerUtils.isSwitchLanguageLink(link, ignoreLinks)) {
-                if (CrawlerUtils.isHTTPLink(link)) {
-                    final String normalizedHref = getAttribute(link, "href").replaceAll("\n", "").toLowerCase().trim();
-                    if (!results.contains(normalizedHref)) {
-                        results.add(normalizedHref);
-                    }
+            if (!CrawlerUtils.isSwitchLanguageLink(link, ignoreLinks) && CrawlerUtils.isHTTPLink(link)) {
+                final String normalizedHref = getAttribute(link, "href").replaceAll("\n", "").trim();
+                if (!results.contains(normalizedHref)) {
+                    results.add(normalizedHref);
                 }
             }
         }
