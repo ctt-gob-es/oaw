@@ -24,6 +24,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     private static final int CSS_BLINK = 449;
 
     private CheckAccessibility checkAccessibility;
+    private Evaluation evaluation;
 
     @Before
     public void setUp() throws Exception {
@@ -34,7 +35,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateNoBlinkMarqueeRedirect() throws Exception {
         checkAccessibility.setContent("<html><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BLINK_MARQUEE));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
@@ -46,7 +47,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateBlinkMarquee() throws Exception {
         checkAccessibility.setContent("<html><p><blink>Lorem</blink> <marquee>ipsum</marquee></p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), BLINK_MARQUEE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
@@ -55,7 +56,21 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateMetaAutomaticRedirect() throws Exception {
         checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"0; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"00; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_GREEN_ONE);
+
+        checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"foo; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
@@ -65,8 +80,25 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateMetaRedirectTimed() throws Exception {
         checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"5; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
 
+        checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"05; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"010; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
+
+        checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"001; url=http://example.es/\" /></head><p>Lorem ipsum</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
@@ -75,7 +107,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateMetaRefresh() throws Exception {
         checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"5\" /></head><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
@@ -85,7 +117,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateMetaRefreshColon() throws Exception {
         checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"5;\" /></head><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
@@ -95,7 +127,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateMetaRedirectInvalid() throws Exception {
         checkAccessibility.setContent("<html><head><meta http-equiv=\"refresh\" content=\"5; www.google.es\" /></head><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), META_REDIRECT));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), META_REFRESH));
@@ -105,7 +137,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateCSSTextDecorationBlink() throws Exception {
         checkAccessibility.setContent("<html><style>p.main { text-decoration: blink; }</style><p class=\"main\">Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
@@ -114,7 +146,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateCSSTextDecorationLineBlink() throws Exception {
         checkAccessibility.setContent("<html><style>p { text-decoration-line: blink; }</style><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_RED_ZERO);
@@ -123,7 +155,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Test
     public void evaluateCSSTextDecorationBlinkDotted() throws Exception {
         checkAccessibility.setContent("<html><style>p { text-decoration: blink dotted; }</style><p>Lorem ipsum</p></html>");
-        final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_GREEN_ONE);

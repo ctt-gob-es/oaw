@@ -919,7 +919,7 @@ Telephone: (416) 978-4360
             <condition type="and">
                 <function call="text-equals" node="@http-equiv" value="refresh"/>
                 <!--<function call="text-equals" node="@content" value="url=" position="anywhere"/>-->
-                <function call="text-match" node="@content" value="^[1-9]\d*;.+"/>
+                <function call="text-match" node="@content" value="^0*[1-9]\d*;.+"/>
             </condition>
         </machine>
     </check>
@@ -3171,7 +3171,7 @@ Telephone: (416) 978-4360
         <rationale>check.319.rationale</rationale>
         <machine>
             <trigger element="ol"/>
-            <function call="all-elements-not-like-this" node="." element="li" value="ul;ol;dl;script;template"/>
+            <function call="all-elements-not-like-this" node="." element="li" value="script;template"/>
         </machine>
     </check>
 
@@ -3181,7 +3181,7 @@ Telephone: (416) 978-4360
         <rationale>check.320.rationale</rationale>
         <machine>
             <trigger element="ul"/>
-            <function call="all-elements-not-like-this" node="." element="li" value="ul;ol;dl;script;template"/>
+            <function call="all-elements-not-like-this" node="." element="li" value="script;template"/>
         </machine>
     </check>
 
