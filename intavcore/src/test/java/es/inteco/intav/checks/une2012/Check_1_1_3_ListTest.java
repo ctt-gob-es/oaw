@@ -514,6 +514,13 @@ public final class Check_1_1_3_ListTest {
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), INCORRECT_SORTED_LIST));
 
+        checkAccessibility.setContent("<ol>" +
+                "<li>Item 1</li>" +
+                "<ol></li>Item 2</li></ol>" +
+                "<li>Item 3</li>" +
+                "</ol>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), INCORRECT_SORTED_LIST));
     }
 
     @Test
