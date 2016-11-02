@@ -113,8 +113,6 @@
                     <check id="86"/>
                     <!-- Encabezamientos de tabla correctos -->
                     <check id="116"/>
-                    <!-- Todas las tablas de datos contienen un elemento caption a menos que la tabla esté identificada en el documento. -->
-                    <check id="151"/>
                     <!-- Celdas únicas que ocupan el ancho completo de la tabla para simular encabezamientos -->
                     <check id="156"/>
                     <!-- Ningún th está vacío. -->

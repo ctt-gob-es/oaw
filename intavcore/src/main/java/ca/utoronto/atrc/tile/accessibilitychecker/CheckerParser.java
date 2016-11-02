@@ -30,10 +30,10 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 import org.apache.xerces.xni.*;
-
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -58,9 +58,6 @@ public class CheckerParser extends DOMParser {
     private int dlinkCounter = 0;
     private int noscriptCounter = 0;
     private int noembedCounter = 0;
-    private int rowCounter = 0;
-    private int cellCounter = 0;
-    private int tableCounter = 0;
     private int formCounter = 0;
     private Node nodeScript = null;
     private Node nodeEmbed = null;
@@ -122,11 +119,13 @@ public class CheckerParser extends DOMParser {
         try {
             // Activar o no el balanceado de etiquetas
             setFeature("http://cyberneko.org/html/features/balance-tags", balanceTags);
+            setFeature("http://xml.org/sax/features/namespaces", false);
             setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-iframe", true);
             setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-tags", true);
             // No se alteran las mayúsculas ni minúsculas de los nombres de elementos y atributos
-            setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
-            setProperty("http://cyberneko.org/html/properties/names/attrs", "lower");
+            setProperty("http://cyberneko.org/html/properties/names/elems", "no-change");
+            setProperty("http://cyberneko.org/html/properties/names/attrs", "no-change");
         } catch (org.xml.sax.SAXException e) {
             Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, e);
         }
@@ -209,20 +208,8 @@ public class CheckerParser extends DOMParser {
             }
         }
 
-        // count the tables
-        if ("table".equalsIgnoreCase(node.getNodeName())) {
-            tableCounter++;
-            rowCounter = 0;
-            cellCounter = 0;
-        }
-
-        // count the rows
-        else if ("tr".equalsIgnoreCase(node.getNodeName())) {
-            rowCounter++;
-        }
-
         // store the "action" attribute of the current form (needed for "input" elements)
-        else if ("form".equalsIgnoreCase(node.getNodeName())) {
+        if ("form".equalsIgnoreCase(node.getNodeName())) {
             formCounter++;
             // the form identifier is the 'action' attribute
             formname = EvaluatorUtility.getAttributeNoSession((Element) node, "action");
@@ -382,16 +369,16 @@ public class CheckerParser extends DOMParser {
         // look for width and height attributes
         String stringWidth = ((Element) node).getAttribute("width").trim();
         String stringHeight = ((Element) node).getAttribute("height").trim();
-        if (stringHeight.length() > 0) {
+        if (!stringHeight.isEmpty()) {
             try {
                 height = Integer.parseInt(stringHeight);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
             }
         }
-        if (stringWidth.length() > 0) {
+        if (!stringWidth.isEmpty()) {
             try {
                 width = Integer.parseInt(stringWidth);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
             }
         }
 
@@ -408,10 +395,7 @@ public class CheckerParser extends DOMParser {
                 // se comenta completamente hasta decidir para que sirve este bloque de código
                 else {
                     // don't try to load relative images for local files
-                    if (StringUtils.isNotEmpty(filename) && filename.equals("temporary") &&
-                            !stringSrc.startsWith("http")) {
-                        // IMAGEN LOCAL
-                    } else {
+                    if (!StringUtils.isNotEmpty(filename) || stringSrc.startsWith("http")) {
                         // image not loaded already so load it
                         try {
                             // is there a 'base' URL for the file?
@@ -421,10 +405,6 @@ public class CheckerParser extends DOMParser {
                             } else { // no, image is relative to filename
                                 stringUrl = EvaluatorUtility.getAbsolute(stringSrc, filename);
                             }
-                            //URL url = EvaluatorUtility.openUrl(stringUrl);
-                            /*if (url == null){
-                                // System.out.println ("Can't get URL for image: " + stringUrl + ", source: " + stringSrc);
-							} else {*/
                             final BufferedImage image = ImageIO.read(new URL(stringUrl));
                             if (image != null) {
                                 dimension = new Dimension(image.getWidth(), image.getHeight());
@@ -432,14 +412,9 @@ public class CheckerParser extends DOMParser {
                                 node.setUserData("dimension", dimension, null);
                             } else {
                                 Logger.putLog("Can't get image, buffered image null: " + stringUrl, CheckerParser.class, Logger.LOG_LEVEL_INFO);
-//                                throw new Exception();
                             }
-//							}
                         } catch (IOException e) {
-                            // exception will be generated if image size can't be found
-                            // System.out.println ("Exception in open URL: " + stringSrc);
-                            //Dimension dimensionDefault = new Dimension(200, 200); // default size
-                            //node.setUserData("dimension", dimensionDefault, null);
+                            Logger.putLog("Exception in open URL: " + stringSrc, CheckerParser.class, Logger.LOG_LEVEL_WARNING, e);
                         }
                     }
                 }
