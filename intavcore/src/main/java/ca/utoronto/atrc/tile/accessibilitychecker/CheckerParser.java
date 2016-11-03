@@ -63,14 +63,9 @@ public class CheckerParser extends DOMParser {
     private Node nodeEmbed = null;
     private Node nodePreviousHeader = null;
     /**
-     * Map que guarda para cada imagen (atributo src del tag img) sus dimensiones (ancho y alto)
-     */
-    private Map<String, Dimension> hashtableImages = new Hashtable<>();
-    /**
      * Map que guarda el número de veces que aparece un elemento (una etiqueta)
      */
     private Map<String, Integer> hashtableElements = new Hashtable<>();
-    private String filename = "";
     private String base = "";
     private String formname = "";
     private List<String> vectorIDs = new ArrayList<>();
@@ -88,10 +83,6 @@ public class CheckerParser extends DOMParser {
 
     public String getBase() {
         return base;
-    }
-
-    public void setFilename(String name) {
-        filename = name;
     }
 
     public String getHtmlXhtml() {
@@ -360,68 +351,6 @@ public class CheckerParser extends DOMParser {
             longdescValue = EvaluatorUtility.getAttributeNoSession((Element) node, "longdesc");
             dlinkCounter = 5; // dlink must occur within the next 5 elements
             node.setUserData("dlink", "false", null);
-        }
-
-        // get the width and height of the image
-        int width = -1;
-        int height = -1;
-
-        // look for width and height attributes
-        String stringWidth = ((Element) node).getAttribute("width").trim();
-        String stringHeight = ((Element) node).getAttribute("height").trim();
-        if (!stringHeight.isEmpty()) {
-            try {
-                height = Integer.parseInt(stringHeight);
-            } catch (NumberFormatException e) {
-            }
-        }
-        if (!stringWidth.isEmpty()) {
-            try {
-                width = Integer.parseInt(stringWidth);
-            } catch (NumberFormatException e) {
-            }
-        }
-
-        // was width and height specified by attributes?
-        if ((width == -1) && (height == -1)) {
-            // no, have we already loaded this image?
-            String stringSrc = ((Element) node).getAttribute("src");
-            if (stringSrc.length() > 0) {
-                Dimension dimension = hashtableImages.get(stringSrc);
-                if (dimension != null) {
-                    node.setUserData("dimension", dimension, null);
-                }
-                // Inicialmente estaba anulada solamente la carga de la imagen y se calculaba la var stringUrl
-                // se comenta completamente hasta decidir para que sirve este bloque de código
-                else {
-                    // don't try to load relative images for local files
-                    if (!StringUtils.isNotEmpty(filename) || stringSrc.startsWith("http")) {
-                        // image not loaded already so load it
-                        try {
-                            // is there a 'base' URL for the file?
-                            final String stringUrl;
-                            if (base.length() > 0) { // yes, image is relative to base
-                                stringUrl = EvaluatorUtility.getAbsolute(stringSrc, base);
-                            } else { // no, image is relative to filename
-                                stringUrl = EvaluatorUtility.getAbsolute(stringSrc, filename);
-                            }
-                            final BufferedImage image = ImageIO.read(new URL(stringUrl));
-                            if (image != null) {
-                                dimension = new Dimension(image.getWidth(), image.getHeight());
-                                hashtableImages.put(stringSrc, dimension);
-                                node.setUserData("dimension", dimension, null);
-                            } else {
-                                Logger.putLog("Can't get image, buffered image null: " + stringUrl, CheckerParser.class, Logger.LOG_LEVEL_INFO);
-                            }
-                        } catch (IOException e) {
-                            Logger.putLog("Exception in open URL: " + stringSrc, CheckerParser.class, Logger.LOG_LEVEL_WARNING, e);
-                        }
-                    }
-                }
-            }
-        } else {
-            // width and height were specified by attributes store width and height on node
-            node.setUserData("dimension", new Dimension(width, height), null);
         }
     }
 

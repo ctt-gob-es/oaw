@@ -40,9 +40,8 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import org.apache.commons.codec.net.URLCodec;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -103,6 +102,10 @@ public final class EvaluatorUtility {
         if (!loadIanaLanguages()) {
             return false;
         }
+
+        ImageIO.setUseCache(true);
+        // A null value indicates that the system-dependent default temporary-file directory is to be used
+        ImageIO.setCacheDirectory(null);
 
         initialized = true;
         return true;
@@ -248,29 +251,26 @@ public final class EvaluatorUtility {
         final NodeList childNodes = node.getChildNodes();
         for (int x = 0; x < childNodes.getLength(); x++) {
             final Node nodeChild = childNodes.item(x);
-            // comments within scripts are treated as 'text' nodes so ignore them
-            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
-                    (nodeChild.getNodeName().equalsIgnoreCase("script"))) {
-                continue;
-            }
-            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
-                    (nodeChild.getNodeName().equalsIgnoreCase("select"))) {
-                continue;
-            }
-            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
-                    (nodeChild.getNodeName().equalsIgnoreCase("abbr") || nodeChild.getNodeName().equalsIgnoreCase("input"))) {
-                buffer.append(((Element) nodeChild).getAttribute("title"));
-                buffer.append(" ");
-            }
-            if ((nodeChild.getNodeType() == Node.ELEMENT_NODE) &&
-                    (nodeChild.getNodeName().equalsIgnoreCase("img"))) {
-                buffer.append(((Element) nodeChild).getAttribute("alt"));
-                buffer.append(" ");
-            }
-            if (nodeChild.getNodeType() == Node.TEXT_NODE) {
+            if (nodeChild.getNodeType() == Node.ELEMENT_NODE) {
+                // comments within scripts are treated as 'text' nodes so ignore them
+                final String nodeName = nodeChild.getNodeName();
+                if ("script".equalsIgnoreCase(nodeName) || "select".equalsIgnoreCase(nodeName)) {
+                    continue;
+                }
+                if ("abbr".equalsIgnoreCase(nodeName) || "input".equalsIgnoreCase(nodeName)) {
+                    buffer.append(((Element) nodeChild).getAttribute("title"));
+                    buffer.append(" ");
+                }
+                if ("img".equalsIgnoreCase(nodeName)) {
+                    buffer.append(((Element) nodeChild).getAttribute("alt"));
+                    buffer.append(" ");
+                }
+
+            } else if (nodeChild.getNodeType() == Node.TEXT_NODE) {
                 buffer.append(nodeChild.getNodeValue());
                 buffer.append(" ");
             }
+
             buffer.append(getLabelTextLoop(nodeChild));
         }
         return buffer.toString();
@@ -430,11 +430,9 @@ public final class EvaluatorUtility {
             return false;
         } else if (langArray.length == 1 && ianaLanguages.getLanguages().contains(langArray[0].toLowerCase())) {
             return true;
-        } else if (langArray.length == 2 && ianaLanguages.getLanguages().contains(langArray[0].toLowerCase()) &&
-                (ianaLanguages.getRegions().contains(langArray[1].toUpperCase()) || ianaLanguages.getVariants().contains(langArray[1].toLowerCase()))) {
-            return true;
         } else {
-            return false;
+            return langArray.length == 2 && ianaLanguages.getLanguages().contains(langArray[0].toLowerCase()) &&
+                    (ianaLanguages.getRegions().contains(langArray[1].toUpperCase()) || ianaLanguages.getVariants().contains(langArray[1].toLowerCase()));
         }
     }
 
@@ -498,8 +496,6 @@ public final class EvaluatorUtility {
 
             String content = StringUtils.getContentAsString(inputStream, charset);
             for (int i = 0; i < 2 && (doc == null || elementRoot == null); i++) {
-                parser.setFilename(checkAccessibility.getUrl());
-
                 content = addFinalTags(content);
                 final InputStream newInputStream = new ByteArrayInputStream(content.getBytes(charset));
                 if (newInputStream.markSupported()) {
@@ -964,7 +960,7 @@ public final class EvaluatorUtility {
                 if (childLevel == -1) {
                     count += countElements((Element) listChildren.item(x), nameElement, nameElementIgnore, childLevel);
                 } else if (childLevel != 0) {
-                    count += countElements((Element) listChildren.item(x), nameElement, nameElementIgnore, childLevel-1);
+                    count += countElements((Element) listChildren.item(x), nameElement, nameElementIgnore, childLevel - 1);
                 }
             }
         }

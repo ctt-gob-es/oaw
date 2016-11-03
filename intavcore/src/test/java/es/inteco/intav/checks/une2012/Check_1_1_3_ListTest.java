@@ -4,15 +4,11 @@ import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.TestUtils;
-import es.inteco.intav.form.ObservatoryEvaluationForm;
-import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  *
@@ -54,7 +50,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateDlCorrectList() throws Exception {
+    public void evaluateDlCorrectList() {
         checkAccessibility.setContent("<dl>" +
                 "<dt>Term 1</dt>" +
                 "<dd>Definition 1</dd>" +
@@ -77,7 +73,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateDTConsecutive() throws Exception {
+    public void evaluateDTConsecutive() {
         checkAccessibility.setContent("<dl>" +
                 "<dd>Definition 1</dd>" +
                 "<dt>Term 2</dt>" +
@@ -89,7 +85,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateDTEnding() throws Exception {
+    public void evaluateDTEnding() {
         checkAccessibility.setContent("<dl>" +
                 "<dt>Term 1</dt>" +
                 "<dd>Definition 1</dd>" +
@@ -111,7 +107,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateULInsideDL() throws Exception {
+    public void evaluateULInsideDL() {
         // Atención este error es una diferencia respecto a la misma comprobación en la v1.0
         checkAccessibility.setContent("<dl>" +
                 "<dt>Term 1</dt>" +
@@ -123,7 +119,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateDTOutsideDL() throws Exception {
+    public void evaluateDTOutsideDL() {
         checkAccessibility.setContent("<dt>Term 1</dt>" +
                 "<dd>Definition 1</dd>" +
                 "<dd>Definition 2</dd>");
@@ -132,7 +128,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateDDOutsideDL() throws Exception {
+    public void evaluateDDOutsideDL() {
         checkAccessibility.setContent("<dt>Term 1</dt>" +
                 "<dd>Definition 1</dd>" +
                 "<dd>Definition 2</dd>");
@@ -141,21 +137,21 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateDLBlankList() throws Exception {
+    public void evaluateDLBlankList() {
         checkAccessibility.setContent("<dl></dl>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), EMPTY_DEFINITION_LIST));
     }
 
     @Test
-    public void evaluateDLNestedBlankList() throws Exception {
+    public void evaluateDLNestedBlankList() {
         checkAccessibility.setContent("<dl><dl><dt>Foo</dt><dd>Bar</dd></dl></dl>");
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), EMPTY_DEFINITION_LIST));
     }
 
     @Test
-    public void evaluateLiParentULOL() throws Exception {
+    public void evaluateLiParentULOL() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1) Opción 1</li>" +
                 "<li>2) Opción 2</li>" +
@@ -171,7 +167,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateLiNoParent() throws Exception {
+    public void evaluateLiNoParent() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1) Opción 1</li>" +
                 "<li>2) Opción 2</li>" +
@@ -182,7 +178,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateUlList() throws Exception {
+    public void evaluateUlList() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1) Opción 1</li>" +
                 "<li>2) Opción 2</li>" +
@@ -194,7 +190,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateUlSimulatingOl() throws Exception {
+    public void evaluateUlSimulatingOl() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1º) Opción 1</li>" +
                 "<li>2º) Opción 2</li>" +
@@ -206,7 +202,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateUlSimulatingOlRomanNumbers() throws Exception {
+    public void evaluateUlSimulatingOlRomanNumbers() {
         checkAccessibility.setContent("<ul>" +
                 "<li>i) Opción 1</li>" +
                 "<li>ii) Opción 2</li>" +
@@ -218,7 +214,7 @@ public final class Check_1_1_3_ListTest {
 
 
     @Test
-    public void evaluateUlSimulatingOlLetters() throws Exception {
+    public void evaluateUlSimulatingOlLetters() {
         checkAccessibility.setContent("<ul>" +
                 "<li>a) Opción 1</li>" +
                 "<li>b) Opción 2</li>" +
@@ -229,7 +225,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateSimulateOnly2Items() throws Exception {
+    public void evaluateSimulateOnly2Items() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1º) Opción 1</li>" +
                 "<li>2º) Opción 2</li>" +
@@ -240,7 +236,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateNotSortedItems() throws Exception {
+    public void evaluateNotSortedItems() {
         checkAccessibility.setContent("<ul>" +
                 "<li>5º) Opción 5</li>" +
                 "<li>2º) Opción 2</li>" +
@@ -253,7 +249,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateOnly3Items() throws Exception {
+    public void evaluateOnly3Items() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1º) Opción 1</li>" +
                 "<li>2º) Opción 2</li>" +
@@ -264,7 +260,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateMixed() throws Exception {
+    public void evaluateMixed() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1º) Opción 1</li>" +
                 "<li>2) Opción 2</li>" +
@@ -276,7 +272,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateNotStartAtFirst() throws Exception {
+    public void evaluateNotStartAtFirst() {
         checkAccessibility.setContent("<ul>" +
                 "<li>4º) Opción 1</li>" +
                 "<li>5) Opción 2</li>" +
@@ -288,7 +284,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluatePSimulatingUl() throws Exception {
+    public void evaluatePSimulatingUl() {
         checkAccessibility.setContent("<p>* Opción 1 - Lorem ipsum</p>" +
                 "<p>* Opción 2</p>" +
                 "<p>* Opción 3</p>" +
@@ -319,7 +315,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateBrSimulatingUl() throws Exception {
+    public void evaluateBrSimulatingUl() {
         checkAccessibility.setContent("<p>* Opción 1 - Lorem ipsum<br/>" +
                 "* Opción 2<br/>" +
                 "* Opción 3<br/>" +
@@ -350,7 +346,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluatePSimulatingOl() throws Exception {
+    public void evaluatePSimulatingOl() {
         checkAccessibility.setContent("<p>1) Opción 1 - Lorem ipsum</p>" +
                 "<p>2) Opción 2</p>" +
                 "<p>3) Opción 3</p>" +
@@ -381,7 +377,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateBrSimulatingOl() throws Exception {
+    public void evaluateBrSimulatingOl() {
         checkAccessibility.setContent("<p>1. Opción 1 - Lorem ipsum<br/>" +
                 "2. Opción 2<br/>" +
                 "3. Opción 3<br/>" +
@@ -420,7 +416,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateTableSimulatingUl() throws Exception {
+    public void evaluateTableSimulatingUl() {
         checkAccessibility.setContent("<table><tr><td>Item 1</td><td>Item 2</td></tr><tr><td>Item 3</td><td>Item 4</td></tr></table");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TABLE_SIMULATING_UL));
@@ -447,7 +443,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateLiParent() throws Exception {
+    public void evaluateLiParent() {
         checkAccessibility.setContent("<ol>" +
                 "<li>Item 1</li>" +
                 "<li>Item 2</li>" +
@@ -459,7 +455,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateListNestedDirectly() throws Exception {
+    public void evaluateListNestedDirectly() {
         checkAccessibility.setContent("<ol>" +
                 "<ul><li>Subitem 1</li><li>Subitem 2</li></ul>" +
                 "<li>Item 1</li>" +
@@ -478,7 +474,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateIncorrectOrderedList() throws Exception {
+    public void evaluateIncorrectOrderedList() {
         checkAccessibility.setContent("<ol>" +
                 "<li>Item 1</li>" +
                 "<div>Item 2</div>" +
@@ -524,7 +520,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateBlankList() throws Exception {
+    public void evaluateBlankList() {
         checkAccessibility.setContent("<ol></ol>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SORTED_EMPTY_LIST));
@@ -536,7 +532,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateULLiParent() throws Exception {
+    public void evaluateULLiParent() {
         checkAccessibility.setContent("<ul>" +
                 "<li>1) Opción 1</li>" +
                 "<li>2) Opción 2</li>" +
@@ -550,7 +546,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateULListNestedDirectly() throws Exception {
+    public void evaluateULListNestedDirectly() {
         checkAccessibility.setContent("<ul>" +
                 "<ul><li>Subitem 1</li><li>Subitem 2</li></ul>" +
                 "<li>Item 1</li>" +
@@ -569,7 +565,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateIncorrectUnorderedList() throws Exception {
+    public void evaluateIncorrectUnorderedList() {
         checkAccessibility.setContent("<ul>" +
                 "<li>Item 1</li>" +
                 "<div>Item 2</div>" +
@@ -607,7 +603,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateULBlankList() throws Exception {
+    public void evaluateULBlankList() {
         checkAccessibility.setContent("<ul></ul>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UNSORTED_EMPTY_LIST));
@@ -618,7 +614,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateSimulatedListParagraphImage() throws Exception {
+    public void evaluateSimulatedListParagraphImage() {
         checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum</p>" +
                 "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2</p>" +
                 "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 3</p>" +
@@ -628,7 +624,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateNonSimulatedListParagraphImage() throws Exception {
+    public void evaluateNonSimulatedListParagraphImage() {
         checkAccessibility.setContent("<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 1 - Lorem ipsum</p>" +
                 "<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 2</p>" +
                 "<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 3</p>" +
@@ -638,7 +634,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateSimulatedListTwoParagraphImage() throws Exception {
+    public void evaluateSimulatedListTwoParagraphImage() {
         checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum</p>" +
                 "<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2</p>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -646,7 +642,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateSimulatedListBrImage() throws Exception {
+    public void evaluateSimulatedListBrImage() {
         checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum" +
                 "<br/><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2" +
                 "<br/><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 3</p>");
@@ -655,7 +651,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateNonSimulatedListBrImage() throws Exception {
+    public void evaluateNonSimulatedListBrImage() {
         checkAccessibility.setContent("<p><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 1 - Lorem ipsum" +
                 "<br/><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 2" +
                 "<br/><img src=\"list.png\" width=\"64\" height=\"64\" alt=\"\">Opción 3" +
@@ -665,7 +661,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateSimulatedListTwoBrImage() throws Exception {
+    public void evaluateSimulatedListTwoBrImage() {
         checkAccessibility.setContent("<p><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 1 - Lorem ipsum" +
                 "<br/><img src=\"list.png\" width=\"8\" height=\"8\" alt=\"\">Opción 2</p>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -701,7 +697,7 @@ public final class Check_1_1_3_ListTest {
             EMPTY_DEFINITION_LIST = 425;        //      "
         */
     @Test
-    public void MET_4_3_2_evaluateDlCorrectList() throws Exception {
+    public void metEvaluateDlCorrectList() {
 
          /* MET 4.3.2
             Title:      Se verifica que las listas de definición tengan una estructura correcta
@@ -795,7 +791,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void MET_4_3_11_evaluatePSimulatingOl() throws Exception {
+    public void metEvaluatePSimulatingOl() {
 
          /* MET 4.3.11
             Title:      Se verifica que no se utilizan párrafos para simular listas numeradas
@@ -922,7 +918,7 @@ public final class Check_1_1_3_ListTest {
 
 
     @Test
-    public void MET_4_3_12_evaluateBrSimulatingOl() throws Exception {
+    public void metEvaluateBrSimulatingOl() {
 
          /* MET 4.3.12
             Title:      Se verifica que no haya 3 o más líneas separadas por <br> que empiecen por patrones numerados
@@ -1058,7 +1054,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void MET_4_3_13_evaluateUlSimulatingOl() throws Exception {
+    public void metEvaluateUlSimulatingOl() {
 
          /* MET 4.3.13
             Title:      Se verifica que no haya 3 o más elementos de lista desordenada que empiecen por patrones numerados
@@ -1221,7 +1217,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateOrderedList() throws Exception {
+    public void evaluateOrderedList() {
         checkAccessibility.setContent("<ol>" +
                 "<li>A) Opción 1</li>" +
                 "<li>B) Opción 2</li>" +
@@ -1232,7 +1228,7 @@ public final class Check_1_1_3_ListTest {
     }
 
     @Test
-    public void evaluateListOfTables() throws Exception {
+    public void evaluateListOfTables() {
         // Codigo extraido de: http://www.minhap.gob.es/es-ES/CDI/Paginas/InformacionPresupuestaria/InformacionPresupuestaria.aspx
         final String content = "<h2 class=\"titulo\">Información Presupuestaria </h2>\n" +
                 "            <div id=\"contSubCDI\">\n" +
@@ -1409,7 +1405,9 @@ public final class Check_1_1_3_ListTest {
                 "                           </ul>" +
                 "                       </div>";
         checkAccessibility.setContent(content);
+        checkAccessibility.setUrl("http://www.minhap.gob.es/es-ES/CDI/Paginas/InformacionPresupuestaria/InformacionPresupuestaria.aspx");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LI_PARENT_UL_OL));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_3, TestUtils.OBS_VALUE_GREEN_ONE);
     }
