@@ -43,12 +43,15 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import org.apache.xerces.util.DOMUtil;
 import org.w3c.dom.*;
 
+import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -1087,10 +1090,8 @@ public class Check {
         if (nodeList.getLength() != 0 && !linkText.trim().isEmpty()) {
             for (int i = 0; i < nodeList.getLength(); i++) {
                 final String altText = ((Element) nodeList.item(i)).getAttribute("alt").trim();
-                if (!altText.isEmpty()) {
-                    if (altText.equalsIgnoreCase(linkText)) {
-                        return true;
-                    }
+                if (!altText.isEmpty() && altText.equalsIgnoreCase(linkText)) {
+                    return true;
                 }
             }
         }
@@ -1098,18 +1099,30 @@ public class Check {
     }
 
     private boolean functionImgDimensionsLessThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-        if (nodeNode != null) {
-            final Dimension dimension = (Dimension) nodeNode.getUserData("dimension");
+        if (nodeNode!=null) {
+            // get the width and height of the image
+            final int width = extractImageDimension(((Element) nodeNode).getAttribute("width"));
+            final int height = extractImageDimension(((Element) nodeNode).getAttribute("height"));
+
+            final Dimension dimension;
+            // Si no existen ambas dimensiones cargar la imagen
+            if (width == -1 && height == -1) {
+                final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+                dimension = loadImage(elementRoot, elementGiven.getAttribute("src"));
+            } else {
+                dimension = new Dimension(width, height);
+            }
+
             if (dimension != null) {
-                final String width = checkCode.getFunctionAttribute1();
-                final String height = checkCode.getFunctionAttribute2();
-                if (!width.isEmpty() || !height.isEmpty()) {
+                final String imageWidth = checkCode.getFunctionAttribute1();
+                final String imageHeight = checkCode.getFunctionAttribute2();
+                if (!imageWidth.isEmpty() || !imageHeight.isEmpty()) {
                     boolean dimensionsLessThan = false;
-                    if (!width.isEmpty() && dimension.getWidth() != -1) {
-                        dimensionsLessThan |= dimension.getWidth() < Integer.valueOf(width);
+                    if (!imageWidth.isEmpty() && dimension.getWidth() != -1) {
+                        dimensionsLessThan |= dimension.width < Integer.valueOf(imageWidth);
                     }
-                    if (!height.isEmpty() && dimension.getHeight() != -1) {
-                        dimensionsLessThan |= dimension.getHeight() < Integer.valueOf(height);
+                    if (!imageHeight.isEmpty() && dimension.getHeight() != -1) {
+                        dimensionsLessThan |= dimension.height < Integer.valueOf(imageHeight);
                     }
                     return dimensionsLessThan;
                 } else {
@@ -1120,6 +1133,36 @@ public class Check {
         }
         // Si no tenemos las dimensiones de la imagen no se produce ningún problema
         return false;
+    }
+
+    private Dimension loadImage(final Element elementRoot, final String srcImg) {
+        try {
+            final String baseUrl = CheckUtils.getBaseUrl(elementRoot);
+            final URL url = baseUrl != null ? new URL(baseUrl) : new URL((String) elementRoot.getUserData("url"));
+            final URL urlImage = new URL(url, srcImg);
+            final BufferedImage image = ImageIO.read(urlImage);
+            if (image != null) {
+                return new Dimension(image.getWidth(), image.getHeight());
+            } else {
+                Logger.putLog("Unknown image format: " + urlImage, CheckerParser.class, Logger.LOG_LEVEL_INFO);
+                return null;
+            }
+        } catch (IOException e) {
+            Logger.putLog("Exception loading image", CheckerParser.class, Logger.LOG_LEVEL_INFO, e);
+            return null;
+        }
+    }
+
+    private int extractImageDimension(final String value) {
+        if (value != null && !value.isEmpty()) {
+            try {
+                return Integer.parseInt(value.trim());
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
     }
 
     private boolean functionOnlyOneChild(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -1141,13 +1184,14 @@ public class Check {
     private int countNodesWithText(NodeList nodeList) {
         int cellsWithText = 0;
         for (int i = 0; i < nodeList.getLength(); i++) {
-            if ((nodeList.item(i).getTextContent() != null) &&
-                    (StringUtils.isNotEmpty(nodeList.item(i).getTextContent()) &&
-                            (!StringUtils.isOnlyBlanks(nodeList.item(i).getTextContent()) &&
-                                    (!StringUtils.isOnlyWhiteChars(nodeList.item(i).getTextContent()))))) {
+            final Node node = nodeList.item(i);
+            if ((node.getTextContent() != null) &&
+                    (StringUtils.isNotEmpty(node.getTextContent()) &&
+                            (!StringUtils.isOnlyBlanks(node.getTextContent()) &&
+                                    (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
                 cellsWithText++;
-            } else if (((Element) nodeList.item(i)).getElementsByTagName("img") != null) {
-                NodeList imgList = ((Element) nodeList.item(i)).getElementsByTagName("img");
+            } else if (((Element) node).getElementsByTagName("img") != null) {
+                NodeList imgList = ((Element) node).getElementsByTagName("img");
                 for (int j = 0; j < imgList.getLength(); j++) {
                     String alt = ((Element) imgList.item(j)).getAttribute("alt");
                     if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
@@ -2007,22 +2051,23 @@ public class Check {
 
         // check for any parent
         Element elementParent = DOMUtil.getParent((Element) nodeNode);
+        int value;
         if (checkCode.getFunctionValue() != null && StringUtils.isNotEmpty(checkCode.getFunctionValue())) {
-            int value = Integer.parseInt(checkCode.getFunctionValue());
-            while (elementParent != null && value != 0) {
-                if (nameTargetParent.equalsIgnoreCase(elementParent.getNodeName())) {
-                    return true;
-                }
-                elementParent = DOMUtil.getParent(elementParent);
-                value--;
+            try {
+                value = Integer.parseInt(checkCode.getFunctionValue());
+            } catch (NumberFormatException nfe) {
+                value = Integer.MAX_VALUE;
             }
         } else {
-            while (elementParent != null) {
-                if (nameTargetParent.equalsIgnoreCase(elementParent.getNodeName())) {
-                    return true;
-                }
-                elementParent = DOMUtil.getParent(elementParent);
+            value = Integer.MAX_VALUE;
+        }
+
+        while (elementParent != null && value != 0) {
+            if (nameTargetParent.equalsIgnoreCase(elementParent.getNodeName())) {
+                return true;
             }
+            elementParent = DOMUtil.getParent(elementParent);
+            value--;
         }
 
         return false;
@@ -2826,21 +2871,21 @@ public class Check {
             return false;
         }
 
-        float linearR1 = colorValue1.getRed() / 255f;
-        float linearG1 = colorValue1.getGreen() / 255f;
-        float linearB1 = colorValue1.getBlue() / 255f;
-        float lum1 = (((float) Math.pow(linearR1, 2.2)) * 0.2126f) +
-                (((float) Math.pow(linearG1, 2.2)) * 0.7152f) +
-                (((float) Math.pow(linearB1, 2.2)) * 0.0722f) + .05f;
+        double linearR1 = colorValue1.getRed() / 255d;
+        double linearG1 = colorValue1.getGreen() / 255d;
+        double linearB1 = colorValue1.getBlue() / 255d;
+        double lum1 = ((Math.pow(linearR1, 2.2)) * 0.2126d) +
+                ((Math.pow(linearG1, 2.2)) * 0.7152d) +
+                ((Math.pow(linearB1, 2.2)) * 0.0722d) + .05d;
 
-        float linearR2 = colorValue2.getRed() / 255f;
-        float linearG2 = colorValue2.getGreen() / 255f;
-        float linearB2 = colorValue2.getBlue() / 255f;
-        float lum2 = (((float) Math.pow(linearR2, 2.2)) * 0.2126f) +
-                (((float) Math.pow(linearG2, 2.2)) * 0.7152f) +
-                (((float) Math.pow(linearB2, 2.2)) * 0.0722f) + .05f;
+        double linearR2 = colorValue2.getRed() / 255d;
+        double linearG2 = colorValue2.getGreen() / 255d;
+        double linearB2 = colorValue2.getBlue() / 255d;
+        double lum2 = ((Math.pow(linearR2, 2.2)) * 0.2126d) +
+                ((Math.pow(linearG2, 2.2)) * 0.7152d) +
+                ((Math.pow(linearB2, 2.2)) * 0.0722d) + .05d;
 
-        float ratio = Math.max(lum1, lum2) / Math.min(lum1, lum2);
+        double ratio = Math.max(lum1, lum2) / Math.min(lum1, lum2);
 
         // round the ratio to 2 decimal places
         long factor = (long) Math.pow(10, 2);
