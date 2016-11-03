@@ -80,8 +80,12 @@ public class CSSImportedResource implements CSSResource {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CSSResource)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof CSSResource)) {
+            return false;
+        }
 
         CSSResource that = (CSSResource) o;
 

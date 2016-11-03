@@ -61,7 +61,7 @@ public class XPathGenerator {
             return "";
         }
 
-        if (node.getNodeName().equalsIgnoreCase("html")) {
+        if ("html".equalsIgnoreCase(node.getNodeName())) {
             return "";
         }
 

@@ -8,8 +8,6 @@ import javax.net.ssl.*;
 import javax.servlet.*;
 import java.io.IOException;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 
 public class SetSystemPropertiesServlet extends GenericServlet {
 

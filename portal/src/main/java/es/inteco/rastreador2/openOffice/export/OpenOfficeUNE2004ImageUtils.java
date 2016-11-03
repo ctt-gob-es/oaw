@@ -1,7 +1,6 @@
 package es.inteco.rastreador2.openOffice.export;
 
 import es.inteco.common.Constants;
-import es.inteco.common.logging.Logger;
 
 import java.util.Collections;
 import java.util.HashMap;

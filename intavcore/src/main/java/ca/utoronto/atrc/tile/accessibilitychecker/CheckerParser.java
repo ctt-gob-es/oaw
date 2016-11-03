@@ -28,20 +28,12 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.utils.StringUtils;
 import org.apache.xerces.xni.*;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
 import java.util.*;
-import java.util.List;
 
 public class CheckerParser extends DOMParser {
 
@@ -73,6 +65,27 @@ public class CheckerParser extends DOMParser {
     private int position = 1;
     private boolean inHeading = false;
 
+    public CheckerParser() {
+        this(true);
+    }
+
+    public CheckerParser(final boolean balanceTags) {
+        super();
+        try {
+            // Activar o no el balanceado de etiquetas
+            setFeature("http://cyberneko.org/html/features/balance-tags", balanceTags);
+            setFeature("http://xml.org/sax/features/namespaces", false);
+            setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+            setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-iframe", true);
+            setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-tags", true);
+            // No se alteran las mayúsculas ni minúsculas de los nombres de elementos y atributos
+            setProperty("http://cyberneko.org/html/properties/names/elems", "no-change");
+            setProperty("http://cyberneko.org/html/properties/names/attrs", "no-change");
+        } catch (org.xml.sax.SAXException e) {
+            Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+    }
+
     public boolean hasDoctype() {
         return flagDoctype;
     }
@@ -99,27 +112,6 @@ public class CheckerParser extends DOMParser {
 
     public String getDoctypeSystemId() {
         return doctypeSystemId;
-    }
-
-    public CheckerParser() {
-        this(true);
-    }
-
-    public CheckerParser(final boolean balanceTags) {
-        super();
-        try {
-            // Activar o no el balanceado de etiquetas
-            setFeature("http://cyberneko.org/html/features/balance-tags", balanceTags);
-            setFeature("http://xml.org/sax/features/namespaces", false);
-            setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-            setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-iframe", true);
-            setFeature("http://cyberneko.org/html/features/scanner/allow-selfclosing-tags", true);
-            // No se alteran las mayúsculas ni minúsculas de los nombres de elementos y atributos
-            setProperty("http://cyberneko.org/html/properties/names/elems", "no-change");
-            setProperty("http://cyberneko.org/html/properties/names/attrs", "no-change");
-        } catch (org.xml.sax.SAXException e) {
-            Logger.putLog("Exception: ", CheckerParser.class, Logger.LOG_LEVEL_ERROR, e);
-        }
     }
 
     /*   We override startElement callback  from DocumentHandler */

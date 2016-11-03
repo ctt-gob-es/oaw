@@ -3,7 +3,6 @@ package es.ctic.css;
 import org.w3c.dom.Element;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 /**
@@ -29,14 +28,14 @@ public class CSSStyleSheetResource implements CSSResource {
     }
 
     private String extractContent(final Element htmlElement) {
-        if (htmlElement==null) {
+        if (htmlElement == null) {
             return "";
         } else if ("style".equalsIgnoreCase(htmlElement.getNodeName())) {
             return htmlElement.getTextContent();
         } else if ("link".equalsIgnoreCase(htmlElement.getNodeName())) {
-            return htmlElement.getUserData("css")!=null?htmlElement.getUserData("css").toString():"";
-        }else {
-            return  "";
+            return htmlElement.getUserData("css") != null ? htmlElement.getUserData("css").toString() : "";
+        } else {
+            return "";
         }
     }
 

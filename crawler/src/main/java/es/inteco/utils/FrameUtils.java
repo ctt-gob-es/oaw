@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -23,7 +24,7 @@ public final class FrameUtils {
     private FrameUtils() {
     }
 
-    private static String getFrameContent(final String url) throws Exception {
+    private static String getFrameContent(final String url) throws IOException {
         HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
         InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
         String textContent = StringUtils.getContentAsString(markableInputStream, CrawlerUtils.getCharset(connection, markableInputStream));

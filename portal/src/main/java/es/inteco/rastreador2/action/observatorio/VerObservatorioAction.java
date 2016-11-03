@@ -2,7 +2,6 @@ package es.inteco.rastreador2.action.observatorio;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.VerObservatorioForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
