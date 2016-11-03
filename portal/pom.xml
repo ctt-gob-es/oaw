@@ -3,19 +3,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>portal</artifactId>
-    <version>3.0.2</version>
+    <version>3.2</version>
     <packaging>war</packaging>
 
     <name>oaw-portal</name>
 
     <properties>
-        <oaw.version>3.0.2</oaw.version>
+        <oaw.version>3.2</oaw.version>
     </properties>
 
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>3.0.2</version>
+        <version>3.2</version>
         <relativePath>../oaw/pom.xml</relativePath>
     </parent>
 
