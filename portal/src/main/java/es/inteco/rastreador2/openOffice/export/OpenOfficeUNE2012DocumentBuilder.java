@@ -1,7 +1,6 @@
 package es.inteco.rastreador2.openOffice.export;
 
 import es.inteco.common.Constants;
-import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;

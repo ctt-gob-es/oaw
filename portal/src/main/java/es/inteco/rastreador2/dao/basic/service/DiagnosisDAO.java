@@ -4,7 +4,6 @@ import com.opencsv.CSVWriter;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
-import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;

@@ -8,7 +8,6 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.ws.CrawlerWS;
 import es.inteco.rastreador2.ws.CrawlerWSJob;
 import es.inteco.utils.FileUtils;
@@ -21,7 +20,6 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.net.IDN;
 import java.net.URL;
 import java.sql.Connection;

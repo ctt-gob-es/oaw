@@ -16,7 +16,6 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
-import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;

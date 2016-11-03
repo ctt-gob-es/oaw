@@ -5,7 +5,6 @@ import es.inteco.common.properties.PropertiesManager;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 
-import java.io.File;
 import java.net.URL;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;

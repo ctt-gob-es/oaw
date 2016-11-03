@@ -4,8 +4,6 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.datos.AnalisisDatos;
-import es.inteco.intav.datos.CSSDTO;
-import es.inteco.intav.persistence.Analysis;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
@@ -15,13 +13,11 @@ import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
-import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.utils.FileUtils;
 import es.inteco.utils.MailUtils;
 import org.apache.struts.util.PropertyMessageResources;
-import org.apache.tika.io.FilenameUtils;
 
-import java.io.*;
+import java.io.File;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
@@ -74,11 +70,12 @@ public class PdfGeneratorThread extends Thread {
 
                         PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds, PropertyMessageResources.getMessageResources("ApplicationResources"), null, pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
                     }
-                    if (!sources.exists()) {
-                        writeSourceFiles(c, evaluationIds, pdfFile);
-                        ZipUtils.generateZipFile(pdfFile.getParentFile().toString() + "/sources", pdfFile.getParentFile().toString() + "/sources.zip", true);
+
+                    final SourceFilesManager sourceFilesManager = new SourceFilesManager(pdfFile.getParentFile());
+                    if (!sourceFilesManager.existsSourcesZip()) {
+                        sourceFilesManager.writeSourceFiles(c, evaluationIds);
+                        sourceFilesManager.zipSources(true);
                     }
-                    FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "sources"));
                     FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
                 }
             }
@@ -87,35 +84,6 @@ public class PdfGeneratorThread extends Thread {
         }
     }
 
-    private void writeSourceFiles(final Connection c, final List<Long> evaluationIds, final File pdfFile) throws IOException {
-        int index = 1;
-        for (Long evaluationId : evaluationIds) {
-            final File pageSourcesDirectory = new File(pdfFile.getParentFile(), "sources/" + index);
-            if (!pageSourcesDirectory.mkdirs()) {
-                Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
-            }
-            try (PrintWriter fw = new PrintWriter(new FileWriter(new File(pageSourcesDirectory, "references.txt"), true))) {
-                final Analysis analysis = AnalisisDatos.getAnalisisFromId(c, evaluationId);
-                final File htmlTempFile = File.createTempFile("oaw_", "_" + getURLFileName(analysis.getUrl(), "html.html"), pageSourcesDirectory);
-                fw.println(writeTempFile(htmlTempFile, analysis.getSource(), analysis.getUrl()));
-                final List<CSSDTO> cssResourcesFromEvaluation = AnalisisDatos.getCSSResourcesFromEvaluation(evaluationId);
-                for (CSSDTO cssdto : cssResourcesFromEvaluation) {
-                    final File stylesheetTempFile = File.createTempFile("oaw_", "_" + getURLFileName(cssdto.getUrl(), "css.css"), pageSourcesDirectory);
-                    fw.println(writeTempFile(stylesheetTempFile, cssdto.getCodigo(), cssdto.getUrl()));
-                }
-                index++;
-                fw.flush();
-            }
-        }
-    }
-
-    private String writeTempFile(final File tempFile, final String source, final String url) throws FileNotFoundException {
-        try (PrintWriter writer = new PrintWriter(tempFile)) {
-            writer.print(source);
-            writer.flush();
-        }
-        return tempFile.getName() + " --> " + url;
-    }
 
     private File getReportFile(final SemillaForm seed) {
         final PropertiesManager pmgr = new PropertiesManager();
@@ -127,8 +95,4 @@ public class PdfGeneratorThread extends Thread {
         return new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
     }
 
-    private String getURLFileName(final String url, final String defaultValue) {
-        final String fileName = FilenameUtils.getName(FilenameUtils.normalize(url));
-        return fileName.isEmpty() ? defaultValue : fileName;
-    }
 }

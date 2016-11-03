@@ -6,7 +6,6 @@ import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
