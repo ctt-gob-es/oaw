@@ -25,12 +25,25 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>tiles-defs.xml</exclude>
+                </excludes>
                 <includes>
                     <include>*</include>
                     <include>checks/*</include>
                     <include>guidelines/*</include>
                     <include>languages/**</include>
                 </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>tiles-defs.xml</include>
+                </includes>
+                <filtering>true</filtering>
+                <!-- Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources)
+                    hay que usar ruta absoluta (usando la variable ${basedir}) -->
+                <targetPath>${basedir}/target/oaw/WEB-INF</targetPath>
             </resource>
             <resource>
                 <directory>profiles/${profile.name}</directory>
