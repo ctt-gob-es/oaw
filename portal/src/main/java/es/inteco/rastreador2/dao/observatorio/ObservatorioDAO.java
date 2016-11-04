@@ -431,42 +431,39 @@ public final class ObservatorioDAO {
         }
     }
 
-    public static void deteleObservatory(Connection connR, long idObservatory) throws SQLException {
-        PreparedStatement ps = null;
+    public static void deteleObservatory(final Connection c, final long idObservatory) throws SQLException {
+        final boolean isAutoCommit = c.getAutoCommit();
         try {
-            connR.setAutoCommit(false);
+            c.setAutoCommit(false);
 
             //RECUPERAMOS LOS IDS DE LOS RASTREOS DEL OBSERVATORIO
-            final List<Long> idsRastreos = getCrawlerIds(connR, idObservatory);
+            final List<Long> idsRastreos = getCrawlerIds(c, idObservatory);
 
             //BORRAMOS RASTREOS Y RESULTADOS
             for (Long idRastreo : idsRastreos) {
-                RastreoDAO.borrarRastreo(connR, idRastreo);
+                RastreoDAO.borrarRastreo(c, idRastreo);
             }
 
             //ELIMINAMOS LAS RELACIONES OBSERVATORIO_SEMILLA
-            ps = connR.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?");
-            ps.setLong(1, idObservatory);
-            ps.executeUpdate();
-            DAOUtils.closeQueries(ps, null);
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?")) {
+                ps.setLong(1, idObservatory);
+                ps.executeUpdate();
+                DAOUtils.closeQueries(ps, null);
+            }
 
             //ELIMINAMOS EL OBSERVATORIO
-            ps = connR.prepareStatement("DELETE FROM observatorio WHERE id_observatorio = ?");
-            ps.setLong(1, idObservatory);
-            ps.executeUpdate();
-
-            connR.commit();
-        } catch (SQLException e) {
-            try {
-                connR.rollback();
-            } catch (SQLException e1) {
-                Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e1);
-                throw e1;
+            try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio WHERE id_observatorio = ?")) {
+                ps.setLong(1, idObservatory);
+                ps.executeUpdate();
             }
+
+            c.commit();
+            c.setAutoCommit(isAutoCommit);
+        } catch (SQLException e) {
+            c.rollback();
+            c.setAutoCommit(isAutoCommit);
             Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, null);
         }
     }
 
@@ -838,37 +835,34 @@ public final class ObservatorioDAO {
     }
 
     public static List<ResultadoSemillaForm> getResultSeedsFromObservatory(final Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria, final int page) throws SQLException {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
         final PropertiesManager pmgr = new PropertiesManager();
         final List<ResultadoSemillaForm> semillasFormList = new ArrayList<>();
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
         final int resultFrom = pagSize * page;
         int paramCount = 1;
-        try {
-            String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id FROM lista l " +
-                    "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " +
-                    "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " +
-                    "WHERE id_obs_realizado = ? ";
 
-            if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
-                query += " AND l.lista like ?";
-            }
+        String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id FROM lista l " +
+                "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " +
+                "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " +
+                "WHERE id_obs_realizado = ? ";
 
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND l.nombre like ?";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
+            query += " AND l.lista like ?";
+        }
 
-            if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
-                query += " AND l.id_categoria = ?";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            query += " AND l.nombre like ?";
+        }
 
-            if (page != Constants.NO_PAGINACION) {
-                query += " LIMIT ? OFFSET ?";
-            }
+        if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
+            query += " AND l.id_categoria = ?";
+        }
 
-            ps = c.prepareStatement(query);
+        if (page != Constants.NO_PAGINACION) {
+            query += " LIMIT ? OFFSET ?";
+        }
+
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(paramCount++, idObservatorio);
 
             if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
@@ -887,51 +881,47 @@ public final class ObservatorioDAO {
                 ps.setInt(paramCount++, pagSize);
                 ps.setInt(paramCount, resultFrom);
             }
-            rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                final ResultadoSemillaForm resultadoSemillaForm = new ResultadoSemillaForm();
-                resultadoSemillaForm.setId(rs.getString("l.id_lista"));
-                resultadoSemillaForm.setName(rs.getString("l.nombre"));
-                resultadoSemillaForm.setActive(rs.getBoolean("r.activo"));
-                resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
-                resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
-                resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
-                semillasFormList.add(resultadoSemillaForm);
+                while (rs.next()) {
+                    final ResultadoSemillaForm resultadoSemillaForm = new ResultadoSemillaForm();
+                    resultadoSemillaForm.setId(rs.getString("l.id_lista"));
+                    resultadoSemillaForm.setName(rs.getString("l.nombre"));
+                    resultadoSemillaForm.setActive(rs.getBoolean("r.activo"));
+                    resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
+                    resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
+                    resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
+                    semillasFormList.add(resultadoSemillaForm);
+                }
             }
         } catch (SQLException e) {
             Logger.putLog("Error", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return semillasFormList;
     }
 
     public static int countResultSeedsFromObservatory(Connection c, SemillaForm searchForm, long idExecutionObservatory, long idCategory) throws SQLException {
-
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int paramCount = 1;
-        try {
-            String query = "SELECT COUNT(*) FROM lista l " +
-                    "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " +
-                    "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " +
-                    "WHERE id_obs_realizado = ? ";
 
-            if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
-                query += " AND l.lista like ?";
-            }
+        String query = "SELECT COUNT(*) FROM lista l " +
+                "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " +
+                "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " +
+                "WHERE id_obs_realizado = ? ";
 
-            if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-                query += " AND l.nombre like ?";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
+            query += " AND l.lista like ?";
+        }
 
-            if (idCategory != Constants.COMPLEXITY_SEGMENT_NONE) {
-                query += " AND l.id_categoria = ?";
-            }
+        if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+            query += " AND l.nombre like ?";
+        }
 
-            ps = c.prepareStatement(query);
+        if (idCategory != Constants.COMPLEXITY_SEGMENT_NONE) {
+            query += " AND l.id_categoria = ?";
+        }
+
+        try (PreparedStatement ps = c.prepareStatement(query)) {
             ps.setLong(paramCount++, idExecutionObservatory);
 
             if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
@@ -945,17 +935,15 @@ public final class ObservatorioDAO {
             if (idCategory != Constants.COMPLEXITY_SEGMENT_NONE) {
                 ps.setLong(paramCount, idCategory);
             }
-            rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            if (rs.next()) {
-                return rs.getInt(1);
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
-
         } catch (SQLException e) {
             Logger.putLog("Error", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
             throw e;
-        } finally {
-            DAOUtils.closeQueries(ps, rs);
         }
         return 0;
     }
@@ -1087,7 +1075,7 @@ public final class ObservatorioDAO {
             insertNewCrawlers(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()), modificarObservatorioForm.getSemillasAnadidas());
 
             c.commit();
-        } catch (Exception e) {
+        } catch (SQLException e) {
             try {
                 c.rollback();
             } catch (SQLException e1) {

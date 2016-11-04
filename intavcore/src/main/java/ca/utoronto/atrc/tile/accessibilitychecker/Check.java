@@ -29,6 +29,7 @@ package ca.utoronto.atrc.tile.accessibilitychecker;
 import es.ctic.language.Diccionario;
 import es.ctic.language.ExtractTextHandler;
 import es.ctic.language.LanguageChecker;
+import es.ctic.utils.AccesibilityDeclarationCheckUtils;
 import es.inteco.common.CheckFunctionConstants;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.ValidationError;
@@ -53,7 +54,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -2418,7 +2418,7 @@ public class Check {
                             } else {
                                 externalLinks.add(link);
                             }
-                        } catch (MalformedURLException e) {
+                        } catch (IOException e) {
                             if (link.getAttribute("href").contains(url)) {
                                 domainLinks.add(link);
                             } else {
@@ -3473,12 +3473,12 @@ public class Check {
 
     private boolean functionHasNotSectionLink(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("A");
-        return CheckUtils.getSectionLink(links, checkCode.getFunctionValue()).isEmpty();
+        return AccesibilityDeclarationCheckUtils.getSectionLink(links, checkCode.getFunctionValue()).isEmpty();
     }
 
     private boolean functionAccessibilityDeclarationNoContact(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-        final List<Element> accessibilityLinks = CheckUtils.getSectionLink(links, checkCode.getFunctionValue());
+        final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, checkCode.getFunctionValue());
 
         final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 
@@ -3489,7 +3489,7 @@ public class Check {
         if (accessibilityLinks.isEmpty()) {
             // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
             try {
-                return !CheckUtils.hasContact(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
+                return !AccesibilityDeclarationCheckUtils.hasContact(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
             } catch (Exception e) {
                 Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -3499,7 +3499,7 @@ public class Check {
                 try {
                     final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
                     if (document != null) {
-                        return !CheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
+                        return !AccesibilityDeclarationCheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
@@ -3512,7 +3512,7 @@ public class Check {
 
     private boolean functionAccessibilityDeclarationNoRevisionDate(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-        final List<Element> accessibilityLinks = CheckUtils.getSectionLink(links, checkCode.getFunctionValue());
+        final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, checkCode.getFunctionValue());
 
         final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 
@@ -3524,7 +3524,7 @@ public class Check {
         if (accessibilityLinks.isEmpty()) {
             // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
             try {
-                return !CheckUtils.hasRevisionDate(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1());
+                return !AccesibilityDeclarationCheckUtils.hasRevisionDate(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1());
             } catch (Exception e) {
                 Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -3533,7 +3533,7 @@ public class Check {
             for (Element accessibilityLink : accessibilityLinks) {
                 try {
                     final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
-                    if (document != null && CheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
+                    if (document != null && AccesibilityDeclarationCheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
                         found = true;
                         return !found;
                     }
@@ -3557,7 +3557,7 @@ public class Check {
      */
     private boolean functionAccessibilityDeclarationNoConformanceLevel(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-        final List<Element> accessibilityLinks = CheckUtils.getSectionLink(links, checkCode.getFunctionValue());
+        final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, checkCode.getFunctionValue());
 
         final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 
@@ -3569,7 +3569,7 @@ public class Check {
         if (accessibilityLinks.isEmpty()) {
             // Si no hay enlaces es porque estamos en la página de accesibilidad (en caso contrario falla la comprobacion 126 y no se ejecuta esta)
             try {
-                return !CheckUtils.hasConformanceLevel(elementGiven.getOwnerDocument());
+                return !AccesibilityDeclarationCheckUtils.hasConformanceLevel(elementGiven.getOwnerDocument());
             } catch (Exception e) {
                 Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
             }
@@ -3579,7 +3579,7 @@ public class Check {
                 if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
                     try {
                         final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
-                        if (document != null && CheckUtils.hasConformanceLevel(document)) {
+                        if (document != null && AccesibilityDeclarationCheckUtils.hasConformanceLevel(document)) {
                             found = true;
                             return !found;
                         }

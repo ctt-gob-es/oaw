@@ -400,6 +400,6 @@ public final class CrawlerUtils {
      * @return true si el enlace es de tipo http o false en caso contrario.
      */
     public static boolean isHTTPLink(final Element link) {
-        return link.hasAttribute("href") && link.getAttribute("href").startsWith("http");
+        return link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript:") && !link.getAttribute("href").toLowerCase().startsWith("mailto:") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("tel:");
     }
 }

@@ -393,6 +393,7 @@ public final class RastreoDAO {
     }
 
     public static void borrarRastreo(Connection c, long idRastreo) throws SQLException {
+        final boolean isAutoCommit = c.getAutoCommit();
         try (PreparedStatement ps = c.prepareStatement("DELETE FROM rastreo WHERE id_rastreo = ?")) {
             c.setAutoCommit(false);
 
@@ -420,14 +421,14 @@ public final class RastreoDAO {
                 }
             } catch (SQLException e) {
                 c.rollback();
-                c.setAutoCommit(true);
+                c.setAutoCommit(isAutoCommit);
                 throw e;
             }
             c.commit();
-            c.setAutoCommit(true);
+            c.setAutoCommit(isAutoCommit);
         } catch (Exception e) {
             c.rollback();
-            c.setAutoCommit(true);
+            c.setAutoCommit(isAutoCommit);
         }
     }
 
