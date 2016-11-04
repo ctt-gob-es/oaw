@@ -21,11 +21,14 @@ import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class CheckUtils {
+
+    private static final List<String> WHITE_LIST = Arrays.asList(".w3.org", ".w3c.es", ".tawdis.net", ".twitter.com", ".facebook.com", ".flicker.com", ".tuenti.com", ".google.com", ".google.es", ".youtube.com", ".pinterest.com");
 
     private CheckUtils() {
     }
@@ -38,11 +41,7 @@ public final class CheckUtils {
      * @return true si el nodo es Element y su coincide con el indicado o false en caso contrario
      */
     public static boolean isElementTagName(final Node node, final String name) {
-        if (node != null && node.getNodeType() == Node.ELEMENT_NODE) {
-            return node.getNodeName().equalsIgnoreCase(name);
-        } else {
-            return false;
-        }
+        return node != null && node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equalsIgnoreCase(name);
     }
 
     /**
@@ -98,99 +97,6 @@ public final class CheckUtils {
         } else {
             return 0;
         }
-    }
-
-    public static List<Element> getSectionLink(final NodeList links, final String sectionRegExp) {
-        final Set<String> includedLinks = new HashSet<>();
-        final List<Element> linksFound = new ArrayList<>();
-        for (int i = 0; i < links.getLength(); i++) {
-            final Element link = (Element) links.item(i);
-            final String href = link.getAttribute("href").toLowerCase();
-            if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
-                if (StringUtils.isNotEmpty(link.getTextContent())) {
-                    if (StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp) && includedLinks.add(href)) {
-                        linksFound.add(link);
-                    }
-                }
-
-                if (link.hasAttribute("title")) {
-                    if (StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp) && includedLinks.add(href)) {
-                        linksFound.add(link);
-                    }
-                }
-
-                final NodeList imgs = link.getElementsByTagName("img");
-                for (int j = 0; j < imgs.getLength(); j++) {
-                    final Element img = (Element) imgs.item(j);
-                    if (img.hasAttribute("alt")) {
-                        if (StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp) && includedLinks.add(href)) {
-                            linksFound.add(link);
-                        }
-                    }
-                }
-            }
-        }
-
-        return linksFound;
-    }
-
-    /**
-     * Comprueba si un documento HTML tiene forma de contacto en la página de declaración de accesibilidad aplicando una serie de patrones sobre los enlaces y texto.
-     *
-     * @param document      documento HTML en formato DOM a analizar
-     * @param contactRegExp expresión regular para detectar enlaces a sección de contacto (contactar,contacte,...)
-     * @param emailRegExp   expresión regular para detectar si se incluye una dirección de correo directamente en el contenido (contacto@portal.es)
-     * @return true si se ha detectado una forma de contacto, false en caso contrario
-     */
-    public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) {
-        // Texto de correo electrónico en el texto normal
-        final Pattern patternEmail = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
-        final Matcher matcher = patternEmail.matcher(getDocumentText(document));
-        if (matcher.find()) {
-            // Hemos encontrado una dirección de correo electrónico en la página
-            return true;
-        }
-
-        // Enlaces a la sección de contacto
-        final List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
-        final List<Element> links = EvaluatorUtils.getElementsByTagName(document, "a");
-        for (Element link : links) {
-            final String linkText = link.getTextContent().toLowerCase().trim();
-            final String linkTitle = link.getAttribute("title").toLowerCase().trim();
-            for (String contactText : contactTexts) {
-                if (linkText.contains(contactText) || linkTitle.contains(contactText)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Comprueba si un documento HTML tiene la fecha de la última revisión en la página de declaración de accesibilidad aplicando una serie de patrones de fecha sobre el texto.
-     *
-     * @param document   documento DOM HTML sobre el que buscar la fecha de la última revisión
-     * @param dateRegExp expresión regular que identifica un formato de fecha
-     * @return true si se ha detectado la fecha de la última revisión, false en caso contrario
-     */
-    public static boolean hasRevisionDate(final Document document, final String dateRegExp) {
-        final Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        final Matcher matcher = pattern.matcher(getDocumentText(document));
-
-        return matcher.find();
-    }
-
-    public static String getDocumentText(final Document document) {
-        final List<Node> nodeList = EvaluatorUtils.generateNodeList(EvaluatorUtils.getHtmlElement(document), new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
-        final StringBuilder documentText = new StringBuilder();
-        for (Node node : nodeList) {
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                documentText.append(node.getTextContent().trim());
-                documentText.append(" ");
-            }
-        }
-        return documentText.toString();
     }
 
     public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws IOException, SAXException {
@@ -268,7 +174,8 @@ public final class CheckUtils {
         CheckedLinks checkedLinks = null;
         try {
             if (!isAbsolute(nodeNode.getTextContent().trim())) {
-                documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+                final String base = CheckUtils.getBaseUrl(elementRoot);
+                documentUrl = base != null ? new URL(base) : new URL((String) elementRoot.getUserData("url"));
                 remoteUrl = new URL(documentUrl, encodeUrl(nodeNode.getTextContent().trim()));
             } else {
                 remoteUrl = new URL(encodeUrl(nodeNode.getTextContent().trim()));
@@ -280,16 +187,8 @@ public final class CheckUtils {
 
             // Consideramos que cualquier enlace a W3C (Internacional o España) o al portal TAW funcionan siempre además
             // de enlaces a las redes sociales más famosas (twitter, facebook, flickr, tuenti,...).
-            if ("jigsaw.w3.org".equals(remoteUrl.getHost())
-                    || "validator.w3.org".equals(remoteUrl.getHost())
-                    || "www.w3.org".equals(remoteUrl.getHost())
-                    || "www.w3c.es".equals(remoteUrl.getHost())
-                    || "www.tawdis.net".equals(remoteUrl.getHost())
-                    || "twitter.com".equals(remoteUrl.getHost())
-                    || "www.facebook.com".equals(remoteUrl.getHost())
-                    || "www.flickr.com".equals(remoteUrl.getHost())
-                    || "www.tuenti.com".equals(remoteUrl.getHost())
-                    || "plus.google.com".equals(remoteUrl.getHost())) {
+            final String domain = getDomainFromHost(remoteUrl.getHost());
+            if (WHITE_LIST.contains(domain)) {
                 return true;
             }
 
@@ -325,8 +224,6 @@ public final class CheckUtils {
                     if (checkedLinks.getBrokenLinks().contains(remoteUrl.toString())) {
                         Logger.putLog("Encontrado enlace roto: " + nodeNode.getTextContent() + " --> " + remoteUrl.toString(), Check.class, Logger.LOG_LEVEL_DEBUG);
                         return false;
-                    } else if (checkedLinks.getAvailablelinks().contains(remoteUrl.toString())) {
-                        return true;
                     } else {
                         return true;
                     }
@@ -353,7 +250,7 @@ public final class CheckUtils {
         return url.startsWith("http");
     }
 
-    private static String encodeUrl(String path) throws UnsupportedEncodingException {
+    public static String encodeUrl(String path) throws UnsupportedEncodingException {
         path = path.replaceAll("[ \\+]", "%20");
         String[] pathArray = path.split("[:\\./?&=#(%20)]");
         for (String aPathArray : pathArray) {
@@ -368,10 +265,8 @@ public final class CheckUtils {
         final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "content.tags").split(";"));
         if (node.getNodeType() == Node.TEXT_NODE && StringUtils.isNotEmpty(node.getTextContent()) && !StringUtils.isOnlyBlanks(node.getTextContent())) {
             return true;
-        } else if (node.getNodeType() == Node.ELEMENT_NODE) {
-            if (elements.contains(node.getNodeName().toUpperCase())) {
-                return true;
-            }
+        } else if (node.getNodeType() == Node.ELEMENT_NODE && elements.contains(node.getNodeName().toUpperCase())) {
+            return true;
         }
         return false;
     }
@@ -478,176 +373,34 @@ public final class CheckUtils {
      * @param link atributo href no vacío de un enlace (etiqueta a)
      * @return true si el enlace link pertenece al mismo dominio que el enlace url false en caso contrario
      */
-    public static boolean checkLinkInDomain(final String url, final String link) throws MalformedURLException {
-        String domain = new URL(url).getHost();
-        int index = domain.lastIndexOf('.');
+    public static boolean checkLinkInDomain(final String url, final String link) throws IOException {
+        if (URI.create(CheckUtils.encodeUrl(link)).isAbsolute()) {
+            final String domain = getDomainFromHost(new URL(url).getHost());
+            final String newHost = getDomainFromHost(new URL(new URL(url), CheckUtils.encodeUrl(link)).getHost());
+
+            return newHost.equalsIgnoreCase(domain);
+        } else {
+            // Si el enlace es relativo pertenece fijo
+            return true;
+        }
+    }
+
+    private static String getDomainFromHost(final String host) {
+        int index = host.lastIndexOf('.');
         if (index != -1) {
             // Comprobamos si la url tiene dominios superiores a nivel 2
             // (ej http://www.algo.es o sólo http://algo.es)
-            index = domain.lastIndexOf('.', index - 1);
+            index = host.lastIndexOf('.', index - 1);
             if (index != -1) {
-                domain = domain.substring(index);
+                return host.substring(index);
             } else {
                 // Si la url comenzó directamente con el dominio de 2º nivel
                 // http://algo.es le anteponemos el caracter '.' para indicar
                 // comienzo de dominio
-                domain = "." + domain;
+                return "." + host;
             }
         }
-
-        String newHost;
-        if (URI.create(link).isAbsolute()) {
-            newHost = new URL(link).getHost();
-        } else {
-            newHost = new URL(new URL(url), link).getHost();
-        }
-
-        index = newHost.lastIndexOf('.');
-
-        if (index != -1) {
-            index = newHost.lastIndexOf('.', index - 1);
-            if (index != -1) {
-                newHost = newHost.substring(index);
-            } else {
-                newHost = "." + newHost;
-            }
-        }
-        return newHost.equalsIgnoreCase(domain);
+        return host;
     }
 
-    /**
-     * Comprueba si un documento HTML tiene declaración de conformidad de accesibilidad aplicando una serie de patrones sobre los enlaces e imagenes
-     *
-     * @param document documento HTML sobre el que buscar la declaración de conformidad de accesibilidad
-     * @return true si se ha detectado una declaración de conformidad, false en caso contrario
-     */
-    public static boolean hasConformanceLevel(final Document document) {
-        /*
-        “Nivel .* A”, “Nivel .* AA”, “Nivel .* AAA” (.* por si se incluye algún texto adicional como “Nivel de Accesibilidad AA”, “Nivel de Conformidad AA”, etc.).-->
-        Un texto con los patrones “doble A”, “triple AAA”, “prioridad X” (con x = 1, 2 o 3).
-        Iconos de conformidad del W3C identificándolos buscando patrones similares a los anteriores en su texto alternativo o, en caso de ser enlaces, reconociendo las URLs de las páginas de conformidad del W3C.
-         */
-        final NodeList enlaces = document.getElementsByTagName("a");
-        for (int i = 0; i < enlaces.getLength(); i++) {
-            final Element tag = (Element) enlaces.item(i);
-            if (tag.getAttribute("href") != null) {
-                final String href = tag.getAttribute("href");
-                if (WCAG1A.equalsIgnoreCase(href) || WCAG2A.equalsIgnoreCase(href)) {
-                    return true;
-                } else if (WCAG1AA.equalsIgnoreCase(href) || WCAG2AA.equalsIgnoreCase(href)) {
-                    return true;
-                } else if (WCAG1AAA.equalsIgnoreCase(href) || WCAG2AAA.equalsIgnoreCase(href)) {
-                    return true;
-                }
-            }
-        }
-        final NodeList images = document.getElementsByTagName("img");
-        for (int i = 0; i < images.getLength(); i++) {
-            final Element tag = (Element) images.item(i);
-
-            if (tag.getAttribute("src") != null) {
-                final String src = tag.getAttribute("src");
-                if (src.contains(SRC1AAA) || src.contains(TAW1AAA) || src.contains(TAW2AAA) || src.contains(SRC2AAA)) {
-                    return true;
-                } else if (src.contains(SRC1AA) || src.contains(TAW1AA) || src.contains(TAW2AA) || src.contains(SRC2AA)) {
-                    return true;
-                } else if (src.contains(SRC1A) || src.contains(TAW1A) || src.contains(TAW2A) || src.contains(SRC2A)) {
-                    return true;
-                }
-            }
-            if (tag.getAttribute("alt") != null) {
-                final String alt = tag.getAttribute("alt");
-                for (Pattern pattern : ALT_A) {
-                    if (pattern.matcher(alt).find()) {
-                        return true;
-                    }
-                }
-                for (Pattern pattern : ALT_AA) {
-                    if (pattern.matcher(alt).find()) {
-                        return true;
-                    }
-                }
-                for (Pattern pattern : ALT_AAA) {
-                    if (pattern.matcher(alt).find()) {
-                        return true;
-                    }
-                }
-            }
-        }
-        final String text = getDocumentText(document);
-        for (Pattern pattern : ALT_A) {
-            if (pattern.matcher(text).find()) {
-                return true;
-            }
-        }
-        for (Pattern pattern : ALT_AA) {
-            if (pattern.matcher(text).find()) {
-                return true;
-            }
-        }
-        for (Pattern pattern : ALT_AAA) {
-            if (pattern.matcher(text).find()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // Patrones usados para la función hasConformanceLevel
-    private static final String WCAG1A = "http://www.w3.org/WAI/WCAG1A-Conformance";
-    private static final String WCAG1AA = "http://www.w3.org/WAI/WCAG1AA-Conformance";
-    private static final String WCAG1AAA = "http://www.w3.org/WAI/WCAG1AAA-Conformance";
-
-    private static final String WCAG2A = "http://www.w3.org/WAI/WCAG2A-Conformance";
-    private static final String WCAG2AA = "http://www.w3.org/WAI/WCAG2AA-Conformance";
-    private static final String WCAG2AAA = "http://www.w3.org/WAI/WCAG2AAA-Conformance";
-
-    private static final String TAW1A = "taw_1_A.png";
-    private static final String TAW2A = "taw_2_A.png";
-    private static final String TAW1AA = "taw_1_AA.png";
-    private static final String TAW2AA = "taw_2_AA.png";
-    private static final String TAW1AAA = "taw_1_AAA.png";
-    private static final String TAW2AAA = "taw_2_AAA.png";
-
-    private static final String SRC1A = "wcag1A";
-    private static final String SRC1AA = "wcag1AA";
-    private static final String SRC1AAA = "wcag1AAA";
-
-    private static final String SRC2A = "wcag2A";
-    private static final String SRC2AA = "wcag2AA";
-    private static final String SRC2AAA = "wcag2AAA";
-
-    private static final Pattern[] ALT_A = new Pattern[]{
-            Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-    };
-
-    private static final Pattern[] ALT_AA = new Pattern[]{
-            Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+doble\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-    };
-
-    private static final Pattern[] ALT_AAA = new Pattern[]{
-            Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+triple\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-    };
 }

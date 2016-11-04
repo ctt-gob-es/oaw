@@ -490,15 +490,14 @@ public class CrawlerJob implements InterruptableJob {
                     int cont = 0;
                     for (String urlLink : urlLinks) {
                         try {
-                            urlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", "");
-
-                            if (isValidUrl(rootUrl, domain, urlLink, crawlerData)) {
+                            final String absoluteUrlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", "");
+                            if (isValidUrl(rootUrl, domain, absoluteUrlLink, crawlerData)) {
                                 if ((crawlerData.getTopN() == unlimitedTopN) || (cont < crawlerData.getTopN())) {
-                                    if (isLinkToAdd(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, true, ignoredLinks)) {
+                                    if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData, true, ignoredLinks)) {
                                         cont++;
                                     }
-                                } else if (!auxDomains.contains(urlLink)) {
-                                    auxDomains.add(urlLink);
+                                } else if (!auxDomains.contains(absoluteUrlLink)) {
+                                    auxDomains.add(absoluteUrlLink);
                                     cont++;
                                 }
                             }
