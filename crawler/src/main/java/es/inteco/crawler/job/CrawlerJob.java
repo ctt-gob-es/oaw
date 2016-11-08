@@ -24,10 +24,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class CrawlerJob implements InterruptableJob {
+    private static final String MAIL_ADDRESS_FROM = "mail.address.from";
+    private static final String MAIL_ADDRESS_FROM_NAME = "mail.address.from.name";
+    private static final String NOT_FILTERED_URIS_SECURITY_KEY = "not.filtered.uris.security.key";
+    private static final String EMPTY_STRING = "";
+
     private final List<CrawledLink> crawlingDomains = new ArrayList<>();
     private final List<String> auxDomains = new ArrayList<>();
     private final List<String> md5Content = new ArrayList<>();
@@ -56,13 +62,13 @@ public class CrawlerJob implements InterruptableJob {
 
     private boolean isInTheSameDirectory(final String link, final String urlRoot) {
         final String protocolRegExp = "https?://";
-        final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
-                urlRoot.replaceAll(protocolRegExp, "").substring(0, urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
-                urlRoot.replaceAll(protocolRegExp, "");
+        final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/') != -1 ?
+                urlRoot.replaceAll(protocolRegExp, EMPTY_STRING).substring(0, urlRoot.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/')) :
+                urlRoot.replaceAll(protocolRegExp, EMPTY_STRING);
 
-        final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
-                link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
-                link.replaceAll(protocolRegExp, "");
+        final String linkDirectory = link.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/') != -1 ?
+                link.replaceAll(protocolRegExp, EMPTY_STRING).substring(0, link.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/')) :
+                link.replaceAll(protocolRegExp, EMPTY_STRING);
 
         return linkDirectory.contains(urlRootDirectory);
     }
@@ -78,7 +84,7 @@ public class CrawlerJob implements InterruptableJob {
         try (Connection c = DataBaseManager.getConnection();
              final PreparedStatement ps = c.prepareStatement("SELECT email FROM usuario u " +
                      "LEFT JOIN usuario_rol ur ON (u.id_usuario = ur.usuario) " +
-                     "WHERE ur.id_rol = ?;");) {
+                     "WHERE ur.id_rol = ?;")) {
             ps.setLong(1, 1);
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -89,9 +95,9 @@ public class CrawlerJob implements InterruptableJob {
         } catch (Exception e) {
             Logger.putLog("Error al obtener los correos de los administradores", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
         }
-        // Ademas de avisar a los usuarios administrador se avisa a los correos indicados en el fichero crawler.core.properties
+        // Ademas de avisar a los usuarios administrador se avisa a los correos indicados en el fichero mail.properties
         final PropertiesManager pmg = new PropertiesManager();
-        final String warningEmails = pmg.getValue("crawler.core.properties", "incomplete.crawler.warning.emails");
+        final String warningEmails = pmg.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.emails");
         if (warningEmails != null) {
             mails.addAll(Arrays.asList(warningEmails.split(";")));
         }
@@ -125,9 +131,9 @@ public class CrawlerJob implements InterruptableJob {
 
                 // Intentamos enviar el error por correo
                 final PropertiesManager pmgr = new PropertiesManager();
-                MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), pmgr.getValue("crawler.core.properties", "mail.address.from.name"),
-                        crawlerData.getUsersMail(), pmgr.getValue("crawler.core.properties", "error.mail.message.subject"),
-                        buildMensajeCorreo(pmgr.getValue("crawler.core.properties", "error.mail.message"), crawlerData), null, null, null, null, true);
+                MailUtils.sendMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME),
+                        crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message.subject"),
+                        buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message"), crawlerData), null, null, null, null, true);
             }
 
             endCrawling(conn, crawlerData);
@@ -152,7 +158,7 @@ public class CrawlerJob implements InterruptableJob {
         simpleAnalysisiDomains.add(crawledLink);
 
         try {
-            analyze(simpleAnalysisiDomains, crawlerData, "");
+            analyze(simpleAnalysisiDomains, crawlerData, EMPTY_STRING);
         } catch (Exception e) {
             Logger.putLog("Error al ejecutar el análisis simple", CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
         }
@@ -180,19 +186,19 @@ public class CrawlerJob implements InterruptableJob {
                                 + File.separator + crawlerData.getLanguage()
                                 + File.separator + pmgr.getValue("pdf.properties", "pdf.file.intav.name");
 
-                        MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), pmgr.getValue("crawler.core.properties", "mail.address.from.name"),
-                                crawlerData.getUsersMail(), pmgr.getValue("crawler.core.properties", "mail.message.subject"),
-                                buildMensajeCorreo(pmgr.getValue("crawler.core.properties", "mail.message"), crawlerData), attachPath, "Informe.pdf", null, null, false);
+                        MailUtils.sendMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME),
+                                crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
+                                buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), attachPath, "Informe.pdf", null, null, false);
                     }
 
                     if (crawlerData.getResponsiblesMail() != null && !crawlerData.getResponsiblesMail().isEmpty()) {
-                        final URL url = new URL(pmgr.getValue("crawler.core.properties", "pdf.executive.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
+                        final URL url = new URL(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "pdf.executive.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
                                 .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
-                                .replace("{2}", pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key")));
+                                .replace("{2}", pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY)));
 
-                        MailUtils.sendExecutiveMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), pmgr.getValue("crawler.core.properties", "mail.address.from.name"),
-                                crawlerData.getResponsiblesMail(), pmgr.getValue("crawler.core.properties", "mail.message.subject"),
-                                buildMensajeCorreo(pmgr.getValue("crawler.core.properties", "mail.message"), crawlerData), url, "Informe.pdf", null, null, false);
+                        MailUtils.sendExecutiveMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME),
+                                crawlerData.getResponsiblesMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
+                                buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), url, "Informe.pdf", null, null, false);
                     }
                 }
             } catch (Exception e) {
@@ -204,25 +210,25 @@ public class CrawlerJob implements InterruptableJob {
         }
     }
 
-    private void generatePDFFile(final CrawlerData crawlerData) throws Exception {
+    private void generatePDFFile(final CrawlerData crawlerData) throws IOException {
         final PropertiesManager pmgr = new PropertiesManager();
 
-        final String attachUrl = pmgr.getValue("crawler.core.properties", "pdf.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
+        final String attachUrl = pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "pdf.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
                 .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
-                .replace("{2}", pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"));
+                .replace("{2}", pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY));
 
-        Logger.putLog("Se va a pedir la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+        Logger.putLog("Se va a pedir la url " + attachUrl.replace(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
         final HttpURLConnection connection = CrawlerUtils.getConnection(attachUrl, null, true);
         // Aumentamos el timeout porque puede que tarde en generarse
-        connection.setConnectTimeout(20 * Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-        connection.setReadTimeout(20 * Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+        connection.setConnectTimeout(20 * Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "crawler.timeout")));
+        connection.setReadTimeout(20 * Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "crawler.timeout")));
         connection.connect();
         final int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
-            Logger.putLog("Generada con éxito la exportacón de la url " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+            Logger.putLog("Generada con éxito la exportacón de la url " + attachUrl.replace(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
         } else {
-            Logger.putLog("Error al pedir la url de la exportación " + attachUrl.replace(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_ERROR);
+            Logger.putLog("Error al pedir la url de la exportación " + attachUrl.replace(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY), "*******"), CrawlerJob.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 
@@ -230,7 +236,7 @@ public class CrawlerJob implements InterruptableJob {
         final PropertiesManager pmgr = new PropertiesManager();
 
         return mensaje
-                .replace("{0}", new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format")).format(new Date()))
+                .replace("{0}", new SimpleDateFormat(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "crawler.date.format")).format(new Date()))
                 .replace("{1}", crawlerData.getUser())
                 .replace("{2}", buildDominiosString(crawlerData.getDomains()));
     }
@@ -253,12 +259,12 @@ public class CrawlerJob implements InterruptableJob {
         return dominios.toString();
     }
 
-    public void makeCrawl(final CrawlerData crawlerData) throws Exception {
+    public void makeCrawl(final CrawlerData crawlerData) throws IOException {
         final PropertiesManager pmgr = new PropertiesManager();
 
-        final int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-        final int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
-        final long timeRetry = Long.parseLong(pmgr.getValue("crawler.core.properties", "time.retry"));
+        final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
+        final int maxNumRedirections = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
+        final long timeRetry = Long.parseLong(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "time.retry"));
 
         List<IgnoredLink> ignoredLinks = null;
 
@@ -401,14 +407,16 @@ public class CrawlerJob implements InterruptableJob {
     private void warnIncompleteCrawl(final CrawlerData crawlerData) {
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> mailTo = getAdministradoresMails();
-        final String text = String.format("El rastreo para %s ha devuelto solo %d resultados", crawlerData.getUrls().get(0), crawlingDomains.size());
 
-        MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), "Rastreador Web de MINHAP", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
+        final String subject = MessageFormat.format(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
+        final String text = MessageFormat.format(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.text"), crawlerData.getUrls().get(0), crawlingDomains.size());
+
+        MailUtils.sendMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME), mailTo, subject, text, null, null, null, null, true);
     }
 
-    private void analyze(final List<CrawledLink> analyzeDomains, final CrawlerData crawlerData, final String cookie) throws Exception {
+    private void analyze(final List<CrawledLink> analyzeDomains, final CrawlerData crawlerData, final String cookie) {
         final PropertiesManager pmgr = new PropertiesManager();
-        final DateFormat df = new SimpleDateFormat(pmgr.getValue("crawler.core.properties", "crawler.date.format"));
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "crawler.date.format"));
 
         int cont = 0;
         final WebAnalayzer webAnalyzer = new WebAnalayzer();
@@ -427,7 +435,7 @@ public class CrawlerJob implements InterruptableJob {
     private boolean isValidUrl(final String urlRoot, final String domain, final String urlLink, final CrawlerData crawlerData) {
         final PropertiesManager pmgr = new PropertiesManager();
 
-        if (urlLink.length() < Integer.parseInt(pmgr.getValue("crawler.core.properties", "link.chars.max.length"))) {
+        if (urlLink.length() < Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "link.chars.max.length"))) {
             if (crawlerData.isExhaustive() || !isOuterDomain(domain, urlLink)) {
                 if (!crawlerData.isInDirectory() || isInTheSameDirectory(urlLink, urlRoot)) {
                     if (!contains(crawlingDomains, urlLink)) {
@@ -460,9 +468,9 @@ public class CrawlerJob implements InterruptableJob {
         return false;
     }
 
-    private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie, final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws Exception {
+    private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie, final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws IOException {
         final PropertiesManager pmgr = new PropertiesManager();
-        final int unlimitedTopN = Integer.parseInt(pmgr.getValue("crawler.core.properties", "amplitud.ilimitada.value"));
+        final int unlimitedTopN = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "amplitud.ilimitada.value"));
         if (crawlerData.getProfundidad() > 0 && !interrupt) {
             final List<CrawledLink> levelLinks = new ArrayList<>();
             final HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
@@ -472,7 +480,7 @@ public class CrawlerJob implements InterruptableJob {
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-                    String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+                    final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
                     markableInputStream.close();
                     final String textContentHash = CrawlerUtils.getHash(textContent);
 
@@ -490,7 +498,7 @@ public class CrawlerJob implements InterruptableJob {
                     int cont = 0;
                     for (String urlLink : urlLinks) {
                         try {
-                            final String absoluteUrlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", "");
+                            final String absoluteUrlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", EMPTY_STRING);
                             if (isValidUrl(rootUrl, domain, absoluteUrlLink, crawlerData)) {
                                 if ((crawlerData.getTopN() == unlimitedTopN) || (cont < crawlerData.getTopN())) {
                                     if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData, true, ignoredLinks)) {
@@ -559,8 +567,8 @@ public class CrawlerJob implements InterruptableJob {
         int numRedirections = 0;
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
-        final int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
+        final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
+        final int maxNumRedirections = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
 
         while ((responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRetries < maxNumRetries) && (numRedirections < maxNumRedirections)) {
             final String connectedURL = connection.getURL().toString();
@@ -599,7 +607,7 @@ public class CrawlerJob implements InterruptableJob {
                                 final List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
                                 for (String urlLinkAux : urlLinks) {
                                     try {
-                                        urlLinkAux = CrawlerUtils.getAbsoluteUrl(document, connectedURL, CrawlerUtils.encodeUrl(urlLinkAux)).toString().replaceAll("\\.\\./", "");
+                                        urlLinkAux = CrawlerUtils.getAbsoluteUrl(document, connectedURL, CrawlerUtils.encodeUrl(urlLinkAux)).toString().replaceAll("\\.\\./", EMPTY_STRING);
                                         if (!auxDomains.contains(urlLinkAux)) {
                                             auxDomains.add(urlLinkAux);
                                         }

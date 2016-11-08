@@ -260,7 +260,7 @@ public abstract class AnonymousResultExportPdf {
     }
 
     public int createContentChapter(final MessageResources messageResources, final Document d, final String contents, final IndexEvents index, int numChapter, int countSections) throws DocumentException {
-        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);

@@ -115,7 +115,7 @@ public final class AnonymousResultExportPdfSection4 {
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p1"), ConstantsFont.PARAGRAPH, section);
 
         Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
-        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMPO"), false, ConstantsFont.paragraphAnchorFont);
+        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMPO"), false, ConstantsFont.PARAGRAPH_ANCHOR_FONT);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.43.p4"), anchorMap, ConstantsFont.PARAGRAPH));
 
@@ -146,14 +146,14 @@ public final class AnonymousResultExportPdfSection4 {
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p2"), ConstantsFont.PARAGRAPH, section);
 
         Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
-        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p7.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMV"), false, ConstantsFont.paragraphAnchorFont);
+        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p7.anchor"), CrawlerUtils.getResources(request).getMessage("anchor.PMV"), false, ConstantsFont.PARAGRAPH_ANCHOR_FONT);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p7"), anchorMap, ConstantsFont.PARAGRAPH));
 
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.p8"), ConstantsFont.PARAGRAPH, section);
 
         section.newPage();
-        Section subSection = PDFUtils.createSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        Section subSection = PDFUtils.createSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.sub1"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section, -1, 2);
         PDFUtils.addImageToSection(subSection, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.img.alt"), 75);
 
         java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIVerificationMidsComparison(CrawlerUtils.getResources(request), resultL1);
@@ -164,7 +164,7 @@ public final class AnonymousResultExportPdfSection4 {
         PdfPTable table = PDFUtils.createResultTable(labelsL1, headers);
         subSection.add(table);
 
-        Section subSection2 = PDFUtils.createSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        Section subSection2 = PDFUtils.createSection(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.sub2"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section, -1, 2);
         PDFUtils.addImageToSection(subSection2, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.44.img.alt.2"), 75);
 
         java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioIntavUtils.infoLevelIIVerificationMidsComparison(CrawlerUtils.getResources(request), resultL2);
@@ -184,14 +184,14 @@ public final class AnonymousResultExportPdfSection4 {
         PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.45.p3"), ConstantsFont.PARAGRAPH, section);
 
         section.newPage();
-        Section subSection = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.45.sub1"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        Section subSection = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.45.sub1"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section, -1, 2);
         PDFUtils.addImageToSection(subSection, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.45.img1.alt"), 75);
 
         PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.45.tableTitle1"), subSection, 380);
         section.add(PDFUtils.createTableMod(messageResources, ResultadosAnonimosObservatorioIntavUtils.infoLevelVerificationModalityComparison(results1)));
 
         section.newPage();
-        Section subSection2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.45.sub2"), null, ConstantsFont.chapterTitleMPFont3L, section, -1, 2);
+        Section subSection2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.45.sub2"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section, -1, 2);
         PDFUtils.addImageToSection(subSection2, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", messageResources.getMessage("ob.resAnon.intav.report.45.img2.alt"), 75);
 
         PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.45.tableTitle2"), subSection2, 380);
@@ -203,7 +203,7 @@ public final class AnonymousResultExportPdfSection4 {
         Map<String, BigDecimal> result = ResultadosAnonimosObservatorioIntavUtils.aspectMidsPuntuationGraphicData(CrawlerUtils.getResources(request), pageExecutionList);
 
         Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
-        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p12.ancla"), CrawlerUtils.getResources(request).getMessage("anchor.PMA"), false, ConstantsFont.paragraphAnchorFont);
+        SpecialChunk anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p12.ancla"), CrawlerUtils.getResources(request).getMessage("anchor.PMA"), false, ConstantsFont.PARAGRAPH_ANCHOR_FONT);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.p12"), anchorMap, ConstantsFont.PARAGRAPH));
         PDFUtils.addImageToSection(section, graphicPath + CrawlerUtils.getResources(request).getMessage("observatory.graphic.aspect.mid.name") + ".jpg", CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.46.img.alt"), 75);

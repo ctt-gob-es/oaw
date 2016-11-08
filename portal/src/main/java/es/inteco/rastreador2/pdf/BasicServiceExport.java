@@ -176,7 +176,7 @@ public final class BasicServiceExport {
             int numChapter = 1;
             int countSections = 1;
 
-            final Chapter introChapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.introduction"), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+            final Chapter introChapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.introduction"), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
             countSections = createSection11(messageResources, index, introChapter, countSections, evaList);
             countSections++;
@@ -202,14 +202,14 @@ public final class BasicServiceExport {
             int counter = 1;
             for (EvaluationForm evaluationForm : evaList) {
                 final String chapterTitle = messageResources.getMessage("basic.service.url.title", counter++);
-                final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle.toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont, false);
+                final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle.toUpperCase(), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, false);
 
                 final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
                 final String url = evaluationForm.getUrl();
                 final Paragraph urlParagraph = new Paragraph();
                 if (title != null && !(title.replace("...", "")).contains(url.replace("...", ""))) {
-                    final Phrase p1 = PDFUtils.createPhrase(messageResources.getMessage("resultados.observatorio.vista.primaria.url") + ": ", ConstantsFont.scoreBoldFont);
-                    final Font urlFont = url.length() > 50 ? ConstantsFont.descriptionFont : ConstantsFont.scoreFont;
+                    final Phrase p1 = PDFUtils.createPhrase(messageResources.getMessage("resultados.observatorio.vista.primaria.url") + ": ", ConstantsFont.SCORE_BOLD_FONT);
+                    final Font urlFont = url.length() > 50 ? ConstantsFont.descriptionFont : ConstantsFont.SCORE_FONT;
                     final String urlTitle = url.length() > 75 ? url.substring(0, 75) + "..." : url;
                     final Phrase p2 = PDFUtils.createPhraseLink(urlTitle, url, urlFont);
                     urlParagraph.add(p1);
@@ -219,7 +219,7 @@ public final class BasicServiceExport {
                 chapter.add(urlParagraph);
 
                 if (title != null) {
-                    final Phrase p3 = PDFUtils.createPhrase(messageResources.getMessage("resultados.observatorio.vista.primaria.title") + ": " + title, ConstantsFont.scoreBoldFont);
+                    final Phrase p3 = PDFUtils.createPhrase(messageResources.getMessage("resultados.observatorio.vista.primaria.title") + ": " + title, ConstantsFont.SCORE_BOLD_FONT);
                     final Paragraph titleParagraph = new Paragraph();
                     titleParagraph.add(p3);
                     chapter.add(titleParagraph);
@@ -247,7 +247,7 @@ public final class BasicServiceExport {
                 chapter.newPage();
 
                 for (PriorityForm priority : evaluationForm.getPriorities()) {
-                    Section section = PDFUtils.createSection(getPriorityName(messageResources, priority), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+                    Section section = PDFUtils.createSection(getPriorityName(messageResources, priority), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
                     for (GuidelineForm guideline : priority.getGuidelines()) {
                         for (PautaForm pautaForm : guideline.getPautas()) {
                             Section subSection = PDFUtils.createSection(messageResources.getMessage(pautaForm.getName()), null, ConstantsFont.guidelineDescMPFont, section, -1, 1);
@@ -259,15 +259,15 @@ public final class BasicServiceExport {
                                 if (problem.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
                                     description += messageResources.getMessage("pdf.accessibility.bs.warning") + ": ";
                                     image = imgWarnings;
-                                    font = ConstantsFont.warningFont;
+                                    font = ConstantsFont.WARNING_FONT;
                                 } else if (problem.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high"))) {
                                     description += messageResources.getMessage("pdf.accessibility.bs.problem") + ": ";
                                     image = imgProblemA;
-                                    font = ConstantsFont.problemFont;
+                                    font = ConstantsFont.PROBLEM_FONT;
                                 } else if (problem.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
                                     description += messageResources.getMessage("pdf.accessibility.bs.info") + ": ";
                                     image = imgInfos;
-                                    font = ConstantsFont.cannottellFont;
+                                    font = ConstantsFont.CANNOTTELL_FONT;
                                 }
                                 Paragraph p = PDFUtils.createImageParagraphWithDiferentFont(image, description, font, StringUtils.removeHtmlTags(messageResources.getMessage(problem.getError())), ConstantsFont.strongDescriptionFont, Chunk.ALIGN_LEFT);
                                 subSection.add(p);
@@ -295,7 +295,7 @@ public final class BasicServiceExport {
                 createContentChapter(messageResources, document, basicServiceForm.getContent(), index, numChapter, countSections);
             }
 
-            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleMPFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
             ExportPageEventsObservatoryMP.setPrintFooter(true);
 
             FileUtils.removeFile(chartsTempPath);
@@ -355,22 +355,22 @@ public final class BasicServiceExport {
                 for (PautaForm pautaForm : guideline.getPautas()) {
                     for (ProblemForm problemForm : pautaForm.getProblems()) {
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high")) && !hasProblem) {
-                            problemList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.listSymbol2, false));
+                            problemList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.LIST_SYMBOL_2, false));
                             hasProblem = true;
                         }
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium")) && !hasWarning) {
-                            warningList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.listSymbol2, false));
+                            warningList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.LIST_SYMBOL_2, false));
                             hasWarning = true;
                         }
                         if (problemForm.getType().equals(PMGR.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell")) && !hasInfos) {
-                            infoList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.listSymbol2, false));
+                            infoList.add(PDFUtils.createListItem(messageResources.getMessage(pautaForm.getName()), ConstantsFont.PARAGRAPH, ConstantsFont.LIST_SYMBOL_2, false));
                             hasInfos = true;
                         }
                     }
                 }
             }
 
-            final ListItem priorityItem = PDFUtils.createListItem(messageResources.getMessage(priority.getPriorityName().replace(" ", "").toLowerCase() + ".bs"), ConstantsFont.paragraphBoldTitleFont, ConstantsFont.listSymbol1, true);
+            final ListItem priorityItem = PDFUtils.createListItem(messageResources.getMessage(priority.getPriorityName().replace(" ", "").toLowerCase() + ".bs"), ConstantsFont.paragraphBoldTitleFont, ConstantsFont.LIST_SYMBOL_1, true);
             priorityItem.add(createProblemList(messageResources, problemList, warningList, infoList, priority));
             priorityTextList.add(priorityItem);
         }
@@ -392,9 +392,9 @@ public final class BasicServiceExport {
         imgWarnings.scalePercent(60);
         imgInfos.scalePercent(60);
 
-        ListItem problemItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems() + messageResources.getMessage("pdf.accessibility.bs.ver.point", problemList.size()), ConstantsFont.problemFont, new Chunk(imgProblemA, 0, 0), false);
-        ListItem warningItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings() + messageResources.getMessage("pdf.accessibility.bs.ver.point", warningList.size()), ConstantsFont.warningFont, new Chunk(imgWarnings, 0, 0), false);
-        ListItem infoItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.infos") + ": " + priority.getNumInfos() + messageResources.getMessage("pdf.accessibility.bs.ver.point", infoList.size()), ConstantsFont.cannottellFont, new Chunk(imgInfos, 0, 0), false);
+        ListItem problemItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems() + messageResources.getMessage("pdf.accessibility.bs.ver.point", problemList.size()), ConstantsFont.PROBLEM_FONT, new Chunk(imgProblemA, 0, 0), false);
+        ListItem warningItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings() + messageResources.getMessage("pdf.accessibility.bs.ver.point", warningList.size()), ConstantsFont.WARNING_FONT, new Chunk(imgWarnings, 0, 0), false);
+        ListItem infoItem = PDFUtils.createListItem(messageResources.getMessage("pdf.accessibility.bs.infos") + ": " + priority.getNumInfos() + messageResources.getMessage("pdf.accessibility.bs.ver.point", infoList.size()), ConstantsFont.CANNOTTELL_FONT, new Chunk(imgInfos, 0, 0), false);
 
         problemItem.setSpacingBefore(8);
         warningItem.setSpacingBefore(8);
@@ -413,7 +413,7 @@ public final class BasicServiceExport {
     }
 
     private static int createSection11(final MessageResources messageResources, final IndexEvents index, final Chapter chapter, final int countSections, final List<EvaluationForm> evalFormList) throws Exception {
-        final Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections, 1);
+        final Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.bs.index.introduction.1"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections, 1);
 
         final ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("basic.service.introduction.1.p1.bold"));
@@ -447,7 +447,7 @@ public final class BasicServiceExport {
     private static int createGlobalChapter(final MessageResources messageResources, Document d, List<EvaluationForm> evaList,
                                            String globalPath, IndexEvents index, String fechaInforme, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter1 = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter1 = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.bs.index.global.summary"), index, numSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         ArrayList<String> boldWords = new ArrayList<>();
         boldWords.add(messageResources.getMessage("pdf.accessibility.bs.entity"));
@@ -477,7 +477,7 @@ public final class BasicServiceExport {
 
     private static int createContentChapter(final MessageResources messageResources, Document d, String contents, IndexEvents index, int numChapter, int countSections) throws Exception {
         int numSections = countSections;
-        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, numSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
@@ -492,16 +492,16 @@ public final class BasicServiceExport {
         int count = prioList.size();
 
         for (PriorityForm priority : prioList) {
-            ListItem priorityList = new ListItem(getPriorityName(messageResources, priority), ConstantsFont.summaryTitleFont);
+            ListItem priorityList = new ListItem(getPriorityName(messageResources, priority), ConstantsFont.SUMMARY_TITLE_FONT);
             priorityList.setSpacingBefore(8);
             priorityList.setListSymbol(new Chunk());
             summaryPriorities.add(priorityList);
             com.lowagie.text.List summaryStatistics = new com.lowagie.text.List();
             summaryStatistics.setIndentationLeft(2 * ConstantsFont.IDENTATION_LEFT_SPACE);
 
-            ListItem problemList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems(), ConstantsFont.summaryFontProblem);
-            ListItem warningsList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings(), ConstantsFont.summaryFontWarning);
-            ListItem infosList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.infos") + ": " + priority.getNumInfos(), ConstantsFont.summaryFontCannottell);
+            ListItem problemList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.problems") + ": " + priority.getNumProblems(), ConstantsFont.SUMMARY_FONT_PROBLEM);
+            ListItem warningsList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.warnings") + ": " + priority.getNumWarnings(), ConstantsFont.SUMMARY_FONT_WARNING);
+            ListItem infosList = new ListItem(messageResources.getMessage("pdf.accessibility.bs.infos") + ": " + priority.getNumInfos(), ConstantsFont.SUMMARY_FONT_CANNOTTELL);
 
             Image imgProblemA = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.problem"));
             Image imgWarnings = Image.getInstance(PMGR.getValue(Constants.PDF_PROPERTIES, "path.warnings"));
@@ -629,7 +629,7 @@ public final class BasicServiceExport {
                 final String linkHref = getMatch(specificProblem.getNote().get(0), "href='(.*?)'");
 
                 final Paragraph p = new Paragraph(paragraphText, ConstantsFont.noteCellFont);
-                final Anchor anchor = new Anchor(getMatch(specificProblem.getNote().get(0), "<a.*?>(.*?)</a>"), ConstantsFont.noteAnchorCellFont);
+                final Anchor anchor = new Anchor(getMatch(specificProblem.getNote().get(0), "<a.*?>(.*?)</a>"), ConstantsFont.NOTE_ANCHOR_CELL_FONT);
                 anchor.setReference(linkHref);
                 p.add(anchor);
                 subSubSection.add(p);
@@ -640,7 +640,7 @@ public final class BasicServiceExport {
                     final String[] arguments = new String[2];
                     arguments[0] = PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number");
                     arguments[1] = String.valueOf(specificProblems.size());
-                    final Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.moreInfoFont);
+                    final Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.bs.num.errors.summary", arguments), ConstantsFont.MORE_INFO_FONT);
                     p.setAlignment(Paragraph.ALIGN_RIGHT);
                     subSubSection.add(p);
                 }
@@ -663,10 +663,10 @@ public final class BasicServiceExport {
         p.setAlignment(Paragraph.ALIGN_RIGHT);
         Anchor anchor = null;
         if (check.equals("232") ) { //PMGR.getValue("check.properties", "doc.valida.especif"))) {
-            anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.moreInfoFont);
+            anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.MORE_INFO_FONT);
             anchor.setReference(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
         } else if (EvaluatorUtils.isCssValidationCheck(Integer.parseInt(check))) {
-            anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.moreInfoFont);
+            anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.MORE_INFO_FONT);
             anchor.setReference(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
         }
         p.add(anchor);

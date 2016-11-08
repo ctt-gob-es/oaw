@@ -108,7 +108,7 @@ public final class IndexUtils {
         int sectionL2 = 1;
         for (int i = 0, n = list.size(); i < n; i++) {
             IndexEvents.Entry entry = list.get(i);
-            Paragraph in = new Paragraph("", ConstantsFont.indexItems);
+            Paragraph in = new Paragraph("", ConstantsFont.INDEX_ITEMS);
             String text = entry.getIn1();
             int identation = 0;
             if (entry.getIn1().contains("@&")) {
@@ -139,7 +139,7 @@ public final class IndexUtils {
             List pages = entry.getPagenumbers();
             List tags = entry.getTags();
             for (int p = 0; p < 1; p++) {
-                Paragraph inPag = new Paragraph("", ConstantsFont.indexItems);
+                Paragraph inPag = new Paragraph("", ConstantsFont.INDEX_ITEMS);
                 Chunk pagenr = new Chunk(String.valueOf(Integer.parseInt(pages.get(p).toString()) - 1));
                 pagenr.setLocalGoto((String) tags.get(p));
                 inPag.setAlignment(Chunk.ALIGN_RIGHT);

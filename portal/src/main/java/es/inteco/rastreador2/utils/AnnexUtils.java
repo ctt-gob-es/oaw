@@ -28,9 +28,17 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.util.*;
 
+import static es.inteco.common.Constants.CATEGORY_NAME;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class AnnexUtils {
+
+    private static final String EMPTY_STRING = "";
+    private static final String RESULTADOS_ELEMENT = "resultados";
+    private static final String NOMBRE_ELEMENT = "nombre";
+    private static final String CATEGORIA_ELEMENT = "categoria";
+    private static final String DEPENDE_DE_ELEMENT = "depende_de";
+    private static final String PORTAL_ELEMENT = "portal";
 
     private AnnexUtils() {
     }
@@ -43,79 +51,81 @@ public final class AnnexUtils {
 
             final ContentHandler hd = getContentHandler(writer);
             hd.startDocument();
-            hd.startElement("", "", "resultados", null);
+            hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
 
             final ObservatoryForm observatoryForm = ObservatoryExportManager.getObservatory(idObsExecution);
             for (CategoryForm categoryForm : observatoryForm.getCategoryFormList()) {
                 if (categoryForm != null) {
                     for (SiteForm siteForm : categoryForm.getSiteFormList()) {
                         if (siteForm != null) {
-                            hd.startElement("", "", "portal", null);
+                            hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
                             final SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(siteForm.getIdCrawlerSeed()));
 
-                            writeTag(hd, "nombre", siteForm.getName());
-                            writeTag(hd, "categoria", semillaForm.getCategoria().getName());
-                            writeTag(hd, "depende_de", semillaForm.getDependencia());
+                            writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
+                            writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
+                            writeTag(hd, DEPENDE_DE_ELEMENT, semillaForm.getDependencia());
 
-                            hd.startElement("", "", "paginas", null);
+                            hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
                             for (PageForm pageForm : siteForm.getPageList()) {
                                 if (pageForm != null) {
-                                    hd.startElement("", "", "pagina", null);
+                                    hd.startElement(EMPTY_STRING, EMPTY_STRING, "pagina", null);
 
                                     writeTag(hd, "url", pageForm.getUrl());
                                     writeTag(hd, "puntuacion", pageForm.getScore());
                                     writeTag(hd, "adecuacion", ObservatoryUtils.getValidationLevel(messageResources, pageForm.getLevel()));
 
-                                    hd.endElement("", "", "pagina");
+                                    hd.endElement(EMPTY_STRING, EMPTY_STRING, "pagina");
                                 }
                             }
-                            hd.endElement("", "", "paginas");
+                            hd.endElement(EMPTY_STRING, EMPTY_STRING, "paginas");
 
-                            hd.endElement("", "", "portal");
+                            hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
                         }
                     }
                 }
             }
 
-            hd.endElement("", "", "resultados");
+            hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
             hd.endDocument();
         } catch (Exception e) {
             Logger.putLog("Excepción", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
         }
     }
 
-    public static void createAnnexPortales(final MessageResources request, final Long idObsExecution, final Long idOperation) throws Exception {
+    public static void createAnnexPortales(final MessageResources messageResources, final Long idObsExecution, final Long idOperation) throws Exception {
         try (Connection c = DataBaseManager.getConnection();
              FileWriter writer = getFileWriter(idOperation, "anexo_portales.xml")) {
 
             final ContentHandler hd = getContentHandler(writer);
             hd.startDocument();
-            hd.startElement("", "", "resultados", null);
+            hd.startElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT, null);
 
             final Map<Long, TreeMap<String, ScoreForm>> annexmap = createAnnexMap(idObsExecution);
 
             for (Map.Entry<Long, TreeMap<String, ScoreForm>> semillaEntry : annexmap.entrySet()) {
                 final SemillaForm semillaForm = SemillaDAO.getSeedById(c, semillaEntry.getKey());
                 if (semillaForm.getId() != 0) {
-                    hd.startElement("", "", "portal", null);
+                    hd.startElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT, null);
 
-                    writeTag(hd, "nombre", semillaForm.getNombre());
-                    writeTag(hd, "categoria", semillaForm.getCategoria().getName());
-                    writeTag(hd, "depende_de", semillaForm.getDependencia());
+                    writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
+                    writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
+                    writeTag(hd, DEPENDE_DE_ELEMENT, semillaForm.getDependencia());
                     writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
 
                     for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {
                         final String executionDateAux = entry.getKey().substring(0, entry.getKey().indexOf(" ")).replace("/", "_");
                         writeTag(hd, "puntuacion_" + executionDateAux, entry.getValue().getTotalScore().toString());
-                        writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), request));
+                        writeTag(hd, "adecuacion_" + executionDateAux, changeLevelName(entry.getValue().getLevel(), messageResources));
                     }
-                    hd.endElement("", "", "portal");
+                    hd.endElement(EMPTY_STRING, EMPTY_STRING, PORTAL_ELEMENT);
                 }
             }
-            hd.endElement("", "", "resultados");
+            hd.endElement(EMPTY_STRING, EMPTY_STRING, RESULTADOS_ELEMENT);
             hd.endDocument();
         } catch (Exception e) {
             Logger.putLog("Error al crear el XML de resultado portales", AnnexUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
         }
     }
 
@@ -134,11 +144,11 @@ public final class AnnexUtils {
     }
 
     private static void writeTag(final ContentHandler contentHandler, final String tagName, final String text) throws SAXException {
-        contentHandler.startElement("", "", tagName, null);
+        contentHandler.startElement(EMPTY_STRING, EMPTY_STRING, tagName, null);
         if (text != null) {
             contentHandler.characters(text.toCharArray(), 0, text.length());
         }
-        contentHandler.endElement("", "", tagName);
+        contentHandler.endElement(EMPTY_STRING, EMPTY_STRING, tagName);
     }
 
     private static Map<Long, TreeMap<String, ScoreForm>> createAnnexMap(final Long idObsExecution) {
@@ -185,7 +195,7 @@ public final class AnnexUtils {
         } else if (name.equalsIgnoreCase(messageResources.getMessage("resultados.anonimos.num.portales.a.old"))) {
             return messageResources.getMessage("resultados.anonimos.num.portales.a");
         } else {
-            return "";
+            return EMPTY_STRING;
         }
     }
 

@@ -30,14 +30,14 @@ import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.Constants.*;
 
 public class BasicServiceAction extends Action {
 
@@ -75,6 +75,7 @@ public class BasicServiceAction extends Action {
             basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
         }
 
+        final PropertiesManager pmgr = new PropertiesManager();
         if (!BasicServiceConcurrenceSystem.passConcurrence()) {
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_QUEUED));
 
@@ -82,7 +83,7 @@ public class BasicServiceAction extends Action {
             final BasicServiceQueingThread basicServiceQueingThread = new BasicServiceQueingThread(basicServiceForm);
             basicServiceQueingThread.start();
 
-            CrawlerUtils.returnText(response, getResources(request).getMessage("basic.service.queued"), false);
+            CrawlerUtils.returnText(response, pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.queued"), false);
         } else if (errors.isEmpty()) {
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_LAUNCHED));
 
@@ -90,13 +91,13 @@ public class BasicServiceAction extends Action {
             final BasicServiceThread basicServiceThread = new BasicServiceThread(basicServiceForm);
             basicServiceThread.start();
 
-            CrawlerUtils.returnText(response, getResources(request).getMessage("basic.service.launched"), false);
+            CrawlerUtils.returnText(response, pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.launched"), false);
         } else {
-            final StringBuilder text = new StringBuilder(getResources(request).getMessage("basic.service.validation.errors"));
+            final StringBuilder text = new StringBuilder(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.validation.errors"));
 
             for (Iterator<ActionMessage> iterator = errors.get(); iterator.hasNext(); ) {
                 final ActionMessage message = iterator.next();
-                text.append("\n - ").append(getResources(request).getMessage(message.getKey(), message.getValues()));
+                text.append("\n - ").append(MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, message.getKey()), message.getValues()));
             }
 
             basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_MISSING_PARAMS));
@@ -112,13 +113,14 @@ public class BasicServiceAction extends Action {
 
         String pdfPath = null;
 
-        BasicServiceForm basicServiceForm = BasicServiceUtils.getBasicServiceForm((BasicServiceForm) form, request);
+        final BasicServiceForm basicServiceForm = BasicServiceUtils.getBasicServiceForm((BasicServiceForm) form, request);
         if (basicServiceForm.isContentAnalysis()) {
             basicServiceForm.setName(BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
         } else {
             basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
         }
 
+        final PropertiesManager pmgr = new PropertiesManager();
         try (Connection conn = DataBaseManager.getConnection()) {
             //Lanzamos el rastreo de INTAV
             final CrawlerJob crawlerJob = new CrawlerJob();
@@ -133,7 +135,6 @@ public class BasicServiceAction extends Action {
             }
 
             if (!crawledLinks.isEmpty()) {
-                final PropertiesManager pmgr = new PropertiesManager();
                 final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "file.date.format"));
 
                 pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + basicServiceForm.getName() + "_" + df.format(new Date()) + ".pdf";
@@ -167,7 +168,7 @@ public class BasicServiceAction extends Action {
 
                 //Lo enviamos por correo electrónico
                 final String subject = getMailSubject(basicServiceForm.getReport());
-                final String text = getMailText(request, basicServiceForm);
+                final String text = getMailText(basicServiceForm);
                 final ArrayList<String> mailTo = new ArrayList<>();
                 mailTo.add(basicServiceForm.getEmail());
                 final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
@@ -177,7 +178,8 @@ public class BasicServiceAction extends Action {
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_FINISHED);
             } else {
                 // Avisamos de que ha sido imposible acceder a la página a rastrear
-                BasicServiceUtils.somethingWasWrongMessage(getResources(request), basicServiceForm, getResources(request).getMessage("basic.service.mail.not.crawled.text", basicServiceForm.getUser(), basicServiceForm.getDomain()));
+                final String message = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.not.crawled.text"), basicServiceForm.getUser(), basicServiceForm.getDomain());
+                BasicServiceUtils.somethingWasWrongMessage(basicServiceForm, message);
 
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_NOT_CRAWLED);
             }
@@ -188,7 +190,8 @@ public class BasicServiceAction extends Action {
             BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_ERROR_SENDING_EMAIL);
         } catch (Exception e) {
             // Avisamos del error al usuario
-            BasicServiceUtils.somethingWasWrongMessage(getResources(request), basicServiceForm, getResources(request).getMessage("basic.service.mail.error.text", basicServiceForm.getUser()));
+            final String message = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.error.text"), basicServiceForm.getUser());
+            BasicServiceUtils.somethingWasWrongMessage(basicServiceForm, message);
 
             // Informamos de la excepción a los administradores
             CrawlerUtils.warnAdministrators(e, BasicServiceAction.class);
@@ -245,25 +248,28 @@ public class BasicServiceAction extends Action {
     }
 
     private String getMailSubject(final String reportType) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final String message = pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.subject");
         if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType) || Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
-            return "Informe de Accesibilidad Web: Observatorio UNE 2004";
+            return MessageFormat.format(message, "Observatorio UNE 2004");
         } else if (Constants.REPORT_OBSERVATORY_2.equals(reportType) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
-            return "Informe de Accesibilidad Web: Observatorio UNE 2012";
+            return MessageFormat.format(message, "Observatorio UNE 2012");
         } else if ("une".equals(reportType)) {
-            return "Informe de Accesibilidad Web: UNE 139803";
+            return MessageFormat.format(message, "UNE 139803");
         }
         return "Informe de Accesibilidad Web";
     }
 
-    private String getMailText(final HttpServletRequest request, final BasicServiceForm basicServiceForm) {
+    private String getMailText(final BasicServiceForm basicServiceForm) {
+        final PropertiesManager pmgr = new PropertiesManager();
         final String text;
         if (basicServiceForm.isContentAnalysis()) {
-            final String[] args = {basicServiceForm.getUser(), BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()), basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), reportToString(basicServiceForm.getReport())};
-            text = basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY) ? getResources(request).getMessage("basic.service.mail.text.observatory.content", args) : getResources(request).getMessage("basic.service.mail.text.une.content", args);
+            text = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"),
+                    basicServiceForm.getUser(), BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()), reportToString(basicServiceForm.getReport()));
         } else {
-            final String inDirectory = basicServiceForm.isInDirectory() ? getResources(request).getMessage("select.yes") : getResources(request).getMessage("select.no");
-            final String[] args = {basicServiceForm.getUser(), basicServiceForm.getDomain(), basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport())};
-            text = basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY) ? getResources(request).getMessage("basic.service.mail.text.observatory", args) : getResources(request).getMessage("basic.service.mail.text.une", args);
+            final String inDirectory = basicServiceForm.isInDirectory() ? pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes") : pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
+            text = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"),
+                    basicServiceForm.getUser(), basicServiceForm.getDomain(), basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()));
         }
 
         return text;

@@ -42,13 +42,13 @@ public final class PDFUtils {
     }
 
     public static void addCoverPage(final Document document, final String titleText, final String subtitleText, final String noticeText) throws DocumentException {
-        final Paragraph title = new Paragraph(titleText, ConstantsFont.documentTitleMPFont);
+        final Paragraph title = new Paragraph(titleText, ConstantsFont.DOCUMENT_TITLE_MP_FONT);
         title.setSpacingBefore(ConstantsFont.TITLE_LINE_SPACE);
         title.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(title);
 
         if (subtitleText != null && !subtitleText.isEmpty()) {
-            final Paragraph subtitle = new Paragraph(subtitleText, ConstantsFont.documentSubtitleMPFont);
+            final Paragraph subtitle = new Paragraph(subtitleText, ConstantsFont.DOCUMENT_SUBTITLE_MP_FONT);
             subtitle.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
             subtitle.setAlignment(Paragraph.ALIGN_CENTER);
             document.add(subtitle);
@@ -57,7 +57,7 @@ public final class PDFUtils {
         if (noticeText != null && !noticeText.isEmpty()) {
             final PdfPTable notice = new PdfPTable(1);
             notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
-            notice.addCell(PDFUtils.createTableCell(noticeText, Constants.GRIS_MUY_CLARO, ConstantsFont.documentNoticeMPFont, Element.ALIGN_CENTER, ConstantsFont.DEFAULT_PADDING, 50));
+            notice.addCell(PDFUtils.createTableCell(noticeText, Constants.GRIS_MUY_CLARO, ConstantsFont.DOCUMENT_NOTICE_MP_FONT, Element.ALIGN_CENTER, ConstantsFont.DEFAULT_PADDING, 50));
             document.add(notice);
         }
     }
@@ -180,11 +180,11 @@ public final class PDFUtils {
         for (String phraseText : text) {
             if (isFirst) {
                 if (StringUtils.isNotEmpty(phraseText)) {
-                    paragraph.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.moreInfoFont));
+                    paragraph.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.MORE_INFO_FONT));
                 }
                 isFirst = false;
             } else {
-                paragraph.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.moreInfoFont));
+                paragraph.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.MORE_INFO_FONT));
             }
         }
 
@@ -386,7 +386,7 @@ public final class PDFUtils {
     }
 
     public static ListItem buildLeyendaListItem(final String message, final String symbol) {
-        return createListItem(message, ConstantsFont.moreInfoFont, new Chunk(symbol + " "), false);
+        return createListItem(message, ConstantsFont.MORE_INFO_FONT, new Chunk(symbol + " "), false);
     }
 
     public static Image createImage(final String path, final String alt) {
@@ -515,7 +515,7 @@ public final class PDFUtils {
         img.setAlignment(Element.ALIGN_CENTER);
 
         section.add(img);
-        PDFUtils.addParagraph(text, ConstantsFont.paragraphTitleTableFont, section, Element.ALIGN_CENTER, false, false);
+        PDFUtils.addParagraph(text, ConstantsFont.PARAGRAPH_TITLE_TABLE_FONT, section, Element.ALIGN_CENTER, false, false);
         section.add(img);
     }
 

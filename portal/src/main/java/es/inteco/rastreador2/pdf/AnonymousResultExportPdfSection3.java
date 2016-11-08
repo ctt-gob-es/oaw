@@ -327,7 +327,7 @@ public final class AnonymousResultExportPdfSection3 {
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p6.PRENSA"), ConstantsFont.PARAGRAPH, section);
             PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.33.p7.PRENSA"), ConstantsFont.PARAGRAPH, section);
 
-            Paragraph p = PDFUtils.addLinkParagraph("http://www.longtailvideo.com/support/jw-player/22/making-video-accessible", "http://www.longtailvideo.com/support/jw-player/22/making-video-accessible", ConstantsFont.paragraphAnchorFont);
+            Paragraph p = PDFUtils.addLinkParagraph("http://www.longtailvideo.com/support/jw-player/22/making-video-accessible", "http://www.longtailvideo.com/support/jw-player/22/making-video-accessible", ConstantsFont.PARAGRAPH_ANCHOR_FONT);
             p.setSpacingBefore(ConstantsFont.LINE_SPACE);
             section.add(p);
         }

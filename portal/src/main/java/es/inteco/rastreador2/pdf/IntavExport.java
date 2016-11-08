@@ -119,7 +119,7 @@ public final class IntavExport {
             List<IntavSimplePDFForm> results = getResultsToShow(evaList);
 
             Chunk chunk = new Chunk(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.main.problems"));
-            Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleFont);
+            Paragraph cTitle = new Paragraph("", ConstantsFont.CHAPTER_TITLE_FONT);
             cTitle.add(chunk);
             cTitle.setSpacingAfter(20);
             Chapter chapter1 = new Chapter(cTitle, 2);
@@ -226,7 +226,7 @@ public final class IntavExport {
             for (EvaluationForm evaluationForm : evaList) {
                 Chunk chunk = new Chunk(evaluationForm.getUrl().toUpperCase());
                 chunk.setLocalDestination(Constants.ANCLA_PDF + (numChapter - 1));
-                Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleFont);
+                Paragraph cTitle = new Paragraph("", ConstantsFont.CHAPTER_TITLE_FONT);
                 cTitle.add(chunk);
                 cTitle.setSpacingAfter(20);
                 Chapter chapter = new Chapter(cTitle, numChapter);
@@ -306,7 +306,7 @@ public final class IntavExport {
             }
 
             ExportPageEvents.setLastPage(true);
-            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.CHAPTER_TITLE_FONT);
             ExportPageEvents.setLastPage(false);
 
             FileUtils.removeFile(globalPath);
@@ -402,7 +402,7 @@ public final class IntavExport {
                                          String globalPath, IndexEvents index, String fechaInforme) throws Exception {
 
         Chunk chunk = new Chunk(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.index.global.summary"));
-        Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleFont);
+        Paragraph cTitle = new Paragraph("", ConstantsFont.CHAPTER_TITLE_FONT);
         cTitle.add(chunk);
         cTitle.setSpacingAfter(20);
         Chapter chapter1 = new Chapter(cTitle, 1);
@@ -413,13 +413,13 @@ public final class IntavExport {
             cTitle.add(index.create(" ", CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.index.global.summary")));
         }
 
-        Paragraph entity = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.entity") + EvaluatorUtils.getEntityName(evaList), ConstantsFont.summaryFont);
+        Paragraph entity = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.entity") + EvaluatorUtils.getEntityName(evaList), ConstantsFont.SUMMARY_FONT);
         chapter1.add(entity);
 
-        Paragraph domain = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.domain") + evaList.get(0).getUrl(), ConstantsFont.summaryFont);
+        Paragraph domain = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.domain") + evaList.get(0).getUrl(), ConstantsFont.SUMMARY_FONT);
         chapter1.add(domain);
 
-        Paragraph fecha = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.date") + fechaInforme, ConstantsFont.summaryFont);
+        Paragraph fecha = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.date") + fechaInforme, ConstantsFont.SUMMARY_FONT);
         fecha.setSpacingAfter(20);
         chapter1.add(fecha);
 
@@ -528,16 +528,16 @@ public final class IntavExport {
         com.lowagie.text.List summaryPriorities = new com.lowagie.text.List();
 
         for (PriorityForm priority : prioList) {
-            ListItem priorityList = new ListItem(getPriorityName(request, priority), ConstantsFont.summaryTitleFont);
+            ListItem priorityList = new ListItem(getPriorityName(request, priority), ConstantsFont.SUMMARY_TITLE_FONT);
             priorityList.setSpacingBefore(8);
             priorityList.setListSymbol(new Chunk());
             summaryPriorities.add(priorityList);
             com.lowagie.text.List summaryStatistics = new com.lowagie.text.List();
             summaryStatistics.setIndentationLeft(40);
 
-            ListItem problemList = new ListItem(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.problems") + ": " + priority.getNumProblems(), ConstantsFont.summaryFontProblem);
-            ListItem warningsList = new ListItem(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.warnings") + ": " + priority.getNumWarnings(), ConstantsFont.summaryFontWarning);
-            ListItem infosList = new ListItem(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.infos") + ": " + priority.getNumInfos(), ConstantsFont.summaryFontCannottell);
+            ListItem problemList = new ListItem(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.problems") + ": " + priority.getNumProblems(), ConstantsFont.SUMMARY_FONT_PROBLEM);
+            ListItem warningsList = new ListItem(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.warnings") + ": " + priority.getNumWarnings(), ConstantsFont.SUMMARY_FONT_WARNING);
+            ListItem infosList = new ListItem(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.infos") + ": " + priority.getNumInfos(), ConstantsFont.SUMMARY_FONT_CANNOTTELL);
 
             Image imgProblemA = Image.getInstance(pmgr.getValue(Constants.PDF_PROPERTIES, "path.problem"));
             Image imgWarnings = Image.getInstance(pmgr.getValue(Constants.PDF_PROPERTIES, "path.warnings"));
@@ -685,7 +685,7 @@ public final class IntavExport {
                 String linkHref = getMatch(specificProblem.getNote().get(0), "href='(.*?)'");
 
                 Paragraph p = new Paragraph(paragraphText, ConstantsFont.noteCellFont);
-                Anchor anchor = new Anchor(getMatch(specificProblem.getNote().get(0), "<a.*?>(.*?)</a>"), ConstantsFont.noteAnchorCellFont);
+                Anchor anchor = new Anchor(getMatch(specificProblem.getNote().get(0), "<a.*?>(.*?)</a>"), ConstantsFont.NOTE_ANCHOR_CELL_FONT);
                 anchor.setReference(linkHref);
                 p.add(anchor);
                 subSubSection.add(p);
@@ -693,7 +693,7 @@ public final class IntavExport {
 
             if (maxNumErrors < 0) {
                 if (specificProblems.size() > Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number"))) {
-                    Paragraph p = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.num.errors.summary", Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number")), specificProblems.size()), ConstantsFont.moreInfoFont);
+                    Paragraph p = new Paragraph(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.num.errors.summary", Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.intav.specific.problems.number")), specificProblems.size()), ConstantsFont.MORE_INFO_FONT);
                     p.setAlignment(Paragraph.ALIGN_RIGHT);
                     subSubSection.add(p);
                 }
@@ -742,7 +742,7 @@ public final class IntavExport {
         if (generateEvolutionGraphics(request, globalPath, evaluationIds, onlyProblems) == 1) {
 
             Chunk chunk = new Chunk(CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), "pdf.accessibility.index.global.evolution"));
-            Paragraph cTitle = new Paragraph("", ConstantsFont.chapterTitleFont);
+            Paragraph cTitle = new Paragraph("", ConstantsFont.CHAPTER_TITLE_FONT);
             cTitle.add(chunk);
             cTitle.setSpacingAfter(20);
             Chapter chapterEv = new Chapter(cTitle, numChapter);
@@ -959,10 +959,10 @@ public final class IntavExport {
         p.setAlignment(Paragraph.ALIGN_RIGHT);
         Anchor anchor = null;
         if (check.equals("232") ) {//pmgr.getValue("check.properties", "doc.valida.especif"))) {
-            anchor = new Anchor(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.moreInfoFont);
+            anchor = new Anchor(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.MORE_INFO_FONT);
             anchor.setReference(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
         } else if (EvaluatorUtils.isCssValidationCheck(Integer.parseInt(check))) {
-            anchor = new Anchor(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.moreInfoFont);
+            anchor = new Anchor(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.MORE_INFO_FONT);
             anchor.setReference(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
         }
         p.add(anchor);

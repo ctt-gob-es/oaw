@@ -264,12 +264,13 @@ public class ResultadosObservatorioAction extends Action {
             AnnexUtils.createAnnexPortales(CrawlerUtils.getResources(request), idObsExecution, idOperation);
 
             final PropertiesManager pmgr = new PropertiesManager();
-            final String zipPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation + File.separator + "anexos.zip";
-            ZipUtils.generateZipFile(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation.toString(), zipPath, true);
+            final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
+            final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
+            ZipUtils.generateZipFile(exportPath + idOperation.toString(), zipPath, true);
 
             CrawlerUtils.returnFile(response, zipPath, "application/zip", true);
 
-            FileUtils.deleteDir(new File(pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path") + idOperation));
+            FileUtils.deleteDir(new File(exportPath + idOperation));
 
             return null;
         } catch (Exception e) {

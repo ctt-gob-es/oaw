@@ -85,10 +85,10 @@ public final class ImportFromXmlUtils {
             }
             if (specialChunk.getNodeName().equalsIgnoreCase("anchor")) {
                 if (specialChunk.getAttribute("external") == null || specialChunk.getAttribute("external").isEmpty()) {
-                    SpecialChunk anchor = new SpecialChunk(specialChunk.getTextContent(), CrawlerUtils.getResources(request).getMessage(specialChunk.getAttribute("destination")), false, ConstantsFont.paragraphAnchorFont);
+                    SpecialChunk anchor = new SpecialChunk(specialChunk.getTextContent(), CrawlerUtils.getResources(request).getMessage(specialChunk.getAttribute("destination")), false, ConstantsFont.PARAGRAPH_ANCHOR_FONT);
                     specialChunkMap.put(key, anchor);
                 } else {
-                    SpecialChunk externalLink = new SpecialChunk(specialChunk.getTextContent(), ConstantsFont.paragraphAnchorFont);
+                    SpecialChunk externalLink = new SpecialChunk(specialChunk.getTextContent(), ConstantsFont.PARAGRAPH_ANCHOR_FONT);
                     externalLink.setExternalLink(true);
                     externalLink.setAnchor(specialChunk.getAttribute("external"));
                     specialChunkMap.put(key, externalLink);

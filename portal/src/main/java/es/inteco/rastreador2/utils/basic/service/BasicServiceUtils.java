@@ -15,7 +15,6 @@ import es.inteco.utils.MailUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
-import org.apache.struts.util.MessageResources;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -37,33 +36,25 @@ public final class BasicServiceUtils {
     }
 
     public static long saveRequestData(final BasicServiceForm basicServiceForm, final String status) {
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection()) {
             return DiagnosisDAO.insertBasicServices(conn, basicServiceForm, status);
         } catch (Exception e) {
             Logger.putLog("Excepción: Error al insertar los datos del servicio básico,", BasicServiceThread.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
         return 0;
     }
 
     public static void updateRequestStatus(final BasicServiceForm basicServiceForm, final String status) {
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection()) {
             DiagnosisDAO.updateStatus(conn, basicServiceForm.getId(), status);
         } catch (Exception e) {
             Logger.putLog("Excepción: Error al modificar los datos del servicio básico,", BasicServiceThread.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
     }
 
-    public static void somethingWasWrongMessage(final MessageResources messageResources, final BasicServiceForm basicServiceForm, final String message) throws Exception {
+    public static void somethingWasWrongMessage(final BasicServiceForm basicServiceForm, final String message) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
-        final String subject = messageResources.getMessage("basic.service.mail.error.subject");
+        final String subject = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.error.subject");
         final ArrayList<String> mailTo = new ArrayList<>();
         mailTo.add(basicServiceForm.getEmail());
         final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
@@ -71,14 +62,10 @@ public final class BasicServiceUtils {
     }
 
     public static List<BasicServiceForm> getBasicServiceRequestByStatus(final String status) {
-        Connection conn = null;
-        try {
-            conn = DataBaseManager.getConnection();
+        try (Connection conn = DataBaseManager.getConnection()) {
             return DiagnosisDAO.getBasicServiceRequestByStatus(conn, status);
         } catch (Exception e) {
             Logger.putLog("Excepción: Error al recuperar las peticiones al servicio básico con el estado " + status, BasicServiceThread.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(conn);
         }
         return null;
     }
@@ -126,7 +113,7 @@ public final class BasicServiceUtils {
     }
 
     public static String checkIDN(final String url) {
-        if ( url!=null && !url.isEmpty()){
+        if (url != null && !url.isEmpty()) {
             try {
                 return url.replaceFirst(new URL(url).getHost(), IDN.toASCII(new URL(url).getHost()));
             } catch (Exception e) {
@@ -149,7 +136,7 @@ public final class BasicServiceUtils {
         } else if (report.equals(Constants.REPORT_WCAG_2_FILE)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag2.intav.id"));
         } else if (report.equals(Constants.REPORT_OBSERVATORY_2) || report.equals(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
-            return 7l;
+            return 7L;
         } else {
             return null;
         }
@@ -199,7 +186,7 @@ public final class BasicServiceUtils {
     }
 
     public static String getTitleDocFromContent(final String content, final boolean isCompleted) {
-        if ( content==null ) {
+        if (content == null) {
             return "";
         }
         try {
@@ -208,7 +195,7 @@ public final class BasicServiceUtils {
             final Matcher matcher = pattern.matcher(content);
 
             if (matcher.find()) {
-                final String title = matcher.group(1).replaceAll("\\s{2,}"," ").trim();
+                final String title = matcher.group(1).replaceAll("\\s{2,}", " ").trim();
                 final int titleMaxLength = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.doc.max.length"));
                 if (title.length() <= titleMaxLength) {
                     return HTMLEntities.unhtmlQuotes(HTMLEntities.unhtmlentities(title));

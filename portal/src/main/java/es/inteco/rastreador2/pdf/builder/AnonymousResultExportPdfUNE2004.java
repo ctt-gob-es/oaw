@@ -33,7 +33,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);
         createChapter1(messageResources, chapter);
 
-        Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter11.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter11.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         createSection11(messageResources, section1);
 
         document.add(chapter);
@@ -102,7 +102,7 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.3.p2"), ConstantsFont.PARAGRAPH, chapter);
 
         if (!isBasicService) {
-            Section section1 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+            Section section1 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
             if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
                 createSection31(resources, section1, observatoryType, "AGE");
             } else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
@@ -112,22 +112,22 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
             }
         }
 
-        Section section2 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter32.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section2 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter32.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         createSection32(resources, section2, primaryReportPageList, observatoryType, isBasicService);
 
-        Section section3 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter33.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1, resources.getMessage("anchor.met.table"));
+        Section section3 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter33.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1, resources.getMessage("anchor.met.table"));
         createSection33(resources, section3, observatoryType);
-        Section section31 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter331.title"), index, ConstantsFont.chapterTitleMPFont3L, section3, countSections++, 2);
+        Section section31 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter331.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section3, countSections++, 2);
         createSection331(resources, section31);
-        Section section4 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter34.title"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section4 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter34.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         createSection34(resources, section4);
-        Section section41 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter341.title"), index, ConstantsFont.chapterTitleMPFont3L, section4, countSections++, 2);
+        Section section41 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter341.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4, countSections++, 2);
         createSection341(resources, section41);
-        Section section42 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter342.title"), index, ConstantsFont.chapterTitleMPFont3L, section4, countSections++, 2);
+        Section section42 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter342.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4, countSections++, 2);
         createSection342(resources, section42);
         // Solo sale en el agregado
         if (primaryReportPageList == null) {
-            Section section43 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter343.title"), index, ConstantsFont.chapterTitleMPFont3L, section4, countSections++, 2);
+            Section section43 = PDFUtils.createSection(resources.getMessage("ob.resAnon.intav.report.chapter343.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4, countSections++, 2);
             createSection343(resources, section43);
         }
 

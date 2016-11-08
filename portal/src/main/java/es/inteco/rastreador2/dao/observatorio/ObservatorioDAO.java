@@ -1409,7 +1409,7 @@ public final class ObservatorioDAO {
     }
 
     /**
-     * Dada una ejecución de un observatorio obtiene el identificador de la ejecución inmediatemante previa del mismo observatorio
+     * Dada una ejecución de un observatorio obtiene el identificador de la ejecución inmediatamente previa del mismo observatorio
      *
      * @param c                      Conexión a la base de datos
      * @param idObservatoryExecution Identificador de la iteración (ejecución) de un observatorio
@@ -1423,14 +1423,12 @@ public final class ObservatorioDAO {
             ps.setLong(2, idObservatoryExecution);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    Logger.putLog("getPreviousObservatoryExecution: " + rs.getLong("id") + " (" + idObservatoryExecution + ")", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR);
                     return rs.getLong("id");
                 }
             }
         } catch (Exception e) {
             Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
-        Logger.putLog("getPreviousObservatoryExecution: null (" + idObservatoryExecution + ")", ObservatorioDAO.class, Logger.LOG_LEVEL_WARNING);
         return -1L;
     }
 }
