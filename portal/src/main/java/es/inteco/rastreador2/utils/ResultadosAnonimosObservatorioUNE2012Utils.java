@@ -1031,7 +1031,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId) {
-        final Map<Date, List<ObservatoryEvaluationForm>> resultData = new HashMap<>();
+        final Map<Date, List<ObservatoryEvaluationForm>> resultData = new LinkedHashMap<>();
 
         try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
@@ -1322,7 +1322,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
     public static Map<String, BigDecimal> getVerificationResultsByPoint(final List<ObservatoryEvaluationForm> resultData, final String level) {
         final Map<String, Integer> results = new TreeMap<>();
-        final Map<String, Integer> numPoint = new HashMap<>();
+        final Map<String, Integer> numPoint = new LinkedHashMap<>();
 
         for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
             for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
@@ -1620,7 +1620,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
      * @param messageResources   MessageResources needed for GraphicsUtils utility class
      * @param filePath           String with the full path (filename included) where the chart will be saved as jpg file.
      * @param pageObservatoryMap a Map where each entrey is keyed by observatory date and the value is a list of the page evaluations
-     * @throws Exception
+     * @throws IOException
      */
     public static void generateEvolutionAverageScoreByAspectChart(final MessageResources messageResources, final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
         final Map<Date, Map<String, BigDecimal>> resultsByAspect = new LinkedHashMap<>();

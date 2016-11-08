@@ -105,10 +105,10 @@ public final class MailUtils {
 
         final String trustStorePath = pmgr.getValue("certificados.properties", "truststore.path");
         final String trustStorePass = pmgr.getValue("certificados.properties", "truststore.pass");
-        if ( trustStorePath!=null && !trustStorePath.isEmpty()) {
+        if (trustStorePath != null && !trustStorePath.isEmpty()) {
             System.setProperty("javax.net.ssl.trustStore", trustStorePath);
         }
-        if ( trustStorePass!=null && !trustStorePass.isEmpty()) {
+        if (trustStorePass != null && !trustStorePass.isEmpty()) {
             System.setProperty("javax.net.ssl.trustStorePassword", trustStorePass);
         }
 

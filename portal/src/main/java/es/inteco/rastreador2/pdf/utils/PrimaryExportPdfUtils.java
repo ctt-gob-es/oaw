@@ -44,6 +44,7 @@ import java.util.*;
 import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.Constants.INTAV_PROPERTIES;
 import static es.inteco.common.ConstantsFont.*;
 
 public final class PrimaryExportPdfUtils {
@@ -147,10 +148,10 @@ public final class PrimaryExportPdfUtils {
             int numChapter = 1;
             int countSections = 1;
 
-            countSections = pdfBuilder.createIntroductionChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont);
+            countSections = pdfBuilder.createIntroductionChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
             numChapter++;
 
-            countSections = pdfBuilder.createObjetiveChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, currentEvaluationPageList, observatoryType);
+            countSections = pdfBuilder.createObjetiveChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
             numChapter++;
 
             // Resumen de las puntuaciones del Observatorio
@@ -167,21 +168,21 @@ public final class PrimaryExportPdfUtils {
             int counter = 1;
             for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
                 final String evaluationTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
-                final Chapter chapter = PDFUtils.createChapterWithTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont, true, "anchor_resultados_page_" + counter);
+                final Chapter chapter = PDFUtils.createChapterWithTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
                 final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
                 final String url = evaluationForm.getUrl();
 
-                final BigDecimal pmp = evaluationForm.getScore();
+                final BigDecimal puntuacionMediaPortal = evaluationForm.getScore();
                 final String validationLevel = ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm));
-                final List<BigDecimal> pmpnas = new ArrayList<>();
+                final List<BigDecimal> puntuacionesMediasNivelAccesibilidad = new ArrayList<>();
                 for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
-                    pmpnas.add(observatoryLevelForm.getScore());
+                    puntuacionesMediasNivelAccesibilidad.add(observatoryLevelForm.getScore());
                 }
-                chapter.add(createPaginaTableInfo(messageResources, title, url, pmp, validationLevel, pmpnas, countSections));
+                chapter.add(createPaginaTableInfo(messageResources, title, url, puntuacionMediaPortal, validationLevel, puntuacionesMediasNivelAccesibilidad, countSections));
 
                 // Creación de las tablas resumen de resultado por verificación de cada página
                 for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
-                    final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.chapterTitleMPFont3L);
+                    final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L);
                     levelTitle.setSpacingBefore(HALF_LINE_SPACE);
                     chapter.add(levelTitle);
                     chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
@@ -203,10 +204,10 @@ public final class PrimaryExportPdfUtils {
                 counter++;
             }
 
-            countSections = pdfBuilder.createMethodologyChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.chapterTitleMPFont, currentEvaluationPageList, observatoryType, pdfBuilder.isBasicService());
+            countSections = pdfBuilder.createMethodologyChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType, pdfBuilder.isBasicService());
 
             //Ponemos la variable a true para que no se escriba el footer en el índice
-            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.chapterTitleMPFont);
+            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
             ExportPageEventsObservatoryMP.setPrintFooter(true);
         } catch (DocumentException e) {
             Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -265,12 +266,10 @@ public final class PrimaryExportPdfUtils {
 
         for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
             if (hasProblems(priority)) {
-                final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.chapterTitleMPFont2L, chapter, 1, 0);
+                final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, 1, 0);
                 for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
                     if (hasProblems(level)) {
-                        final Paragraph levelTitle = new Paragraph(getLevelName(messageResources, level), ConstantsFont.chapterTitleMPFont3L);
-                        levelTitle.setSpacingBefore(10);
-                        final Section levelSection = PDFUtils.createSection(getLevelName(messageResources, level), null, ConstantsFont.chapterTitleMPFont3L, prioritySection, 1, 0);
+                        final Section levelSection = PDFUtils.createSection(getLevelName(messageResources, level), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, prioritySection, 1, 0);
                         for (ObservatorySubgroupForm verification : level.getSubgroups()) {
                             if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
                                 for (ProblemForm problem : verification.getProblems()) {
@@ -287,16 +286,16 @@ public final class PrimaryExportPdfUtils {
                                     final com.lowagie.text.Font font;
                                     if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
                                         problema = messageResources.getMessage("pdf.accessibility.bs.warning");
-                                        font = ConstantsFont.warningFont;
+                                        font = ConstantsFont.WARNING_FONT;
                                     } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high"))) {
                                         problema = messageResources.getMessage("pdf.accessibility.bs.problem");
-                                        font = ConstantsFont.problemFont;
+                                        font = ConstantsFont.PROBLEM_FONT;
                                     } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
                                         problema = messageResources.getMessage("pdf.accessibility.bs.info");
-                                        font = ConstantsFont.cannottellFont;
+                                        font = ConstantsFont.CANNOTTELL_FONT;
                                     } else {
                                         problema = "";
-                                        font = ConstantsFont.cannottellFont;
+                                        font = ConstantsFont.CANNOTTELL_FONT;
                                     }
                                     final PdfPCell celdaProblema = PDFUtils.createTableCell(problema, Color.WHITE, font, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
                                     celdaProblema.setBorder(0);
@@ -376,9 +375,9 @@ public final class PrimaryExportPdfUtils {
 
     private static String getPriorityName(final MessageResources messageResources, final ObservatoryLevelForm priority) {
         final PropertiesManager pmgr = new PropertiesManager();
-        if (priority.getName().equals(pmgr.getValue("intav.properties", "priority.1"))) {
+        if (priority.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1"))) {
             return messageResources.getMessage("priority1.bs");
-        } else if (priority.getName().equals(pmgr.getValue("intav.properties", "priority.2"))) {
+        } else if (priority.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.2"))) {
             return messageResources.getMessage("priority2.bs");
         } else {
             return "";
@@ -387,9 +386,9 @@ public final class PrimaryExportPdfUtils {
 
     private static String getLevelName(final MessageResources messageResources, final ObservatorySuitabilityForm level) {
         final PropertiesManager pmgr = new PropertiesManager();
-        if (level.getName().equals(pmgr.getValue("intav.properties", "priority.1.level").toUpperCase())) {
+        if (level.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1.level").toUpperCase())) {
             return messageResources.getMessage("first.level.bs");
-        } else if (level.getName().equals(pmgr.getValue("intav.properties", "priority.2.level").toUpperCase())) {
+        } else if (level.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.2.level").toUpperCase())) {
             return messageResources.getMessage("second.level.bs");
         } else {
             return "";
@@ -397,7 +396,7 @@ public final class PrimaryExportPdfUtils {
     }
 
     private static int addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, IndexEvents index, final List<ObservatoryEvaluationForm> currentEvaluationPageList, List<ObservatoryEvaluationForm> previousEvaluationPageList, int numChapter, int countSections, final File file, final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
-        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
         final ArrayList<String> boldWord = new ArrayList<>();
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -478,17 +477,17 @@ public final class PrimaryExportPdfUtils {
         // Obtener lista resultados iteración anterior
         addLevelAllocationResultsSummary(messageResources, chapter, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
 
-        Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
 
-        section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
         section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 
-        PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
 
         document.add(chapter);
@@ -554,19 +553,8 @@ public final class PrimaryExportPdfUtils {
         }
     }
 
-    private static Image getEvolutionNeutralImage(final BigDecimal actualValue, final BigDecimal previousValue) {
-        final PropertiesManager pmgr = new PropertiesManager();
-        if (actualValue.compareTo(previousValue) > 0) {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase.neutral"), "Aumenta");
-        } else if (actualValue.compareTo(previousValue) < 0) {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease.neutral"), "Disminuye");
-        } else {
-            return PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same.neutral"), "Se mantiene");
-        }
-    }
-
     private static int addObservatoryResultsSummary(final MessageResources messageResources, Document document, IndexEvents index, List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections) throws Exception {
-        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.chapterTitleMPFont);
+        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
         countSections = addResultsByVerification(messageResources, chapter, evaList, countSections, index);
@@ -624,7 +612,7 @@ public final class PrimaryExportPdfUtils {
             table.addCell(PDFUtils.createTableCell(actualData.getPercentageP(), Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0));
             if (!previousEvaluationPageList.isEmpty()) {
                 try {
-                    table.addCell(PDFUtils.createTableCell(getEvolutionNeutralImage(actualData.getRawPercentage(), previousData.getRawPercentage()), new DecimalFormat("+0.00;-0.00").format(actualData.getRawPercentage().subtract(previousData.getRawPercentage())) + "%", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
+                    table.addCell(PDFUtils.createTableCell(new DecimalFormat("+0.00;-0.00").format(actualData.getRawPercentage().subtract(previousData.getRawPercentage())) + "%", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
                 } catch (NumberFormatException nfe) {
                     table.addCell(PDFUtils.createTableCell("Errror", Color.white, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
                 }
@@ -715,7 +703,7 @@ public final class PrimaryExportPdfUtils {
 
     private static int createTablaResumenResultadosPorNivel(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final int groupIndex, int countSections, final IndexEvents index) {
         final ObservatoryLevelForm observatoryLevelForm = evaList.get(0).getGroups().get(groupIndex);
-        final Section section = PDFUtils.createSection("Tabla resumen de resultados " + getPriorityName(messageResources, observatoryLevelForm.getName()), index, ConstantsFont.chapterTitleMPFont2L, chapter, countSections++, 1);
+        final Section section = PDFUtils.createSection("Tabla resumen de resultados " + getPriorityName(messageResources, observatoryLevelForm.getName()), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
         final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
 
         int contadorPagina = 1;
@@ -772,7 +760,7 @@ public final class PrimaryExportPdfUtils {
             for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
                 final String checkId = messageResources.getMessage(subgroupForm.getDescription()).substring(0, 6);
                 final String checkDescription = messageResources.getMessage(subgroupForm.getDescription()).substring(6);
-                final ListItem listItem = new ListItem(checkDescription, ConstantsFont.moreInfoFont);
+                final ListItem listItem = new ListItem(checkDescription, ConstantsFont.MORE_INFO_FONT);
                 listItem.setListSymbol(new Chunk(checkId));
                 leyenda.add(listItem);
             }
@@ -831,9 +819,9 @@ public final class PrimaryExportPdfUtils {
 
     private static String getPriorityName(final MessageResources messageResources, final String name) {
         final PropertiesManager pmgr = new PropertiesManager();
-        if (name.equals(pmgr.getValue("intav.properties", "priority.1"))) {
+        if (name.equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1"))) {
             return messageResources.getMessage("observatorio.nivel.analisis.1");
-        } else if (name.equals(pmgr.getValue("intav.properties", "priority.2"))) {
+        } else if (name.equals(pmgr.getValue(INTAV_PROPERTIES, "priority.2"))) {
             return messageResources.getMessage("observatorio.nivel.analisis.2");
         } else {
             return null;
@@ -864,7 +852,7 @@ public final class PrimaryExportPdfUtils {
                     } else if (observatorySubgroupFormValue == Constants.OBS_VALUE_GREEN_ZERO) {
                         value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero");
                         modality = messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad.pasa");
-                        fuente = ConstantsFont.warningFont;
+                        fuente = ConstantsFont.WARNING_FONT;
                     } else if (observatorySubgroupFormValue == Constants.OBS_VALUE_RED_ZERO) {
                         value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero");
                         modality = messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad.falla");
