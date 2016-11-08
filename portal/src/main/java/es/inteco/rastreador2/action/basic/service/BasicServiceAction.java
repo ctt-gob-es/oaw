@@ -265,7 +265,7 @@ public class BasicServiceAction extends Action {
         final String text;
         if (basicServiceForm.isContentAnalysis()) {
             text = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"),
-                    basicServiceForm.getUser(), BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()), reportToString(basicServiceForm.getReport()));
+                    basicServiceForm.getUser(), reportToString(basicServiceForm.getReport()));
         } else {
             final String inDirectory = basicServiceForm.isInDirectory() ? pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes") : pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
             text = MessageFormat.format(pmgr.getValue(BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"),

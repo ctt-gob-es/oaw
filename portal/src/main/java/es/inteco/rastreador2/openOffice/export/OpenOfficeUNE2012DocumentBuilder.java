@@ -90,7 +90,7 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         }
 
         if (evolution) {
-            final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNE2012Utils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId));
+            final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap =ResultadosAnonimosObservatorioUNE2012Utils.resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId));
             final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
             for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
                 resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));

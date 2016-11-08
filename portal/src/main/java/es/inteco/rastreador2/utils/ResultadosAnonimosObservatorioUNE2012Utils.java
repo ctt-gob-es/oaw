@@ -1031,7 +1031,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId) {
-        final Map<Date, List<ObservatoryEvaluationForm>> resultData = new LinkedHashMap<>();
+        final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
 
         try (Connection c = DataBaseManager.getConnection()) {
             final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
@@ -1057,9 +1057,9 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         String fitResultKey = "";
         for (Map.Entry<String, Integer> entry : values.entrySet()) {
             if (total != 0) {
-                result.put(entry.getKey(), (new BigDecimal(entry.getValue())).divide(new BigDecimal(total), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+                result.put(entry.getKey(), new BigDecimal(entry.getValue()).divide(new BigDecimal(total), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
             } else {
-                result.put(entry.getKey(), (BigDecimal.ZERO));
+                result.put(entry.getKey(), BigDecimal.ZERO);
             }
             totalPercentage = totalPercentage.add(result.get(entry.getKey()));
             fitResultKey = entry.getKey();
@@ -1602,7 +1602,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             for (String verification : verifications) {
                 //Para un observatorio en concreto recuperamos la puntuación de una verificación
                 final BigDecimal value = resultsByVerification.get(verification);
-                dataSet.addValue(value, df.format(entry.getKey()), verification);
+                dataSet.addValue(value, entry.getKey().getTime(), verification);
             }
         }
 
