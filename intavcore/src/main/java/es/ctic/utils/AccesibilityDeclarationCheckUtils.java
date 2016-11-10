@@ -226,34 +226,34 @@ public final class AccesibilityDeclarationCheckUtils {
 
     private static final Pattern[] ALT_A = new Pattern[]{
             Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivell?\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformi(dad|tat)\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
     private static final Pattern[] ALT_AA = new Pattern[]{
             Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivell?\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivell?\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+doble\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformi(dad|tat)\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformi(dad|tat)\\s+.?doble(-|\\s+)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 
     private static final Pattern[] ALT_AAA = new Pattern[]{
             Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bnivel\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivell?\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bnivell?\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
             Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-            Pattern.compile("\\bconformidad\\s+triple\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformi(dad|tat)\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+            Pattern.compile("\\bconformi(dad|tat)\\s+.?triple(-|\\s+)aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
     };
 }
