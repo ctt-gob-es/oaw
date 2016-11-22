@@ -24,8 +24,7 @@ Adaptive Technology Resource Centre, University of Toronto
 130 St. George St., Toronto, Ontario, Canada
 Telephone: (416) 978-4360
 -->
-<checks xml:lang="en" xmlns="http://checker.atrc.utoronto.ca/2004/12/Checks"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<checks xml:lang="en" xmlns="http://checker.atrc.utoronto.ca/2004/12/Checks">
     <header>
         <title>Lista completa de comprobaciones de accesibilidad</title>
         <date>2006-06-19</date>
@@ -33,7 +32,12 @@ Telephone: (416) 978-4360
     </header>
 
     <check id="1" key="img" confidence="high" status="5">
-        <name>Todos los elementos <code>img</code> tienen un atributo <code>alt</code> alternativo.</name>
+        <name>Todos los elementos
+            <code>img</code>
+            tienen un atributo
+            <code>alt</code>
+            alternativo.
+        </name>
         <error>check.1.error</error>
         <rationale>check.1.rationale</rationale>
         <machine>
@@ -74,7 +78,7 @@ Telephone: (416) 978-4360
         <error>check.4.error</error>
         <rationale>check.4.rationale</rationale>
         <machine>
-            <trigger element="img" />
+            <trigger element="img"/>
             <condition type="or">
                 <function call="characters-less-than" node="@alt" value="1"/>
                 <function call="is-only-blanks" node="@alt"/>
@@ -196,7 +200,12 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="16" key="p" confidence="high">
-        <name>División de la información, utilizar <code>br</code> en lugar de <code>p</code> para simular párrafos</name>
+        <name>División de la información, utilizar
+            <code>br</code>
+            en lugar de
+            <code>p</code>
+            para simular párrafos
+        </name>
         <error>check.16.error</error>
         <rationale>check.16.rationale</rationale>
         <machine>
@@ -279,7 +288,9 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="23" key="applet" confidence="high" status="1">
-        <name>El <code>applet</code> contiene un equivalente textual o atributo<code>alt</code>.
+        <name>El
+            <code>applet</code>
+            contiene un equivalente textual o atributo<code>alt</code>.
         </name>
         <error>check.23.error</error>
         <machine>
@@ -415,7 +426,10 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="33" key="div" confidence="high" status="4">
-        <name>División de la información, se utiliza <code>div</code> para simular un párrafo</name>
+        <name>División de la información, se utiliza
+            <code>div</code>
+            para simular un párrafo
+        </name>
         <error>check.33.error</error>
         <rationale>check.33.rationale</rationale>
         <machine>
@@ -1027,7 +1041,8 @@ Telephone: (416) 978-4360
             <trigger element="a"/>
             <condition type="or">
                 <function call="text-equals" node="." value="aquí"/>
-                <function call="text-match" node="." value="^.{0,10}((puls(e|a|ar)|pinch(a|e|ar)|click*) aqu[íi]).{0,10}$"/>
+                <function call="text-match" node="."
+                          value="^.{0,10}((puls(e|a|ar)|pinch(a|e|ar)|click*) aqu[íi]).{0,10}$"/>
                 <function call="text-equals" node="." value="here"/>
                 <function call="text-match" node="." value="^.{0,10}((press.|click*) here).{0,10}$"/>
             </condition>
@@ -1035,7 +1050,10 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="80" key="object" confidence="high" status="1">
-        <name>Todos los <code>objects</code> contienen texto equivalente del<code>object</code>.</name>
+        <name>Todos los
+            <code>objects</code>
+            contienen texto equivalente del<code>object</code>.
+        </name>
         <error>check.80.error</error>
         <rationale>check.80.rationale</rationale>
         <machine>
@@ -1202,40 +1220,40 @@ Telephone: (416) 978-4360
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Welcome|English(\s+version){0,1})( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="en" />
+                    <function call="current-language" node="." value="en"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Catal.{1,2}|Catal&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="ca" />
+                    <function call="current-language" node="." value="ca"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Valenci[^a]{1,2}|Valenci&amp;agrave;)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="ca" />
+                    <function call="current-language" node="." value="ca"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="^[\W_]*(Benvin{0,1}guts{0,1})( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="ca" />
+                    <function call="current-language" node="." value="ca"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Benvidos{0,1}|Galego)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="gl" />
+                    <function call="current-language" node="." value="gl"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Ongi\s+etorri|Eusk[ae]ra|Eusquera)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="eu" />
+                    <function call="current-language" node="." value="eu"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="."
                               value="^[\W_]*(Bienvenues{0,1}|Bienvenus{0,1}|Fran.{1,2}ais|Fran&amp;ccedil;ais)( *\(.*\)){0,1}[\W_]*$"/>
-                    <function call="current-language" node="." value="fr" />
+                    <function call="current-language" node="." value="fr"/>
                 </condition>
                 <condition type="and">
                     <function call="text-match" node="." value="asturianu"/>
-                    <function call="current-language" node="." value="ast" />
+                    <function call="current-language" node="." value="ast"/>
                 </condition>
             </condition>
         </machine>
@@ -1290,30 +1308,39 @@ Telephone: (416) 978-4360
                 <function call="text-equals" node="@alt" value=".gif" position="end"/>
                 <function call="text-equals" node="@alt" value=".png" position="end"/>
                 <function call="text-equals" node="@alt" value=".bmp" position="end"/>
-                <function call="text-match" node="@alt" value="^pic0*\d+" />
-                <function call="text-match" node="@alt" value="^\d+$" />
-                <function call="text-match" node="@alt" value="^img_?\d+.*" />
-                <function call="text-match" node="@alt" value="^imagen$$$|^dibujo$|^pintura$|^cuadro$|^figura$|^ilustración$|^foto$|^fotograf[í|i]a$|^instantánea$|^retrato$|^captura$|^captura de pantalla$|^gráfico$|^gráfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espaciador$|^espacio$|^decorativa$|^ornamental$|^imagen decorativa$|^texto alternativo$|^descripción$|^descripción de la imagen$" />
-                <function call="text-match" node="@alt" value="^image$|^drawing$|^picture$|^painting$|^figure$|^illustration$|^photo$|^snapshot$|^snap$|^shot$|^shooting$|^photograph$|^photography$|^portrait$|^screenshot$|^graphic$|^graph$|^chart$|^diagram$|^scheme$|^diagram$|^thumb$|^thumbnail$|^separator$|^spacer$|^space$|^decorative$|^ornamental$|^decorative image$|^alternative text$|^description$|^image description$" />
-                <function call="text-match" node="@alt" value="^image$|^dessin$|^peinture$|^figure$|^illustration$|^photo$|^instantané$|^photo instantané$|^photographie$|^portrait$|^capture d’écran$|^graphique$|^schème$|^diagramme$|^miniature$|^vignettes$|^séparateur$|^entretoise$|^espace$|^décoratif$|^dècoration$|^ornemental$|^image décorative$|^texte alternatif$|^description$|^image description$" />
-                <function call="text-match" node="@alt" value="^imatge$|^dibuix$|^pintura$|^quadre$|^figura$|^il-lustració$|^foto$|^fotografía$|^instantània$|^retrat$|^captura$|^captura de pantalla$|^gràfic$|^gràfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espaiador$|^espai$|^decorativa$|^ornamental$|^imatge decorativa$|^text alternatiu$|^descripció$|^descripció de la imatge$" />
-                <function call="text-match" node="@alt" value="^imaxe$|^debuxo$|^deseño$|^pintura$|^cadro$|^táboa$|^figura$|^ilustración$|^foto$|^fotografía$|^instantánea$|^retrato$|^captura$|^captura de pantalla$|^gráfico$|^gráfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espazador$|^espazos$|^espazo$|^decorativa$|^ornamental$|^imaxe decorativa$|^texto alternativo$|^descrición$|^descrición da imaxe$" />
-                <function call="text-match" node="@alt" value="^irudia$|^marrazkia$|^pintura$|^koadroa$|^ilustrazioa$|^argazki$|^argazkilaritza$|^argazkigintza$|^argazkia$|^erretratua$|^harrapaketa$|^kaptura$|^pantaila-kaptura$|^pantaila-tiroa$|^grafikoa$|^eskema$|^diagrama$|^miniatura$|^bereizlea$|^espazioa$|^apaingarria$|^irudi apaingarria$|^ordezko testua$|^deskribapena$|^irudiko deskribapena$" />
+                <function call="text-match" node="@alt" value="^pic0*\d+"/>
+                <function call="text-match" node="@alt" value="^\d+$"/>
+                <function call="text-match" node="@alt" value="^img_?\d+.*"/>
+                <function call="text-match" node="@alt"
+                          value="^imagen$$$|^dibujo$|^pintura$|^cuadro$|^figura$|^ilustración$|^foto$|^fotograf[í|i]a$|^instantánea$|^retrato$|^captura$|^captura de pantalla$|^gráfico$|^gráfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espaciador$|^espacio$|^decorativa$|^ornamental$|^imagen decorativa$|^texto alternativo$|^descripción$|^descripción de la imagen$"/>
+                <function call="text-match" node="@alt"
+                          value="^image$|^drawing$|^picture$|^painting$|^figure$|^illustration$|^photo$|^snapshot$|^snap$|^shot$|^shooting$|^photograph$|^photography$|^portrait$|^screenshot$|^graphic$|^graph$|^chart$|^diagram$|^scheme$|^diagram$|^thumb$|^thumbnail$|^separator$|^spacer$|^space$|^decorative$|^ornamental$|^decorative image$|^alternative text$|^description$|^image description$"/>
+                <function call="text-match" node="@alt"
+                          value="^image$|^dessin$|^peinture$|^figure$|^illustration$|^photo$|^instantané$|^photo instantané$|^photographie$|^portrait$|^capture d’écran$|^graphique$|^schème$|^diagramme$|^miniature$|^vignettes$|^séparateur$|^entretoise$|^espace$|^décoratif$|^dècoration$|^ornemental$|^image décorative$|^texte alternatif$|^description$|^image description$"/>
+                <function call="text-match" node="@alt"
+                          value="^imatge$|^dibuix$|^pintura$|^quadre$|^figura$|^il-lustració$|^foto$|^fotografía$|^instantània$|^retrat$|^captura$|^captura de pantalla$|^gràfic$|^gràfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espaiador$|^espai$|^decorativa$|^ornamental$|^imatge decorativa$|^text alternatiu$|^descripció$|^descripció de la imatge$"/>
+                <function call="text-match" node="@alt"
+                          value="^imaxe$|^debuxo$|^deseño$|^pintura$|^cadro$|^táboa$|^figura$|^ilustración$|^foto$|^fotografía$|^instantánea$|^retrato$|^captura$|^captura de pantalla$|^gráfico$|^gráfica$|^esquema$|^diagrama$|^miniatura$|^separador$|^espazador$|^espazos$|^espazo$|^decorativa$|^ornamental$|^imaxe decorativa$|^texto alternativo$|^descrición$|^descrición da imaxe$"/>
+                <function call="text-match" node="@alt"
+                          value="^irudia$|^marrazkia$|^pintura$|^koadroa$|^ilustrazioa$|^argazki$|^argazkilaritza$|^argazkigintza$|^argazkia$|^erretratua$|^harrapaketa$|^kaptura$|^pantaila-kaptura$|^pantaila-tiroa$|^grafikoa$|^eskema$|^diagrama$|^miniatura$|^bereizlea$|^espazioa$|^apaingarria$|^irudi apaingarria$|^ordezko testua$|^deskribapena$|^irudiko deskribapena$"/>
             </condition>
         </machine>
     </check>
 
     <check id="101" key="ol" confidence="high" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos <code>p</code>
+        <name>Listas ordenadas mal creadas con elementos
+            <code>p</code>
         </name>
         <error>check.101.error</error>
         <rationale>check.101.rationale</rationale>
         <machine>
             <trigger element="p"/>
             <condition type="or">
-                <function call="false-paragraph-list" node="." element="p" number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
-                <function call="false-paragraph-list" node="." element="p" number="3" value="^([a-z])[ \.ºª)-]+" attribute1="sorted" attribute2="char"/>
-                <function call="false-paragraph-list" node="." element="p" number="3" value="^(i){1,3}[ \.ºª)-]+" />
+                <function call="false-paragraph-list" node="." element="p" number="3" value="^(\d+)[ \.ºª)-]+"
+                          attribute1="sorted" attribute2="integer"/>
+                <function call="false-paragraph-list" node="." element="p" number="3" value="^([a-z])[ \.ºª)-]+"
+                          attribute1="sorted" attribute2="char"/>
+                <function call="false-paragraph-list" node="." element="p" number="3" value="^(i){1,3}[ \.ºª)-]+"/>
             </condition>
         </machine>
     </check>
@@ -1579,18 +1606,20 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="120" key="ul" confidence="high" occurrence="first">
-        <name>Listas no ordenadas mal creadas con elementos <code>p</code>
+        <name>Listas no ordenadas mal creadas con elementos
+            <code>p</code>
         </name>
         <error>check.120.error</error>
         <rationale>check.120.rationale</rationale>
         <machine>
             <trigger element="p"/>
-            <function call="false-paragraph-list" node="."  number="3" value="^\*|^-"/>
+            <function call="false-paragraph-list" node="." number="3" value="^\*|^-"/>
         </machine>
     </check>
 
     <check id="121" key="ul" confidence="high" occurrence="first">
-        <name>Listas mal creadas con elementos <code>br</code>
+        <name>Listas mal creadas con elementos
+            <code>br</code>
         </name>
         <error>check.121.error</error>
         <rationale>check.121.rationale</rationale>
@@ -1608,7 +1637,7 @@ Telephone: (416) 978-4360
             <trigger element="html"/>
             <condition type="and">
                 <function call="title-not-contains" node="."
-                          value="\b(accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun)\b" />
+                          value="\b(accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun)\b"/>
                 <function call="has-not-section-link" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
             </condition>
@@ -1904,7 +1933,8 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="150" key="ol" confidence="high" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos <code>br</code>
+        <name>Listas ordenadas mal creadas con elementos
+            <code>br</code>
         </name>
         <error>check.150.error</error>
         <rationale>check.150.rationale</rationale>
@@ -2028,7 +2058,7 @@ Telephone: (416) 978-4360
         <error>check.159.error</error>
         <machine>
             <trigger element="table"/>
-            <function call="table-heading-blank" node="." />
+            <function call="table-heading-blank" node="."/>
         </machine>
     </check>
 
@@ -2550,7 +2580,7 @@ Telephone: (416) 978-4360
                 <function call="element-count-greater-than" node="." value="h6" number="0"/>
             </condition>
         </machine>
-    </check>
+    </check>_
 
     <check id="238" key="input" confidence="high" status="1">
         <name>Todos los elementos
@@ -4528,7 +4558,8 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="410" key="ol" confidence="high" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos <code>br</code>
+        <name>Listas ordenadas mal creadas con elementos
+            <code>br</code>
         </name>
         <error>check.410.error</error>
         <rationale>check.410.rationale</rationale>
@@ -4543,13 +4574,15 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="411" key="ol" confidence="high" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos <code>p</code>
+        <name>Listas ordenadas mal creadas con elementos
+            <code>p</code>
         </name>
         <error>check.411.error</error>
         <rationale>check.411.rationale</rationale>
         <machine>
             <trigger element="p"/>
-            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
+            <function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"
+                      attribute2="integer"/>
         </machine>
     </check>
 
@@ -4565,12 +4598,21 @@ Telephone: (416) 978-4360
 
     <!-- Añadidos para el observatorio 2.0 -->
     <check id="413" key="img" confidence="high">
-        <name>Todos los elementos <code>img</code> con texto alternativo <code>alt</code> vacío no tienen atributo <code>title</code> o bien éste está vacío y que no tienen atributo <code>role</code> o bien su valor es <code>presentation</code>.</name>
+        <name>Todos los elementos
+            <code>img</code>
+            con texto alternativo
+            <code>alt</code>
+            vacío no tienen atributo
+            <code>title</code>
+            o bien éste está vacío y que no tienen atributo
+            <code>role</code>
+            o bien su valor es<code>presentation</code>.
+        </name>
         <error>check.413.error</error>
         <rationale>check.413.rationale</rationale>
         <machine>
             <trigger element="img"/>
-            <function call="characters-greater-than" node="@title" value="0" />
+            <function call="characters-greater-than" node="@title" value="0"/>
 
             <condition type="or">
                 <condition type="and">
@@ -4585,7 +4627,10 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="414" key="applet" confidence="high">
-        <name>El elemento <code>applet</code> debe proporcionar alternativas textuales.</name>
+        <name>El elemento
+            <code>applet</code>
+            debe proporcionar alternativas textuales.
+        </name>
         <error>check.414.error</error>
         <rationale>check.414.rationale</rationale>
         <machine>
@@ -4596,14 +4641,15 @@ Telephone: (416) 978-4360
                     <function call="characters-less-than" node="@alt" value="1"/>
                     <function call="is-only-blanks" node="@alt"/>
                 </condition>
-                <function call="object-has-not-alternative" node="." />
+                <function call="object-has-not-alternative" node="."/>
             </condition>
         </machine>
     </check>
 
     <check id="415" key="th" confidence="high">
         <!--<prerequisite id="7"/>-->
-        <name>Las tablas de datos que contienen cabeceras de filas y columna usan el atributo <code>scope</code>
+        <name>Las tablas de datos que contienen cabeceras de filas y columna usan el atributo
+            <code>scope</code>
             para identificar las celdas.
         </name>
         <error>check.415.error</error>
@@ -4618,16 +4664,19 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="416" key="ol" confidence="medium" occurrence="first">
-        <name>Listas ordenadas mal creadas con elementos <code>ul</code>
+        <name>Listas ordenadas mal creadas con elementos
+            <code>ul</code>
         </name>
         <error>check.416.error</error>
         <rationale>check.416.rationale</rationale>
         <machine>
             <trigger element="li"/>
             <condition type="or">
-                <function call="false-paragraph-list" node="." element="li" number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
-                <function call="false-paragraph-list" node="." element="li" number="3" value="^([a-z])[ \.ºª)-]+" attribute1="sorted" attribute2="char"/>
-                <function call="false-paragraph-list" node="." element="li" number="3" value="^(i){1,3}[ \.ºª)-]+" />
+                <function call="false-paragraph-list" node="." element="li" number="3" value="^(\d+)[ \.ºª)-]+"
+                          attribute1="sorted" attribute2="integer"/>
+                <function call="false-paragraph-list" node="." element="li" number="3" value="^([a-z])[ \.ºª)-]+"
+                          attribute1="sorted" attribute2="char"/>
+                <function call="false-paragraph-list" node="." element="li" number="3" value="^(i){1,3}[ \.ºª)-]+"/>
             </condition>
         </machine>
     </check>
@@ -4642,6 +4691,7 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
+    <!-- FIXME: Modificar para que admita summary o caption -->
     <check id="418" key="table" confidence="high">
         <prerequisite id="7"/>
         <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.</name>
@@ -4651,10 +4701,16 @@ Telephone: (416) 978-4360
             <trigger element="table"/>
             <condition type="and">
                 <function call="table-heading-complex" node="."/>
-                <condition type="or">
-                    <function call="attribute-missing" node="." value="summary"/>
-                    <function call="characters-less-than" node="@summary" value="1"/>
-                    <function call="is-only-blanks" node="@summary"/>
+                <condition type="and">
+                    <condition type="or">
+                        <function call="attribute-missing" node="." value="summary"/>
+                        <function call="characters-less-than" node="@summary" value="1"/>
+                        <function call="is-only-blanks" node="@summary"/>
+                    </condition>
+                    <condition type="or">
+                        <function call="element-count-equals" node="." value="caption" number="0" attribute2="table"/>
+                        <function call="is-empty-element" node="." element="caption" value="all"/>
+                    </condition>
                 </condition>
             </condition>
         </machine>
@@ -4668,11 +4724,13 @@ Telephone: (416) 978-4360
             <trigger element="html"/>
             <condition type="and">
                 <function call="title-not-contains" node="."
-                          value="\b(mapa del sitio web|mapa web|mapa|gunearen mapa|webgunearen mapa|site map|plan du site|mapa del sitio|mapa del web|mapa do sitio|web mapa|plan de site web|map|map of the website|plan|mapa de la web|mapa de web$|contenido de la web|visualizar mapa del web|mapa del portal|web map|sitemap|mapa de la sede|mapa da web|mapa del lloc|carte web|Mapa Web: Toda la información a un clic|Mapa Web \(Tecla de acceso 3\)|Webaren mapa|Mapa do portal)\b" />
+                          value="\b(mapa del sitio web|mapa web|mapa|gunearen mapa|webgunearen mapa|site map|plan du site|mapa del sitio|mapa del web|mapa do sitio|web mapa|plan de site web|map|map of the website|plan|mapa de la web|mapa de web$|contenido de la web|visualizar mapa del web|mapa del portal|web map|sitemap|mapa de la sede|mapa da web|mapa del lloc|carte web|Mapa Web: Toda la información a un clic|Mapa Web \(Tecla de acceso 3\)|Webaren mapa|Mapa do portal)\b"/>
                 <function call="has-not-section-link" node="."
                           value="^mapa del sitio web$|^mapa web$|^mapa$|^gunearen mapa$|^webgunearen mapa$|^site map$|^plan du site$|^mapa del sitio$|^mapa del web$|^mapa do sitio$|^web mapa$|^plan de site web$|^map$|^map of the website$|^plan$|^mapa de la web$|^mapa de web$|^contenido de la web$|^visualizar mapa del web$|^mapa del portal$|^web map$|^sitemap$|^mapa de la sede$|^mapa da web$|^mapa del lloc$|^carte web$|^Mapa Web: Toda la información a un clic$|^Mapa Web \(Tecla de acceso 3\)$|^Webaren mapa$|^Mapa do portal$"/>
-                <function call="attribute-element-text-not-match" node="." element="form" attribute1="role" value="search"/>
-                <function call="attribute-element-text-not-match" node="." element="div" attribute1="role" value="search"/>
+                <function call="attribute-element-text-not-match" node="." element="form" attribute1="role"
+                          value="search"/>
+                <function call="attribute-element-text-not-match" node="." element="div" attribute1="role"
+                          value="search"/>
                 <function call="attribute-element-text-not-match" node="." element="input" attribute1="value"
                           value="buscar|búsqueda|buscador|search|rechercher|cercar|cerca|cercador|bilaketa|bilatzailea|bilatu|busca"/>
             </condition>
@@ -4755,7 +4813,10 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="426" key="img" confidence="high">
-        <name>Se verifica que las imágenes con un alto y/o ancho igual o inferior a X no tienen atributo “role” o bien su valor es “presentation”; y además tienen un atributo “alt” vacío y carecen de atributo “title” o éste está vacío. (Heurístico X=2)</name>
+        <name>Se verifica que las imágenes con un alto y/o ancho igual o inferior a X no tienen atributo “role” o bien
+            su valor es “presentation”; y además tienen un atributo “alt” vacío y carecen de atributo “title” o éste
+            está vacío. (Heurístico X=2)
+        </name>
         <error>check.426.error</error>
         <rationale>check.426.rationale</rationale>
         <machine>
@@ -4771,8 +4832,9 @@ Telephone: (416) 978-4360
                 <condition type="and">
                     <!-- attribute1 = width & attribute2 = height -->
                     <function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3"/>
-                    <function call="attribute-exists" node="@role" />
-                    <function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation"/>
+                    <function call="attribute-exists" node="@role"/>
+                    <function call="not-exist-attribute-value" node="." element="." attribute1="@role"
+                              value="presentation"/>
                 </condition>
             </condition>
         </machine>
@@ -4844,7 +4906,9 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="432" key="form" confidence="high">
-        <name>Elementos con “onclick” u “onkeypress” son de interacción de forma nativa (enlaces o botones estándar) o bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado</name>
+        <name>Elementos con “onclick” u “onkeypress” son de interacción de forma nativa (enlaces o botones estándar) o
+            bien tienen asignado un atributo “tabindex” y un “role” de WAI-ARIA adecuado
+        </name>
         <error>check.432.error</error>
         <rationale>check.432.rationale</rationale>
         <machine>
@@ -4887,7 +4951,8 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <condition type="and">
-                <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="2" position="less"/>
+                <function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="2"
+                          position="less"/>
                 <function call="has-complex-structure" node="." number="15"/>
             </condition>
         </machine>
@@ -4946,7 +5011,7 @@ Telephone: (416) 978-4360
         <rationale>check.438.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="has-validation-errors" node="." value="141" />
+            <function call="has-validation-errors" node="." value="141"/>
         </machine>
     </check>
 
@@ -4957,10 +5022,10 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <condition type="or">
-                <function call="has-validation-errors" node="." value="82" />
+                <function call="has-validation-errors" node="." value="82"/>
                 <!-- Si son varias palabras sin entrecomillar notifica este otro error (atributo simple inexistente)
                 puede dar falsos positivos con atributos simples -->
-                <function call="has-validation-errors" node="." value="106" />
+                <function call="has-validation-errors" node="." value="106"/>
             </condition>
         </machine>
     </check>
@@ -4972,8 +5037,8 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <condition type="or">
-                <function call="has-validation-errors" node="." value="70" />
-                <function call="has-validation-errors" node="." value="79" />
+                <function call="has-validation-errors" node="." value="70"/>
+                <function call="has-validation-errors" node="." value="79"/>
             </condition>
         </machine>
     </check>
@@ -4984,7 +5049,7 @@ Telephone: (416) 978-4360
         <rationale>check.441.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="has-validation-errors" node="." value="112" />
+            <function call="has-validation-errors" node="." value="112"/>
         </machine>
     </check>
 
@@ -4994,12 +5059,14 @@ Telephone: (416) 978-4360
         <rationale>check.442.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="guess-language" node="." />
+            <function call="guess-language" node="."/>
         </machine>
     </check>
 
     <check id="443" key="form" confidence="high">
-        <name>Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) se agrupan bajo su correspondiente fieldset.</name>
+        <name>Grupos de tres o más de botones de radio y/o casillas de verificación (con el mismo “name”) se agrupan
+            bajo su correspondiente fieldset.
+        </name>
         <error>check.443.error</error>
         <rationale>check.443.rationale</rationale>
         <machine>
@@ -5013,52 +5080,65 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="444" key="form" confidence="high">
-        <name>Todo fieldset debe tener un único elemento legend con contenido (como primer elemento semántico hijo)</name>
+        <name>Todo fieldset debe tener un único elemento legend con contenido (como primer elemento semántico hijo)
+        </name>
         <error>check.444.error</error>
         <rationale>check.444.rationale</rationale>
         <machine>
             <trigger element="fieldset"/>
             <!-- value - etiqueta que debe ser el primer hijo, attribute1 - etiquetas hijas que ignoramos -->
-            <function call="not-first-child" node="." value="legend" attribute1="div" />
+            <function call="not-first-child" node="." value="legend" attribute1="div"/>
         </machine>
     </check>
 
     <check id="445" key="p" confidence="high" occurrence="first">
-        <name>Listas mal creadas con 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean iguales o inferiores a X*Y (Heurístico X=10, Y=10).</name>
+        <name>Listas mal creadas con 3 o más párrafos seguidos que empiecen por una imagen cuyas dimensiones sean
+            iguales o inferiores a X*Y (Heurístico X=10, Y=10).
+        </name>
         <error>check.445.error</error>
         <rationale>check.445.rationale</rationale>
         <machine>
             <trigger element="p"/>
             <condition type="and">
                 <function call="img-dimensions-less-than" node="./img[1]" attribute1="11" attribute2="11"/>
-                <function call="false-paragraph-list" node="." number="3" value="\w+" />
+                <function call="false-paragraph-list" node="." number="3" value="\w+"/>
             </condition>
         </machine>
     </check>
 
     <check id="446" key="form" confidence="high">
-        <name>Se identifican los campos obligatorios en formularios con más de N campos de introducción de texto (N = 4)</name>
+        <name>Se identifican los campos obligatorios en formularios con más de N campos de introducción de texto (N =
+            4)
+        </name>
         <error>check.446.error</error>
         <rationale>check.446.rationale</rationale>
         <machine>
-            <trigger element="form" />
-            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bobligado\b|\bexigido\b|\bpreciso\b|\brequeridos?\b|\bnecesarios?\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b|\bopcionales\b|\bblanco\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatory\b|\bobliged\b|\bmandatory\b|\bcompulsory\b|\brequisite\b|\brequired\b|\brequested\b|\bnecessary\b|\bneeded\b|\bindispensable\b|\bessential\b|\bimperative\b|\boptional\b|\bvoluntary\b|\bblank\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatoire\b|\bexigé\b|\bprécis\b|\brequis\b|\bnécessaire\b|\bindispoensable\b|\bessential\b|\bimpératif\b|\boption\b|\bbénévoles\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatori\b|\bobligat\b|\bobligats\b|\bexigit\b|\brequerit\b|\bnecessari\b|\bindispensable\b|\bimprescindible\b|\bimperatiu\b|\bopcional\b|\bopcionals\b|\bvoluntari\b"/>
-            <function call="required-controls" node="." number="4" value="\bobrigatorio\b|\bobrigado\b|\besixido\b|\bpreciso\b|\brequirido\b|\bnecesario\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b"/>
-            <function call="required-controls" node="." number="4" value="\bnahitaezkoa\b|\bbetebeharpekoa\b|\beskatuta\b|\bbeharrezkoa\b|\berrekeritua\b|\bezinbestekoa\b|\bagindua\b|\baukerakoa\b|\bboluntarioa\b"/>
+            <trigger element="form"/>
+            <function call="required-controls" node="." number="4"
+                      value="\bobligatorios?\b|\bobligado\b|\bexigido\b|\bpreciso\b|\brequeridos?\b|\bnecesarios?\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b|\bopcionales\b|\bblanco\b"/>
+            <function call="required-controls" node="." number="4"
+                      value="\bobligatory\b|\bobliged\b|\bmandatory\b|\bcompulsory\b|\brequisite\b|\brequired\b|\brequested\b|\bnecessary\b|\bneeded\b|\bindispensable\b|\bessential\b|\bimperative\b|\boptional\b|\bvoluntary\b|\bblank\b"/>
+            <function call="required-controls" node="." number="4"
+                      value="\bobligatoire\b|\bexigé\b|\bprécis\b|\brequis\b|\bnécessaire\b|\bindispoensable\b|\bessential\b|\bimpératif\b|\boption\b|\bbénévoles\b"/>
+            <function call="required-controls" node="." number="4"
+                      value="\bobligatori\b|\bobligat\b|\bobligats\b|\bexigit\b|\brequerit\b|\bnecessari\b|\bindispensable\b|\bimprescindible\b|\bimperatiu\b|\bopcional\b|\bopcionals\b|\bvoluntari\b"/>
+            <function call="required-controls" node="." number="4"
+                      value="\bobrigatorio\b|\bobrigado\b|\besixido\b|\bpreciso\b|\brequirido\b|\bnecesario\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b"/>
+            <function call="required-controls" node="." number="4"
+                      value="\bnahitaezkoa\b|\bbetebeharpekoa\b|\beskatuta\b|\bbeharrezkoa\b|\berrekeritua\b|\bezinbestekoa\b|\bagindua\b|\baukerakoa\b|\bboluntarioa\b"/>
         </machine>
     </check>
 
     <check id="447" key="css" confidence="high">
-        <name>Generación de contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o superior a X caracteres alfanuméricos (X=2)</name>
+        <name>Generación de contenido desde CSS mediante :before o :after y la propiedad “content” con texto igual o
+            superior a X caracteres alfanuméricos (X=2)
+        </name>
         <error>check.447.error</error>
         <rationale>check.447.rationale</rationale>
         <machine>
-            <trigger element="css" />
+            <trigger element="css"/>
             <!-- number es el número de chars permitidos (number = X-1)-->
-            <function call="css-generated-content" node="." number="2" />
+            <function call="css-generated-content" node="." number="2"/>
         </machine>
     </check>
 
@@ -5067,8 +5147,8 @@ Telephone: (416) 978-4360
         <error>check.448.error</error>
         <rationale>check.448.rationale</rationale>
         <machine>
-            <trigger element="css" />
-            <function call="css-color-contrast" node="." />
+            <trigger element="css"/>
+            <function call="css-color-contrast" node="."/>
         </machine>
     </check>
 
@@ -5077,8 +5157,8 @@ Telephone: (416) 978-4360
         <error>check.449.error</error>
         <rationale>check.449.rationale</rationale>
         <machine>
-            <trigger element="css" />
-            <function call="css-blink" node="." />
+            <trigger element="css"/>
+            <function call="css-blink" node="."/>
         </machine>
     </check>
 
@@ -5087,8 +5167,8 @@ Telephone: (416) 978-4360
         <error>check.450.error</error>
         <rationale>check.450.rationale</rationale>
         <machine>
-            <trigger element="css" />
-            <function call="css-parseable" node="." />
+            <trigger element="css"/>
+            <function call="css-parseable" node="."/>
         </machine>
     </check>
 
@@ -5097,17 +5177,19 @@ Telephone: (416) 978-4360
         <error>check.451.error</error>
         <rationale>check.451.rationale</rationale>
         <machine>
-            <trigger element="css" />
-            <function call="css-outline" node="." />
+            <trigger element="css"/>
+            <function call="css-outline" node="."/>
         </machine>
     </check>
 
     <check id="452" key="html" confidence="high">
-        <name>No se produce ningún cambio de contexto en los eventos “onfocus” u “onblur” (window.location, window.history, window.open, window.focus)</name>
+        <name>No se produce ningún cambio de contexto en los eventos “onfocus” u “onblur” (window.location,
+            window.history, window.open, window.focus)
+        </name>
         <error>check.452.error</error>
         <rationale>check.452.rationale</rationale>
         <machine>
-            <trigger element="*" />
+            <trigger element="*"/>
             <condition type="or">
                 <condition type="and">
                     <function call="attribute-exists" node="." value="onfocus"/>
@@ -5122,11 +5204,13 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="453" key="html" confidence="high">
-        <name>No se produce ningún cambio de contexto nada más cargarse la página (onload) (window.location, window.history, window.open, window.focus)</name>
+        <name>No se produce ningún cambio de contexto nada más cargarse la página (onload) (window.location,
+            window.history, window.open, window.focus)
+        </name>
         <error>check.453.error</error>
         <rationale>check.453.rationale</rationale>
         <machine>
-            <trigger element="body" />
+            <trigger element="body"/>
             <condition type="and">
                 <function call="attribute-exists" node="." value="onload"/>
                 <function call="text-match" node="@onload" value="window\.(location|history|open|focus)"/>
@@ -5135,11 +5219,13 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="454" key="html" confidence="high">
-        <name>No se produce ningún cambio de contexto en el evento “onchange” de los elementos “select” (window.location, window.history, window.open, window.focus)</name>
+        <name>No se produce ningún cambio de contexto en el evento “onchange” de los elementos “select”
+            (window.location, window.history, window.open, window.focus)
+        </name>
         <error>check.454.error</error>
         <rationale>check.454.rationale</rationale>
         <machine>
-            <trigger element="select" />
+            <trigger element="select"/>
             <condition type="and">
                 <function call="attribute-exists" node="." value="onchange"/>
                 <function call="text-match" node="@onchange" value="window\.(location|history|open|focus)"/>
@@ -5188,12 +5274,14 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="459" key="ul" confidence="high" occurrence="first">
-        <name>Listas mal creadas con elementos <code>br</code></name>
+        <name>Listas mal creadas con elementos
+            <code>br</code>
+        </name>
         <error>check.459.error</error>
         <rationale>check.459.rationale</rationale>
         <machine>
             <trigger element="br"/>
-            <function call="false-br-image-list" node="." number="3" value="^\w+" attribute1="11" attribute2="11" />
+            <function call="false-br-image-list" node="." number="3" value="^\w+" attribute1="11" attribute2="11"/>
         </machine>
     </check>
 
@@ -5203,7 +5291,7 @@ Telephone: (416) 978-4360
         <rationale>check.460.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="other-language" node="." number="4" />
+            <function call="other-language" node="." number="4"/>
         </machine>
     </check>
 
@@ -5212,8 +5300,8 @@ Telephone: (416) 978-4360
         <error>check.461.error</error>
         <rationale>check.461.rationale</rationale>
         <machine>
-            <trigger element="css" />
-            <function call="css-label-hidden" node="." />
+            <trigger element="css"/>
+            <function call="css-label-hidden" node="."/>
         </machine>
     </check>
 
@@ -5222,7 +5310,7 @@ Telephone: (416) 978-4360
         <error>check.462.error</error>
         <rationale>check.462.rationale</rationale>
         <machine>
-            <trigger element="title" />
+            <trigger element="title"/>
             <function call="characters-greater-than" node="." value="0"/>
         </machine>
     </check>
@@ -5234,7 +5322,8 @@ Telephone: (416) 978-4360
         <rationale>check.463.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="accessibility-declaration-not-conformance-level" node="." value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
+            <function call="accessibility-declaration-not-conformance-level" node="."
+                      value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"/>
         </machine>
     </check>
 
