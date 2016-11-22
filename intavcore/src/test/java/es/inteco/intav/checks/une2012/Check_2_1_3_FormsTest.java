@@ -48,12 +48,12 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     private CheckAccessibility checkAccessibility;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         checkAccessibility = getCheckAccessibility("observatorio-une-2012");
     }
 
     @Test
-    public void evaluateComplexForm() throws Exception {
+    public void evaluateComplexForm() {
         checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /></form>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), COMPLEX_FORMS));
@@ -75,7 +75,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
 
     @Test
-    public void evaluateLabelFor() throws Exception {
+    public void evaluateLabelFor() {
         checkAccessibility.setContent("<form><label for=\"control\">Etiqueta</label><input id=\"control\" /></form>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), LABEL_NO_FOR));
@@ -87,7 +87,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
 
     @Test
-    public void evaluateInputLabelAssociation() throws Exception {
+    public void evaluateInputLabelAssociation() {
         checkAccessibility.setContent("<label for=\"correo\">Correo</label><input id=\"correo\" type=\"email\"/>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
@@ -123,10 +123,21 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
         checkAccessibility.setContent("<span id=\"label_correo\"></span><input aria-labelledby=\"label_correo\" type=\"email\"/>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+
+        checkAccessibility.setContent("<span class=\"aui-field-content\">\n" +
+                "<span class=\"aui-field-element aui-field-label-right\">\n" +
+                "<input id=\"_Registraremail_WAR_registermailmanportlet_INSTANCE_9eOl5LbUEiM0_mailman-list-0\" name=\"_Registraremail_WAR_registermailmanportlet_INSTANCE_9eOl5LbUEiM0_mailman-list-0\" type=\"hidden\" value=\"false\">\n" +
+                "<input class=\"aui-field-input aui-field-input-choice\" id=\"_Registraremail_WAR_registermailmanportlet_INSTANCE_9eOl5LbUEiM0_mailman-list-0Checkbox\" name=\"_Registraremail_WAR_registermailmanportlet_INSTANCE_9eOl5LbUEiM0_mailman-list-0Checkbox\" onclick=\"Liferay.Util.updateCheckboxValue(this); \" type=\"checkbox\" value=\"ive_coyuntura_economica\">\n" +
+                "</span>\n" +
+                "<label class=\"aui-choice-label\" for=\"_Registraremail_WAR_registermailmanportlet_INSTANCE_9eOl5LbUEiM0_mailman-list-0Checkbox\"> Estadísticas coyunturales </label>\n" +
+                "</span>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), INPUT_LABEL));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
-    public void evaluateSelectLabelAssociation() throws Exception {
+    public void evaluateSelectLabelAssociation() {
         checkAccessibility.setContent("<label for=\"selector\">Selector</label><select id=\"selector\"><option>Opción 1</option></select>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), SELECT_LABEL));
@@ -194,7 +205,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateTextAreaLabelAssociation() throws Exception {
+    public void evaluateTextAreaLabelAssociation() {
         checkAccessibility.setContent("<label for=\"texto\">Texto</label><textarea id=\"texto\">Lorem ipsum</textarea>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, getNumProblems(evaluation.getProblems(), TEXTAREA_LABEL));
@@ -233,7 +244,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateNoOptgroup() throws Exception {
+    public void evaluateNoOptgroup() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción 1</option>" +
                 "<option>Opción 2</option>" +
@@ -250,7 +261,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateManyOptionsOptGroupLabel() throws Exception {
+    public void evaluateManyOptionsOptGroupLabel() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
@@ -282,7 +293,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
 
     @Test
-    public void evaluateOptgroupNoLabel() throws Exception {
+    public void evaluateOptgroupNoLabel() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
@@ -303,7 +314,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateOptgroupLabelBlank() throws Exception {
+    public void evaluateOptgroupLabelBlank() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
@@ -322,7 +333,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateOptgroupWhiteSpaces() throws Exception {
+    public void evaluateOptgroupWhiteSpaces() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
@@ -340,7 +351,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateOptgroupNbspSpaces() throws Exception {
+    public void evaluateOptgroupNbspSpaces() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
@@ -358,7 +369,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateFewOptions() throws Exception {
+    public void evaluateFewOptions() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción 1</option>" +
                 "<option>Opción 2</option>" +
@@ -373,7 +384,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateManyOptions() throws Exception {
+    public void evaluateManyOptions() {
         checkAccessibility.setContent("<select>" +
                 "<option>Seleccione ----</option>" +
                 "<option>Opción  1</option>" +
@@ -437,7 +448,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateManyOptionsGrouped() throws Exception {
+    public void evaluateManyOptionsGrouped() {
         checkAccessibility.setContent("<select>" +
                 "<option>Opción  1</option>" +
                 "<option>Opción  2</option>" +
@@ -468,7 +479,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluate2NoOptgroup() throws Exception {
+    public void evaluate2NoOptgroup() {
         checkAccessibility.setContent("<select>" +
                 "<option>* Opción 1</option>" +
                 "<option>* Opción 2</option>" +
@@ -478,7 +489,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateOnly2Items() throws Exception {
+    public void evaluateOnly2Items() {
         checkAccessibility.setContent("<select>" +
                 "<option>--- Opción 1</option>" +
                 "<option>Opción 2</option>" +
@@ -488,7 +499,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateMixedChars() throws Exception {
+    public void evaluateMixedChars() {
         checkAccessibility.setContent("<select>" +
                 "<option>**- Opción 1</option>" +
                 "<option>Opción 2</option>" +
@@ -498,7 +509,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateTwoGroups() throws Exception {
+    public void evaluateTwoGroups() {
         checkAccessibility.setContent("<select>" +
                 "<option>***- Opción A</option>" +
                 "<option>Opción 1</option>" +
@@ -509,7 +520,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateGroupedSelectionButtonsTwoButtons() throws Exception {
+    public void evaluateGroupedSelectionButtonsTwoButtons() {
         checkAccessibility.setContent("<form>" +
                 "<input name=\"grupo\" type=\"radio\"> Opción A" +
                 "<input name=\"grupo\" type=\"radio\"> Opción B" +
@@ -524,7 +535,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateGroupedSelectionButtonsThreeButtons() throws Exception {
+    public void evaluateGroupedSelectionButtonsThreeButtons() {
         checkAccessibility.setContent("<form>" +
                 "<input name=\"grupo\" type=\"radio\"> Opción A" +
                 "<input name=\"grupo\" type=\"radio\"> Opción B" +
@@ -541,7 +552,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateGroupedSelectionButtonsThreeButtonsGrouped() throws Exception {
+    public void evaluateGroupedSelectionButtonsThreeButtonsGrouped() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<input name=\"grupo\" type=\"radio\"> Opción A" +
@@ -562,7 +573,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLegendFirstChild() throws Exception {
+    public void evaluateLegendFirstChild() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
@@ -572,7 +583,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLegendFirstChildDiv() throws Exception {
+    public void evaluateLegendFirstChildDiv() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><div><legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
@@ -588,7 +599,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLegendDoubleChildDiv() throws Exception {
+    public void evaluateLegendDoubleChildDiv() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><div>Lorem</div><div>Ipsum</div><legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
@@ -598,7 +609,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateH2FirstChild() throws Exception {
+    public void evaluateH2FirstChild() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><h2>Foo</h2>" +
                 "<legend>Grupo</legend>" +
@@ -609,7 +620,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLegendFirstChildWhiteSpaces() throws Exception {
+    public void evaluateLegendFirstChildWhiteSpaces() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset>    <div>   <legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
@@ -626,7 +637,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLegendFirstChildText() throws Exception {
+    public void evaluateLegendFirstChildText() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label for=\"foo\">Lorem</label><input id=\"foo\" />" +
@@ -636,7 +647,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLegendSpanText() throws Exception {
+    public void evaluateLegendSpanText() {
         checkAccessibility.setContent("\t\t\t<form action=\"busqueda.asp\" method=\"get\" name=\"busqueda\" id=\"formBuscadores\">\n" +
                 "\t\t\t<div><input type=\"hidden\" name=\"idioma\" value=\"1\"></div>\n" +
                 "\t\t\t<fieldset>\n" +
@@ -647,7 +658,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateNonRequiredControls() throws Exception {
+    public void evaluateNonRequiredControls() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<input>" +
@@ -660,7 +671,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateRequiredControls() throws Exception {
+    public void evaluateRequiredControls() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<input>" +
@@ -674,7 +685,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateRequiredControlsLabel() throws Exception {
+    public void evaluateRequiredControlsLabel() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label>Campo obligatorio</label><input>" +
@@ -688,7 +699,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateRequiredControlsAbbr() throws Exception {
+    public void evaluateRequiredControlsAbbr() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label>Lorem<abbr title=\"Campo obligatorio\">*</abbr></label><input>" +
@@ -702,7 +713,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateRequiredControlsTitle() throws Exception {
+    public void evaluateRequiredControlsTitle() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label>Lorem*</label><input title=\"Campo obligatorio\">" +
@@ -716,7 +727,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateRequiredControlsText() throws Exception {
+    public void evaluateRequiredControlsText() {
         checkAccessibility.setContent("<form>" +
                 "<div>Los campos marcados con * son obligatorios" +
                 "<fieldset><legend>Grupo</legend>" +
@@ -732,7 +743,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateRequiredControlsImg() throws Exception {
+    public void evaluateRequiredControlsImg() {
         checkAccessibility.setContent("<form>" +
                 "<fieldset><legend>Grupo</legend>" +
                 "<label>Lorem <img src=\"img/asterisk.gif\" alt=\"Campo obligatorio\"></label><input>" +
@@ -746,7 +757,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLabelHiddenDisplayNone() throws Exception {
+    public void evaluateLabelHiddenDisplayNone() {
         checkAccessibility.setContent("<html><style type=\"text/css\">label { display: none; }</style>" +
                 "<div>Los campos marcados con * son obligatorios</div>" +
                 "<fieldset><legend>Grupo</legend>" +
@@ -758,7 +769,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLabelHiddenLeftNegative() throws Exception {
+    public void evaluateLabelHiddenLeftNegative() {
         checkAccessibility.setContent("<html><style>label { left: -9000px; }</style>" +
                 "<div>Los campos marcados con * son obligatorios" +
                 "<fieldset><legend>Grupo</legend>" +
@@ -779,7 +790,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLabelHiddenLeftNegativeClass() throws Exception {
+    public void evaluateLabelHiddenLeftNegativeClass() {
         checkAccessibility.setContent("<html><style>.hidden { left: -9000px; }</style>" +
                 "<div>Los campos marcados con * son obligatorios" +
                 "<fieldset><legend>Grupo</legend>" +
@@ -791,7 +802,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateLabelAndTitle() throws Exception {
+    public void evaluateLabelAndTitle() {
         checkAccessibility.setContent("<html><style>.hidden { left: -9000px; }</style>" +
                 "<div>Los campos marcados con * son obligatorios" +
                 "<fieldset><legend>Grupo</legend>" +
@@ -804,7 +815,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
 
     @Test
-    public void evaluateFormOneHeader() throws Exception {
+    public void evaluateFormOneHeader() {
         checkAccessibility.setContent("<html><form>" +
                 "<h1>Foo</h1>" +
                 "<label for=\"id_1\">Lorem*</label>" +
@@ -814,7 +825,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateFormTwoHeaders() throws Exception {
+    public void evaluateFormTwoHeaders() {
         checkAccessibility.setContent("<html><form>" +
                 "<h2>Foo</h2>" +
                 "<label for=\"id_1\">Lorem*</label>" +
@@ -839,7 +850,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateSharepointFormName() throws Exception {
+    public void evaluateSharepointFormName() {
         checkAccessibility.setContent("<html><form name=\"aspnetForm\">" +
                 "<h1>Foo</h1>" +
                 "<label for=\"id_1\">Lorem*</label>" +
@@ -854,7 +865,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateSharepointFormId() throws Exception {
+    public void evaluateSharepointFormId() {
         checkAccessibility.setContent("<html><form id=\"aspnetForm\">" +
                 "<h1>Foo</h1>" +
                 "<label for=\"id_1\">Lorem*</label>" +
@@ -869,7 +880,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateSharepointFormIdAndName() throws Exception {
+    public void evaluateSharepointFormIdAndName() {
         checkAccessibility.setContent("<html><form id=\"aspnetForm\" method=\"post\" name=\"aspnetForm\">" +
                 "<h1>Foo</h1>" +
                 "<label for=\"id_1\">Lorem*</label>" +
@@ -884,7 +895,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
-    public void evaluateMultipleSelects() throws Exception {
+    public void evaluateMultipleSelects() {
         final String markup ="<select id=\"MesDesde\">\n" +
                 "\t\t<option value=\"01\">enero</option>\n" +
                 "\t\t<option value=\"02\">febrero</option>\n" +
@@ -928,7 +939,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
 //    @Test
-//    public void evaluateURL() throws Exception {
+//    public void evaluateURL() {
 //        checkAccessibility.setUrl("http://www.minhap.gob.es/es-ES/Prensa/Paginas/Eventos.aspx");
 //        final Evaluation evaluation = EvaluatorUtils.evaluate(checkAccessibility, "es");
 //        TestUtils.printProblems(evaluation.getProblems(), OPTGROUP);
