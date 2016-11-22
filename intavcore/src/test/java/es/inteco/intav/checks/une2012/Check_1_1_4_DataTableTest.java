@@ -133,6 +133,23 @@ public final class Check_1_1_4_DataTableTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
     }
 
+
+    @Test
+    public void evaluateTableComplexCaption() throws Exception {
+        checkAccessibility.setContent("<html><body><table><caption>Table caption</caption><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
+
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+    }
+
+    @Test
+    public void evaluateTableComplexCaptionBlank() throws Exception {
+        checkAccessibility.setContent("<html><body><table><caption></caption><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
+
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+    }
+
     @Test
     public void evaluateDataTable() throws Exception {
         checkAccessibility.setContent("<html><body><table summary=\"Relación alfabética de Convenios de nivel regional de Fundación CTIC CT\"><caption>\n" +
