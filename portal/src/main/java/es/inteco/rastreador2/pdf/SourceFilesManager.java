@@ -9,6 +9,7 @@ import es.inteco.utils.FileUtils;
 import org.apache.tika.io.FilenameUtils;
 
 import java.io.*;
+import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
 
@@ -54,11 +55,11 @@ public class SourceFilesManager {
             }
             try (PrintWriter fw = new PrintWriter(new FileWriter(new File(pageSourcesDirectory, "references.txt"), true))) {
                 final Analysis analysis = AnalisisDatos.getAnalisisFromId(c, evaluationId);
-                final File htmlTempFile = File.createTempFile("oaw_", "_" + getURLFileName(analysis.getUrl(), "html.html"), pageSourcesDirectory);
+                final File htmlTempFile = File.createTempFile("oaw_", "_html.html", pageSourcesDirectory);
                 fw.println(writeTempFile(htmlTempFile, analysis.getSource(), analysis.getUrl()));
                 final List<CSSDTO> cssResourcesFromEvaluation = AnalisisDatos.getCSSResourcesFromEvaluation(evaluationId);
                 for (CSSDTO cssdto : cssResourcesFromEvaluation) {
-                    final File stylesheetTempFile = File.createTempFile("oaw_", "_" + getURLFileName(cssdto.getUrl(), "css.css"), pageSourcesDirectory);
+                    final File stylesheetTempFile = createCSSTempFile(cssdto.getUrl(), pageSourcesDirectory);
                     fw.println(writeTempFile(stylesheetTempFile, cssdto.getCodigo(), cssdto.getUrl()));
                 }
                 index++;
@@ -69,9 +70,23 @@ public class SourceFilesManager {
         }
     }
 
+    protected File createCSSTempFile(final String filename, final File pageSourcesDirectory) throws IOException {
+        try {
+            return File.createTempFile("oaw_", "_" + getURLFileName(filename, "css.css"), pageSourcesDirectory);
+        } catch (IOException ioe) {
+            return File.createTempFile("oaw_", "_css.css", pageSourcesDirectory);
+        }
+    }
+
     private String getURLFileName(final String url, final String defaultValue) {
-        final String fileName = FilenameUtils.getName(FilenameUtils.normalize(url));
-        return fileName.isEmpty() ? defaultValue : fileName;
+        try {
+            // Utilizamos unicamente la parte del path para generar un nombre único y a su vez identificativo.
+            final String fileName = FilenameUtils.getName(FilenameUtils.normalize(new URL(url).getPath()));
+            return fileName.isEmpty() ? defaultValue : fileName;
+        } catch (Exception e) {
+            return defaultValue;
+        }
+
     }
 
     private String writeTempFile(final File tempFile, final String source, final String url) throws FileNotFoundException {
