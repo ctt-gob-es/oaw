@@ -32,7 +32,7 @@ public abstract class EvaluateCheck {
         return checkAccessibility;
     }
 
-    protected int getNumProblems(final CheckAccessibility checkAccessibility, int idCheck) throws Exception {
+    protected int getNumProblems(final CheckAccessibility checkAccessibility, int idCheck) {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         return getNumProblems(evaluation.getProblems(), idCheck);
     }

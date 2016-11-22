@@ -134,12 +134,13 @@ public class PrimaryExportPdfAction extends Action {
             }
             // Truco para poder generar los informes de forma síncrona por si surge algún problema en la generación asíncrona cuando se despliegue en PRO
             if ("false".equalsIgnoreCase(request.getParameter("async"))) {
-                reportsToGenerate = 0 ;
+                reportsToGenerate = 0;
             }
 
             if (reportsToGenerate < 5) {
+                final boolean regenerate = request.getParameter("regenerate") != null && Boolean.parseBoolean(request.getParameter("regenerate"));
                 for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
-                    buildPdf(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(), false, request);
+                    buildPdf(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(), regenerate, request);
                 }
                 final PropertiesManager pmgr = new PropertiesManager();
                 return ZipUtils.pdfsZip(mapping, response, idObservatory, idExecutionOb, pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav"));
