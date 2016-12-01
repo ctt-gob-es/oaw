@@ -574,7 +574,7 @@ public class CrawlerJob implements InterruptableJob {
             final String connectedURL = connection.getURL().toString();
             connection.connect();
             responseCode = connection.getResponseCode();
-            if (responseCode > HttpURLConnection.HTTP_BAD_REQUEST) {
+            if (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
                 numRetries++;
             } else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
                 numRedirections++;
