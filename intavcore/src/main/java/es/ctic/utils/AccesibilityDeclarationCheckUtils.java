@@ -193,7 +193,7 @@ public final class AccesibilityDeclarationCheckUtils {
         final StringBuilder documentText = new StringBuilder();
         for (Node node : nodeList) {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
-                documentText.append(node.getTextContent().trim());
+                documentText.append(StringUtils.normalizeWhiteSpaces(node.getTextContent().trim()));
                 documentText.append(" ");
             }
         }
