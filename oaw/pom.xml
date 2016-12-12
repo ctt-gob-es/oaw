@@ -4,7 +4,7 @@
 
     <groupId>es.minhap.oaw</groupId>
     <artifactId>oaw</artifactId>
-    <version>3.2</version>
+    <version>3.3</version>
     <packaging>pom</packaging>
 
     <name>oaw</name>
