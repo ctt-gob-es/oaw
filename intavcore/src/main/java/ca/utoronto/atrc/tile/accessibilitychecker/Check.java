@@ -3495,18 +3495,19 @@ public class Check {
             }
             return false;
         } else {
+            boolean hasContact = false;
             for (Element accessibilityLink : accessibilityLinks) {
                 try {
                     final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
                     if (document != null) {
-                        return !AccesibilityDeclarationCheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
+                        hasContact |= AccesibilityDeclarationCheckUtils.hasContact(document, checkCode.getFunctionAttribute1(), checkCode.getFunctionAttribute2());
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
 
-            return true;
+            return !hasContact;
         }
     }
 
@@ -3530,19 +3531,19 @@ public class Check {
             }
             return false;
         } else {
+            boolean hasDate = false;
             for (Element accessibilityLink : accessibilityLinks) {
                 try {
                     final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
-                    if (document != null && AccesibilityDeclarationCheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1())) {
-                        found = true;
-                        return !found;
+                    if (document != null) {
+                        hasDate |= AccesibilityDeclarationCheckUtils.hasRevisionDate(document, checkCode.getFunctionAttribute1());
                     }
                 } catch (Exception e) {
                     Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
                 }
             }
 
-            return !found;
+            return !hasDate;
         }
     }
 
@@ -3575,13 +3576,13 @@ public class Check {
             }
             return false;
         } else {
+            boolean hasConformance = false;
             for (Element accessibilityLink : accessibilityLinks) {
                 if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
                     try {
                         final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
-                        if (document != null && AccesibilityDeclarationCheckUtils.hasConformanceLevel(document)) {
-                            found = true;
-                            return !found;
+                        if (document != null) {
+                            hasConformance |= AccesibilityDeclarationCheckUtils.hasConformanceLevel(document);
                         }
                     } catch (Exception e) {
                         Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
@@ -3589,7 +3590,7 @@ public class Check {
                 }
             }
 
-            return !found;
+            return !hasConformance;
         }
     }
 
