@@ -52,7 +52,7 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static void somethingWasWrongMessage(final BasicServiceForm basicServiceForm, final String message) throws Exception {
+    public static void somethingWasWrongMessage(final BasicServiceForm basicServiceForm, final String message) {
         final PropertiesManager pmgr = new PropertiesManager();
         final String subject = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.error.subject");
         final ArrayList<String> mailTo = new ArrayList<>();
@@ -81,12 +81,10 @@ public final class BasicServiceUtils {
         if (StringUtils.isNotEmpty(request.getParameter(Constants.PARAM_CONTENT))) {
             basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("ISO-8859-1")));
         }
-        if (!StringUtils.isEmpty(request.getParameter(Constants.PARAM_IN_DIRECTORY)) && request.getParameter(Constants.PARAM_IN_DIRECTORY).equals(Boolean.TRUE.toString())) {
-            basicServiceForm.setInDirectory(true);
-        } else {
-            basicServiceForm.setInDirectory(false);
-        }
+        basicServiceForm.setInDirectory(Boolean.parseBoolean(request.getParameter(Constants.PARAM_IN_DIRECTORY)));
 
+        basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
+        basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
         return basicServiceForm;
     }
 
