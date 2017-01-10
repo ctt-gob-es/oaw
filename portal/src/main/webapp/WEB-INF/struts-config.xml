@@ -297,6 +297,10 @@
                 validate="false">
         </action>
 
+        <action path="/checkHistorico" type="es.ctic.basicservice.historico.CheckHistoricoAction" scope="request">
+            <forward name="exito" path=".json" />
+        </action>
+
         <action path="/languageLogin"
                 type="es.inteco.rastreador2.language.CambioIdiomaAction"
                 scope="request"/>
@@ -934,44 +938,44 @@
         <action path="/secure/chartAction"
                 type="es.inteco.rastreador2.action.rastreo.ChartIntavAction"
                 scope="request"
-                >
+        >
             <forward name="indiceGraficas" path=".indiceGraficasIntav"/>
         </action>
 
         <action path="/secure/exportAction"
                 type="es.inteco.rastreador2.pdf.ExportAction"
                 scope="request"
-                >
+        >
         </action>
 
         <action path="/secure/primaryExportPdfAction"
                 type="es.inteco.rastreador2.pdf.PrimaryExportPdfAction"
                 scope="request"
-                >
+        >
         </action>
 
         <action path="/secure/anonymousExportPdfAction"
                 type="es.inteco.rastreador2.pdf.AnonymousResultExportPdfAction"
                 scope="request"
-                >
+        >
         </action>
 
         <action path="/secure/exportHTMLAction"
                 type="es.inteco.rastreador2.html.ExportHTMLAction"
                 scope="request"
-                >
+        >
         </action>
 
         <action path="/secure/exportOpenOfficeAction"
                 type="es.inteco.rastreador2.openOffice.export.ExportOpenOfficeAction"
                 scope="request"
-                >
+        >
         </action>
 
         <action path="/secure/anonymousHTMLAction"
                 type="es.inteco.rastreador2.html.AnonymousHTMLAction"
                 scope="request"
-                >
+        >
             <forward name="indexHTML" path=".htmlSectionSet"/>
             <forward name="globalResultHTML" path=".htmlGlobalResult"/>
             <forward name="globalResultHTML2" path=".htmlGlobalResult2"/>
@@ -994,7 +998,7 @@
         <action path="/secure/databaseExportAction"
                 type="es.inteco.rastreador2.action.export.database.DatabaseExportAction"
                 scope="request"
-                >
+        >
             <forward name="confirm" path=".exportarDatosObservatorio"/>
             <forward name="exito" path=".Exito"/>
         </action>
@@ -1005,7 +1009,7 @@
                 name="RastreoClienteForm"
                 validate="false"
                 input="/secure/clientCrawlingAction.do"
-                >
+        >
             <forward name="nuevoRastreoCliente" path=".nuevoRastreoCliente"/>
             <forward name="exito" path=".Exito"/>
             <forward name="volverCarga" path="/secure/CargarRastreos.do"/>
@@ -1014,7 +1018,7 @@
         <action path="/secure/loadClientCrawlingAction"
                 type="es.inteco.rastreador2.action.cuentausuario.CargarRastreosClienteAction"
                 scope="request"
-                >
+        >
             <forward name="rastreosCliente" path=".rastreosCliente"/>
             <forward name="rastreosRealizados" path=".rastreosRealizadosCliente"/>
         </action>
@@ -1022,14 +1026,14 @@
         <action path="/secure/showTrackingAction"
                 type="es.inteco.rastreador2.intav.action.ResultsAction"
                 scope="request"
-                >
+        >
             <forward name="listAnalysisByTracking" path=".listAnalysisByTracking"/>
         </action>
 
         <action path="/secure/showAnalysisFromCrawlerAction"
                 type="es.inteco.rastreador2.intav.action.AnalysisFromCrawlerAction"
                 scope="request"
-                >
+        >
             <forward name="checkResults" path=".checkResults"/>
             <forward name="checkResultsDetail" path=".checkResultsDetail"/>
             <forward name="checkObservatoryResults" path=".checkObservatoryResults"/>

@@ -37,7 +37,7 @@ public class BasicServiceThread extends Thread {
             final OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
 
             final URLCodec codec = new URLCodec();
-            final String postRequest = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.post.request")
+             String postRequest = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.post.request")
                     .replace("{0}", StringUtils.isNotEmpty(basicServiceForm.getDomain()) ? URLEncoder.encode(basicServiceForm.getDomain(), "UTF-8") : "")
                     .replace("{1}", basicServiceForm.getEmail())
                     .replace("{2}", String.valueOf(basicServiceForm.getProfundidad()))
@@ -48,17 +48,25 @@ public class BasicServiceThread extends Thread {
                     .replace("{7}", String.valueOf(basicServiceForm.getId()))
                     .replace("{8}", StringUtils.isNotEmpty(basicServiceForm.getContent()) ? codec.encode(basicServiceForm.getContent()) : "")
                     .replace("{9}", String.valueOf(basicServiceForm.isInDirectory()));
+            if (basicServiceForm.isRegisterAnalysis()) {
+                postRequest += "&registerAnalysis=true";
+            }
+            if (basicServiceForm.isDeleteOldAnalysis()) {
+                postRequest += "&analysisToDelete=" + basicServiceForm.getAnalysisToDelete();
+            }
             writer.write(postRequest);
             writer.flush();
             writer.close();
 
             connection.connect();
             Logger.putLog("Pidiendo la URL " + url, BasicServiceThread.class, Logger.LOG_LEVEL_INFO);
+            Logger.putLog("URL EXECUTE " + postRequest, BasicServiceThread.class, Logger.LOG_LEVEL_ERROR);
 
             int responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK) {
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_HTTP_REQUEST_ERROR);
             }
+            connection.disconnect();
         } catch (SocketTimeoutException ste) {
             Logger.putLog("SocketTimeoutException (es normal): " + ste.getMessage(), BasicServiceThread.class, Logger.LOG_LEVEL_INFO);
         } catch (Exception e) {
