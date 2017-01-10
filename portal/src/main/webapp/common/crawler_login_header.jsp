@@ -2,7 +2,7 @@
 <%@page import="es.inteco.common.Constants"%>
 
 <div id="cabeza">
-		<img src="images/escudo.png" alt="<bean:message key="logo.inteco.alt" />" />
+		<img src="images/mhfp.gif" alt="<bean:message key="logo.inteco.alt" />" />
 </div>
 <div class="language">
 	<logic:notEmpty name="<%= Constants.LANGUAGE_LIST %>">
