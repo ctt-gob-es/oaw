@@ -46,15 +46,18 @@ public class GraphicUtilsTest {
     @Test
     public void testEvolutionAverageScore() throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
-        final String color = pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color");
+        final String color = "{225,18,13},{255,225,0},{38,187,8},{15,91,255}";
 
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         dataSet.addValue(7.61, "", "18/09/15");
         dataSet.addValue(7.43, "", "23/11/15");
         dataSet.addValue(7.73, "", "22/08/16");
-        final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, false, false, false, false, true, false, 580, 458, color);
+        dataSet.addValue(6.30, "", "17/10/16");
+        final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, true, false, false, true, true, false, 580, 458, color);
+        //final ChartForm observatoryGraphicsForm = new ChartForm(title, columnTitle, rowTitle, dataSet, false, false, true, false, true, true, true, x, y, colors.toString());
         observatoryGraphicsForm.setFixedColorBars(true);
-        observatoryGraphicsForm.setOnePixelGraph(false);
+        observatoryGraphicsForm.setFixedLegend(true);
+        //observatoryGraphicsForm.setShowColumsLabels(true);
         GraphicsUtils.createStandardBarChart(observatoryGraphicsForm, "/home/mikunis/evolution_average_score.jpg", "", messageResources, false);
     }
 
@@ -233,7 +236,7 @@ public class GraphicUtilsTest {
         final String noDataMess = "noData";
 
         final ChartForm chartForm = new ChartForm("", "", "", dataSet, true, false, false, true, true, false, false, 1265, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
-        GraphicsUtils.createStandardBarChart(chartForm, "/home/mikunis/evolucion_nivel_conformidad.jpg", noDataMess, messageResources, false);
+        GraphicsUtils.createStackedBarChart(chartForm, noDataMess, "/home/mikunis/evolucion_nivel_conformidad.jpg");
     }
 
     @Test

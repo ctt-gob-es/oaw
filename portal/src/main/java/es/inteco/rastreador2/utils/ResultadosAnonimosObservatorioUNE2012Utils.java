@@ -35,10 +35,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.rastreador2.utils.GraphicsUtils.parseLevelLabel;
 
 public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
-    private static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
+    public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
     //GENERATE GRAPHIC METHODS
     private static int x = 0;
     private static int y = 0;
@@ -550,9 +551,9 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     private static DefaultCategoryDataset createDataSet(final Map<CategoriaForm, Map<String, BigDecimal>> result, final MessageResources messageResources) {
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<CategoriaForm, Map<String, BigDecimal>> entry : result.entrySet()) {
-            dataSet.addValue(entry.getValue().get(Constants.OBS_NV), GraphicsUtils.parseLevelLabel(Constants.OBS_NV, messageResources), entry.getKey().getName());
-            dataSet.addValue(entry.getValue().get(Constants.OBS_A), GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), entry.getKey().getName());
-            dataSet.addValue(entry.getValue().get(Constants.OBS_AA), GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), entry.getKey().getName());
+            dataSet.addValue(entry.getValue().get(Constants.OBS_NV), parseLevelLabel(Constants.OBS_NV, messageResources), entry.getKey().getName());
+            dataSet.addValue(entry.getValue().get(Constants.OBS_A), parseLevelLabel(Constants.OBS_A, messageResources), entry.getKey().getName());
+            dataSet.addValue(entry.getValue().get(Constants.OBS_AA), parseLevelLabel(Constants.OBS_AA, messageResources), entry.getKey().getName());
         }
 
         return dataSet;
@@ -931,11 +932,14 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
     }
 
     public static Map<String, BigDecimal> calculateEvolutionPuntuationDataSet(final Map<Date, List<ObservatoryEvaluationForm>> result) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
+        return calculateEvolutionPuntuationDataSet(result, df);
+    }
+    public static Map<String, BigDecimal> calculateEvolutionPuntuationDataSet(final Map<Date, List<ObservatoryEvaluationForm>> result, final DateFormat df) {
         final TreeMap<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                final PropertiesManager pmgr = new PropertiesManager();
-                final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
                 try {
                     final Date fecha1 = new Date(df.parse(o1).getTime());
                     final Date fecha2 = new Date(df.parse(o2).getTime());
@@ -947,8 +951,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             }
 
         });
-        final PropertiesManager pmgr = new PropertiesManager();
-
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : result.entrySet()) {
             BigDecimal value = BigDecimal.ZERO;
             if ((entry.getValue()) != null && !(entry.getValue()).isEmpty()) {
@@ -958,7 +960,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                 final int numPages = entry.getValue().size();
                 value = value.divide(new BigDecimal(numPages), 2, BigDecimal.ROUND_HALF_UP);
             }
-            final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
             resultData.put(df.format(entry.getKey()), value);
         }
 
@@ -976,11 +977,9 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         final TreeMap<String, BigDecimal> percentagesMap = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                final PropertiesManager pmgr = new PropertiesManager();
-                final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple.pdf"));
                 try {
-                    final Date fecha1 = new Date(df.parse(o1).getTime());
-                    final Date fecha2 = new Date(df.parse(o2).getTime());
+                    final Date fecha1 = new Date(dateFormat.parse(o1).getTime());
+                    final Date fecha2 = new Date(dateFormat.parse(o2).getTime());
                     return fecha1.compareTo(fecha2);
                 } catch (Exception e) {
                     Logger.putLog("Error al ordenar fechas de evolución. ", ResultadosAnonimosObservatorioUNE2012Utils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -992,7 +991,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         for (Map.Entry<Date, Map<Long, Map<String, Integer>>> dateMapEntry : result.entrySet()) {
             int numSitesType = 0;
             for (Map.Entry<Long, Map<String, Integer>> longMapEntry : dateMapEntry.getValue().entrySet()) {
-                final String portalLevel = siteLevel(dateMapEntry.getValue(), longMapEntry.getKey());
+                final String portalLevel = siteLevel(longMapEntry.getValue());
                 if (portalLevel.equals(suitabilityLevel)) {
                     numSitesType++;
                 }
@@ -1047,7 +1046,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         return resultData;
     }
 
-    private static Map<String, BigDecimal> calculatePercentage(final Map<String, Integer> values) {
+    public static Map<String, BigDecimal> calculatePercentage(final Map<String, Integer> values) {
         int total = 0;
         final Map<String, BigDecimal> result = new HashMap<>();
         for (Map.Entry<String, Integer> stringIntegerEntry : values.entrySet()) {
@@ -1099,7 +1098,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
             for (Map.Entry<Long, ObservatorySiteEvaluationForm> siteEntry : siteMap.entrySet()) {
                 final ObservatorySiteEvaluationForm observatorySite = siteEntry.getValue();
                 observatorySite.setScore(observatorySite.getScore().divide(new BigDecimal(observatorySite.getPages().size()), 2, BigDecimal.ROUND_HALF_UP));
-                observatorySite.setLevel(siteLevel(getSitesByType(observatorySite.getPages()), siteEntry.getKey()));
+                observatorySite.setLevel(siteLevel(getSitesByType(observatorySite.getPages()).get(siteEntry.getKey())));
                 observatorySite.setName(siteEntry.getValue().getName());
                 siteList.add(siteEntry.getValue());
             }
@@ -1110,8 +1109,8 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         return siteList;
     }
 
-    private static String siteLevel(final Map<Long, Map<String, Integer>> portalInformation, final Long idSite) {
-        final Map<String, Integer> pageType = portalInformation.get(idSite);
+    public static String siteLevel(final Map<String, Integer> pageType) {
+        //final Map<String, Integer> pageType = portalInformation.get(idSite);
         final Integer numPages = pageType.get(Constants.OBS_A) + pageType.get(Constants.OBS_AA) + pageType.get(Constants.OBS_NV);
         final BigDecimal value = ((new BigDecimal(pageType.get(Constants.OBS_A)).multiply(new BigDecimal(5))).add(
                 new BigDecimal(pageType.get(Constants.OBS_AA)).multiply(BigDecimal.TEN))).divide(
@@ -1136,9 +1135,9 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
             final DefaultPieDataset dataSet = new DefaultPieDataset();
 
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_PARCIAL, messageResources), result.get(Constants.OBS_NV));
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
-            dataSet.setValue(GraphicsUtils.parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
+            dataSet.setValue(parseLevelLabel(Constants.OBS_PARCIAL, messageResources), result.get(Constants.OBS_NV));
+            dataSet.setValue(parseLevelLabel(Constants.OBS_A, messageResources), result.get(Constants.OBS_A));
+            dataSet.setValue(parseLevelLabel(Constants.OBS_AA, messageResources), result.get(Constants.OBS_AA));
 
             GraphicsUtils.createPieChart(dataSet, "", messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
         }
@@ -1486,7 +1485,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         return globalResult;
     }
 
-    private static Map<Long, Map<String, Integer>> getSitesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
+    public static Map<Long, Map<String, Integer>> getSitesByType(final List<ObservatoryEvaluationForm> observatoryEvaluationList) {
         final Map<String, List<ObservatoryEvaluationForm>> pagesByType = getPagesByType(observatoryEvaluationList);
         final Map<Long, Map<String, Integer>> sitesByType = new HashMap<>();
 
@@ -1594,7 +1593,6 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
      */
     public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources, final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
         final PropertiesManager pmgr = new PropertiesManager();
-        final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
 
         final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
         for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {

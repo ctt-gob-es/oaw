@@ -5,6 +5,7 @@ import es.inteco.common.utils.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.struts.validator.ValidatorForm;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class BasicServiceForm extends ValidatorForm {
@@ -23,6 +24,7 @@ public class BasicServiceForm extends ValidatorForm {
     // Campos relativos al historico/evolutivo del servicio de diagnóstico
     private boolean registerAnalysis;
     private String analysisToDelete;
+    private Date date;
 
     public String getLanguage() {
         return language;
@@ -176,5 +178,13 @@ public class BasicServiceForm extends ValidatorForm {
                 .append("registerAnalysis", registerAnalysis)
                 .append("analysisToDelete", analysisToDelete)
                 .toString();
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Date getDate() {
+        return date;
     }
 }

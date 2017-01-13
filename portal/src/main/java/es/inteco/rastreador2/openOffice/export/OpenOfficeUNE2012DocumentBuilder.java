@@ -27,7 +27,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
  */
 public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder {
 
-    private static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(
+    public static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION,
@@ -39,7 +39,7 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION);
 
-    private static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(
+    public static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION,

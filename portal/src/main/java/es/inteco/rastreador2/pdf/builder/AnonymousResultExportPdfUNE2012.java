@@ -45,6 +45,9 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         setBasicService(true);
     }
 
+    public BasicServiceForm getBasicServiceForm() {
+        return basicServiceForm;
+    }
     @Override
     public int createIntroductionChapter(final MessageResources messageResources, final IndexEvents index, final Document document, int countSections, int numChapter, final Font titleFont) throws Exception {
         final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), index, countSections++, numChapter, titleFont);

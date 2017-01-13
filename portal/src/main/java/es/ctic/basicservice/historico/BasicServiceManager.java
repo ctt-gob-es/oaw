@@ -4,6 +4,7 @@ import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import com.opensymphony.oscache.base.NeedsRefreshException;
+import es.ctic.rastreador2.observatorio.ObservatoryManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.datos.AnalisisDatos;
@@ -27,20 +28,23 @@ import java.util.*;
  */
 public class BasicServiceManager {
 
+    private final ObservatoryManager observatoryManager = new ObservatoryManager();
+
     public Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long idCrawling) {
         final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
 
-        try (Connection c = DataBaseManager.getConnection()) {
-            final List<Long> evaluationIds = DiagnosisDAO.getEvaluationIds(idCrawling);
-            // cod_rastreo de tanalisis -> <cod_analisis> -> <Analysis> ->
-            final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
-            for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
-                final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null);
-                resultData.put(entry.getValue(), pageList);
-            }
-        } catch (Exception e) {
-            Logger.putLog("Exception: ", BasicServiceManager.class, Logger.LOG_LEVEL_ERROR, e);
-        }
+//        try (Connection c = DataBaseManager.getConnection()) {
+//            final List<Long> evaluationIds = DiagnosisDAO.getEvaluationIds(idCrawling);
+//            observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(-1, evaluationIds);
+//            // cod_rastreo de tanalisis -> <cod_analisis> -> <Analysis> ->
+//            final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
+//            for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
+//                final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null);
+//                resultData.put(entry.getValue(), pageList);
+//            }
+//        } catch (Exception e) {
+//            Logger.putLog("Exception: ", BasicServiceManager.class, Logger.LOG_LEVEL_ERROR, e);
+//        }
 
         return resultData;
     }
