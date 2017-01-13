@@ -10,6 +10,7 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 import java.io.StringWriter;
+import java.net.URL;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -70,6 +71,36 @@ public final class DiagnosisDAO {
             Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return 0;
+    }
+
+    public static BasicServiceForm getBasicServiceRequestById(final Connection conn, final long id) {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM basic_service WHERE id=?")) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    final BasicServiceForm basicServiceForm = new BasicServiceForm();
+                    basicServiceForm.setId(rs.getLong("id"));
+                    basicServiceForm.setDomain(rs.getString("domain"));
+                    basicServiceForm.setUser(rs.getString("usr"));
+                    basicServiceForm.setEmail(rs.getString("email"));
+                    basicServiceForm.setLanguage(rs.getString("language"));
+                    basicServiceForm.setAmplitud(rs.getString("width"));
+                    basicServiceForm.setProfundidad(rs.getString("depth"));
+                    basicServiceForm.setReport(rs.getString("report"));
+                    basicServiceForm.setDate(rs.getTimestamp("send_date"));
+                    basicServiceForm.setInDirectory(rs.getBoolean("in_directory"));
+                    basicServiceForm.setRegisterAnalysis(rs.getBoolean("register_result"));
+                    // FIXME: Construrir basicServiceForm para análisis de código_fuente
+                    basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
+
+
+                    return  basicServiceForm;
+                }
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+        return null;
     }
 
     public static List<BasicServiceForm> getBasicServiceRequestByStatus(Connection conn, String status) {

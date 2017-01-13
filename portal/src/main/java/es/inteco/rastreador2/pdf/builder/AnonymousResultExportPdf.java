@@ -271,7 +271,7 @@ public abstract class AnonymousResultExportPdf {
 
     public abstract void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess, List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception;
 
-    public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) throws Exception {
+    public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
         final ScoreForm scoreForm = new ScoreForm();
 
         int suitabilityGroups = 0;
