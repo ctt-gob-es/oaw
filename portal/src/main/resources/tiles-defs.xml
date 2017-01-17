@@ -735,5 +735,7 @@
         <put name="title" value="application.title.diagnostico" />
         <put name="contents" value="/WEB-INF/pages/front/html/sections/servicioDiagnostico.jsp"/>
     </definition>
+
+    <definition name=".json" path="/json.jsp"/>
     
     </tiles-definitions>    

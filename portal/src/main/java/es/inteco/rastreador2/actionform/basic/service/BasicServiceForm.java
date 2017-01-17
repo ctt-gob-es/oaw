@@ -2,6 +2,7 @@ package es.inteco.rastreador2.actionform.basic.service;
 
 import es.inteco.common.Constants;
 import es.inteco.common.utils.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.struts.validator.ValidatorForm;
 
 import java.util.Date;
@@ -19,6 +20,12 @@ public class BasicServiceForm extends ValidatorForm {
     private String report;
     private Date schedulingDate;
     private boolean inDirectory;
+    // Campos relativos al historico/evolutivo del servicio de diagnóstico
+    private boolean registerAnalysis;
+    private String analysisToDelete;
+    private Date date;
+
+    private BasicServiceAnalysisType analysisType = BasicServiceAnalysisType.URL;
 
     public String getLanguage() {
         return language;
@@ -132,5 +139,61 @@ public class BasicServiceForm extends ValidatorForm {
         } else {
             return report;
         }
+    }
+
+    public boolean isRegisterAnalysis() {
+        return registerAnalysis;
+    }
+
+    public void setRegisterAnalysis(boolean registerAnalysis) {
+        this.registerAnalysis = registerAnalysis;
+    }
+
+    public String getAnalysisToDelete() {
+        return analysisToDelete;
+    }
+
+    public void setAnalysisToDelete(String analysisToDelete) {
+        this.analysisToDelete = analysisToDelete;
+    }
+
+    public boolean isDeleteOldAnalysis() {
+        return analysisToDelete != null && !analysisToDelete.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("language", language)
+                .append("domain", domain)
+                .append("content", content)
+                .append("email", email)
+                .append("name", name)
+                .append("user", user)
+                .append("profundidad", profundidad)
+                .append("amplitud", amplitud)
+                .append("report", report)
+                .append("schedulingDate", schedulingDate)
+                .append("inDirectory", inDirectory)
+                .append("registerAnalysis", registerAnalysis)
+                .append("analysisToDelete", analysisToDelete)
+                .toString();
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public BasicServiceAnalysisType getAnalysisType() {
+        return analysisType;
+    }
+
+    public void setAnalysisType(BasicServiceAnalysisType analysisType) {
+        this.analysisType = analysisType;
     }
 }

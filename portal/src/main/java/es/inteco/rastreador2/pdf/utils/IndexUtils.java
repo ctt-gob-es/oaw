@@ -21,10 +21,10 @@ public final class IndexUtils {
     private IndexUtils() {
     }
 
-    public static void createIndex(final PdfWriter writer, final Document document, final MessageResources resources, final IndexEvents index, final Font titleFont) throws DocumentException {
+    public static void createIndex(final PdfWriter writer, final Document document, final String title, final IndexEvents index, final Font titleFont) throws DocumentException {
         int beforeIndex = writer.getPageNumber();
         document.newPage();
-        final Paragraph indexTitle = new Paragraph(resources.getMessage("pdf.accessibility.index.title"), titleFont);
+        final Paragraph indexTitle = new Paragraph(title, titleFont);
         indexTitle.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(indexTitle);
 

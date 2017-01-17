@@ -1,5 +1,8 @@
 package es.inteco.rastreador2.action.basic.service;
 
+import es.ctic.basicservice.historico.BasicServiceResultado;
+import es.ctic.basicservice.historico.CheckHistoricoService;
+import es.ctic.rastreador2.observatorio.ObservatoryManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -7,12 +10,15 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
+import es.inteco.intav.datos.AnalisisDatos;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.pdf.BasicServiceExport;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
+import es.inteco.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceConcurrenceSystem;
@@ -28,14 +34,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URL;
-import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static es.inteco.common.Constants.*;
 
@@ -46,95 +48,132 @@ public class BasicServiceAction extends Action {
             throws Exception {
         final String action = request.getParameter(Constants.ACTION);
 
-        if (Constants.EXECUTE.equalsIgnoreCase(action)) {
-            executeCrawling(form, request);
+        final BasicServiceForm basicServiceFormRequest = BasicServiceUtils.getBasicServiceForm((BasicServiceForm) form, request);
+        if (basicServiceFormRequest.isContentAnalysis()) {
+            basicServiceFormRequest.setName(BasicServiceUtils.getTitleFromContent(basicServiceFormRequest.getContent()));
         } else {
-            launchCrawling(mapping, form, request, response);
+            basicServiceFormRequest.setName(new URL(basicServiceFormRequest.getDomain()).getAuthority());
+        }
+
+        basicServiceFormRequest.setDomain(BasicServiceUtils.checkIDN(basicServiceFormRequest.getDomain()));
+        // ¡No validan que la URL esté bien codificada!
+        if (StringUtils.isNotEmpty(basicServiceFormRequest.getDomain())) {
+            basicServiceFormRequest.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceFormRequest.getDomain()));
+        }
+        final ActionErrors errors = basicServiceFormRequest.validate(mapping, request);
+        errors.add(BasicServiceUtils.validateReport(basicServiceFormRequest));
+        errors.add(BasicServiceUtils.validateUrlOrContent(basicServiceFormRequest));
+
+        if (errors.isEmpty()) {
+            if (Constants.EXECUTE.equalsIgnoreCase(action)) {
+                Logger.putLog("EXECUTE --  " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                // TODO: Quitar param request
+                final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
+                basicServiceForm.setContent(basicServiceFormRequest.getContent());
+                if (basicServiceForm.isContentAnalysis()) {
+                    basicServiceForm.setName(BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
+                } else {
+                    basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
+                }
+                executeCrawling(basicServiceForm, request);
+            } else {
+                Logger.putLog("ENQUEUE --  " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                final String serverResponse = enqueueCrawling(basicServiceFormRequest);
+                CrawlerUtils.returnText(response, serverResponse, false);
+            }
+        } else {
+            final String serverResponse = processValidationErrors(basicServiceFormRequest, errors);
+            CrawlerUtils.returnText(response, serverResponse, false);
         }
 
         return null;
     }
 
 
-    private ActionForward launchCrawling(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-        final BasicServiceForm basicServiceForm = BasicServiceUtils.getBasicServiceForm((BasicServiceForm) form, request);
-
+    private String enqueueCrawling(final BasicServiceForm basicServiceForm) {
         // Guardamos en base de datos y en los logs las peticiones de análisis
         Logger.putLog("El usuario " + basicServiceForm.getUser() + " ha lanzado una petición de análisis en el servicio básico", BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
 
-        basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
-        final ActionErrors errors = basicServiceForm.validate(mapping, request);
-
-        if (errors.isEmpty()) {
-            errors.add(BasicServiceUtils.validateReport(basicServiceForm));
-            errors.add(BasicServiceUtils.validateUrlOrContent(basicServiceForm));
-        }
-
-        // ¡No validan que la URL esté bien codificada!
-        if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
-            basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
-        }
-
-        final PropertiesManager pmgr = new PropertiesManager();
+        final String serverResponse;
         if (!BasicServiceConcurrenceSystem.passConcurrence()) {
-            basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_QUEUED));
-
-            // Ponemos el análisis en cola
-            final BasicServiceQueingThread basicServiceQueingThread = new BasicServiceQueingThread(basicServiceForm);
-            basicServiceQueingThread.start();
-
-            CrawlerUtils.returnText(response, pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.queued"), false);
-        } else if (errors.isEmpty()) {
-            basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_LAUNCHED));
-
-            // Lanzamos el análisis
-            final BasicServiceThread basicServiceThread = new BasicServiceThread(basicServiceForm);
-            basicServiceThread.start();
-
-            CrawlerUtils.returnText(response, pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.launched"), false);
+            serverResponse = processTooManyRequests(basicServiceForm);
         } else {
-            final StringBuilder text = new StringBuilder(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.validation.errors"));
-
-            for (Iterator<ActionMessage> iterator = errors.get(); iterator.hasNext(); ) {
-                final ActionMessage message = iterator.next();
-                text.append("\n - ").append(MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, message.getKey()), message.getValues()));
-            }
-
-            basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_MISSING_PARAMS));
-
-            CrawlerUtils.returnText(response, text.toString(), false);
+            serverResponse = processBasicServiceRequest(basicServiceForm);
         }
 
-        return null;
+        return serverResponse;
     }
 
-    private ActionForward executeCrawling(final ActionForm form, final HttpServletRequest request) throws Exception {
+    private String processBasicServiceRequest(final BasicServiceForm basicServiceForm) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_LAUNCHED));
+
+        // Lanzamos el análisis
+        final BasicServiceThread basicServiceThread = new BasicServiceThread(basicServiceForm);
+        basicServiceThread.start();
+
+        return pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.launched");
+    }
+
+    private String processValidationErrors(final BasicServiceForm basicServiceForm, final ActionErrors errors) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final StringBuilder text = new StringBuilder(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.validation.errors"));
+
+        for (Iterator<ActionMessage> iterator = errors.get(); iterator.hasNext(); ) {
+            final ActionMessage message = iterator.next();
+            Logger.putLog(message.getKey(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+            text.append("\n - ").append(MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, message.getKey()), message.getValues()));
+        }
+
+        basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_MISSING_PARAMS));
+
+        return text.toString();
+    }
+
+    private String processTooManyRequests(final BasicServiceForm basicServiceForm) {
+        final PropertiesManager pmgr = new PropertiesManager();
+        basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_QUEUED));
+
+        // Ponemos el análisis en cola
+        final BasicServiceQueingThread basicServiceQueingThread = new BasicServiceQueingThread(basicServiceForm);
+        basicServiceQueingThread.start();
+
+        return pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.queued");
+    }
+
+    private ActionForward executeCrawling(final BasicServiceForm basicServiceForm, final HttpServletRequest request) {
         Logger.putLog("executeCrawling", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
 
         String pdfPath = null;
 
-        final BasicServiceForm basicServiceForm = BasicServiceUtils.getBasicServiceForm((BasicServiceForm) form, request);
-        if (basicServiceForm.isContentAnalysis()) {
-            basicServiceForm.setName(BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
-        } else {
-            basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
-        }
-
         final PropertiesManager pmgr = new PropertiesManager();
-        try (Connection conn = DataBaseManager.getConnection()) {
+        try {
             //Lanzamos el rastreo de INTAV
             final CrawlerJob crawlerJob = new CrawlerJob();
-            final Long idCrawling = System.nanoTime() * (-1);
+            // La variable idCrawling es el campo cod_rastreo en la tabla tanalisis
+            final Long idCrawling = basicServiceForm.getId() * (-1);
             final CrawlerData crawlerData = createCrawlerData(basicServiceForm, BasicServiceUtils.getGuideline(basicServiceForm.getReport()), idCrawling);
 
             final List<CrawledLink> crawledLinks;
-            if (crawlerData.getUrls() != null && !crawlerData.getUrls().isEmpty()) {
+            if (crawlerData.getUrls() != null && !crawlerData.getUrls().isEmpty() && !basicServiceForm.isContentAnalysis()) {
                 crawledLinks = crawlerJob.testCrawler(crawlerData);
             } else {
                 crawledLinks = crawlerJob.runSimpleAnalysis(crawlerData);
             }
 
             if (!crawledLinks.isEmpty()) {
+                final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
+                if (basicServiceForm.isRegisterAnalysis()) {
+                    if (basicServiceForm.isDeleteOldAnalysis()) {
+                        if (checkHistoricoService.isAnalysisOfUrl(basicServiceForm.getAnalysisToDelete(), basicServiceForm.getDomain())) {
+                            // Si el analisis marcado corresponde a un análisis de esa url lo borramos
+                            Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                            checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), basicServiceForm.getAnalysisToDelete());
+                        } else {
+                            Logger.putLog("Los datos indicados no corresponden a ningún analisis registrado para " + basicServiceForm.getDomain(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                        }
+                    }
+                }
                 final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "file.date.format"));
 
                 pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + basicServiceForm.getName() + "_" + df.format(new Date()) + ".pdf";
@@ -152,18 +191,36 @@ public class BasicServiceAction extends Action {
                     final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
                     PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004(), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
                 } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
-                    Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
-                    final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
-                    PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(basicServiceForm), idCrawling, evaluationIds, request, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
+                    Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012())", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
+                    final ObservatoryManager observatoryManager = new ObservatoryManager();
+
+                    final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
+                    final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+                    final SimpleDateFormat dateFormat = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.basicservice.evolutivo.format"));
+                    final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = new TreeMap<>();
+
+                    if (basicServiceForm.isRegisterAnalysis()) {
+                        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(basicServiceForm.getDomain());
+                        if (historicoResultados.size() == 3) {
+                            historicoResultados.remove(0);
+                        }
+                        for (BasicServiceResultado historicoResultado : historicoResultados) {
+                            final List<Long> analysisIds = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), Long.parseLong(historicoResultado.getId()));
+                            previousEvaluationsPageList.put(dateFormat.parse(historicoResultado.getDate()), observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIds));
+                        }
+                    }
+
+                    final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(CrawlerUtils.getResources(request), new AnonymousResultExportPdfUNE2012(basicServiceForm));
+                    basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
                 }
 
                 // Comprimimos el fichero
                 pdfPath = BasicServiceExport.compressReport(pdfPath);
-                try {
-                    //Borramos el análisis
-                    DiagnosisDAO.deleteAnalysis(conn, basicServiceForm.getName(), idCrawling);
-                } catch (Exception e) {
-                    Logger.putLog("Excepcion: ", BasicServiceAction.class, Logger.LOG_LEVEL_WARNING, e);
+
+                if (!basicServiceForm.isRegisterAnalysis()) {
+                    // Si no es necesario registrar el análisis se borra
+                    Logger.putLog("Borrando analisis " + idCrawling, BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
+                    checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), idCrawling.toString());
                 }
 
                 //Lo enviamos por correo electrónico
@@ -228,9 +285,8 @@ public class BasicServiceAction extends Action {
             final List<String> urls = new ArrayList<>();
             urls.add(basicServiceForm.getDomain());
             crawlerData.setUrls(urls);
-        } else {
-            crawlerData.setContent(basicServiceForm.getContent());
         }
+        crawlerData.setContent(basicServiceForm.getContent());
 
         crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
         crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
