@@ -41,7 +41,9 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
         addResultsByVerification(messageResources, chapter, currentEvaluationPageList, pdfTocManager);
+
         document.add(chapter);
+        pdfTocManager.addChapterCount();
     }
 
     private void addResultsByVerification(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager) {
