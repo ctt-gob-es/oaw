@@ -111,6 +111,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
         addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
 
         document.add(chapter);
+        pdfTocManager.addChapterCount();
     }
 
     private void addLevelAllocationResultsSummary(final MessageResources messageResources, final Section section, final File file,
