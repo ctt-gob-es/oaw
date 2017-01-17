@@ -49,7 +49,7 @@ import static es.inteco.common.ConstantsFont.*;
 
 public final class PrimaryExportPdfUtils {
 
-    private PrimaryExportPdfUtils() {
+    protected PrimaryExportPdfUtils() {
     }
 
     public static void exportToPdf(final Long idRastreo, final Long idRastreoRealizado, final HttpServletRequest request, final String generalExpPath, final String seed, final String content,
@@ -145,30 +145,28 @@ public final class PrimaryExportPdfUtils {
                 PDFUtils.addCoverPage(document, messageResources.getMessage("pdf.accessibility.title", new String[]{seed.toUpperCase(), pdfBuilder.getTitle()}), currentEvaluationPageList.get(0).getUrl());
             }
 
-            int numChapter = 1;
-            int countSections = 1;
+            final PdfTocManager pdfTocManager = new PdfTocManager(index);
 
-            countSections = pdfBuilder.createIntroductionChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
-            numChapter++;
+            pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+            pdfTocManager.addChapterCount();
 
-            countSections = pdfBuilder.createObjetiveChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
-            numChapter++;
+            pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
+            pdfTocManager.addChapterCount();
 
             // Resumen de las puntuaciones del Observatorio
             final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRanking(idObservatoryExecution, crawling.getSeed()) : null;
             final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRanking(idObservatoryExecution, crawling.getSeed()) : null;
-            countSections = addObservatoryScoreSummary(pdfBuilder, messageResources, document, index, currentEvaluationPageList, previousEvaluationPageList, numChapter, countSections, file, rankingActual, rankingPrevio);
-
-            numChapter++;
+            addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
+            pdfTocManager.addChapterCount();
 
             // Resumen de las puntuaciones del Observatorio
-            countSections = addObservatoryResultsSummary(messageResources, document, index, currentEvaluationPageList, numChapter, countSections);
-            numChapter++;
+            addObservatoryResultsSummary(messageResources, document, pdfTocManager, currentEvaluationPageList);
+            pdfTocManager.addChapterCount();
 
             int counter = 1;
             for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
                 final String evaluationTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
-                final Chapter chapter = PDFUtils.createChapterWithTitle(evaluationTitle, index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
+                final Chapter chapter = PDFUtils.createChapterWithTitle(evaluationTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
                 final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
                 final String url = evaluationForm.getUrl();
 
@@ -178,7 +176,7 @@ public final class PrimaryExportPdfUtils {
                 for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
                     puntuacionesMediasNivelAccesibilidad.add(observatoryLevelForm.getScore());
                 }
-                chapter.add(createPaginaTableInfo(messageResources, title, url, puntuacionMediaPortal, validationLevel, puntuacionesMediasNivelAccesibilidad, countSections));
+                chapter.add(createPaginaTableInfo(messageResources, title, url, puntuacionMediaPortal, validationLevel, puntuacionesMediasNivelAccesibilidad, pdfTocManager.getNumSection()));
 
                 // Creación de las tablas resumen de resultado por verificación de cada página
                 for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
@@ -200,14 +198,14 @@ public final class PrimaryExportPdfUtils {
                 }
 
                 document.add(chapter);
-                numChapter++;
+                pdfTocManager.addChapterCount();
                 counter++;
             }
 
-            countSections = pdfBuilder.createMethodologyChapter(messageResources, index, document, countSections, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType, pdfBuilder.isBasicService());
+            pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType, pdfBuilder.isBasicService());
 
             //Ponemos la variable a true para que no se escriba el footer en el índice
-            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+            IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
             ExportPageEventsObservatoryMP.setPrintFooter(true);
         } catch (DocumentException e) {
             Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -395,8 +393,8 @@ public final class PrimaryExportPdfUtils {
         }
     }
 
-    private static int addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, IndexEvents index, final List<ObservatoryEvaluationForm> currentEvaluationPageList, List<ObservatoryEvaluationForm> previousEvaluationPageList, int numChapter, int countSections, final File file, final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
-        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+    private static void addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, PdfTocManager pdfTocManager, final List<ObservatoryEvaluationForm> currentEvaluationPageList, List<ObservatoryEvaluationForm> previousEvaluationPageList, final File file, final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
+        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
         final ArrayList<String> boldWord = new ArrayList<>();
         chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("resultados.primarios.4.p1"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
@@ -477,21 +475,20 @@ public final class PrimaryExportPdfUtils {
         // Obtener lista resultados iteración anterior
         addLevelAllocationResultsSummary(messageResources, chapter, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
 
-        Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
+        Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion1"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.41.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
         section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
 
-        section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
+        section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.42.p1"), ConstantsFont.PARAGRAPH, section);
         addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
         section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 
-        PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
+        PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
         addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
 
         document.add(chapter);
-        return countSections;
     }
 
     /**
@@ -553,14 +550,12 @@ public final class PrimaryExportPdfUtils {
         }
     }
 
-    private static int addObservatoryResultsSummary(final MessageResources messageResources, Document document, IndexEvents index, List<ObservatoryEvaluationForm> evaList, int numChapter, int countSections) throws Exception {
-        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+    private static void addObservatoryResultsSummary(final MessageResources messageResources, Document document, PdfTocManager pdfTocManager, List<ObservatoryEvaluationForm> evaList) throws Exception {
+        Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
         PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
-        countSections = addResultsByVerification(messageResources, chapter, evaList, countSections, index);
+        addResultsByVerification(messageResources, chapter, evaList, pdfTocManager);
         document.add(chapter);
-
-        return countSections;
     }
 
     private static void addLevelAllocationResultsSummary(final MessageResources messageResources, final Section section, final File file,
@@ -688,22 +683,20 @@ public final class PrimaryExportPdfUtils {
         chapter.add(table);
     }
 
-    private static int addResultsByVerification(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, int countSections, final IndexEvents index) {
-        countSections = createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, 0, countSections, index);
+    private static void addResultsByVerification(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, PdfTocManager pdfTocManager) {
+        createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, 0, pdfTocManager);
 
         if (evaList.size() > 2 && evaList.size() < 17) {
             chapter.newPage();
         }
 
-        countSections = createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, 1, countSections, index);
-
-        return countSections;
+        createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, 1, pdfTocManager);
     }
 
 
-    private static int createTablaResumenResultadosPorNivel(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final int groupIndex, int countSections, final IndexEvents index) {
+    private static void createTablaResumenResultadosPorNivel(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final int groupIndex, PdfTocManager pdfTocManager) {
         final ObservatoryLevelForm observatoryLevelForm = evaList.get(0).getGroups().get(groupIndex);
-        final Section section = PDFUtils.createSection("Tabla resumen de resultados " + getPriorityName(messageResources, observatoryLevelForm.getName()), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections++, 1);
+        final Section section = PDFUtils.createSection("Tabla resumen de resultados " + getPriorityName(messageResources, observatoryLevelForm.getName()), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
         final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
 
         int contadorPagina = 1;
@@ -718,8 +711,6 @@ public final class PrimaryExportPdfUtils {
         }
         section.add(table);
         section.add(createTablaResumenResultadosPorNivelLeyenda(messageResources, observatoryLevelForm));
-
-        return countSections;
     }
 
     private static PdfPTable createTablaResumenResultadosPorNivelHeader(final MessageResources messageResources, final List<ObservatorySuitabilityForm> suitabilityGroups) {

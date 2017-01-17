@@ -306,7 +306,7 @@ public final class IntavExport {
             }
 
             ExportPageEvents.setLastPage(true);
-            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.CHAPTER_TITLE_FONT);
+            IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_FONT);
             ExportPageEvents.setLastPage(false);
 
             FileUtils.removeFile(globalPath);

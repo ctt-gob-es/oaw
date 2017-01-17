@@ -95,7 +95,7 @@ public abstract class AnonymousResultPdfBuilder {
         createSummaryChapter(resources, titleFont);
 
         //Creamos el index
-        IndexUtils.createIndex(writer, document, resources, index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+        IndexUtils.createIndex(writer, document, resources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
         ExportPageEventsObservatoryMP.setPrintFooter(true);
 
         if (document.isOpen()) {

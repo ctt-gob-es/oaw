@@ -192,7 +192,7 @@ public final class GraphicsUtils {
      * @param colors a StringBuilder object where append the colors
      * @param level  a String representing the suitability (conformance level)
      */
-    private static void getRequiredColors(final StringBuilder colors, final String level) {
+    public static void getRequiredColors(final StringBuilder colors, final String level) {
         final PropertiesManager pmgr = new PropertiesManager();
         if (Constants.OBS_NV.equalsIgnoreCase(level) ||
                 Constants.OBS_PARCIAL.equalsIgnoreCase(level)) {

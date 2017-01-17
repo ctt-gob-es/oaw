@@ -1,15 +1,19 @@
 package es.inteco.rastreador2.dao.basic.service;
 
 import com.opencsv.CSVWriter;
+import es.ctic.basicservice.historico.BasicServiceResultado;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
 import java.io.StringWriter;
+import java.net.URL;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +26,7 @@ public final class DiagnosisDAO {
     public static void updateStatus(final Connection conn, final long idAnalysis, final String status) {
         try (PreparedStatement ps = conn.prepareStatement("UPDATE basic_service SET status = ?, send_date = ? WHERE id = ?")) {
             ps.setString(1, status);
-            if (status.equals(Constants.BASIC_SERVICE_STATUS_FINISHED)) {
+            if (Constants.BASIC_SERVICE_STATUS_FINISHED.equals(status)) {
                 ps.setTimestamp(2, new Timestamp(new java.util.Date().getTime()));
             } else {
                 ps.setTimestamp(2, null);
@@ -35,7 +39,7 @@ public final class DiagnosisDAO {
     }
 
     public static long insertBasicServices(final Connection conn, final BasicServiceForm basicServiceForm, final String status) {
-        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, basicServiceForm.getUser());
             ps.setString(2, basicServiceForm.getLanguage());
             if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
@@ -57,16 +61,50 @@ public final class DiagnosisDAO {
                 ps.setTimestamp(10, null);
             }
             ps.setBoolean(12, basicServiceForm.isInDirectory());
+            ps.setBoolean(13, basicServiceForm.isRegisterAnalysis());
             ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     return rs.getLong(1);
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return 0;
+    }
+
+    public static BasicServiceForm getBasicServiceRequestById(final Connection conn, final long id) {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM basic_service WHERE id=?")) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    final BasicServiceForm basicServiceForm = new BasicServiceForm();
+                    basicServiceForm.setId(rs.getLong("id"));
+                    basicServiceForm.setDomain("");
+                    basicServiceForm.setName("");
+                    basicServiceForm.setUser(rs.getString("usr"));
+                    basicServiceForm.setEmail(rs.getString("email"));
+                    basicServiceForm.setLanguage(rs.getString("language"));
+                    basicServiceForm.setAmplitud(rs.getString("width"));
+                    basicServiceForm.setProfundidad(rs.getString("depth"));
+                    basicServiceForm.setReport(rs.getString("report"));
+                    basicServiceForm.setDate(rs.getTimestamp("date"));
+                    basicServiceForm.setInDirectory(rs.getBoolean("in_directory"));
+                    basicServiceForm.setRegisterAnalysis(rs.getBoolean("register_result"));
+                    basicServiceForm.setAnalysisType(BasicServiceAnalysisType.parseString(rs.getString("analysis_type")));
+                    if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
+                        basicServiceForm.setDomain(rs.getString("domain"));
+                        basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
+                    }
+
+                    return basicServiceForm;
+                }
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+        return null;
     }
 
     public static List<BasicServiceForm> getBasicServiceRequestByStatus(Connection conn, String status) {
@@ -86,6 +124,8 @@ public final class DiagnosisDAO {
                     basicServiceForm.setReport(rs.getString("report"));
                     basicServiceForm.setSchedulingDate(rs.getTimestamp("scheduling_date"));
                     basicServiceForm.setInDirectory(rs.getBoolean("in_directory"));
+                    basicServiceForm.setRegisterAnalysis(rs.getBoolean("register_result"));
+                    basicServiceForm.setDate(rs.getTimestamp("date"));
 
                     results.add(basicServiceForm);
                 }
@@ -109,7 +149,7 @@ public final class DiagnosisDAO {
                 return stringWriter.toString();
             }
         } catch (Exception e) {
-            Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Error al exportar en CSV los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return "";
     }
@@ -140,6 +180,29 @@ public final class DiagnosisDAO {
             throw e;
         }
         return analysisIds;
+    }
+
+    public static List<BasicServiceResultado> getHistoricoResultados(final String url) {
+        final List<BasicServiceResultado> results = new ArrayList<>();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        try (Connection conn = DataBaseManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND register_result=TRUE ORDER BY date DESC LIMIT ?")) {
+            ps.setString(1, url);
+            // TODO: Leer el limite de resultados de un property o como parametro
+            ps.setInt(2, 3);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    final BasicServiceResultado basicServiceResultado = new BasicServiceResultado();
+                    basicServiceResultado.setId(String.valueOf(rs.getLong("id")));
+                    basicServiceResultado.setDate(dateFormat.format(rs.getTimestamp("date")));
+
+                    results.add(basicServiceResultado);
+                }
+            }
+        } catch (Exception e) {
+            Logger.putLog("Error al acceder al historico de resultados del servicio de diagnostico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+        return results;
     }
 
 }
