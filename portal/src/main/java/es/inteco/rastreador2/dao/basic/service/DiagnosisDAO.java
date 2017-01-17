@@ -6,6 +6,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 
@@ -67,7 +68,7 @@ public final class DiagnosisDAO {
                     return rs.getLong(1);
                 }
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             Logger.putLog("Error al insertar los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return 0;
@@ -80,21 +81,24 @@ public final class DiagnosisDAO {
                 if (rs.next()) {
                     final BasicServiceForm basicServiceForm = new BasicServiceForm();
                     basicServiceForm.setId(rs.getLong("id"));
-                    basicServiceForm.setDomain(rs.getString("domain"));
+                    basicServiceForm.setDomain("");
+                    basicServiceForm.setName("");
                     basicServiceForm.setUser(rs.getString("usr"));
                     basicServiceForm.setEmail(rs.getString("email"));
                     basicServiceForm.setLanguage(rs.getString("language"));
                     basicServiceForm.setAmplitud(rs.getString("width"));
                     basicServiceForm.setProfundidad(rs.getString("depth"));
                     basicServiceForm.setReport(rs.getString("report"));
-                    basicServiceForm.setDate(rs.getTimestamp("send_date"));
+                    basicServiceForm.setDate(rs.getTimestamp("date"));
                     basicServiceForm.setInDirectory(rs.getBoolean("in_directory"));
                     basicServiceForm.setRegisterAnalysis(rs.getBoolean("register_result"));
-                    // FIXME: Construrir basicServiceForm para análisis de código_fuente
-                    basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
+                    basicServiceForm.setAnalysisType(BasicServiceAnalysisType.parseString(rs.getString("analysis_type")));
+                    if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
+                        basicServiceForm.setDomain(rs.getString("domain"));
+                        basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
+                    }
 
-
-                    return  basicServiceForm;
+                    return basicServiceForm;
                 }
             }
         } catch (Exception e) {
@@ -121,6 +125,7 @@ public final class DiagnosisDAO {
                     basicServiceForm.setSchedulingDate(rs.getTimestamp("scheduling_date"));
                     basicServiceForm.setInDirectory(rs.getBoolean("in_directory"));
                     basicServiceForm.setRegisterAnalysis(rs.getBoolean("register_result"));
+                    basicServiceForm.setDate(rs.getTimestamp("date"));
 
                     results.add(basicServiceForm);
                 }

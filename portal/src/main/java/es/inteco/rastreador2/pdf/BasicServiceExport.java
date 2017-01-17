@@ -295,7 +295,7 @@ public final class BasicServiceExport {
                 createContentChapter(messageResources, document, basicServiceForm.getContent(), index, numChapter, countSections);
             }
 
-            IndexUtils.createIndex(writer, document, messageResources, index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+            IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
             ExportPageEventsObservatoryMP.setPrintFooter(true);
 
             FileUtils.removeFile(chartsTempPath);

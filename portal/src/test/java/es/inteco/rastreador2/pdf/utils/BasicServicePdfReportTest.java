@@ -2,29 +2,23 @@ package es.inteco.rastreador2.pdf.utils;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 import es.ctic.basicservice.historico.BasicServiceResultado;
-import es.ctic.basicservice.historico.CheckHistoricoAction;
 import es.ctic.basicservice.historico.CheckHistoricoService;
 import es.ctic.rastreador2.observatorio.ObservatoryManager;
-import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
+import es.inteco.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import junit.framework.Assert;
-import org.apache.struts.util.MessageResources;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import java.sql.Connection;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -36,6 +30,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
  */
 public class BasicServicePdfReportTest {
 
+    private PropertiesManager pmgr;
     private ObservatoryManager observatoryManager;
 
     @BeforeClass
@@ -61,18 +56,36 @@ public class BasicServicePdfReportTest {
 
     @Before
     public void setUp() {
+        pmgr = new PropertiesManager();
         observatoryManager = new ObservatoryManager();
     }
 
     @Test
-    public void exportToPdf() throws Exception {
+    public void exportToPdfNoEvolution() throws Exception {
         final long analisisId = -131;
         final long basicServiceId = analisisId * -1;
 
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
         final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
         final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2012(basicServiceForm));
+        final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
+
+        final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+
+        basicServicePdfReport.exportToPdf(
+                currentEvaluationPageList,
+                Collections.<Date, List<ObservatoryEvaluationForm>>emptyMap(),
+                "/home/mikunis/Desktop/pruebaNoEvolution.pdf"
+                );
+    }
+
+    @Test
+    public void exportToPdfEvolution() throws Exception {
+        final long analisisId = -131;
+        final long basicServiceId = analisisId * -1;
+
+        final SimpleDateFormat dateFormat = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.basicservice.evolutivo.format"));
+
+        final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
         final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
 
         CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
@@ -81,19 +94,19 @@ public class BasicServicePdfReportTest {
         final Map<Date,List<ObservatoryEvaluationForm>> previousEvaluationsPageList = new TreeMap<>();
         final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(basicServiceForm.getDomain());
         Assert.assertEquals(3,historicoResultados.size());
-        for (BasicServiceResultado historicoResultado : historicoResultados.subList(1,3)) {
+        for (BasicServiceResultado historicoResultado : historicoResultados.subList(1,2)) {
             final List<Long> analysisIds = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), Long.parseLong(historicoResultado.getId()));
             previousEvaluationsPageList.put(dateFormat.parse(historicoResultado.getDate()), observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIds));
         }
         Assert.assertFalse(previousEvaluationsPageList.isEmpty());
-        Assert.assertEquals(2, previousEvaluationsPageList.size());
+        Assert.assertEquals(1, previousEvaluationsPageList.size());
 
+        final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2012(basicServiceForm));
         basicServicePdfReport.exportToPdf(
                 currentEvaluationPageList,
                 previousEvaluationsPageList,
-                MessageResources.getMessageResources("ApplicationResources"),
-                "/home/mikunis/Desktop/prueba.pdf"
-                );
+                "/home/mikunis/Desktop/pruebaEvolution.pdf"
+        );
     }
 
 }
