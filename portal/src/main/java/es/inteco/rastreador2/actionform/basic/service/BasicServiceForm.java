@@ -5,7 +5,6 @@ import es.inteco.common.utils.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.struts.validator.ValidatorForm;
 
-import java.sql.Timestamp;
 import java.util.Date;
 
 public class BasicServiceForm extends ValidatorForm {
@@ -25,6 +24,8 @@ public class BasicServiceForm extends ValidatorForm {
     private boolean registerAnalysis;
     private String analysisToDelete;
     private Date date;
+
+    private BasicServiceAnalysisType analysisType = BasicServiceAnalysisType.URL;
 
     public String getLanguage() {
         return language;
@@ -99,11 +100,11 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public Date getSchedulingDate() {
-        return new Date(schedulingDate.getTime());
+        return schedulingDate;
     }
 
     public void setSchedulingDate(Date schedulingDate) {
-        this.schedulingDate = new Date(schedulingDate.getTime());
+        this.schedulingDate = schedulingDate;
     }
 
     public String getContent() {
@@ -180,11 +181,19 @@ public class BasicServiceForm extends ValidatorForm {
                 .toString();
     }
 
+    public Date getDate() {
+        return date;
+    }
+
     public void setDate(Date date) {
         this.date = date;
     }
 
-    public Date getDate() {
-        return date;
+    public BasicServiceAnalysisType getAnalysisType() {
+        return analysisType;
+    }
+
+    public void setAnalysisType(BasicServiceAnalysisType analysisType) {
+        this.analysisType = analysisType;
     }
 }

@@ -14,6 +14,7 @@ import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
+import es.inteco.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
@@ -31,11 +32,11 @@ public abstract class AnonymousResultExportPdf {
 
     protected boolean basicService = false;
 
-    public abstract int createIntroductionChapter(MessageResources messageResources, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont) throws Exception;
+    public abstract void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont) throws Exception;
 
-    public abstract int createObjetiveChapter(MessageResources messageResources, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<ObservatoryEvaluationForm> evaList, long observatoryType) throws DocumentException;
+    public abstract void createObjetiveChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, List<ObservatoryEvaluationForm> evaList, long observatoryType) throws DocumentException;
 
-    public abstract int createMethodologyChapter(MessageResources messageResources, IndexEvents index, Document document, int countSections, int numChapter, Font titleFont, List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception;
+    public abstract void createMethodologyChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception;
 
     protected void createSection34(final MessageResources messageResources, Section section) {
         ArrayList<String> boldWords = new ArrayList<>();
@@ -259,14 +260,12 @@ public abstract class AnonymousResultExportPdf {
         section.add(list);
     }
 
-    public int createContentChapter(final MessageResources messageResources, final Document d, final String contents, final IndexEvents index, int numChapter, int countSections) throws DocumentException {
-        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+    public void createContentChapter(final MessageResources messageResources, final Document d, final String contents, final PdfTocManager pdfTocManager) throws DocumentException {
+        final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
         PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
         d.add(chapter);
-
-        return countSections;
     }
 
     public abstract void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess, List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception;

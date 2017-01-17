@@ -62,6 +62,10 @@ public final class PDFUtils {
         }
     }
 
+    public static Chapter createChapterWithTitle(String title, PdfTocManager pdfTocManager, Font titleFont) {
+        return createChapterWithTitle(title, pdfTocManager.getIndex(),pdfTocManager.addSection(), pdfTocManager.getNumChapter(), titleFont, true);
+    }
+
     public static Chapter createChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont) {
         return createChapterWithTitle(title, index, countSections, numChapter, titleFont, true);
     }

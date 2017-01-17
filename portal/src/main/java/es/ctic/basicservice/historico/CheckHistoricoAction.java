@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -18,9 +20,11 @@ import java.util.List;
  */
 public class CheckHistoricoAction extends Action {
 
-    public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
+    public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response) {
         final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
-        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(request.getParameter("url"));
+        // El parametro url debería venir encodeado (ej http%3A%2F%2Fwww.example.com)
+        final String url = decodeUrlParam(request.getParameter("url"));
+        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(url);
 
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("historico", historicoResultados);
@@ -28,5 +32,19 @@ public class CheckHistoricoAction extends Action {
         request.setAttribute("JSON", jsonObject.toJSONString());
 
         return mapping.findForward(Constants.EXITO);
+    }
+
+    private String decodeUrlParam(final String urlParam) {
+        String url;
+        try {
+            url = URLDecoder.decode(urlParam, "ISO-8859-1");
+        } catch (UnsupportedEncodingException e) {
+            try {
+                url = URLDecoder.decode(urlParam, "UTF-8");
+            } catch (UnsupportedEncodingException e1) {
+                url = "";
+            }
+        }
+        return url;
     }
 }
