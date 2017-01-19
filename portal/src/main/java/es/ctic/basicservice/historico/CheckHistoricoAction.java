@@ -1,6 +1,8 @@
 package es.ctic.basicservice.historico;
 
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
+import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -39,10 +41,12 @@ public class CheckHistoricoAction extends Action {
         try {
             url = URLDecoder.decode(urlParam, "ISO-8859-1");
         } catch (UnsupportedEncodingException e) {
+            Logger.putLog("No se puede decodificar la url como ISO-8859-1", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
             try {
                 url = URLDecoder.decode(urlParam, "UTF-8");
             } catch (UnsupportedEncodingException e1) {
                 url = "";
+                Logger.putLog("No se puede decodificar la url como UTF-8", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
             }
         }
         return url;

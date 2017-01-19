@@ -39,7 +39,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
     private final List<ObservatoryEvaluationForm> currentEvaluationPageList;
     private final List<ObservatoryEvaluationForm> previousEvaluationPageList;
     private final boolean evolution;
-    private final String TEMP_SUBDIR = "temp";
+    private static final String TEMP_SUBDIR = "temp";
 
     public BasicServiceObservatoryScorePdfSectionBuilder(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
         this(currentEvaluationPageList, null);

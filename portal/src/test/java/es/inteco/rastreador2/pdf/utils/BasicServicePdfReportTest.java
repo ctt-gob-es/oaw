@@ -19,6 +19,7 @@ import org.junit.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -62,6 +63,9 @@ public class BasicServicePdfReportTest {
 
     @Test
     public void exportToPdfNoEvolution() throws Exception {
+        final File exportFile = new File("/home/mikunis/Desktop/pruebaNoEvolution.pdf");
+        exportFile.delete();
+        Assert.assertFalse(exportFile.exists());
         final long analisisId = -131;
         final long basicServiceId = analisisId * -1;
 
@@ -74,12 +78,16 @@ public class BasicServicePdfReportTest {
         basicServicePdfReport.exportToPdf(
                 currentEvaluationPageList,
                 Collections.<Date, List<ObservatoryEvaluationForm>>emptyMap(),
-                "/home/mikunis/Desktop/pruebaNoEvolution.pdf"
+                exportFile.getAbsolutePath()
                 );
+        Assert.assertTrue(exportFile.exists());
     }
 
     @Test
     public void exportToPdfEvolution() throws Exception {
+        final File exportFile = new File("/home/mikunis/Desktop/pruebaEvolution.pdf");
+        exportFile.delete();
+        Assert.assertFalse(exportFile.exists());
         final long analisisId = -131;
         final long basicServiceId = analisisId * -1;
 
@@ -94,19 +102,20 @@ public class BasicServicePdfReportTest {
         final Map<Date,List<ObservatoryEvaluationForm>> previousEvaluationsPageList = new TreeMap<>();
         final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(basicServiceForm.getDomain());
         Assert.assertEquals(3,historicoResultados.size());
-        for (BasicServiceResultado historicoResultado : historicoResultados.subList(1,2)) {
+        for (BasicServiceResultado historicoResultado : historicoResultados) {
             final List<Long> analysisIds = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), Long.parseLong(historicoResultado.getId()));
             previousEvaluationsPageList.put(dateFormat.parse(historicoResultado.getDate()), observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIds));
         }
         Assert.assertFalse(previousEvaluationsPageList.isEmpty());
-        Assert.assertEquals(1, previousEvaluationsPageList.size());
+        Assert.assertEquals(3, previousEvaluationsPageList.size());
 
         final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2012(basicServiceForm));
         basicServicePdfReport.exportToPdf(
                 currentEvaluationPageList,
                 previousEvaluationsPageList,
-                "/home/mikunis/Desktop/pruebaEvolution.pdf"
+                exportFile.getAbsolutePath()
         );
+        Assert.assertTrue(exportFile.exists());
     }
 
 }

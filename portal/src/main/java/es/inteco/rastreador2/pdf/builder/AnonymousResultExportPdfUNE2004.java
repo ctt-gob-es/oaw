@@ -4,12 +4,12 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.List;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.events.IndexEvents;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PdfTocManager;
@@ -28,6 +28,10 @@ import java.util.Map;
  * Created by mikunis on 11/12/14.
  */
 public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
+
+    public AnonymousResultExportPdfUNE2004() {
+        super(new BasicServiceForm());
+    }
 
     @Override
     public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont) throws Exception {

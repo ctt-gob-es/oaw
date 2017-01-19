@@ -20,6 +20,7 @@ import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.net.URL;
 import java.sql.Connection;
@@ -71,7 +72,8 @@ public final class BasicServiceUtils {
         return null;
     }
 
-    public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) throws Exception {
+    public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) {
+        Logger.putLog("getBasicServiceForm " + basicServiceForm.toString(), BasicServiceUtils.class, Logger.LOG_LEVEL_ERROR);
         basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
         basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
         basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
@@ -79,14 +81,37 @@ public final class BasicServiceUtils {
         basicServiceForm.setAmplitud(request.getParameter(Constants.PARAM_WIDTH));
         basicServiceForm.setLanguage("es");
         basicServiceForm.setReport(request.getParameter(Constants.PARAM_REPORT));
+        if ( request.getParameter("informe-nobroken")!=null && Boolean.parseBoolean(request.getParameter("informe-nobroken"))) {
+            basicServiceForm.setReport(basicServiceForm.getReport() + "-nobroken");
+        }
         if (StringUtils.isNotEmpty(request.getParameter(Constants.PARAM_CONTENT))) {
-            basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("ISO-8859-1")));
+            try {
+                basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("ISO-8859-1")));
+            } catch (UnsupportedEncodingException e) {
+                Logger.putLog("No se puede codificar el contenido como ISO-8859-1", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+                try {
+                    basicServiceForm.setContent(new String(request.getParameter(Constants.PARAM_CONTENT).getBytes("UTF-8")));
+                } catch (UnsupportedEncodingException e1) {
+                    Logger.putLog("No se puede codificar el contenido como UTF-8", BasicServiceUtils.class, Logger.LOG_LEVEL_WARNING, e);
+                    basicServiceForm.setContent("");
+                }
+            }
             basicServiceForm.setAnalysisType(BasicServiceAnalysisType.CODIGO_FUENTE);
+        }
+        if (StringUtils.isNotEmpty(request.getParameter("urls"))) {
+            basicServiceForm.setDomain(request.getParameter("urls"));
+            basicServiceForm.setAnalysisType(BasicServiceAnalysisType.LISTA_URLS);
         }
         basicServiceForm.setInDirectory(Boolean.parseBoolean(request.getParameter(Constants.PARAM_IN_DIRECTORY)));
 
         basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
         basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
+
+        basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
+        // ¡No validan que la URL esté bien codificada!
+        if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+            basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
+        }
         return basicServiceForm;
     }
 

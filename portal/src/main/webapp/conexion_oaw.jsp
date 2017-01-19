@@ -6,7 +6,9 @@
 <%@page import= "java.net.*" %>
 <%@page import= "java.util.ArrayList"%>
 <%@page import= "java.util.List"%>
+<%@page import= "java.util.Objects"%>
 <%@page import= "java.util.Properties"%>
+
 <%@page import= "org.apache.commons.codec.net.URLCodec"%>
 <%!
     // Clase para manejar las solicitudes al servicio de diagnóstico y realizar peticiones a los servicios que manejan el historico/evolutivo del servicio de diagnóstico.
@@ -19,17 +21,19 @@
         // Integración: http://localhost:8080/oaw/
         private final static String BASE_URL = "http://localhost:8080/oaw/";
 
-        // Path de los servicios que se invocarán se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en el servidor.
+        // Path de los servicios que se invocarán se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en la aplicación.
         private final static String BASIC_SERVICE_ENDPOINT = "basicServiceAction.do";
         private final static String HISTORICO_ENDPOINT = "checkHistorico.do";
 
         private final URL host;
-        private final String content;
+        private final String codigo;
         private String url;
+        private String urls;
         private final String correo;
         private final String profundidad;
         private final String amplitud;
         private final String informe;
+        private final String nobroken;
         private final String username;
         private final String directorio;
         private final String registerAnalysis;
@@ -44,11 +48,13 @@
                 throw new Error("ERROR de configuración.", e);
             }
             this.url = request.getParameter("url") != null ? request.getParameter("url") : "";
-            this.content = request.getParameter("content");
+            this.urls = request.getParameter("urls") != null ? request.getParameter("urls") : "";
+            this.codigo = request.getParameter("content");
             this.correo = request.getParameter("correo");
             this.profundidad = request.getParameter("profundidad");
             this.amplitud = request.getParameter("amplitud");
             this.informe = request.getParameter("informe");
+            this.nobroken = request.getParameter("informe-nobroken");
             this.username = request.getParameter("username");
             this.directorio = request.getParameter("inDirectory") != null ? "true" : "false";
             this.registerAnalysis = request.getParameter("registerAnalysis") != null ? "true" : "false";
@@ -94,9 +100,9 @@
         private String buildPostRequest() {
             final URLCodec codec = new URLCodec();
             try {
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s",
-                        codec.encode(content),
-                        url,
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s",
+                        Objects.toString(codec.encode(codigo), ""),
+                        Objects.toString(url, ""),
                         correo,
                         profundidad,
                         amplitud,
@@ -104,7 +110,9 @@
                         username,
                         directorio,
                         registerAnalysis,
-                        analysisToDelete
+                        analysisToDelete,
+                        nobroken,
+                        urls
                 );
                 return postRequest;
             } catch (Exception e) {
@@ -192,7 +200,13 @@
                 if (width < 0 || width > 4) {
                     errores.add("La amplitud de rastreo es incorrecta");
                 }
-            } else if (content.length() > 2000000) {
+            } else if (isListaUrlsRequest()) {
+                for (String domain: urls.split("\r\n")) {
+                    if (!domain.startsWith("http://") && !domain.startsWith("https://")) {
+                        errores.add("La URL " + domain + " debe comenzar por http:// o https://");
+                    }
+                }
+            } else if (codigo.length() > 2000000) {
                 errores.add("El código fuente a analizar es demasiado largo");
             }
             if (!correo.contains("@")) {
@@ -201,7 +215,11 @@
         }
 
         private boolean isCrawlingRequest() {
-            return url.trim().length() > 0 || content.trim().length() == 0;
+            return url!=null && url.trim().length() > 0;
+        }
+
+        private boolean isListaUrlsRequest() {
+            return urls!=null && urls.trim().length() > 0;
         }
     }
 %>
@@ -248,7 +266,6 @@
         <form method="POST">
             <input type="hidden" name="confirm"             value="true">
             <input type="hidden" name="url"                 value="<%=request.getParameter("url")%>">
-            <input type="hidden" name="content"             value="<%=request.getParameter("content")%>">
             <input type="hidden" name="profundidad"         value="<%=request.getParameter("profundidad")%>">
             <input type="hidden" name="amplitud"            value="<%=request.getParameter("amplitud")%>">
             <input type="hidden" name="correo"              value="<%=request.getParameter("correo")%>">

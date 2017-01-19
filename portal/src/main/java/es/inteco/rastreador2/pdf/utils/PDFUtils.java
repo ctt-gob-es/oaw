@@ -27,7 +27,7 @@ import java.util.Map;
 public final class PDFUtils {
 
     // Clase que se usará con urls para permitir que se parta el texto y haga retorno de carro en cualquier caracter.
-    private final static SplitCharacter ANY_CHARACTER_WORD_SPLITTER = new SplitCharacter() {
+    private static final SplitCharacter ANY_CHARACTER_WORD_SPLITTER = new SplitCharacter() {
         @Override
         public boolean isSplitCharacter(int i, int i1, int i2, char[] chars, PdfChunk[] pdfChunks) {
             return true;
@@ -63,7 +63,7 @@ public final class PDFUtils {
     }
 
     public static Chapter createChapterWithTitle(String title, PdfTocManager pdfTocManager, Font titleFont) {
-        return createChapterWithTitle(title, pdfTocManager.getIndex(),pdfTocManager.addSection(), pdfTocManager.getNumChapter(), titleFont, true);
+        return createChapterWithTitle(title, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), titleFont, true);
     }
 
     public static Chapter createChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont) {
@@ -71,14 +71,11 @@ public final class PDFUtils {
     }
 
     public static Chapter createChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont, boolean upperCase) {
-        if (upperCase) {
-            title = title.toUpperCase();
-        }
-        Chunk chunk = new Chunk(title);
+        final Chunk chunk = new Chunk(upperCase?title.toUpperCase():title);
         chunk.setLocalDestination(Constants.ANCLA_PDF + (countSections));
-        Paragraph paragraph = new Paragraph("", titleFont);
+        final Paragraph paragraph = new Paragraph("", titleFont);
         paragraph.add(chunk);
-        Chapter chapter = new Chapter(paragraph, numChapter);
+        final Chapter chapter = new Chapter(paragraph, numChapter);
         if (index != null) {
             paragraph.add(index.create(" ", countSections + "@&" + title));
         }
@@ -86,12 +83,9 @@ public final class PDFUtils {
     }
 
     public static Chapter createChapterWithTitle(String title, IndexEvents index, int countSections, int numChapter, Font titleFont, boolean upperCase, final String anchor) {
-        if (upperCase) {
-            title = title.toUpperCase();
-        }
-        final Chunk chunk = new Chunk(title);
+        final Chunk chunk = new Chunk(upperCase?title.toUpperCase():title);
         chunk.setLocalDestination(Constants.ANCLA_PDF + (countSections));
-        Paragraph paragraph = new Paragraph("", titleFont);
+        final Paragraph paragraph = new Paragraph("", titleFont);
         paragraph.add(chunk);
         // Si el capítulo requiere un anchor adicional al que se crea desde el índice (tabla contenidos) entonces se
         // crea un trozo de texto adicional (Chunk) con el caracter especial 200B ZWSP Zero White Space para añadir el
@@ -576,14 +570,16 @@ public final class PDFUtils {
         if (seedName != null) {
             return replaceAccent(seedName.trim().toLowerCase()).replaceAll("[\\s,./\\\\]+", "_");
         }
-        return seedName;
+        return null;
     }
 
     public static void addImageToSection(final Section section, final String imagePath, final String imageAlt, final float scale) {
         try {
             final Image graphic = createImage(imagePath, imageAlt);
-            graphic.scalePercent(scale);
-            section.add(graphic);
+            if (graphic != null) {
+                graphic.scalePercent(scale);
+                section.add(graphic);
+            }
         } catch (Exception e) {
             Logger.putLog("Error al crear imagen en la exportación anónima de resultados", AnonymousResultExportPdfSectionEv.class, Logger.LOG_LEVEL_ERROR, e);
         }
@@ -591,6 +587,7 @@ public final class PDFUtils {
 
     /**
      * Crea una celda vacía para una tabla. Una celda vacía se considera especial y se elimina el borde.
+     *
      * @return una celda PdfPCell sin texto y sin borde.
      */
     public static PdfPCell createEmptyTableCell() {

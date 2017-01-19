@@ -2,9 +2,12 @@ package es.inteco.rastreador2.actionform.basic.service;
 
 import es.inteco.common.Constants;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.struts.validator.ValidatorForm;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 
 public class BasicServiceForm extends ValidatorForm {
@@ -41,6 +44,11 @@ public class BasicServiceForm extends ValidatorForm {
 
     public void setDomain(String domain) {
         this.domain = domain;
+        if (domain.contains("\r\n")) {
+            analysisType = BasicServiceAnalysisType.LISTA_URLS;
+        } else {
+            analysisType = BasicServiceAnalysisType.URL;
+        }
     }
 
     public String getEmail() {
@@ -52,7 +60,19 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public String getName() {
-        return name;
+        if (analysisType == BasicServiceAnalysisType.URL) {
+            try {
+                return new URL(domain).getAuthority();
+            } catch (MalformedURLException e) {
+                return domain;
+            }
+        } else if (analysisType == BasicServiceAnalysisType.CODIGO_FUENTE) {
+            return BasicServiceUtils.getTitleFromContent(content);
+        } else if (analysisType == BasicServiceAnalysisType.LISTA_URLS) {
+            return "Lista de páginas";
+        } else {
+            return "Informe del Servicio de diagnóstico";
+        }
     }
 
     public void setName(String name) {
@@ -100,11 +120,11 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public Date getSchedulingDate() {
-        return schedulingDate;
+        return schedulingDate != null ? new Date(schedulingDate.getTime()) : null;
     }
 
     public void setSchedulingDate(Date schedulingDate) {
-        this.schedulingDate = schedulingDate;
+        this.schedulingDate = schedulingDate != null ? new Date(schedulingDate.getTime()) : null;
     }
 
     public String getContent() {
@@ -113,6 +133,9 @@ public class BasicServiceForm extends ValidatorForm {
 
     public void setContent(String content) {
         this.content = content;
+        if (isContentAnalysis()) {
+            analysisType = BasicServiceAnalysisType.CODIGO_FUENTE;
+        }
     }
 
     public boolean isInDirectory() {
@@ -142,7 +165,7 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public boolean isRegisterAnalysis() {
-        return registerAnalysis;
+        return registerAnalysis && analysisType == BasicServiceAnalysisType.URL && "4".equals(amplitud) && "4".equals(profundidad);
     }
 
     public void setRegisterAnalysis(boolean registerAnalysis) {
@@ -178,15 +201,17 @@ public class BasicServiceForm extends ValidatorForm {
                 .append("inDirectory", inDirectory)
                 .append("registerAnalysis", registerAnalysis)
                 .append("analysisToDelete", analysisToDelete)
+                .append("date", date)
+                .append("analysisType", analysisType)
                 .toString();
     }
 
     public Date getDate() {
-        return date;
+        return date != null ? new Date(date.getTime()) : null;
     }
 
     public void setDate(Date date) {
-        this.date = date;
+        this.date = date != null ? new Date(date.getTime()) : null;
     }
 
     public BasicServiceAnalysisType getAnalysisType() {
