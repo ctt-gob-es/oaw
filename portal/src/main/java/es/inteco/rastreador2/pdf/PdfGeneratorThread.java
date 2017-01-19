@@ -68,7 +68,7 @@ public class PdfGeneratorThread extends Thread {
                         previousEvaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(observatoryManager.getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(idRastreo, ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution)));
                         final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
 
-                        PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds, PropertyMessageResources.getMessageResources("ApplicationResources"), null, pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
+                        PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds, PropertyMessageResources.getMessageResources("ApplicationResources"), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
                     }
 
                     final SourceFilesManager sourceFilesManager = new SourceFilesManager(pdfFile.getParentFile());

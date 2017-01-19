@@ -22,8 +22,7 @@ public class CheckHistoricoService {
      * @return una lista con un máximo de 3 resultados del servicio de diagnostico asociado a la url
      */
     public List<BasicServiceResultado> getHistoricoResultados(final String url) {
-        // Añadir comprobación de que existe registro en tanalisis para que no salgan análisis antiguos que estén registrados en basic_service pero no haya datos en tanalisis
-        if (url != null && url.length() > 0) {
+        if (url != null && url.trim().length() > 0) {
             return DiagnosisDAO.getHistoricoResultados(url);
         }
         return Collections.emptyList();

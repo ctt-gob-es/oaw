@@ -44,7 +44,7 @@ public final class DiagnosisDAO {
             ps.setString(2, basicServiceForm.getLanguage());
             if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
                 ps.setString(3, basicServiceForm.getDomain());
-                ps.setString(11, Constants.BASIC_SERVICE_ANALYSIS_TYPE_URL);
+                ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
             } else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
                 ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
                 ps.setString(11, Constants.BASIC_SERVICE_ANALYSIS_TYPE_CONTENT);
@@ -96,6 +96,8 @@ public final class DiagnosisDAO {
                     if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
                         basicServiceForm.setDomain(rs.getString("domain"));
                         basicServiceForm.setName(new URL(basicServiceForm.getDomain()).getAuthority());
+                    } else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.LISTA_URLS) {
+                        basicServiceForm.setDomain(rs.getString("domain"));
                     }
 
                     return basicServiceForm;
@@ -186,7 +188,7 @@ public final class DiagnosisDAO {
         final List<BasicServiceResultado> results = new ArrayList<>();
         final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         try (Connection conn = DataBaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND register_result=TRUE ORDER BY date DESC LIMIT ?")) {
+             PreparedStatement ps = conn.prepareStatement("SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND AND analysis_type='url' register_result=TRUE ORDER BY date DESC LIMIT ?")) {
             ps.setString(1, url);
             // TODO: Leer el limite de resultados de un property o como parametro
             ps.setInt(2, 3);

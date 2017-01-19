@@ -93,7 +93,7 @@ public class ObservatoryManager {
     public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
         try (Connection c = DataBaseManager.getConnection()) {
             List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
-            if ( seedsResults.isEmpty()) {
+            if (seedsResults.isEmpty()) {
                 return null;
             }
             final RankingInfo rankingInfo = new RankingInfo();
@@ -120,12 +120,12 @@ public class ObservatoryManager {
             for (ResultadoSemillaForm seedForm : seedsResults) {
                 if (seedForm.getScore() != null) {
                     final BigDecimal seedFormScore = new BigDecimal(seedForm.getScore());
-                    if (seedFormScore.compareTo(rankingInfo.getScore()) == 1) {
+                    if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
                         rankingInfo.incrementGlobalRank();
                     }
                     if (currentSeed.getCategoria().getId().equals(String.valueOf(seedForm.getIdCategory()))) {
                         rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
-                        if (seedFormScore.compareTo(rankingInfo.getScore()) == 1) {
+                        if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
                             rankingInfo.incrementCategoryRank();
                         }
                     }

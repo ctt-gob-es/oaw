@@ -70,14 +70,14 @@ public class ExportPageEventsObservatoryMP extends PdfPageEventHelper {
         int posX = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posX"));
         int posY = Integer.parseInt(pmgr.getValue(Constants.PDF_PROPERTIES, "pdf.logo.posY"));
 
-        Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Ministerio de Hacienda y Administraciones Públicas");
+        final Image logoMinisterio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.ministerio.logo"), 158, 45, "Ministerio de Hacienda y Función Públicas");
         if (logoMinisterio != null) {
             logoMinisterio.setAbsolutePosition(posX, posY);
             pdfContentByte.addImage(logoMinisterio);
             pdfContentByte.endMarkedContentSequence();
         }
 
-        Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Observatorio de Accesibilidad Web");
+        final Image logoObservatorio = ExportPageEventsUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.observatorio.logo"), 233, 45, "Observatorio de Accesibilidad Web");
         if (logoObservatorio != null) {
             logoObservatorio.setAbsolutePosition(document.getPageSize().getWidth() - logoObservatorio.getScaledWidth() - posX, posY);
             pdfContentByte.addImage(logoObservatorio);

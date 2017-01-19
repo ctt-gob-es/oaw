@@ -11,6 +11,7 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
@@ -35,19 +36,13 @@ import static es.inteco.common.ConstantsFont.LINE_SPACE;
 public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
 
-    private final BasicServiceForm basicServiceForm;
-
     public AnonymousResultExportPdfUNE2012() {
-        basicServiceForm = new BasicServiceForm();
+        super(new BasicServiceForm());
     }
 
     public AnonymousResultExportPdfUNE2012(final BasicServiceForm basicServiceForm) {
-        this.basicServiceForm = basicServiceForm;
+        super(basicServiceForm);
         setBasicService(true);
-    }
-
-    public BasicServiceForm getBasicServiceForm() {
-        return basicServiceForm;
     }
 
     @Override
@@ -149,9 +144,9 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
     @Override
     public void createObjetiveChapter(final MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, final java.util.List<ObservatoryEvaluationForm> evaList, long observatoryType) throws DocumentException {
-        if (isBasicService() && basicServiceForm.isContentAnalysis()) {
+        if (isBasicService() && getBasicServiceForm().isContentAnalysis()) {
             // Añadir el código fuente analizado
-            createContentChapter(messageResources, document, basicServiceForm.getContent(), pdfTocManager);
+            createContentChapter(messageResources, document, getBasicServiceForm().getContent(), pdfTocManager);
         } else {
             createMuestraPaginasChapter(messageResources, document, pdfTocManager, titleFont, evaList);
         }
@@ -168,7 +163,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
         listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
         PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-        PDFUtils.addListItem("Normativa: " + basicServiceForm.reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+        PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 
         chapter.add(listaConfiguracionRastreo);
 
@@ -185,21 +180,32 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
             PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
             final List listaConfiguracionRastreo = new List();
             listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
-            final SpecialChunk externalLink = new SpecialChunk(basicServiceForm.getDomain(), ConstantsFont.ANCHOR_FONT);
-            externalLink.setExternalLink(true);
-            externalLink.setAnchor(basicServiceForm.getDomain());
-            final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
-            specialChunkMap.put(1, externalLink);
-            listaConfiguracionRastreo.add(new ListItem(PDFUtils.createParagraphAnchor("Origen: [anchor1]", specialChunkMap, ConstantsFont.PARAGRAPH, false)));
-            PDFUtils.addListItem("Forma de selección de páginas: aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-            PDFUtils.addListItem("Profundidad: " + basicServiceForm.getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-            PDFUtils.addListItem("Amplitud: " + basicServiceForm.getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-            PDFUtils.addListItem("Selección restringida a directorio: " + (basicServiceForm.isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-            PDFUtils.addListItem("Normativa: " + basicServiceForm.reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+
+            listaConfiguracionRastreo.add(createOrigen(getBasicServiceForm().getDomain()));
+            if (getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL) {
+                PDFUtils.addListItem("Forma de selección de páginas: aleatoria", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+                PDFUtils.addListItem("Profundidad: " + getBasicServiceForm().getProfundidad(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+                PDFUtils.addListItem("Amplitud: " + getBasicServiceForm().getAmplitud(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+                PDFUtils.addListItem("Selección restringida a directorio: " + (getBasicServiceForm().isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+            }
+            PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 
             chapter.add(listaConfiguracionRastreo);
         }
         document.add(chapter);
+    }
+
+    private TextElementArray createOrigen(final String domain) {
+        if (getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.LISTA_URLS) {
+            return new ListItem("Origen: Lista de páginas", ConstantsFont.PARAGRAPH);
+        } else {
+            final SpecialChunk externalLink = new SpecialChunk(domain, ConstantsFont.ANCHOR_FONT);
+            externalLink.setExternalLink(true);
+            externalLink.setAnchor(domain);
+            final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+            specialChunkMap.put(1, externalLink);
+            return new ListItem(PDFUtils.createParagraphAnchor("Origen: [anchor1]", specialChunkMap, ConstantsFont.PARAGRAPH, false));
+        }
     }
 
     protected void createChapter2(MessageResources messageResources, IndexEvents index, int countSections, Chapter chapter, java.util.List<ObservatoryEvaluationForm> evaList, long observatoryType) {
