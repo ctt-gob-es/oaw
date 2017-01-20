@@ -4,6 +4,7 @@ import com.opencsv.CSVWriter;
 import es.ctic.basicservice.historico.BasicServiceResultado;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
@@ -17,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class DiagnosisDAO {
 
@@ -186,9 +189,10 @@ public final class DiagnosisDAO {
 
     public static List<BasicServiceResultado> getHistoricoResultados(final String url) {
         final List<BasicServiceResultado> results = new ArrayList<>();
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        final PropertiesManager pmgr = new PropertiesManager();
+        final SimpleDateFormat dateFormat = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.basicservice.evolutivo.format"));
         try (Connection conn = DataBaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND AND analysis_type='url' register_result=TRUE ORDER BY date DESC LIMIT ?")) {
+             PreparedStatement ps = conn.prepareStatement("SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND analysis_type='url' AND register_result=TRUE ORDER BY date DESC LIMIT ?")) {
             ps.setString(1, url);
             // TODO: Leer el limite de resultados de un property o como parametro
             ps.setInt(2, 3);
@@ -207,4 +211,17 @@ public final class DiagnosisDAO {
         return results;
     }
 
+    /**
+     * Actualiza la información de histórico del servicio de diagnóstico y desmarca el registro de resultado guardado
+     *
+     * @param conn           conexión a la base de datos
+     * @param idBasicService el identificador de la solicitud al servicio de diagnósitco
+     * @throws SQLException si no se pudo realizar la actualización en la base de datos
+     */
+    public static void deregisterResult(final Connection conn, final long idBasicService) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("UPDATE basic_service SET register_result = FALSE WHERE id = ?")) {
+            ps.setLong(1, idBasicService);
+            ps.executeUpdate();
+        }
+    }
 }

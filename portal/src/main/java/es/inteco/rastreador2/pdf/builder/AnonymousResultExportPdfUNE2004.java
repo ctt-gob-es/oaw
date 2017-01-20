@@ -33,6 +33,10 @@ public class AnonymousResultExportPdfUNE2004 extends AnonymousResultExportPdf {
         super(new BasicServiceForm());
     }
 
+    public AnonymousResultExportPdfUNE2004(final BasicServiceForm basicServiceForm) {
+        super(basicServiceForm);
+    }
+
     @Override
     public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont) throws Exception {
         Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), pdfTocManager, titleFont);

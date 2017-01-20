@@ -195,8 +195,6 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
         final ListIterator<GraphicData> actualDataIterator = currentGlobalAccessibilityLevel.listIterator();
         final ListIterator<GraphicData> previousDataIterator = previousGlobalAccessibilityLevel.listIterator();
 
-        assert currentGlobalAccessibilityLevel.size() == previousGlobalAccessibilityLevel.size();
-
         while (actualDataIterator.hasNext()) {
             final GraphicData actualData = actualDataIterator.next();
             final GraphicData previousData = previousDataIterator.hasNext() ? previousDataIterator.next() : actualData;
@@ -380,10 +378,6 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
     private Image getEvolutionImage(final BigDecimal actualValue, final BigDecimal previousValue) {
         return getEvolutionImage(actualValue.compareTo(previousValue));
     }
-
-//    private Image getEvolutionImage(final int actualValue, final int previousValue) {
-//        return getEvolutionImage(actualValue - previousValue);
-//    }
 
     private Image getEvolutionImage(final int compareValue) {
         final PropertiesManager pmgr = new PropertiesManager();

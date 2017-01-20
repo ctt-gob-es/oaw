@@ -658,7 +658,7 @@ public final class BasicServiceExport {
         return matcher.find() ? matcher.group(1) : null;
     }
 
-    public static void addW3CCopyright(Section subSubSection, String check) {
+    private static void addW3CCopyright(Section subSubSection, String check) {
         Paragraph p = new Paragraph();
         p.setAlignment(Paragraph.ALIGN_RIGHT);
         Anchor anchor = null;

@@ -35,7 +35,7 @@ import static es.inteco.rastreador2.utils.GraphicsUtils.parseLevelLabel;
 import static es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils.getVerificationResultsByPoint;
 
 /**
- * Created by mikunis on 1/17/17.
+ * Clase para crear la sección Evolución de Resultados de los informes evolutivos del servicio de diagnóstico
  */
 public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 
@@ -193,19 +193,19 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 
         tablaRankings.addCell(PDFUtils.createTableCell("Prioridad 1 y 2", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         for (Map.Entry<String, Map<String, BigDecimal>> stringMapEntry : result.entrySet()) {
-            tablaRankings.addCell(PDFUtils.createTableCell(stringMapEntry.getValue().get(Constants.OBS_AA).toString(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            tablaRankings.addCell(PDFUtils.createTableCell(stringMapEntry.getValue().get(Constants.OBS_AA).toString() + "%", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         }
         tablaRankings.completeRow();
 
         tablaRankings.addCell(PDFUtils.createTableCell("Prioridad 1", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         for (Map.Entry<String, Map<String, BigDecimal>> stringMapEntry : result.entrySet()) {
-            tablaRankings.addCell(PDFUtils.createTableCell(stringMapEntry.getValue().get(Constants.OBS_A).toString(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            tablaRankings.addCell(PDFUtils.createTableCell(stringMapEntry.getValue().get(Constants.OBS_A).toString() + "%", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         }
         tablaRankings.completeRow();
 
         tablaRankings.addCell(PDFUtils.createTableCell("Parcial", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         for (Map.Entry<String, Map<String, BigDecimal>> stringMapEntry : result.entrySet()) {
-            tablaRankings.addCell(PDFUtils.createTableCell(stringMapEntry.getValue().get(Constants.OBS_NV).toString(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+            tablaRankings.addCell(PDFUtils.createTableCell(stringMapEntry.getValue().get(Constants.OBS_NV).toString() + "%", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
         }
         tablaRankings.completeRow();
 

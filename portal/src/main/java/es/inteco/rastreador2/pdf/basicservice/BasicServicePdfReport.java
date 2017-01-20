@@ -14,6 +14,8 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatoryLevelForm;
+import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
@@ -104,7 +106,7 @@ public class BasicServicePdfReport {
                 observatoryEvolutionResultsSectionBuilder.addEvolutionResults(pdfBuilder, messageResources, document, pdfTocManager, file);
 
                 // Resultados por página
-                final BasicServiceObservatoryPageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServiceObservatoryPageResultsPdfSectionBuilder(currentEvaluationPageList);
+                final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
                 observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager);
 
                 pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());

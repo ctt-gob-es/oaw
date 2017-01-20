@@ -24,9 +24,8 @@ public final class CheckDescriptionsManager {
      * Obtiene una instancia de esta clase utilizando como fichero de recursos la entrada file.descriptions del fichero
      * de configuración propertiesmanager.properties.
      *
-     * @throws IOException si no existe el fichero o no se ha podido leer.
      */
-    public CheckDescriptionsManager() throws IOException {
+    public CheckDescriptionsManager() {
         this.properties = new Properties(getDefaultDescriptions());
         loadDescriptions(getConfiguredDescriptionsFilePath());
     }
@@ -61,10 +60,12 @@ public final class CheckDescriptionsManager {
         return pmg.getProperty("file.descriptions");
     }
 
-    private Properties getDefaultDescriptions() throws IOException {
+    private Properties getDefaultDescriptions() {
         final Properties defaultDescriptions = new Properties();
         try (Reader reader = new InputStreamReader(this.getClass().getResourceAsStream(DEFAULT_PROPERTIES))) {
             defaultDescriptions.load(reader);
+        } catch (IOException ioe) {
+            Logger.putLog("No se ha podido leer las descripciones por defecto de los checks", CheckDescriptionsManager.class, Logger.LOG_LEVEL_ERROR, ioe);
         }
         return defaultDescriptions;
     }
