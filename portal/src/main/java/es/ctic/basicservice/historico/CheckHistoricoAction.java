@@ -2,7 +2,6 @@ package es.ctic.basicservice.historico;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;

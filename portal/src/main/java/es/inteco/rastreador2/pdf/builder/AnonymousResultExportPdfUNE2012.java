@@ -42,7 +42,6 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
     public AnonymousResultExportPdfUNE2012(final BasicServiceForm basicServiceForm) {
         super(basicServiceForm);
-        setBasicService(true);
     }
 
     @Override

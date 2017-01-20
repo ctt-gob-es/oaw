@@ -270,7 +270,9 @@
             <input type="hidden" name="amplitud"            value="<%=request.getParameter("amplitud")%>">
             <input type="hidden" name="correo"              value="<%=request.getParameter("correo")%>">
             <input type="hidden" name="informe"             value="<%=request.getParameter("informe")%>">
+            <input type="hidden" name="informe-nobroken"    value="<%=Objects.toString(request.getParameter("informe-nobroken"),"")%>">
             <input type="hidden" name="registerAnalysis"    value="<%=request.getParameter("registerAnalysis")%>">
+
             <fieldset id="historico_resultados">
                 <legend>Histórico de resultados</legend>                
 

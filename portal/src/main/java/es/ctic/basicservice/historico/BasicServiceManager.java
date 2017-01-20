@@ -12,7 +12,6 @@ import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.action.basic.service.BasicServiceAction;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
@@ -21,7 +20,6 @@ import es.inteco.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceConcurrenceSystem;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceQueingThread;
@@ -82,7 +80,7 @@ public class BasicServiceManager {
     }
 
     public void executeCrawling(final BasicServiceForm basicServiceForm, final MessageResources messageResources) {
-        Logger.putLog("executeCrawling", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
+        Logger.putLog("executeCrawling", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 
         String pdfPath = null;
 
@@ -95,15 +93,15 @@ public class BasicServiceManager {
 
             final List<CrawledLink> crawledLinks;
             if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
-                Logger.putLog("URL " + basicServiceForm.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                Logger.putLog("URL " + basicServiceForm.toString(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
                 crawledLinks = crawlerJob.testCrawler(crawlerData);
             } else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.LISTA_URLS) {
                 // Si es una lista de urls modificamos la información para que no se realice crawling.
                 disableCrawling(crawlerData);
-                Logger.putLog("LISTA URLS " + basicServiceForm.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                Logger.putLog("LISTA URLS " + basicServiceForm.toString(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
                 crawledLinks = crawlerJob.testCrawler(crawlerData);
             } else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.CODIGO_FUENTE) {
-                Logger.putLog("CODIGO FUENTE" + basicServiceForm.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                Logger.putLog("CODIGO FUENTE" + basicServiceForm.toString(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
                 crawledLinks = crawlerJob.runSimpleAnalysis(crawlerData);
             } else {
                 crawledLinks = Collections.emptyList();
@@ -115,10 +113,10 @@ public class BasicServiceManager {
                     if (basicServiceForm.isDeleteOldAnalysis()) {
                         if (checkHistoricoService.isAnalysisOfUrl(basicServiceForm.getAnalysisToDelete(), basicServiceForm.getDomain())) {
                             // Si el analisis marcado corresponde a un análisis de esa url lo borramos
-                            Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                            Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
                             checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), basicServiceForm.getAnalysisToDelete());
                         } else {
-                            Logger.putLog("Los datos indicados no corresponden a ningún analisis registrado para " + basicServiceForm.getDomain(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
+                            Logger.putLog("Los datos indicados no corresponden a ningún analisis registrado para " + basicServiceForm.getDomain(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
                         }
                     }
                 }
@@ -126,38 +124,33 @@ public class BasicServiceManager {
 
                 pdfPath = pmgr.getValue(CRAWLER_PROPERTIES, "pdf.basic.service.path") + idCrawling + File.separator + PDFUtils.formatSeedName(basicServiceForm.getName()) + "_" + df.format(new Date()) + ".pdf";
 
-                //Creamos el PDF con los resultados del rastreo
-                final List<Long> evaluationIds = DiagnosisDAO.getEvaluationIds(idCrawling);
+                final ObservatoryManager observatoryManager = new ObservatoryManager();
 
                 if (basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE) ||
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_UNE_FILE) ||
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_1_FILE) ||
                         basicServiceForm.getReport().equalsIgnoreCase(Constants.REPORT_WCAG_2_FILE)) {
-                    BasicServiceExport.generatePDF(messageResources, basicServiceForm, evaluationIds, idCrawling, pdfPath);
+                    //Creamos el PDF con los resultados del rastreo
+                    final List<Long> evaluationIds = DiagnosisDAO.getEvaluationIds(idCrawling);
+                    // BasicServiceExport.generatePDF(messageResources, basicServiceForm, evaluationIds, idCrawling, pdfPath);
                 } else if (basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY) ||
                         basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_FILE) || basicServiceForm.getReport().equals(Constants.REPORT_OBSERVATORY_1_NOBROKEN)) {
-                    Logger.putLog("Exportando desde BasicService a PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004() ...", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
-                    final String content = basicServiceForm.isContentAnalysis() ? basicServiceForm.getContent() : null;
-                    PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2004(), idCrawling, evaluationIds, Collections.<Long>emptyList(), messageResources, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
-                } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
-                    Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012())", BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
-                    final ObservatoryManager observatoryManager = new ObservatoryManager();
+                    Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2004() ...", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 
                     final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
                     final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-                    final SimpleDateFormat dateFormat = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.basicservice.evolutivo.format"));
                     final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = new TreeMap<>();
 
-                    if (basicServiceForm.isRegisterAnalysis()) {
-                        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(basicServiceForm.getDomain());
-                        if (historicoResultados.size() == 3) {
-                            historicoResultados.remove(0);
-                        }
-                        for (BasicServiceResultado historicoResultado : historicoResultados) {
-                            final List<Long> analysisIds = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), Long.parseLong(historicoResultado.getId()));
-                            previousEvaluationsPageList.put(dateFormat.parse(historicoResultado.getDate()), observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIds));
-                        }
-                    }
+                    final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2004(basicServiceForm));
+                    basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
+                    //.exportToPdf(new AnonymousResultExportPdfUNE2004(), idCrawling, evaluationIds, Collections.<Long>emptyList(), messageResources, pdfPath, basicServiceForm.getName(), content, -System.currentTimeMillis(), 1);
+                } else if (Constants.REPORT_OBSERVATORY_2.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(basicServiceForm.getReport())) {
+                    Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
+
+                    final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
+                    final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+
+                    final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 
                     final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2012(basicServiceForm));
                     basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
@@ -168,7 +161,7 @@ public class BasicServiceManager {
 
                 if (!basicServiceForm.isRegisterAnalysis()) {
                     // Si no es necesario registrar el análisis se borra
-                    Logger.putLog("Borrando analisis " + idCrawling, BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
+                    Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
                     checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), idCrawling.toString());
                 }
 
@@ -178,7 +171,7 @@ public class BasicServiceManager {
                 final ArrayList<String> mailTo = new ArrayList<>();
                 mailTo.add(basicServiceForm.getEmail());
                 final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
-                Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceAction.class, Logger.LOG_LEVEL_INFO);
+                Logger.putLog("Enviando correo del servicio de diagnóstico", BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
                 MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad",
                         mailTo, subject, text, pdfPath, new File(pdfPath).getName(), mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", false);
                 BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_FINISHED);
@@ -191,8 +184,8 @@ public class BasicServiceManager {
             }
         } catch (EmailException e) {
             // Intentamos informar a los administradores, aunque seguramente no se pueda
-            CrawlerUtils.warnAdministrators(e, BasicServiceAction.class);
-            Logger.putLog("Excepcion: ", BasicServiceAction.class, Logger.LOG_LEVEL_ERROR, e);
+            CrawlerUtils.warnAdministrators(e, BasicServiceManager.class);
+            Logger.putLog("Excepcion: ", BasicServiceManager.class, Logger.LOG_LEVEL_ERROR, e);
             BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_ERROR_SENDING_EMAIL);
         } catch (Exception e) {
             // Avisamos del error al usuario
@@ -200,8 +193,8 @@ public class BasicServiceManager {
             BasicServiceUtils.somethingWasWrongMessage(basicServiceForm, message);
 
             // Informamos de la excepción a los administradores
-            CrawlerUtils.warnAdministrators(e, BasicServiceAction.class);
-            Logger.putLog("Excepcion: ", BasicServiceAction.class, Logger.LOG_LEVEL_ERROR, e);
+            CrawlerUtils.warnAdministrators(e, BasicServiceManager.class);
+            Logger.putLog("Excepcion: ", BasicServiceManager.class, Logger.LOG_LEVEL_ERROR, e);
             BasicServiceUtils.updateRequestStatus(basicServiceForm, Constants.BASIC_SERVICE_STATUS_ERROR);
         } finally {
             if (pdfPath != null && StringUtils.isNotEmpty(pdfPath)) {
@@ -286,7 +279,7 @@ public class BasicServiceManager {
         crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
         crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
         crawlerData.setInDirectory(basicServiceForm.isInDirectory());
-        Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceAction.class, Logger.LOG_LEVEL_DEBUG);
+        Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
         return crawlerData;
     }
 

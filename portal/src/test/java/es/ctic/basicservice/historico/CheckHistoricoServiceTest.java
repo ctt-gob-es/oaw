@@ -38,10 +38,16 @@ public class CheckHistoricoServiceTest {
     }
 
     @Test
-    public void getHistoricoResultados() throws Exception {
+    public void getHistoricoResultadosTest() throws Exception {
         final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
         final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados("http://www.fundacionctic.org");
         assertTrue(!historicoResultados.isEmpty());
+    }
+
+    @Test
+    public void isAnalysisOfUrlTest() throws Exception {
+        final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
+        assertTrue(checkHistoricoService.isAnalysisOfUrl("148", "http://www.fundacionctic.org"));
     }
 
 }

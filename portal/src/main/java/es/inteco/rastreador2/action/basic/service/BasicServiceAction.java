@@ -32,6 +32,7 @@ public class BasicServiceAction extends Action {
                 Logger.putLog("EXECUTE --  " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
                 final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
                 basicServiceForm.setContent(basicServiceFormRequest.getContent());
+                basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
                 // TODO: Quitar param request
                 basicServiceManager.executeCrawling(basicServiceForm, CrawlerUtils.getResources(request));
             } else {

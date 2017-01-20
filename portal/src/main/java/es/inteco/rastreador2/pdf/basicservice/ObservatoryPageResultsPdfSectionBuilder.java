@@ -12,9 +12,9 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.form.*;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.rastreador2.pdf.BasicServiceExport;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PdfTocManager;
+import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import org.apache.struts.util.MessageResources;
@@ -23,8 +23,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static es.inteco.common.Constants.INTAV_PROPERTIES;
 import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
@@ -33,29 +34,37 @@ import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
 /**
  * Created by mikunis on 1/18/17.
  */
-public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
+public class ObservatoryPageResultsPdfSectionBuilder {
 
-    private final List<ObservatoryEvaluationForm> currentEvaluationPageList;
+    protected final List<ObservatoryEvaluationForm> currentEvaluationPageList;
 
-    public BasicServiceObservatoryPageResultsPdfSectionBuilder(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
+    public ObservatoryPageResultsPdfSectionBuilder(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
         this.currentEvaluationPageList = currentEvaluationPageList;
+    }
+
+    protected static void addW3CCopyright(Section subSubSection, String check) {
+        final PropertiesManager PMGR = new PropertiesManager();
+        final Paragraph p = new Paragraph();
+        p.setAlignment(Paragraph.ALIGN_RIGHT);
+        Anchor anchor = null;
+        if ("232".equals(check)) { //PMGR.getValue("check.properties", "doc.valida.especif"))) {
+            anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright"), ConstantsFont.MORE_INFO_FONT);
+            anchor.setReference(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
+        } else if (EvaluatorUtils.isCssValidationCheck(Integer.parseInt(check))) {
+            anchor = new Anchor(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.css.copyright"), ConstantsFont.MORE_INFO_FONT);
+            anchor.setReference(PMGR.getValue(Constants.PDF_PROPERTIES, "pdf.w3c.html.copyright.link"));
+        }
+        p.add(anchor);
+        subSubSection.add(p);
     }
 
     public void addPageResults(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws Exception {
         int counter = 1;
         for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
-            final String evaluationTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
-            final Chapter chapter = PDFUtils.createChapterWithTitle(evaluationTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
-            final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
-            final String url = evaluationForm.getUrl();
+            final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
+            final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
 
-            final BigDecimal puntuacionMediaPortal = evaluationForm.getScore();
-            final String validationLevel = ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm));
-            final List<BigDecimal> puntuacionesMediasNivelAccesibilidad = new ArrayList<>();
-            for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
-                puntuacionesMediasNivelAccesibilidad.add(observatoryLevelForm.getScore());
-            }
-            chapter.add(createPaginaTableInfo(messageResources, title, url, puntuacionMediaPortal, validationLevel, puntuacionesMediasNivelAccesibilidad));
+            chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
 
             // Creación de las tablas resumen de resultado por verificación de cada página
             for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
@@ -65,7 +74,14 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
                 chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
             }
 
-            addCheckCodes(messageResources, evaluationForm, chapter, true);
+            addCheckCodes(messageResources, evaluationForm, chapter);
+
+            final SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("observatory.servicio.diagnostico.url"), ConstantsFont.ANCHOR_FONT);
+            externalLink.setExternalLink(true);
+            externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
+            final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+            specialChunkMap.put(1, externalLink);
+            chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
 
             document.add(chapter);
             pdfTocManager.addChapterCount();
@@ -73,7 +89,17 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         }
     }
 
-    private PdfPTable createPaginaTableInfo(final MessageResources messageResources, final String title, final String url, final BigDecimal puntuacionMedia, final String nivelAdecuacion, final List<BigDecimal> puntuacionesMediasNivel) {
+    protected PdfPTable createPaginaTableInfo(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm) {
+        final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
+        final String url = evaluationForm.getUrl();
+
+        final BigDecimal puntuacionMedia = evaluationForm.getScore();
+        final String nivelAdecuacion = ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm));
+        final List<BigDecimal> puntuacionesMediasNivel = new ArrayList<>();
+        for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+            puntuacionesMediasNivel.add(observatoryLevelForm.getScore());
+        }
+
         final float[] widths = {0.22f, 0.78f};
         final PdfPTable table = new PdfPTable(widths);
         table.setWidthPercentage(100);
@@ -107,7 +133,7 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         return table;
     }
 
-    private String getPriorityName(final MessageResources messageResources, final String name) {
+    protected String getPriorityName(final MessageResources messageResources, final String name) {
         final PropertiesManager pmgr = new PropertiesManager();
         if (name.equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1"))) {
             return messageResources.getMessage("observatorio.nivel.analisis.1");
@@ -118,7 +144,7 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         }
     }
 
-    private PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm) {
+    protected PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm) {
         final float[] widths = {0.60f, 0.20f, 0.20f};
         final PdfPTable table = new PdfPTable(widths);
 
@@ -176,9 +202,7 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         return table;
     }
 
-    private void addCheckCodes(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, boolean isBasicService) throws IOException {
-        final PropertiesManager pmgr = new PropertiesManager();
-
+    private void addCheckCodes(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
         for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
             if (hasProblems(priority)) {
                 final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, 1, 0);
@@ -188,74 +212,10 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
                         for (ObservatorySubgroupForm verification : level.getSubgroups()) {
                             if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
                                 for (ProblemForm problem : verification.getProblems()) {
-                                    final PdfPTable tablaVerificacionProblema = new PdfPTable(new float[]{0.13f, 0.87f});
-                                    tablaVerificacionProblema.setSpacingBefore(10);
-                                    tablaVerificacionProblema.setWidthPercentage(100);
-                                    levelSection.add(tablaVerificacionProblema);
+                                    final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, levelSection, verification, problem);
 
-                                    final PdfPCell verificacion = PDFUtils.createTableCell(messageResources.getMessage(verification.getDescription()), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
-                                    verificacion.setColspan(2);
-                                    tablaVerificacionProblema.addCell(verificacion);
-
-                                    final String problema;
-                                    final com.lowagie.text.Font font;
-                                    if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
-                                        problema = messageResources.getMessage("pdf.accessibility.bs.warning");
-                                        font = ConstantsFont.WARNING_FONT;
-                                    } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high"))) {
-                                        problema = messageResources.getMessage("pdf.accessibility.bs.problem");
-                                        font = ConstantsFont.PROBLEM_FONT;
-                                    } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
-                                        problema = messageResources.getMessage("pdf.accessibility.bs.info");
-                                        font = ConstantsFont.CANNOTTELL_FONT;
-                                    } else {
-                                        problema = "";
-                                        font = ConstantsFont.CANNOTTELL_FONT;
-                                    }
-                                    final PdfPCell celdaProblema = PDFUtils.createTableCell(problema, Color.WHITE, font, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
-                                    celdaProblema.setBorder(0);
-                                    celdaProblema.setVerticalAlignment(Element.ALIGN_TOP);
-                                    tablaVerificacionProblema.addCell(celdaProblema);
-
-                                    final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
-                                    final PdfPCell comprobacion = PDFUtils.createTableCell(StringUtils.removeHtmlTags(checkDescriptionsManager.getErrorMessage(problem.getCheck())), Color.WHITE, ConstantsFont.strongDescriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
-                                    comprobacion.setBorder(0);
-                                    comprobacion.setVerticalAlignment(Element.ALIGN_TOP);
-                                    tablaVerificacionProblema.addCell(comprobacion);
-
-                                    if (isBasicService) {
-                                        final String rationaleMessage = checkDescriptionsManager.getRationaleMessage(problem.getCheck());
-                                        if (rationaleMessage != null && StringUtils.isNotEmpty(rationaleMessage)) {
-                                            final Paragraph rationale = new Paragraph();
-                                            boolean isFirst = true;
-                                            for (String phraseText : Arrays.asList(rationaleMessage.split("<p>|</p>"))) {
-                                                if (isFirst) {
-                                                    if (StringUtils.isNotEmpty(phraseText)) {
-                                                        rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
-                                                    }
-                                                    isFirst = false;
-                                                } else {
-                                                    rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
-                                                }
-                                            }
-
-                                            tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
-
-                                            final PdfPCell celdaRationale = new PdfPCell(rationale);
-                                            celdaRationale.setBorder(0);
-                                            celdaRationale.setBackgroundColor(Color.WHITE);
-                                            celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
-                                            celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                                            celdaRationale.setPadding(DEFAULT_PADDING);
-                                            tablaVerificacionProblema.addCell(celdaRationale);
-                                        }
-
-                                        BasicServiceExport.addSpecificProblems(messageResources, levelSection, problem.getSpecificProblems());
-                                    }
-
-                                    if (problem.getCheck().equals("232") || //pmgr.getValue("check.properties", "doc.valida.especif")) ||
-                                            EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
-                                        BasicServiceExport.addW3CCopyright(levelSection, problem.getCheck());
+                                    if (problem.getCheck().equals("232") || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
+                                        addW3CCopyright(levelSection, problem.getCheck());
                                     }
                                 }
                             }
@@ -266,7 +226,47 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         }
     }
 
-    private boolean hasProblems(final ObservatoryLevelForm priority) {
+    protected PdfPTable createTablaVerificacionProblema(final MessageResources messageResources, final Section levelSection, final ObservatorySubgroupForm verification, final ProblemForm problem) throws IOException {
+        final PropertiesManager pmgr = new PropertiesManager();
+        final PdfPTable tablaVerificacionProblema = new PdfPTable(new float[]{0.13f, 0.87f});
+        tablaVerificacionProblema.setSpacingBefore(10);
+        tablaVerificacionProblema.setWidthPercentage(100);
+        levelSection.add(tablaVerificacionProblema);
+
+        final PdfPCell verificacion = PDFUtils.createTableCell(messageResources.getMessage(verification.getDescription()), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+        verificacion.setColspan(2);
+        tablaVerificacionProblema.addCell(verificacion);
+
+        final String problema;
+        final Font font;
+        if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
+            problema = messageResources.getMessage("pdf.accessibility.bs.warning");
+            font = ConstantsFont.WARNING_FONT;
+        } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.high"))) {
+            problema = messageResources.getMessage("pdf.accessibility.bs.problem");
+            font = ConstantsFont.PROBLEM_FONT;
+        } else if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
+            problema = messageResources.getMessage("pdf.accessibility.bs.info");
+            font = ConstantsFont.CANNOTTELL_FONT;
+        } else {
+            problema = "";
+            font = ConstantsFont.CANNOTTELL_FONT;
+        }
+        final PdfPCell celdaProblema = PDFUtils.createTableCell(problema, Color.WHITE, font, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+        celdaProblema.setBorder(0);
+        celdaProblema.setVerticalAlignment(Element.ALIGN_TOP);
+        tablaVerificacionProblema.addCell(celdaProblema);
+
+        final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
+        final PdfPCell comprobacion = PDFUtils.createTableCell(StringUtils.removeHtmlTags(checkDescriptionsManager.getErrorMessage(problem.getCheck())), Color.WHITE, ConstantsFont.strongDescriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+        comprobacion.setBorder(0);
+        comprobacion.setVerticalAlignment(Element.ALIGN_TOP);
+        tablaVerificacionProblema.addCell(comprobacion);
+
+        return tablaVerificacionProblema;
+    }
+
+    protected boolean hasProblems(final ObservatoryLevelForm priority) {
         for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
             for (ObservatorySubgroupForm verification : level.getSubgroups()) {
                 if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
@@ -278,7 +278,7 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         return false;
     }
 
-    private boolean hasProblems(final ObservatorySuitabilityForm level) {
+    protected boolean hasProblems(final ObservatorySuitabilityForm level) {
         for (ObservatorySubgroupForm verification : level.getSubgroups()) {
             if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
                 return true;
@@ -288,18 +288,18 @@ public class BasicServiceObservatoryPageResultsPdfSectionBuilder {
         return false;
     }
 
-    private String getLevelName(final MessageResources messageResources, final ObservatorySuitabilityForm level) {
+    protected String getLevelName(final MessageResources messageResources, final ObservatorySuitabilityForm level) {
         final PropertiesManager pmgr = new PropertiesManager();
-        if (level.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1.level").toUpperCase())) {
+        if (level.getName().equalsIgnoreCase(pmgr.getValue(INTAV_PROPERTIES, "priority.1.level"))) {
             return messageResources.getMessage("first.level.bs");
-        } else if (level.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.2.level").toUpperCase())) {
+        } else if (level.getName().equalsIgnoreCase(pmgr.getValue(INTAV_PROPERTIES, "priority.2.level"))) {
             return messageResources.getMessage("second.level.bs");
         } else {
             return "";
         }
     }
 
-    private String getPriorityName(final MessageResources messageResources, final ObservatoryLevelForm priority) {
+    protected String getPriorityName(final MessageResources messageResources, final ObservatoryLevelForm priority) {
         final PropertiesManager pmgr = new PropertiesManager();
         if (priority.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1"))) {
             return messageResources.getMessage("priority1.bs");
