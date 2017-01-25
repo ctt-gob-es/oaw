@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -8,6 +8,7 @@ public interface Constants {
     int STATUS_ERROR = 5;
 
     String CRAWLER_CORE_PROPERTIES = "crawler.core.properties";
+    String MAIL_PROPERTIES = "mail.properties";
 
     String CRAWLER_JOB_NAME = "crawlerJob";
     String CRAWLER_JOB_GROUP = "crawlerJobGroup";

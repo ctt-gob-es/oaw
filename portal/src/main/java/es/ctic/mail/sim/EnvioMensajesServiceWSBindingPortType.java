@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -31,7 +31,7 @@ public interface EnvioMensajesServiceWSBindingPortType {
      */
     @WebMethod(action = "enviarMensaje")
     @WebResult(name = "Respuesta", targetNamespace = "http://misim.redsara.es/misim-bus-webapp/respuesta", partName = "respuesta")
-    public Respuesta enviarMensaje(
+    Respuesta enviarMensaje(
         @WebParam(name = "Peticion", targetNamespace = "http://misim.redsara.es/misim-bus-webapp/peticion", partName = "peticion")
         Peticion peticion);
 

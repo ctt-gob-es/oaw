@@ -155,7 +155,7 @@ public class BasicServiceForm extends ValidatorForm {
             return "Observatorio UNE 2004";
         } else if (Constants.REPORT_OBSERVATORY_2.equals(report)) {
             return "Observatorio UNE 2012";
-        } else if ("observatorio-1-nobroken".equals(report)) {
+        } else if (Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(report)) {
             return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
         } else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(report)) {
             return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";

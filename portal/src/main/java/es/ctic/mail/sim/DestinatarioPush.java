@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,18 +8,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DestinatarioSMS complex type.
+ * <p>Java class for DestinatarioPush complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DestinatarioSMS">
+ * &lt;complexType name="DestinatarioPush">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="DocUsuario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="IdExterno" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="Destinatario" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="IdentificadorUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,19 +29,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DestinatarioSMS", propOrder = {
+@XmlType(name = "DestinatarioPush", propOrder = {
     "docUsuario",
     "idExterno",
-    "destinatario"
+    "identificadorUsuario"
 })
-public class DestinatarioSMS {
+public class DestinatarioPush {
 
     @XmlElement(name = "DocUsuario")
     protected String docUsuario;
     @XmlElement(name = "IdExterno")
     protected String idExterno;
-    @XmlElement(name = "Destinatario", required = true)
-    protected String destinatario;
+    @XmlElement(name = "IdentificadorUsuario", required = true)
+    protected String identificadorUsuario;
 
     /**
      * Gets the value of the docUsuario property.
@@ -92,27 +92,27 @@ public class DestinatarioSMS {
     }
 
     /**
-     * Gets the value of the destinatario property.
+     * Gets the value of the identificadorUsuario property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDestinatario() {
-        return destinatario;
+    public String getIdentificadorUsuario() {
+        return identificadorUsuario;
     }
 
     /**
-     * Sets the value of the destinatario property.
+     * Sets the value of the identificadorUsuario property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDestinatario(String value) {
-        this.destinatario = value;
+    public void setIdentificadorUsuario(String value) {
+        this.identificadorUsuario = value;
     }
 
 }
