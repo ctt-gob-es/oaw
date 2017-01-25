@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -23,7 +23,7 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: es.client
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: es.mail.sim
      * 
      */
     public ObjectFactory() {

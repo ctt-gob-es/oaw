@@ -54,15 +54,6 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static void somethingWasWrongMessage(final BasicServiceForm basicServiceForm, final String message) {
-        final PropertiesManager pmgr = new PropertiesManager();
-        final String subject = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.error.subject");
-        final ArrayList<String> mailTo = new ArrayList<>();
-        mailTo.add(basicServiceForm.getEmail());
-        final String mailFrom = pmgr.getValue(CRAWLER_CORE_PROPERTIES, "mail.address.from");
-        MailUtils.sendMail(mailFrom, "Servicio on-line de diagnóstico de Accesibilidad", mailTo, subject, message, null, null, null, null, true);
-    }
-
     public static List<BasicServiceForm> getBasicServiceRequestByStatus(final String status) {
         try (Connection conn = DataBaseManager.getConnection()) {
             return DiagnosisDAO.getBasicServiceRequestByStatus(conn, status);
@@ -150,7 +141,7 @@ public final class BasicServiceUtils {
         }
     }
 
-    public static Long getGuideline(final String report) {
+    public static long getGuideline(final String report) {
         final PropertiesManager pmgr = new PropertiesManager();
         if (report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY) || report.equalsIgnoreCase(Constants.REPORT_OBSERVATORY_FILE) || report.equals(Constants.REPORT_OBSERVATORY_1_NOBROKEN)) {
             return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.observatorio.intav.id"));
@@ -163,7 +154,7 @@ public final class BasicServiceUtils {
         } else if (report.equals(Constants.REPORT_OBSERVATORY_2) || report.equals(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
             return 7L;
         } else {
-            return null;
+            return -1;
         }
     }
 

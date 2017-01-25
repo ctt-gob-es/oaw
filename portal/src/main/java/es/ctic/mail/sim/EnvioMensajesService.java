@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "EnvioMensajesService", targetNamespace = "http://misim.redsara.es/misim-bus-webapp/", wsdlLocation = "file:/home/mikunis/proyectos/minhap/documentacion/SIM_envio_mensaje_service.wsdl")
+@WebServiceClient(name = "EnvioMensajesService", targetNamespace = "http://misim.redsara.es/misim-bus-webapp/", wsdlLocation = "https://pre-misim.redsara.es/misim-bus-webapp/EnvioMensajesService?wsdl")
 public class EnvioMensajesService
     extends Service
 {
@@ -30,7 +30,7 @@ public class EnvioMensajesService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/home/mikunis/proyectos/minhap/documentacion/SIM_envio_mensaje_service.wsdl");
+            url = new URL("https://pre-misim.redsara.es/misim-bus-webapp/EnvioMensajesService?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
@@ -39,11 +39,11 @@ public class EnvioMensajesService
     }
 
     public EnvioMensajesService() {
-        super(__getWsdlLocation(), ENVIOMENSAJESSERVICE_QNAME);
+        super(internalGetWsdlLocation(), ENVIOMENSAJESSERVICE_QNAME);
     }
 
     public EnvioMensajesService(WebServiceFeature... features) {
-        super(__getWsdlLocation(), ENVIOMENSAJESSERVICE_QNAME, features);
+        super(internalGetWsdlLocation(), ENVIOMENSAJESSERVICE_QNAME, features);
     }
 
     public EnvioMensajesService(URL wsdlLocation) {
@@ -84,7 +84,7 @@ public class EnvioMensajesService
         return super.getPort(new QName("http://misim.redsara.es/misim-bus-webapp/", "EnvioMensajesServicePort"), EnvioMensajesServiceWSBindingPortType.class, features);
     }
 
-    private static URL __getWsdlLocation() {
+    private static URL internalGetWsdlLocation() {
         if (ENVIOMENSAJESSERVICE_EXCEPTION!= null) {
             throw ENVIOMENSAJESSERVICE_EXCEPTION;
         }

@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,18 +8,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DestinatarioMail complex type.
+ * <p>Java class for DestinatarioSMS complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DestinatarioMail">
+ * &lt;complexType name="DestinatarioSMS">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="DocUsuario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="IdExterno" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="Destinatarios" type="{http://misim.redsara.es/misim-bus-webapp/peticion}Destinatarios"/>
+ *         &lt;element name="Destinatario" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,19 +29,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DestinatarioMail", propOrder = {
+@XmlType(name = "DestinatarioSMS", propOrder = {
     "docUsuario",
     "idExterno",
-    "destinatarios"
+    "destinatario"
 })
-public class DestinatarioMail {
+public class DestinatarioSMS {
 
     @XmlElement(name = "DocUsuario")
     protected String docUsuario;
     @XmlElement(name = "IdExterno")
     protected String idExterno;
-    @XmlElement(name = "Destinatarios", required = true)
-    protected Destinatarios destinatarios;
+    @XmlElement(name = "Destinatario", required = true)
+    protected String destinatario;
 
     /**
      * Gets the value of the docUsuario property.
@@ -92,27 +92,27 @@ public class DestinatarioMail {
     }
 
     /**
-     * Gets the value of the destinatarios property.
+     * Gets the value of the destinatario property.
      * 
      * @return
      *     possible object is
-     *     {@link Destinatarios }
+     *     {@link String }
      *     
      */
-    public Destinatarios getDestinatarios() {
-        return destinatarios;
+    public String getDestinatario() {
+        return destinatario;
     }
 
     /**
-     * Sets the value of the destinatarios property.
+     * Sets the value of the destinatario property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Destinatarios }
+     *     {@link String }
      *     
      */
-    public void setDestinatarios(Destinatarios value) {
-        this.destinatarios = value;
+    public void setDestinatario(String value) {
+        this.destinatario = value;
     }
 
 }

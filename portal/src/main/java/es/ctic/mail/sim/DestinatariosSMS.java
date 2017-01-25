@@ -1,5 +1,5 @@
 
-package es.ctic.sim;
+package es.ctic.mail.sim;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,16 +10,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DestinatariosMail complex type.
+ * <p>Java class for DestinatariosSMS complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DestinatariosMail">
+ * &lt;complexType name="DestinatariosSMS">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="DestinatarioMail" type="{http://misim.redsara.es/misim-bus-webapp/peticion}DestinatarioMail" maxOccurs="unbounded"/>
+ *         &lt;element name="DestinatarioSMS" type="{http://misim.redsara.es/misim-bus-webapp/peticion}DestinatarioSMS" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,41 +29,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DestinatariosMail", propOrder = {
-    "destinatarioMail"
+@XmlType(name = "DestinatariosSMS", propOrder = {
+    "destinatarioSMS"
 })
-public class DestinatariosMail {
+public class DestinatariosSMS {
 
-    @XmlElement(name = "DestinatarioMail", required = true)
-    protected List<DestinatarioMail> destinatarioMail;
+    @XmlElement(name = "DestinatarioSMS", required = true)
+    protected List<DestinatarioSMS> destinatarioSMS;
 
     /**
-     * Gets the value of the destinatarioMail property.
+     * Gets the value of the destinatarioSMS property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the destinatarioMail property.
+     * This is why there is not a <CODE>set</CODE> method for the destinatarioSMS property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDestinatarioMail().add(newItem);
+     *    getDestinatarioSMS().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DestinatarioMail }
+     * {@link DestinatarioSMS }
      * 
      * 
      */
-    public List<DestinatarioMail> getDestinatarioMail() {
-        if (destinatarioMail == null) {
-            destinatarioMail = new ArrayList<DestinatarioMail>();
+    public List<DestinatarioSMS> getDestinatarioSMS() {
+        if (destinatarioSMS == null) {
+            destinatarioSMS = new ArrayList<DestinatarioSMS>();
         }
-        return this.destinatarioMail;
+        return this.destinatarioSMS;
     }
 
 }
