@@ -876,11 +876,8 @@ public class Check {
         for (int i = 0; i < inputs.getLength(); i++) {
             if (inputs.item(i) instanceof Element) {
                 final Element element = (Element) inputs.item(i);
-                // Los input de tipo hidden & button no cuentan
-                if (!"hidden".equals(element.getAttribute("type"))
-                        && !"button".equals(element.getAttribute("type"))
-                        && !"submit".equals(element.getAttribute("type"))) {
-                    // TODO: ¿Filtrar los input de botón (radio y checkbox)?
+                // Solo se contabilizan los input de tipo text
+                if (element.getAttribute("type").isEmpty() || "text".equals(element.getAttribute("type"))) {
                     filteredControls++;
                 }
             }

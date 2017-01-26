@@ -757,6 +757,20 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
     }
 
     @Test
+    public void evaluateRequiredControlsRadioButton() {
+        checkAccessibility.setContent("<form>" +
+                "<fieldset><legend>Grupo</legend>" +
+                "<input type=\"radio\">" +
+                "<input type=\"radio\">" +
+                "<input type=\"radio\">" +
+                "<input type=\"radio\">" +
+                "<input type=\"radio\">" +
+                "</fieldset>" +
+                "</form>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, REQUIRED_CONTROLS));
+    }
+
+    @Test
     public void evaluateLabelHiddenDisplayNone() {
         checkAccessibility.setContent("<html><style type=\"text/css\">label { display: none; }</style>" +
                 "<div>Los campos marcados con * son obligatorios</div>" +
