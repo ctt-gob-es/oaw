@@ -1,9 +1,9 @@
 package es.inteco.rastreador2.management;
 
+import es.ctic.mail.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.utils.DAOUtils;
-import es.inteco.utils.MailUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
@@ -60,7 +60,8 @@ public class FreeSpaceJob implements StatefulJob {
         String alertFromAddress = pmgr.getValue("management.properties", "alert.from.address");
         String alertFromName = pmgr.getValue("management.properties", "alert.from.name");
 
-        MailUtils.sendSimpleMail(alertFromAddress, alertFromName, adminMails, alertSubject, alertText);
+        MailService mailService = new MailService();
+        mailService.sendMail(adminMails, alertSubject, alertText);
     }
 
 }

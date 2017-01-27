@@ -1,7 +1,7 @@
 package es.ctic.mail;
 
-import es.ctic.mail.sim.MailSimProvider;
 import es.ctic.mail.smtp.MailSmtpProvider;
+import es.ctic.mail.sim.MailSimProvider;
 
 /**
  * Created by mikunis on 1/23/17.

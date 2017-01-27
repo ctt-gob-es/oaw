@@ -3,7 +3,6 @@ package es.ctic.mail.sim;
 import es.ctic.mail.MailProvider;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.common.Constants;
 import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
@@ -33,15 +32,15 @@ public class MailSimProvider implements MailProvider {
         final PropertiesManager pmgr = new PropertiesManager();
         final Peticion peticion = factory.createPeticion();
 
-        peticion.setUsuario(pmgr.getValue(Constants.MAIL_PROPERTIES, "sim.user.username"));
-        peticion.setPassword(pmgr.getValue(Constants.MAIL_PROPERTIES, "sim.user.password"));
-        peticion.setServicio(pmgr.getValue(Constants.MAIL_PROPERTIES, "sim.mailservice.id"));
+        peticion.setUsuario(pmgr.getValue(MAIL_PROPERTIES, "sim.user.username"));
+        peticion.setPassword(pmgr.getValue(MAIL_PROPERTIES, "sim.user.password"));
+        peticion.setServicio(pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.id"));
         peticion.setNombreLote("OAW-" + System.currentTimeMillis());
         peticion.setMensajes(createMensajes());
 
         final URL wsdlURL;
         try {
-            wsdlURL = new URL(pmgr.getValue(Constants.MAIL_PROPERTIES, "sim.mailservice.wsdl.url"));
+            wsdlURL = new URL(pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url"));
             final EnvioMensajesService service = new EnvioMensajesService(wsdlURL);
 
             final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service.getEnvioMensajesServicePort();
@@ -49,7 +48,7 @@ public class MailSimProvider implements MailProvider {
             final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
             final ResponseStatusType respuestaStatus = respuesta.getStatus();
         } catch (MalformedURLException e) {
-            Logger.putLog(String.format("Invalid SIM WSDL URL value of %s", pmgr.getValue(Constants.MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
+            Logger.putLog(String.format("Invalid SIM WSDL URL value of %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 

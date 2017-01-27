@@ -116,58 +116,58 @@ public class Prueba {
 
     }
 
-    @Test
-    public void testConexionOAW() throws Exception {
-        String baseUrl = "http://localhost:8080/oaw/basicServiceAction.do";
-        HttpURLConnection urlConnection = (HttpURLConnection)new URL(baseUrl).openConnection();
-        urlConnection.setConnectTimeout(15000);
-        urlConnection.setReadTimeout(15000);
-        urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        urlConnection.setDoOutput(true);
-        OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
-
-        String directorio = "false";
-        String content = "<p>\n" +
-                "<img src=\"imagen.gif\"/>\n" +
-                "Lorem ipsum\n" +
-                "</p>\n" +
-                " <ul class=\"nice-menu nice-menu-down nice-menu-main-menu\" id=\"nice-menu-2\"><li class=\"menu-227 menu-path-node-7 active-trail first odd \"><a href=\"/inicio\" class=\"active\">Inicio</a></li>\n" +
-                "<li class=\"menu-3639 menuparent  menu-path-node-927  even \"><a href=\"/ctic\">CTIC</a><ul><li class=\"menu-749 menu-path-node-41 first odd \"><a href=\"/ctic/organos-de-gobierno\">Órganos de Gobierno</a></li>\n" +
-                "<li class=\"menu-904 menu-path-node-162  even \"><a href=\"/ctic/perfil-del-contratante\">Perfil del Contratante</a></li>\n" +
-                "<li class=\"menu-751 menu-path-node-43  odd \"><a href=\"/ctic/recursos-humanos\">Recursos Humanos</a></li>\n" +
-                "</ul>\n" +
-                "<div class=\"angle\">\n" +
-                "\t\t<h2><span>Únete al TAW</span></h2>      \n" +
-                "\t\t<div><p>Desde hace 15 a&ntilde;os TAW ayuda a mejorar la accesibilidad de la web de forma gratuita. &iexcl;Ay&uacute;danos a mantener TAW!</p>\n" +
-                "</div>\n" +
-                "\t</div>\n";
-        String urlParameter = "";
-        String mailParameter = "miguel.garcia@fundacionctic.org";
-        URLCodec codec = new URLCodec();
-        String postRequest = "content=" + codec.encode(content) + "&url="+java.net.URLEncoder.encode(urlParameter,"ISO-8859-1")+"&correo="+mailParameter+"&profundidad=1&amplitud=1&informe=observatorio-2-nobroken&usuario=miguelgarcia&inDirectory="+directorio;
-        writer.write(postRequest);
-        writer.flush();
-        writer.close();
-
-        urlConnection.connect();
-
-        if (urlConnection.getResponseCode()!=200){
-            System.out.println("FAIL: Recibido código de estado distinto a 200: "+urlConnection.getResponseCode());
-        }else{
-            System.out.println("OK");
-            System.out.println("Obteniendo datos respuesta");
-            DataInputStream dis = new DataInputStream ( urlConnection.getInputStream (  )  ) ;
-            BufferedReader in = new BufferedReader(new InputStreamReader(dis));
-
-            String line = in.readLine();
-
-            //Si leemos un texto ok en esta linea por ejemplo
-            if (in!=null) {
-                System.out.println("Datos enviados correctamente");
-            }
-            System.out.println(line);
-            dis.close();
-            dis=null;
-        }
-    }
+//    @Test
+//    public void testConexionOAW() throws Exception {
+//        String baseUrl = "http://localhost:8080/oaw/basicServiceAction.do";
+//        HttpURLConnection urlConnection = (HttpURLConnection)new URL(baseUrl).openConnection();
+//        urlConnection.setConnectTimeout(15000);
+//        urlConnection.setReadTimeout(15000);
+//        urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+//        urlConnection.setDoOutput(true);
+//        OutputStreamWriter writer = new OutputStreamWriter(urlConnection.getOutputStream());
+//
+//        String directorio = "false";
+//        String content = "<p>\n" +
+//                "<img src=\"imagen.gif\"/>\n" +
+//                "Lorem ipsum\n" +
+//                "</p>\n" +
+//                " <ul class=\"nice-menu nice-menu-down nice-menu-main-menu\" id=\"nice-menu-2\"><li class=\"menu-227 menu-path-node-7 active-trail first odd \"><a href=\"/inicio\" class=\"active\">Inicio</a></li>\n" +
+//                "<li class=\"menu-3639 menuparent  menu-path-node-927  even \"><a href=\"/ctic\">CTIC</a><ul><li class=\"menu-749 menu-path-node-41 first odd \"><a href=\"/ctic/organos-de-gobierno\">Órganos de Gobierno</a></li>\n" +
+//                "<li class=\"menu-904 menu-path-node-162  even \"><a href=\"/ctic/perfil-del-contratante\">Perfil del Contratante</a></li>\n" +
+//                "<li class=\"menu-751 menu-path-node-43  odd \"><a href=\"/ctic/recursos-humanos\">Recursos Humanos</a></li>\n" +
+//                "</ul>\n" +
+//                "<div class=\"angle\">\n" +
+//                "\t\t<h2><span>Únete al TAW</span></h2>      \n" +
+//                "\t\t<div><p>Desde hace 15 a&ntilde;os TAW ayuda a mejorar la accesibilidad de la web de forma gratuita. &iexcl;Ay&uacute;danos a mantener TAW!</p>\n" +
+//                "</div>\n" +
+//                "\t</div>\n";
+//        String urlParameter = "";
+//        String mailParameter = "miguel.garcia@fundacionctic.org";
+//        URLCodec codec = new URLCodec();
+//        String postRequest = "content=" + codec.encode(content) + "&url="+java.net.URLEncoder.encode(urlParameter,"ISO-8859-1")+"&correo="+mailParameter+"&profundidad=1&amplitud=1&informe=observatorio-2-nobroken&usuario=miguelgarcia&inDirectory="+directorio;
+//        writer.write(postRequest);
+//        writer.flush();
+//        writer.close();
+//
+//        urlConnection.connect();
+//
+//        if (urlConnection.getResponseCode()!=200){
+//            System.out.println("FAIL: Recibido código de estado distinto a 200: "+urlConnection.getResponseCode());
+//        }else{
+//            System.out.println("OK");
+//            System.out.println("Obteniendo datos respuesta");
+//            DataInputStream dis = new DataInputStream ( urlConnection.getInputStream (  )  ) ;
+//            BufferedReader in = new BufferedReader(new InputStreamReader(dis));
+//
+//            String line = in.readLine();
+//
+//            //Si leemos un texto ok en esta linea por ejemplo
+//            if (in!=null) {
+//                System.out.println("Datos enviados correctamente");
+//            }
+//            System.out.println(line);
+//            dis.close();
+//            dis=null;
+//        }
+//    }
 }

@@ -1,10 +1,10 @@
 package es.inteco.rastreador2.management;
 
 import com.sun.management.OperatingSystemMXBean;
+import es.ctic.mail.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.utils.DAOUtils;
-import es.inteco.utils.MailUtils;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -146,10 +146,10 @@ public class ManagementThread extends Thread {
                 .replace("{1}", heapMemoryUsed.divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_HALF_UP).toPlainString())
                 .replace("{2}", heapMemoryMax.divide(new BigDecimal(1000000), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
         alertText += pmgr.getValue("management.properties", "memory.alert.info");
-        String alertFromAddress = pmgr.getValue("management.properties", "alert.from.address");
-        String alertFromName = pmgr.getValue("management.properties", "alert.from.name");
 
-        MailUtils.sendSimpleMail(alertFromAddress, alertFromName, adminMails, alertSubject, alertText);
+        MailService mailService = new MailService();
+        mailService.sendMail(adminMails, alertSubject, alertText);
+
     }
 
     private void sendCpuMail(BigDecimal cpuUsage) throws Exception {
@@ -159,9 +159,8 @@ public class ManagementThread extends Thread {
         String alertText = pmgr.getValue("management.properties", "common.alert.text");
         alertText += pmgr.getValue("management.properties", "cpu.alert.text")
                 .replace("{0}", cpuUsage.toPlainString());
-        String alertFromAddress = pmgr.getValue("management.properties", "alert.from.address");
-        String alertFromName = pmgr.getValue("management.properties", "alert.from.name");
 
-        MailUtils.sendSimpleMail(alertFromAddress, alertFromName, adminMails, alertSubject, alertText);
+        MailService mailService = new MailService();
+        mailService.sendMail(adminMails, alertSubject, alertText);
     }
 }

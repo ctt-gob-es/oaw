@@ -75,20 +75,6 @@ public final class MailUtils {
         }
     }
 
-    public static void sendSimpleMail(String fromAddress, String fromName, List<String> mailsTo, String subject, String text) {
-        try {
-            // Create the email message
-            final MultiPartEmail email = createEmail();
-
-            setEmailInfo(email, mailsTo, fromAddress, fromName, subject, text);
-
-            // send the email
-            email.send();
-        } catch (Exception e) {
-            Logger.putLog("FALLO No se han podido enviar el correo simple", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-    }
-
     private static void setEmailInfo(final MultiPartEmail email, final List<String> mailTo, final String mailFrom, final String mailFromName, final String subject, final String text) throws EmailException {
         for (String addressStr : mailTo) {
             email.addBcc(addressStr);

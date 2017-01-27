@@ -41,7 +41,7 @@ import static es.inteco.common.Constants.*;
 public class BasicServiceManager {
 
     private final PropertiesManager pmgr = new PropertiesManager();
-    private final MailService mailService = new MailService();
+    private final BasicServiceMailService mailService = new BasicServiceMailService();
 
     /**
      *

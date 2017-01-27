@@ -1,7 +1,7 @@
 package es.ctic.mail;
 
-import es.ctic.mail.sim.MailSimProvider;
 import es.ctic.mail.smtp.MailSmtpProvider;
+import es.ctic.mail.sim.MailSimProvider;
 import junit.framework.Assert;
 import org.junit.Test;
 

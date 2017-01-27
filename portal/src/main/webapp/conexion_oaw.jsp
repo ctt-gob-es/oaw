@@ -11,20 +11,19 @@
 
 <%@page import= "org.apache.commons.codec.net.URLCodec"%>
 <%!
+    // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
+    // Valores típicos serán:
+    // Producción: http://oaw.redsara.es/oaw/
+    // Preproducción: http://pre-oaw.redsara.es/oaw/
+    // Integración: http://des-oaw.redsara.es/oaw/
+    private final static String BASE_URL = "http://localhost:8080/oaw/";
+
+    // Path de los servicios que se invocarán. Se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en la aplicación.
+    private final static String BASIC_SERVICE_ENDPOINT = "basicServiceAction.do";
+    private final static String HISTORICO_ENDPOINT = "checkHistorico.do";
+
     // Clase para manejar las solicitudes al servicio de diagnóstico y realizar peticiones a los servicios que manejan el historico/evolutivo del servicio de diagnóstico.
     class RequestManager {
-
-        // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
-        // Valores típicos serán: 
-        // Producción: http://oaw.redsara.es/oaw
-        // Preproducción: http://oaw-pre.redsara.es/oaw
-        // Integración: http://localhost:8080/oaw/
-        private final static String BASE_URL = "http://localhost:8080/oaw/";
-
-        // Path de los servicios que se invocarán se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en la aplicación.
-        private final static String BASIC_SERVICE_ENDPOINT = "basicServiceAction.do";
-        private final static String HISTORICO_ENDPOINT = "checkHistorico.do";
-
         private final URL host;
         private final String codigo;
         private String url;
@@ -163,8 +162,7 @@
             BufferedReader in = null;
             try {
                 in = new BufferedReader(new InputStreamReader(httpConnection.getInputStream()));
-                final String line = in.readLine();
-                return line;
+                return in.readLine();
             } catch (Exception e) {
                 return "";
             } finally {
@@ -178,6 +176,9 @@
         }
 
         private void validateRequest() {
+            if (!correo.contains("@")) {
+                errores.add("La direcci&oacute;n de correo electr&oacute;nico no es v&aacute;lida");
+            }
             if (isCrawlingRequest()) {
                 if (!url.startsWith("http://") && !url.startsWith("https://")) {
                     errores.add("La URL debe comenzar por http:// o https://");
@@ -207,10 +208,7 @@
                     }
                 }
             } else if (codigo.length() > 2000000) {
-                errores.add("El código fuente a analizar es demasiado largo");
-            }
-            if (!correo.contains("@")) {
-                errores.add("La dirección de correo electrónico no es válida");
+                errores.add("El c&oacute;digo fuente a analizar es demasiado largo");
             }
         }
 
@@ -246,12 +244,12 @@
             function checkHistoricoResults(historicoResult) {
               var fieldset = document.getElementById('historico_resultados');
               if (historicoResult.historico.length > 0) {
-                fieldset.innerHTML += "<p>A continuación se indican los análisis existentes para la url indicada. Seleccione el análisis a eliminar.<\/p>";
+                fieldset.innerHTML += "<p>A continuaci&oacute;n se indican los an&aacute;lisis existentes para la url indicada. Seleccione el an&aacute;lisis a eliminar.<\/p>";
                 for (i in historicoResult.historico) {
                   fieldset.appendChild(createRadioElement(historicoResult.historico[i].id, historicoResult.historico[i].date, i == 2));
                 }
               } else {
-                fieldset.innerHTML += "<p>No existen análisis existentes para la url indicada. Se guardarán los resultados para incluirlos como referencia en posteriores análisis.<\/p>";
+                fieldset.innerHTML += "<p>No existen an&aacute;lisis existentes para la url indicada. Se guardar&aacute;n los resultados para incluirlos como referencia en posteriores an&aacute;lisis.<\/p>";
               }
             }
         </script>
@@ -280,14 +278,13 @@
             <div><input type="submit" value="Enviar"></div>
         </form>
         <%
-                    final String historico = requestManager.getHistorico();
-                    out.println(requestManager.generateCallHistoricoJavaScriptFunction(historico));
+                    out.println(requestManager.generateCallHistoricoJavaScriptFunction(requestManager.getHistorico()));
                 } else {
                     out.println(requestManager.launchServicioDiagnostico());
                 }
             } else {
                 // Si los parámetros no son válidos se muestran los errores.
-                out.println("<p><strong>ERROR</strong> los parámetros no son correctos.</p>");
+                out.println("<p><strong>ERROR</strong> los par&aacute;metros no son correctos.</p>");
                 out.println("<ul>");
                 for (String error : requestManager.getErrores()) {
                     out.println("<li>" + error + "</li>");
