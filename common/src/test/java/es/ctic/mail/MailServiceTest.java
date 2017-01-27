@@ -1,16 +1,5 @@
 package es.ctic.mail;
 
-import es.inteco.common.Constants;
-import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
-import es.inteco.utils.FileUtils;
-import org.apache.commons.codec.binary.Base64;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 /**
  * Created by mikunis on 1/25/17.
  */

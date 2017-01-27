@@ -22,9 +22,9 @@ public class EnvioMensajesService
     extends Service
 {
 
-    private final static URL ENVIOMENSAJESSERVICE_WSDL_LOCATION;
-    private final static WebServiceException ENVIOMENSAJESSERVICE_EXCEPTION;
-    private final static QName ENVIOMENSAJESSERVICE_QNAME = new QName("http://misim.redsara.es/misim-bus-webapp/", "EnvioMensajesService");
+    private static final URL ENVIOMENSAJESSERVICE_WSDL_LOCATION;
+    private static final WebServiceException ENVIOMENSAJESSERVICE_EXCEPTION;
+    private static final QName ENVIOMENSAJESSERVICE_QNAME = new QName("http://misim.redsara.es/misim-bus-webapp/", "EnvioMensajesService");
 
     static {
         URL url = null;
