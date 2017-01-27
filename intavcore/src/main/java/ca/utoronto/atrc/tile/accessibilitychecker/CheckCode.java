@@ -321,6 +321,8 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_ALL_LABELS;
             } else if ("not-valid-url".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_NOT_VALID_URL;
+            } else if ("table-complex".equals(stringCall)) {
+                functionId = CheckFunctionConstants.FUNCTION_TABLE_COMPLEX;
             } else if ("table-heading-complex".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_TABLE_HEADING_COMPLEX;
             } else if ("has-not-element-childs".equals(stringCall)) {

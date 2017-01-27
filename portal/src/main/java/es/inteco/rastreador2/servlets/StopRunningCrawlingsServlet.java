@@ -1,4 +1,4 @@
-package es.inteco.crawler.servlet;
+package es.inteco.rastreador2.servlets;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.plugin.dao.DataBaseManager;
