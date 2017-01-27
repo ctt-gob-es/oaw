@@ -9,14 +9,13 @@ import java.util.List;
  */
 public class MailService {
 
-    private final MailProvider mailProvider;
+    private final PropertiesManager pmgr = new PropertiesManager();
 
     public MailService() {
-        final PropertiesManager pmgr = new PropertiesManager();
-        mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
     }
 
     public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody) {
+        final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
         mailProvider.setSubject(mailSubject);
         mailProvider.setBody(mailBody);
         mailProvider.setMailTo(mailTo);
@@ -24,6 +23,7 @@ public class MailService {
     }
 
     public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody, final String attachUrl, final String attachName) {
+        final MailProvider mailProvider = MailProviderFactory.getMailProvider(pmgr.getValue(MailProvider.MAIL_PROPERTIES, "mail.transport.protocol"));
         mailProvider.setSubject(mailSubject);
         mailProvider.setBody(mailBody);
         mailProvider.setMailTo(mailTo);
