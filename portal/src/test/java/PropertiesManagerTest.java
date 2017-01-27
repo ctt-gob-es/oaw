@@ -13,8 +13,9 @@ public class PropertiesManagerTest {
     public void testPM() {
         final PropertiesManager pm = new PropertiesManager();
         Assert.assertNotNull(pm.getProperties(Constants.CRAWLER_CORE_PROPERTIES));
+        Assert.assertNotNull(pm.getProperties(Constants.MAIL_PROPERTIES));
 
-        Assert.assertEquals("test", pm.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.transport.protocol"));
+        Assert.assertEquals("sim", pm.getValue(Constants.MAIL_PROPERTIES, "mail.transport.protocol"));
 
         Assert.assertEquals("Programado", pm.getValue(Constants.CRAWLER_CORE_PROPERTIES, "crawler.user.name"));
 
@@ -26,7 +27,7 @@ public class PropertiesManagerTest {
 
         Assert.assertNotNull(pm.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.css.validator"));
 
-        Assert.assertEquals("miguel.garcia@fundacionctic.org", pm.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.warning.emails"));
+        Assert.assertEquals("miguel.garcia@fundacionctic.org", pm.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.warning.emails"));
     }
 
     @Test

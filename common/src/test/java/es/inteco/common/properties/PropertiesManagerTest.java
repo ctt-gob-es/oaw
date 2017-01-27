@@ -40,23 +40,11 @@ public class PropertiesManagerTest {
         final PropertiesManager pm = new PropertiesManager();
         // Se carga el fichero mail.properties con la clave crawler.core.properties (para que sea backwards-compatible)
         // Ver fichero propertiesmanager.properties
-        Assert.assertNotNull(pm.getProperties("crawler.core.properties"));
+        Assert.assertNotNull(pm.getProperties("mail.properties"));
         // Esta cadena la reconoce porque está en el fichero mail.properties
-        Assert.assertEquals("smtp", pm.getValue("crawler.core.properties", "mail.transport.protocol"));
+        Assert.assertEquals("test", pm.getValue("mail.properties", "mail.transport.protocol"));
         // Esta cadena no existe porque no está en el fichero mail.properties
-        Assert.assertNull(pm.getValue("crawler.core.properties", "crawler.user.name"));
-    }
-
-    @Test
-    public void testResources() {
-        final PropertiesManager pm = new PropertiesManager();
-        // Se carga el fichero mail.properties con la clave crawler.core.properties (para que sea backwards-compatible)
-        // Ver fichero propertiesmanager.properties
-        Assert.assertNotNull(pm.getProperties("pdf.properties"));
-        // Esta cadena la reconoce porque está en el fichero mail.properties
-        Assert.assertEquals("smtp", pm.getValue("pdf.properties", "mail.transport.protocol"));
-        // Esta cadena no existe porque no está en el fichero mail.properties
-        Assert.assertNull(pm.getValue("crawler.core.properties", "crawler.user.name"));
+        Assert.assertNull(pm.getValue("mail.properties", "crawler.user.name"));
     }
 
 }

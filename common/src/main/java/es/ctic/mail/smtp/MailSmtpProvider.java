@@ -3,7 +3,6 @@ package es.ctic.mail.smtp;
 import es.ctic.mail.MailProvider;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.common.Constants;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
@@ -29,8 +28,8 @@ public class MailSmtpProvider implements MailProvider {
 
     public MailSmtpProvider() {
         // Por defecto se envia desde observ.accesibilidad@correo.gob.es
-        this.fromAddress = pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.address.from");
-        this.fromName = pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.address.from.name");
+        this.fromAddress = pmgr.getValue(MAIL_PROPERTIES, "mail.address.from");
+        this.fromName = pmgr.getValue(MAIL_PROPERTIES, "mail.address.from.name");
     }
 
     @Override
@@ -103,34 +102,32 @@ public class MailSmtpProvider implements MailProvider {
         final MultiPartEmail email = new MultiPartEmail();
 
         initTrustStore();
-
         initSSLContext();
 
-
-        if (pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.host") == null || pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.host").trim().isEmpty()) {
+        if (pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.host") == null || pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.host").trim().isEmpty()) {
             throw new IllegalArgumentException("No se configurado el servidor de correo");
         }
-        email.setHostName(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.host"));
-        if (pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.user") != null && !pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.user").trim().isEmpty()) {
-            email.setAuthenticator(new DefaultAuthenticator(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.user").trim(), pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.pass").trim()));
+        email.setHostName(pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.host"));
+        if (pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.user") != null && !pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.user").trim().isEmpty()) {
+            email.setAuthenticator(new DefaultAuthenticator(pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.user").trim(), pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.pass").trim()));
         }
 
-        final String mailSmtpPort = pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.port");
+        final String mailSmtpPort = pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.port");
         if (mailSmtpPort != null && !mailSmtpPort.trim().isEmpty()) {
             Logger.putLog("Configurando el port " + mailSmtpPort, MailSmtpProvider.class, Logger.LOG_LEVEL_INFO);
             email.setSmtpPort(Integer.parseInt(mailSmtpPort));
         }
 
-        final String mailSmtpSslPort = pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.sslport");
+        final String mailSmtpSslPort = pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.sslport");
         if (mailSmtpSslPort != null && !mailSmtpSslPort.trim().isEmpty()) {
             Logger.putLog("Configurando el sslport " + mailSmtpSslPort, MailSmtpProvider.class, Logger.LOG_LEVEL_INFO);
             email.setSSLOnConnect(true);
             email.setSslSmtpPort(mailSmtpSslPort.trim());
         }
 
-        Logger.putLog("Configurando TLS a " + pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.tls"), MailSmtpProvider.class, Logger.LOG_LEVEL_INFO);
-        email.setStartTLSEnabled(Boolean.parseBoolean(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.tls")));
-        email.setStartTLSRequired(Boolean.parseBoolean(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.smtp.tls")));
+        Logger.putLog("Configurando TLS a " + pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.tls"), MailSmtpProvider.class, Logger.LOG_LEVEL_INFO);
+        email.setStartTLSEnabled(Boolean.parseBoolean(pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.tls")));
+        email.setStartTLSRequired(Boolean.parseBoolean(pmgr.getValue(MAIL_PROPERTIES, "mail.smtp.tls")));
         email.setSSLCheckServerIdentity(false);
 
         return email;

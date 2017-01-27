@@ -1,6 +1,7 @@
 package es.inteco.rastreador2.job;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.ctic.mail.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.common.Constants;
@@ -17,7 +18,6 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
-import es.inteco.utils.MailUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -81,7 +81,7 @@ public class ExecuteScheduledObservatory implements StatefulJob {
                         if (isFirst) {
                             if (CartuchoDAO.isCartuchoAccesibilidad(c, observatory.getDatosRastreo().getId_cartucho())) {
                                 String ficheroNorma = CrawlerUtils.getFicheroNorma(observatory.getDatosRastreo().getId_guideline());
-                                saveMethodology(idFulfilledObservatory, ficheroNorma);
+                                saveMethodology(c, idFulfilledObservatory, ficheroNorma);
                             }
                             isFirst = false;
                         }
@@ -112,10 +112,9 @@ public class ExecuteScheduledObservatory implements StatefulJob {
         if (url != null && !url.isEmpty()) {
             alertText += "\n" + pmgr.getValue(CRAWLER_PROPERTIES, "url.administrator.message") + url;
         }
-        String alertFromAddress = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.address");
-        String alertFromName = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.name");
 
-        MailUtils.sendSimpleMail(alertFromAddress, alertFromName, adminMails, alertSubject, alertText);
+        MailService mailService = new MailService();
+        mailService.sendMail(adminMails, alertSubject, alertText);
     }
 
     private void createNewCrawlings(final Connection conn, final long observatoryId) {
@@ -134,8 +133,8 @@ public class ExecuteScheduledObservatory implements StatefulJob {
         }
     }
 
-    private void saveMethodology(Long idExecution, String methodologyFile) {
-        try (Connection c = DataBaseManager.getConnection()) {
+    private void saveMethodology(final Connection c, Long idExecution, String methodologyFile) {
+        try {
             if (!EvaluatorUtility.isInitialized()) {
                 EvaluatorUtility.initialize();
             }

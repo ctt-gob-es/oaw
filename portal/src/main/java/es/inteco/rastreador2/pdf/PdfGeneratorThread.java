@@ -1,10 +1,12 @@
 package es.inteco.rastreador2.pdf;
 
+import es.ctic.mail.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
@@ -14,7 +16,6 @@ import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.utils.FileUtils;
-import es.inteco.utils.MailUtils;
 import org.apache.struts.util.PropertyMessageResources;
 
 import java.io.File;
@@ -44,13 +45,26 @@ public class PdfGeneratorThread extends Thread {
 
     @Override
     public final void run() {
+        final String observatoryName = getObservatoryName();
+
         for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
             buildPdf(fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
         }
-        final PropertiesManager pmgr = new PropertiesManager();
-        final String alertFromAddress = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.address");
-        final String alertFromName = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.name");
-        MailUtils.sendSimpleMail(alertFromAddress, alertFromName, Collections.singletonList(email), "Generación de informes completado", "El proceso de generación de informes ha finalizado. Para descargar los informes vuelva a ejecutar la acción");
+
+        final MailService mailService = new MailService();
+        mailService.sendMail(Collections.singletonList(email),
+                "Generación de informes completado",
+                String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Para descargar los informes vuelva a ejecutar la acción", observatoryName)
+        );
+    }
+
+    private String getObservatoryName() {
+        try (Connection c = DataBaseManager.getConnection()) {
+            final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+            return observatoryForm.getNombre();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private void buildPdf(final long idRastreoRealizado, final long idRastreo) {

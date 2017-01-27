@@ -13,12 +13,14 @@ import es.inteco.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import junit.framework.Assert;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -53,6 +55,12 @@ public class BasicServicePdfReportTest {
         mysqlDataSource.setPassword("root");
 
         ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws NamingException {
+        final InitialContext ic = new InitialContext();
+        ic.destroySubcontext("java:");
     }
 
     @Before
@@ -111,26 +119,4 @@ public class BasicServicePdfReportTest {
         Assert.assertTrue(exportFile.exists());
     }
 
-    @Test
-    public void testNivelConformidadPagina() throws Exception {
-        final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), -211);
-        final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-        int nv = 0;
-        int a = 0;
-        int aa = 0;
-        for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
-            final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
-            if (Constants.OBS_NV.equals(pageSuitabilityLevel)) {
-                nv++;
-            } else if (Constants.OBS_A.equals(pageSuitabilityLevel)) {
-                a++;
-            }
-            if (Constants.OBS_AA.equals(pageSuitabilityLevel)) {
-                aa++;
-            }
-        }
-        System.out.println(nv/0.17);
-        System.out.println(a/0.17);
-        System.out.println(aa/0.17);
-    }
 }

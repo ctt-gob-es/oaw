@@ -1,4 +1,3 @@
-
 package es.ctic.mail.sim;
 
 import javax.xml.bind.annotation.XmlRegistry;

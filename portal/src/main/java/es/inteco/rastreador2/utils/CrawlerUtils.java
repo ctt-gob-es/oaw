@@ -1,5 +1,6 @@
 package es.inteco.rastreador2.utils;
 
+import es.ctic.mail.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -15,7 +16,6 @@ import es.inteco.rastreador2.dao.language.LanguageDAO;
 import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.pdf.ExportAction;
-import es.inteco.utils.MailUtils;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.util.MessageResources;
@@ -253,10 +253,9 @@ public final class CrawlerUtils {
             final List<String> adminMails = DAOUtils.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));
             final String alertSubject = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.subject");
             final String alertText = pmgr.getValue(CRAWLER_PROPERTIES, "warning.administrator.message") + exception.getMessage();
-            final String alertFromAddress = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.address");
-            final String alertFromName = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.name");
 
-            MailUtils.sendSimpleMail(alertFromAddress, alertFromName, adminMails, alertSubject, alertText);
+            MailService mailService = new MailService();
+            mailService.sendMail(adminMails, alertSubject, alertText);
         } catch (Exception e) {
             Logger.putLog("No ha sido posible avisar a los administradores: ", NuevoUsuarioSistemaAction.class, Logger.LOG_LEVEL_ERROR, e);
         }

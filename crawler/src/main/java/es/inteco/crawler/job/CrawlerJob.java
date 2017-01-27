@@ -97,7 +97,7 @@ public class CrawlerJob implements InterruptableJob {
         }
         // Ademas de avisar a los usuarios administrador se avisa a los correos indicados en el fichero mail.properties
         final PropertiesManager pmg = new PropertiesManager();
-        final String warningEmails = pmg.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.emails");
+        final String warningEmails = pmg.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.emails");
         if (warningEmails != null) {
             mails.addAll(Arrays.asList(warningEmails.split(";")));
         }

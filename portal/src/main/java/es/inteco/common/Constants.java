@@ -12,6 +12,7 @@ public interface Constants {
     String INTAV_PROPERTIES = "intav.properties";
     String PDF_PROPERTIES = "pdf.properties";
     String BASIC_SERVICE_PROPERTIES = "basic.service.properties";
+    String MAIL_PROPERTIES = "mail.properties";
 
 
     String TRUE = "true";

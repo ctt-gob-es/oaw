@@ -6,6 +6,8 @@ import java.util.List;
  * Interfaz para proporcionar servicios de envío de correo electrónico
  */
 public interface MailProvider {
+    String MAIL_PROPERTIES = "mail.properties";
+
     void setFromAddress(String fromAddress);
 
     void setFromName(String fromName);
