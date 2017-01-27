@@ -334,7 +334,7 @@ public final class CrawlerUtils {
             });
             return sc.getSocketFactory();
         } catch (Exception e) {
-            Logger.putLog("Excepción: ", MailUtils.class, Logger.LOG_LEVEL_ERROR, e);
+            Logger.putLog("Excepción: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return null;
     }

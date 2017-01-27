@@ -1,3 +1,4 @@
+import es.ctic.mail.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -8,7 +9,6 @@ import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
-import es.inteco.utils.MailUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
@@ -33,6 +33,31 @@ public class TestCrawl {
     private final List<String> auxDomains = new ArrayList<String>();
     private final List<String> md5Content = new ArrayList<String>();
     private final List<String> rejectedDomains = new ArrayList<String>();
+    private final MailService mailService = new MailService();
+
+    private static boolean isOuterDomain(String domain, String url) {
+        try {
+            if (domain.equalsIgnoreCase(new URL(url).getHost())) {
+                return false;
+            }
+        } catch (Exception e) {
+            LOG.error("Error al obtener el dominio base de la URL");
+        }
+        return true;
+    }
+
+    private static boolean isInTheSameDirectory(String link, String urlRoot) {
+        final String protocolRegExp = "https?://";
+        final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
+                urlRoot.replaceAll(protocolRegExp, "").substring(0, urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
+                urlRoot.replaceAll(protocolRegExp, "");
+
+        final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
+                link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
+                link.replaceAll(protocolRegExp, "");
+
+        return linkDirectory.contains(urlRootDirectory);
+    }
 
     @Test
     public void test() throws Exception {
@@ -174,7 +199,7 @@ public class TestCrawl {
                     final List<String> mailTo = Collections.<String>emptyList();//Arrays.asList(pmgr.getValue("crawler.core.properties", "incomplete.crawler.warning.emails").split(";"));
                     final String text = "El rastreo para " + crawlerData.getUrls().get(0) + " ha devuelto solo " + crawlingDomains.size() + " resultados";
 
-                    MailUtils.sendMail(pmgr.getValue("crawler.core.properties", "mail.address.from"), "Rastreador Web de MINHAP", mailTo, "Rastreo inacabado", text, null, null, null, null, true);
+                    mailService.sendMail(mailTo, "Rastreo inacabado", text);
                 }
             }
         }
@@ -384,29 +409,5 @@ public class TestCrawl {
         }
 
         return false;
-    }
-
-    private static boolean isOuterDomain(String domain, String url) {
-        try {
-            if (domain.equalsIgnoreCase(new URL(url).getHost())) {
-                return false;
-            }
-        } catch (Exception e) {
-            LOG.error("Error al obtener el dominio base de la URL");
-        }
-        return true;
-    }
-
-    private static boolean isInTheSameDirectory(String link, String urlRoot) {
-        final String protocolRegExp = "https?://";
-        final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
-                urlRoot.replaceAll(protocolRegExp, "").substring(0, urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
-                urlRoot.replaceAll(protocolRegExp, "");
-
-        final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ?
-                link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/")) :
-                link.replaceAll(protocolRegExp, "");
-
-        return linkDirectory.contains(urlRootDirectory);
     }
 }
