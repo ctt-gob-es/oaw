@@ -12,7 +12,6 @@ import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.ws.CrawlerWS;
 import es.inteco.rastreador2.ws.CrawlerWSJob;
 import es.inteco.utils.FileUtils;
-import es.inteco.utils.MailUtils;
 import org.apache.struts.Globals;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMessage;
@@ -24,12 +23,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static es.inteco.common.Constants.CRAWLER_CORE_PROPERTIES;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class BasicServiceUtils {
@@ -72,7 +69,7 @@ public final class BasicServiceUtils {
         basicServiceForm.setAmplitud(request.getParameter(Constants.PARAM_WIDTH));
         basicServiceForm.setLanguage("es");
         basicServiceForm.setReport(request.getParameter(Constants.PARAM_REPORT));
-        if ( request.getParameter("informe-nobroken")!=null && Boolean.parseBoolean(request.getParameter("informe-nobroken"))) {
+        if (request.getParameter("informe-nobroken") != null && Boolean.parseBoolean(request.getParameter("informe-nobroken"))) {
             basicServiceForm.setReport(basicServiceForm.getReport() + "-nobroken");
         }
         if (StringUtils.isNotEmpty(request.getParameter(Constants.PARAM_CONTENT))) {

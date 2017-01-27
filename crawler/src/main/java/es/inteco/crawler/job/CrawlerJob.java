@@ -1,5 +1,6 @@
 package es.inteco.crawler.job;
 
+import es.ctic.mail.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -11,7 +12,6 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
-import es.inteco.utils.MailUtils;
 import org.quartz.*;
 import org.w3c.dom.Document;
 
@@ -38,6 +38,7 @@ public class CrawlerJob implements InterruptableJob {
     private final List<String> auxDomains = new ArrayList<>();
     private final List<String> md5Content = new ArrayList<>();
     private final List<String> rejectedDomains = new ArrayList<>();
+    private final MailService mailService = new MailService();
     private boolean interrupt = false;
 
     private boolean isOuterDomain(final String domain, final String url) {
@@ -131,9 +132,9 @@ public class CrawlerJob implements InterruptableJob {
 
                 // Intentamos enviar el error por correo
                 final PropertiesManager pmgr = new PropertiesManager();
-                MailUtils.sendMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME),
-                        crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message.subject"),
-                        buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message"), crawlerData), null, null, null, null, true);
+                mailService.sendMail(crawlerData.getUsersMail(),
+                        pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message.subject"),
+                        buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message"), crawlerData));
             }
 
             endCrawling(conn, crawlerData);
@@ -186,19 +187,17 @@ public class CrawlerJob implements InterruptableJob {
                                 + File.separator + crawlerData.getLanguage()
                                 + File.separator + pmgr.getValue("pdf.properties", "pdf.file.intav.name");
 
-                        MailUtils.sendMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME),
-                                crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
-                                buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), attachPath, "Informe.pdf", null, null, false);
+                        mailService.sendMail(crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
+                                buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), attachPath, "Informe.pdf");
                     }
 
                     if (crawlerData.getResponsiblesMail() != null && !crawlerData.getResponsiblesMail().isEmpty()) {
-                        final URL url = new URL(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "pdf.executive.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
-                                .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
-                                .replace("{2}", pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY)));
-
-                        MailUtils.sendExecutiveMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME),
-                                crawlerData.getResponsiblesMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
-                                buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), url, "Informe.pdf", null, null, false);
+//                        final URL url = new URL(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "pdf.executive.url.export").replace("{0}", String.valueOf(crawlerData.getIdFulfilledCrawling()))
+//                                .replace("{1}", String.valueOf(crawlerData.getIdCrawling()))
+//                                .replace("{2}", pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, NOT_FILTERED_URIS_SECURITY_KEY)));
+//
+//                        mailService.sendMail(crawlerData.getResponsiblesMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
+//                                buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), url, "Informe.pdf");
                     }
                 }
             } catch (Exception e) {
@@ -411,7 +410,7 @@ public class CrawlerJob implements InterruptableJob {
         final String subject = MessageFormat.format(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
         final String text = MessageFormat.format(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.text"), crawlerData.getUrls().get(0), crawlingDomains.size());
 
-        MailUtils.sendMail(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, MAIL_ADDRESS_FROM_NAME), mailTo, subject, text, null, null, null, null, true);
+        mailService.sendMail(mailTo, subject, text);
     }
 
     private void analyze(final List<CrawledLink> analyzeDomains, final CrawlerData crawlerData, final String cookie) {

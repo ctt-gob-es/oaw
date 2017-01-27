@@ -23,7 +23,7 @@ public class MailService {
         mailProvider.sendMail();
     }
 
-    public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody, final String attachUrl,final String attachName) {
+    public void sendMail(final List<String> mailTo, final String mailSubject, final String mailBody, final String attachUrl, final String attachName) {
         mailProvider.setSubject(mailSubject);
         mailProvider.setBody(mailBody);
         mailProvider.setMailTo(mailTo);
