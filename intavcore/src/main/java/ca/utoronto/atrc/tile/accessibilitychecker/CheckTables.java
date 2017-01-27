@@ -92,7 +92,15 @@ public final class CheckTables {
         return listCaption.getLength() > 0;
     }
 
-    protected static boolean functionTableHeadingComplex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+    /**
+     * Comprueba si una tabla es compleja. Se considera como ese tipo de tabla aquellas que tienen encabezados de filas O columnas multinivel (puede presentar encabezados en solo uno de los ejes)
+     *
+     * @param checkCode
+     * @param nodeNode
+     * @param elementGiven
+     * @return
+     */
+    protected static boolean functionTableComplex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
         //Creamos la matriz que representa la tabla
         NodeList trList = elementGiven.getElementsByTagName("tr");
         int x = 0;
@@ -101,11 +109,6 @@ public final class CheckTables {
         }
         int y = trList.getLength();
         TableNode[][] table = createTable(trList, x, y);
-
-        //Si la tabla es bidireccional, es compleja
-        if (isBidirectionalHeading(table, x, y)) {
-            return true;
-        }
 
         //Comprobamos si tiene mas de una fila de encabezados, entonces también será compleja
         boolean complex = true;
@@ -121,6 +124,62 @@ public final class CheckTables {
                     complex = false;
                 }
             }
+        }
+
+        //Comprobamos si tiene mas de una columna de encabezados, entonces también será compleja
+        complex = true;
+        cont = 0;
+        for (int i = 0; i < x && complex; i++) {
+            if (isCorrectVerticalHeading(table, y, i, false)) {
+                cont++;
+                if (cont > 1) {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Comprueba si una tabla tiene encabezados de complejidad superior. Se considera como ese tipo de tabla aquellas que teniendo encabezados de filas Y columnas al menos uno de ellos es además multinivel
+     *
+     * @param checkCode
+     * @param nodeNode
+     * @param elementGiven
+     * @return
+     */
+    protected static boolean functionTableHeadingComplex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+        //Creamos la matriz que representa la tabla
+        NodeList trList = elementGiven.getElementsByTagName("tr");
+        int x = 0;
+        if (trList.item(0) != null && trList.item(0).getChildNodes() != null) {
+            x = countLength(trList.item(0).getChildNodes());
+        }
+        int y = trList.getLength();
+        TableNode[][] table = createTable(trList, x, y);
+
+        //Si la tabla es bidireccional, es compleja
+        if (!isBidirectionalHeading(table, x, y)) {
+            return false;
+        }
+
+        //Comprobamos si tiene mas de una fila de encabezados, entonces también será compleja
+        boolean complex = true;
+        int cont = 0;
+        for (int i = 0; i < y && complex; i++) {
+//            if ((i == 0 && !functionHeaderWithOnlyCell(checkCode, nodeNode, elementGiven)) || (i > 0)) {
+            if (isCorrectHorizontalHeading(table, i, x, false)) {
+                cont++;
+                if (cont > 1) {
+                    return true;
+                }
+            } else {
+                complex = false;
+            }
+//            }
         }
 
         //Comprobamos si tiene mas de una columna de encabezados, entonces también será compleja
@@ -267,7 +326,7 @@ public final class CheckTables {
                 if ((j != 0) || (i != 0)) {
                     //Comprobamos que no sea un encabezado ni un th, porque, en el casod e que fuese un th
                     //vacio no sería un encabezado correcto y no estaría marcado como tal.
-                    if (!table[i][j].isHeaderCell() && !table[i][j].getNode().getNodeName().equalsIgnoreCase("th")) {
+                    if (!table[i][j].isHeaderCell() && !table[i][j].isSpanCell() && !"th".equalsIgnoreCase(table[i][j].getNode().getNodeName())) {
                         return false;
                     }
                 }
@@ -491,7 +550,7 @@ public final class CheckTables {
         }
         try {
             for (int i = initialCounter; i < x; i++) {
-                if (!table[i][colum].isHeaderCell()) {
+                if (!table[i][colum].isHeaderCell() && !table[i][colum].isSpanCell()) {
                     return false;
                 }
             }
@@ -512,7 +571,7 @@ public final class CheckTables {
             initialCounter = 1;
         }
         for (int j = initialCounter; j < y; j++) {
-            if (!table[row][j].isHeaderCell()) {
+            if (!table[row][j].isHeaderCell() && !table[row][j].isSpanCell()) {
                 return false;
             }
         }

@@ -2580,7 +2580,7 @@ Telephone: (416) 978-4360
                 <function call="element-count-greater-than" node="." value="h6" number="0"/>
             </condition>
         </machine>
-    </check>_
+    </check>
 
     <check id="238" key="input" confidence="high" status="1">
         <name>Todos los elementos
@@ -2644,7 +2644,7 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="table"/>
             <condition type="and">
-                <function call="table-heading-complex" node="."/>
+                <function call="table-complex" node="."/>
                 <function call="missing-id-headers" node="."/>
             </condition>
         </machine>
@@ -4691,7 +4691,6 @@ Telephone: (416) 978-4360
         </machine>
     </check>
 
-    <!-- FIXME: Modificar para que admita summary o caption -->
     <check id="418" key="table" confidence="high">
         <prerequisite id="7"/>
         <name>Las tablas de datos que contienen más de una fila/columna de cabeceras presentan summary.</name>
@@ -4699,18 +4698,12 @@ Telephone: (416) 978-4360
         <rationale>check.418.rationale</rationale>
         <machine>
             <trigger element="table"/>
+            <function call="table-heading-complex" node="."/>
             <condition type="and">
-                <function call="table-heading-complex" node="."/>
-                <condition type="and">
-                    <condition type="or">
-                        <function call="attribute-missing" node="." value="summary"/>
-                        <function call="characters-less-than" node="@summary" value="1"/>
-                        <function call="is-only-blanks" node="@summary"/>
-                    </condition>
-                    <condition type="or">
-                        <function call="element-count-equals" node="." value="caption" number="0" attribute2="table"/>
-                        <function call="is-empty-element" node="." element="caption" value="all"/>
-                    </condition>
+                <condition type="or">
+                    <function call="attribute-missing" node="." value="summary"/>
+                    <function call="characters-less-than" node="@summary" value="1"/>
+                    <function call="is-only-blanks" node="@summary"/>
                 </condition>
             </condition>
         </machine>

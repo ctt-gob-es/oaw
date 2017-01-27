@@ -1,7 +1,5 @@
 package es.inteco.intav.checks.une2012;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.CheckTables;
-import ca.utoronto.atrc.tile.accessibilitychecker.CheckUtils;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
@@ -15,20 +13,36 @@ import org.junit.Test;
  *
  */
 public final class Check_1_1_4_DataTableTest {
-    public static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4 = "minhap.observatory.2_0.subgroup.1.1.4";
-
+    private static final String MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4 = "minhap.observatory.2_0.subgroup.1.1.4";
+    private static final String DATA_TABLE_WITHOUT_CAPTION_HTML = "<table summary=\"Foo bar\">" +
+            "   <thead>\n" +
+            "       <tr>\n" +
+            "           <th scope=\"col\">Solicitudes totales registradas</th>\n" +
+            "           <th scope=\"col\">Proyectos concedidos</th>\n" +
+            "           <th scope=\"col\">Financiación concedida</th>\n" +
+            "       </tr>\n" +
+            "   </thead>\n" +
+            "   <tbody>\n" +
+            "       <tr>\n" +
+            "           <td>192</td>\n" +
+            "           <td>142</td>\n" +
+            "           <td>3.000€</td>\n" +
+            "       </tr>\n" +
+            "       <tr>\n" +
+            "           <td>139</td>\n" +
+            "           <td>34</td>\n" +
+            "           <td>5.000€</td>\n" +
+            "       </tr>\n" +
+            "    </tbody>\n" +
+            "</table>";
     /*<!-- Tabla de datos sin encabezados -->*/
     private static final int HEADERS = 86;
-
     /*<!-- Encabezamientos de tabla correctos -->*/
     private static final int HEADERS_CORRECT = 116;
-
     /*<!-- Todas las tablas de datos contienen un elemento caption a menos que la tabla esté identificada en el documento. -->*/
     private static final int CAPTION_OR_SUMMARY_EXISTS = 151;
-
     /*<!-- Celdas únicas que ocupan el ancho completo de la tabla para simular encabezamientos -->*/
     private static final int CELL_CAPTION = 156;
-
     /*<!-- Ningún th está vacío. -->*/
     private static final int TH_BLANK = 159;
     /*<!-- Las tablas de datos que contienen más de una fila/columna de cabeceras usan los atributos id y headers para identificar las celdas. -->*/
@@ -40,7 +54,6 @@ public final class Check_1_1_4_DataTableTest {
     private static final int MISSING_SCOPE_CHECK = 415;
     // Encabezados simulando captions
     private static final int HEADER_AS_CAPTION = 464;
-
     private CheckAccessibility checkAccessibility;
 
     @Before
@@ -73,7 +86,6 @@ public final class Check_1_1_4_DataTableTest {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
     }
 
-
     @Test
     public void evaluateSameCaptionAndSummary() throws Exception {
         checkAccessibility.setContent("<html><body><table summary=\"Same text\"><caption>Same text</caption><tr><th>Header 1</th><th>Header 2</th></tr><tr><td>Cell 1:1</td><td>Cell 1:2</td></tr><td>Cell 2:1</td><td>Cell 2:2</td></tr></table></body></html>");
@@ -105,10 +117,16 @@ public final class Check_1_1_4_DataTableTest {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
     }
 
-
     @Test
     public void evaluateTableComplexNoSummary() throws Exception {
-        checkAccessibility.setContent("<html><body><table><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
+        checkAccessibility.setContent("<html><body>" +
+                "<table>" +
+                "   <tr><th colspan=\"2\">Header A</th></tr>" +
+                "   <tr><th>Header 1</th><th>Header 2</th></tr>" +
+                "   <tr><th>Cell 1:1</th><td>Cell 1:2</td></tr>" +
+                "   <tr><th>Cell 2:1</th><td>Cell 2:2</td></tr>" +
+                "</table>" +
+                "</body></html>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         int numProblems = TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY);
@@ -118,7 +136,14 @@ public final class Check_1_1_4_DataTableTest {
 
     @Test
     public void evaluateTableComplexSummaryBlank() throws Exception {
-        checkAccessibility.setContent("<html><body><table summary=\"\"><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
+        checkAccessibility.setContent("<html><body>" +
+                "<table summary=\"\">" +
+                "   <tr><th colspan=\"2\">Header A</th></tr>" +
+                "   <tr><th>Header 1</th><th>Header 2</th></tr>" +
+                "   <tr><th>Cell 1:1</th><td>Cell 1:2</td></tr>" +
+                "   <tr><th>Cell 2:1</th><td>Cell 2:2</td></tr>" +
+                "</table>" +
+                "</body></html>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
@@ -127,12 +152,18 @@ public final class Check_1_1_4_DataTableTest {
 
     @Test
     public void evaluateTableComplexSummary() throws Exception {
-        checkAccessibility.setContent("<html><body><table summary=\"Table summary\"><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
+        checkAccessibility.setContent("<html><body>" +
+                "<table summary=\"This is the summary of a complex heading table\">" +
+                "   <tr><th colspan=\"2\">Header A</th></tr>" +
+                "   <tr><th>Header 1</th><th>Header 2</th></tr>" +
+                "   <tr><th>Cell 1:1</th><td>Cell 1:2</td></tr>" +
+                "   <tr><th>Cell 2:1</th><td>Cell 2:2</td></tr>" +
+                "</table>" +
+                "</body></html>");
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
     }
-
 
     @Test
     public void evaluateTableComplexCaption() throws Exception {
@@ -140,14 +171,6 @@ public final class Check_1_1_4_DataTableTest {
 
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
-    }
-
-    @Test
-    public void evaluateTableComplexCaptionBlank() throws Exception {
-        checkAccessibility.setContent("<html><body><table><caption></caption><tr><th>Header 1</th><th>Header 2</th></tr><tr><th>Cell 1:1</th><td>Cell 1:2</td></tr><th>Cell 2:1</th><td>Cell 2:2</td></tr></table></body></html>");
-
-        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
     }
 
     @Test
@@ -329,10 +352,10 @@ public final class Check_1_1_4_DataTableTest {
                 "        </tbody>\n" +
                 "</table></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        // Esta tabla se considera compleja y necesita la combinación ID, HEADERS
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        // Esta tabla no se considera compleja
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
-        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
     @Test
@@ -420,7 +443,6 @@ public final class Check_1_1_4_DataTableTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
-
 
     @Test
     public void evaluateHeaderLayoutTable() throws Exception {
@@ -611,6 +633,37 @@ public final class Check_1_1_4_DataTableTest {
     }
 
     @Test
+    public void evaluateFirstHeaderCellBlank() {
+        checkAccessibility.setContent("<table>\n" +
+                "<caption>Ejemplo de tabla</caption>\n" +
+                "<thead>\n" +
+                "<tr>\n" +
+                "<th></th>\n" +
+                "<th>Encabezado de columna</th>\n" +
+                "</tr>\n" +
+                "</thead>\n" +
+                "<tbody>\n" +
+                "<tr>\n" +
+                "<th>Encabezado de fila</th>\n" +
+                "<td>Información</td>\n" +
+                "</tr>\n" +
+                "</tbody>\n" +
+                "</table>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
     public void evaluateNoSiblingHeaderDataTableWithoutCaption() throws Exception {
         checkAccessibility.setContent("<h1>Foo</h1>Lorem ipsum" + DATA_TABLE_WITHOUT_CAPTION_HTML);
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
@@ -637,7 +690,7 @@ public final class Check_1_1_4_DataTableTest {
                 "  <tr>\n" +
                 "    <td>Lorem ipsum\n" +
                 "            <table id='interna' summary='summary'>\n" +
-                "              <tr><th>Header One</th><th>Header Two</th></tr>\n"+
+                "              <tr><th>Header One</th><th>Header Two</th></tr>\n" +
                 "              <tr>\n" +
                 "                    <td>Lorem ipsum a</td>\n" +
                 "                    <td>Lorem ipsum b</td>\n" +
@@ -667,25 +720,141 @@ public final class Check_1_1_4_DataTableTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_GREEN_ONE);
     }
 
-    public static final String DATA_TABLE_WITHOUT_CAPTION_HTML = "<table summary=\"Foo bar\">" +
-            "   <thead>\n" +
-            "       <tr>\n" +
-            "           <th scope=\"col\">Solicitudes totales registradas</th>\n" +
-            "           <th scope=\"col\">Proyectos concedidos</th>\n" +
-            "           <th scope=\"col\">Financiación concedida</th>\n" +
-            "       </tr>\n" +
-            "   </thead>\n" +
-            "   <tbody>\n" +
-            "       <tr>\n" +
-            "           <td>192</td>\n" +
-            "           <td>142</td>\n" +
-            "           <td>3.000€</td>\n" +
-            "       </tr>\n" +
-            "       <tr>\n" +
-            "           <td>139</td>\n" +
-            "           <td>34</td>\n" +
-            "           <td>5.000€</td>\n" +
-            "       </tr>\n" +
-            "    </tbody>\n" +
-            "</table>";
+    @Test
+    public void evaluateRealExampleComplexTable(){
+        final String table ="<table class=\"contacto\" summary=\"Tabla con teléfonos, fax y correo electrónico de los servicios de la Agencia\">\n" +
+                "<caption>Contacte con los servicios de la Agencia</caption>\n" +
+                "\n" +
+                "  <thead>\n" +
+                "    <tr>\n" +
+                "      <td></td>\n" +
+                "      <th id=\"header1\" axis=\"datos\">Teléfono</th>\n" +
+                "      <th id=\"header2\" axis=\"datos\">Fax</th>\n" +
+                "      <th id=\"header3\" axis=\"datos\">Correo electrónico</th>\n" +
+                "      <th id=\"headerS\" axis=\"datos\">Ubicación (*)</th>\n" +
+                "    </tr>\n" +
+                "  </thead>\n" +
+                "\n" +
+                "  <tfoot>\n" +
+                "    <tr>\n" +
+                // TODO: ¿Cambiar?
+                // No se permiten encabezados vacios ni siquiera en el pie de tabla tfoot
+                "    \t<th></th>\n" +
+                "      <td colspan=\"4\">\n" +
+                "      \n" +
+                "      <p>(*) Ubicación: <a href=\"/aeboe/organismo/donde.php\">¿Dónde estamos?</a></p>\n" +
+                "      \n" +
+                "      <ul>\n" +
+                "      \n" +
+                "      <li>Sede de Manoteras: <abbr title=\"Avenida\">Avda.</abbr> de Manoteras, 54.- 28050 Madrid</li>\n" +
+                "      <li>Sede de Trafalgar: <abbr title=\"Calle\">c/</abbr> Trafalgar, 27.- 28010 Madrid</li>\n" +
+                "      \n" +
+                "      </ul>\n" +
+                "      </td>\n" +
+                "    </tr>\n" +
+                "  </tfoot>\n" +
+                "\n" +
+                "  <tbody>\n" +
+                "  \n" +
+                "    <!-- <tr>\n" +
+                "      <th id=\"header6\" axis=\"Departamento\" colspan=\"1\" class=\"contTh\"><span class=\"mayus\"><abbr title=\"Departamento\">Dpto.</abbr> Información y Documentación</span></th>     \n" +
+                "      <td colspan=\"4\"></td>    \n" +
+                "    </tr> -->\n" +
+                "    <tr>\n" +
+                "      <th id=\"header7\" axis=\"Servicio\" class=\"contDpt\"><a hreflang=\"es\" href=\"/legislacion/informacion/\">Atención al ciudadano</a></th>\n" +
+                "      <td headers=\"header7 header1\"><span class=\"nbsp\">91 111 4000</span></td>\n" +
+                "      <td headers=\"header7 header2\"><span class=\"nbsp\">91 111 42 87</span></td>\n" +
+                "      <td headers=\"header7 header3\"><a href=\"mailto:info@boe.es\">info@boe.es</a></td>\n" +
+                "      <td headers=\"header7 headerS\">Manoteras</td>\n" +
+                "    </tr> \n" +
+                "     \n" +
+                "    <tr>\n" +
+                "      <th id=\"header4\" axis=\"Departamento\" colspan=\"1\" class=\"contTh\"><span class=\"mayus\">Secretaría General</span></th>     \n" +
+                "      <td colspan=\"4\"></td>    \n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "    <tr>\n" +
+                "      <th id=\"header5\" axis=\"Servicio\" class=\"contDpt\"><a hreflang=\"es\" href=\"/anuncios/\">Anuncios</a></th>\n" +
+                "      <td headers=\"header4 header5 header1\"><span class=\"nbsp\"><span class=\"nbsp\">91 111 4000</span></span></td>\n" +
+                "      <td headers=\"header4 header5 header2\"><span class=\"nbsp\">91 111 42 88</span></td>\n" +
+                "      <td headers=\"header4 header5 header3\"><a href=\"/aeboe/organismo/formulario.php?tipo=ANU\">Formulario (<em>anuncios</em>)</a></td>\n" +
+                "      <td headers=\"header4 header5 headerS\">Manoteras</td>\n" +
+                "    </tr>  \n" +
+                "  \n" +
+                "    <tr>\n" +
+                "      <th id=\"header8\" axis=\"Departamento\" colspan=\"1\" class=\"contTh\"><span class=\"mayus\">Imprenta Nacional</span></th>     \n" +
+                "      <td colspan=\"4\"></td>    \n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "    <tr>\n" +
+                "      <th id=\"header9\" axis=\"Servicio\" class=\"contDpt\"><a href=\"/aeboe/imprenta/contactar.php\">Oficinas técnicas y relaciones con clientes</a></th>\n" +
+                "      <td headers=\"header8 header9 header1\"><span class=\"nbsp\">91 111 43 58</span></td>\n" +
+                "      <td headers=\"header8 header9 header2\"><span class=\"nbsp\">91 111 42 97</span></td>\n" +
+                "      <td headers=\"header8 header9 header3\"><a href=\"mailto:in@boe.es\">in@boe.es</a></td>\n" +
+                "      <td headers=\"header8 header9 headerS\">Manoteras</td>\n" +
+                "    </tr>  \n" +
+                "  \n" +
+                "    <tr>\n" +
+                "      <th id=\"header10\" axis=\"Departamento\" colspan=\"1\" class=\"contTh\"><span class=\"mayus\">La librería del BOE</span></th>     \n" +
+                "      <td colspan=\"4\"></td>    \n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "    <tr>\n" +
+                "      <th id=\"header11\" axis=\"Servicio\" class=\"contDpt\"><a href=\"/publicaciones/comercializacion/\">La Librería</a></th>\n" +
+                "      <td headers=\"header10 header11 header1\"><span class=\"nbsp\">91 111 4000</span></td>\n" +
+                "      <td headers=\"header10 header11 header2\"><span class=\"nbsp\">91 111 42 60</span></td>\n" +
+                "      <td headers=\"header10 header11 header3\"><a href=\"mailto:libreria@boe.es\">libreria@boe.es</a></td>\n" +
+                "      <td headers=\"header10 header11 headerS\">Trafalgar</td>\n" +
+                "    </tr>  \n" +
+                "  \n" +
+                "    <tr>\n" +
+                "      <th id=\"header12\" axis=\"Departamento\" colspan=\"1\" class=\"contTh\"><span class=\"mayus\"><abbr title=\"Departamento\">Dpto.</abbr> Tecnologías de la Información</span></th>     \n" +
+                "      <td colspan=\"4\"></td>    \n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "    <tr>\n" +
+                "      <th id=\"header13\" axis=\"Servicio\" class=\"contDpt\"><a href=\"/sede_electronica/informacion/acerca_web.php\">Servicios Internet</a></th>\n" +
+                "      <td headers=\"header12 header13 header3\" colspan=\"3\" class=\"centro\"><a href=\"/aeboe/organismo/formulario.php?tipo=WEB\">Formulario (<em>webmaster</em>)</a></td>\n" +
+                "      <td headers=\"header12 header13 headerS\">Manoteras</td>\n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "    <tr>\n" +
+                "      <th id=\"header14\" axis=\"Servicio\" class=\"contDpt\"><a href=\"/sede_electronica/informacion/accesibilidad_web.php\">Accesibilidad</a></th>\n" +
+                "      <td headers=\"header12 header14 header3\" colspan=\"3\" class=\"centro\"><a href=\"/aeboe/organismo/formulario.php?tipo=ACC\">Formulario (<em>accesibilidad</em>)</a></td>\n" +
+                "      <td headers=\"header12 header14 headerS\">Manoteras</td>\n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "    <tr>\n" +
+                "      <th id=\"header15\" axis=\"Servicio\" class=\"contDpt\"><a href=\"https://subastas.boe.es/\">Portal de subastas</a></th>\n" +
+                "      <td headers=\"header12 header15 header3\" colspan=\"3\" class=\"centro\"><a href=\"/aeboe/organismo/formulario.php?tipo=SUB\">Formulario (<em>subastas</em>)</a></td>\n" +
+                "      <td headers=\"header12 header15 headerS\">Manoteras</td>\n" +
+                "    </tr>\n" +
+                "\t\t\n" +
+                "\t\t\n" +
+                "    <!-- <tr>\n" +
+                "      <th id=\"header14\" axis=\"Servicio\" class=\"contDpt\"><a href=\"/sede_electronica/informacion/accesibilidad_web.php\">Accesibilidad</a></th>\n" +
+                "      <td headers=\"header12 header14 header1\"></td>\n" +
+                "      <td headers=\"header12 header14 header2\"></td>\n" +
+                "      <td headers=\"header12 header14 header3\"><a href=\"mailto:webmaster@boe.es\">accesibilidad@boe.es</a></td>\n" +
+                "      <td headers=\"header12 header14 headerS\">Manoteras</td>\n" +
+                "    </tr>\t\t -->\n" +
+                "  </tbody>\n" +
+                "\t\n" +
+                "</table>";
+
+        checkAccessibility.setContent(table);
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), HEADERS_CORRECT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CAPTION_OR_SUMMARY_EXISTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CELL_CAPTION));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TH_BLANK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_ID_HEADERS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), COMPLEX_TABLE_SUMMARY));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), SAME_CAPTION_SUMMARY_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MISSING_SCOPE_CHECK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HEADER_AS_CAPTION));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_4, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
 }

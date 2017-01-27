@@ -636,6 +636,9 @@ public class Check {
             case CheckFunctionConstants.FUNCTION_TABLE_HEADING_COMPLEX:
                 return CheckTables.functionTableHeadingComplex(checkCode, nodeNode, elementGiven);
 
+            case CheckFunctionConstants.FUNCTION_TABLE_COMPLEX:
+                return CheckTables.functionTableComplex(checkCode, nodeNode, elementGiven);
+
             case CheckFunctionConstants.FUNCTION_HAS_ALL_ID_HEADERS:
                 return !CheckTables.functionMissingIdHeaders(checkCode, nodeNode, elementGiven);
 

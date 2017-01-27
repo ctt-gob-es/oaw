@@ -187,8 +187,7 @@ public final class CheckUtils {
 
             // Consideramos que cualquier enlace a W3C (Internacional o España) o al portal TAW funcionan siempre además
             // de enlaces a las redes sociales más famosas (twitter, facebook, flickr, tuenti,...).
-            final String domain = getDomainFromHost(remoteUrl.getHost());
-            if (WHITE_LIST.contains(domain)) {
+            if (WHITE_LIST.contains(getDomainFromHost(remoteUrl.getHost()))) {
                 return true;
             }
 
@@ -250,7 +249,7 @@ public final class CheckUtils {
         return url.startsWith("http");
     }
 
-    public static String encodeUrl(String path) throws UnsupportedEncodingException {
+    private static String encodeUrl(String path) throws UnsupportedEncodingException {
         path = path.replaceAll("[ \\+]", "%20");
         String[] pathArray = path.split("[:\\./?&=#(%20)]");
         for (String aPathArray : pathArray) {
@@ -260,7 +259,7 @@ public final class CheckUtils {
         return path;
     }
 
-    public static boolean hasContent(final Node node) {
+    private static boolean hasContent(final Node node) {
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "content.tags").split(";"));
         if (node.getNodeType() == Node.TEXT_NODE && StringUtils.isNotEmpty(node.getTextContent()) && !StringUtils.isOnlyBlanks(node.getTextContent())) {
@@ -314,7 +313,7 @@ public final class CheckUtils {
         return IntavConstants.IS_EMPTY;
     }
 
-    public static int hasChildContent(final Node node, final Element elementGiven) {
+    private static int hasChildContent(final Node node, final Element elementGiven) {
         final NodeList nodeList = node.getChildNodes();
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> elements = Arrays.asList(pmgr.getValue("intav.properties", "ignored.tags").split(";"));
