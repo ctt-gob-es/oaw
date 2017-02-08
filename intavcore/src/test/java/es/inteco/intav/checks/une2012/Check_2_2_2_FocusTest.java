@@ -128,5 +128,13 @@ public final class Check_2_2_2_FocusTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
+    @Test
+    public void evaluateBoxShadow() throws Exception {
+        checkAccessibility.setContent("<html><style>.main:focus { outline: 0; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6); }</style><p><a class=\"main\">Lorem</a></p></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_OUTLINE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_2, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 }
 
