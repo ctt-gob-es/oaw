@@ -10,13 +10,12 @@ import es.ctic.css.utils.CSSSACUtils;
 import javax.annotation.Nonnull;
 
 /**
- * Clase para comprobar si mediante CSS se elimina la marca al elemento que contiene el foco
+ * Clase para comprobar si mediante CSS se elimina la marca al elemento que contiene el foco y no se proporciona la información mediante técnicas alternativas.
  */
 public class CSSOutlineDocumentHandler extends OAWCSSVisitor {
 
     private boolean focusHidden;
-    private boolean borderVisible;
-    private boolean backgroundVisible;
+    private boolean alternativeOutlineMethod;
 
     private CSSDeclaration outlineDeclaration;
 
@@ -42,28 +41,40 @@ public class CSSOutlineDocumentHandler extends OAWCSSVisitor {
                     focusHidden = true;
                     outlineDeclaration = cssDeclaration;
                 }
-            } else if ("border".equals(cssDeclaration.getProperty())) {
-                final String value = CSSSACUtils.parseLexicalValue(getValue(cssDeclaration));
-                borderVisible = !isZero(value);
-            } else if ("background-color".equals(cssDeclaration.getProperty())) {
-                backgroundVisible = true;
+            } else if (isAlternativeOutlineMethod(cssDeclaration.getProperty(), CSSSACUtils.parseLexicalValue(getValue(cssDeclaration)))) {
+                alternativeOutlineMethod = true;
             }
+        }
+    }
+
+    private boolean isAlternativeOutlineMethod(final String cssProperty, final String cssValue) {
+        if ("border".equals(cssProperty)) {
+            return !isZero(cssValue);
+        } else if ("background-color".equals(cssProperty)) {
+            return true;
+        } else if ("box-shadow".equals(cssProperty)) {
+            return true;
+        } else if ("color".equals(cssProperty)) {
+            return true;
+        } else if ("text-decoration".equals(cssProperty)) {
+            return true;
+        } else {
+            return false;
         }
     }
 
     @Override
     public void onEndStyleRule(@Nonnull CSSStyleRule cssStyleRule) {
-        if (focusHidden && !borderVisible && !backgroundVisible) {
+        if (focusHidden && !alternativeOutlineMethod) {
             getProblems().add(createCSSProblem("", outlineDeclaration));
         }
         focusHidden = false;
-        borderVisible = false;
-        backgroundVisible = false;
+        alternativeOutlineMethod = false;
         outlineDeclaration = null;
     }
 
     private boolean isZero(final String value) {
-        return value != null && (value.startsWith("0") || value.contains("none"));
+        return value != null && (value.equals("0") || value.contains("none"));
     }
 
     private boolean isFocusPseudoClass() {
