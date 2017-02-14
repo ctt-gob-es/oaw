@@ -1892,7 +1892,7 @@ Telephone: (416) 978-4360
                           attribute1="(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)\s+del?\s+(19|20)\d{2}\D"/>
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
-                          attribute1="(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|January|February|March|April|May|June|July|August|September|October|November|December) +(0[1-9]|[1-9]|[12][0-9]|3[01])\s*,\s*(19|20)(\d{2})\D*"
+                          attribute1="(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre|January|February|March|April|May|June|July|August|September|October|November|December)\s+((0[1-9]|[1-9]|[12][0-9]|3[01])\s*,)?\s*(19|20)(\d{2})\D*"
                           position="end"/>
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"

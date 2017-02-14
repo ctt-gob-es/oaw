@@ -321,6 +321,17 @@ public final class Check_1_2_3_AccesibilitySection {
     }
 
     @Test
+    public void testAccesibilityPageYearDateLongFormat() throws Exception {
+        checkAccessibility.setContent("<html><head><title>Accesibilidad</title></head><body><p>contact@example.com</p><p>Nivel de conformidad AA (doble A)</p><p>Date of last review (14th February 2016)</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HAS_NOT_SECTION_LINK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_REVISION_DATE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONFORMANCE_LEVEL));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
     public void testAccesibilityPatternsPage() throws Exception {
         checkAccessibility.setContent("<html><head><title>Portal title - subtitle - Accesibilidad</title></head><body><p>contact@example.com</p><p>Nivel de conformidad AA (doble A)</p><p>Last reviewed: 2015/12/31</p></body></html>");
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
