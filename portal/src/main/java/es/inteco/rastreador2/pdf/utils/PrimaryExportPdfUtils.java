@@ -108,7 +108,9 @@ public final class PrimaryExportPdfUtils {
                 final es.ctic.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.ctic.rastreador2.observatorio.ObservatoryManager();
 
                 final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObservatoryExecution, evaluationIds);
-                final List<ObservatoryEvaluationForm> previousEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObservatoryExecution, previousEvaluationIds);
+                // Obtenemos el id de la ejecución anterior para cargar la metodología que se usó en ese observatorio (ya que si se modificó altera los resultados)
+                final Long previousObservatoryExecution = ObservatorioDAO.getPreviousObservatoryExecution(connection, idObservatoryExecution);
+                final List<ObservatoryEvaluationForm> previousEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(previousObservatoryExecution, previousEvaluationIds);
 
                 final PdfWriter writer = PdfWriter.getInstance(document, outputFileStream);
                 writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);

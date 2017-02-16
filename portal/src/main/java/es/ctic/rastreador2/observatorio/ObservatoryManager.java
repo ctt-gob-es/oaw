@@ -53,14 +53,14 @@ public class ObservatoryManager {
      * @param evaluationIds          identificadores de análisis de página que se quieren evaluar
      * @return una lista con las evaluaciones de las páginas correspondientes a la ejecución indicada
      */
-    public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(long idObservatoryExecution, final List<Long> evaluationIds) {
+    public List<ObservatoryEvaluationForm> getObservatoryEvaluationsFromObservatoryExecution(final long idObservatoryExecution, final List<Long> evaluationIds) {
         final List<ObservatoryEvaluationForm> evaluationList = new ArrayList<>(evaluationIds.size());
         try (Connection c = DataBaseManager.getConnection()) {
+            final String methodology = ObservatorioDAO.getMethodology(c, idObservatoryExecution);
             final Evaluator evaluator = new Evaluator();
             for (Long id : evaluationIds) {
                 try {
                     final Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false);
-                    final String methodology = ObservatorioDAO.getMethodology(c, idObservatoryExecution);
                     final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true);
                     evaluationList.add(evaluationForm);
                 } catch (ParserConfigurationException e) {
