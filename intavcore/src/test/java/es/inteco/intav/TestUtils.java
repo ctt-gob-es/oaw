@@ -4,6 +4,7 @@ import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.Problem;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.form.*;
+import es.inteco.intav.negocio.SourceManager;
 import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.w3c.dom.Document;
@@ -115,7 +116,7 @@ public final class TestUtils {
     public static void printProblems(final List<Problem> problems, int idCheck) {
         for (Problem problem : problems) {
             if ( problem.getCheck().getId()==idCheck) {
-                System.out.printf("%s:%s  %s%n", problem.getLineNumberString(), problem.getColumnNumberString(), problem.getNode().getTextContent());
+                System.out.printf("%s:%s  %s%n", problem.getLineNumberString(), problem.getColumnNumberString(), SourceManager.getSourceInfo(problem));
             }
         }
     }

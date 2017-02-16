@@ -123,5 +123,25 @@ public final class Check_2_1_1_JavaScriptAccesibleTest {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ELEMENTS_INTERACTIVE));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
+    @Test
+    public void testOnclickDivRequieresRole() {
+        checkAccessibility.setContent("<DIV class=\"wtitulo\" onclick=\"$('#widget1').hide()\" style=\"cursor:\n" +
+                "pointer; height: 30px; width: 100%; display: table-row\" tabindex=\"0\">Cerrar</div>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), ELEMENTS_INTERACTIVE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_RED_ZERO);
+    }
+
+    @Test
+    public void testOnclickDivWithRole() {
+        checkAccessibility.setContent("<DIV class=\"wtitulo\" onclick=\"$('#widget1').hide()\" style=\"cursor:\n" +
+                "pointer; height: 30px; width: 100%; display: table-row\" tabindex=\"0\" role=\"button\">Cerrar</div>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DUPLICATED_DEPENDENT_EVENTS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ELEMENTS_INTERACTIVE));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_1, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
 }
 

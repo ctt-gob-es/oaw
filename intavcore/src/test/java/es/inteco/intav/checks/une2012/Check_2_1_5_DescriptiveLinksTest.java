@@ -96,13 +96,29 @@ public final class Check_2_1_5_DescriptiveLinksTest {
     }
 
     @Test
-
     public void evaluateLeyLongLinkText() throws Exception {
         checkAccessibility.setContent("<html><body><a href=\"foo.html\">Real Decreto Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies ante eget lobortis vestibulum. Maecenas quis mollis metus. Nullam pulvinar nisl eu lorem consequat accumsan. Praesent vel nulla mollis, convallis tellus sit amet, facilisis magna amet. </a></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TOO_MUCH_TEXT_LINKS));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+
+    @Test
+    public void evaluateWhiteSpacesAreTrimmedOnLongLinkText() throws Exception {
+        checkAccessibility.setContent("<html><body><a href=\"foo.html\">          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ultricies ante eget lobortis vestibulum. Maecenas quis mollis metus. Nullam pulvinar nisl eu lorem consequat accumsan. Praesent vel nulla mollis, convallis tellus sit amet.          </a></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TOO_MUCH_TEXT_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void evaluateInnerWhiteSpacesAreSkippedOnLongLinkText() throws Exception {
+        checkAccessibility.setContent("<html><body><a href=\"foo.html\">Lorem  ipsum    dolor   sit    amet,    consectetur    adipiscing elit.  Sed    ultricies    ante eget    lobortis vestibulum. Maecenas quis mollis metus. Nullam pulvinar nisl eu lorem consequat accumsan. Praesent vel nulla mollis, convallis tellus sit amet.</a></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), TOO_MUCH_TEXT_LINKS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
 
     @Test
     public void evaluateLongLinkImgAltText() throws Exception {
@@ -113,7 +129,7 @@ public final class Check_2_1_5_DescriptiveLinksTest {
     }
 
     @Test
-    public void evaluateWhiteSpaces() throws Exception {
+    public void evaluateWhiteSpacesOnRedundantLinks() throws Exception {
         checkAccessibility.setContent("<a href=\"foo.html\">Lorem <img alt=\"Lorem\"/></a>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), REDUNDANT_IMG_ALT_TEXT_LINKS));
