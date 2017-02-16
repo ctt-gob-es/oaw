@@ -1417,7 +1417,7 @@ public final class ObservatorioDAO {
      */
     public static Long getPreviousObservatoryExecution(final Connection c, final Long idObservatoryExecution) {
         try (PreparedStatement ps = c.prepareStatement("SELECT id FROM observatorios_realizados " +
-                "WHERE id_observatorio = ? AND id<>? AND estado=0 ORDER BY fecha DESC")) {
+                "WHERE id_observatorio = ? AND id<? AND estado=0 ORDER BY fecha DESC")) {
             final long idObservatory = getObservatoryFormFromExecution(c, idObservatoryExecution).getId();
             ps.setLong(1, idObservatory);
             ps.setLong(2, idObservatoryExecution);
