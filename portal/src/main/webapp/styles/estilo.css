@@ -192,7 +192,9 @@
 /* Cabecera de la p�gina */
 	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1.5%; text-align:right; background:url('../images/logo.jpg') left; background-repeat:no-repeat;min-height:125px;}
 	#cabeza a img {border:0%;}
-	
+
+	#logout { font-size: 140%; font-weight: bold; margin: 20px 5px; }
+	.breadcrumb { text-align: left; }
 /* Cuerpo de la p�gina */
 	
 	#normaDiv {display: none;}
@@ -219,7 +221,7 @@
 	#container_der_exito {padding-top:2%; }
 	#container_der{float:left;padding-top:2%;width:74%;}
 	#container_der table {margin:3% auto 3%; background:silver;width:100%; border-collapse: collapse; border: 2px solid #CCC}
-	#container_der table th {text-align:center;font-weight:bold;background:silver url('../images/barra_menu_hover_2.png');color:#FFF;font-size:125%;border: 1px solid #CCC}
+	#container_der table th {text-align:center;background:silver url('../images/barra_menu_hover_2.png');color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
 	#container_der table tr.suitability th {background: silver}
 	#container_der table td {text-align:center;background:white;border: 1px solid #CCC}
 	#container_der table td.alignLeft {text-align:left}
