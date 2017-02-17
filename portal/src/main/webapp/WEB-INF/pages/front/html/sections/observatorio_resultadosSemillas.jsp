@@ -73,14 +73,14 @@
 									</logic:empty>
 									<logic:notEmpty name="<%= Constants.OBSERVATORY_SEED_LIST %>">
 										<div class="pag">
-											<table>
+											<table class="table table-stripped table-bordered table-hover">
 												<caption><bean:message key="lista.semillas.observatorio"/></caption>
 												<tr>
 													<th><bean:message key="resultados.observatorio.nombre" /></th>
 
-														<th><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
+													<th><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
 
-													<th><bean:message key="resultados.observatorio.estado" /></th>
+													<th>Nive accesibilidad</th>
 													<th><bean:message key="resultados.observatorio.acciones" /></th>
 												</tr>
 												<logic:iterate name="<%= Constants.OBSERVATORY_SEED_LIST %>" id="semilla">
@@ -144,7 +144,7 @@
 														<td>
 															<ul class="lista_linea">
 
-																	<li><html:link forward="showTracking" name="paramSTR"><img src="../images/list.gif" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
+																<li><html:link forward="showTracking" name="paramSTR"><img src="../images/list.gif" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
 
 																<logic:equal parameter="idCartucho" value="<%=idCartridgeLenox%>">
 																	<li><html:link forward="showLenoxResultsByUrl" name="paramSTR"><img src="../images/transgender.png" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
