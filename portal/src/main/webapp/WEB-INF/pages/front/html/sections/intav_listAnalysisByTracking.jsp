@@ -41,25 +41,28 @@
 		<c:set target="${params}" property="observatorio" value="si" />
 	</logic:present>
 
+
 	<div id="migas">
-		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p>
-		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> 
-		<logic:present parameter="isCliente">
-			/ <html:link forward="loadClientCrawlings"><bean:message key="migas.rastreos.cliente" /></html:link>
-	 		/ <html:link forward="loadClientFulfilledCrawlings" name="paramsVolverFC"><bean:message key="migas.rastreos.realizados" /></html:link>
-		</logic:present>
-		<logic:notPresent parameter="isCliente"> 
-			<logic:notPresent parameter="<%= Constants.OBSERVATORY %>">
-				/ <html:link forward="crawlingsMenu"><bean:message key="migas.rastreo" /></html:link>
-			 	/ <html:link forward="loadFulfilledCrawlings" paramId="<%= Constants.ID_RASTREO %>" paramName="<%= Constants.ID_RASTREO %>"><bean:message key="migas.rastreos.realizados" /></html:link>
-		 	</logic:notPresent>
-		 	<logic:present parameter="<%= Constants.OBSERVATORY %>">
-		 		/ <html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link>
-				/ <html:link forward="resultadosPrimariosObservatorio" paramName="id_observatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.resultado.rastreos.realizados.observatorio" /></html:link>
-		 		/ <html:link forward="resultadosObservatorioSemillas" name="paramsVolver"><bean:message key="migas.resultado.observatorio" /></html:link>
-		 	</logic:present>
-		 </logic:notPresent>
-	 	/ <bean:message key="migas.rastreos.realizados.url.analizadas" /></p>
+	    <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+    	<ol class="breadcrumb">
+            <li><a href="#"><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link></a></li>
+            <logic:present parameter="isCliente">
+                <li><html:link forward="loadClientCrawlings"><bean:message key="migas.rastreos.cliente" /></html:link></li>
+                <li><html:link forward="loadClientFulfilledCrawlings" name="paramsVolverFC"><bean:message key="migas.rastreos.realizados" /></html:link></li>
+            </logic:present>
+            <logic:notPresent parameter="isCliente">
+			    <logic:notPresent parameter="<%= Constants.OBSERVATORY %>">
+				    <li><html:link forward="crawlingsMenu"><bean:message key="migas.rastreo" /></html:link></li>
+			 	    <li><html:link forward="loadFulfilledCrawlings" paramId="<%= Constants.ID_RASTREO %>" paramName="<%= Constants.ID_RASTREO %>"><bean:message key="migas.rastreos.realizados" /></html:link></li>
+		 	    </logic:notPresent>
+		 	    <logic:present parameter="<%= Constants.OBSERVATORY %>">
+		 		    <li><html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link></li>
+				    <li><html:link forward="resultadosPrimariosObservatorio" paramName="id_observatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.resultado.rastreos.realizados.observatorio" /></html:link></li>
+		 		    <li><html:link forward="resultadosObservatorioSemillas" name="paramsVolver"><bean:message key="migas.resultado.observatorio" /></html:link></li>
+		 	    </logic:present>
+		    </logic:notPresent>
+          <li class="active"><bean:message key="migas.rastreos.realizados.url.analizadas" /></li>
+        </ol>
 	</div>
 	
 	<div id="cuerpo">
@@ -92,10 +95,7 @@
 										<div id="observatoryInfo">
 											<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
 											<c:set target="${params}" property="idExObs" value="${idExObs}" />
-											<html:link forward="primaryExportPdfAction" name="params" ><img src="../images/icono_pdf.gif" alt="<bean:message key="indice.rastreo.exportar.pdf" />"/></html:link>
-											<bean:define id="regeneratePDF"><%= Constants.EXPORT_PDF_REGENERATE %></bean:define>
-											<c:set target="${params}" property="${regeneratePDF}" value="true" />
-											<html:link forward="primaryExportPdfAction" name="params" ><img src="../images/icono_regenerar_pdf.gif" alt="<bean:message key="indice.rastreo.exportar.pdf.regenerate" />"/></html:link>
+
 											<p>
 												<strong><bean:message key="observatorio.nivel.adecuacion"/>: </strong>
 												<bean:write name="<%=Constants.SCORE %>" property="level"/>
@@ -116,7 +116,7 @@
 									</logic:present>
 								
 									<div class="pag">
-										<table>
+										<table class="table table-stripped table-bordered table-hover">
 											<thead>
 												<tr>
 													<th><bean:message key="search.results.domain"/></th>
@@ -127,7 +127,8 @@
 														<th><bean:message key="search.results.warnings"/></th>
 														<th><bean:message key="search.results.observations"/></th>
 													</logic:notPresent>
-													<th><bean:message key="search.results.operations"/></th>
+													<th>Resultados</th>
+													<th>Código fuente</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -166,12 +167,18 @@
 															<td>
 																<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_SUCCESS) %>">
-																	<html:link forward="showAnalysisFromCrawler" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.rastreo.ver.puntuaci�n" />"/></html:link>
+																	<html:link forward="showAnalysisFromCrawler" name="params">
+																	    <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta página"/><span class="sr-only">Resultados</span>
+																	</html:link>
 																</logic:equal>
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_ERROR) %>">
 																	<html:img src="../images/error.png" altKey="search.results.analysis.error"/>
 																</logic:equal>
-																<html:link forward="getHtmlSource" name="params"><img src="../images/html_icon.png" alt="<bean:message key="indice.rastreo.ver.codigo.analizado" />"/></html:link>
+															</td>
+															<td>
+																<html:link forward="getHtmlSource" name="params">
+																    <span class="glyphicon glyphicon-file" aria-hidden="true" data-toggle="tooltip" title="Ver el código fuente analizado"/><span class="sr-only">Código fuente</span>
+																</html:link>
 															</td>
 														</logic:present>
 													</tr>
@@ -186,10 +193,10 @@
 							<p id="pCenter">
 								<logic:notPresent parameter="isCliente"> 
 									<logic:notPresent parameter="<%= Constants.OBSERVATORY %>">
-									 	<html:link forward="loadFulfilledCrawlings" styleClass="boton" paramId="<%= Constants.ID_RASTREO %>" paramName="<%= Constants.ID_RASTREO %>"><bean:message key="boton.volver" /></html:link>
+									 	<html:link forward="loadFulfilledCrawlings" styleClass="btn btn-default btn-lg" paramId="<%= Constants.ID_RASTREO %>" paramName="<%= Constants.ID_RASTREO %>"><bean:message key="boton.volver" /></html:link>
 								 	</logic:notPresent>
 								 	<logic:present parameter="<%= Constants.OBSERVATORY %>">
-								 		<html:link forward="resultadosObservatorioSemillas" styleClass="boton" name="paramsVolver"><bean:message key="boton.volver" /></html:link>
+								 		<html:link forward="resultadosObservatorioSemillas" styleClass="btn btn-default btn-lg" name="paramsVolver"><bean:message key="boton.volver" /></html:link>
 								 	</logic:present>
 								</logic:notPresent>
 							</p>

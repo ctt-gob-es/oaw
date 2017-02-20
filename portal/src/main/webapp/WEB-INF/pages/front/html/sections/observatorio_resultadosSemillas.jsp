@@ -13,20 +13,21 @@
 	<bean:parameter name="<%= Constants.ID_CARTUCHO %>" id="idCartucho"/>
 
 	<div id="migas">
-		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p> 
-		<p>
-			<html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / 
-			<html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link> / 
-			<html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link> /
-			<bean:message key="migas.resultado.observatorio" />
-		</p>
+	    <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+        <ol class="breadcrumb">
+          <li><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link></a></li>
+          <li><html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link></li>
+          <li><html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link></li>
+          <li class="active"><bean:message key="migas.resultado.observatorio" /></li>
+        </ol>
 	</div>
+
 	
 	<div id="cuerpo">
 		<div id="cIzq">&nbsp;</div>
 		<div id="contenido">
 			<div id="main">
-				<h1 class="sem"> <bean:message key="gestion.resultados.observatorio"/> </h1>
+<!--				<h1 class="sem"> <bean:message key="gestion.resultados.observatorio"/> </h1> -->
 	
 				<div id="cuerpoprincipal">
 				
@@ -44,6 +45,7 @@
 								<input type="hidden" name="<%= Constants.ID_EX_OBS %>" value="<bean:write name="idExObs"/>"/>
 								<input type="hidden" name="<%= Constants.ID_CARTUCHO %>" value="<bean:write name="<%= Constants.ID_CARTUCHO %>"/>"/>
 								<fieldset>
+								    <legend>Buscador</legend>
 									<jsp:include page="/common/crawler_messages.jsp" />
 									<div class="formItem">
 										<label for="nombre"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
@@ -54,7 +56,9 @@
 										<html:text styleClass="texto" styleId="listaUrlsString" property="listaUrlsString" />
 									</div>
 									<div class="formButton">
-										<html:submit><bean:message key="boton.aceptar" /></html:submit>
+										<button type="submit" class="btn btn-default btn-lg">
+										    <span class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message key="boton.buscar" />
+										</button>
 									</div>
 								</fieldset>
 							</html:form>
@@ -74,14 +78,16 @@
 									<logic:notEmpty name="<%= Constants.OBSERVATORY_SEED_LIST %>">
 										<div class="pag">
 											<table class="table table-stripped table-bordered table-hover">
+											<!-- <span class="badge"><%=((java.util.List)request.getAttribute(Constants.OBSERVATORY_SEED_LIST)).size()%></span> -->
 												<caption><bean:message key="lista.semillas.observatorio"/></caption>
 												<tr>
 													<th><bean:message key="resultados.observatorio.nombre" /></th>
-
 													<th><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
-
-													<th>Nive accesibilidad</th>
-													<th><bean:message key="resultados.observatorio.acciones" /></th>
+													<th>Nivel accesibilidad</th>
+													<th>Informes</th>
+													<th>Resultados</th>
+													<th>Relanzar</th>
+													<th>Eliminar</th>
 												</tr>
 												<logic:iterate name="<%= Constants.OBSERVATORY_SEED_LIST %>" id="semilla">
 													<bean:define id="action"><%= Constants.ACTION %></bean:define>
@@ -102,6 +108,8 @@
 													<c:set target="${paramSTR}" property="${observatorioExSTR}" value="${idExObs}" />
 													<c:set target="${paramSTR}" property="id" value="${semilla.idFulfilledCrawling}"/>
 													<c:set target="${paramSTR}" property="${idCartuchoSTR}" value="${idCartucho}"/>
+													<c:set target="${paramSTR}" property="regeneratePDF" value="true"/>
+
 															
 													<jsp:useBean id="paramThrow" class="java.util.HashMap" />
 													<c:set target="${paramThrow}" property="${observatorioSTR}" value="${idObservatorio}" />
@@ -117,44 +125,43 @@
 													<c:set target="${paramDelete}" property="${idSeedSTR}" value="${semilla.id}"/>
 													
 													<tr>
-														<td>
-
-																<li><html:link forward="showTracking" name="paramSTR"><bean:write name="semilla" property="name" /></html:link></li>
-
-															<logic:equal parameter="idCartucho" value="<%=idCartridgeLenox%>">
-																<li><html:link forward="showLenoxResultsByUrl" name="paramSTR"><bean:write name="semilla" property="name" /></html:link></li>
-															</logic:equal>
-															<logic:equal parameter="idCartucho" value="<%=idCartridgeMultilanguage%>">
-																<li><html:link forward="multilanguageListAnalysis" name="paramSTR"><bean:write name="semilla" property="name" /></html:link></li>
-															</logic:equal>
-														</td>
-
-															<td>
-																<bean:write name="semilla" property="score"/>
-															</td>
-
-														<td>
-															<logic:equal value="true" name="semilla" property="active">
-																<img src="../images/verde.jpg" alt="<bean:message key="resultado.observatorio.activo.alt" />"/>
-															</logic:equal>
-															<logic:equal value="false" name="semilla" property="active">
-																<img src="../images/rojo.jpg" alt="<bean:message key="resultado.observatorio.inActivo.alt" />"/>
-															</logic:equal>
+														<td style="text-align:left">
+														    <html:link forward="showTracking" name="paramSTR"><bean:write name="semilla" property="name" /></html:link>
+														    <html:link forward="showTracking" name="paramSTR" styleClass="pull-right">
+                                                                <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar la semilla de este resultado"/> <span class="sr-only">Editar</span>
+														    </html:link>
 														</td>
 														<td>
-															<ul class="lista_linea">
+															<bean:write name="semilla" property="score"/>
+														</td>
+														<td>
+															TODO: Nivel
+														</td>
+														<td>
+														<!--
+														TODO: Enlace al informe
+														http://localhost:8080/oaw/secure/showTrackingAction.do?    id=38&idExObs=2&idrastreo=107&id_observatorio=7&observatorio=si&idCartucho=5
+                                                        http://localhost:8080/oaw/secure/primaryExportPdfAction.do?id=38&idExObs=2&idrastreo=107&id_observatorio=7&observatorio=si&idCartucho=5&regeneratePDF=true
+-->
+                                                            <html:link forward="showTracking" name="paramSTR">
+                                                                <span class="glyphicon glyphicon-book" aria-hidden="true" data-toggle="tooltip" title="Ver el informe individual para esta semilla"/><span class="sr-only">Informe individual</span>
+                                                            </html:link>
 
-																<li><html:link forward="showTracking" name="paramSTR"><img src="../images/list.gif" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
-
-																<logic:equal parameter="idCartucho" value="<%=idCartridgeLenox%>">
-																	<li><html:link forward="showLenoxResultsByUrl" name="paramSTR"><img src="../images/transgender.png" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
-																</logic:equal>
-																<logic:equal parameter="idCartucho" value="<%=idCartridgeMultilanguage%>">
-																	<li><html:link forward="multilanguageListAnalysis" name="paramSTR"><img src="../images/multilanguage.png" alt="<bean:message key="resultado.observatorio.ver.rastreos.realizados"/>" /></html:link></li>
-																</logic:equal>
-																<li><html:link forward="resultadosObservatorioLanzarEjecucion" name="paramThrow"><img src="../images/bt_lanzar.gif" alt="<bean:message key="resultado.observatorio.relanzar.ejecucion.rastreo"/>" /></html:link></li>
-																<li><html:link forward="deleteObservatoryCrawlerExecutionConf" name="paramDelete"><img src="../images/bt_eliminar.gif" alt="<bean:message key="resultado.observatorio.eliminar.ejecucion.rastreo" />"/></html:link></li>
-															</ul>
+                                                        </td>
+														<td>
+															<html:link forward="showTracking" name="paramSTR">
+														        <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta semilla"/><span class="sr-only">Resultados</span>
+															</html:link>
+														</td>
+                                                        <td>
+														    <html:link forward="resultadosObservatorioLanzarEjecucion" name="paramThrow">
+														        <span class="glyphicon glyphicon-refresh" aria-hidden="true" data-toggle="tooltip" title="Relanzar el análisis para esta semilla"/><span class="sr-only">Reanalizar</span>
+                                                            </html:link>
+														</td>
+														<td>
+														    <html:link forward="deleteObservatoryCrawlerExecutionConf" name="paramDelete">
+														        <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar este resultado del observatorio"/><span class="sr-only">Eliminar</span>
+														    </html:link>
 														</td>
 													</tr>
 												</logic:iterate>
@@ -164,7 +171,7 @@
 									</logic:notEmpty>
 								</logic:present>
 								<div id="pCenter">
-									<p><html:link forward="resultadosPrimariosObservatorio" styleClass="boton" paramName="idObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="boton.volver"/></html:link></p>
+									<p><html:link forward="resultadosPrimariosObservatorio" styleClass="btn btn-default btn-lg" paramName="idObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="boton.volver"/></html:link></p>
 								</div>
 							</div>
 						</div><!-- fin cajaformularios -->

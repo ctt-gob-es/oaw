@@ -375,8 +375,8 @@ public final class ObservatorioDAO {
         final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
         final int resultFrom = pagSize * page;
 
-        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion" +
-                " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) " +
+        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name" +
+                " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo)" +
                 " LIMIT ? OFFSET ?")) {
             ps.setInt(1, pagSize);
             ps.setInt(2, resultFrom);
@@ -388,6 +388,7 @@ public final class ObservatorioDAO {
                     ls.setId_observatorio(rs.getLong("id_observatorio"));
                     ls.setId_cartucho(rs.getLong("id_cartucho"));
                     ls.setCartucho(rs.getString("aplicacion"));
+                    ls.setTipo(rs.getString("name"));
                     observatoryList.add(ls);
                 }
                 cargarObservatorioForm.setListadoObservatorio(observatoryList);

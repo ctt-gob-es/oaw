@@ -29,7 +29,7 @@
 		/ <html:link forward="resultadosObservatorioSemillas" paramId="<%= Constants.OBSERVATORY_ID %>" paramName="<%= Constants.OBSERVATORY_ID %>"><bean:message key="migas.resultado.observatorio" /></html:link>
 		/ <html:link forward="resultadosObservatorioSemillasLista" name="paramsVolver"><bean:message key="migas.resultado.rastreos.realizados.observatorio" /></html:link>
 		/ <html:link forward="showTracking" name="paramsVolverAFC"><bean:message key="migas.rastreos.realizados.url.analizadas" /></html:link>
-		/ <bean:message key="migas.resultados.observatorio.puntuaci�n" />
+		/ <bean:message key="migas.resultados.observatorio.puntuacion" />
 	</p>
 </div>
 

@@ -21,8 +21,12 @@
 	ul.topo, .rationale ul {margin:1.5% 0% 0% 5%;}
 	ul.topo li, .rationale li {list-style-image:url('../images/topo.gif');margin:0.5% 0% 0% 2%;}
 	
-	ul li {margin: 1em 0 0 1em}
-	ul li ul li {margin: .2em 0 0 3em}
+/*	ul li {margin: 1em 0 0 1em}
+	ul li ul li {margin: .2em 0 0 3em}*/
+
+	.nav-stacked ul li {
+	    margin: 0 15px;
+	}
 	
 	code {font-size: 1.5em; color: #663399; font-style: bold}
 	
@@ -78,7 +82,7 @@
 	.error, .info {margin-bottom:4%;padding:2% 6% 2% 6%; border-top:1px solid #eec4c4;border-left:1px solid #eec4c4;border-right:1px solid #900303;border-bottom:1px solid #900303;}
 	.error ul, .info ul {margin:0%;}
 	.error ul li, .info ul li {margin:0%; list-style-image:url('../images/topo.gif');}
-	.formulario fieldset, div.detail, .textoinformativo, #cajaformularios {border:solid #e5e5e5 1px;background:#e5e5e5 url("../images/fondo_fieldset.png") top repeat-x;padding:4%;}
+	.formulario fieldset, div.detail, .textoinformativo, #cajaformularios {border:solid #e5e5e5 1px;background:#e5e5e5 url("../images/fondo_fieldset.png") top repeat-x; padding: 1% 4%;}
 	
 	div.detail p {margin-top: 2%}
 	
@@ -162,7 +166,7 @@
 	.resumen li {margin:0%;margin-left:5%;padding-top:1%;display:inline;list-style-image:none;list-style-type:none;}
 	.resumen li span {font-weight:bold;font-size:150%;}
 	
-	.config{padding:0% 6% 4%;margin-top:1.5%;min-height:3%;background:url('../images/config.gif') 1% top no-repeat;}
+	.config{padding:0% 6% 2%;margin-top:1.5%;min-height:3%;background:url('../images/config.gif') 1% top no-repeat;}
 	.proble{color:#e21430;padding-left:40px;margin-top:15px;background:url('../images/problema.gif') 10px top no-repeat;}
 	.advert{color:#c47e05;padding-left:40px;margin-top:15px;background:url('../images/advertencia.gif') 10px top no-repeat;}
 	.observ{color:#27669c;padding-left:40px;margin-top:15px;background:url('../images/observacion.gif') 10px top no-repeat;}
@@ -207,20 +211,19 @@
 	#cajaformularios_login fieldset {margin:1%;padding:1%;border:solid silver 1px;}
 
 	#cuerpo {background:url('../images/top.gif') top;background-repeat:repeat-x;min-height:10.8%;height:100%;}
-	#migas {color:#8c8c8b;margin-bottom: 1%; text-align:left;padding-left:4%;min-height:3%;background:url('../images/clip.gif') 1% top no-repeat;font-weight:bold;}
 	#cIzq {float:left;width:1.2%;background:url('../images/top_izq.gif') no-repeat;min-height:10.8%;}
-	#contenido{text-align:left;background:url('../images/top_der.gif') no-repeat right top;min-height:30%;padding:2%;}
+	#contenido{text-align:left;background:url('../images/top_der.gif') no-repeat right top;min-height:30%;padding:1% 2%;}
 	#container_menu_izq{float:left;border:solid silver 1px;margin:2%;width:20%}
-	#container_menu_izq ul {margin:0%;padding:0%;list-style:none;width:100%;background:url(../images/barra_menu.png);min-height:3.2%;}
+/*	#container_menu_izq ul {margin:0%;padding:0%;list-style:none;width:100%;background:url(../images/barra_menu.png);min-height:3.2%;}
 	#container_menu_izq ul li {border:solid white 1px;margin:0%;padding:0%;list-style:none;}
 	#container_menu_izq ul li a {display:block;padding:4% 10%;background:#FFF url(../images/barra_menu.png) bottom ;color:gray;text-decoration:none;}
 	#container_menu_izq ul li a:link, #navegacion ul li a:visited, #navegacion ul li a:active {background:#FFF url(../images/barra_menu.png) bottom;color:gray;text-decoration:none;}
 	#container_menu_izq ul li a:hover {background:#000 url(../images/barra_menu_hover.png) !important;color:white}
 	#container_menu_izq ul li a#selected {border:none;background:silver url('../images/fondo_ul.png') !important; color: white}
-	
+//*/
 	#container_der_exito {padding-top:2%; }
 	#container_der{float:left;padding-top:2%;width:74%;}
-	#container_der table {margin:3% auto 3%; background:silver;width:100%; border-collapse: collapse; border: 2px solid #CCC}
+	#container_der table {margin:1% auto; background:silver;width:100%; border-collapse: collapse; border: 2px solid #CCC}
 	#container_der table th {text-align:center;background:silver url('../images/barra_menu_hover_2.png');color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
 	#container_der table tr.suitability th {background: silver}
 	#container_der table td {text-align:center;background:white;border: 1px solid #CCC}

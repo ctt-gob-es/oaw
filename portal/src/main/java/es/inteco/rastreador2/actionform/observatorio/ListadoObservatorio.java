@@ -9,6 +9,7 @@ public class ListadoObservatorio {
     private Long id_observatorio;
     private long id_cartucho;
     private String cartucho;
+    private String tipo;
 
     public String getCartucho() {
         return cartucho;
@@ -51,4 +52,11 @@ public class ListadoObservatorio {
     }
 
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
 }
