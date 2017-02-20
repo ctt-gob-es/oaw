@@ -7,6 +7,21 @@
 	<bean:define id="rolCustResp"><inteco:properties key="role.customer.responsible.id" file="crawler.properties" /></bean:define>
 	<bean:define id="rolCustUser"><inteco:properties key="role.customer.user.id" file="crawler.properties" /></bean:define>
 	<bean:define id="rolObservatory"><inteco:properties key="role.observatory.id" file="crawler.properties" /></bean:define>
+
+
+    <ul role="presentation" class="nav nav-pills nav-stacked">
+        <li  class="active"><a href="#">Observatorio</a></li>
+        <li>
+            <ul role="presentation" class="nav nav-pills nav-stacked">
+                <li><a href="#">Gestión</a></li>
+                <li><a href="#">Categorias</a></li>
+                <li><a href="#">Semillas</a></li>
+             </ul>
+        </li>
+        <li><a href="#">Usuarios</a></li>
+    </ul>
+
+<!--
 <ul>
 	<inteco:menu roles="<%=rolAdmin%>">
     	<li class="menutit">
@@ -67,16 +82,82 @@
 		</logic:equal>
 	</inteco:menu>
 
+
+    <inteco:menu roles="<%=rolAdmin%>">
+        <li class="menutit">
+            <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
+                <html:link forward="servicioDiagnostico" styleId="selected" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
+            </logic:equal>
+            <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
+                <html:link forward="servicioDiagnostico" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
+            </logic:notEqual>
+        </li>
+    </inteco:menu>
+
     <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
-    	<li class="menutit">
-    		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT %>">
-    			<html:link forward="clientAccountsMenu" styleId="selected" titleKey="menuadmin.cuenta.usuarios.title"><bean:message key="menuadmin.cuenta.usuarios" /></html:link>
-    		</logic:equal>
-    		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT %>">
-    			<html:link forward="clientAccountsMenu" titleKey="menuadmin.cuenta.usuarios.title"><bean:message key="menuadmin.cuenta.usuarios" /></html:link>
-    		</logic:notEqual>
-    	</li>
-	</inteco:menu>
+        <li class="menutit">
+            Advanced
+        </li>
+        <li class="menutit">
+            <ul>
+                <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
+                    <li class="menutit">
+                        <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT %>">
+                            <html:link forward="clientAccountsMenu" styleId="selected" titleKey="menuadmin.cuenta.usuarios.title"><bean:message key="menuadmin.cuenta.usuarios" /></html:link>
+                        </logic:equal>
+                        <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT %>">
+                            <html:link forward="clientAccountsMenu" titleKey="menuadmin.cuenta.usuarios.title"><bean:message key="menuadmin.cuenta.usuarios" /></html:link>
+                        </logic:notEqual>
+                    </li>
+                </inteco:menu>
+                <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig + \";\" + rolVisor%>">
+                    <li class="menutit">
+                        <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CRAWLINGS %>">
+                            <html:link styleId="selected" forward="crawlingsMenu" titleKey="menuadmin.rastreos.title"><bean:message key="menuadmin.rastreos" /></html:link>
+                        </logic:equal>
+                        <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CRAWLINGS %>">
+                            <html:link forward="crawlingsMenu" titleKey="menuadmin.rastreos.title"><bean:message key="menuadmin.rastreos" /></html:link>
+                        </logic:notEqual>
+                    </li>
+                </inteco:menu>
+                <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
+                        <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SEEDS %>">
+                            <li class="menutit"><html:link forward="listSeedsMenu" titleKey="menuadmin.semillas.title"><bean:message key="menuadmin.semillas" /></html:link></li>
+                        </logic:notEqual>
+                        <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SEEDS %>">
+                            <li id="submenu"><span><bean:message key="menuadmin.semillas" /></span>
+                                <ul>
+                                    <li>
+                                        <logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_LISTADO_SEM %>">
+                                            <html:link forward="listSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.listado.semillas.title"><bean:message key="menuadmin.semillas.listado.semillas" /></html:link>
+                                        </logic:equal>
+                                        <logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_LISTADO_SEM %>">
+                                            <html:link forward="listSeedsMenu" titleKey="menuadmin.semillas.listado.semillas.title"><bean:message key="menuadmin.semillas.listado.semillas" /></html:link>
+                                        </logic:notEqual>
+                                    </li>
+                                    <li>
+                                        <logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_IP %>">
+                                            <html:link forward="ipSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.rangoIP.title"><bean:message key="menuadmin.semillas.rangoIP" /></html:link>
+                                        </logic:equal>
+                                        <logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_IP %>">
+                                            <html:link forward="ipSeedsMenu" titleKey="menuadmin.semillas.rangoIP.title"><bean:message key="menuadmin.semillas.rangoIP" /></html:link>
+                                        </logic:notEqual>
+                                    </li>
+                                    <li>
+                                        <logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_GOOGLE %>">
+                                            <html:link forward="googleSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.resultados.google.title"><bean:message key="menuadmin.semillas.resultados.google" /></html:link>
+                                        </logic:equal>
+                                        <logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_GOOGLE %>">
+                                            <html:link forward="googleSeedsMenu" titleKey="menuadmin.semillas.resultados.google.title"><bean:message key="menuadmin.semillas.resultados.google" /></html:link>
+                                        </logic:notEqual>
+                                    </li>
+                                </ul>
+                            </li>
+                        </logic:equal>
+                    </inteco:menu>
+            </ul>
+        <li>
+    </inteco:menu>
 
 	<%--
 	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
@@ -90,54 +171,6 @@
 		</li>
 	</inteco:menu>
 	--%>
-
-	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig + \";\" + rolVisor%>">
-		<li class="menutit">
-			<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CRAWLINGS %>">
-				<html:link styleId="selected" forward="crawlingsMenu" titleKey="menuadmin.rastreos.title"><bean:message key="menuadmin.rastreos" /></html:link>
-			</logic:equal>
-			<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CRAWLINGS %>">
-				<html:link forward="crawlingsMenu" titleKey="menuadmin.rastreos.title"><bean:message key="menuadmin.rastreos" /></html:link>
-			</logic:notEqual>
-		</li>
-	</inteco:menu>
-
-	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
-		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SEEDS %>">
-			<li class="menutit"><html:link forward="listSeedsMenu" titleKey="menuadmin.semillas.title"><bean:message key="menuadmin.semillas" /></html:link></li>
-		</logic:notEqual>
-		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SEEDS %>">
-			<li id="submenu"><span><bean:message key="menuadmin.semillas" /></span>
-				<ul>
-					<li>
-			   			<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_LISTADO_SEM %>">
-			   				<html:link forward="listSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.listado.semillas.title"><bean:message key="menuadmin.semillas.listado.semillas" /></html:link>
-			   			</logic:equal>
-			   			<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_LISTADO_SEM %>">
-			   				<html:link forward="listSeedsMenu" titleKey="menuadmin.semillas.listado.semillas.title"><bean:message key="menuadmin.semillas.listado.semillas" /></html:link>
-			   			</logic:notEqual>
-			   		</li>
-	    			<li>
-	    				<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_IP %>">
-	    					<html:link forward="ipSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.rangoIP.title"><bean:message key="menuadmin.semillas.rangoIP" /></html:link>
-	    				</logic:equal>
-	    				<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_IP %>">
-	    					<html:link forward="ipSeedsMenu" titleKey="menuadmin.semillas.rangoIP.title"><bean:message key="menuadmin.semillas.rangoIP" /></html:link>
-	    				</logic:notEqual>
-	    			</li>
-			   		<li>
-			   			<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_GOOGLE %>">
-			   				<html:link forward="googleSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.resultados.google.title"><bean:message key="menuadmin.semillas.resultados.google" /></html:link>
-			   			</logic:equal>
-			   			<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_GOOGLE %>">
-			   				<html:link forward="googleSeedsMenu" titleKey="menuadmin.semillas.resultados.google.title"><bean:message key="menuadmin.semillas.resultados.google" /></html:link>
-			   			</logic:notEqual>
-			   		</li>
-				</ul>
-			</li>
-		</logic:equal>
-	</inteco:menu>
-
 
 	<inteco:menu roles="<%=rolCustResp + \";\" + rolCustUser%>">
 		<li class="menutit">
@@ -161,14 +194,5 @@
 		</li>
 	</inteco:menu>
 
-    <inteco:menu roles="<%=rolAdmin%>">
-        <li class="menutit">
-            <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
-                <html:link forward="servicioDiagnostico" styleId="selected" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
-            </logic:equal>
-            <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
-                <html:link forward="servicioDiagnostico" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
-            </logic:notEqual>
-        </li>
-    </inteco:menu>
 </ul>
+-->

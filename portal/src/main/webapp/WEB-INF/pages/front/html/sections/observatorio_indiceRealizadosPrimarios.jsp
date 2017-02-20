@@ -10,11 +10,12 @@
 	<bean:define id="idCartridgeMultilanguage"><inteco:properties key="cartridge.multilanguage.id" file="crawler.properties" /></bean:define>
 
 	<div id="migas">
-		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p> 
-		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / 
-		<html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link> / 
-		<bean:message key="migas.indice.observatorios.realizados.lista"/>
-		</p>
+        <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+        <ol class="breadcrumb">
+          <li><a href="#"><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link></a></li>
+          <li><html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link></li>
+          <li class="active"><bean:message key="migas.indice.observatorios.realizados.lista"/></li>
+        </ol>
 	</div>
 	
 	<div id="cuerpo">
@@ -38,13 +39,15 @@
 									<bean:message key="indice.observatorios.realizados.lista.vacia"/>
 								</logic:empty>
 								<logic:notEmpty name="<%=Constants.FULFILLED_OBSERVATORIES %>">
-									<table>
+									<table class="table table-stripped table-bordered table-hover">
 										<caption><bean:message key="indice.observatorios.realizados.lista"/></caption>
 										<tr>
 											<th><bean:message key="resultado.observatorio.rastreo.realizado.fecha.ejecucion" /></th>
 											<th><bean:message key="resultado.observatorio.rastreo.realizado.cartucho.asociado" /></th>
 											<th><bean:message key="resultado.observatorio.rastreo.realizado.estado"/></th>
-											<th><bean:message key="resultado.observatorio.rastreo.realizado.acciones" /></th>
+											<th>Resultado</th>
+											<th>Exportar</th>
+											<th>Eliminar</th>
 										</tr>
 										
 										<jsp:useBean id="params" class="java.util.HashMap" />
@@ -70,49 +73,40 @@
 													</logic:equal>
 												</td>
 												<td>
+                                                    <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0">
+                                                        <html:link forward="resultadosObservatorioSemillas" name="params">
+                                                            <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de este observatorio"/><span class="sr-only">Resultados</span>
+                                                        </html:link>
+                                                    </logic:equal>
+                                                    <logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="0">
+                                                        <img src="../images/list_disable.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/>
+                                                    </logic:notEqual>
+                                                </td>
+                                                <!-- <td>
 													<jsp:useBean id="params2" class="java.util.HashMap" />
 													<c:set target="${params2}" property="id_observatorio" value="${id_observatorio}" />
 													<c:set target="${params2}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
 													<c:set target="${params2}" property="esPrimera" value="true"/>
 													<c:set target="${params2}" property="isPrimary" value="true"/>
-													
-													<jsp:useBean id="paramsExportPDF" class="java.util.HashMap" />
+                                                    <html:link forward="getAnnexes" name="params2">
+                                                        <span class="glyphicon glyphicon-save" aria-hidden="true" data-toggle="tooltip" title="Exportar los resultados de todas las iteraciones del observatorio en formato XML"/>
+                                                        <span class="sr-only">Generar anexos de resultados</span>
+                                                    </html:link>
+                                                </td> -->
+                                                <td>
+                                                    <jsp:useBean id="paramsExportPDF" class="java.util.HashMap" />
 													<c:set target="${paramsExportPDF}" property="id_observatorio" value="${id_observatorio}" />
 													<c:set target="${paramsExportPDF}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
-													<ul class="lista_linea">
-														<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0">
-
-																<li><html:link forward="resultadosObservatorioSemillas" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/></html:link></li>
-
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeLenox%>">
-																<li><html:link forward="resultadosObservatorioSemillas" name="params"><img src="../images/transgender.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></html:link></li>
-															</logic:equal>
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeMultilanguage%>">
-																<li><html:link forward="resultadosObservatorioSemillas" name="params"><img src="../images/multilanguage.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></html:link></li>
-															</logic:equal>
-														</logic:equal>
-														<logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="0">
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>">
-																<li><img src="../images/list_disable.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/></li>
-															</logic:equal>
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeLenox%>">
-																<li><img src="../images/transgender_disable.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></li>
-															</logic:equal>
-															<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeMultilanguage%>">
-																<li><img src="../images/multilanguage_disable.png" alt="<bean:message key="indice.rastreo.ver.informe.rastreo" />"/></li>
-															</logic:equal>
-														</logic:notEqual>
-														<%-- <logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeIntav%>"> --%>
-															<li><html:link forward="getAnnexes" name="params2"><img src="../images/xml.jpg" alt="<bean:message key="indice.observatorio.anexos.alt" />"/></html:link></li>
-															<li><html:link forward="<%= Constants.EXPORT_ALL_PDF_FORWARD %>" name="paramsExportPDF"><img src="../images/AllPDF.gif" alt="<bean:message key="indice.observatorio.generar.PDFs.alt" />"/></html:link></li>
-														<%-- </logic:equal> --%>
-														<logic:equal name="fulfilledObservatory" property="cartucho.id" value="<%=idCartridgeMultilanguage%>">
-															<li><html:link forward="getAnnexesMultilanguage" name="params2"><img src="../images/xml.jpg" alt="<bean:message key="indice.observatorio.eliminar.alt" />"/></html:link></li>
-															<li><html:link forward="<%= Constants.EXPORT_ALL_PDF_FORWARD_MULTILANGUAGE %>" name="paramsExportPDF"><img src="../images/AllPDF.gif" alt="<bean:message key="indice.observatorio.generar.PDFs.alt" />"/></html:link></li>
-														</logic:equal>
-														<li><html:link forward="deleteFulfilledObservatory" name="params2"><img src="../images/bt_eliminar.gif" alt="<bean:message key="indice.observatorio.eliminar.alt" />"/></html:link></li>														
-													</ul>
+													<html:link forward="<%= Constants.EXPORT_ALL_PDF_FORWARD %>" name="paramsExportPDF">
+                                                        <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Exportar todos los informes indidividuales de todos los portales"/>
+                                                        <span class="sr-only">Generar los informes individuales</span>
+                                                    </html:link></li>
 												</td>
+												<td>
+												    <html:link forward="deleteFulfilledObservatory" name="params2">
+                                                	    <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta iteración del observatorio"/><span class="sr-only">Eliminar esta iteración del observatorio</span>
+                                                    </html:link>
+												</td
 											</tr>
 										</logic:iterate>
 									</table>
@@ -121,7 +115,7 @@
 								</logic:notEmpty>
 							</div>
 							<p id="pCenter">
-								<html:link styleClass="boton" forward="observatoryMenu"> <bean:message key="boton.volver"/> </html:link>
+								<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu"> <bean:message key="boton.volver"/> </html:link>
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
