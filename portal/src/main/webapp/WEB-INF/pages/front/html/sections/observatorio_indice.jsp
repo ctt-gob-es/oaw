@@ -15,8 +15,6 @@
 		<div id="contenido">
 			<div id="main">
 
-				<h1 class="cart"> <bean:message key="indice.observatorio.gestion.observatorio" /> </h1>
-				
 				<div id="cuerpoprincipal">
 					
 					<div id="container_menu_izq">

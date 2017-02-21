@@ -9,7 +9,6 @@
 		<div id="cIzq">&nbsp;</div>
 		<div id="contenido">
 			<div id="main">
-				<h1 class="login"><bean:message key="login.usuario" /> </h1>
 				<div id="cuerpoprincipal" class="container">
 					<div id="cajaformularios_login">
 						<html:form styleClass="formulario" method="post" action="/login/ValidarLoginSistema.do" onsubmit="return validateValidarLoginSistemaForm(this)">

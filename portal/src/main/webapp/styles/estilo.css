@@ -194,7 +194,7 @@
 /* SELECTORES */
 /**************/
 /* Cabecera de la p�gina */
-	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1.5%; text-align:right; background:url('../images/logo.jpg') left; background-repeat:no-repeat;min-height:125px;}
+	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1%; text-align:right}
 	#cabeza a img {border:0%;}
 
 	#logout { font-size: 140%; font-weight: bold; margin: 20px 5px; }

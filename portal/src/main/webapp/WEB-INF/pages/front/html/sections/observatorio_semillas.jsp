@@ -24,8 +24,7 @@
 		<div id="cIzq">&nbsp;</div>
 		<div id="contenido">
 			<div id="main">
-				<h1 class="usu"><bean:message key="indice.observatorio.gestion.observatorio" /> </h1>
-	
+
 				<div id="cuerpoprincipal">
 					
 					<div id="container_menu_izq">

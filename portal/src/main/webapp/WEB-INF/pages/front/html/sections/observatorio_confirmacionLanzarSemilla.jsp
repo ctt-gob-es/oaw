@@ -32,7 +32,6 @@
 		<div id="cIzq">&nbsp;</div>
 		<div id="contenido">
 			<div id="main">
-				<h1 class="sem"><bean:message key="resultados.observatorio.lanzar.semilla.confirmación" /> </h1>
 				<div id="cuerpoprincipal">
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -41,7 +40,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="resultados.observatorio.lanzar.semilla.confirmación" /></h2>
+							<h2 class="config"><bean:message key="resultados.observatorio.lanzar.semilla.confirmaciï¿½n" /></h2>
 								<div class="detail">
 									<p><strong class="labelVisu"><bean:message key="resultados.observatorio.lanzar.semilla.conf" /></strong></p>
 									<p><strong class="labelVisu"><bean:message key="resultados.observatorio.lanzar.semilla.info" /></strong></p>
