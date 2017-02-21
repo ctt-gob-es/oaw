@@ -10,18 +10,48 @@
 
 
     <ul role="presentation" class="nav nav-pills nav-stacked">
-        <li  class="active"><a href="#">Observatorio</a></li>
-        <li>
-            <ul role="presentation" class="nav nav-pills nav-stacked">
-                <li><a href="#">Gestión</a></li>
-                <li><a href="#">Categorias</a></li>
-                <li><a href="#">Semillas</a></li>
-             </ul>
-        </li>
+        <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig + \";\" + rolObservatory%>">
+    		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
+    			<li class="menutit"><html:link forward="observatoryMenu" titleKey="menuadmin.observatorio.title"><bean:message key="menuadmin.observatorio" /></html:link></li>
+    		</logic:notEqual>
+    		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
+    			<li class="active"><span><bean:message key="menuadmin.observatorio" /></span></li>
+    			<li>
+    				<ul role="presentation" class="nav nav-pills nav-stacked">
+    					<li>
+    	    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBSERVATORIO %>">
+    	    		    		<html:link styleId="subselected" forward="observatoryMenu" titleKey="menu.config.observatory.title"><bean:message key="menu.config.observatory" /></html:link>
+    	    		    	</logic:equal>
+    	    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBSERVATORIO %>">
+    	    		    		<html:link forward="observatoryMenu" titleKey="menu.config.observatory.title"><bean:message key="menu.config.observatory" /></html:link>
+    	    		    	</logic:notEqual>
+    	    		    </li>
+    	    		    <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
+    	    		    	<li>
+    		    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CATEGORIES %>">
+    		    		    		<html:link forward="getSeedCategories" styleId="subselected" titleKey="menuconfig.semillas.listado.categorias.title"><bean:message key="menuconfig.semillas.listado.categorias" /></html:link>
+    		    		    	</logic:equal>
+    		    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CATEGORIES %>">
+    		    		    		<html:link forward="getSeedCategories" titleKey="menuconfig.semillas.listado.categorias.title"><bean:message key="menuconfig.semillas.listado.categorias" /></html:link>
+    		    		    	</logic:notEqual>
+    		    		    </li>
+    						<li>
+    		    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBS_SEMILLA %>">
+    		    		    		<html:link styleId="subselected" forward="observatorySeed" titleKey="menu.config.observatory.seed.title"><bean:message key="menu.config.observatory.seed" /></html:link>
+    		    		    	</logic:equal>
+    		    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBS_SEMILLA %>">
+    		    		    		<html:link forward="observatorySeed" titleKey="menu.config.observatory.seed.title"><bean:message key="menu.config.observatory.seed" /></html:link>
+    		    		    	</logic:notEqual>
+    		    		    </li>
+    		    	    </inteco:menu>
+    	    		</ul>
+    			</li>
+    		</logic:equal>
+    	</inteco:menu>
         <li><a href="#">Usuarios</a></li>
     </ul>
 
-<!--
+
 <ul>
 	<inteco:menu roles="<%=rolAdmin%>">
     	<li class="menutit">
@@ -43,45 +73,6 @@
     		</logic:notEqual>
     	</inteco:menu>
     	</li>
-
-	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig + \";\" + rolObservatory%>">	
-		<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
-			<li class="menutit"><html:link forward="observatoryMenu" titleKey="menuadmin.observatorio.title"><bean:message key="menuadmin.observatorio" /></html:link></li>
-		</logic:notEqual>
-		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
-			<li id="submenu"><span><bean:message key="menuadmin.observatorio" /></span>
-				<ul>
-					<li>
-	    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBSERVATORIO %>">
-	    		    		<html:link styleId="subselected" forward="observatoryMenu" titleKey="menu.config.observatory.title"><bean:message key="menu.config.observatory" /></html:link>
-	    		    	</logic:equal>
-	    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBSERVATORIO %>">
-	    		    		<html:link forward="observatoryMenu" titleKey="menu.config.observatory.title"><bean:message key="menu.config.observatory" /></html:link>
-	    		    	</logic:notEqual>
-	    		    </li>
-	    		    <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
-	    		    	<li>
-		    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CATEGORIES %>">
-		    		    		<html:link forward="getSeedCategories" styleId="subselected" titleKey="menuconfig.semillas.listado.categorias.title"><bean:message key="menuconfig.semillas.listado.categorias" /></html:link>
-		    		    	</logic:equal>
-		    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_CATEGORIES %>">
-		    		    		<html:link forward="getSeedCategories" titleKey="menuconfig.semillas.listado.categorias.title"><bean:message key="menuconfig.semillas.listado.categorias" /></html:link>
-		    		    	</logic:notEqual>
-		    		    </li>
-						<li>
-		    		    	<logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBS_SEMILLA %>">
-		    		    		<html:link styleId="subselected" forward="observatorySeed" titleKey="menu.config.observatory.seed.title"><bean:message key="menu.config.observatory.seed" /></html:link>
-		    		    	</logic:equal>
-		    		    	<logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBS_SEMILLA %>">
-		    		    		<html:link forward="observatorySeed" titleKey="menu.config.observatory.seed.title"><bean:message key="menu.config.observatory.seed" /></html:link>
-		    		    	</logic:notEqual>
-		    		    </li>
-		    	    </inteco:menu>
-	    		</ul>
-			</li>
-		</logic:equal>
-	</inteco:menu>
-
 
     <inteco:menu roles="<%=rolAdmin%>">
         <li class="menutit">
@@ -195,4 +186,4 @@
 	</inteco:menu>
 
 </ul>
--->
+

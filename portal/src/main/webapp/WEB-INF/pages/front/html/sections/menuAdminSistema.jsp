@@ -17,7 +17,6 @@
 	<div id="cIzq">&nbsp;</div>
 	<div id="contenido">
 		<div id="main">
-			<h1 class="bullet"><bean:message key="actions.menu" /></h1>
 			<div id="cuerpoprincipal">
 				<div id="container_menu_izq">
 					<jsp:include page="menu.jsp"/>

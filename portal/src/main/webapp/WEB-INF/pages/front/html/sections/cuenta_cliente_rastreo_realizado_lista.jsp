@@ -21,8 +21,6 @@
 		<div id="cIzq">&nbsp;</div>
 		<div id="contenido">
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.rastreos.realizados"/> </h1>
-	
 				<div id="cuerpoprincipal">
 					
 					<div id="container_menu_izq">
