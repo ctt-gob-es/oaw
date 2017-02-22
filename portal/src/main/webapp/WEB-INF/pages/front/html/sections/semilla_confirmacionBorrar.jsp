@@ -18,13 +18,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
-			<div id="main">
-				<h1 class="sem"> <bean:message key="gestion.semillas"/> </h1>
 
-				<div id="cuerpoprincipal">
+
+
+			<div id="main">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -32,7 +30,7 @@
 					
 					<div id="container_der">
 
-						<h2 class="config"><bean:message key="categoria.semillas.titulo" /></h2>
+						<h2><bean:message key="categoria.semillas.titulo" /></h2>
 						<div class="detail">
 							<logic:notEmpty name="<%= Constants.OBSERVATORY_SEED_LIST %>">
 								<p><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.info" /></strong></p>
@@ -62,7 +60,6 @@
 							</div>
 						</div>
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
-		</div>
-	</div> <!-- fin CONTENEDOR GRAL. -->
+

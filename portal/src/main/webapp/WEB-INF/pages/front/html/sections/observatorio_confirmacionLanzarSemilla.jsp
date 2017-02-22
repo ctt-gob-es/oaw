@@ -16,56 +16,50 @@
 	<c:set target="${params}" property="${idExObsSTR}" value="${idExObs}"/>
 	<c:set target="${params}" property="${idCartuchoSTR}" value="${idCartucho}"/>
 	<c:set target="${params}" property="${semillaSTR}" value="${semillaId}" />
-	
-	<div id="migas">
-		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p> 
-		<p>
-			<html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / 
-			<html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link> / 
-			<html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link> /
-			<html:link forward="resultadosObservatorioSemillas" name="params"><bean:message key="migas.resultado.observatorio" /></html:link> /
-			<bean:message key="migas.resultado.observatorio.confirmacion.lanzar.semilla" />
-		</p>
-	</div>
-	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
-			<div id="main">
-				<h1 class="sem"><bean:message key="resultados.observatorio.lanzar.semilla.confirmación" /> </h1>
-				<div id="cuerpoprincipal">
-					<div id="container_menu_izq">
-						<jsp:include page="menu.jsp"/>
-					</div>
-					
-					<div id="container_der">
-						<div id="cajaformularios">
-						
-							<h2 class="config"><bean:message key="resultados.observatorio.lanzar.semilla.confirmación" /></h2>
-								<div class="detail">
-									<p><strong class="labelVisu"><bean:message key="resultados.observatorio.lanzar.semilla.conf" /></strong></p>
-									<p><strong class="labelVisu"><bean:message key="resultados.observatorio.lanzar.semilla.info" /></strong></p>
-									<div class="formItem">
-										<label><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.observatorio.nombre" />: </strong></label>
-										<p><bean:write name="<%= Constants.OBSERVATORY_SEED_FORM %>" property="nombre" /></p>
-									</div>
-									<div class="formItem">
-										<label><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.observatorio.url" />: </strong></label>
-										<p><bean:write name="<%= Constants.OBSERVATORY_SEED_FORM %>" property="listaUrlsString" /></p>
-									</div>
-									<div class="formButton">
-										<bean:define id="confirmacion"><%= Constants.CONFIRMACION%></bean:define>
-										<bean:define id="confSi"><%= Constants.CONF_SI%></bean:define>
-										<bean:define id="confNo"><%= Constants.CONF_NO%></bean:define>
-										<c:set target="${params}" property="${confirmacion}" value="${confSi}" />
-										<html:link styleClass="boton" forward="resultadosObservatorioLanzarEjecucion" name="params"><bean:message key="boton.aceptar"/></html:link>
-										<c:set target="${params}" property="${confirmacion}" value="${confNo}" />
-										<html:link styleClass="boton" forward="resultadosObservatorioLanzarEjecucion" name="params"><bean:message key="boton.cancelar"/></html:link>
-									</div>
-								</div>
-						</div><!-- fin cajaformularios -->
-					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
-			</div>
-		</div>
-	</div> 
+
+    <!-- observatorio_confirmacionLanzarSemilla.jsp -->
+    <div id="main">
+
+        <div id="container_menu_izq">
+            <jsp:include page="menu.jsp"/>
+        </div>
+
+        <div id="container_der">
+
+            <div id="migas">
+                <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+                <ol class="breadcrumb">
+                    <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.observatorio" /></html:link></li>
+                    <li><html:link forward="resultadosPrimariosObservatorio" paramName="id_observatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link></li>
+                    <li><html:link forward="resultadosObservatorioSemillas" name="params"><bean:message key="migas.resultado.observatorio" /></html:link></li>
+                    <li class="active"><bean:message key="migas.resultado.observatorio.confirmacion.lanzar.semilla" /></li>
+                </ol>
+            </div>
+
+            <div id="cajaformularios">
+
+                <h2><bean:message key="resultados.observatorio.lanzar.semilla.confirmacion" /></h2>
+                    <div>
+                        <p><strong class="labelVisu"><bean:message key="resultados.observatorio.lanzar.semilla.conf" /></strong></p>
+                        <p><strong class="labelVisu"><bean:message key="resultados.observatorio.lanzar.semilla.info" /></strong></p>
+                        <div class="formItem">
+                            <label><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.observatorio.nombre" />: </strong></label>
+                            <p><bean:write name="<%= Constants.OBSERVATORY_SEED_FORM %>" property="nombre" /></p>
+                        </div>
+                        <div class="formItem">
+                            <label><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.observatorio.url" />: </strong></label>
+                            <p><bean:write name="<%= Constants.OBSERVATORY_SEED_FORM %>" property="listaUrlsString" /></p>
+                        </div>
+                    </div>
+                    <div class="formButton">
+                        <bean:define id="confirmacion"><%= Constants.CONFIRMACION%></bean:define>
+                        <bean:define id="confSi"><%= Constants.CONF_SI%></bean:define>
+                        <bean:define id="confNo"><%= Constants.CONF_NO%></bean:define>
+                        <c:set target="${params}" property="${confirmacion}" value="${confSi}" />
+                        <html:link styleClass="btn btn-primary btn-lg" forward="resultadosObservatorioLanzarEjecucion" name="params"><bean:message key="boton.aceptar"/></html:link>
+                        <c:set target="${params}" property="${confirmacion}" value="${confNo}" />
+                        <html:link styleClass="btn btn-default btn-lg" forward="resultadosObservatorioLanzarEjecucion" name="params"><bean:message key="boton.cancelar"/></html:link>
+                    </div>
+            </div><!-- fin cajaformularios -->
+        </div>
+    </div>

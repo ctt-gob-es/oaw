@@ -14,13 +14,12 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="usu"><bean:message key="indice.usuarios.sistema.gestion.usuarios" /> </h1>
-	
-				<div id="cuerpoprincipal">
+
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -29,7 +28,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 	
-							<h2 class="config"><bean:message key="nuevo.usuario.title" /></h2>
+							<h2><bean:message key="nuevo.usuario.title" /></h2>
 							<html:form styleClass="formulario" method="post" action="/secure/NuevoUsuarioObservatorio.do" onsubmit="return validateNuevoUsuarioObservatorioForm(this)">
 								<input type="hidden" name="<%= Constants.ES_PRIMERA %>" value="no" />
 								<input type="hidden" name="<%=Constants.ROLE_TYPE %>" value="<bean:write name="roleType"/>"/>
@@ -40,7 +39,7 @@
 												<p><bean:message key="nuevo.usuario.sin.observatorio"/></p>
 												<p>
 													<html:link forward="newObservatory" styleClass="boton"><bean:message key="boton.crear.observatorio" /></html:link>
-													<html:link forward="usersMenu" styleClass="boton"><bean:message key="boton.volver" /></html:link>
+													<html:link forward="usersMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link>
 												</p>
 											</p>
 										</logic:empty>
@@ -105,8 +104,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
-		</div>
-	</div> <!-- fin CONTENEDOR GRAL. -->
+
 

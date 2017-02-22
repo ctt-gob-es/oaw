@@ -14,13 +14,12 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="usu"><bean:message key="indice.usuarios.sistema.gestion.usuarios" /> </h1>
-	
-				<div id="cuerpoprincipal">
+
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -29,7 +28,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 	
-							<h2 class="config"><bean:message key="nuevo.usuario.title" /></h2>
+							<h2><bean:message key="nuevo.usuario.title" /></h2>
 							
 							<p><bean:message key="leyenda.campo.obligatorio" /></p>
 							<html:form styleClass="formulario" method="post" action="/secure/NuevoUsuarioCliente.do" onsubmit="return validateNuevoUsuarioClienteForm(this)">
@@ -42,7 +41,7 @@
 											<p><bean:message key="nuevo.usuario.cliente.sin.cuenta"/></p>
 											<p>
 												<html:link forward="newUserAccount" styleClass="boton"><bean:message key="boton.crear.cuenta.cliente" /></html:link>
-												<html:link forward="usersMenu" styleClass="boton"><bean:message key="boton.volver" /></html:link>
+												<html:link forward="usersMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link>
 											</p>
 										</p>
 									</logic:empty>
@@ -117,8 +116,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
-		</div>
-	</div> <!-- fin CONTENEDOR GRAL. -->
+
 

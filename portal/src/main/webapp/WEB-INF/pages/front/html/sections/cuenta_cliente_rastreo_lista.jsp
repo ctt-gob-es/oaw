@@ -12,13 +12,11 @@
 		 / <bean:message key="migas.rastreos.cliente" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.rastreos.cliente"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -27,7 +25,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.rastreos.cliente" /></h2>
+							<h2><bean:message key="indice.rastreos.cliente" /></h2>
 							
 							<table>
 								<caption><bean:message key="indice.rastreo.lista.rastreos.cliente" /></caption>
@@ -64,7 +62,7 @@
 							</div>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

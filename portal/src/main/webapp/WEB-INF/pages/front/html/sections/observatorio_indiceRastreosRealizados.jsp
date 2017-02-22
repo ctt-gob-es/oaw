@@ -17,13 +17,11 @@
 		<bean:message key="migas.resultado.rastreos.realizados.observatorio" />
 		</p>
 	</div>
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="gestion.resultados.observatorio"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -32,7 +30,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="gestion.resultados.observatorio.ejecuciones" /></h2>
+							<h2><bean:message key="gestion.resultados.observatorio.ejecuciones" /></h2>
 							<div class="pag">
 								<logic:present name="<%=Constants.CRAWLINGS_FORM %>">
 									<logic:empty name="<%=Constants.CRAWLINGS_FORM %>">
@@ -84,7 +82,7 @@
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

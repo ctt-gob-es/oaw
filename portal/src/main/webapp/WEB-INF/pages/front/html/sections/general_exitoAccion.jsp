@@ -7,9 +7,9 @@
 		 / <bean:message key="migas.informacion" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
 				<bean:define id="mensajeExito">
 					<bean:write name="mensajeExito"/>
@@ -20,7 +20,7 @@
 				
 				<h1><img src="../images/bullet_h1.gif" /> <bean:message key="pagina.exito" /> </h1>
 				
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -29,7 +29,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="exito.informacion" /></h2>
+							<h2><bean:message key="exito.informacion" /></h2>
 							<div class="notaInformativaExito">
 								<c:if test="${mensajeExito!=null}">
 									<p><bean:write name="mensajeExito" filter="false"/></p>
@@ -37,13 +37,13 @@
 								<c:set var="volvemos" value="ValidarLoginSistema"/> 
 								<c:if test="${accionVolver!=null}">	
 									<bean:define id="volvemos"><c:out value="${pageContext.request.contextPath}" /><bean:write name="accionVolver" filter="false"/></bean:define>
-									<p><html:link styleClass="boton" href="<%= volvemos %>"><bean:message key="boton.volver" /></html:link></p>
+									<p><html:link styleClass="btn btn-default btn-lg" href="<%= volvemos %>"><bean:message key="boton.volver" /></html:link></p>
 								</c:if>
 							</div>
 
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

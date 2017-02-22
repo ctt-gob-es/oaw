@@ -6,13 +6,11 @@
 	<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / <bean:message key="migas.categorias" /></p>
 </div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bullet"> <bean:message key="indice.categorias.gestion.categorias" /> </h1>
-		
-				<div id="cuerpoprincipal">
+
 				
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -21,7 +19,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="indice.categorias.categorias" /></h2>
+							<h2><bean:message key="indice.categorias.categorias" /></h2>
 							
 							<logic:notPresent name="<%=Constants.CARGAR_CATEGORIA_FORM %>">	
 								<div class="notaInformativaExito">
@@ -64,10 +62,10 @@
 									</logic:notEmpty>
 								</logic:present>
 							</div>
-							<p id="pCenter"><html:link forward="indexAdmin" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+							<p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

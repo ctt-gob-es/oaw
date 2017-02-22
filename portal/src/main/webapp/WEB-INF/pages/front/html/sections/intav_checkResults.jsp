@@ -38,12 +38,11 @@
 </div>
 
 <!-- Cuerpo -->
-<div id="cuerpo">
+
 	<div id="cIzq">&nbsp;</div>
-	<div id="contenido">
+
 		<div id="main">
-			<h1 class="bulleth1"> <bean:message key="indice.rastreo.resultados.rastreos.realizados"/> </h1>
-			<div id="cuerpoprincipal">
+
 				<div id="container_menu_izq">
 					<jsp:include page="menu.jsp"/>
 				</div>
@@ -128,10 +127,10 @@
 					
 					<logic:present parameter="isCliente">
 						<c:set target="${paramsVolver}" property="isCliente" value="true" />
-						<p id="pCenter"><html:link styleClass="boton" forward="showTracking" name="paramsCFC"> <bean:message key="boton.volver"/> </html:link></p>
+						<p id="pCenter"><html:link styleClass="btn btn-default btn-lg" forward="showTracking" name="paramsCFC"> <bean:message key="boton.volver"/> </html:link></p>
 					</logic:present>
 					<logic:notPresent parameter="isCliente">
-						<p id="pCenter"><html:link styleClass="boton" forward="showTracking" name="paramsVolver"> <bean:message key="boton.volver"/> </html:link></p>
+						<p id="pCenter"><html:link styleClass="btn btn-default btn-lg" forward="showTracking" name="paramsVolver"> <bean:message key="boton.volver"/> </html:link></p>
 					</logic:notPresent>
 				</div>
 			</div>

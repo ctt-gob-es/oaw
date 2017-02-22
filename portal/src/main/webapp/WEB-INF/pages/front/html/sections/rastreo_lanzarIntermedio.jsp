@@ -17,13 +17,11 @@
 		 <bean:message key="migas.rastreoo" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.rastreos"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -33,10 +31,10 @@
 						<div id="cajaformularios">
 						
 							<logic:equal name="LanzarWrapCommandForm" property="mensaje" value="<%= Constants.PARAR1 %>">
-								<h2 class="config"><%= Constants.PARAR %> <bean:message key="lanzar.intermedio.rastreo.titulo" /></h2>
+								<h2><%= Constants.PARAR %> <bean:message key="lanzar.intermedio.rastreo.titulo" /></h2>
 							</logic:equal>
 							<logic:equal name="LanzarWrapCommandForm" property="mensaje" value="<%= Constants.LANZAR1 %>">
-								<h2 class="config"><%= Constants.LANZAR %> <bean:message key="lanzar.intermedio.rastreo.titulo" /></h2>
+								<h2><%= Constants.LANZAR %> <bean:message key="lanzar.intermedio.rastreo.titulo" /></h2>
 							</logic:equal>
 							<html:form styleClass="formulario" method="post" action="/secure/LanzarWrapCommand.do">
 								<input type="hidden" name="intermedio" id="intermedio" value="si" />
@@ -73,7 +71,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

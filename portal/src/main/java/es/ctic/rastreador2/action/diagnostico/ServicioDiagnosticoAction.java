@@ -47,6 +47,8 @@ public class ServicioDiagnosticoAction extends Action {
                 return mapping.findForward(Constants.EXITO);
             }
         }
+        request.getSession().setAttribute(Constants.MENU, Constants.MENU_SERVICIO_DIAGNOSTICO);
+        request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU);
         return mapping.findForward(Constants.EXITO);
     }
 

@@ -13,20 +13,18 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="sem"> <bean:message key="gestion.semillas"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="lista.semillas"/></h2>
+							<h2><bean:message key="lista.semillas"/></h2>
 							<html:form  styleClass="formulario" method="get" action="/secure/ListadoSemillas.do">
 								<input type="hidden" name="<%= Constants.INICIAL %>" id="<%= Constants.INICIAL %>" value="<%= Constants.CONF_SI %>"/>
 								<fieldset>
@@ -88,13 +86,13 @@
 										</logic:notEmpty>
 									</logic:present>
 									<div id="pCenter">
-										<p><html:link forward="indexAdmin" styleClass="boton"><bean:message key="boton.volver"/></html:link></p>
+										<p><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver"/></html:link></p>
 									</div>
 								</div>
 							</div><!-- fin cajaformularios -->
 						</div>
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

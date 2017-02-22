@@ -6,24 +6,23 @@
 		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / <bean:message key="migas.cuenta.cliente" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="usu"><bean:message key="indice.cuentas.usuario.sistema.gestion.usuarios" /> </h1>
-				<div id="cuerpoprincipal">		
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.cuentas.usuario.sistema.usuarios" /></h2>
+							<h2><bean:message key="indice.cuentas.usuario.sistema.usuarios" /></h2>
 							
 							<logic:notPresent name="<%=Constants.CARGAR_CUENTA_USUARIO_FORM %>">	
 								<div class="notaInformativaExito">
 									<p><bean:message key="indice.cuentas.usuario.vacio"/></p>
 									<p><html:link forward="newUserAccount" styleClass="boton"><bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
-									<html:link forward="indexAdmin" styleClass="boton"><bean:message key="boton.volver" /></html:link></p>
+									<html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 								</div>
 							</logic:notPresent>
 							<logic:present name="<%=Constants.CARGAR_CUENTA_USUARIO_FORM %>">
@@ -31,7 +30,7 @@
 									<div class="notaInformativaExito">
 										<p><bean:message key="indice.cuentas.usuario.vacio"/></p>
 										<p><html:link forward="newUserAccount" styleClass="boton"><bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
-										<html:link forward="indexAdmin" styleClass="boton"><bean:message key="boton.volver" /></html:link></p>
+										<html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 									</div>
 								</logic:empty>
 								<logic:notEmpty name="<%=Constants.CARGAR_CUENTA_USUARIO_FORM %>" property="listadoCuentasUsuario">	
@@ -76,12 +75,12 @@
 										</table>
 										<jsp:include page="pagination.jsp" />
 									</div>
-									<p id="pCenter"><html:link forward="indexAdmin" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+									<p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 								</logic:notEmpty>
 							</logic:present>
 						</div><!-- fin cajaformularios -->
 					</div><!-- Container Derecha -->
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div> 
 		</div> 
 	</div> 

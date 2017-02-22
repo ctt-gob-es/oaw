@@ -28,13 +28,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.graficas"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -43,7 +41,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.observatorios.menu.graficas.global" /></h2>
+							<h2><bean:message key="indice.observatorios.menu.graficas.global" /></h2>
 							<jsp:include page="/common/crawler_messages.jsp" />
 							<logic:equal name="<%= Constants.OBSERVATORY_RESULTS %>" value="<%= Constants.SI %>">
 								<h3><bean:message key="resultados.anonimos.nivel.accesibilidad.global.title" /></h3>
@@ -308,13 +306,13 @@
 								<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_MODALITY_VERIFICATION_N2 %>"></img></div>
 							</logic:equal>
 							<p id="pCenter">
-								<html:link forward="getObservatoryGraphic" name="params" styleClass="boton"> <bean:message key="boton.volver"/> </html:link>
+								<html:link forward="getObservatoryGraphic" name="params" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link>
 								<c:set target="${params}" property="${grParam}" value="${grRegenerate}" />
 								<html:link forward="regenerateGraphicIntav" name="params" styleClass="boton"> <bean:message key="boton.regenerar.resultados"/> </html:link>
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div> <!-- container dch -->
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div> <!-- main -->
 		</div>	<!-- contenido -->
 	</div> <!-- cuerpo -->
