@@ -43,13 +43,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.graficas"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -58,7 +56,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.rastreo.graficas" /></h2>
+							<h2><bean:message key="indice.rastreo.graficas" /></h2>
 							
 							<div class="graphicIcon1Row">
 								<c:set target="${params}" property="${graphicParam}" value="${categories}" />
@@ -85,10 +83,10 @@
 								<div class="spacer"></div>
 							</div>
 							<c:set target="${params}" property="${graphicParam}" value="${initilal}" />
-							<p id="pCenter"><html:link forward="getFulfilledObservatories" name="params" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+							<p id="pCenter"><html:link forward="getFulfilledObservatories" name="params" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

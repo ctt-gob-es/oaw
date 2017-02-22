@@ -25,19 +25,18 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.rastreos"/> </h1>
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					
 					<div id="container_der">
 						<div class="detail">
-							<h2 class="config"><bean:message key="subir.semilla.servidor.title" /></h2>
+							<h2><bean:message key="subir.semilla.servidor.title" /></h2>
 							<bean:define id="action" type="java.lang.String">
 								<logic:equal value="true" name="isNew">/secure/InsertarRastreo.do</logic:equal>
 								<logic:equal value="false" name="isNew">/secure/ModificarRastreo.do</logic:equal>
@@ -83,7 +82,7 @@
 							</logic:notEqual>
 							
 							<logic:equal name="isNew" value="true">
-							 	<html:link forward="addCrawling" styleClass="boton"><bean:message key="boton.volver" /></html:link> 
+							 	<html:link forward="addCrawling" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link>
 							</logic:equal>
 							<logic:equal name="isNew" value="false">
 								<bean:parameter id="idrastreo" name="<%= Constants.ID_RASTREO %>"/>
@@ -91,7 +90,7 @@
 							</logic:equal>
 						</div>
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

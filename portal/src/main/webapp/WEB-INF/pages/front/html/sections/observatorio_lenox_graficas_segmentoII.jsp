@@ -27,13 +27,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.graficas"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -42,7 +40,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.observatorios.menu.graficas.segmento2" /></h2>
+							<h2><bean:message key="indice.observatorios.menu.graficas.segmento2" /></h2>
 							
 							<jsp:include page="/common/crawler_messages.jsp" />
 							<logic:equal name="<%= Constants.OBSERVATORY_RESULTS %>" value="<%= Constants.SI %>">
@@ -63,13 +61,13 @@
 								</logic:empty>
 							</logic:equal>
 							<p id="pCenter">
-								<html:link forward="getObservatoryGraphic" name="params" styleClass="boton"> <bean:message key="boton.volver"/> </html:link>
+								<html:link forward="getObservatoryGraphic" name="params" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link>
 								<c:set target="${params}" property="${grParam}" value="${grRegenerate}" />
 								<html:link forward="regenerateGraphicLenox" name="params" styleClass="boton"> <bean:message key="boton.regenerar.resultados"/> </html:link>
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

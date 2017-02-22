@@ -10,12 +10,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="usu"><bean:message key="indice.usuarios.sistema.gestion.usuarios" /> </h1>
-				<div id="cuerpoprincipal">
+
 				
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -23,7 +22,7 @@
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="eliminar.usuario.titulo" /></h2>
+							<h2><bean:message key="eliminar.usuario.titulo" /></h2>
 						
 							<html:form styleClass="formulario" method="post" action="/secure/EliminarUsuarioSistema.do" >
 								<input type="hidden" name="<%=Constants.ID_USUARIO %>" value="<bean:write name="EliminarUsuarioSistemaForm" property="id" />" />
@@ -107,7 +106,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div> 
 		</div> 			
 	</div> 

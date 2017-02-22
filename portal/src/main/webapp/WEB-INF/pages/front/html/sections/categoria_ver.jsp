@@ -10,13 +10,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
-			<div id="main">
-				<h1 class="bullet"> <bean:message key="indice.categorias.gestion.categorias" /> </h1>
 
-				<div id="cuerpoprincipal">
+
+
+			<div id="main">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -25,7 +23,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="ver.categoria.title" /></h2>
+							<h2><bean:message key="ver.categoria.title" /></h2>
 							<html:form method="post" action="/secure/CargarCategorias.do" styleClass="formulario">
 								<fieldset>
 									<div class="formItem">
@@ -72,7 +70,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

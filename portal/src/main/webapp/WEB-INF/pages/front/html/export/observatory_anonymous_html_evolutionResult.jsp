@@ -7,7 +7,7 @@
 	<jsp:include page="observatory_anonymous_html_menu.jsp"/>
 	<bean:define id="observatoryType" name="<%= Constants.OBSERVATORY_T %>" type="java.lang.String"/>
 	
-	<div id="contenido">
+
 		<jsp:include page="observatory_anonymous_html_breadCoumbs.jsp" />
 		<h1><bean:message key="ob.resAnon.intav.report.chapterEv.title" /></h1>
 		

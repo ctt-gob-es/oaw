@@ -14,13 +14,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="gestion.certificado" /></h1>
-				
-				<div id="cuerpoprincipal">
+
 				
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -29,7 +27,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="subir.certificado.nuevo" /> </h2>
+							<h2><bean:message key="subir.certificado.nuevo" /> </h2>
 							
 							<p><bean:message key="leyenda.campo.obligatorio" /></p>
 							
@@ -50,11 +48,10 @@
 									</div>
 								</fieldset>
 							</html:form>
-							<p id="pCenter"><html:link forward="loadCertificateForm" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+							<p id="pCenter"><html:link forward="loadCertificateForm" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
-		</div>
-	</div> <!-- fin CONTENEDOR GRAL. -->
+
 </inteco:sesion>

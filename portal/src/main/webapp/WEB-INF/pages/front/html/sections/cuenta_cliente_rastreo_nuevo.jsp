@@ -41,13 +41,11 @@
 		 </p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="bulleth1"> <bean:message key="indice.rastreo.gestion.rastreos"/> </h1>
-	
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -56,13 +54,13 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 	
-							<h2 class="config"><bean:message key="nuevo.rastreo.cliente.title" /></h2>
+							<h2><bean:message key="nuevo.rastreo.cliente.title" /></h2>
 							
 							<logic:notPresent name="<%=Constants.LISTADO_CUENTAS_CLIENTE %>">	
 								<p class="notaInformativaExito">
 									<p><bean:message key="indice.cuentas.usuario.vacio"/></p>
 									<p><html:link forward="newUserAccount" styleClass="boton"><bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
-									<html:link forward="crawlingsMenu" styleClass="boton"><bean:message key="boton.volver" /></html:link></p>
+									<html:link forward="crawlingsMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 								</p>
 							</logic:notPresent>
 							<logic:present name="<%=Constants.LISTADO_CUENTAS_CLIENTE %>">
@@ -70,7 +68,7 @@
 									<div class="notaInformativaExito">
 										<p><bean:message key="indice.cuentas.usuario.vacio"/></p>
 										<p><html:link forward="newUserAccount" styleClass="boton"><bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
-										<html:link forward="crawlingsMenu" styleClass="boton"><bean:message key="boton.volver" /></html:link></p>
+										<html:link forward="crawlingsMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 									</div>
 								</logic:empty>
 								<logic:notEmpty name="<%=Constants.LISTADO_CUENTAS_CLIENTE  %>" >	
@@ -136,7 +134,7 @@
 						</div>
 
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

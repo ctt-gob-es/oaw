@@ -14,19 +14,18 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<h1 class="sem"><bean:message key="indice.observatorio.gestion.observatorio" /> </h1>
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="detalle.semilla.observatorio.title" /></h2>
+							<h2><bean:message key="detalle.semilla.observatorio.title" /></h2>
 								<div class="detail">
 									<div class="formItem">
 										<label><strong class="labelVisu"><bean:message key="detalle.semilla.observatorio.nombre" />: </strong></label>
@@ -38,16 +37,16 @@
 									</div>
 									<div id="pCenter">
 										<logic:notPresent parameter="<%= Constants.ACCION_DE_OBSERVATORIO%>">
-											<html:link forward="observatorySeed" styleClass="boton"><bean:message key="boton.volver" /></html:link>
+											<html:link forward="observatorySeed" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link>
 										</logic:notPresent>
 										<logic:present parameter="<%= Constants.ACCION_DE_OBSERVATORIO%>">
-											<html:link forward="resultadosObservatorio" name="breadCrumbsParams"  styleClass="boton"><bean:message key="boton.volver" /></html:link> 
+											<html:link forward="resultadosObservatorio" name="breadCrumbsParams"  styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link>
 										</logic:present>
 									</div>
 								</div>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 
