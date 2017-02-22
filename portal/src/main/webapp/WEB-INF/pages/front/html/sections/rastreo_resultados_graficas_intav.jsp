@@ -21,11 +21,11 @@
 	 	</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -80,7 +80,7 @@
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

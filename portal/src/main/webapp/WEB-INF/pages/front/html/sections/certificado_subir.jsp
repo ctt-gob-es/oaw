@@ -15,11 +15,11 @@
 	<jsp:useBean id="paramsNC" class="java.util.HashMap" />
 	<c:set target="${paramsNC}" property="esPrimera" value="si" />
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 				
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -28,7 +28,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="subir.certificado.nuevo" /> </h2>
+							<h2><bean:message key="subir.certificado.nuevo" /> </h2>
 							<div class="certificados">
 								<jsp:include page="/common/crawler_messages.jsp" />
 								<p><html:link forward="uploadCertificate" name="paramsNC" styleClass="boton"><bean:message key="certificado.nuevo.certificado" /></html:link></p>
@@ -73,11 +73,10 @@
 								<div class="pag">
 									<jsp:include page="pagination.jsp" />
 								</div>
-								<p id="pCenter"><html:link forward="indexAdmin" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+								<p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
-		</div>
-	</div> <!-- fin CONTENEDOR GRAL. -->
+
 </inteco:sesion>

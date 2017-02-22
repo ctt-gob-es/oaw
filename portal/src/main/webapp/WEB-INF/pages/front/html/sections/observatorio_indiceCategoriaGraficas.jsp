@@ -41,11 +41,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -54,7 +54,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.rastreo.graficas.categorias" /></h2>
+							<h2><bean:message key="indice.rastreo.graficas.categorias" /></h2>
 							
 														
 							<logic:notEmpty name="<%= Constants.CATEGORIES_LIST %>">
@@ -75,11 +75,11 @@
 							
 							<p id="pCenter">
 								<c:set target="${params}" property="${graphicParam}" value="${initial}" />
-								<html:link forward="getObservatoryGraphic" name="params" styleClass="boton"> <bean:message key="boton.volver"/> </html:link>
+								<html:link forward="getObservatoryGraphic" name="params" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link>
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

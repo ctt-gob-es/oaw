@@ -1,10 +1,32 @@
+caption { left: -9999px; position: absolute}
+th.accion { width: 100px }
+.dropdown-menu.nav.nav-stacked.nav-pills {
+  width: 98%;
+}
+.dropdown-menu.nav.nav-stacked.nav-pills a {
+  color: #e1120d;
+}
+.dropdown-menu.nav.nav-stacked.nav-pills a:hover,
+.dropdown-menu.nav.nav-stacked.nav-pills a:focus {
+  color: #000;
+}
+#migas .breadcrumb .glyphicon {
+    padding-right: 8px;
+}
+a.btn.btn-primary {
+    color: #fff;
+}
+/*a.btn.btn-primary:focus,
+a.btn.btn-primary:hover{
+    color: #e1120d;
+}*/
 
 /* ESTILOS PRINCIPALES */
 /***********************/
 /* Cuerpo - Valores por defecto */
 	/*html,body{height:80%;}*/
 	* {margin:0%;padding:0%;}
-	html {font-family: Arial, sans-serif;font-size:72%;text-align:center;color:#000;background:#FFF;}
+	/*html {font-family: Arial, sans-serif;font-size:72%;text-align:center;color:#000;background:#FFF;}*/
 	body {background:#FFF;margin:1%;margin-bottom:0%;}
 /* Encabezados */
 	h1 {font-weight:normal;color:#8c8c8b;margin-left:0.2%;margin-top:1.2%;font-size:180%;}
@@ -36,14 +58,14 @@
 	form {display:inline;padding:0%;margin:0%;}
 	caption {text-align:right;padding:0.3%;font-style:italic;}
 	input,input[type=file] {font-family:Arial, sans-serif;border:1px solid #777;padding:0.1% 0.4%;margin:0% 0% 0% 0.5%px;background:url('../images/backinput.gif') repeat-x;}
-	input[type=submit],button {text-decoration:none;margin-left:4%;padding:1% 3%;border:solid silver 1px;color:white;background:#000 url(../images/barra_menu_hover.png) bottom;}
+/*	input[type=submit],button {text-decoration:none;margin-left:4%;padding:1% 3%;border:solid silver 1px;color:white;background:#000 url(../images/barra_menu_hover.png) bottom;}*/
 	input[type=radio] {border:none;background:none;}
 
 	input:focus {border-color:#e21430;}
 	textarea{overflow:auto;}
 	fieldset ul li {list-style-image:none;list-style:none;margin:0%;padding:0%;}
 	fieldset ul {list-style:none;margin:0%;padding:0%;margin-top:1%;}
-	fieldset legend {color:#E60D2E;font-size:125%;padding-left:0.5%;padding-right:0.5%;}
+	fieldset legend {background-color: #fff; border: 1px solid #e5e5e5;color:#E60D2E;font-size:130%; margin-bottom:0; padding:0 0.5%;}
 	select {font-family:Arial, sans-serif;border:1px solid #777;padding:0.1% 0.4%;margin:0%; background:url('../images/backinput.gif') repeat-x;}
 	fieldset {padding-top: 1%; padding-bottom: 0.5%; margin-bottom:1%; margin-top:1%;border :none;}
 	fieldset p {margin:1% 0% 0% 1%;}
@@ -64,7 +86,7 @@
 	.formItem label {float: left; min-width:10%; width:20%; text-align: right; margin-right: 2%;}
 	.formItem label.noFloat{float: none}
 	.formItem .labelCorto{width: 13%}
-	.formButton {padding-top:3%;text-align:right;}
+	.formButton {padding-top:2%;text-align:center;}
 
 	.texto {min-width:30%; width:45%;}
 	.textoCorto{width: 18%; float: left; margin-right: 2%}
@@ -82,7 +104,8 @@
 	.error, .info {margin-bottom:4%;padding:2% 6% 2% 6%; border-top:1px solid #eec4c4;border-left:1px solid #eec4c4;border-right:1px solid #900303;border-bottom:1px solid #900303;}
 	.error ul, .info ul {margin:0%;}
 	.error ul li, .info ul li {margin:0%; list-style-image:url('../images/topo.gif');}
-	.formulario fieldset, div.detail, .textoinformativo, #cajaformularios {border:solid #e5e5e5 1px;background:#e5e5e5 url("../images/fondo_fieldset.png") top repeat-x; padding: 1% 4%;}
+	.formulario fieldset, div.detail, .textoinformativo, #cajaformularios {border:solid #e5e5e5 1px; padding: 1% 4%;}
+	#cajaformularios {background:#e5e5e5 url("../images/fondo_fieldset.png") top repeat-x;}
 	
 	div.detail p {margin-top: 2%}
 	
@@ -165,8 +188,7 @@
 	.resumen {margin: 2% 3%}
 	.resumen li {margin:0%;margin-left:5%;padding-top:1%;display:inline;list-style-image:none;list-style-type:none;}
 	.resumen li span {font-weight:bold;font-size:150%;}
-	
-	.config{padding:0% 6% 2%;margin-top:1.5%;min-height:3%;background:url('../images/config.gif') 1% top no-repeat;}
+
 	.proble{color:#e21430;padding-left:40px;margin-top:15px;background:url('../images/problema.gif') 10px top no-repeat;}
 	.advert{color:#c47e05;padding-left:40px;margin-top:15px;background:url('../images/advertencia.gif') 10px top no-repeat;}
 	.observ{color:#27669c;padding-left:40px;margin-top:15px;background:url('../images/observacion.gif') 10px top no-repeat;}
@@ -194,12 +216,13 @@
 /* SELECTORES */
 /**************/
 /* Cabecera de la p�gina */
-	#cabeza {padding-left:0%; margin-left:0%;  margin-bottom:1%; text-align:right}
+	#cabeza {padding-left:0%; margin: 0; text-align:right}
 	#cabeza a img {border:0%;}
 
-	#logout { font-size: 140%; font-weight: bold; margin: 20px 5px; }
+	#logout { font-size: 140%; font-weight: bold; margin: 20px 5px 0; }
 	.breadcrumb { text-align: left; }
 /* Cuerpo de la p�gina */
+    #main { float:left; margin-top: 30px; width: 100% }
 	
 	#normaDiv {display: none;}
 	#pCenter {text-align: center; margin-top: 3%;}
@@ -209,36 +232,18 @@
 	#nBoton10 {padding-top: 1%;}
 	#cajaformularios_login ul,#cajaformularios_login li{list-style-type:none;}
 	#cajaformularios_login fieldset {margin:1%;padding:1%;border:solid silver 1px;}
+	#cajaformularios h2 {margin: 0 0 1.5%;}
 
-	#cuerpo {background:url('../images/top.gif') top;background-repeat:repeat-x;min-height:10.8%;height:100%;}
-	#cIzq {float:left;width:1.2%;background:url('../images/top_izq.gif') no-repeat;min-height:10.8%;}
-	#contenido{text-align:left;background:url('../images/top_der.gif') no-repeat right top;min-height:30%;padding:1% 2%;}
-	#container_menu_izq{float:left;border:solid silver 1px;margin:2%;width:20%}
-/*	#container_menu_izq ul {margin:0%;padding:0%;list-style:none;width:100%;background:url(../images/barra_menu.png);min-height:3.2%;}
-	#container_menu_izq ul li {border:solid white 1px;margin:0%;padding:0%;list-style:none;}
-	#container_menu_izq ul li a {display:block;padding:4% 10%;background:#FFF url(../images/barra_menu.png) bottom ;color:gray;text-decoration:none;}
-	#container_menu_izq ul li a:link, #navegacion ul li a:visited, #navegacion ul li a:active {background:#FFF url(../images/barra_menu.png) bottom;color:gray;text-decoration:none;}
-	#container_menu_izq ul li a:hover {background:#000 url(../images/barra_menu_hover.png) !important;color:white}
-	#container_menu_izq ul li a#selected {border:none;background:silver url('../images/fondo_ul.png') !important; color: white}
-//*/
+	#container_menu_izq{float:left;border:solid silver 1px;margin: 0 2%;width:20%}
+
 	#container_der_exito {padding-top:2%; }
-	#container_der{float:left;padding-top:2%;width:74%;}
+	#container_der{float:left;margin:0;padding:0; width:76%;}
 	#container_der table {margin:1% auto; background:silver;width:100%; border-collapse: collapse; border: 2px solid #CCC}
 	#container_der table th {text-align:center;background:silver url('../images/barra_menu_hover_2.png');color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
 	#container_der table tr.suitability th {background: silver}
 	#container_der table td {text-align:center;background:white;border: 1px solid #CCC}
 	#container_der table td.alignLeft {text-align:left}
-	
-	#submenu {border:none;background:silver url('../images/fondo_ul.png');}
-	#submenu span {color:white;display:block;padding: 5% 11%}
-	#submenu ul{background:silver url('../images/fondo_li.png');}
-	#submenu ul li {border:none;}
-	#submenu ul li a {border-bottom:solid #e8e8e8 1px;font-weight:normal;display:block;margin-left:12%;padding:4% 12%;background:#FFF url(../images/barra_menu_2.png) bottom !important;color:#e1120d;text-decoration:none;}
-	#submenu ul li a:link, #navegacion ul li a:visited, #navegacion ul li a:active {background:#FFF url(../images/barra_menu_2.png) bottom !important;color:#e1120d;text-decoration:none;}
-	#submenu ul li a:hover {background:#000 url(../images/barra_menu_hover_2.png) !important;color:white}
-	#submenu ul li a#subselected {font-style: italic; color: black}
-	#container_der {padding-left:1%}
-	
+
 	#NuevaSemillaIpForm fieldset li {padding-top:0.5%;padding-bottom:0.5%;}
 	
 	#observatoryInfo {margin: 0% 1% 1% 0%}
@@ -257,9 +262,8 @@
 	.divCenter {text-align: center}
 	
 /* Pie de la p�gina */
-	#pie{clear:left;background:url('../images/bot.gif') top;background-repeat:repeat-x;min-height:3.5%;}
-	#pIzq {float:left;width:1.2%;background:url('../images/bot_izq.gif') no-repeat;min-height:3.5%;}
-	#creditos{background:url('../images/bot_der.gif') no-repeat right top;min-height:3.5%;padding-top:3%;font-size:100%;}
+	#pie {clear:both}
+	#creditos {padding-top:3%; text-align: center}
 	
 	#calendar{display: none}
 	#calendar img{cursor: pointer}

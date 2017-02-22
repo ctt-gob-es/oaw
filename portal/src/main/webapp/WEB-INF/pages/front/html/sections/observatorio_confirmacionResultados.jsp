@@ -12,11 +12,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
@@ -24,7 +24,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="confirmacion.eliminar.semilla.title" /></h2>
+							<h2><bean:message key="confirmacion.eliminar.semilla.title" /></h2>
 								<div class="detail">
 									<p><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.observatorio.pregunta" /></strong></p>
 									<p><strong class="labelVisu"><bean:message key="confirmacion.eliminar.semilla.observatorio.info" /></strong></p>
@@ -63,7 +63,7 @@
 								</div>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

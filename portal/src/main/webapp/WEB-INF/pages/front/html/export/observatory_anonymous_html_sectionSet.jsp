@@ -4,7 +4,7 @@
 
 <div id="content">
 	<jsp:include page="observatory_anonymous_html_menu.jsp"/>
-	<div id="contenido">
+
 		<jsp:include page="observatory_anonymous_html_breadCoumbs.jsp" />
 		
 		<h1><bean:write name="<%= Constants.SECTION_FORM %>" property="title"/></h1>
