@@ -10,11 +10,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -24,7 +24,7 @@
 					
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="eliminar.semilla.titulo" /></h2>
+							<h2><bean:message key="eliminar.semilla.titulo" /></h2>
 							
 							<html:form styleClass="formulario" method="post" action="/secure/EliminarSemilla.do">
 								<input type="hidden" name="segunda" id="segunda" value="si" />
@@ -46,7 +46,7 @@
 						
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

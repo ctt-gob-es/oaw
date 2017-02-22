@@ -15,11 +15,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -27,7 +27,7 @@
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="subir.conclusiones.titulo" /></h2>
+							<h2><bean:message key="subir.conclusiones.titulo" /></h2>
 					
 							<p><bean:message key="leyenda.campo.obligatorio" /></p>
 							
@@ -49,7 +49,6 @@
 							</html:form>
 						</div>
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
-		</div>
-	</div> <!-- fin CONTENEDOR GRAL. -->
+

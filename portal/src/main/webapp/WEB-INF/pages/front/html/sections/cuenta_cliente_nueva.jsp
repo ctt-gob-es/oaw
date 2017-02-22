@@ -32,12 +32,12 @@
 			 / <bean:message key="migas.nueva.cuenta.cliente" />
 		 </p>
 	</div>
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
 
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -46,7 +46,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 						
-							<h2 class="config"><bean:message key="nueva.cuenta.cliente.title" /></h2>
+							<h2><bean:message key="nueva.cuenta.cliente.title" /></h2>
 							
 							<p><bean:message key="leyenda.campo.obligatorio" /></p>
 							
@@ -232,7 +232,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

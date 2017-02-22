@@ -6,7 +6,7 @@
 
 <div id="content">
 	<jsp:include page="observatory_anonymous_html_menu.jsp"/>
-	<div id="contenido">
+
 		<jsp:include page="observatory_anonymous_html_breadCoumbs.jsp" />
 		
 		<h1><bean:message key="ob.resAnon.intav.report.chapter45.title" /></h1>

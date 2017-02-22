@@ -42,8 +42,8 @@
 </div>
 
 <!-- Cuerpo -->
-<div id="cuerpo">
-	<div id="contenido">
+
+
 		<div id="main">
 			
 			<bean:define id="keyError">
@@ -116,12 +116,12 @@
 			</logic:notEmpty>
 			<logic:notPresent parameter="isCliente"> 
 				<p id="pCenter">
-					<html:link styleClass="boton" forward="showAnalysisFromCrawlerRecover" name="paramsVolver"><bean:message key="boton.volver"/> </html:link>
+					<html:link styleClass="btn btn-default btn-lg" forward="showAnalysisFromCrawlerRecover" name="paramsVolver"><bean:message key="boton.volver"/> </html:link>
 				</p>
 			</logic:notPresent>
 			<logic:present parameter="isCliente"> 
 				<p id="pCenter">
-					<html:link styleClass="boton" forward="showAnalysisFromCrawlerRecover" name="paramsVolver"><bean:message key="boton.volver"/> </html:link>
+					<html:link styleClass="btn btn-default btn-lg"" forward="showAnalysisFromCrawlerRecover" name="paramsVolver"><bean:message key="boton.volver"/> </html:link>
 				</p>
 			</logic:present>
 		</div>

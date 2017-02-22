@@ -20,11 +20,11 @@
 	 	</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -33,7 +33,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.rastreo.rastreo" /></h2>
+							<h2><bean:message key="indice.rastreo.rastreo" /></h2>
 								
 								<jsp:include page="/common/crawler_messages.jsp" />
 								
@@ -188,11 +188,11 @@
 										</html:form>
 									</logic:notEmpty>
 								</logic:present>
-								<p id="pCenter"><html:link forward="crawlingsMenu" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+								<p id="pCenter"><html:link forward="crawlingsMenu" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 							</div>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

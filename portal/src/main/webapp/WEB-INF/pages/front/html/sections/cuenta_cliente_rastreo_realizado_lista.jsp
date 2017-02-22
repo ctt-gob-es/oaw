@@ -17,11 +17,11 @@
 	 	/ <bean:message key="migas.rastreos.realizados" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -30,7 +30,7 @@
 					<div id="container_der">
 					
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.rastreo.rastreo" /></h2>
+							<h2><bean:message key="indice.rastreo.rastreo" /></h2>
 							
 							<logic:present name="<%=Constants.CRAWLINGS_FORM %>">
 								<logic:empty name="<%=Constants.CRAWLINGS_FORM %>">
@@ -107,10 +107,10 @@
 									</div>
 								</logic:notEmpty>
 							</logic:present>
-							<p id="pCenter"><html:link forward="loadClientCrawlings" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+							<p id="pCenter"><html:link forward="loadClientCrawlings" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

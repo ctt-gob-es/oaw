@@ -21,11 +21,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -33,7 +33,7 @@
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="gestion.resultados.observatorio.ejecuciones" /></h2>
+							<h2><bean:message key="gestion.resultados.observatorio.ejecuciones" /></h2>
 							<div class="pag">
 								<logic:empty name="<%=Constants.FULFILLED_OBSERVATORIES %>">
 									<bean:message key="indice.observatorios.realizados.lista.vacia"/>
@@ -129,11 +129,11 @@
 								</logic:notEmpty>
 							</div>
 							<p id="pCenter">
-								<html:link styleClass="boton" forward="observatoryMenu"> <bean:message key="boton.volver"/> </html:link>
+								<html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu"> <bean:message key="boton.volver"/> </html:link>
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

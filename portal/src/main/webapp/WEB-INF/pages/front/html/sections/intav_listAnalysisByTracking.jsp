@@ -42,41 +42,43 @@
 	</logic:present>
 
 
-	<div id="migas">
-	    <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
-    	<ol class="breadcrumb">
-            <li><a href="#"><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link></a></li>
-            <logic:present parameter="isCliente">
-                <li><html:link forward="loadClientCrawlings"><bean:message key="migas.rastreos.cliente" /></html:link></li>
-                <li><html:link forward="loadClientFulfilledCrawlings" name="paramsVolverFC"><bean:message key="migas.rastreos.realizados" /></html:link></li>
-            </logic:present>
-            <logic:notPresent parameter="isCliente">
-			    <logic:notPresent parameter="<%= Constants.OBSERVATORY %>">
-				    <li><html:link forward="crawlingsMenu"><bean:message key="migas.rastreo" /></html:link></li>
-			 	    <li><html:link forward="loadFulfilledCrawlings" paramId="<%= Constants.ID_RASTREO %>" paramName="<%= Constants.ID_RASTREO %>"><bean:message key="migas.rastreos.realizados" /></html:link></li>
-		 	    </logic:notPresent>
-		 	    <logic:present parameter="<%= Constants.OBSERVATORY %>">
-		 		    <li><html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link></li>
-				    <li><html:link forward="resultadosPrimariosObservatorio" paramName="id_observatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.resultado.rastreos.realizados.observatorio" /></html:link></li>
-		 		    <li><html:link forward="resultadosObservatorioSemillas" name="paramsVolver"><bean:message key="migas.resultado.observatorio" /></html:link></li>
-		 	    </logic:present>
-		    </logic:notPresent>
-          <li class="active"><bean:message key="migas.rastreos.realizados.url.analizadas" /></li>
-        </ol>
-	</div>
+
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					<div id="container_der">
+
+                        <div id="migas">
+                            <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+                            <ol class="breadcrumb">
+                                <logic:present parameter="isCliente">
+                                    <li><html:link forward="loadClientCrawlings"><bean:message key="migas.rastreos.cliente" /></html:link></li>
+                                    <li><html:link forward="loadClientFulfilledCrawlings" name="paramsVolverFC"><bean:message key="migas.rastreos.realizados" /></html:link></li>
+                                </logic:present>
+                                <logic:notPresent parameter="isCliente">
+                                    <logic:notPresent parameter="<%= Constants.OBSERVATORY %>">
+                                        <li><html:link forward="crawlingsMenu"><bean:message key="migas.rastreo" /></html:link></li>
+                                        <li><html:link forward="loadFulfilledCrawlings" paramId="<%= Constants.ID_RASTREO %>" paramName="<%= Constants.ID_RASTREO %>"><bean:message key="migas.rastreos.realizados" /></html:link></li>
+                                    </logic:notPresent>
+                                    <logic:present parameter="<%= Constants.OBSERVATORY %>">
+                                        <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> <bean:message key="migas.observatorio" /></html:link></li>
+                                        <li><html:link forward="resultadosPrimariosObservatorio" paramName="id_observatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.resultado.rastreos.realizados.observatorio" /></html:link></li>
+                                        <li><html:link forward="resultadosObservatorioSemillas" name="paramsVolver"><bean:message key="migas.resultado.observatorio" /></html:link></li>
+                                    </logic:present>
+                                </logic:notPresent>
+                              <li class="active"><bean:message key="migas.rastreos.realizados.url.analizadas" /></li>
+                            </ol>
+                        </div>
+
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="search.results.by.tracking"/></h2>
+							<h2><bean:message key="search.results.by.tracking"/></h2>
 							<logic:notPresent name="<%=Constants.LIST_ANALYSIS %>">	
 								<div class="notaInformativaExito">
 									<p><bean:message key="indice.rastreo.vacio"/></p>
@@ -200,7 +202,7 @@
 							</p>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>	
 	</div> 

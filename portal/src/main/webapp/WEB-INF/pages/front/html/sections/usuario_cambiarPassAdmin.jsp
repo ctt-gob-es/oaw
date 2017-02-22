@@ -38,11 +38,11 @@
 		<bean:message key="migas.cambiar.pass.admin" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -51,7 +51,7 @@
 					<div id="container_der">
 						<div id="cajaformularios">
 					
-							<h2 class="config"><bean:message key="cambiar.pass.admin.titulo" /></h2>
+							<h2><bean:message key="cambiar.pass.admin.titulo" /></h2>
 							<bean:define id="action" value="" />
 							<bean:define id="form" value="" />
 							<bean:define id="formName" value="" />
@@ -109,7 +109,7 @@
 							
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

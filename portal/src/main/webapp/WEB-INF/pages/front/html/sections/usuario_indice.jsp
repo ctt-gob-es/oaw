@@ -17,18 +17,18 @@
 		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / <bean:message key="migas.usuarios" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="indice.usuarios.sistema.usuarios" /></h2>
+							<h2><bean:message key="indice.usuarios.sistema.usuarios" /></h2>
 							
 							<logic:notPresent name="<%=Constants.CARGAR_USUARIOS_SISTEMA_FORM %>">	
 								<div class="notaInformativaExito">
@@ -111,12 +111,12 @@
 										</table>
 										<jsp:include page="pagination.jsp" />
 									</div>
-									<p id="pCenter"><html:link forward="indexAdmin" styleClass="boton"> <bean:message key="boton.volver"/> </html:link></p>
+									<p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
 								</logic:notEmpty>
 							</logic:present>
 						</div><!-- fin cajaformularios -->
 					</div><!-- Container Derecha -->
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div> 
 		</div> 
 	</div> 

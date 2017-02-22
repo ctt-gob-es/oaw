@@ -7,18 +7,18 @@
 		<bean:message key="migas.cuentas.cliente" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="ver.usuario.title" /></h2>
+							<h2><bean:message key="ver.usuario.title" /></h2>
 							<div class="detail">
 								<p><bean:message key="client.accounts.info"/></p>
 								<ul class="lista_inicial">
@@ -33,7 +33,7 @@
 							</div>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

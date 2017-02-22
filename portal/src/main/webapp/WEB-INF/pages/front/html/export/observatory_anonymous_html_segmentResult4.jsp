@@ -4,7 +4,7 @@
 
 <div id="content">
 	<jsp:include page="observatory_anonymous_html_menu.jsp"/>
-	<div id="contenido">
+
 		<bean:define id="categoryName"><bean:write name="<%= Constants.CATEGORY_NAME %>" /></bean:define>
 		<bean:parameter id="idCat" name="<%= Constants.ID_CATEGORIA %>"/>
 		<jsp:include page="observatory_anonymous_html_breadCoumbs.jsp" />

@@ -9,18 +9,18 @@
 		<bean:message key="migas.modificar.cuenta.cliente" /></p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
 					</div>
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="modificar.cuenta.cliente.title" /></h2>
+							<h2><bean:message key="modificar.cuenta.cliente.title" /></h2>
 							
 							<p><bean:message key="leyenda.campo.obligatorio" /></p>
 							
@@ -83,7 +83,7 @@
 							</html:form>
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

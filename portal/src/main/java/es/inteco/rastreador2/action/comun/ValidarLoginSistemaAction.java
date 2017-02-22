@@ -68,7 +68,7 @@ public class ValidarLoginSistemaAction extends Action {
                     path = removeAplicationName(path);
                     forward.setPath(path);
                 } else {
-                    forward = new ActionForward(mapping.findForward(Constants.INDEX_ADMIN));
+                    forward = new ActionForward(mapping.findForward("observatoryMenu"));
                 }
                 forward.setRedirect(true);
                 request.getSession().removeAttribute(Constants.URL);

@@ -11,11 +11,11 @@
 		</p>
 	</div>
 	
-	<div id="cuerpo">
-		<div id="cIzq">&nbsp;</div>
-		<div id="contenido">
+
+
+
 			<div id="main">
-				<div id="cuerpoprincipal">
+
 				
 					<div id="container_menu_izq">
 						<jsp:include page="menu.jsp"/>
@@ -23,7 +23,7 @@
 					
 					<div id="container_der">
 						<div id="cajaformularios">
-							<h2 class="config"><bean:message key="gestion.semillas.observatorio.titulo"/></h2>
+							<h2><bean:message key="gestion.semillas.observatorio.titulo"/></h2>
 							
 							<jsp:include page="/common/crawler_messages.jsp" />
 							<html:form action="/secure/SemillasObservatorio.do" method="get" styleClass="formulario" onsubmit="return validateSemillaObservatorioForm(this)">
@@ -78,12 +78,12 @@
 								</fieldset>
 							</html:form>
 							<div id="pCenter">
-								<p><html:link styleClass="boton" forward="observatorySeed"><bean:message key="boton.volver"/></html:link></p>
+								<p><html:link styleClass="btn btn-default btn-lg" forward="observatorySeed"><bean:message key="boton.volver"/></html:link></p>
 							</div>
 							
 						</div><!-- fin cajaformularios -->
 					</div>
-				</div><!-- fin CUERPO PRINCIPAL -->
+
 			</div>
 		</div>
 	</div> 

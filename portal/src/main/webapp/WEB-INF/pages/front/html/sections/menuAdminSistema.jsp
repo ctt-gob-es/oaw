@@ -13,17 +13,17 @@
 	<span class="oculto"><bean:message key="ubicacion.usuario" /> </span> <bean:message key="migas.inicio" />
 </div>
 
-<div id="cuerpo">
+
 	<div id="cIzq">&nbsp;</div>
-	<div id="contenido">
+
 		<div id="main">
-			<div id="cuerpoprincipal">
+
 				<div id="container_menu_izq">
 					<jsp:include page="menu.jsp"/>
 				</div>
 				<div id="container_der">
 					<div class="textoinformativo">
-						<h2 class="config"><bean:message key="menuadmin.informacion" /></h2>
+						<h2><bean:message key="menuadmin.informacion" /></h2>
 						<p>
 							<bean:message key="welcome.common.message"/>
 						</p>
@@ -49,7 +49,7 @@
 						</div>
 					</div>
 				</div>
-			</div><!-- fin CUERPO PRINCIPAL -->
+
 		</div> 
 	</div>
 </div>
