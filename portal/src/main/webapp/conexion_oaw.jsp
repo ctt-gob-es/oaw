@@ -37,6 +37,7 @@
         private final String directorio;
         private final String registerAnalysis;
         private final String analysisToDelete;
+        private final String type;
 
         private final List<String> errores;
 
@@ -58,6 +59,7 @@
             this.directorio = request.getParameter("inDirectory") != null ? "true" : "false";
             this.registerAnalysis = request.getParameter("registerAnalysis") != null ? "true" : "false";
             this.analysisToDelete = request.getParameter("analysisToDelete") != null ? request.getParameter("analysisToDelete") : "";
+            this.type = request.getParameter("type") != null ? request.getParameter("type") : "url";
             // TODO: Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
             this.errores = new ArrayList<String>();
             validateRequest();
@@ -99,7 +101,7 @@
         private String buildPostRequest() {
             final URLCodec codec = new URLCodec();
             try {
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s",
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
                         Objects.toString(codec.encode(codigo), ""),
                         Objects.toString(url, ""),
                         correo,
@@ -111,7 +113,8 @@
                         registerAnalysis,
                         analysisToDelete,
                         nobroken,
-                        urls
+                        urls,
+                        type
                 );
                 return postRequest;
             } catch (Exception e) {
@@ -125,7 +128,15 @@
 
         public String getHistorico() {
             try {
-                final HttpURLConnection httpConnection = createConnection(HISTORICO_ENDPOINT + "?url=" + java.net.URLEncoder.encode(url, "ISO-8859-1"));
+                final String historicoParamQuery;
+                if ( "url".equalsIgnoreCase(type) ) {
+                    historicoParamQuery = "?type="+type+"&url=" + java.net.URLEncoder.encode(url, "ISO-8859-1");
+                } else if ( "lista_urls".equalsIgnoreCase(type) ) {
+                    historicoParamQuery = "?type="+type+"&url=" + java.net.URLEncoder.encode(urls, "ISO-8859-1");
+                } else {
+                    historicoParamQuery = "";
+                }
+                final HttpURLConnection httpConnection = createConnection(HISTORICO_ENDPOINT + historicoParamQuery);
                 httpConnection.connect();
 
                 if (httpConnection.getResponseCode() != 200) {
@@ -207,6 +218,25 @@
                         errores.add("La URL " + domain + " debe comenzar por http:// o https://");
                     }
                 }
+                if (isEvolutivoHistorico()) {
+                    final String[] domains = urls.split("\r\n");
+                    if (domains.length!=17) {
+                        errores.add("El evolutivo para análsis de tipo 'Conjunto de URLs' requiere 17 páginas");
+                    } else {
+                        try {
+                            final String pattern = new URL(domains[0]).getHost();
+                            for (String domain: domains) {
+                                final String host = new URL(domain).getHost();
+                                if ( !host.equalsIgnoreCase(pattern) ) {
+                                    errores.add("El evolutivo para análisis de tipo 'Conjunto de URLs' solo está permitido para páginas del mismo 'host' (exactamente mismo dominio) " + domain + " | " +pattern);
+                                    break;
+                                }
+                            }
+                        } catch (MalformedURLException murle) {
+                            errores.add("Error al comprobar el dominio de un análisis de tipo 'Conjunto de URLs'");
+                        }
+                    }
+                }
             } else if (codigo.length() > 2000000) {
                 errores.add("El c&oacute;digo fuente a analizar es demasiado largo");
             }
@@ -217,7 +247,7 @@
         }
 
         private boolean isListaUrlsRequest() {
-            return urls!=null && urls.trim().length() > 0;
+            return "lista_urls".equalsIgnoreCase(type); //urls!=null && urls.trim().length() > 0;
         }
     }
 %>
@@ -264,12 +294,14 @@
         <form method="POST">
             <input type="hidden" name="confirm"             value="true">
             <input type="hidden" name="url"                 value="<%=request.getParameter("url")%>">
+            <input type="hidden" name="urls"                value="<%=request.getParameter("urls")%>">
             <input type="hidden" name="profundidad"         value="<%=request.getParameter("profundidad")%>">
             <input type="hidden" name="amplitud"            value="<%=request.getParameter("amplitud")%>">
             <input type="hidden" name="correo"              value="<%=request.getParameter("correo")%>">
             <input type="hidden" name="informe"             value="<%=request.getParameter("informe")%>">
             <input type="hidden" name="informe-nobroken"    value="<%=Objects.toString(request.getParameter("informe-nobroken"),"")%>">
             <input type="hidden" name="registerAnalysis"    value="<%=request.getParameter("registerAnalysis")%>">
+            <input type="hidden" name="type"                value="<%=request.getParameter("type")%>">
 
             <fieldset id="historico_resultados">
                 <legend>Histórico de resultados</legend>                

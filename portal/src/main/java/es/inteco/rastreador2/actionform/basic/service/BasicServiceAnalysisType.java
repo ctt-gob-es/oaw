@@ -26,7 +26,7 @@ public enum BasicServiceAnalysisType {
         } else if ("lista_urls".equalsIgnoreCase(label)) {
             return LISTA_URLS;
         } else {
-            return null;
+            return URL;
         }
     }
 }
