@@ -1,6 +1,7 @@
 package es.ctic.basicservice.historico;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -8,10 +9,10 @@ import org.junit.Test;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by mikunis on 1/16/17.
@@ -26,18 +27,18 @@ public class CheckHistoricoServiceTest {
         final InitialContext ic = new InitialContext();
 
 
-            ic.createSubcontext("java:");
-            ic.createSubcontext("java:/comp");
-            ic.createSubcontext("java:/comp/env");
-            ic.createSubcontext("java:/comp/env/jdbc");
+        ic.createSubcontext("java:");
+        ic.createSubcontext("java:/comp");
+        ic.createSubcontext("java:/comp/env");
+        ic.createSubcontext("java:/comp/env/jdbc");
 
-            // Construct DataSource
-            final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
-            mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW");
-            mysqlDataSource.setUser("root");
-            mysqlDataSource.setPassword("root");
+        // Construct DataSource
+        final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
+        mysqlDataSource.setURL("jdbc:mysql://localhost:3306/OAW");
+        mysqlDataSource.setUser("root");
+        mysqlDataSource.setPassword("root");
 
-            ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
+        ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
     }
 
     @AfterClass
@@ -49,14 +50,39 @@ public class CheckHistoricoServiceTest {
     @Test
     public void getHistoricoResultadosTest() throws Exception {
         final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
-        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados("http://www.fundacionctic.org");
+        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados("http://www.fundacionctic.org", BasicServiceAnalysisType.URL);
         assertFalse(historicoResultados.isEmpty());
     }
 
     @Test
     public void isAnalysisOfUrlTest() throws Exception {
         final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
-        assertTrue(checkHistoricoService.isAnalysisOfUrl("212", "http://www.fundacionctic.org"));
+        assertTrue(checkHistoricoService.isAnalysisOfUrl("212", "http://www.fundacionctic.org", BasicServiceAnalysisType.URL));
     }
+
+    @Test
+    public void getHistoricoResultadosListURLsTest() throws Exception {
+        final String urls = "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org\n" +
+                "http://www.fundacionctic.org";
+        final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
+        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(urls, BasicServiceAnalysisType.LISTA_URLS);
+        assertFalse(historicoResultados.isEmpty());
+    }
+
 
 }

@@ -16,6 +16,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
@@ -82,7 +83,7 @@ public class BasicServicePdfReport {
 
                 document.open();
 
-                PDFUtils.addCoverPage(document, messageResources.getMessage("pdf.accessibility.title", new String[]{pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle()}), pdfBuilder.getBasicServiceForm().getDomain(), "Informe emitido bajo demanda.");
+                PDFUtils.addCoverPage(document, messageResources.getMessage("pdf.accessibility.title", new String[]{pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle()}), pdfBuilder.getBasicServiceForm().getAnalysisType()== BasicServiceAnalysisType.URL?pdfBuilder.getBasicServiceForm().getDomain():"", "Informe emitido bajo demanda.");
 
                 pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
                 pdfTocManager.addChapterCount();

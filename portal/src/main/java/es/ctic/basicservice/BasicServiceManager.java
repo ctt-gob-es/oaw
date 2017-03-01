@@ -102,7 +102,7 @@ public class BasicServiceManager {
                 final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
                 if (basicServiceForm.isRegisterAnalysis()) {
                     if (basicServiceForm.isDeleteOldAnalysis()) {
-                        if (checkHistoricoService.isAnalysisOfUrl(basicServiceForm.getAnalysisToDelete(), basicServiceForm.getDomain())) {
+                        if (checkHistoricoService.isAnalysisOfUrl(basicServiceForm.getAnalysisToDelete(), basicServiceForm.getDomain(), basicServiceForm.getAnalysisType())) {
                             // Si el analisis marcado corresponde a un análisis de esa url lo borramos
                             Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
                             checkHistoricoService.deleteAnalysis(basicServiceForm.getName(), basicServiceForm.getAnalysisToDelete());
