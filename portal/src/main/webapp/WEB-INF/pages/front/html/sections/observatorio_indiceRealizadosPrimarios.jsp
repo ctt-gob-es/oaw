@@ -43,7 +43,7 @@
                                 <th class="accion">Inf agregado</th>
                                 <th class="accion">Inf individuales</th>
                                 <!-- <th class="accion">Generar resultados</th> -->
-                                <th>Graficas globales</th>
+                                <th class="accion">Graficas globales</th>
                                 <th class="accion">Eliminar</th>
                             </tr>
 
@@ -114,7 +114,13 @@
                                     	<jsp:useBean id="paramsGraphic" class="java.util.HashMap" />
                                     	<c:set target="${paramsGraphic}" property="id" value="${fulfilledObservatory.id}" />
                                     	<c:set target="${paramsGraphic}" property="id_observatorio" value="${id_observatorio}" />
-                                        <html:link forward="getObservatoryGraphic" name="paramsGraphic"><bean:message key="migas.indice.observatorios.menu.graficas"/></html:link> /
+                                    	<c:set target="${paramsGraphic}" property="graphic" value="initial" />
+                                    	<c:set target="${paramsGraphic}" property="Otype" value="5" />
+
+                                        <html:link forward="getObservatoryGraphic" name="paramsGraphic">
+                                            <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Acceder a las gráficas agregadas de esta iteraci\u00f3n"/>
+                                            <span class="sr-only"><bean:message key="migas.indice.observatorios.menu.graficas"/></span>
+                                        </html:link>
                                     </td>
                                     <td>
                                         <html:link forward="deleteFulfilledObservatory">

@@ -5,6 +5,7 @@
 
 	<bean:parameter id="id" name="<%=Constants.ID %>"/>
 	<bean:parameter id="id_observatorio" name="<%=Constants.ID_OBSERVATORIO %>"/>
+	<bean:parameter id="idObservatorio" name="<%=Constants.ID_OBSERVATORIO %>"/>
 	<bean:parameter id="observatoryType" name="<%=Constants.TYPE_OBSERVATORY %>"/>
 	
 	<bean:define id="grParam" ><%= Constants.GRAPHIC %></bean:define>
@@ -17,729 +18,732 @@
 	<c:set target="${params}" property="${grParam}" value="${grValue}" />
 	<c:set target="${params}" property="Otype" value="${observatoryType}" />
 			
-	<div id="migas">
-		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p> 
-		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> / 
-		<html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link> / 
-		<html:link forward="getFulfilledObservatories" name="params"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link> /
-		<html:link forward="getObservatoryGraphic" name="params"><bean:message key="migas.indice.observatorios.menu.graficas"/></html:link> /
-		<bean:message key="migas.indice.observatorios.menu.graficas.evolucion"/>
-		</p>
-	</div>
-	
+    <div id="main">
 
+        <div id="container_menu_izq">
+            <jsp:include page="menu.jsp"/>
+        </div>
 
+        <div id="container_der">
+            <div id="migas">
+                <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+                <ol class="breadcrumb">
+                  <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.observatorio" /></html:link></li>
+                  <li><html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link></li>
+                  <li><html:link forward="getObservatoryGraphic" name="params"><bean:message key="migas.indice.observatorios.menu.graficas"/></html:link></li>
+                  <li class="active"><bean:message key="migas.indice.observatorios.menu.graficas.evolucion"/></li>
+                </ol>
+            </div>
+<!--
+        	<div id="migas">
+        		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p>
+        		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link> /
+        		<html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link> /
+        		<html:link forward="getFulfilledObservatories" name="params"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link> /
+        		<html:link forward="getObservatoryGraphic" name="params"><bean:message key="migas.indice.observatorios.menu.graficas"/></html:link> /
 
-			<div id="main">
+        		</p>
+        	</div>
+-->
+            <div id="cajaformularios">
+                <h2><bean:message key="indice.observatorios.menu.graficas.evolucion" /></h2>
+                    <jsp:include page="/common/crawler_messages.jsp" />
+                    <logic:equal name="<%= Constants.OBSERVATORY_RESULTS %>" value="<%= Constants.SI %>">
+                        <h3>1. <bean:message key="resultados.anonimos.nivel.comformidad.accesibilidad.aa.title" /></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.porc.portales"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.porc.portales"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_APPROVAL_LEVEL_AA %>"></img></div>
 
-					
-					<div id="container_menu_izq">
-						<jsp:include page="menu.jsp"/>
-					</div>
-					
-					<div id="container_der">
-					
-						<div id="cajaformularios">
-							<h2><bean:message key="indice.observatorios.menu.graficas.evolucion" /></h2>
-								<jsp:include page="/common/crawler_messages.jsp" />
-								<logic:equal name="<%= Constants.OBSERVATORY_RESULTS %>" value="<%= Constants.SI %>">
-									<h3>1. <bean:message key="resultados.anonimos.nivel.comformidad.accesibilidad.aa.title" /></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.porc.portales"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.porc.portales"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_APPROVAL_LEVEL_AA %>"></img></div>
-									
-									<h3>2. <bean:message key="resultados.anonimos.nivel.comformidad.accesibilidad.a.title" /></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.porc.portales"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.porc.portales"/></strong>
-											<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol>--%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_APPROVAL_LEVEL_A %>"></img></div>
-									
-									<h3>3. <bean:message key="resultados.anonimos.nivel.comformidad.accesibilidad.nv.title" /></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.porc.portales"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.porc.portales"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_APPROVAL_LEVEL_NV %>"></img></div>
-									
-									<h3>4. <bean:message key="resultados.anonimos.puntuacion.media.observatorio.title" /></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_MID_PUNT %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_MID_PUNT %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_MID_MARK %>"></img></div>
-									
-									<h3>5. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.1"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION %>"></img></div>
-									
-									<h3>6. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.2"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION %>"></img></div>
-									
-									<h3>7. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.3"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION %>"></img></div>
-									
-									<h3>8. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.4"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION %>"></img></div>
-									
-									<h3>9. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.5"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION %>"></img></div>
-									
-									<h3>10.<bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.6"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION %>"></img></div>
-									
-									<h3>11. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.7"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION %>"></img></div>
-									
-									<h3>12. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.2.1"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION %>"></img></div>
-									
-									<h3>13. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.2.2"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION %>"></img></div>
-									
-									<h3>14. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.2.3"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION %>"></img></div>
-									
-									<h3>15. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.1"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION %>"></img></div>
-									
-									<h3>16. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.2"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION %>"></img></div>
-									
-									<h3>17. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.3"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION %>"></img></div>
-									
-									<h3>18. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.4"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION %>"></img></div>
-									
-									<h3>19. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.5"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION %>"></img></div>
-									
-									<h3>20. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.6"/></h3>
-									<div class="graphicInfo2">
-									<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION %>"></img></div>
-									
-									<h3>21. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.7"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION %>"></img></div>
-									
-									<h3>22. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.2.1"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION %>"></img></div>
-									
-									<h3>23. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.2.2"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION %>"></img></div>
-									
-									<h3>24. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.2.3"/></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223 %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223 %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION %>"></img></div>
-							
-									<h3>25. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
-											<jsp:attribute name="arg0">
-												<bean:message key="observatory.aspect.general"/>
-											</jsp:attribute>
-										</bean:message></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID %>"></img></div>
-									
-									<h3>26. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
-											<jsp:attribute name="arg0">
-												<bean:message key="observatory.aspect.presentation"/>
-											</jsp:attribute>
-										</bean:message></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID %>"></img></div>
-									
-									<h3>27. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
-											<jsp:attribute name="arg0">
-												<bean:message key="observatory.aspect.structure"/>
-											</jsp:attribute>
-										</bean:message></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID %>"></img></div>
-									
-									<h3>28. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
-											<jsp:attribute name="arg0">
-												<bean:message key="observatory.aspect.navigation"/>
-											</jsp:attribute>
-										</bean:message></h3>
-									<div class="graphicInfo2">
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID %>"></img></div>
-									
-									<h3>29. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
-											<jsp:attribute name="arg0">
-												<bean:message key="observatory.aspect.alternatives"/>
-											</jsp:attribute>
-										</bean:message></h3>
-									<div class="graphicInfo2">	
-										<table>
-											<tr>
-												<th><bean:message key="resultados.anonimos.date"/></th>
-												<th><bean:message key="resultados.anonimos.punt.media"/></th>
-											</tr>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL %>">
-												<tr>
-													<td><bean:write name="item" property="label" /></td>
-													<td><bean:write name="item" property="value"/></td>
-												</tr>
-											</logic:iterate>
-										</table>
-										<%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
-										<ol>
-											<logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL %>">
-												<li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
-											</logic:iterate>
-										</ol> --%>
-									</div>
-									<div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID %>"></img></div>
-									
-								</logic:equal>
-								<p id="pCenter">
-									<html:link forward="getObservatoryGraphic" name="params" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link>
-									<c:set target="${params}" property="${grParam}" value="${grRegenerate}" />
-									<html:link forward="regenerateGraphicIntav" name="params" styleClass="boton"> <bean:message key="boton.regenerar.resultados"/> </html:link>
-								</p>
-						</div><!-- fin cajaformularios -->
-					</div>
+                        <h3>2. <bean:message key="resultados.anonimos.nivel.comformidad.accesibilidad.a.title" /></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.porc.portales"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.porc.portales"/></strong>
+                                <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol>--%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_APPROVAL_LEVEL_A %>"></img></div>
 
-			</div>
-		</div>	
-	</div> 
+                        <h3>3. <bean:message key="resultados.anonimos.nivel.comformidad.accesibilidad.nv.title" /></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.porc.portales"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.porc.portales"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_APPROVAL_LEVEL_NV %>"></img></div>
+
+                        <h3>4. <bean:message key="resultados.anonimos.puntuacion.media.observatorio.title" /></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_MID_PUNT %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_MID_PUNT %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_MID_MARK %>"></img></div>
+
+                        <h3>5. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.1"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION %>"></img></div>
+
+                        <h3>6. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.2"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION %>"></img></div>
+
+                        <h3>7. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.3"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION %>"></img></div>
+
+                        <h3>8. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.4"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION %>"></img></div>
+
+                        <h3>9. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.5"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION %>"></img></div>
+
+                        <h3>10.<bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.6"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION %>"></img></div>
+
+                        <h3>11. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.1.7"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION %>"></img></div>
+
+                        <h3>12. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.2.1"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION %>"></img></div>
+
+                        <h3>13. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.2.2"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION %>"></img></div>
+
+                        <h3>14. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 1.2.3"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION %>"></img></div>
+
+                        <h3>15. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.1"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION %>"></img></div>
+
+                        <h3>16. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.2"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION %>"></img></div>
+
+                        <h3>17. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.3"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION %>"></img></div>
+
+                        <h3>18. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.4"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION %>"></img></div>
+
+                        <h3>19. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.5"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION %>"></img></div>
+
+                        <h3>20. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.6"/></h3>
+                        <div class="graphicInfo2">
+                        <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION %>"></img></div>
+
+                        <h3>21. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.1.7"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION %>"></img></div>
+
+                        <h3>22. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.2.1"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION %>"></img></div>
+
+                        <h3>23. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.2.2"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION %>"></img></div>
+
+                        <h3>24. <bean:message key="resultados.anonimos.puntuacion.media.verificacion.title" arg0=" 2.2.3"/></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223 %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223 %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_VERIFICATION %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION %>"></img></div>
+
+                        <h3>25. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
+                                <jsp:attribute name="arg0">
+                                    <bean:message key="observatory.aspect.general"/>
+                                </jsp:attribute>
+                            </bean:message></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AG %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID %>"></img></div>
+
+                        <h3>26. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
+                                <jsp:attribute name="arg0">
+                                    <bean:message key="observatory.aspect.presentation"/>
+                                </jsp:attribute>
+                            </bean:message></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID %>"></img></div>
+
+                        <h3>27. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
+                                <jsp:attribute name="arg0">
+                                    <bean:message key="observatory.aspect.structure"/>
+                                </jsp:attribute>
+                            </bean:message></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID %>"></img></div>
+
+                        <h3>28. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
+                                <jsp:attribute name="arg0">
+                                    <bean:message key="observatory.aspect.navigation"/>
+                                </jsp:attribute>
+                            </bean:message></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID %>"></img></div>
+
+                        <h3>29. <bean:message key="resultados.anonimos.puntuacion.media.aspecto.title">
+                                <jsp:attribute name="arg0">
+                                    <bean:message key="observatory.aspect.alternatives"/>
+                                </jsp:attribute>
+                            </bean:message></h3>
+                        <div class="graphicInfo2">
+                            <table>
+                                <tr>
+                                    <th><bean:message key="resultados.anonimos.date"/></th>
+                                    <th><bean:message key="resultados.anonimos.punt.media"/></th>
+                                </tr>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL %>">
+                                    <tr>
+                                        <td><bean:write name="item" property="label" /></td>
+                                        <td><bean:write name="item" property="value"/></td>
+                                    </tr>
+                                </logic:iterate>
+                            </table>
+                            <%-- %><strong><bean:message key="resultados.anonimos.punt.media"/></strong>
+                            <ol>
+                                <logic:iterate id="item" name="<%= Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AAL %>">
+                                    <li><bean:write name="item" property="label" /> : <bean:write name="item" property="value"/></li>
+                                </logic:iterate>
+                            </ol> --%>
+                        </div>
+                        <div class="divCenter"><img src="<%=request.getContextPath()%>/secure/GraficasObservatorio.do?<%= Constants.TYPE_OBSERVATORY %>=<%= observatoryType %>&amp;<%= Constants.ID %>=<%= id %>&amp;<%= Constants.ID_OBSERVATORIO %>=<%= id_observatorio %>&amp;<%= Constants.GRAPHIC_TYPE %>=<%= Constants.GRAPHIC_ASPECT %>&amp;<%= Constants.GRAPHIC %>=<%= Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID %>"></img></div>
+
+                    </logic:equal>
+                    <p id="pCenter">
+                        <c:set target="${params}" property="${grParam}" value="${grRegenerate}" />
+                        <html:link forward="regenerateGraphicIntav" name="params" styleClass="btn btn-primary btn-lg"> <bean:message key="boton.regenerar.resultados"/> </html:link>
+                        <c:set target="${params}" property="${grParam}" value="${grValue}" />
+                        <html:link forward="getObservatoryGraphic" name="params" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link>
+                    </p>
+            </div><!-- fin cajaformularios -->
+        </div>
+    </div>
 </inteco:sesion>

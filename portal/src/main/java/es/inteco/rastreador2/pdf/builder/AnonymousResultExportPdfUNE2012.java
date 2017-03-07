@@ -698,7 +698,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
 
     @Override
     public void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess, java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean regenerate) throws Exception {
-        ResultadosAnonimosObservatorioUNE2012Utils.getMidsComparationByVerificationLevelGraphic(messageResources, level, title, filePath, noDataMess, evaList, value, regenerate);
+        ResultadosAnonimosObservatorioUNE2012Utils.getMidsComparationByVerificationLevelGraphic(messageResources, new HashMap<String, Object>(), level, title, filePath, noDataMess, evaList, value, regenerate);
     }
 
     @Override
