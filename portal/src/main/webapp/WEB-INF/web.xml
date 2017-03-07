@@ -73,7 +73,7 @@
     <!-- Detener en base de datos los rastreos activos al arrancar -->
     <servlet>
         <servlet-name>StopRunningCrawlings</servlet-name>
-        <servlet-class>es.inteco.crawler.servlet.StopRunningCrawlingsServlet</servlet-class>
+        <servlet-class>es.inteco.rastreador2.servlets.StopRunningCrawlingsServlet</servlet-class>
         <load-on-startup>4</load-on-startup>
     </servlet>
 

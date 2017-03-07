@@ -122,7 +122,7 @@
 
                                             <a href="<bean:write name="url"/>" title="<%=altLink %>">
                                                 <span class="glyphicon glyphicon-new-window"></span>
-                                                <span class="sr-only">Ir a la página web de esta semilla</span>
+                                                <span class="sr-only">Ir a la p\u00e1gina web de esta semilla</span>
                                             </a>
                                         </logic:iterate>
                                     </td>

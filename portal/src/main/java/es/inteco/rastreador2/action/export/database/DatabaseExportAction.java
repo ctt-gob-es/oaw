@@ -64,7 +64,7 @@ public class DatabaseExportAction extends Action {
 
                 if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
                     exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
-                } else if (String.valueOf(fulfilledObservatory.getCartucho().getId()).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
+                } else {
                     return mapping.findForward(Constants.ERROR);
                 }
             }

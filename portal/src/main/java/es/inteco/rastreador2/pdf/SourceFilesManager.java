@@ -28,7 +28,7 @@ public class SourceFilesManager {
      */
     public SourceFilesManager(final File parentDir) {
         this.parentDir = parentDir;
-        this.sourcesFile = new File(parentDir, "sources.zip");
+        this.sourcesFile = new File(parentDir, "codigo_fuente.zip");
     }
 
     /**
@@ -49,7 +49,7 @@ public class SourceFilesManager {
     public void writeSourceFiles(final Connection c, final List<Long> evaluationIds) {
         int index = 1;
         for (Long evaluationId : evaluationIds) {
-            final File pageSourcesDirectory = new File(parentDir, "sources/" + index);
+            final File pageSourcesDirectory = new File(parentDir, "paginas/" + index);
             if (!pageSourcesDirectory.mkdirs()) {
                 Logger.putLog("No se ha podido crear el directorio sources - " + pageSourcesDirectory.getAbsolutePath(), PdfGeneratorThread.class, Logger.LOG_LEVEL_ERROR);
             }
@@ -86,7 +86,6 @@ public class SourceFilesManager {
         } catch (Exception e) {
             return defaultValue;
         }
-
     }
 
     private String writeTempFile(final File tempFile, final String source, final String url) throws FileNotFoundException {
@@ -102,10 +101,10 @@ public class SourceFilesManager {
      *
      * @param deleteFiles flag para indicar si se deben borrar los ficheros una vez comprimidos
      */
-    public void zipSources(boolean deleteFiles) {
-        ZipUtils.generateZipFile(parentDir.toString() + "/sources", parentDir.toString() + "/sources.zip", true);
+    public void zipSources(final boolean deleteFiles) {
+        ZipUtils.generateZipFile(parentDir.toString() + "/paginas", parentDir.toString() + "/codigo_fuente.zip", true);
         if (deleteFiles) {
-            FileUtils.deleteDir(new File(parentDir, "sources"));
+            FileUtils.deleteDir(new File(parentDir, "paginas"));
         }
     }
 }

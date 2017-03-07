@@ -215,6 +215,29 @@ public final class CrawlerUtils {
         }
     }
 
+    public static void returnData(final HttpServletResponse response, final byte[] data, final String filename, final String mimeType) throws Exception {
+        try (ByteArrayInputStream fileIn = new ByteArrayInputStream(data);
+             final OutputStream out = response.getOutputStream()) {
+
+            response.setContentType(mimeType);
+            response.setContentLength(data.length);
+            response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", filename));
+
+            final byte[] buffer = new byte[2048];
+            int bytesRead = fileIn.read(buffer);
+            while (bytesRead >= 0) {
+                if (bytesRead > 0) {
+                    out.write(buffer, 0, bytesRead);
+                    bytesRead = fileIn.read(buffer);
+                }
+            }
+            out.flush();
+        } catch (Exception e) {
+            Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
+    }
+
     public static void returnStringAsFile(final HttpServletResponse response, final String content, final String filename, final String mimeType) throws Exception {
         try (PrintWriter out = response.getWriter()) {
             response.setContentType(mimeType);

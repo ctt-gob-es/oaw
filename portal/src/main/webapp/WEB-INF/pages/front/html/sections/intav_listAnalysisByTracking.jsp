@@ -128,7 +128,7 @@
 														<th><bean:message key="search.results.observations"/></th>
 													</logic:notPresent>
 													<th>Resultados</th>
-													<th>Código fuente</th>
+													<th>C\u00f3digo fuente</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -168,7 +168,7 @@
 																<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_SUCCESS) %>">
 																	<html:link forward="showAnalysisFromCrawler" name="params">
-																	    <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta página"/><span class="sr-only">Resultados</span>
+																	    <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta p\u00e1gina"/><span class="sr-only">Resultados</span>
 																	</html:link>
 																</logic:equal>
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_ERROR) %>">
@@ -177,7 +177,7 @@
 															</td>
 															<td>
 																<html:link forward="getHtmlSource" name="params">
-																    <span class="glyphicon glyphicon-file" aria-hidden="true" data-toggle="tooltip" title="Ver el código fuente analizado"/><span class="sr-only">Código fuente</span>
+																    <span class="glyphicon glyphicon-file" aria-hidden="true" data-toggle="tooltip" title="Ver el c\u00f3digo fuente analizado"/><span class="sr-only">C\u00f3digo fuente</span>
 																</html:link>
 															</td>
 														</logic:present>
