@@ -39,8 +39,11 @@
                                 <th><bean:message key="resultado.observatorio.rastreo.realizado.fecha.ejecucion" /></th>
                                 <th><bean:message key="resultado.observatorio.rastreo.realizado.cartucho.asociado" /></th>
                                 <th><bean:message key="resultado.observatorio.rastreo.realizado.estado"/></th>
-                                <th class="accion">Resultado</th>
-                                <th class="accion">Exportar</th>
+                                <th class="accion">Resultados individuales</th>
+                                <th class="accion">Inf agregado</th>
+                                <th class="accion">Inf individuales</th>
+                                <!-- <th class="accion">Generar resultados</th> -->
+                                <th>Graficas globales</th>
                                 <th class="accion">Eliminar</th>
                             </tr>
 
@@ -76,17 +79,22 @@
                                             <img src="../images/list_disable.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/>
                                         </logic:notEqual>
                                     </td>
-                                    <!-- <td>
-                                        <jsp:useBean id="params2" class="java.util.HashMap" />
-                                        <c:set target="${params2}" property="id_observatorio" value="${id_observatorio}" />
-                                        <c:set target="${params2}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
-                                        <c:set target="${params2}" property="esPrimera" value="true"/>
-                                        <c:set target="${params2}" property="isPrimary" value="true"/>
-                                        <html:link forward="getAnnexes" name="params2">
-                                            <span class="glyphicon glyphicon-save" aria-hidden="true" data-toggle="tooltip" title="Exportar los resultados de todas las iteraciones del observatorio en formato XML"/>
-                                            <span class="sr-only">Generar anexos de resultados</span>
-                                        </html:link>
-                                    </td> -->
+                                    <td>
+                                        <jsp:useBean id="paramsInformeAgregado" class="java.util.HashMap" />
+                                        <c:set target="${paramsInformeAgregado}" property="id_observatorio" value="${id_observatorio}" />
+                                        <c:set target="${paramsInformeAgregado}" property="id" value="${fulfilledObservatory.id}" />
+                                        <c:set target="${paramsInformeAgregado}" property="esPrimera" value="true"/>
+                                        <c:set target="${paramsInformeAgregado}" property="isPrimary" value="false"/>
+                                        <c:set target="${paramsInformeAgregado}" property="idExObs" value="${fulfilledObservatory.id}" />
+                                        <logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="1">
+                                            <!-- <html:link forward="<%= Constants.OBSERVATORY_GRAPHIC %>" name="params"><img src="../images/list.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/></html:link></li> -->
+
+                                            <html:link forward="anonymousExportOpenOfficeAction" name="paramsInformeAgregado" >
+                                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Descargar informe de resultados agregados en formato odt (LibreOffice)"/>
+                                                <span class="sr-only">Generar informe de resultados agregados</span>
+                                            </html:link>
+                                        </logic:notEqual>
+                                    </td>
                                     <td>
                                         <jsp:useBean id="paramsExportPDF" class="java.util.HashMap" />
                                         <c:set target="${paramsExportPDF}" property="id_observatorio" value="${id_observatorio}" />
@@ -96,9 +104,21 @@
                                             <span class="sr-only">Generar los informes individuales</span>
                                         </html:link></li>
                                     </td>
+                                    <!-- <td>
+                                        <html:link forward="databaseExportActionConfirm" name="paramsInformeAgregado">
+                                            <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Actualizar la exportaci\u00f3n de resultados de esta iteraci\u00f3n"/>
+                                            <span class="sr-only"><bean:message key="indice.rastreo.exportar.database" /></span>
+                                        </html:link>
+                                    </td> -->
                                     <td>
-                                        <html:link forward="deleteFulfilledObservatory" name="params2">
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta iteración del observatorio"/><span class="sr-only">Eliminar esta iteración del observatorio</span>
+                                    	<jsp:useBean id="paramsGraphic" class="java.util.HashMap" />
+                                    	<c:set target="${paramsGraphic}" property="id" value="${fulfilledObservatory.id}" />
+                                    	<c:set target="${paramsGraphic}" property="id_observatorio" value="${id_observatorio}" />
+                                        <html:link forward="getObservatoryGraphic" name="paramsGraphic"><bean:message key="migas.indice.observatorios.menu.graficas"/></html:link> /
+                                    </td>
+                                    <td>
+                                        <html:link forward="deleteFulfilledObservatory">
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta iteraci\u00f3n del observatorio"/><span class="sr-only">Eliminar esta iteraci\u00f3n del observatorio</span>
                                         </html:link>
                                     </td
                                 </tr>

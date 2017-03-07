@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -54,6 +55,16 @@ public final class ZipUtils {
         }
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
+            generateZipEntries(directoryPath, "", zos, excludeZipFiles);
+            zos.flush();
+            zos.finish();
+        } catch (Exception e) {
+            Logger.putLog("Excepción al crear el zip", ZipUtils.class, Logger.LOG_LEVEL_ERROR, e);
+        }
+    }
+
+    public static void generateZipFile(final String directoryPath, final OutputStream outputStream, boolean excludeZipFiles) {
+        try (ZipOutputStream zos = new ZipOutputStream(outputStream)) {
             generateZipEntries(directoryPath, "", zos, excludeZipFiles);
             zos.flush();
             zos.finish();

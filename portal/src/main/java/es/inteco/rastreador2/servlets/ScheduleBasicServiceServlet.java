@@ -24,9 +24,8 @@ public class ScheduleBasicServiceServlet extends GenericServlet {
 
         Logger.putLog("Programando las peticiones al servicio básico", ScheduleBasicServiceServlet.class, Logger.LOG_LEVEL_INFO);
 
-        Connection c = null;
+        final List<BasicServiceForm> basicServiceRequests = BasicServiceUtils.getBasicServiceRequestByStatus(Constants.BASIC_SERVICE_STATUS_SCHEDULED);
         try {
-            List<BasicServiceForm> basicServiceRequests = BasicServiceUtils.getBasicServiceRequestByStatus(Constants.BASIC_SERVICE_STATUS_SCHEDULED);
             if (basicServiceRequests != null) {
                 for (BasicServiceForm basicServiceForm : basicServiceRequests) {
                     BasicServiceUtils.scheduleBasicServiceJob(basicServiceForm);
@@ -34,8 +33,6 @@ public class ScheduleBasicServiceServlet extends GenericServlet {
             }
         } catch (Exception e) {
             Logger.putLog("Error al programar los jobs para los rastreos de las cuentas de cliente y observatorios", ScheduleBasicServiceServlet.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

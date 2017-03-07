@@ -8,8 +8,6 @@
 	<c:set target="${paramsNS}" property="esPrimera" value="si" />
 	
 
-
-
     <!-- observatorio_cargarSemillas.jsp -->
     <div id="main">
 
@@ -99,21 +97,16 @@
                                         <bean:define id="semillaSTR"><%= Constants.SEMILLA %></bean:define>
                                         <tr>
                                             <td style="text-align: left">
-                                                <jsp:useBean id="paramsV" class="java.util.HashMap" />
                                                 <bean:define id="actionDet"><%= Constants.ACCION_SEED_DETAIL %></bean:define>
-                                                <c:set target="${paramsV}" property="${semillaSTR}" value="${semillaId}" />
-                                                <c:set target="${paramsV}" property="${action}" value="${actionDet}" />
-                                                <bean:define id="detailTitle"><bean:message key="eliminar.semilla.detalle.semilla.observatorio" /></bean:define>
-                                                <html:link forward="observatorySeeds" name="paramsV" title="<%= detailTitle%>"><bean:write name="semilla" property="nombre" /></html:link>
-
                                                 <jsp:useBean id="params" class="java.util.HashMap" />
                                                 <bean:define id="actionMod"><%= Constants.ACCION_MODIFICAR %></bean:define>
                                                 <c:set target="${params}" property="${semillaSTR}" value="${semillaId}" />
                                                 <c:set target="${params}" property="${action}" value="${actionMod}"/>
-                                                <html:link forward="observatorySeeds" name="params" styleClass="pull-right">
-                                                    <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar la configuración de esta semilla"/>
-                                                    <span class="sr-only"><bean:message key="etitar.semilla.observatorio" /></span>
+                                                <html:link forward="observatorySeeds" name="params">
+                                                    <span data-toggle="tooltip" title="Editar la configuraci\u00f3n de esta semilla"/><bean:write name="semilla" property="nombre" /></span>
                                                 </html:link>
+
+                                                <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true"/>
                                             </td>
                                             <td>
                                                 <bean:write name="semilla" property="categoria.name"/>

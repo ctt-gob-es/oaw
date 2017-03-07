@@ -131,7 +131,7 @@
                                             </td>
                                             <td>
                                                 <html:link forward="primaryExportPdfAction" name="paramSTR">
-                                                    <span class="glyphicon glyphicon-book" aria-hidden="true" data-toggle="tooltip" title="Descargar el informe individual de esta semilla"/><span class="sr-only">Informe individual</span>
+                                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Descargar el informe individual de esta semilla"/><span class="sr-only">Informe individual</span>
                                                 </html:link>
                                             </td>
                                             <td>
@@ -141,7 +141,7 @@
                                             </td>
                                             <td>
                                                 <html:link forward="resultadosObservatorioLanzarEjecucion" name="paramThrow">
-                                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true" data-toggle="tooltip" title="Relanzar el análisis de esta semilla"/><span class="sr-only">Reanalizar</span>
+                                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true" data-toggle="tooltip" title="Relanzar el an\u00e1lisis de esta semilla"/><span class="sr-only">Reanalizar</span>
                                                 </html:link>
                                             </td>
                                             <td>

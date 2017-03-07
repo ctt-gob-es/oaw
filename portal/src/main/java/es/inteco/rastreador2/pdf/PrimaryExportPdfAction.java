@@ -24,13 +24,19 @@ import org.apache.struts.action.ActionMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PrimaryExportPdfAction extends Action {
 
@@ -61,8 +67,9 @@ public class PrimaryExportPdfAction extends Action {
 
             final File pdfFile = buildPdf(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo, regenerate, request);
             if (pdfFile != null) {
-                try {
-                    CrawlerUtils.returnFile(response, pdfFile.getPath(), "application/pdf", false);
+                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
+                    ZipUtils.generateZipFile(pdfFile.getParent(), outputStream, false);
+                    CrawlerUtils.returnData(response,  outputStream.toByteArray(), pdfFile.getName(), "application/zip");
                 } catch (Exception e) {
                     Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
                     return mapping.findForward(Constants.ERROR);

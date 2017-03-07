@@ -27,7 +27,7 @@
                     </p>
                 </logic:empty>
                 <p class="pull-right">
-                    <html:link forward="newSeedCategory" styleClass="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title="Crear una nueva categoría de semillas"></span> <bean:message key="categoria.semillas.nueva"/></html:link>
+                    <html:link forward="newSeedCategory" styleClass="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title="Crear una nueva categor\u00eda de semillas"></span> <bean:message key="categoria.semillas.nueva"/></html:link>
                 </p>
                 <logic:notEmpty name="<%=Constants.SEED_CATEGORIES %>">
                     <div class="pag">
@@ -41,17 +41,14 @@
                             <logic:iterate name="<%=Constants.SEED_CATEGORIES %>" id="category">
                                 <tr>
                                     <td style="text-align: left;">
-                                        <html:link forward="viewSeedCategory" paramId="<%= Constants.ID_CATEGORIA %>" paramName="category" paramProperty="id">
-                                            <bean:write name="category" property="name"/>
+                                        <html:link forward="editSeedCategory" paramId="<%= Constants.ID_CATEGORIA %>" paramName="category" paramProperty="id">
+                                            <span data-toggle="tooltip" title="Editar la configuraci\u00f3n de esta semilla"><bean:write name="category" property="name"/></span>
                                         </html:link>
-                                        <html:link forward="editSeedCategory" paramId="<%= Constants.ID_CATEGORIA %>" paramName="category" paramProperty="id" styleClass="pull-right">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar la configuración de esta categoría"/>
-                                            <span class="sr-only"><bean:message key="indice.rastreo.img.editar.rastreo.alt" /></span>
-                                        </html:link>
+                                        <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
                                     </td>
                                     <td>
                                         <html:link forward="getCategorySeedsFile" paramId="<%= Constants.ID_CATEGORIA %>" paramName="category" paramProperty="id">
-                                            <span class="glyphicon glyphicon-save" aria-hidden="true" data-toggle="tooltip" title="Descargar las semillas de esta categoria en formato XML"/>
+                                            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Descargar las semillas de esta categoria en formato XML"/>
                                             <span class="sr-only">Descargar</span>
                                         </html:link>
                                     </td>
