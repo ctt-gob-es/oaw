@@ -162,7 +162,10 @@ public final class AnnexUtils {
 
             final List<ObservatoryForm> observatoryFormList = new ArrayList<>();
             for (ObservatorioRealizadoForm orForm : observatoriesList) {
-                observatoryFormList.add(ObservatoryExportManager.getObservatory(orForm.getId()));
+                final ObservatoryForm observatory = ObservatoryExportManager.getObservatory(orForm.getId());
+                if (observatory!=null) {
+                    observatoryFormList.add(observatory);
+                }
             }
 
             for (ObservatoryForm observatory : observatoryFormList) {

@@ -49,7 +49,6 @@
                                     <th>Tipo</th>
                                     <th><bean:message key="indice.observatorio.cartucho" /></th>
                                     <th class="accion"><bean:message key="indice.observatorio.acciones" /></th>
-                                    <th class="accion">Exportar</th>
                                     <th class="accion">Eliminar</th>
                                 </tr>
                                 <logic:iterate name="<%=Constants.CARGAR_OBSERVATORIO_FORM %>" property="listadoObservatorio" id="elemento">
@@ -72,29 +71,6 @@
                                         <td><bean:write name="elemento" property="cartucho"/></td>
                                         <td>
                                             <html:link forward="resultadosPrimariosObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>" paramName="elemento" paramProperty="id_observatorio"><span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver iteraciones de este observatorio"/><span class="sr-only">Resultados</span></html:link>
-                                            <!-- <li><html:link forward="getFulfilledObservatories" paramId="<%=Constants.OBSERVATORY_ID %>" paramName="observatoryId"><img src="../images/anonimo.gif" alt="<bean:message key="indice.observatorio.resultados.anonimos.alt" />"/></html:link></li> -->
-                                            <!-- <li><html:link forward="databaseExportActionConfirm" paramId="<%=Constants.OBSERVATORY_ID %>" paramName="observatoryId" ><img src="../images/database.jpg" alt="<bean:message key="indice.rastreo.exportar.database" />"/></html:link></li> -->
-                                        </td>
-                                        <td>
-                                            <!-- <jsp:useBean id="params2" class="java.util.HashMap" />
-                                            <c:set target="${params2}" property="id_observatorio" value="${id_observatorio}" />
-                                            <c:set target="${params2}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
-                                            <c:set target="${params2}" property="esPrimera" value="true"/>
-                                            <c:set target="${params2}" property="isPrimary" value="true"/>
-                                            <html:link forward="getAnnexes" name="params2">
-                                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Exportar los resultados de todas las iteraciones del observatorio en formato XML"/>
-                                                <span class="sr-only">Exportar resultados</span>
-                                            </html:link> -->
-                                            <jsp:useBean id="paramsInformeAgregado" class="java.util.HashMap" />
-                                            <c:set target="${paramsInformeAgregado}" property="id_observatorio" value="${id_observatorio}" />
-                                            <c:set target="${paramsInformeAgregado}" property="id" value="${fulfilledObservatory.id}" />
-                                            <c:set target="${paramsInformeAgregado}" property="esPrimera" value="true"/>
-                                            <c:set target="${paramsInformeAgregado}" property="isPrimary" value="false"/>
-                                            <c:set target="${paramsInformeAgregado}" property="idExObs" value="${fulfilledObservatory.id}" />
-                                            <html:link forward="getAnnexes" name="paramsInformeAgregado">
-                                                <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Exportar los resultados de todas las iteraciones del observatorio en formato XML"/>
-                                                <span class="sr-only">Exportar resultados</span>
-                                            </html:link>
                                         </td>
                                         <td>
                                             <jsp:useBean id="paramsEsPrim" class="java.util.HashMap" />
