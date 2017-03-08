@@ -42,8 +42,8 @@
                                 <th class="accion">Resultados individuales</th>
                                 <th class="accion">Inf agregado</th>
                                 <th class="accion">Inf individuales</th>
-                                <!-- <th class="accion">Generar resultados</th> -->
                                 <th class="accion">Graficas globales</th>
+                                <th class="accion">Anexos</th>
                                 <th class="accion">Eliminar</th>
                             </tr>
 
@@ -104,12 +104,6 @@
                                             <span class="sr-only">Generar los informes individuales</span>
                                         </html:link></li>
                                     </td>
-                                    <!-- <td>
-                                        <html:link forward="databaseExportActionConfirm" name="paramsInformeAgregado">
-                                            <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Actualizar la exportaci\u00f3n de resultados de esta iteraci\u00f3n"/>
-                                            <span class="sr-only"><bean:message key="indice.rastreo.exportar.database" /></span>
-                                        </html:link>
-                                    </td> -->
                                     <td>
                                     	<jsp:useBean id="paramsGraphic" class="java.util.HashMap" />
                                     	<c:set target="${paramsGraphic}" property="id" value="${fulfilledObservatory.id}" />
@@ -120,6 +114,12 @@
                                         <html:link forward="getObservatoryGraphic" name="paramsGraphic">
                                             <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Acceder a las gráficas agregadas de esta iteraci\u00f3n"/>
                                             <span class="sr-only"><bean:message key="migas.indice.observatorios.menu.graficas"/></span>
+                                        </html:link>
+                                    </td>
+                                    <td>
+                                        <html:link forward="databaseExportActionConfirm" name="paramsInformeAgregado">
+                                            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Actualizar la exportaci\u00f3n de resultados de esta iteraci\u00f3n"/>
+                                            <span class="sr-only"><bean:message key="indice.rastreo.exportar.database" /></span>
                                         </html:link>
                                     </td>
                                     <td>

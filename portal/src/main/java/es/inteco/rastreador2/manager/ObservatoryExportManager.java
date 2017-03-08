@@ -19,8 +19,10 @@ public class ObservatoryExportManager extends BaseManager {
         Session session = getSession();
 
         Observatory observatory = DatabaseExportDAO.getObservatory(session, idExecutionObs);
-
-        ObservatoryForm observatoryForm = ExportDataBaseUtils.getObservatoryForm(observatory);
+        ObservatoryForm observatoryForm = null;
+        if (observatory!=null) {
+           observatoryForm = ExportDataBaseUtils.getObservatoryForm(observatory);
+        }
 
         session.flush();
 

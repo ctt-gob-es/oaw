@@ -53,15 +53,17 @@ public final class ObservatorioDAO {
                     observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
                     observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
 
-                    ObservatorioForm observatorio = new ObservatorioForm();
+                    final ObservatorioForm observatorio = new ObservatorioForm();
                     observatorio.setEstado(rs.getInt("estado"));
                     observatorio.setNombre(rs.getString("nombre"));
                     observatorioRealizadoForm.setObservatorio(observatorio);
 
-                    CartuchoForm cartucho = new CartuchoForm();
+                    final CartuchoForm cartucho = new CartuchoForm();
                     cartucho.setId(rs.getLong("id_cartucho"));
                     cartucho.setName(rs.getString("aplicacion"));
                     observatorioRealizadoForm.setCartucho(cartucho);
+                } else {
+                    Logger.putLog("Error en getFulfilledObservatory !rs.next " , ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR);
                 }
             }
         } catch (SQLException e) {
