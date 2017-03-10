@@ -28,18 +28,18 @@
             <div id="cajaformularios">
                 <h2><bean:message key="gestion.semillas.observatorio.titulo"/></h2>
 
-                <html:form action="/secure/ViewSemillasObservatorio.do" method="get" styleClass="formulario">
+                <html:form action="/secure/ViewSemillasObservatorio.do" method="get" styleClass="formulario form-horizontal">
                     <input type="hidden" name="<%= Constants.ACTION %>" value="<%= Constants.LOAD %>"/>
                     <fieldset>
                         <legend>Buscador</legend>
                         <jsp:include page="/common/crawler_messages.jsp" />
                         <div class="formItem">
-                            <label for="nombre"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
-                            <html:text styleClass="texto" styleId="nombre" property="nombre" />
+                            <label for="nombre" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="nombre" property="nombre" />
                         </div>
                         <div class="formItem">
-                            <label for="categoria"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.categoria" /></strong></label>
-                            <html:select styleClass="textoSelect" styleId="categoria" property="categoria" >
+                            <label for="categoria" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.categoria" /></strong></label>
+                            <html:select styleClass="textoSelect form-control" styleId="categoria" property="categoria" >
                                 <html:option value=""><bean:message key="resultados.observatorio.cualquier.categoria" /></html:option>
                                 <logic:iterate name="<%= Constants.CATEGORIES_LIST %>" id="categoria">
                                     <bean:define id="idCategoria"><bean:write name="categoria" property="id"/></bean:define>
@@ -48,8 +48,8 @@
                             </html:select>
                         </div>
                         <div class="formItem">
-                            <label for="url"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.url" /></strong></label>
-                            <html:text styleClass="texto" styleId="url" property="url" />
+                            <label for="url" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.url" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="url" property="url" />
                         </div>
                         <div class="formButton">
                             <button type="submit" class="btn btn-default btn-lg">

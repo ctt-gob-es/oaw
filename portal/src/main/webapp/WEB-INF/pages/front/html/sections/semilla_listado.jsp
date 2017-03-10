@@ -24,11 +24,11 @@
 
             <div id="cajaformularios">
                 <h2><bean:message key="lista.semillas"/></h2>
-                <html:form  styleClass="formulario" method="get" action="/secure/ListadoSemillas.do">
+                <html:form  styleClass="formulario form-horizontal" method="get" action="/secure/ListadoSemillas.do">
                     <input type="hidden" name="<%= Constants.INICIAL %>" id="<%= Constants.INICIAL %>" value="<%= Constants.CONF_SI %>"/>
                     <fieldset>
                         <div class="formItem">
-                            <label for="nombre"><strong class="labelVisu"><bean:message key="borrar.semilla.busqueda.nombre" />: </strong></label>
+                            <label for="nombre" class="control-label"><strong class="labelVisu"><bean:message key="borrar.semilla.busqueda.nombre" />: </strong></label>
                             <html:text styleClass="texto" maxlength="100" property="nombre" styleId="nombre" />
                         </div>
                         <div class="formButton">

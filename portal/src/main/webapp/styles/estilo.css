@@ -19,6 +19,9 @@ a.btn.btn-primary {
 span.edit-mark {
     color: #e1120d;
 }
+#listaUrlsString {
+    width: 45%;
+}
 /*a.btn.btn-primary:focus,
 a.btn.btn-primary:hover{
     color: #e1120d;
@@ -60,7 +63,7 @@ a.btn.btn-primary:hover{
 /* Formularios */
 	form {display:inline;padding:0%;margin:0%;}
 	caption {text-align:right;padding:0.3%;font-style:italic;}
-	input,input[type=file] {font-family:Arial, sans-serif;border:1px solid #777;padding:0.1% 0.4%;margin:0% 0% 0% 0.5%px;background:url('../images/backinput.gif') repeat-x;}
+	input,input[type=file] {font-family:Arial, sans-serif;border:1px solid #777;padding:0.1% 0.4%;margin:0% 0% 0% 0.5%px;}
 /*	input[type=submit],button {text-decoration:none;margin-left:4%;padding:1% 3%;border:solid silver 1px;color:white;background:#000 url(../images/barra_menu_hover.png) bottom;}*/
 	input[type=radio] {border:none;background:none;}
 

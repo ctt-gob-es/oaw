@@ -31,7 +31,7 @@
             <div id="cajaformularios">
                 <h2><bean:message key="gestion.resultados.observatorio"/></h2>
 
-                <html:form action="/secure/ResultadosObservatorio.do" method="get" styleClass="formulario">
+                <html:form action="/secure/ResultadosObservatorio.do" method="get" styleClass="formulario form-horizontal">
                     <input type="hidden" name="<%= Constants.ACTION %>" value="<%= Constants.GET_SEEDS %>"/>
                     <input type="hidden" name="<%= Constants.ID_OBSERVATORIO %>" value="<bean:write name="idObservatorio"/>"/>
                     <input type="hidden" name="<%= Constants.ID_EX_OBS %>" value="<bean:write name="idExObs"/>"/>
@@ -40,12 +40,12 @@
                         <legend>Buscador</legend>
                         <jsp:include page="/common/crawler_messages.jsp" />
                         <div class="formItem">
-                            <label for="nombre"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
-                            <html:text styleClass="texto" styleId="nombre" property="nombre" />
+                            <label for="nombre" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="nombre" property="nombre" />
                         </div>
                         <div class="formItem">
-                            <label for="listaUrlsString"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.url" /></strong></label>
-                            <html:text styleClass="texto" styleId="listaUrlsString" property="listaUrlsString" />
+                            <label for="listaUrlsString" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.url" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="listaUrlsString" property="listaUrlsString" />
                         </div>
                         <div class="formButton">
                             <button type="submit" class="btn btn-default btn-lg">
@@ -74,10 +74,10 @@
                                     <caption><bean:message key="lista.semillas.observatorio"/></caption>
                                     <tr>
                                         <th><bean:message key="resultados.observatorio.nombre" /></th>
-                                        <th><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
-                                        <th>Nivel accesibilidad</th>
-                                        <th class="accion">Informes</th>
+                                        <th class="accion"><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
+                                        <th class="accion">Nivel accesibilidad</th>
                                         <th class="accion">Resultados</th>
+                                        <th class="accion">Informes</th>
                                         <th class="accion">Relanzar</th>
                                         <th class="accion">Eliminar</th>
                                     </tr>
@@ -127,16 +127,16 @@
                                                 <bean:write name="semilla" property="score"/>
                                             </td>
                                             <td>
-                                                TODO: Nivel
-                                            </td>
-                                            <td>
-                                                <html:link forward="primaryExportPdfAction" name="paramSTR">
-                                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Descargar el informe individual de esta semilla"/><span class="sr-only">Informe individual</span>
-                                                </html:link>
+                                                <bean:write name="semilla" property="nivel"/>
                                             </td>
                                             <td>
                                                 <html:link forward="showTracking" name="paramSTR">
                                                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta semilla"/><span class="sr-only">Resultados</span>
+                                                </html:link>
+                                            </td>
+                                            <td>
+                                                <html:link forward="primaryExportPdfAction" name="paramSTR">
+                                                    <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Descargar el informe individual de esta semilla"/><span class="sr-only">Informe individual</span>
                                                 </html:link>
                                             </td>
                                             <td>
