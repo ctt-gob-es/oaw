@@ -45,18 +45,18 @@
                 </p>
                 <p><bean:message key="leyenda.campo.obligatorio" /></p>
 
-                <html:form styleClass="formulario" method="post" action="/secure/SeedCategoriesAction" enctype="multipart/form-data" onsubmit="return validateCategoriaForm(this)">
+                <html:form styleClass="formulario form-horizontal" method="post" action="/secure/SeedCategoriesAction" enctype="multipart/form-data" onsubmit="return validateCategoriaForm(this)">
                     <html:hidden property="id"/>
                     <input type="hidden" name="<%=Constants.ACTION %>" value="<bean:write name="<%=Constants.ACTION %>"/>"/>
                     <fieldset>
                         <jsp:include page="/common/crawler_messages.jsp" />
                         <div class="formItem">
-                            <label for="name"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="categoria.semillas.nombre" />: </strong></label>
-                            <html:text styleClass="texto" property="name" styleId="name" maxlength="30"/>
+                            <label for="name" class="control-label"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="categoria.semillas.nombre" />: </strong></label>
+                            <html:text styleClass="texto form-control" property="name" styleId="name" maxlength="30"/>
                         </div>
                         <div class="formItem">
-                            <label for="orden"><strong class="labelVisu"><bean:message key="categoria.semillas.orden" />: </strong></label>
-                            <html:select styleClass="textoSelect" styleId="orden"  property="orden" >
+                            <label for="orden" class="control-label"><strong class="labelVisu"><bean:message key="categoria.semillas.orden" />: </strong></label>
+                            <html:select styleClass="textoSelect form-control" styleId="orden"  property="orden" >
                                 <option value="1" <c:if test="${CategoriaForm.orden==1}">selected="selected"</c:if>>1</option>
                                 <option value="2" <c:if test="${CategoriaForm.orden==2}">selected="selected"</c:if>>2</option>
                                 <option value="3" <c:if test="${CategoriaForm.orden==3}">selected="selected"</c:if>>3</option>
@@ -70,7 +70,7 @@
                             </html:select>
                         </div>
                         <div class="formItem">
-                            <label for="fileSeeds"><strong class="labelVisu"><bean:message key="categoria.semillas.fichero" />: </strong></label>
+                            <label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message key="categoria.semillas.fichero" />: </strong></label>
                             <html:file styleClass="texto" property="fileSeeds" styleId="fileSeeds"/>
                         </div>
                         <div class="formButton">
