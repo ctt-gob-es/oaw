@@ -22,6 +22,9 @@ span.edit-mark {
 #listaUrlsString {
     width: 45%;
 }
+.alinForm.form-inline label {
+    display: inline;
+}
 /*a.btn.btn-primary:focus,
 a.btn.btn-primary:hover{
     color: #e1120d;
