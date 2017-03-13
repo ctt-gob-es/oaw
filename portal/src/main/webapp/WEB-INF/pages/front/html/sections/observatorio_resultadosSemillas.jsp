@@ -70,7 +70,6 @@
                         <logic:notEmpty name="<%= Constants.OBSERVATORY_SEED_LIST %>">
                             <div class="pag">
                                 <table class="table table-stripped table-bordered table-hover">
-                                <!-- <span class="badge"><%=((java.util.List)request.getAttribute(Constants.OBSERVATORY_SEED_LIST)).size()%></span> -->
                                     <caption><bean:message key="lista.semillas.observatorio"/></caption>
                                     <tr>
                                         <th><bean:message key="resultados.observatorio.nombre" /></th>
@@ -141,7 +140,7 @@
                                             </td>
                                             <td>
                                                 <html:link forward="resultadosObservatorioLanzarEjecucion" name="paramThrow">
-                                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true" data-toggle="tooltip" title="Relanzar el an\u00e1lisis de esta semilla"/><span class="sr-only">Reanalizar</span>
+                                                    <span class="glyphicon glyphicon-refresh" aria-hidden="true" data-toggle="tooltip" title="Relanzar el an&aacute;lisis de esta semilla"/><span class="sr-only">Reanalizar</span>
                                                 </html:link>
                                             </td>
                                             <td>

@@ -39,12 +39,12 @@
                                 <th><bean:message key="resultado.observatorio.rastreo.realizado.fecha.ejecucion" /></th>
                                 <th><bean:message key="resultado.observatorio.rastreo.realizado.cartucho.asociado" /></th>
                                 <th><bean:message key="resultado.observatorio.rastreo.realizado.estado"/></th>
-                                <th class="accion">Resultados individuales</th>
-                                <th class="accion">Inf agregado</th>
-                                <th class="accion">Inf individuales</th>
-                                <th class="accion">Graficas globales</th>
-                                <th class="accion">Anexos</th>
-                                <th class="accion">Eliminar</th>
+                                <th class="accion"><bean:message key="resultado.observatorio.rastreo.realizado.resultados"/></th>
+                                <th class="accion"><bean:message key="resultado.observatorio.rastreo.realizado.informe.agregado"/></th>
+                                <th class="accion"><bean:message key="resultado.observatorio.rastreo.realizado.informes.individuales"/></th>
+                                <th class="accion"><bean:message key="resultado.observatorio.rastreo.realizado.graficas.agregadas"/></th>
+                                <th class="accion"><bean:message key="resultado.observatorio.rastreo.realizado.anexos"/></th>
+                                <th class="accion"><bean:message key="resultado.observatorio.rastreo.realizado.eliminar"/></th>
                             </tr>
 
                             <jsp:useBean id="params" class="java.util.HashMap" />
@@ -112,19 +112,19 @@
                                     	<c:set target="${paramsGraphic}" property="Otype" value="5" />
 
                                         <html:link forward="getObservatoryGraphic" name="paramsGraphic">
-                                            <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Acceder a las gráficas agregadas de esta iteraci\u00f3n"/>
+                                            <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Acceder a las gr&aacute;ficas agregadas de esta iteraci&oacute;n"/>
                                             <span class="sr-only"><bean:message key="migas.indice.observatorios.menu.graficas"/></span>
                                         </html:link>
                                     </td>
                                     <td>
                                         <html:link forward="databaseExportActionConfirm" name="paramsInformeAgregado">
-                                            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Actualizar la exportaci\u00f3n de resultados de esta iteraci\u00f3n"/>
+                                            <span class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title="Actualizar la exportaci&oacute;n de resultados de esta iteraci&oacute;n"/>
                                             <span class="sr-only"><bean:message key="indice.rastreo.exportar.database" /></span>
                                         </html:link>
                                     </td>
                                     <td>
                                         <html:link forward="deleteFulfilledObservatory">
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta iteraci\u00f3n del observatorio"/><span class="sr-only">Eliminar esta iteraci\u00f3n del observatorio</span>
+                                            <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta iteraci&oacute;n del observatorio"/><span class="sr-only">Eliminar esta iteraci&oacute;n del observatorio</span>
                                         </html:link>
                                     </td
                                 </tr>
