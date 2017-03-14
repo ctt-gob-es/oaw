@@ -50,7 +50,7 @@ public final class DiagnosisDAO {
                 ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
             } else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
                 ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
-                ps.setString(11, Constants.BASIC_SERVICE_ANALYSIS_TYPE_CONTENT);
+                ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE.getLabel());
             }
             ps.setString(4, basicServiceForm.getEmail());
             ps.setString(5, basicServiceForm.getProfundidad());

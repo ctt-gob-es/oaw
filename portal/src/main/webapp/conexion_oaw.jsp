@@ -1,15 +1,17 @@
 <%@page language="java"  contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@page import= "java.io.InputStreamReader"%>
-<%@page import= "java.io.BufferedReader"%>
-<%@page import= "java.io.OutputStreamWriter"%>
+<%@page import= "java.io.InputStreamReader" %>
+<%@page import= "java.io.BufferedReader" %>
+<%@page import= "java.io.OutputStreamWriter" %>
 <%@page import= "java.net.*" %>
-<%@page import= "java.util.ArrayList"%>
-<%@page import= "java.util.List"%>
-<%@page import= "java.util.Objects"%>
-<%@page import= "java.util.Properties"%>
-
-<%@page import= "org.apache.commons.codec.net.URLCodec"%>
+<%@page import= "java.util.ArrayList" %>
+<%@page import= "java.util.List" %>
+<%@page import= "java.util.Objects" %>
+<%@page import= "java.util.Properties" %>
+<%@page import= "org.apache.tomcat.util.http.fileupload.*" %>
+<%@page import= "org.apache.tomcat.util.http.fileupload.servlet.*" %>
+<%@page import= "org.apache.tomcat.util.http.fileupload.disk.*" %>
+<%@page import= "org.apache.commons.codec.net.URLCodec" %>
 <%!
     // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
     // Valores típicos serán:
@@ -25,19 +27,20 @@
     // Clase para manejar las solicitudes al servicio de diagnóstico y realizar peticiones a los servicios que manejan el historico/evolutivo del servicio de diagnóstico.
     class RequestManager {
         private final URL host;
-        private final String codigo;
-        private String url;
-        private String urls;
-        private final String correo;
-        private final String profundidad;
-        private final String amplitud;
-        private final String informe;
-        private final String nobroken;
-        private final String username;
-        private final String directorio;
-        private final String registerAnalysis;
-        private final String analysisToDelete;
-        private final String type;
+        String codigo;
+        String url = "";
+        String urls = "";
+        String correo;
+        String profundidad;
+        String amplitud;
+        String informe;
+        String nobroken;
+        String username;
+        String directorio = "false";
+        String registerAnalysis = "false";
+        String analysisToDelete = "";
+        String type = "url";
+        String confirm = "false";
 
         private final List<String> errores;
 
@@ -47,22 +50,69 @@
             } catch (Exception e) {
                 throw new Error("ERROR de configuración.", e);
             }
-            this.url = request.getParameter("url") != null ? request.getParameter("url") : "";
-            this.urls = request.getParameter("urls") != null ? request.getParameter("urls") : "";
-            this.codigo = request.getParameter("content");
-            this.correo = request.getParameter("correo");
-            this.profundidad = request.getParameter("profundidad");
-            this.amplitud = request.getParameter("amplitud");
-            this.informe = request.getParameter("informe");
-            this.nobroken = request.getParameter("informe-nobroken");
-            this.username = request.getParameter("username");
-            this.directorio = request.getParameter("inDirectory") != null ? "true" : "false";
-            this.registerAnalysis = request.getParameter("registerAnalysis") != null ? "true" : "false";
-            this.analysisToDelete = request.getParameter("analysisToDelete") != null ? request.getParameter("analysisToDelete") : "";
-            this.type = request.getParameter("type") != null ? request.getParameter("type") : "url";
+
+            // Create a factory for disk-based file items
+            final DiskFileItemFactory factory = new DiskFileItemFactory();
+            // Configure a repository (to ensure a secure temp location is used)
+            final ServletContext servletContext = request.getServletContext();
+            final java.io.File repository = (java.io.File) servletContext.getAttribute("javax.servlet.context.tempdir");
+            factory.setRepository(repository);
+
+            // Create a new file upload handler
+            final ServletFileUpload upload = new ServletFileUpload(factory);
+            // Parse the request
+            try {
+                final List<FileItem> items = upload.parseRequest(new ServletRequestContext(request));
+
+                final java.util.Iterator iterator = items.iterator();
+                while (iterator.hasNext()) {
+                    final FileItem item = (FileItem) iterator.next();
+                    if (item.isFormField()) {
+                        readParam(item);
+                    } else {
+                        // Si no es campo de formulario es el fichero
+                        codigo = new String(item.get());
+                    }
+                }
+            } catch (FileUploadException fue) {
+            }
+
             // TODO: Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
             this.errores = new ArrayList<String>();
             validateRequest();
+        }
+
+        private void readParam(final FileItem item) {
+            final String paramName = item.getFieldName();
+            if (paramName.equalsIgnoreCase("url")) {
+                this.url = item.getString();
+            } else if (paramName.equalsIgnoreCase("urls")) {
+                this.urls = item.getString();
+            } else if (paramName.equalsIgnoreCase("content")) {
+                this.codigo = item.getString();
+            } else if (paramName.equalsIgnoreCase("correo")) {
+                this.correo = item.getString();
+            } else if (paramName.equalsIgnoreCase("profundidad")) {
+                this.profundidad = item.getString();
+            } else if (paramName.equalsIgnoreCase("amplitud")) {
+                this.amplitud = item.getString();
+            } else if (paramName.equalsIgnoreCase("informe")) {
+                this.informe = item.getString();
+            } else if (paramName.equalsIgnoreCase("informe-nobroken")) {
+                this.nobroken = item.getString();
+            } else if (paramName.equalsIgnoreCase("username")) {
+                this.username = item.getString();
+            } else if (paramName.equalsIgnoreCase("inDirectory")) {
+                this.directorio = item.getString();
+            } else if (paramName.equalsIgnoreCase("registerAnalysis")) {
+                this.registerAnalysis = item.getString();
+            } else if (paramName.equalsIgnoreCase("analysisToDelete")) {
+                this.analysisToDelete = item.getString();
+            } else if (paramName.equalsIgnoreCase("type")) {
+                this.type = item.getString();
+            } else if (paramName.equalsIgnoreCase("confirm")) {
+                this.confirm = item.getString();
+            }
         }
 
         public boolean isValidRequest() {
@@ -191,7 +241,7 @@
                 errores.add("La direcci&oacute;n de correo electr&oacute;nico no es v&aacute;lida");
             }
             if (isCrawlingRequest()) {
-                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                if (!url.startsWith("http") && !url.startsWith("https")) {
                     errores.add("La URL debe comenzar por http:// o https://");
                 } else {
                     try {
@@ -214,7 +264,7 @@
                 }
             } else if (isListaUrlsRequest()) {
                 for (String domain: urls.split("\r\n")) {
-                    if (!domain.startsWith("http://") && !domain.startsWith("https://")) {
+                    if (!domain.startsWith("http") && !domain.startsWith("https")) {
                         errores.add("La URL " + domain + " debe comenzar por http:// o https://");
                     }
                 }
@@ -237,8 +287,11 @@
                         }
                     }
                 }
-            } else if (codigo.length() > 2000000) {
-                errores.add("El c&oacute;digo fuente a analizar es demasiado largo");
+            } else {
+                if (codigo.length() > 2000000) {
+                    errores.add("El c&oacute;digo fuente a analizar es demasiado largo");
+                }
+                this.registerAnalysis = "false";
             }
         }
 
@@ -248,6 +301,10 @@
 
         private boolean isListaUrlsRequest() {
             return "lista_urls".equalsIgnoreCase(type); //urls!=null && urls.trim().length() > 0;
+        }
+
+        public boolean isConfirmed() {
+            return Boolean.parseBoolean(confirm);
         }
     }
 %>
@@ -288,20 +345,20 @@
         <%
             final RequestManager requestManager = new RequestManager(request);
             if (requestManager.isValidRequest()) {
-                if (request.getParameter("confirm") != null) {
+                if (requestManager.isConfirmed()) {
                     out.println(requestManager.launchServicioDiagnostico());
                 } else if (requestManager.isEvolutivoHistorico()) {%>
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
             <input type="hidden" name="confirm"             value="true">
-            <input type="hidden" name="url"                 value="<%=request.getParameter("url")%>">
-            <input type="hidden" name="urls"                value="<%=request.getParameter("urls")%>">
-            <input type="hidden" name="profundidad"         value="<%=request.getParameter("profundidad")%>">
-            <input type="hidden" name="amplitud"            value="<%=request.getParameter("amplitud")%>">
-            <input type="hidden" name="correo"              value="<%=request.getParameter("correo")%>">
-            <input type="hidden" name="informe"             value="<%=request.getParameter("informe")%>">
-            <input type="hidden" name="informe-nobroken"    value="<%=Objects.toString(request.getParameter("informe-nobroken"),"")%>">
-            <input type="hidden" name="registerAnalysis"    value="<%=request.getParameter("registerAnalysis")%>">
-            <input type="hidden" name="type"                value="<%=request.getParameter("type")%>">
+            <input type="hidden" name="url"                 value="<%=requestManager.url%>">
+            <input type="hidden" name="urls"                value="<%=requestManager.urls%>">
+            <input type="hidden" name="profundidad"         value="<%=requestManager.profundidad%>">
+            <input type="hidden" name="amplitud"            value="<%=requestManager.amplitud%>">
+            <input type="hidden" name="correo"              value="<%=requestManager.correo%>">
+            <input type="hidden" name="informe"             value="<%=requestManager.informe%>">
+            <input type="hidden" name="informe-nobroken"    value="<%=Objects.toString(requestManager.nobroken,"")%>">
+            <input type="hidden" name="registerAnalysis"    value="<%=requestManager.registerAnalysis%>">
+            <input type="hidden" name="type"                value="<%=requestManager.type%>">
 
             <fieldset id="historico_resultados">
                 <legend>Histórico de resultados</legend>                
