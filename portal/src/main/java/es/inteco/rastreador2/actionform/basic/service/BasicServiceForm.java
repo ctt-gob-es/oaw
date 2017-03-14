@@ -147,7 +147,7 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public boolean isContentAnalysis() {
-        return StringUtils.isEmpty(this.domain) && StringUtils.isNotEmpty(this.content);
+        return analysisType==BasicServiceAnalysisType.CODIGO_FUENTE;
     }
 
     public String reportToString() {

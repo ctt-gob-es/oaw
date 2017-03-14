@@ -156,7 +156,7 @@ public class AnonymousResultExportPdfUNE2012 extends AnonymousResultExportPdf {
         final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
-        PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
+        PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
 
         PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
         final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();

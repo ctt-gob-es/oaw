@@ -275,7 +275,7 @@ public abstract class AnonymousResultExportPdf {
         final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
-        PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
+        PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
         d.add(chapter);
     }
 

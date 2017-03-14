@@ -22,7 +22,9 @@ import org.apache.struts.util.MessageResources;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Scanner;
 
 public final class PDFUtils {
 
@@ -77,7 +79,7 @@ public final class PDFUtils {
         paragraph.add(chunk);
         final Chapter chapter = new Chapter(paragraph, numChapter);
         if (index != null) {
-            paragraph.add(index.create(" ", countSections + "@&" + title));
+            paragraph.add(index.create(" ", countSections + "@&" + title.toUpperCase()));
         }
         return chapter;
     }
@@ -88,14 +90,14 @@ public final class PDFUtils {
         final Paragraph paragraph = new Paragraph("", titleFont);
         paragraph.add(chunk);
         // Si el capítulo requiere un anchor adicional al que se crea desde el índice (tabla contenidos) entonces se
-        // crea un trozo de texto adicional (Chunk) con el caracter especial 200B ZWSP Zero White Space para añadir el
-        // ancla oculto sin que se añada nuevo texto. Si se intentase con la cadena vacía no se crea el ancla.
+        // crea un trozo de texto adicional (Chunk) con el caracter especial \u200B (ZWSP Zero White Space) para añadir
+        // el ancla oculto sin que se añada nuevo texto. Si se intentase con la cadena vacía no se crea el ancla.
         final Chunk aditionalAnchor = new Chunk("\u200B", titleFont);
         aditionalAnchor.setLocalDestination(anchor);
         paragraph.add(aditionalAnchor);
         final Chapter chapter = new Chapter(paragraph, numChapter);
         if (index != null) {
-            paragraph.add(index.create(" ", countSections + "@&" + title));
+            paragraph.add(index.create(" ", countSections + "@&" + title.toUpperCase()));
         }
         return chapter;
     }
@@ -147,23 +149,29 @@ public final class PDFUtils {
         section.add(p);
     }
 
-    public static void addParagraphCode(String text, String message, Section section) {
+    public static void addCode(final String text, final Section section) {
         float[] widths = {100f};
-        PdfPTable table = new PdfPTable(widths);
+        final PdfPTable table = new PdfPTable(widths);
         table.setWidthPercentage(100);
-        java.util.List<String> boldWords = new ArrayList<>();
-        if (!StringUtils.isEmpty(message)) {
-            text = "{0} \n\n" + text.trim();
-            boldWords.add(message);
+        table.setKeepTogether(false);
+
+        for (String linea : text.split(System.lineSeparator())) {
+            if ( !linea.trim().isEmpty() ) {
+                final PdfPCell labelCell = new PdfPCell();
+                labelCell.setBackgroundColor(new Color(255, 244, 223));
+                labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                labelCell.setPadding(2f);
+                labelCell.setPaddingTop(0);
+                labelCell.setBorderWidth(0);
+                labelCell.addElement(new Chunk(linea, ConstantsFont.noteCellFont));
+                table.addCell(labelCell);
+            }
         }
 
-        PdfPCell labelCell = new PdfPCell(PDFUtils.createParagraphWithDiferentFormatWord(text, boldWords, ConstantsFont.noteCellFont, ConstantsFont.noteCellFont, false));
-        labelCell.setBackgroundColor(new Color(255, 244, 223));
-        labelCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        labelCell.setPadding(5f);
-        table.addCell(labelCell);
         table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
         table.setSpacingAfter(ConstantsFont.HALF_LINE_SPACE);
+
+
         section.add(table);
     }
 
