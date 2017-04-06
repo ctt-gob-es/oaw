@@ -49,40 +49,28 @@
                 </ul>
             </li>
     	</inteco:menu>
-<!--
-        <inteco:menu roles="<%=rolAdmin%>">
-            <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_USERS %>">
-                <li class="active"><html:link forward="usersMenu" styleId="selected" titleKey="menuadmin.usuarios.title"><bean:message key="menuadmin.usuarios" /></html:link></li>
-                <li>
-                    <ul role="presentation" class="nav nav-pills nav-stacked">
-                        <li>
-                            <html:link forward="changePassMenu" titleKey="menuvisor.cambiar.pass.title"><bean:message key="menuvisor.cambiar.pass" /></html:link>
-                        </li>
-                    </ul>
-                </li>
-            </logic:equal>
-                        <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_PASSWORD %>">
-                            <li><html:link forward="usersMenu" styleId="selected" titleKey="menuadmin.usuarios.title"><bean:message key="menuadmin.usuarios" /></html:link></li>
-                            <li>
-                                <ul role="presentation" class="nav nav-pills nav-stacked">
-                                    <li class="active">
-                                        <html:link forward="changePassMenu" styleId="selected" titleKey="menuvisor.cambiar.pass.title"><bean:message key="menuvisor.cambiar.pass" /></html:link>
-                                    </li>
-                                </ul>
-                            </li>
-                        </logic:equal>
-        </inteco:menu>
--->
 
         <inteco:menu roles="<%=rolAdmin%>">
             <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
             <li class="active">
-                <html:link forward="servicioDiagnostico" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
             </logic:equal>
             <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
             <li>
-                <html:link forward="servicioDiagnostico" titleKey="menuadmin.servicio_diagnostico.title"><bean:message key="menuadmin.servicio_diagnostico" /></html:link>
             </logic:notEqual>
+                <a><bean:message key="menuadmin.servicio_diagnostico" /></a>
+            </li>
+            <li>
+                <ul role="presentation" class="nav nav-pills nav-stacked">
+                <li><a href="/oaw/diagnostico.html">Acceso al servicio</a></li>
+                <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
+                <li class="active">
+                    <html:link forward="servicioDiagnostico" titleKey="menuadmin.exportar_servicio_diagnostico.title"><bean:message key="menuadmin.exportar_servicio_diagnostico" /></html:link>
+                </logic:equal>
+                <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_SERVICIO_DIAGNOSTICO %>">
+                <li>
+                    <html:link forward="servicioDiagnostico" titleKey="menuadmin.exportar_servicio_diagnostico.title"><bean:message key="menuadmin.exportar_servicio_diagnostico" /></html:link>
+                </logic:notEqual>
+                </ul>
             </li>
         </inteco:menu>
 
@@ -136,45 +124,3 @@
             </ul>
           </li>
     </ul>
-
-<!--
-<ul>
-
-	<%--
-	<inteco:menu roles="<%=rolAdmin + \";\" + rolConfig%>">
-		<li class="menutit">
-			<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CERTIFICATES %>">
-				<html:link forward="loadCertificateForm" title="Gesti\ufffdn certificados digitales" styleId="selected"><bean:message key="menuadmin.certificates" /></html:link>
-			</logic:equal>
-			<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CERTIFICATES %>">
-				<html:link forward="loadCertificateForm" title="Gesti\ufffdn certificados digitales"><bean:message key="menuadmin.certificates" /></html:link>
-			</logic:notEqual>
-		</li>
-	</inteco:menu>
-	--%>
-
-	<inteco:menu roles="<%=rolCustResp + \";\" + rolCustUser%>">
-		<li class="menutit">
-			<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT_CRAWLINGS %>">
-				<html:link forward="loadClientCrawlings" styleId="selected" titleKey="menuclient.rastreos.title"><bean:message key="menuclient.rastreos" /></html:link>
-			</logic:equal>
-			<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT_CRAWLINGS %>">
-				<html:link forward="loadClientCrawlings" titleKey="menuclient.rastreos.title"><bean:message key="menuclient.rastreos"/></html:link>
-			</logic:notEqual>
-		</li>
-	</inteco:menu>
-
-	<inteco:menu roles="<%=rolCustResp%>">
-		<li class="menutit">
-			<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT_CRAWLINGS_ACCOUNT %>">
-				<html:link forward="verCuentasUsuario" styleId="selected" titleKey="menuclient.rastreos.cuenta.title"><bean:message key="menuclient.rastreos.cuenta" /></html:link>
-			</logic:equal>
-			<logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_CLIENT_CRAWLINGS_ACCOUNT %>">
-				<html:link forward="verCuentasUsuario" titleKey="menuclient.rastreos.cuenta.title"><bean:message key="menuclient.rastreos.cuenta"/></html:link>
-			</logic:notEqual>
-		</li>
-	</inteco:menu>
-
-</ul>
-
--->

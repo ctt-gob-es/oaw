@@ -69,7 +69,7 @@ public class PrimaryExportPdfAction extends Action {
             if (pdfFile != null) {
                 try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()){
                     ZipUtils.generateZipFile(pdfFile.getParent(), outputStream, false);
-                    CrawlerUtils.returnData(response,  outputStream.toByteArray(), pdfFile.getName(), "application/zip");
+                    CrawlerUtils.returnData(response,  outputStream.toByteArray(), pdfFile.getName().replace(".pdf", ".zip"), "application/zip");
                 } catch (Exception e) {
                     Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR, e);
                     return mapping.findForward(Constants.ERROR);

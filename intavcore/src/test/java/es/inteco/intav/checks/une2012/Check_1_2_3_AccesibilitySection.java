@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.util.regex.Pattern;
+
 /**
  *
  */
@@ -184,6 +186,24 @@ public final class Check_1_2_3_AccesibilitySection {
 
         checkAccessibility.setContent("<html><head><title>Accesibilidad</title></head><body><p>contact@example.com</p><p>Nivel de conformidad AA (doble A)</p><p>Last reviewed: 1.24.2015</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HAS_NOT_SECTION_LINK));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_REVISION_DATE));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONFORMANCE_LEVEL));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
+    @Test
+    public void testAccesibilityPageGalego() throws Exception {
+        checkAccessibility.setContent("<html><head><title>Accesibilidad</title></head><body><p>contact@example.com</p><p>Nivel alcalzado: AA (doble A)  \n" +
+                "<p>Data da última revisión: 1 de decembro de 2016</p><p class=\"btn_links\">\n" +
+                "<a href=\"/gl/concello\">\n" +
+                "<em class=\"fa fa-lg fa-send\">  </em>\n" +
+                "<span>Contacta</span>\n" +
+                "</a>\n" +
+                "</p></body></html>");
+
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), HAS_NOT_SECTION_LINK));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_REVISION_DATE));

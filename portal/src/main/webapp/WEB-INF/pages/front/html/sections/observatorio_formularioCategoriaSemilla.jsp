@@ -51,7 +51,7 @@
                     <fieldset>
                         <jsp:include page="/common/crawler_messages.jsp" />
                         <div class="formItem">
-                            <label for="name" class="control-label"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="categoria.semillas.nombre" />: </strong></label>
+                            <label for="name" class="control-label"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="migas.categoria" />: </strong></label>
                             <html:text styleClass="texto form-control" property="name" styleId="name" maxlength="30"/>
                         </div>
                         <div class="formItem">
@@ -103,12 +103,10 @@
                                 <c:set target="${params}" property="idSemilla" value="${seed.id}" />
                                 <tr>
                                     <td style="text-align: left">
-                                        <bean:write name="seed" property="nombre"/>
-
-                                        <html:link forward="editCategorySeed" name="params" styleClass="pull-right">
-                                            <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar esta semilla"></span>
-                                            <span class="sr-only"><bean:message key="indice.rastreo.img.editar.rastreo.alt" /></span>
+                                        <html:link forward="editCategorySeed" name="params">
+                                            <span data-toggle="tooltip" title="Editar esta semilla"><bean:write name="seed" property="nombre"/></span>
                                         </html:link>
+                                        <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
                                     </td>
                                     <td>
                                         <logic:iterate name="seed" property="listaUrls" id="url" length="1">
@@ -122,7 +120,7 @@
 
                                             <a href="<bean:write name="url"/>" title="<%=altLink %>">
                                                 <span class="glyphicon glyphicon-new-window"></span>
-                                                <span class="sr-only">Ir a la p\u00e1gina web de esta semilla</span>
+                                                <span class="sr-only">Ir a la p&aacute;gina web de esta semilla</span>
                                             </a>
                                         </logic:iterate>
                                     </td>

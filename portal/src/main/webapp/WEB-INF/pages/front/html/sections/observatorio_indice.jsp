@@ -63,7 +63,7 @@
                                         <bean:define id="detailTitle"><bean:message key="indice.observatorio.detalle.alt" /></bean:define>
                                         <td style="text-align: left">
                                             <inteco:menu roles="<%=rolAdmin%>">
-                                                <html:link forward="editObservatory" name="params"><span data-toggle="tooltip" title="Editar la configuraci\u00f3n de este observatorio"><bean:write name="elemento" property="nombreObservatorio" /></span></html:link>
+                                                <html:link forward="editObservatory" name="params"><span data-toggle="tooltip" title="Editar la configuraci&oacute;n de este observatorio"><bean:write name="elemento" property="nombreObservatorio" /></span></html:link>
                                                 <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true"/>
                                             </inteco:menu>
                                         </td>
@@ -89,7 +89,7 @@
 
                             <jsp:include page="pagination.jsp" />
                         </div>
-                        <p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
+                        <!-- <p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p> -->
                     </logic:notEmpty>
                 </logic:present>
             </div><!-- fin cajaformularios -->

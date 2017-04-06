@@ -62,7 +62,8 @@ public class BasicServiceCrawlingManager {
             final List<String> urls = new ArrayList<>();
             final String[] split = basicServiceForm.getDomain().split("\r\n");
             Collections.addAll(urls, split);
-            crawlerData.setUrls(urls);
+            // En el caso de lista cerrada nos quedamos con 17 urls como máximo
+            crawlerData.setUrls(urls.subList(0, Math.min(urls.size(),17)));
         }
         crawlerData.setContent(basicServiceForm.getContent());
 

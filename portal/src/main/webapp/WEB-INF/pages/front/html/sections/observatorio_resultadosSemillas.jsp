@@ -74,7 +74,7 @@
                                     <tr>
                                         <th><bean:message key="resultados.observatorio.nombre" /></th>
                                         <th class="accion"><bean:message key="resultados.observatorio.ultima.puntuacion" /></th>
-                                        <th class="accion">Nivel accesibilidad</th>
+                                        <th class="accion" style="width: 110px">Nivel accesibilidad</th>
                                         <th class="accion">Resultados</th>
                                         <th class="accion">Informes</th>
                                         <th class="accion">Relanzar</th>
@@ -117,10 +117,14 @@
 
                                         <tr>
                                             <td style="text-align:left">
-                                                <html:link forward="showTracking" name="paramSTR"><bean:write name="semilla" property="name" /></html:link>
-                                                <html:link forward="showTracking" name="paramSTR" styleClass="pull-right">
-                                                    <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar la semilla de este resultado"/> <span class="sr-only">Editar</span>
+                                                <jsp:useBean id="params" class="java.util.HashMap" />
+                                                <bean:define id="actionMod"><%= Constants.ACCION_MODIFICAR %></bean:define>
+                                                <c:set target="${params}" property="${semillaSTR}" value="${semilla.id}" />
+                                                <c:set target="${params}" property="${action}" value="${actionMod}"/>
+                                                <html:link forward="observatorySeeds" name="params">
+                                                    <span aria-hidden="true" data-toggle="tooltip" title="Editar la semilla de este resultado"/><bean:write name="semilla" property="name" /></span>
                                                 </html:link>
+                                                <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true"/>
                                             </td>
                                             <td>
                                                 <bean:write name="semilla" property="score"/>
