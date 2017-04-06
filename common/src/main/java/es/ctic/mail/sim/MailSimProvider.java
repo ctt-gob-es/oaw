@@ -47,39 +47,42 @@ public class MailSimProvider implements MailProvider {
 
             final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
             final ResponseStatusType respuestaStatus = respuesta.getStatus();
+            if ( !"1000".equals(respuestaStatus.getStatusCode()) ) {
+                Logger.putLog(String.format("Error SIM response code: %s, text: %s, details: %s", respuestaStatus.getStatusCode(), respuestaStatus.getStatusText(), respuestaStatus.getDetails()), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
+            }
         } catch (MalformedURLException e) {
             Logger.putLog(String.format("Invalid SIM WSDL URL value of %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_ERROR);
         }
     }
 
     @Override
-    public void setFromAddress(String fromAddress) {
+    public void setFromAddress(final String fromAddress) {
         Logger.putLog("Trying to set fromAddress for SIM Mail Service. This value is configured in the SIM Mail Service", MailSimProvider.class, Logger.LOG_LEVEL_INFO);
     }
 
     @Override
-    public void setFromName(String fromName) {
+    public void setFromName(final String fromName) {
         Logger.putLog("Trying to set fromName for SIM Mail Service. This value is configured in the SIM Mail Service", MailSimProvider.class, Logger.LOG_LEVEL_INFO);
     }
 
     @Override
-    public void setMailTo(List<String> mailTo) {
+    public void setMailTo(final List<String> mailTo) {
         this.mailTo = mailTo;
     }
 
     @Override
-    public void setAttachment(String attachName, String attachUrl) {
+    public void setAttachment(final String attachName, final String attachUrl) {
         this.attachName = attachName;
         this.attachUrl = attachUrl;
     }
 
     @Override
-    public void setSubject(String mailSubject) {
+    public void setSubject(final String mailSubject) {
         this.subject = mailSubject;
     }
 
     @Override
-    public void setBody(String mailBody) {
+    public void setBody(final String mailBody) {
         this.body = mailBody;
     }
 
@@ -87,7 +90,8 @@ public class MailSimProvider implements MailProvider {
         final Mensajes mensajes = factory.createMensajes();
         final MensajeEmail mensajeEmail = factory.createMensajeEmail();
         mensajeEmail.setAsunto(subject);
-        mensajeEmail.setCuerpo(body);
+        // Convertimos los saltos de línea en la etiqueta HTML equivalente porque SIM envía el mensaje como text/HTML
+        mensajeEmail.setCuerpo(body.replace("\n","<br>"));
         if (attachName != null && attachUrl != null) {
             createAdjunto(mensajeEmail);
         }

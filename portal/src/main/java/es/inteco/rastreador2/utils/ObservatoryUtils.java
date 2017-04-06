@@ -12,6 +12,7 @@ import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
+import es.inteco.rastreador2.intav.utils.IntavUtils;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.util.MessageResources;
@@ -180,14 +181,17 @@ public final class ObservatoryUtils {
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
                 int numPages = 0;
                 BigDecimal avgScore = BigDecimal.ZERO;
+                final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(17);
                 for (ObservatoryEvaluationForm observatory : observatories) {
                     if (observatory.getCrawlerExecutionId() == seedFulfilledCrawlings.get(0).getId()) {
                         numPages++;
                         avgScore = avgScore.add(observatory.getScore());
+                        paginas.add(observatory);
                     }
                 }
                 if (numPages != 0) {
                     seedResult.setScore(avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+                    seedResult.setNivel(IntavUtils.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
                 }
             }
         }

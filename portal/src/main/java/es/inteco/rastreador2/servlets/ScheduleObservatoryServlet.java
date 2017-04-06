@@ -39,9 +39,7 @@ public class ScheduleObservatoryServlet extends GenericServlet {
 
         Logger.putLog("Programando los observatorios", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_INFO);
 
-        Connection c = null;
-        try {
-            c = DataBaseManager.getConnection();
+        try (Connection c = DataBaseManager.getConnection()) {
             final List<ObservatorioForm> observatories = ObservatorioDAO.getObservatoryList(c);
 
             for (ObservatorioForm observatory : observatories) {
@@ -50,8 +48,6 @@ public class ScheduleObservatoryServlet extends GenericServlet {
             }
         } catch (Exception e) {
             Logger.putLog("FALLO al programar los jobs para los rastreos de observatorios", ScheduleObservatoryServlet.class, Logger.LOG_LEVEL_ERROR, e);
-        } finally {
-            DataBaseManager.closeConnection(c);
         }
     }
 

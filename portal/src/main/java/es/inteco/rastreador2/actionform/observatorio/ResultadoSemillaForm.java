@@ -7,6 +7,7 @@ public class ResultadoSemillaForm {
     private String idFulfilledCrawling;
     private boolean active;
     private String score;
+    private String nivel;
     private long idCategory;
 
 
@@ -64,5 +65,13 @@ public class ResultadoSemillaForm {
 
     public void setIdFulfilledCrawling(String idFulfilledCrawling) {
         this.idFulfilledCrawling = idFulfilledCrawling;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
     }
 }

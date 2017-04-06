@@ -91,7 +91,7 @@ public final class AnonymousResultExportPdfSections {
         Chapter chapter = PDFUtils.createChapterWithTitle(CrawlerUtils.getResources(request).getMessage("basic.service.content.title"), index, countSections++, numChapter, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
         PDFUtils.addParagraph(CrawlerUtils.getResources(request).getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
-        PDFUtils.addParagraphCode(HTMLEntities.unhtmlAngleBrackets(contents), "", chapter);
+        PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
         d.add(chapter);
 
         return countSections;

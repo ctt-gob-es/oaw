@@ -4,6 +4,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.action.observatorio.ResultadosObservatorioAction;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
@@ -13,17 +14,18 @@ import es.inteco.rastreador2.dao.export.database.Observatory;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.manager.BaseManager;
 import es.inteco.rastreador2.manager.export.database.DatabaseExportManager;
+import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.rastreador2.utils.ActionUtils;
+import es.inteco.rastreador2.utils.AnnexUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.export.database.DatabaseExportUtils;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
+import es.inteco.utils.FileUtils;
+import org.apache.struts.action.*;
 import org.apache.struts.util.MessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.List;
@@ -37,7 +39,9 @@ public class DatabaseExportAction extends Action {
             try {
                 if (request.getParameter(Constants.ACTION) != null) {
                     if (request.getParameter(Constants.ACTION).equals(Constants.EXPORT)) {
-                        return export(mapping, request);
+                        //return
+                        export(mapping, request);
+                        getAnnexes(mapping, request, response);
                     } else if (request.getParameter(Constants.ACTION).equals(Constants.CONFIRM)) {
                         return confirm(mapping, request);
                     }
@@ -53,20 +57,17 @@ public class DatabaseExportAction extends Action {
         return null;
     }
 
-    private ActionForward export(ActionMapping mapping, HttpServletRequest request) throws Exception {
+    private ActionForward export(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
+        final Long idExObservatory = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
 
         try (Connection c = DataBaseManager.getConnection()) {
-            final List<ObservatorioRealizadoForm> fulfilledObservatories = ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, null);
+            final ObservatorioRealizadoForm fulfilledObservatory = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExObservatory);
 
-            for (ObservatorioRealizadoForm fulfilledObservatory : fulfilledObservatories) {
-                final PropertiesManager pmgr = new PropertiesManager();
-
-                if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
-                    exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
-                } else if (String.valueOf(fulfilledObservatory.getCartucho().getId()).equals(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.multilanguage.id"))) {
-                    return mapping.findForward(Constants.ERROR);
-                }
+            if (CartuchoDAO.isCartuchoAccesibilidad(c, fulfilledObservatory.getCartucho().getId())) {
+                exportResultadosAccesibilidad(CrawlerUtils.getResources(request), idObservatory, c, fulfilledObservatory);
+            } else {
+                return mapping.findForward(Constants.ERROR);
             }
 
         } catch (Exception e) {
@@ -97,6 +98,9 @@ public class DatabaseExportAction extends Action {
             observatory.setDate(new Timestamp(observatorioRealizadoForm.getFecha().getTime()));
 
             BaseManager.save(observatory);
+        } else {
+            BaseManager.delete(observatory);
+            exportResultadosAccesibilidad(messageResources, idObservatory, c, fulfilledObservatory);
         }
     }
 
@@ -114,4 +118,32 @@ public class DatabaseExportAction extends Action {
         return mapping.findForward(Constants.CONFIRM);
     }
 
+
+    private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+        try {
+            final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));
+            final Long idOperation = System.currentTimeMillis();
+
+            AnnexUtils.createAnnexPaginas(CrawlerUtils.getResources(request), idObsExecution, idOperation);
+            AnnexUtils.createAnnexPortales(CrawlerUtils.getResources(request), idObsExecution, idOperation);
+
+            final PropertiesManager pmgr = new PropertiesManager();
+            final String exportPath = pmgr.getValue(CRAWLER_PROPERTIES, "export.annex.path");
+            final String zipPath = exportPath + idOperation + File.separator + "anexos.zip";
+            ZipUtils.generateZipFile(exportPath + idOperation.toString(), zipPath, true);
+
+            CrawlerUtils.returnFile(response, zipPath, "application/zip", true);
+
+            FileUtils.deleteDir(new File(exportPath + idOperation));
+
+            return null;
+        } catch (Exception e) {
+            Logger.putLog("Exception generando los anexos.", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+            final ActionMessages errors = new ActionMessages();
+            errors.add("usuarioDuplicado", new ActionMessage("data.export"));
+            saveErrors(request, errors);
+            //return getFulfilledObservatories(mapping, request);
+            return mapping.findForward(Constants.ERROR);
+        }
+    }
 }

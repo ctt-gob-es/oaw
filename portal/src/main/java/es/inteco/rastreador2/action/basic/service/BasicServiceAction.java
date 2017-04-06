@@ -5,10 +5,12 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
+import org.apache.struts.Globals;
 import org.apache.struts.action.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +35,6 @@ public class BasicServiceAction extends Action {
                 final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
                 basicServiceForm.setContent(basicServiceFormRequest.getContent());
                 basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
-                // TODO: Quitar param request
                 basicServiceManager.executeCrawling(basicServiceForm, CrawlerUtils.getResources(request));
             } else {
                 Logger.putLog("ENQUEUE --  " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
@@ -52,6 +53,17 @@ public class BasicServiceAction extends Action {
         final ActionErrors errors = basicServiceForm.validate(mapping, request);
         errors.add(BasicServiceUtils.validateReport(basicServiceForm));
         errors.add(BasicServiceUtils.validateUrlOrContent(basicServiceForm));
+        if (basicServiceForm.isRegisterAnalysis()) {
+            if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
+                if (!"4".equals(basicServiceForm.getProfundidad()) && !"4".equals(basicServiceForm.getAmplitud())) {
+                    errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.evolution.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
+                }
+            } else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.LISTA_URLS
+                    && basicServiceForm.getDomain().split("\r\n").length != 17) {
+                errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.evolution.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
+            }
+        }
+
         return errors;
     }
 

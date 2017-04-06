@@ -16,17 +16,30 @@ th.accion { width: 100px }
 a.btn.btn-primary {
     color: #fff;
 }
-/*a.btn.btn-primary:focus,
-a.btn.btn-primary:hover{
+span.edit-mark {
     color: #e1120d;
-}*/
+}
+#listaUrlsString {
+    width: 45%;
+}
+.alinForm.form-inline label {
+    display: inline;
+}
+.table.table-stripped.table-bordered.table-hover ul {
+    margin: 0;
+    padding: 0;
+}
+.table.table-stripped.table-bordered.table-hover ul li {
+    display: inline;
+}
+.table.table-stripped.table-bordered.table-hover ul li + li::before {
+    content: ", ";
+}
+
 
 /* ESTILOS PRINCIPALES */
 /***********************/
 /* Cuerpo - Valores por defecto */
-	/*html,body{height:80%;}*/
-	* {margin:0%;padding:0%;}
-	/*html {font-family: Arial, sans-serif;font-size:72%;text-align:center;color:#000;background:#FFF;}*/
 	body {background:#FFF;margin:1%;margin-bottom:0%;}
 /* Encabezados */
 	h1 {font-weight:normal;color:#8c8c8b;margin-left:0.2%;margin-top:1.2%;font-size:180%;}
@@ -43,9 +56,6 @@ a.btn.btn-primary:hover{
 	ul.topo, .rationale ul {margin:1.5% 0% 0% 5%;}
 	ul.topo li, .rationale li {list-style-image:url('../images/topo.gif');margin:0.5% 0% 0% 2%;}
 	
-/*	ul li {margin: 1em 0 0 1em}
-	ul li ul li {margin: .2em 0 0 3em}*/
-
 	.nav-stacked ul li {
 	    margin: 0 15px;
 	}
@@ -57,8 +67,7 @@ a.btn.btn-primary:hover{
 /* Formularios */
 	form {display:inline;padding:0%;margin:0%;}
 	caption {text-align:right;padding:0.3%;font-style:italic;}
-	input,input[type=file] {font-family:Arial, sans-serif;border:1px solid #777;padding:0.1% 0.4%;margin:0% 0% 0% 0.5%px;background:url('../images/backinput.gif') repeat-x;}
-/*	input[type=submit],button {text-decoration:none;margin-left:4%;padding:1% 3%;border:solid silver 1px;color:white;background:#000 url(../images/barra_menu_hover.png) bottom;}*/
+	input[type=file] {height: auto}
 	input[type=radio] {border:none;background:none;}
 
 	input:focus {border-color:#e21430;}
@@ -239,7 +248,11 @@ a.btn.btn-primary:hover{
 	#container_der_exito {padding-top:2%; }
 	#container_der{float:left;margin:0;padding:0; width:76%;}
 	#container_der table {margin:1% auto; background:silver;width:100%; border-collapse: collapse; border: 2px solid #CCC}
-	#container_der table th {text-align:center;background:silver url('../images/barra_menu_hover_2.png');color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
+	#container_der table th {text-align:center;background: #e1120d;
+                                               background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
+                                               background: -webkit-linear-gradient(top, #e1120d 0%,#ff8e8e 100%);
+                                               background: linear-gradient(to bottom, #e1120d 0%,#ff8e8e 100%);
+                                               filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e1120d', endColorstr='#ff8e8e',GradientType=0 );color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
 	#container_der table tr.suitability th {background: silver}
 	#container_der table td {text-align:center;background:white;border: 1px solid #CCC}
 	#container_der table td.alignLeft {text-align:left}

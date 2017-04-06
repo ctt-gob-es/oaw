@@ -2,6 +2,8 @@ package es.ctic.basicservice.historico;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
+import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -25,7 +27,8 @@ public class CheckHistoricoAction extends Action {
         final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
         // El parametro url debería venir encodeado (ej http%3A%2F%2Fwww.example.com)
         final String url = decodeUrlParam(request.getParameter("url"));
-        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(url);
+        final BasicServiceAnalysisType type = BasicServiceAnalysisType.parseString(request.getParameter("type"));
+        final List<BasicServiceResultado> historicoResultados = checkHistoricoService.getHistoricoResultados(url, type);
 
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put("historico", historicoResultados);

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.sql.Connection;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -63,7 +64,11 @@ public final class BasicServiceUtils {
     public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) {
         Logger.putLog("getBasicServiceForm " + basicServiceForm.toString(), BasicServiceUtils.class, Logger.LOG_LEVEL_ERROR);
         basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
-        basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
+        try {
+            basicServiceForm.setDomain(URLDecoder.decode(request.getParameter(Constants.PARAM_URL),"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
+        }
         basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
         basicServiceForm.setProfundidad(request.getParameter(Constants.PARAM_DEPTH));
         basicServiceForm.setAmplitud(request.getParameter(Constants.PARAM_WIDTH));

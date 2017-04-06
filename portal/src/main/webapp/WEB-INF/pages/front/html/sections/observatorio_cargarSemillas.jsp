@@ -8,8 +8,6 @@
 	<c:set target="${paramsNS}" property="esPrimera" value="si" />
 	
 
-
-
     <!-- observatorio_cargarSemillas.jsp -->
     <div id="main">
 
@@ -30,18 +28,18 @@
             <div id="cajaformularios">
                 <h2><bean:message key="gestion.semillas.observatorio.titulo"/></h2>
 
-                <html:form action="/secure/ViewSemillasObservatorio.do" method="get" styleClass="formulario">
+                <html:form action="/secure/ViewSemillasObservatorio.do" method="get" styleClass="formulario form-horizontal">
                     <input type="hidden" name="<%= Constants.ACTION %>" value="<%= Constants.LOAD %>"/>
                     <fieldset>
                         <legend>Buscador</legend>
                         <jsp:include page="/common/crawler_messages.jsp" />
                         <div class="formItem">
-                            <label for="nombre"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
-                            <html:text styleClass="texto" styleId="nombre" property="nombre" />
+                            <label for="nombre" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.nombre" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="nombre" property="nombre" />
                         </div>
                         <div class="formItem">
-                            <label for="categoria"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.categoria" /></strong></label>
-                            <html:select styleClass="textoSelect" styleId="categoria" property="categoria" >
+                            <label for="categoria" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.categoria" /></strong></label>
+                            <html:select styleClass="textoSelect form-control" styleId="categoria" property="categoria" >
                                 <html:option value=""><bean:message key="resultados.observatorio.cualquier.categoria" /></html:option>
                                 <logic:iterate name="<%= Constants.CATEGORIES_LIST %>" id="categoria">
                                     <bean:define id="idCategoria"><bean:write name="categoria" property="id"/></bean:define>
@@ -50,8 +48,8 @@
                             </html:select>
                         </div>
                         <div class="formItem">
-                            <label for="url"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.url" /></strong></label>
-                            <html:text styleClass="texto" styleId="url" property="url" />
+                            <label for="url" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.url" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="url" property="url" />
                         </div>
                         <div class="formButton">
                             <button type="submit" class="btn btn-default btn-lg">
@@ -99,21 +97,16 @@
                                         <bean:define id="semillaSTR"><%= Constants.SEMILLA %></bean:define>
                                         <tr>
                                             <td style="text-align: left">
-                                                <jsp:useBean id="paramsV" class="java.util.HashMap" />
                                                 <bean:define id="actionDet"><%= Constants.ACCION_SEED_DETAIL %></bean:define>
-                                                <c:set target="${paramsV}" property="${semillaSTR}" value="${semillaId}" />
-                                                <c:set target="${paramsV}" property="${action}" value="${actionDet}" />
-                                                <bean:define id="detailTitle"><bean:message key="eliminar.semilla.detalle.semilla.observatorio" /></bean:define>
-                                                <html:link forward="observatorySeeds" name="paramsV" title="<%= detailTitle%>"><bean:write name="semilla" property="nombre" /></html:link>
-
                                                 <jsp:useBean id="params" class="java.util.HashMap" />
                                                 <bean:define id="actionMod"><%= Constants.ACCION_MODIFICAR %></bean:define>
                                                 <c:set target="${params}" property="${semillaSTR}" value="${semillaId}" />
                                                 <c:set target="${params}" property="${action}" value="${actionMod}"/>
-                                                <html:link forward="observatorySeeds" name="params" styleClass="pull-right">
-                                                    <span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar la configuración de esta semilla"/>
-                                                    <span class="sr-only"><bean:message key="etitar.semilla.observatorio" /></span>
+                                                <html:link forward="observatorySeeds" name="params">
+                                                    <span data-toggle="tooltip" title="Editar la configuraci&oacute;n de esta semilla"/><bean:write name="semilla" property="nombre" /></span>
                                                 </html:link>
+
+                                                <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true"/>
                                             </td>
                                             <td>
                                                 <bean:write name="semilla" property="categoria.name"/>

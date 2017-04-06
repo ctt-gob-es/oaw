@@ -128,7 +128,7 @@
 														<th><bean:message key="search.results.observations"/></th>
 													</logic:notPresent>
 													<th>Resultados</th>
-													<th>Código fuente</th>
+													<th>C&oacute;digo fuente</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -136,10 +136,10 @@
 													<c:set target="${params}" property="code" value="${analysis.code}" />
 													<tr>
 														<logic:empty name="analysis" property="urlTitle">
-															<td><bean:write name="analysis" property="url"/></td>
+															<td class="alignLeft"><bean:write name="analysis" property="url"/></td>
 														</logic:empty>
 														<logic:notEmpty name="analysis" property="urlTitle">
-															<td title ="<bean:write name="analysis" property="urlTitle" />"><bean:write name="analysis" property="url"/></td>
+															<td class="alignLeft" title ="<bean:write name="analysis" property="urlTitle" />"><bean:write name="analysis" property="url"/></td>
 														</logic:notEmpty>
 														<logic:empty name="analysis" property="entityTitle">
 															<td><bean:write name="analysis" property="entity"/></td>
@@ -168,7 +168,7 @@
 																<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_SUCCESS) %>">
 																	<html:link forward="showAnalysisFromCrawler" name="params">
-																	    <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta página"/><span class="sr-only">Resultados</span>
+																	    <span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver resultados de esta p&aacute;gina"/><span class="sr-only">Resultados</span>
 																	</html:link>
 																</logic:equal>
 																<logic:equal name="analysis" property="status" value="<%= String.valueOf(Constants.STATUS_ERROR) %>">
@@ -177,7 +177,7 @@
 															</td>
 															<td>
 																<html:link forward="getHtmlSource" name="params">
-																    <span class="glyphicon glyphicon-file" aria-hidden="true" data-toggle="tooltip" title="Ver el código fuente analizado"/><span class="sr-only">Código fuente</span>
+																    <span class="glyphicon glyphicon-file" aria-hidden="true" data-toggle="tooltip" title="Ver el c&oacute;digo fuente analizado"/><span class="sr-only">C&oacute;digo fuente</span>
 																</html:link>
 															</td>
 														</logic:present>
