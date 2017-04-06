@@ -21,7 +21,7 @@
 							<logic:notPresent name="<%=Constants.CARGAR_CUENTA_USUARIO_FORM %>">	
 								<div class="notaInformativaExito">
 									<p><bean:message key="indice.cuentas.usuario.vacio"/></p>
-									<p><html:link forward="newUserAccount" styleClass="boton"><bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
+									<p class="pull-right"><html:link forward="newUserAccount" styleClass="btn btn-defualt btn-lg"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
 									<html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 								</div>
 							</logic:notPresent>
@@ -29,7 +29,7 @@
 								<logic:empty name="<%=Constants.CARGAR_CUENTA_USUARIO_FORM %>" property="listadoCuentasUsuario">	
 									<div class="notaInformativaExito">
 										<p><bean:message key="indice.cuentas.usuario.vacio"/></p>
-										<p><html:link forward="newUserAccount" styleClass="boton"><bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
+										<p class="pull-right"><html:link forward="newUserAccount" styleClass="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <bean:message key="indice.usuarios.sistema.nueva.cuenta.usuario" /></html:link>
 										<html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 									</div>
 								</logic:empty>

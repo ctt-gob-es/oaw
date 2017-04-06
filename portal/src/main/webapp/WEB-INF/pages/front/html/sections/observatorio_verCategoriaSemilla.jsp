@@ -2,6 +2,7 @@
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml/>
 
+    <!-- observatorio_verCategoriaSemilla.jsp -->
     <div id="main">
 
         <div id="container_menu_izq">
@@ -13,8 +14,7 @@
             <div id="migas">
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                 <ol class="breadcrumb">
-
-                  <li><html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link></li>
+                  <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.observatorio" /></html:link></li>
                   <li><html:link forward="getSeedCategories"><bean:message key="migas.categoria" /></html:link></li>
                   <li class="active"><bean:message key="migas.categoria.semillas"/></li>
                 </ol>
@@ -34,7 +34,7 @@
                             <html:text styleClass="texto" styleId="nombre" property="nombre" />
                         </div>
                         <div class="formButton">
-                            <html:submit><bean:message key="boton.aceptar" /></html:submit>
+                            <html:submit styleClass="btn btn-default btn-lg"><bean:message key="boton.aceptar" /></html:submit>
                         </div>
                     </fieldset>
                 </html:form>
@@ -68,8 +68,9 @@
                                                     </bean:message>
                                                 </bean:define>
 
-                                                <a href="<bean:write name="url"/>">
-                                                    <img src="../images/external_link.gif" alt="<%=altLink %>"/>
+                                                <a class="pull-right" href="<bean:write name="url"/>" data-toggle="tooltip" title="<%=altLink %>">
+                                                    <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span>
+                                                    <span class="sr-only"><%=altLink %></span>
                                                 </a>
                                             </logic:iterate>
                                         </td>
@@ -78,6 +79,7 @@
                             </table>
                             <jsp:include page="pagination.jsp" />
                         </logic:notEmpty>
+                        <p id="pCenter"><html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
                     </div>
                 </div>
             </div>

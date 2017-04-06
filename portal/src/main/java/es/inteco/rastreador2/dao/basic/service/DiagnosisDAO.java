@@ -50,7 +50,7 @@ public final class DiagnosisDAO {
                 ps.setString(11, basicServiceForm.getAnalysisType().getLabel());
             } else if (StringUtils.isNotEmpty(basicServiceForm.getContent())) {
                 ps.setString(3, BasicServiceUtils.getTitleFromContent(basicServiceForm.getContent()));
-                ps.setString(11, Constants.BASIC_SERVICE_ANALYSIS_TYPE_CONTENT);
+                ps.setString(11, BasicServiceAnalysisType.CODIGO_FUENTE.getLabel());
             }
             ps.setString(4, basicServiceForm.getEmail());
             ps.setString(5, basicServiceForm.getProfundidad());
@@ -187,12 +187,12 @@ public final class DiagnosisDAO {
         return analysisIds;
     }
 
-    public static List<BasicServiceResultado> getHistoricoResultados(final String url) {
+    public static List<BasicServiceResultado> getHistoricoResultados(final String url, final BasicServiceAnalysisType type) {
         final List<BasicServiceResultado> results = new ArrayList<>();
         final PropertiesManager pmgr = new PropertiesManager();
         final SimpleDateFormat dateFormat = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.basicservice.evolutivo.format"));
         try (Connection conn = DataBaseManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND analysis_type='url' AND register_result=TRUE ORDER BY date DESC LIMIT ?")) {
+             PreparedStatement ps = conn.prepareStatement(getHistoricoResultadosQueryByType(type))) {
             ps.setString(1, url);
             // TODO: Leer el limite de resultados de un property o como parametro
             ps.setInt(2, 3);
@@ -209,6 +209,15 @@ public final class DiagnosisDAO {
             Logger.putLog("Error al acceder al historico de resultados del servicio de diagnostico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
         }
         return results;
+    }
+
+    private static String getHistoricoResultadosQueryByType(final BasicServiceAnalysisType type) {
+        if (BasicServiceAnalysisType.URL==type) {
+            return "SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=4 AND width=4 AND analysis_type='url' AND register_result=TRUE ORDER BY date DESC LIMIT ?";
+        } else if (BasicServiceAnalysisType.LISTA_URLS==type) {
+            return "SELECT id, date FROM basic_service WHERE domain REGEXP ? AND status='finished' AND analysis_type='lista_urls' AND register_result=TRUE ORDER BY date DESC LIMIT ?";
+        }
+        return null;
     }
 
     /**

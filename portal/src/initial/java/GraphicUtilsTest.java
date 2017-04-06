@@ -63,9 +63,10 @@ public class GraphicUtilsTest {
 
     @Test
     public void testGraphicsGlobalEvolution() throws Exception {
-        final int empeoran = 28;
-        final int mantienen = 105;
-        final int mejoran =   28;
+        final int mejoran =   95;
+        final int mantienen = 187;
+        final int empeoran = 76;
+
 
         final String sectionLabel = "N\u00BA Portales: ";
         final int total = empeoran + mantienen + mejoran;

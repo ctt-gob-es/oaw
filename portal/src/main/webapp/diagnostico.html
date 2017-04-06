@@ -1,382 +1,372 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
-    <head>
-        <title>RASTREADOR WEB - Servicio de diagnóstico</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
-        <meta name="keywords" content="inteco,malware,rastreador"/>
-        <meta name="version" content="3.5.0"/>
-        <link rel="stylesheet" type="text/css" href="styles/estilo.css"/>
-        <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
+<head>
+    <title>RASTREADOR WEB - Servicio de diagn&oacute;stico</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <meta name="keywords" content="inteco,malware,rastreador"/>
+    <meta name="version" content="3.5.0"/>
+    <!-- Bootstrap -->
+    <link href="/oaw/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles/estilo.css"/>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    </head>
+    <script src="/oaw/js/jquery-3.1.1.min.js"></script>
+</head>
 
-    <body>
-        <div id="cabeza">
-            <a href="http://www.minhap.gob.es/es-ES/Paginas/Home.aspx">
-                <img src="images/mhfp.gif" alt="MHFP - Ministerio de Hacienda y Función Pública"/>
-            </a>
-        </div>
-        <div class="language">
-            <a href="languageLogin.do?log=t&amp;lang=es">Español</a>
-            <a href="languageLogin.do?log=t&amp;lang=en">English</a>
-        </div>
+<body>
+<div id="cabeza">
+    <h1>
+        <img class="pull-left" src="/oaw/images/logo.jpg" alt="Observatorio de Accesibilidad Web"/>
+        <img src="/oaw/images/mhfp.gif" alt="MINHAFP - Ministerio de Hacienda y Funci&oacute;n P&uacute;blica"/>
+    </h1>
+</div> <!-- fin cabecera -->
+
+<div id="main">
+    <div id="cuerpoprincipal">
+
         <div id="migas">
-            <p class="oculto">Esta usted en: </p>
-            <p>Servicio de diagnóstico</p>
+            <p class="sr-only">Est&aacute; usted en</p>
+            <ol class="breadcrumb">
+                <li class="active"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Servicio diagn&oacute;stico</li>
+            </ol>
         </div>
 
-        <div id="cuerpo">
-            <div id="cIzq">&nbsp;</div>
+        <div id="cajaformularios">
+            <h2>Servicio de diagn&oacute;stico</h2>
 
-                <div id="main">
-                    <h1 class="diagnostico">Servicio de diagnóstico</h1>
-                    <div id="cuerpoprincipal">
-                        <div id="cajaformularios_diagnostico">
-                            <form action="/oaw/conexion_oaw.jsp" method="post">
-                                <p>El servicio on-line de diagn&oacute;stico de la Accesibilidad web remitir&aacute; en
-                                    diferido, al correo electr&oacute;nico indicado, el informe de la web o c&oacute;digo fuente
-                                    analizado. Las peticiones son encoladas y procesadas progresivamente.</p>
+            <form id="basic_service" action="/oaw/conexion_oaw.jsp" method="post" enctype="multipart/form-data">
+                <p>El servicio on-line de diagn&oacute;stico de la Accesibilidad web remitir&aacute; en
+                    diferido, al correo electr&oacute;nico indicado, el informe de la web o c&oacute;digo fuente
+                    analizado. Las peticiones son encoladas y procesadas progresivamente.</p>
 
-                                <p>Puede realizar el an&aacute;lisis de una p&aacute;gina web p&uacute;blica en Internet, o del
-                                    c&oacute;digo fuente de una p&aacute;gina interna a la que el analizador no pueda acceder
-                                    (por ejemplo una Intranet o una p&aacute;gina que requiera autenticaci&oacute;n previa
-                                    mediante certificado electr&oacute;nico).</p>
+                <p>Puede realizar el an&aacute;lisis de una p&aacute;gina web p&uacute;blica en Internet, o del
+                    c&oacute;digo fuente de una p&aacute;gina interna a la que el analizador no pueda acceder
+                    (por ejemplo una Intranet o una p&aacute;gina que requiera autenticaci&oacute;n previa
+                    mediante certificado electr&oacute;nico).</p>
 
-                                <p><strong>Nota:</strong> En caso de que rellene los campos URL y c&oacute;digo, se analizar&aacute;
-                                    unicamente la URL.</p>
+                <p><strong>Nota:</strong> En caso de que rellene los campos URL y c&oacute;digo, se analizar&aacute;
+                    unicamente la URL.</p>
 
-                                <p>
-                                    <label for="correo">
-                                        <span style="font-weight: bold">Correo electr&oacute;nico:</span>
-                                    </label>
-                                    <br/>
-                                    <input id="correo" name="correo" size="50" type="text"/>
-                                </p>
-                                <style>
+                <fieldset class="servicioAccesibilidad">
+                    <legend>Destinatario</legend>
+                    <div class="form-inline">
+                        <label for="correo">
+                            <span style="font-weight: bold">Correo electr&oacute;nico:</span>
+                        </label>
+                        <input id="correo" name="correo" size="50" type="email" required="required"
+                               class="form-control"/>
+                    </div>
+                </fieldset>
 
-                                    /* http://www.w3schools.com/css/css_tooltip.asp */
+                <style type="text/css">
+                            .servicioAccesibilidad {
+                                width: 98% !important;
+                            }
 
-                                    /* Tooltip container */
-                                    .tooltip {
-                                        position: relative;
-                                        display: inline-block;
-                                        border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
-                                    }
+                            #tipo-analisis {
+                                border: 0 !important;
+                            }
 
-                                    /* Tooltip text */
-                                    .tooltip .tooltiptext {
-                                        visibility: hidden;
-                                        width: 120px;
-                                        background-color: black;
-                                        color: #fff;
-                                        text-align: center;
-                                        padding: 5px 0;
-                                        border-radius: 6px;
+                            #tipo-analisis label {
+                                font-weight: bold;
+                                padding-left: 5px;
+                            }
 
-                                        /* Position the tooltip text - see examples below! */
-                                        position: absolute;
-                                        z-index: 1;
-                                    }
+                            #tipo-analisis {
+                                column-count: 3;
+                                -moz-columns: 3;
+                                width: 100%;
+                            }
 
-                                    /* Show the tooltip text when you mouse over the tooltip container */
-                                    .tooltip:hover .tooltiptext, .tooltip:focus .tooltiptext {
-                                        visibility: visible;
-                                    }
+                            fieldset#urlset, fieldset#source {
+                                display:none;
+                            }
 
-                                    .tooltip .tooltiptext {
-                                        width: 200px;
-                                        top: 100%;
-                                        left: 50%;
-                                        margin-left: -100px; /* Use half of the width (120/2 = 60), to center the tooltip */
-                                    }
+                            fieldset p {
+                                margin: 5px 0;
+                            }
 
-                                    .tooltip .tooltiptext::after {
-                                        content: " ";
-                                        position: absolute;
-                                        bottom: 100%;  /* At the top of the tooltip */
-                                        left: 50%;
-                                        margin-left: -5px;
-                                        border-width: 5px;
-                                        border-style: solid;
-                                        border-color: transparent transparent black transparent;
-                                    }
+                            #opciones-rastreo {
+                                border: 0 !important;
+                            }
 
-                                    .tooltip .tooltiptext {
-                                        opacity: 0;
-                                        transition: opacity 1s;
-                                    }
+                            #cajaformularios form,
+                            #cajaformularios form fieldset {
+                                background-color: #fff;
+                            }
 
-                                    .tooltip:hover .tooltiptext, .tooltip:focus .tooltiptext {
-                                        opacity: 1;
-                                    }
+                            #cajaformularios fieldset.servicioAccesibilidad,
+                            #cajaformularios fieldset.servicioAccesibilidad fieldset {
+                                border: 1px solid #e5e5e5;
+                                margin-top: 25px;
+                                padding: 15px 25px;
+                            }
+                </style>
 
-                                </style>
+                <fieldset class="servicioAccesibilidad">
+                    <legend>Seleccionar el tipo de an&aacute;lisis</legend>
+                    <ul>
+                        <li class="col-sm-3">
+                            <div class="form-inline">
+                                <input type="radio" name="type" id="radio-1" class="radio" checked="checked"
+                                       value="url"/>
+                                <label for="radio-1">Sitio Web</label>
+                            </div>
+                            <p>Analiza un sitio web a partir de una URL.
+                                <span data-toggle="tooltip" tabindex="0"
+                                      title="An&aacute;lisis online de la/s p&aacute;gina/s de un sitio web p&uacute;blico en Internet a partir de una URL inicial.">
+                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                    <span class="tooltiptext sr-only">An&aacute;lisis online de la/s p&aacute;gina/s de un sitio web p&uacute;blico en Internet a partir de una URL inicial.</span>
+                                </span>
+                            </p>
+                        </li>
+                        <li class="col-sm-3">
+                            <div class="form-inline">
+                                <input type="radio" name="type" id="radio-2" class="radio" value="lista_urls"/>
+                                <label for="radio-2">Conjunto de URLs</label>
+                            </div>
+                            <p>Analiza un conjunto cerrado de URLs.
+                                <span data-toggle="tooltip" tabindex="0"
+                                      title="An&aacute;lisis online de un conjunto predefinido de p&aacute;ginas de un sitio web p&uacute;blico en Internet.">
+                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                    <span class="tooltiptext sr-only">An&aacute;lisis online de un conjunto predefinido de p&aacute;ginas de un sitio web p&uacute;blico en Internet.</span>
+                                </span>
+                            </p>
+                        </li>
+                        <li class="col-sm-3">
+                            <div class="form-inline">
+                                <input type="radio" name="type" id="radio-3" class="radio" value="c&oacute;digo_fuente"/>
+                                <label for="radio-3">C&oacute;digo fuente</label>
+                            </div>
+                            <p>Analiza el c&oacute;digo fuente introducido
+                                <span data-toggle="tooltip" tabindex="0"
+                                      title="An&aacute;lisis del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no pueda acceder).">
+                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                                    <span class="tooltiptext sr-only">An&aacute;lisis del c&oacute;digo fuente de una p&aacute;gina (p. ej. p&aacute;gina de una Intranet a la que el analizador no pueda acceder).</span>
+                                </span>
+                            </p>
+                        </li>
+                    </ul>
+                </fieldset>
 
+                <fieldset class="servicioAccesibilidad" id="crawler">
+                    <legend>An&aacute;lisis de sitio web</legend>
+                    <div>
+                        <p class="form-inline">
+                            <label for="url">
+                                <span class="bold">URL del portal o p&aacute;gina a analizar:</span></label>
+                            <input id="url" class="form-control" type="url" name="url" size="80"/>
+                        </p>
+                        <fieldset>
+                            <legend>Opciones de rastreo</legend>
 
-                                <style type="text/css">
-                                    .servicioAccesibilidad {
-                                        width: 98% !important;
-                                    }
+                            <p>La profundidad y la amplitud determinan cuantas p&aacute;ginas se analizar&aacute;n
+                                en el informe (profundidad*amplitud) y c&oacute;mo se hace la selecci&oacute;n
+                                aleatoria de &eacute;stas. Si se desea analizar una p&aacute;gina en concreto se puede
+                                indicar su URL y especificar profundidad=1 y amplitud=1</p>
 
-                                    #tipo-analisis, #tipo-analisis tr, #tipo-analisis td {
-                                        border: 0 !important;
-                                    }
+                            <p class="form-inline">
+                                <label for="profundidad">Profundidad:</label>
+                                <select id="profundidad" name="profundidad" class="form-control">
+                                    <option selected="selected" value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </p>
 
-                                    #tipo-analisis input, #tipo-analisis label, .informes input, informes label,
-                                    #crawler input, #crawler label,
-                                    #urlset input, #urlset label,
-                                    #historico input, #historico label  {
-                                        vertical-align: middle;
+                            <p class="form-inline">
+                                <label for="amplitud">Amplitud:</label>
+                                <select id="amplitud" name="amplitud" class="form-control">
+                                    <option selected="selected" value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </select>
+                            </p>
 
-                                    }
+                            <p>Si desea que la selecci&oacute;n aleatoria de p&aacute;ginas se realice dentro
+                                del &uacute;ltimo &quot;directorio&quot; (hasta la &uacute;ltima &quot;/&quot;)
+                                indicado en la URL (por ejemplo http://www.dominio.com/directorio/pagina), marque la
+                                siguiente opci&oacute;n.</p>
 
-                                    #tipo-analisis label {
-                                        font-weight: bold;
-                                        padding-left: 5px;
-                                    }
+                            <p>
+                                <label for="inDirectory">
+                                    <input id="inDirectory" name="inDirectory" type="checkbox" value="true"/>
+                                </label> <strong>
+                                <label for="inDirectory">No rastrear fuera del directorio</label>
+                            </strong>
+                            </p>
+                        </fieldset>
 
-                                    #tipo-analisis {
-                                        column-count: 3;
-                                        -moz-columns: 3;
-                                        width: 100%;
-                                    }
+                    </div>
+                </fieldset>
 
-                                    #tipo-analisis td {
-                                        width: 33%;
-                                        vertical-align: top;
-                                    }
+                <fieldset class="servicioAccesibilidad" id="urlset">
+                    <legend>An&aacute;lisis de conjunto de URLs</legend>
+                    <div>
+                        <p><label for="urls"><span class="bold">Listado de p&aacute;ginas a analizar:</span><br/></label>
+                            <textarea id="urls" class="form-control" name="urls" rows="10" cols="50"></textarea>
+                            <span style="display: block; padding-left: 5px">Introduce una URL por l&iacute;nea. Solo se analizar&aacute;n un m&aacute;ximo de 17 p&aacute;ginas</span>
+                        </p>
+                    </div>
+                </fieldset>
 
-                                    #tipo-analisis .info td {
-                                        font-size: 0.9em;
-                                        padding-top: 0px;
-                                        padding-left: 26px;
-                                    }
+                <fieldset class="servicioAccesibilidad" id="source">
+                    <legend>An&aacute;lisis de c&oacute;digo fuente</legend>
+                    <div>
+                        <p><label for="content"><span class="bold">C&oacute;digo fuente a analizar:</span><br/></label>
+                            <input id="content" class="form-control" name="content" type="file" />
+                        </p>
+                    </div>
+                </fieldset>
 
-                                    fieldset#urlset, fieldset#source {
-                                        display:none;
-                                    }
+                <fieldset class="servicioAccesibilidad" id="historico">
+                    <legend>Hist&oacute;rico</legend>
+                    <p>El servicio de diagn&oacute;stico puede guardar el resultado del an&aacute;lisis
+                        asoci&aacute;ndolo a la url (p. ej. para www.dominio.es) e incorporar en el informe su evolutivo
+                        respecto a ejecuciones anteriores.</p>
+                    <input id="registerAnalysis" type="checkbox" name="registerAnalysis"
+                           value="true" disabled="true"/>
+                    <label id="lb-registerAnalysis" for="registerAnalysis"
+                           style="padding-left: 7px">
+                        <span class="bold">Añadir al hist&oacute;rico <span id="disabled_info">(Esta opción solo está disponible para análisis de 17 páginas)</span></span>
+                    </label>
+                    <span class="help-block">Guarda los resultados y añade el evolutivo en el informe.</span>
+                </fieldset>
 
-                                    #opciones-rastreo, #opciones-rastreo tr, #opciones-rastreo td {
-                                        border: 0 !important;
-                                    }
+                <fieldset class="servicioAccesibilidad">
+                    <legend>Tipo de informe</legend>
 
-                                    fieldset.servicioAccesibilidad {
-                                        margin-top:25px;
-                                        padding-bottom: 15px !important;
-                                    }
+                    <p>El servicio generar&aacute; un informe con el detalle de todos los problemas seg&uacute;n la metodolog&iacute;a de
+                        alguno de los siguientes Observatorios de Accesibilidad:</p>
 
+                    <ul class="informes">
+                        <li>
+                            <input id="informe-obs-2" type="radio" name="informe" value="observatorio-2" checked>
+                            <label for="informe-obs-2">Observatorio UNE 2012</label>
+                            <span class="help-block">
+                                Informe conforme a la <a
+                                    href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012">metodolog&iacute;a
+                                del Observatorio de Accesibilidad, basada en la UNE 139803:2012</a>.
+                            </span>
+                        </li>
+                        <li>
+                            <input id="informe-obs" type="radio" name="informe" value="observatorio-1">
+                            <label for="informe-obs">Observatorio UNE 2004</label>
+                            <span class="help-block">
+                                Informe conforme a la <a
+                                    href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2004">metodolog&iacute;a
+                                del Observatorio de Accesibilidad, basada en la UNE 139803:2004</a>.
+                            </span>
+                        </li>
+                    </ul>
 
-                                </style>
+                    <div>
+                        <p>Otras opciones de configuraci&oacute;n:</p>
+                        <ul class="informes">
+                            <li>
+                                <input id="informe-nobroken" type="checkbox" name="informe-nobroken" value="true"
+                                       checked="checked">
+                                <label for="informe-nobroken"><strong>Sin comprobaci&oacute;n de enlaces rotos</strong></label>
+                                <span class="help-block">
+                                    Acelera la ejecuci&oacute;n del servicio de diagn&oacute;stico al no verificar todos los enlaces
+                                    existentes en la p&aacute;gina analizada.
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </fieldset>
+                <p id="pCenter">
+                    <input id="usuario" name="usuario" type="hidden" value="diagnostico"/>
+                    <input name="submit" type="submit" value="Solicitar informe" class="btn btn-primary btn-lg"/>
+                </p>
+            </form>
+            <script type="text/javascript">
+                            var userr = document.getElementById("usuario");
+                            userr.value = readCookie('Jesi_Template_Username');
+            </script>
+        </div><!-- fin cajaformularios_login -->
+    </div><!-- fin CUERPO PRINCIPAL -->
+</div>
 
-                                <fieldset class="servicioAccesibilidad">
-                                    <legend>Seleccionar el tipo de análisis</legend>
-                                    <ul id="tipo-analisis">
-                                        <li><input type="radio" name="radio-1" id="radio-1" class="radio" checked="checked"/><label
-                                                for="radio-1">Sitio Web</label>
-                                            <p>Analiza un sitio web a partir de una URL.
-                                                <span class="tooltip" tabindex="0"><img src="information-button-icon.png" alt="info"/>
-                                                    <span class="tooltiptext">Análisis online de la/s página/s de un sitio web público en Internet a partir de una URL inicial.</span>
-                                                </span>
-                                            </p>
-                                        </li>
-                                        <li><input type="radio" name="radio-1" id="radio-2" class="radio"/><label
-                                                for="radio-2">Conjunto de URLs</label>
-                                            <p>Analiza un conjunto cerrado de URLs.
-                                                <span class="tooltip" tabindex="0"><img src="information-button-icon.png" alt="info"/>
-                                                    <span class="tooltiptext">Análisis online de un conjunto predefinido de páginas de un sitio web público en Internet.</span>
-                                                </span>
-                                            </p>
-                                        </li>
-                                        <li><input type="radio" name="radio-1" id="radio-3" class="radio"/><label
-                                                for="radio-3">Código fuente</label>
-                                            <p>Analiza el código fuente introducido
-                                                <span class="tooltip" tabindex="0"><img src="information-button-icon.png" alt="info"/>
-                                                    <span class="tooltiptext">Análisis del código fuente de una página (p. ej. página de una Intranet a la que el analizador no pueda acceder).</span>
-                                                </span>
-                                            </p>
-                                        </li>
-                                    </ul>                                       
-                                </fieldset>
+<!-- Pie -->
+<div id="pie">
+    <div id="creditos">
+        Copyright \u00A9 2014 - <span class="negrita">Ministerio de Hacienda y Funci&oacute;n P&uacute;blica</span>
+    </div>
+</div>
+    <script type="application/javascript">
+    <!--
+        $("#radio-1").click(function () {
+          $("#crawler").show();
+          $("#urlset").hide();
+          $("#source").hide();
+          $("#historico").show();
+          checkHistoricoCrawler()
+        });
 
-                                <script>
-                                    $("#radio-1").click(function () {
-                                      $("#crawler").show();
-                                      $("#urlset").hide();
-                                      $("#source").hide();
-                                      $("#historico").show();
-                                    });
+        $("#radio-2").click(function () {
+          $("#crawler").hide();
+          $("#urlset").show();
+          $("#source").hide();
+          $("#historico").show();
+          checkHistoricoListaUrls();
+        });
 
-                                    $("#radio-2").click(function () {
-                                      $("#crawler").hide();
-                                      $("#urlset").show();
-                                      $("#source").hide();
-                                      $("#historico").show();
-                                    });
+        $("#radio-3").click(function () {
+          $("#crawler").hide();
+          $("#urlset").hide();
+          $("#source").show();
+          $("#historico").hide();
+        });
 
-                                    $("#radio-3").click(function () {
-                                      $("#crawler").hide();
-                                      $("#urlset").hide();
-                                      $("#source").show();
-                                      $("#historico").hide();
-                                    });
+        $("#profundidad, #amplitud").change(checkHistoricoCrawler);
+        $("#urls").on('input', checkHistoricoListaUrls);
 
-
-                                </script>
-
-                                <fieldset class="servicioAccesibilidad" id="crawler">
-                                    <legend>Análisis de sitio web</legend>
-                                    <div>
-                                        <p><label for="url"><span class="bold">URL del portal o página a analizar:</span> <br/></label><input id="url" class="w98" type="text" name="url" size="30"></p>
-                                        <fieldset
-                                            style="border-bottom: #ccc 1px solid; border-left: #ccc 1px solid; margin: 0px; border-top: #ccc 1px solid; border-right: #ccc 1px solid">
-                                            <legend>Opciones de rastreo</legend>
-
-                                            <p>La profundidad y la amplitud determinan cuantas p&aacute;ginas se analizar&aacute;n
-                                                en el
-                                                informe (profundidad*amplitud) y c&oacute;mo se hace la selecci&oacute;n
-                                                aleatoria
-                                                de &eacute;stas. Si se desea analizar una p&aacute;gina en concreto se puede
-                                                indicar su
-                                                URL y especificar profundidad=1 y amplitud=1</p>
-
-
-                                            <p>
-                                                <label for="profundidad">
-                                                    <span style="font-weight: bold">Profundidad:</span>
-                                                </label>
-                                                <select id="profundidad" name="profundidad">
-                                                    <option selected="selected" value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                </select>
-                                            </p>
-
-                                            <p>
-                                                <label for="amplitud">
-                                                    <span style="font-weight: bold">Amplitud:</span>
-                                                </label>
-                                                <select id="amplitud" name="amplitud">
-                                                    <option selected="selected" value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                </select>
-                                            </p>
-
-                                            <p>Si desea que la selecci&oacute;n aleatoria de p&aacute;ginas se realice dentro
-                                                del &uacute;ltimo &quot;directorio&quot; (hasta la &uacute;ltima &quot;/&quot;)
-                                                indicado
-                                                en la URL (por ejemplo http://www.dominio.com/directorio/pagina), marque la
-                                                siguiente
-                                                opci&oacute;n.</p>
-
-                                            <p>
-                                                <label for="inDirectory">
-                                                    <input id="inDirectory" name="inDirectory" type="checkbox" value="true"/>
-                                                </label> <strong>
-                                                    <label for="inDirectory">No rastrear fuera del directorio</label>
-                                                </strong>
-                                            </p>
-                                        </fieldset>
-
-                                        <fieldset class="servicioAccesibilidad" id="historico">
-                                            <legend>Histórico</legend>
-                                            <div><p>El servicio de diagnóstico puede guardar el resultado del análisis
-                                                    asociándolo a la
-                                                    url (p. ej. para www.dominio.es) e incorporar en el informe su evolutivo
-                                                    respecto a
-                                                    ejecuciones anteriores.</p>
-                                                <input id="registerAnalysis" type="checkbox" name="registerAnalysis"
-                                                       value="true"/>
-                                                <label id="lb-registerAnalysis" for="registerAnalysis"
-                                                       style="padding-left: 7px">
-                                                    <span class="bold">Añadir al histórico</span>
-                                                </label>
-                                                <div style="padding-left: 22px">Guarda los resultados y añade el evolutivo en el informe.</div>
-                                            </div>
-                                        </fieldset>
-                                </fieldset>
-
-                                <fieldset class="servicioAccesibilidad" id="urlset">
-                                    <legend>Análisis de conjunto de URLs</legend>
-                                    <div>
-                                        <p><label for="urls"><span class="bold">Listado de páginas a analizar:</span><br/></label>
-                                            <textarea id="urls" class="w98" name="urls" rows="10" cols="50"></textarea>
-                                            <span style="display: block; padding-left: 5px">Introduce una URL por línea</span>
-                                        </p>
-                                    </div>
-                                </fieldset>
-
-                                <fieldset class="servicioAccesibilidad" id="source">
-                                    <legend>Análisis de código fuente</legend>
-                                    <div>
-                                        <p><label for="content"><span class="bold">Código fuente a analizar:</span><br/></label>
-                                            <textarea id="content" class="w98" name="content" rows="10" cols="50"></textarea>
-                                        </p>
-                                    </div>
-                                </fieldset>                                
-
-                                <fieldset class="servicioAccesibilidad">
-                                    <legend>Tipo de informe</legend>
-
-                                    <p>El servicio generará un informe con el detalle de todos los problemas según la metodología de alguno de los siguientes Observatorios de Accesibilidad:</p>
-
-                                    <ul class="informes">
-                                        <li>
-                                            <input id="informe-obs-2" type="radio" name="informe" value="observatorio-2" checked> 
-                                                <label for="informe-obs-2"><b>Observatorio UNE 2012</b></label>
-                                                <div style="padding-left: 22px">
-                                                    Informe conforme a la <a href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012">metodología del Observatorio de Accesibilidad, basada en la UNE 139803:2012</a>.
-                                                </div>
-                                        </li>
-                                        <li>
-                                            <input id="informe-obs" type="radio" name="informe" value="observatorio-1"> 
-                                                <label for="informe-obs"><b>Observatorio UNE 2004</b></label>
-                                                <div style="padding-left: 22px">
-                                                    Informe conforme a la <a href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2004">metodología del Observatorio de Accesibilidad, basada en la UNE 139803:2004</a>.
-                                                </div>
-                                        </li>
-                                    </ul>
-
-                                    <div>
-                                        <p>Otras opciones de configuración:</p>
-                                        <ul class="informes">
-                                            <li>
-                                                <input id="informe-nobroken" type="checkbox" name="informe-nobroken" value="true" checked="checked"> 
-                                                    <label for="informe-nobroken"><b>Sin comprobación de enlaces rotos</b></label>
-                                                    <div style="padding-left: 22px">
-                                                        Acelera la ejecución del servicio de diagnóstico al no verificar todos los enlaces existentes en la página analizada.
-                                                    </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </fieldset>
-                                <p>
-                                    <input id="usuario" name="usuario" type="hidden" value="diagnostico"/>
-                                    <input name="submit" type="submit" value="Solicitar informe"/>
-                                </p>
-                            </form>
-                                <script type="text/javascript">
-                                    var userr = document.getElementById("usuario");
-                                    userr.value = readCookie('Jesi_Template_Username');
-
-                                </script>
-                        
-                        </div><!-- fin cajaformularios_login -->
-                    </div><!-- fin CUERPO PRINCIPAL -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Pie -->
-        <div id="pie">
-            <div id="pIzq">&nbsp;</div>
-            <div id="creditos">
-                Copyright © 2014 - <span class="negrita"> Ministerio de Hacienda y Función Pública</span>
-            </div>
-        </div>
-    </body>
+        function checkHistoricoCrawler() {
+            if ($("#profundidad option:selected").val()==4 && $("#amplitud option:selected").val()==4) {
+                $("#registerAnalysis").prop("disabled", false);
+                $("#disabled_info").hide();
+            } else {
+                $("#registerAnalysis").prop("checked", false);
+                $("#registerAnalysis").prop("disabled", true);
+                $("#disabled_info").show();
+            }
+        }
+        function checkHistoricoListaUrls() {
+          if ($("#urls").val().split("\n").length == 17) {
+            $("#registerAnalysis").prop("disabled", false);
+            $("#disabled_info").hide();
+          } else {
+            $("#registerAnalysis").prop("checked", false);
+            $("#registerAnalysis").prop("disabled", true);
+            $("#disabled_info").show();
+          }
+        }
+        $("form#basic_service").submit(function() {
+          if ($("#radio-1").prop("checked")) {
+            $("#urls").val("");
+            $("#content").val("");
+          } else if ($("#radio-2").prop("checked")) {
+            $("#url").val("");
+            $("#content").val("");
+          } else if ($("#radio-3").prop("checked")) {
+            $("#url").val("");
+            $("#urls").val("");
+          } else {
+            return false;
+          }
+          return true;
+        });
+        $("#radio-1").click();
+     -->
+    </script>
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/oaw/js/jquery-ui-1.12.4.min.js"></script>
+    <script src="/oaw/bootstrap/js/bootstrap.min.js"></script>
+    <script type="application/javascript">$(function () { $('[data-toggle="tooltip"]').tooltip() })</script>
+</body>
 
 </html>

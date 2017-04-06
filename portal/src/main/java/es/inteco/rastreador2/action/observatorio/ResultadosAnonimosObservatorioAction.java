@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
@@ -205,7 +206,11 @@ public class ResultadosAnonimosObservatorioAction extends Action {
                 final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
                 if ("UNE-2012".equalsIgnoreCase(application)) {
-                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateGlobalGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID), graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2012Utils.generateGlobalGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID), graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    haveResults = graphics.size();
+                    for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
+                        request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
+                    }
                 } else {
                     haveResults = ResultadosAnonimosObservatorioIntavUtils.generateGlobalGraphics(request, graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
                 }
@@ -240,7 +245,11 @@ public class ResultadosAnonimosObservatorioAction extends Action {
                 final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
                 if ("UNE-2012".equalsIgnoreCase(application)) {
-                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateCategoryGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID), ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2012Utils.generateCategoryGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID), ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+                    haveResults = graphics.size();
+                    for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
+                        request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
+                    }
                 } else {
                     haveResults = ResultadosAnonimosObservatorioIntavUtils.generateCategoryGraphics(request, ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
                 }
@@ -276,7 +285,11 @@ public class ResultadosAnonimosObservatorioAction extends Action {
                 final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
                 final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
                 if ("UNE-2012".equalsIgnoreCase(application)) {
-                    haveResults = ResultadosAnonimosObservatorioUNE2012Utils.generateEvolutionGraphics(CrawlerUtils.getResources(request),request.getParameter(Constants.ID_OBSERVATORIO),request.getParameter(Constants.ID), fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);
+                    final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2012Utils.generateEvolutionGraphics(CrawlerUtils.getResources(request),request.getParameter(Constants.ID_OBSERVATORIO),request.getParameter(Constants.ID), fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);
+                    haveResults = graphics.size();
+                    for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
+                        request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
+                    }
                     forward = "getEvolutionGraphicsUNE2102";
                 } else {
                     haveResults = ResultadosAnonimosObservatorioIntavUtils.generateEvolutionGraphics(request, fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);

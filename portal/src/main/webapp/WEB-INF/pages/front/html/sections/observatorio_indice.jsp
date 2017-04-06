@@ -48,8 +48,8 @@
                                     <th><bean:message key="indice.observatorio.nombre" /></th>
                                     <th>Tipo</th>
                                     <th><bean:message key="indice.observatorio.cartucho" /></th>
-                                    <th><bean:message key="indice.observatorio.acciones" /></th>
-                                    <th>Eliminar</th>
+                                    <th class="accion"><bean:message key="indice.observatorio.acciones" /></th>
+                                    <th class="accion">Eliminar</th>
                                 </tr>
                                 <logic:iterate name="<%=Constants.CARGAR_OBSERVATORIO_FORM %>" property="listadoObservatorio" id="elemento">
                                         <jsp:useBean id="params" class="java.util.HashMap" />
@@ -62,17 +62,15 @@
                                     <tr>
                                         <bean:define id="detailTitle"><bean:message key="indice.observatorio.detalle.alt" /></bean:define>
                                         <td style="text-align: left">
-                                            <html:link forward="verObservatorio" paramId="id_observatorio" paramName="elemento" paramProperty="id_observatorio" title="<%= detailTitle %>"><bean:write name="elemento" property="nombreObservatorio" /></html:link>
                                             <inteco:menu roles="<%=rolAdmin%>">
-                                                <html:link forward="editObservatory" name="params" styleClass="pull-right"><span class="glyphicon glyphicon-edit" aria-hidden="true" data-toggle="tooltip" title="Editar la configuración de este observatorio"/><span class="sr-only">Editar</span></html:link>
+                                                <html:link forward="editObservatory" name="params"><span data-toggle="tooltip" title="Editar la configuraci&oacute;n de este observatorio"><bean:write name="elemento" property="nombreObservatorio" /></span></html:link>
+                                                <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true"/>
                                             </inteco:menu>
                                         </td>
                                         <td><bean:write name="elemento" property="tipo"/></td>
                                         <td><bean:write name="elemento" property="cartucho"/></td>
                                         <td>
                                             <html:link forward="resultadosPrimariosObservatorio" paramId="<%= Constants.ID_OBSERVATORIO %>" paramName="elemento" paramProperty="id_observatorio"><span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" title="Ver iteraciones de este observatorio"/><span class="sr-only">Resultados</span></html:link>
-                                            <!-- <li><html:link forward="getFulfilledObservatories" paramId="<%=Constants.OBSERVATORY_ID %>" paramName="observatoryId"><img src="../images/anonimo.gif" alt="<bean:message key="indice.observatorio.resultados.anonimos.alt" />"/></html:link></li> -->
-                                            <!-- <li><html:link forward="databaseExportActionConfirm" paramId="<%=Constants.OBSERVATORY_ID %>" paramName="observatoryId" ><img src="../images/database.jpg" alt="<bean:message key="indice.rastreo.exportar.database" />"/></html:link></li> -->
                                         </td>
                                         <td>
                                             <jsp:useBean id="paramsEsPrim" class="java.util.HashMap" />
@@ -82,7 +80,7 @@
                                             <c:set target="${paramsEsPrim}" property="${observatorySTR}" value="${observatoryId}" />
                                             <c:set target="${paramsEsPrim}" property="${actionEsPrim}" value="si"/>
                                             <html:link forward="deleteObservatory" name="paramsEsPrim">
-                                                <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar este observatorio"/><span class="sr-only">Resultados</span>
+                                                <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar este observatorio"/><span class="sr-only">Eliminar</span>
                                             </html:link>
                                         </td>
                                     </tr>
@@ -91,10 +89,9 @@
 
                             <jsp:include page="pagination.jsp" />
                         </div>
-                        <p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p>
+                        <!-- <p id="pCenter"><html:link forward="indexAdmin" styleClass="btn btn-default btn-lg"> <bean:message key="boton.volver"/> </html:link></p> -->
                     </logic:notEmpty>
                 </logic:present>
             </div><!-- fin cajaformularios -->
         </div><!-- Container Derecha -->
-			</div>
-
+	</div>

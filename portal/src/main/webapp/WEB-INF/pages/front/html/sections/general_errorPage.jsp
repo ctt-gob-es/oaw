@@ -1,31 +1,28 @@
 <%@ include file="/common/taglibs.jsp" %> 
 <%@ taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles" %>
 <html:xhtml/>
-	<div id="migas">
-		<p class="oculto"><bean:message key="ubicacion.usuario" /> </p> 
-		<p><html:link forward="indexAdmin"><bean:message key="migas.inicio" /></html:link>
-		 / <bean:message key="migas.error" /></p>
-	</div>
-	
 
+    <div id="main">
+        <div id="container_menu_izq">
+            <jsp:include page="menu.jsp"/>
+        </div>
 
+        <div id="container_der">
+            <div id="migas">
+                <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
+                <ol class="breadcrumb">
+                    <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.observatorio" /></html:link></li>
+                    <li class="active"><bean:message key="migas.error" /></li>
+                </ol>
+            </div>
 
-			<div id="main">
-				<h1><img src="../images/bullet_h1.gif" /> <bean:message key="pagina.error" /> </h1>
+            <div id="cajaformularios">
+                <h2><bean:message key="pagina.error" /></h2>
+                <div class="notaInformativaExito">
+                    <p><bean:message key="mensaje.error.generico"/></p>
+                    <p><html:link styleClass="btn btn-default btn-lg" forward="observatoryMenu"><bean:message key="boton.volver.inicio" /></html:link></p>
+                </div>
+            </div><!-- fin cajaformularios -->
+        </div>
 
-					<div id="container_menu_izq">
-						<jsp:include page="menu.jsp"/>
-					</div>
-					<div id="container_der">
-						<div id="cajaformularios">
-							<h2 class = "config"><bean:message key="pagina.error" /></h2>
-							<div class="notaInformativaExito">
-								<p><bean:message key="mensaje.error.generico"/></p>
-								<p><html:link styleClass="btn btn-default btn-lg" forward="indexAdmin"><bean:message key="boton.volver.inicio" /></html:link></p>
-							</div>
-						</div><!-- fin cajaformularios -->
-					</div>
-
-			</div>
-		</div>
-	</div> 
+    </div>

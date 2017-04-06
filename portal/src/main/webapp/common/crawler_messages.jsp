@@ -2,7 +2,7 @@
 <html:xhtml/>
 
 <logic:messagesPresent message="false">
-	<div class="error">
+	<div class="alert alert-danger">
 		<ul>
 			<html:messages id="error" message="false">
 				<li><bean:write name="error"/></li>
@@ -12,7 +12,7 @@
 </logic:messagesPresent>
 
 <logic:messagesPresent message="true">
-	<div class="info">
+	<div class="alert alert-info">
 		<ul>
 			<html:messages id="error" message="true">
 				<li><bean:write name="error"/></li>

@@ -2,7 +2,7 @@
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml/>
 	
-<!-- servicioDiagnostico.jsp -->
+    <!-- servicioDiagnostico.jsp -->
     <div id="main">
         <div id="container_menu_izq">
             <jsp:include page="menu.jsp"/>
@@ -13,8 +13,7 @@
             <div id="migas">
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                 <ol class="breadcrumb">
-                  <li aria-hidden="true"><span class="glyphicon glyphicon-home" ></span></li>
-                  <li class="active"><bean:message key="migas.diagnostico" /></li>
+                  <li class="active"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.diagnostico" /></li>
                 </ol>
             </div>
 

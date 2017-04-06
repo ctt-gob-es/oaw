@@ -147,7 +147,7 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public boolean isContentAnalysis() {
-        return StringUtils.isEmpty(this.domain) && StringUtils.isNotEmpty(this.content);
+        return analysisType==BasicServiceAnalysisType.CODIGO_FUENTE;
     }
 
     public String reportToString() {
@@ -165,7 +165,14 @@ public class BasicServiceForm extends ValidatorForm {
     }
 
     public boolean isRegisterAnalysis() {
-        return registerAnalysis && analysisType == BasicServiceAnalysisType.URL && "4".equals(amplitud) && "4".equals(profundidad);
+        return registerAnalysis && isEvolutivo();
+    }
+
+    private boolean isEvolutivo() {
+        final boolean isEvolutivoCrawl = analysisType == BasicServiceAnalysisType.URL && "4".equals(amplitud) && "4".equals(profundidad);
+        final boolean isEvolutivoLista = analysisType == BasicServiceAnalysisType.LISTA_URLS && domain.split("\r\n|\n").length==17;
+
+        return isEvolutivoCrawl || isEvolutivoLista;
     }
 
     public void setRegisterAnalysis(boolean registerAnalysis) {

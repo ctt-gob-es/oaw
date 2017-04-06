@@ -1868,7 +1868,7 @@ Telephone: (416) 978-4360
             <trigger element="html"/>
             <function call="accessibility-declaration-not-contact" node="."
                       value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
-                      attribute1="contacto|contacte|contactar|contacte con nosotros|contáctenos|le atendemos|atendémolo/a|buzón|contact|contact us|kontaktua|harremanak|harremanetan jarri|harremanetarako|harremanetan jartzeko|sugerencias|contactar con el administrador del portal sugerencias y quejas|suxestións e queixas"
+                      attribute1="contacto|contacte|contacta|contactar|contacte con nosotros|contáctenos|le atendemos|atendémolo/a|buzón|contact|contact us|kontaktua|harremanak|harremanetan jarri|harremanetarako|harremanetan jartzeko|sugerencias|contactar con el administrador del portal sugerencias y quejas|suxestións e queixas"
                       attribute2="\w+@\w+\.\w+"/>
         </machine>
     </check>
@@ -1897,6 +1897,10 @@ Telephone: (416) 978-4360
                 <function call="accessibility-declaration-not-revision-date" node="."
                           value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
                           attribute1="(Gener|Febrer|Març|Abril|Maig|Juny|Juliol|Agost|Setembre|Octubre|Novembre|Desembre) +(0[1-9]|[1-9]|[12][0-9]|3[01])\s*,\s*(19|20)(\d{2})\D*"
+                          position="end"/>
+                <function call="accessibility-declaration-not-revision-date" node="."
+                          value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
+                          attribute1="(Xaneiro|Febreiro|Marzo|Abril|Maio|Xuño|Xullo|Agosto|Setembro|Outubro|Novembro|decembro)\s+del?\s+(19|20)(\d{2})\D"
                           position="end"/>
             </condition>
         </machine>
