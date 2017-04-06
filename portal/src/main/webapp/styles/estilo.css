@@ -25,6 +25,17 @@ span.edit-mark {
 .alinForm.form-inline label {
     display: inline;
 }
+.table.table-stripped.table-bordered.table-hover ul {
+    margin: 0;
+    padding: 0;
+}
+.table.table-stripped.table-bordered.table-hover ul li {
+    display: inline;
+}
+.table.table-stripped.table-bordered.table-hover ul li + li::before {
+    content: ", ";
+}
+
 
 /* ESTILOS PRINCIPALES */
 /***********************/
@@ -237,7 +248,11 @@ span.edit-mark {
 	#container_der_exito {padding-top:2%; }
 	#container_der{float:left;margin:0;padding:0; width:76%;}
 	#container_der table {margin:1% auto; background:silver;width:100%; border-collapse: collapse; border: 2px solid #CCC}
-	#container_der table th {text-align:center;background:silver url('../images/barra_menu_hover_2.png');color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
+	#container_der table th {text-align:center;background: #e1120d;
+                                               background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
+                                               background: -webkit-linear-gradient(top, #e1120d 0%,#ff8e8e 100%);
+                                               background: linear-gradient(to bottom, #e1120d 0%,#ff8e8e 100%);
+                                               filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e1120d', endColorstr='#ff8e8e',GradientType=0 );color:#FFF;border: 1px solid #CCC;font-variant: petite-caps;}
 	#container_der table tr.suitability th {background: silver}
 	#container_der table td {text-align:center;background:white;border: 1px solid #CCC}
 	#container_der table td.alignLeft {text-align:left}

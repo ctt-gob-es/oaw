@@ -22,21 +22,23 @@
                 </ol>
             </div>
 
-            <h2><bean:message key="categoria.semillas.titulo" /></h2>
-            <div class="detail">
-                <p><strong class="labelVisu"><bean:message key="categoria.semillas.borrar.advertencia" /></strong></p>
-                <logic:notEmpty name="<%= Constants.OBSERVATORY_SEED_LIST %>">
-                    <p><strong class="labelVisu"><bean:message key="categoria.semillas.borrar.info" /></strong></p>
-                    <ul class="lista_inicial">
-                        <logic:iterate name="<%= Constants.OBSERVATORY_SEED_LIST %>" id="elemento">
-                            <li><bean:write name="elemento" property="nombre"/></li>
-                        </logic:iterate>
-                    </ul>
-                    <p><strong class="labelVisu"><bean:message key="categoria.semillas.borrar.info2" /></strong></p>
-                </logic:notEmpty>
-                <div class="formButton">
-                    <html:link styleClass="btn btn-primary btn-lg" forward="deleteSeedCategory" paramId="<%= Constants.ID_CATEGORIA %>" paramName="<%=Constants.ID_CATEGORIA %>"><bean:message key="boton.aceptar"/></html:link>
-                    <html:link styleClass="btn btn-default btn-lg" forward="getSeedCategories"><bean:message key="boton.cancelar"/></html:link>
+            <div id="cajaformularios">
+                <h2><bean:message key="migas.eliminar.categoria" /></h2>
+                <div class="detail">
+                    <p><strong class="labelVisu"><bean:message key="categoria.semillas.borrar.advertencia" /></strong></p>
+                    <logic:notEmpty name="<%= Constants.OBSERVATORY_SEED_LIST %>">
+                        <p><strong class="labelVisu"><bean:message key="categoria.semillas.borrar.info" /></strong></p>
+                        <ul class="lista_inicial">
+                            <logic:iterate name="<%= Constants.OBSERVATORY_SEED_LIST %>" id="elemento">
+                                <li><bean:write name="elemento" property="nombre"/></li>
+                            </logic:iterate>
+                        </ul>
+                        <p><strong class="labelVisu"><bean:message key="categoria.semillas.borrar.info2" /></strong></p>
+                    </logic:notEmpty>
+                    <div class="formButton">
+                        <html:link styleClass="btn btn-primary btn-lg" forward="deleteSeedCategory" paramId="<%= Constants.ID_CATEGORIA %>" paramName="<%=Constants.ID_CATEGORIA %>"><bean:message key="boton.aceptar"/></html:link>
+                        <html:link styleClass="btn btn-default btn-lg" forward="getSeedCategories"><bean:message key="boton.cancelar"/></html:link>
+                    </div>
                 </div>
             </div>
         </div>

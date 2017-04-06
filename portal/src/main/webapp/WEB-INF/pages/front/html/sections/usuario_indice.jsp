@@ -66,7 +66,7 @@
                             <html:link forward="newObservatoryUser" paramId="<%=Constants.ROLE_TYPE %>" paramName="idObservatoryRole" styleClass="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <bean:message key="indice.usuarios.sistema.nuevo.usuario.observatorio" /></html:link>
                         </p>
                         <div class="pag">
-                            <table>
+                            <table class="table table-stripped table-bordered table-hover">
                                 <caption><bean:message key="indice.usuarios.sistema.lista.usuarios" /></caption>
                                 <tr>
                                     <th><bean:message key="indice.usuarios.sistema.usuario" /></th>

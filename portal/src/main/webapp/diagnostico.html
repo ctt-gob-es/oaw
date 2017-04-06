@@ -10,7 +10,7 @@
     <link rel="stylesheet" type="text/css" href="styles/estilo.css"/>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/oaw/js/jquery-3.1.1.min.js"></script>
 </head>
 
 <body>
@@ -34,7 +34,7 @@
         <div id="cajaformularios">
             <h2>Servicio de diagn&oacute;stico</h2>
 
-            <form action="/oaw/conexion_oaw.jsp" method="post" enctype="multipart/form-data">
+            <form id="basic_service" action="/oaw/conexion_oaw.jsp" method="post" enctype="multipart/form-data">
                 <p>El servicio on-line de diagn&oacute;stico de la Accesibilidad web remitir&aacute; en
                     diferido, al correo electr&oacute;nico indicado, el informe de la web o c&oacute;digo fuente
                     analizado. Las peticiones son encoladas y procesadas progresivamente.</p>
@@ -58,29 +58,13 @@
                     </div>
                 </fieldset>
 
-                <style>
-                            #cajaformularios form,
-                            #cajaformularios form fieldset {
-                                background-color: #fff;
-                            }
-                            /* http://www.w3schools.com/css/css_tooltip.asp */
-                </style>
-
-
                 <style type="text/css">
                             .servicioAccesibilidad {
                                 width: 98% !important;
                             }
 
-                            #tipo-analisis, #tipo-analisis tr, #tipo-analisis td {
+                            #tipo-analisis {
                                 border: 0 !important;
-                            }
-
-                            #tipo-analisis input, #tipo-analisis label, .informes input, informes label,
-                            #crawler input, #crawler label,
-                            #urlset input, #urlset label,
-                            #historico input, #historico label  {
-                                /*vertical-align: middle;*/
                             }
 
                             #tipo-analisis label {
@@ -94,17 +78,6 @@
                                 width: 100%;
                             }
 
-                            #tipo-analisis td {
-                                width: 33%;
-                                vertical-align: top;
-                            }
-
-                            #tipo-analisis .info td {
-                                font-size: 0.9em;
-                                padding-top: 0px;
-                                padding-left: 26px;
-                            }
-
                             fieldset#urlset, fieldset#source {
                                 display:none;
                             }
@@ -113,8 +86,13 @@
                                 margin: 5px 0;
                             }
 
-                            #opciones-rastreo, #opciones-rastreo tr, #opciones-rastreo td {
+                            #opciones-rastreo {
                                 border: 0 !important;
+                            }
+
+                            #cajaformularios form,
+                            #cajaformularios form fieldset {
+                                background-color: #fff;
                             }
 
                             #cajaformularios fieldset.servicioAccesibilidad,
@@ -123,10 +101,6 @@
                                 margin-top: 25px;
                                 padding: 15px 25px;
                             }
-
-
-
-
                 </style>
 
                 <fieldset class="servicioAccesibilidad">
@@ -175,36 +149,12 @@
                     </ul>
                 </fieldset>
 
-                <script type="application/javascript">
-                    $("#radio-1").click(function () {
-                      $("#crawler").show();
-                      $("#urlset").hide();
-                      $("#source").hide();
-                      $("#historico").show();
-                    });
-
-                    $("#radio-2").click(function () {
-                      $("#crawler").hide();
-                      $("#urlset").show();
-                      $("#source").hide();
-                      $("#historico").show();
-                    });
-
-                    $("#radio-3").click(function () {
-                      $("#crawler").hide();
-                      $("#urlset").hide();
-                      $("#source").show();
-                      $("#historico").hide();
-                    });
-                </script>
-
                 <fieldset class="servicioAccesibilidad" id="crawler">
                     <legend>An&aacute;lisis de sitio web</legend>
                     <div>
                         <p class="form-inline">
                             <label for="url">
-                                <spanclass
-                                ="bold">URL del portal o p&aacute;gina a analizar:</span></label>
+                                <span class="bold">URL del portal o p&aacute;gina a analizar:</span></label>
                             <input id="url" class="form-control" type="url" name="url" size="80"/>
                         </p>
                         <fieldset>
@@ -257,7 +207,7 @@
                     <div>
                         <p><label for="urls"><span class="bold">Listado de p&aacute;ginas a analizar:</span><br/></label>
                             <textarea id="urls" class="form-control" name="urls" rows="10" cols="50"></textarea>
-                            <span style="display: block; padding-left: 5px">Introduce una URL por l&iacute;nea</span>
+                            <span style="display: block; padding-left: 5px">Introduce una URL por l&iacute;nea. Solo se analizar&aacute;n un m&aacute;ximo de 17 p&aacute;ginas</span>
                         </p>
                     </div>
                 </fieldset>
@@ -265,9 +215,6 @@
                 <fieldset class="servicioAccesibilidad" id="source">
                     <legend>An&aacute;lisis de c&oacute;digo fuente</legend>
                     <div>
-                        <!-- <p><label for="content"><span class="bold">C&oacute;digo fuente a analizar:</span><br/></label>
-                            <textarea id="content" class="form-control" name="content" rows="10" cols="50"></textarea>
-                        </p> -->
                         <p><label for="content"><span class="bold">C&oacute;digo fuente a analizar:</span><br/></label>
                             <input id="content" class="form-control" name="content" type="file" />
                         </p>
@@ -277,14 +224,13 @@
                 <fieldset class="servicioAccesibilidad" id="historico">
                     <legend>Hist&oacute;rico</legend>
                     <p>El servicio de diagn&oacute;stico puede guardar el resultado del an&aacute;lisis
-                        asoci&aacute;ndolo a la
-                        url (p. ej. para www.dominio.es) e incorporar en el informe su evolutivo
+                        asoci&aacute;ndolo a la url (p. ej. para www.dominio.es) e incorporar en el informe su evolutivo
                         respecto a ejecuciones anteriores.</p>
                     <input id="registerAnalysis" type="checkbox" name="registerAnalysis"
-                           value="true"/>
+                           value="true" disabled="true"/>
                     <label id="lb-registerAnalysis" for="registerAnalysis"
                            style="padding-left: 7px">
-                        <span class="bold">Añadir al hist&oacute;rico</span>
+                        <span class="bold">Añadir al hist&oacute;rico <span id="disabled_info">(Esta opción solo está disponible para análisis de 17 páginas)</span></span>
                     </label>
                     <span class="help-block">Guarda los resultados y añade el evolutivo en el informe.</span>
                 </fieldset>
@@ -298,7 +244,7 @@
                     <ul class="informes">
                         <li>
                             <input id="informe-obs-2" type="radio" name="informe" value="observatorio-2" checked>
-                            <label for="informe-obs-2"><b>Observatorio UNE 2012</b></label>
+                            <label for="informe-obs-2">Observatorio UNE 2012</label>
                             <span class="help-block">
                                 Informe conforme a la <a
                                     href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012">metodolog&iacute;a
@@ -307,7 +253,7 @@
                         </li>
                         <li>
                             <input id="informe-obs" type="radio" name="informe" value="observatorio-1">
-                            <label for="informe-obs"><b>Observatorio UNE 2004</b></label>
+                            <label for="informe-obs">Observatorio UNE 2004</label>
                             <span class="help-block">
                                 Informe conforme a la <a
                                     href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2004">metodolog&iacute;a
@@ -339,12 +285,6 @@
             <script type="text/javascript">
                             var userr = document.getElementById("usuario");
                             userr.value = readCookie('Jesi_Template_Username');
-
-
-
-
-
-
             </script>
         </div><!-- fin cajaformularios_login -->
     </div><!-- fin CUERPO PRINCIPAL -->
@@ -356,11 +296,77 @@
         Copyright \u00A9 2014 - <span class="negrita">Ministerio de Hacienda y Funci&oacute;n P&uacute;blica</span>
     </div>
 </div>
-<!-- Bootstrap core JavaScript -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="/oaw/bootstrap/js/bootstrap.min.js"></script>
-<script type="application/javascript">$(function () { $('[data-toggle="tooltip"]').tooltip() })</script>
+    <script type="application/javascript">
+    <!--
+        $("#radio-1").click(function () {
+          $("#crawler").show();
+          $("#urlset").hide();
+          $("#source").hide();
+          $("#historico").show();
+          checkHistoricoCrawler()
+        });
+
+        $("#radio-2").click(function () {
+          $("#crawler").hide();
+          $("#urlset").show();
+          $("#source").hide();
+          $("#historico").show();
+          checkHistoricoListaUrls();
+        });
+
+        $("#radio-3").click(function () {
+          $("#crawler").hide();
+          $("#urlset").hide();
+          $("#source").show();
+          $("#historico").hide();
+        });
+
+        $("#profundidad, #amplitud").change(checkHistoricoCrawler);
+        $("#urls").on('input', checkHistoricoListaUrls);
+
+        function checkHistoricoCrawler() {
+            if ($("#profundidad option:selected").val()==4 && $("#amplitud option:selected").val()==4) {
+                $("#registerAnalysis").prop("disabled", false);
+                $("#disabled_info").hide();
+            } else {
+                $("#registerAnalysis").prop("checked", false);
+                $("#registerAnalysis").prop("disabled", true);
+                $("#disabled_info").show();
+            }
+        }
+        function checkHistoricoListaUrls() {
+          if ($("#urls").val().split("\n").length == 17) {
+            $("#registerAnalysis").prop("disabled", false);
+            $("#disabled_info").hide();
+          } else {
+            $("#registerAnalysis").prop("checked", false);
+            $("#registerAnalysis").prop("disabled", true);
+            $("#disabled_info").show();
+          }
+        }
+        $("form#basic_service").submit(function() {
+          if ($("#radio-1").prop("checked")) {
+            $("#urls").val("");
+            $("#content").val("");
+          } else if ($("#radio-2").prop("checked")) {
+            $("#url").val("");
+            $("#content").val("");
+          } else if ($("#radio-3").prop("checked")) {
+            $("#url").val("");
+            $("#urls").val("");
+          } else {
+            return false;
+          }
+          return true;
+        });
+        $("#radio-1").click();
+     -->
+    </script>
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/oaw/js/jquery-ui-1.12.4.min.js"></script>
+    <script src="/oaw/bootstrap/js/bootstrap.min.js"></script>
+    <script type="application/javascript">$(function () { $('[data-toggle="tooltip"]').tooltip() })</script>
 </body>
 
 </html>

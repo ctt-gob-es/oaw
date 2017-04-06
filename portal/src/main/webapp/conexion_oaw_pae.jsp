@@ -8,21 +8,17 @@
 <%@page import= "java.util.List" %>
 <%@page import= "java.util.Properties" %>
 <%--
-    Necesita las librerias commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
+    Necesita las librerias de apache commons-fileupload-1.2.1.jar y commons-io-1.3.2.jar
 --%>
-<%@page import= "org.apache.tomcat.util.http.fileupload.*" %>
-<%@page import= "org.apache.tomcat.util.http.fileupload.disk.*" %>
-<%@page import= "org.apache.tomcat.util.http.fileupload.servlet.*" %>
+<%@page import= "org.apache.commons.fileupload.*" %>
+<%@page import= "org.apache.commons.fileupload.disk.*" %>
+<%@page import= "org.apache.commons.fileupload.servlet.*" %>
 <%@page import= "org.apache.commons.codec.net.URLCodec" %>
-<%!
-    // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
-    // Indicar únicamente dominio + contexto de despliegue.
-    // Valores típicos serán:
-    // Producción: http://oaw.redsara.es/oaw/
-    // Preproducción: http://pre-oaw.redsara.es/oaw/
-    // Integración: http://des-oaw.redsara.es/oaw/
-    private final static String BASE_URL = "http://localhost:8080/oaw/";
+<%@page import= "org.apache.commons.lang.StringUtils" %>
+<%@page import= "es.minhap.common.properties.PropertiesServices" %>
+<%@page import= "es.minhap.common.security.util.UserSpringSecurityPAe" %>
 
+<%!
     // Path de los servicios que se invocarán. Se mantienen invariables entre entornos y solo hará falta modificarlos como consecuencia de cambios en la aplicación.
     private final static String BASIC_SERVICE_ENDPOINT = "basicServiceAction.do";
     private final static String HISTORICO_ENDPOINT = "checkHistorico.do";
@@ -46,13 +42,30 @@
         String confirm = "false";
 
         private final List<String> errores;
+        private final PropertiesServices propertiesServices;
 
-        public RequestManager(final HttpServletRequest request) {
+        // Proxy
+        final String RUTA_PROXY;
+        final String OLD_TIME_OUT;
+        final String OLD_PROXY_HOST;
+        final String OLD_PROXY_PORT;
+
+        public RequestManager(final HttpServletRequest request, final HttpServletResponse response) {
+            propertiesServices = new PropertiesServices(request);
+            username = UserSpringSecurityPAe.getNameUserSpringSecurity(request, response);
             try {
-                host = new URL(BASE_URL);
+                // URL donde se encuentra ubicado el servidor OAW (dependerá del entorno donde estemos)
+                // Indicar únicamente dominio + contexto de despliegue.
+                // Ej. http://oaw.redsara.es/oaw/
+                host = new URL(propertiesServices.getMessage("servicio.accesibilidad.url", null));
             } catch (Exception e) {
                 throw new Error("ERROR de configuración.", e);
             }
+
+            RUTA_PROXY = propertiesServices.getMessage("servicio.accesibilidad.proxy", null);
+            OLD_TIME_OUT = System.getProperties().getProperty("sun.net.client.defaultReadTimeout");
+            OLD_PROXY_HOST = System.getProperties().getProperty("http.proxyHost");
+            OLD_PROXY_PORT = System.getProperties().getProperty("http.proxyPort");
 
             // Create a factory for disk-based file items
             final DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -65,7 +78,7 @@
             final ServletFileUpload upload = new ServletFileUpload(factory);
             // Parse the request
             try {
-                final List<FileItem> items = upload.parseRequest(new ServletRequestContext(request));
+                final List<FileItem> items = upload.parseRequest(request);
 
                 final java.util.Iterator iterator = items.iterator();
                 while (iterator.hasNext()) {
@@ -80,9 +93,9 @@
             } catch (FileUploadException fue) {
             }
 
-            // TODO: Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
             this.errores = new ArrayList<String>();
             validateRequest();
+            initProxy();
         }
 
         private void readParam(final FileItem item) {
@@ -118,6 +131,30 @@
             }
         }
 
+        private void initProxy() {
+            if (StringUtils.isNotEmpty(RUTA_PROXY)) {
+                Properties systemProperties = System.getProperties();
+                systemProperties.setProperty("sun.net.client.defaultReadTimeout", propertiesServices.getMessage("servicio.accesibilidad.read.timeout", null));
+            	systemProperties.setProperty("http.proxyHost", RUTA_PROXY);
+            	systemProperties.setProperty("http.proxyPort", propertiesServices.getMessage("servicio.accesibilidad.proxy.port", null));
+            }
+        }
+
+        private void revertProxy() {
+            if (StringUtils.isNotEmpty(RUTA_PROXY)) {
+                Properties systemProperties = System.getProperties();
+                if (StringUtils.isNotEmpty(OLD_TIME_OUT)) {
+                    System.setProperty("sun.net.client.defaultReadTimeout", OLD_TIME_OUT);
+                }
+                if (StringUtils.isNotEmpty(OLD_PROXY_HOST)) {
+                    System.setProperty("http.proxyHost", OLD_PROXY_HOST);
+                }
+                if (StringUtils.isNotEmpty(OLD_PROXY_PORT)) {
+                    System.setProperty("http.proxyPort", OLD_PROXY_PORT);
+                }
+            }
+        }
+
         public boolean isValidRequest() {
             return errores.isEmpty();
         }
@@ -148,6 +185,8 @@
                 }
             } catch (Exception e) {
                 return "Error, no se ha podido procesar su solicitud " + e.getLocalizedMessage();
+            } finally {
+                revertProxy();
             }
         }
 
@@ -201,6 +240,8 @@
                 }
             } catch (Exception e) {
                 return "{\"historico\":[]}";
+            } finally {
+                revertProxy();
             }
         }
 
@@ -350,8 +391,7 @@
             }
         </script>
         <!-- Bootstrap -->
-        <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-        <link href="/oaw/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         <link rel="icon" href="images/favicon.ico" type="image/x-icon"/>
 
         <style type="text/css">
@@ -396,33 +436,33 @@
     <body>
         <div id="cajaformularios">
         <%
-            final RequestManager requestManager = new RequestManager(request);
+            final RequestManager requestManager = new RequestManager(request, response);
             if (requestManager.isValidRequest()) {
                 if (requestManager.isConfirmed()) {
                     out.println("<div class=\"mensaje\">");
                     out.println(requestManager.launchServicioDiagnostico());
                     out.println("</div>");
-                } else if (requestManager.isEvolutivoHistorico()) { %>
-            <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="confirm"             value="true">
-                <input type="hidden" name="url"                 value="<%=requestManager.url %>">
-                <input type="hidden" name="urls"                value="<%=requestManager.urls %>">
-                <input type="hidden" name="profundidad"         value="<%=requestManager.profundidad %>">
-                <input type="hidden" name="amplitud"            value="<%=requestManager.amplitud %>">
-                <input type="hidden" name="correo"              value="<%=requestManager.correo %>">
-                <input type="hidden" name="informe"             value="<%=requestManager.informe %>">
-                <input type="hidden" name="informe-nobroken"    value="<%=requestManager.nobroken!=null?requestManager.nobroken:"" %>">
-                <input type="hidden" name="registerAnalysis"    value="<%=requestManager.registerAnalysis %>">
-                <input type="hidden" name="type"                value="<%=requestManager.type %>">
+                } else if (requestManager.isEvolutivoHistorico()) {%>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="confirm"             value="true">
+            <input type="hidden" name="url"                 value="<%=requestManager.url %>">
+            <input type="hidden" name="urls"                value="<%=requestManager.urls %>">
+            <input type="hidden" name="profundidad"         value="<%=requestManager.profundidad %>">
+            <input type="hidden" name="amplitud"            value="<%=requestManager.amplitud %>">
+            <input type="hidden" name="correo"              value="<%=requestManager.correo %>">
+            <input type="hidden" name="informe"             value="<%=requestManager.informe %>">
+            <input type="hidden" name="informe-nobroken"    value="<%=requestManager.nobroken!=null?requestManager.nobroken:"" %>">
+            <input type="hidden" name="registerAnalysis"    value="<%=requestManager.registerAnalysis %>">
+            <input type="hidden" name="type"                value="<%=requestManager.type %>">
 
-                <fieldset id="historico_resultados">
-                    <legend>Histórico de resultados</legend>
+            <fieldset id="historico_resultados">
+                <legend>Histórico de resultados</legend>                
 
-                </fieldset>
-                <div><input type="submit" class="btn btn-primary btn-lg" value="Enviar"></div>
-            </form>
+            </fieldset>
+            <div><input type="submit" class="btn btn-primary btn-lg" value="Enviar"></div>
+        </form>
         <%
-                  out.println(requestManager.generateCallHistoricoJavaScriptFunction(requestManager.getHistorico()));
+                    out.println(requestManager.generateCallHistoricoJavaScriptFunction(requestManager.getHistorico()));
                 } else {
                     out.println("<div class=\"mensaje\">");
                     out.println(requestManager.launchServicioDiagnostico());

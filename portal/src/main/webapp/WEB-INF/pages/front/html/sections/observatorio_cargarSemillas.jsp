@@ -103,7 +103,7 @@
                                                 <c:set target="${params}" property="${semillaSTR}" value="${semillaId}" />
                                                 <c:set target="${params}" property="${action}" value="${actionMod}"/>
                                                 <html:link forward="observatorySeeds" name="params">
-                                                    <span data-toggle="tooltip" title="Editar la configuraci\u00f3n de esta semilla"/><bean:write name="semilla" property="nombre" /></span>
+                                                    <span data-toggle="tooltip" title="Editar la configuraci&oacute;n de esta semilla"/><bean:write name="semilla" property="nombre" /></span>
                                                 </html:link>
 
                                                 <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true"/>
