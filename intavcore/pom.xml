@@ -112,13 +112,6 @@
             <version>1.7.5</version>
         </dependency>
 
-        <!-- Dependencia que no se encuentra en los repositorios habituales, instalar local o subir a repositorio local -->
-        <dependency>
-            <groupId>com.tecnick.htmlutils</groupId>
-            <artifactId>htmlentities</artifactId>
-            <version>1.0.004</version>
-        </dependency>
-
         <!-- SERVLET API-->
         <dependency>
             <groupId>javax.servlet</groupId>
