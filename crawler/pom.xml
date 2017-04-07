@@ -48,10 +48,8 @@
             <artifactId>quartz</artifactId>
             <version>1.7.2</version>
         </dependency>
-
-        <!-- dependencia que no existe en los repositorios -->
         <dependency>
-            <groupId>org.mozilla</groupId>
+            <groupId>com.googlecode.juniversalchardet</groupId>
             <artifactId>juniversalchardet</artifactId>
             <version>1.0.3</version>
         </dependency>
