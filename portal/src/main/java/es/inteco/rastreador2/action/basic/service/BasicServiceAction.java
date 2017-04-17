@@ -24,20 +24,17 @@ public class BasicServiceAction extends Action {
     public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
         final BasicServiceForm basicServiceFormRequest = BasicServiceUtils.getBasicServiceForm((BasicServiceForm) form, request);
-        Logger.putLog("after getBasicServiceForm " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
         final ActionErrors errors = validateBasicServiceForm(basicServiceFormRequest, mapping, request);
 
         if (errors.isEmpty()) {
             final String action = request.getParameter(Constants.ACTION);
             final BasicServiceManager basicServiceManager = new BasicServiceManager();
             if (Constants.EXECUTE.equalsIgnoreCase(action)) {
-                Logger.putLog("EXECUTE --  " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
                 final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceFormRequest.getId());
                 basicServiceForm.setContent(basicServiceFormRequest.getContent());
                 basicServiceForm.setAnalysisToDelete(basicServiceFormRequest.getAnalysisToDelete());
                 basicServiceManager.executeCrawling(basicServiceForm, CrawlerUtils.getResources(request));
             } else {
-                Logger.putLog("ENQUEUE --  " + basicServiceFormRequest.toString(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
                 final String serverResponse = basicServiceManager.enqueueCrawling(basicServiceFormRequest);
                 CrawlerUtils.returnText(response, serverResponse, false);
             }

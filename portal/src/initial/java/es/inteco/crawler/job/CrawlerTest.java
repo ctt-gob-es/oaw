@@ -21,11 +21,15 @@ public class CrawlerTest {
 
     @Test
     public void testCrawler() {
-        final String url = "http://administracionelectronica.gob.es";
+        final String url = "http://www.minhafp.gob.es";
         final CrawlerJob crawlerJob = new CrawlerJob();
-//        final List<CrawledLink> crawledLinkList = crawlerJob.testCrawler(createCrawlerData(url,OBSERVATORIO_1_0_NO_LINKS));
-//        Assert.assertNotNull(crawledLinkList);
-//        Assert.assertFalse(crawledLinkList.isEmpty());
+        final List<CrawledLink> crawledLinkList = crawlerJob.testCrawler(createCrawlerData(url,OBSERVATORIO_2_0_NO_LINKS));
+        Assert.assertNotNull(crawledLinkList);
+        Assert.assertFalse(crawledLinkList.isEmpty());
+        for (CrawledLink crawledLink : crawledLinkList) {
+            System.out.println(crawledLink);
+        }
+
     }
 
     private CrawlerData createCrawlerData(final String url, final String normativa) {

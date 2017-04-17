@@ -1,4 +1,4 @@
-package es.inteco.rastreador2.pdf.basicservice;
+package es.ctic.rastreador2.pdf.basicservice;
 
 import com.lowagie.text.*;
 import com.lowagie.text.Font;
@@ -13,7 +13,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.form.*;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.inteco.rastreador2.pdf.utils.PdfTocManager;
+import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;

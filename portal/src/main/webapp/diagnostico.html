@@ -335,7 +335,7 @@
             }
         }
         function checkHistoricoListaUrls() {
-          if ($("#urls").val().split("\n").length == 17) {
+          if ($("#urls").val().split("http").length == 18) {
             $("#registerAnalysis").prop("disabled", false);
             $("#disabled_info").hide();
           } else {

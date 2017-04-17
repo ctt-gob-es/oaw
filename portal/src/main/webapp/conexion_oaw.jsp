@@ -340,7 +340,11 @@
             function checkHistoricoResults(historicoResult) {
               var fieldset = document.getElementById('historico_resultados');
               if (historicoResult.historico.length > 0) {
-                fieldset.innerHTML += "<p>A continuaci&oacute;n se indican los an&aacute;lisis existentes para la url indicada. Seleccione el an&aacute;lisis a eliminar.<\/p>";
+                if (historicoResult.historico.length < 3) {
+                    fieldset.innerHTML += "<p>A continuaci&oacute;n se indican los an&aacute;lisis existentes para el conjunto de URLs indicadas. Pueden registrarse hasta un m&aacute;ximo de 3 an&aacute;lisis, si lo desea puede seleccionar uno de ellos a eliminar:<\/p>";
+                } else {
+                    fieldset.innerHTML += "<p>A continuaci&oacute;n se indican los an&aacute;lisis existentes para el conjunto de URLs indicadas. Pueden registrarse hasta un m&aacute;ximo de 3 an&aacute;lisis por lo que debe seleccionar uno de ellos a eliminar para que sea sustituido por el actual:<\/p>";
+                }
                 for (i in historicoResult.historico) {
                   fieldset.appendChild(createRadioElement(historicoResult.historico[i].id, historicoResult.historico[i].date, i == 2));
                 }

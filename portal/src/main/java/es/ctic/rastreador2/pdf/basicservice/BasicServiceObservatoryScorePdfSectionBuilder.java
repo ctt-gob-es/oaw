@@ -1,4 +1,4 @@
-package es.inteco.rastreador2.pdf.basicservice;
+package es.ctic.rastreador2.pdf.basicservice;
 
 import com.lowagie.text.*;
 import com.lowagie.text.Image;
@@ -11,7 +11,7 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.inteco.rastreador2.pdf.utils.PdfTocManager;
+import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ObservatoryUtils;

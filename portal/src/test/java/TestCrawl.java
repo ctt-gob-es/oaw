@@ -11,6 +11,7 @@ import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -62,20 +63,18 @@ public class TestCrawl {
     @Test
     public void test() throws Exception {
         final CrawlerData crawlerData = new CrawlerData();
-//        crawlerData.setUrls(Collections.singletonList("http://www.mjusticia.gob.es/cs/Satellite/Portal/es/inicio"));
-//        crawlerData.setUrls(Collections.singletonList("http://www.aytoalamedasagra.com/"));
-//        crawlerData.setUrls(Collections.singletonList("http://www.ayuntamientodeoyon.com/es/"));
-//        crawlerData.setProfundidad(4);
-//        crawlerData.setTopN(4);
-//        crawlerData.setPseudoaleatorio(true);
-//        crawlerData.setTest(true);
-//        crawlerData.setIdCrawling(-1);
-//        makeCrawl(crawlerData);
-//
-//        for (CrawledLink cl: crawlingDomains) {
-//            System.out.println(cl.getUrl());
-//        }
-//        Assert.assertEquals(17, crawlingDomains.size());
+        crawlerData.setUrls(Collections.singletonList("http://www.minhafp.gob.es"));
+        crawlerData.setProfundidad(4);
+        crawlerData.setTopN(4);
+        crawlerData.setPseudoaleatorio(true);
+        crawlerData.setTest(true);
+        crawlerData.setIdCrawling(-1);
+        makeCrawl(crawlerData);
+
+        for (CrawledLink cl: crawlingDomains) {
+            System.out.println(cl.getUrl());
+        }
+        Assert.assertEquals(17, crawlingDomains.size());
     }
 
     private void makeCrawl(CrawlerData crawlerData) throws Exception {

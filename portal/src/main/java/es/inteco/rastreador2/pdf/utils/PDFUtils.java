@@ -8,6 +8,7 @@ import com.lowagie.text.pdf.PdfChunk;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.events.IndexEvents;
+import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
@@ -21,10 +22,7 @@ import org.apache.struts.util.MessageResources;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
-import java.util.Scanner;
 
 public final class PDFUtils {
 

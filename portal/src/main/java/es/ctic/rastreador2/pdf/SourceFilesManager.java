@@ -1,4 +1,4 @@
-package es.inteco.rastreador2.pdf;
+package es.ctic.rastreador2.pdf;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.datos.AnalisisDatos;
