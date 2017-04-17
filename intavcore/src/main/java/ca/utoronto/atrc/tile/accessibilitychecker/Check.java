@@ -1150,6 +1150,9 @@ public class Check {
         } catch (IOException e) {
             Logger.putLog("Exception loading image", CheckerParser.class, Logger.LOG_LEVEL_INFO, e);
             return null;
+        } catch (Throwable t) {
+            Logger.putLog(String.format("Throwable %s", t.getMessage()), CheckerParser.class, Logger.LOG_LEVEL_INFO);
+            return null;
         }
     }
 

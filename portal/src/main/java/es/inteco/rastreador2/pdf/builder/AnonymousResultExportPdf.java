@@ -15,7 +15,7 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.inteco.rastreador2.pdf.utils.PdfTocManager;
+import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import org.apache.struts.util.MessageResources;

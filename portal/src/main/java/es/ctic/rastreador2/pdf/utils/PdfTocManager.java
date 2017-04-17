@@ -1,4 +1,4 @@
-package es.inteco.rastreador2.pdf.utils;
+package es.ctic.rastreador2.pdf.utils;
 
 import com.lowagie.text.pdf.events.IndexEvents;
 

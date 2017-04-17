@@ -71,7 +71,6 @@ public class BasicServiceCrawlingManager {
         crawlerData.setFicheroNorma(includeBrokenLinksCheck(CrawlerUtils.getFicheroNorma(idGuideline), basicServiceForm.getReport()));
         crawlerData.setDomains(es.inteco.utils.CrawlerUtils.addDomainsToList(basicServiceForm.getDomain(), true, Constants.ID_LISTA_SEMILLA));
         crawlerData.setInDirectory(basicServiceForm.isInDirectory());
-        Logger.putLog(crawlerData.getFicheroNorma(), BasicServiceCrawlingManager.class, Logger.LOG_LEVEL_DEBUG);
         return crawlerData;
     }
 

@@ -1,5 +1,7 @@
 package es.inteco.rastreador2.pdf;
 
+import es.ctic.rastreador2.pdf.PdfGeneratorThread;
+import es.ctic.rastreador2.pdf.SourceFilesManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -24,19 +26,14 @@ import org.apache.struts.action.ActionMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class PrimaryExportPdfAction extends Action {
 

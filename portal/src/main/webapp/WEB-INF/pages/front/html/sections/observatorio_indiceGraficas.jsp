@@ -22,13 +22,6 @@
 	<bean:define id="forward" value="" />
 
 		<bean:define id="forward" value="<%= Constants.OBSERVATORY_GRAPHIC_INTAV %>" />
-
-	<logic:equal name="observatoryType" value="<%= idCartridgeLenox %>">
-		<bean:define id="forward" value="<%= Constants.OBSERVATORY_GRAPHIC_LENOX %>" />
-	</logic:equal>
-	<logic:equal name="observatoryType" value="<%= idCartridgeMultilanguage %>">
-		<bean:define id="forward" value="<%= Constants.OBSERVATORY_GRAPHIC_MULTILANGUAGE %>" />
-	</logic:equal>
 	
 	<jsp:useBean id="params" class="java.util.HashMap" />
 	<c:set target="${params}" property="id" value="${id}" />

@@ -31,6 +31,8 @@ public interface Constants {
     String EXITO2 = "exito2";
     String NUEVA_SEMILLA_FORWARD = "nuevaSemilla";
     String NUEVO_CERTIFICADO = "nuevoCertificado";
+    String ANADIR_SEMILLA = "anadirSemillas";
+    String EXITO_MOD = "exitoMod";
     String EXITO_SI = "exitoSi";
     String EXITO_VER = "exitoVer";
     String EXITO_INTERMEDIO = "exitoIntermedio";
@@ -117,11 +119,15 @@ public interface Constants {
     int OBSERVATORY_NOT_HAVE_RESULTS = 0;
     String OBSERVATORY_RESULTS = "existRes";
     String GRAPHIC = "graphic";
+    String OBSERVATORY_GRAPHIC_REGENERATE = "reg";
     String GRAPHIC_TYPE = "type";
+    String GRAPHIC_VERIFICATION = "verification";
     String GRAPHIC_ASPECT = "aspect";
+    String OBSERVATORY_GRAPHIC_PDF_REPORT = "pdfReport";
     String OBSERVATORY_GRAPHIC_GLOBAL_ALLOCATION = "globalAllocation";
     String OBSERVATORY_GRAPHIC_SEGMENTS_MARK = "segmentsMark";
     String OBSERVATORY_GRAPHIC_GROUP_SEGMENT_MARK = "groupSegmentMark";
+    String OBSERVATORY_GRAPHIC_GLOBAL_ACCESSIBILITY_ALLOCATION = "globalAccessAllocation";
     String OBSERVATORY_GRAPHIC_ACCESSIBILITY_LEVEL_ALLOCATION_S = "accLevelAllocationS";
     String OBSERVATORY_GRAPHIC_MID_VERIFICATION_N1_S = "midVerificationN1S";
     String OBSERVATORY_GRAPHIC_MID_VERIFICATION_N2_S = "midVerificationN2S";
@@ -559,7 +565,7 @@ public interface Constants {
     int ID_LISTA_SEMILLA_OBSERVATORIO = 4;
 
     String ID_OBSERVATORY_GUIDELINE = "4";
-
+    String OBSERVATORY_GRAPHIC_INTAV = "getObservatoryGraphicIntav";
     String GET_SEED_RESULTS_FORWARD = "resultadosObservatorioSemillas";
     String SEED_LIST = "seedList";
     String OBSERVATORY_SEED_LIST = "observatorySeedList";

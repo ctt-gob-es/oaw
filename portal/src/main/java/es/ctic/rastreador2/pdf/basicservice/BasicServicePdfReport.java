@@ -1,4 +1,4 @@
-package es.inteco.rastreador2.pdf.basicservice;
+package es.ctic.rastreador2.pdf.basicservice;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -14,14 +14,12 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
-import es.inteco.intav.form.ObservatoryLevelForm;
-import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.inteco.rastreador2.pdf.utils.PdfTocManager;
+import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import org.apache.struts.util.MessageResources;
 

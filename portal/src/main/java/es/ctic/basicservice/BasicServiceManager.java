@@ -2,7 +2,6 @@ package es.ctic.basicservice;
 
 
 import es.ctic.basicservice.historico.CheckHistoricoService;
-import es.ctic.mail.MailService;
 import es.ctic.rastreador2.observatorio.ObservatoryManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -14,7 +13,7 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.pdf.BasicServiceExport;
-import es.inteco.rastreador2.pdf.basicservice.BasicServicePdfReport;
+import es.ctic.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
