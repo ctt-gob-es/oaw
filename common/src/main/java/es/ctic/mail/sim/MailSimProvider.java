@@ -42,8 +42,9 @@ public class MailSimProvider implements MailProvider {
         try {
             wsdlURL = new URL(pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url"));
             final EnvioMensajesService service = new EnvioMensajesService(wsdlURL);
-
             final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service.getEnvioMensajesServicePort();
+
+            Logger.putLog(String.format("Sending mail from MailSimProvider using %s", pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url")), MailSimProvider.class, Logger.LOG_LEVEL_WARNING);
 
             final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
             final ResponseStatusType respuestaStatus = respuesta.getStatus();
