@@ -1,6 +1,7 @@
 package es.ctic.mail.smtp;
 
 import es.ctic.mail.MailProvider;
+import es.ctic.mail.sim.MailSimProvider;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import org.apache.commons.mail.DefaultAuthenticator;
@@ -49,6 +50,8 @@ public class MailSmtpProvider implements MailProvider {
                 // add the attachment
                 email.attach(attachment);
             }
+
+            Logger.putLog(String.format("Sending mail from MailSmtpProvider to ", email.getHostName()), MailSmtpProvider.class, Logger.LOG_LEVEL_WARNING);
 
             // send the email
             email.send();
