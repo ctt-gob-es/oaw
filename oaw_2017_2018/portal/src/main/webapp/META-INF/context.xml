@@ -1,0 +1,11 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/portal"/>
+ -->
+ 
+ <Context path="/portal" reloadable="true">
+    <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" type="javax.sql.DataSource"
+              name="jdbc/oaw" url="jdbc:mysql://localhost:3306/OAW" maxActive="100" maxIdle="10" maxWait="-1"
+              validationQuery="SELECT 1 as dbcp_connection_test" removeAbandoned="true" testOnBorrow="true"
+              timeBetweenEvictionRunsMillis="60000" testWhileIdle="true" defaultTransactionIsolation="READ_UNCOMMITTED"
+              username="root" password="root"/>
+</Context>
