@@ -6,290 +6,417 @@
 <jsp:useBean id="paramsNS" class="java.util.HashMap" />
 <c:set target="${paramsNS}" property="action" value="anadir" />
 <c:set target="${paramsNS}" property="esPrimera" value="si" />
-	<!--  JQ GRID   -->
-   <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
+
+<style>
+/* Para evitar el parpadeo al recargar */
+.ui-jqgrid-bdiv {
+	min-height: 500px !Important;
+}
+</style>
+
+<!--  JQ GRID   -->
+<link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
 
 
-	<!--  JQ GRID   -->
-    <script>
-    
-    var dialog;
-    
-    var windowWidth = $(window).width()*0.8;
-    var windowHeight = $(window).height()*0.8;
-    
-    function dialogoNuevaSemilla(){
-    	
-    	window.scrollTo(0,0);
-    	
-    	dialog = $( "#dialogoNuevaSemilla" ).dialog({
-    	      height: windowHeight,
-    	      width: windowWidth,
-    	      modal: true,
-    	      buttons: {
-      	        "Guardar": function() {
-      	        	guardarNuevaSemilla();
-      	        },
-      	        "Cancelar": function() {
-      	          dialog.dialog( "close" );
-      	        }
-      	      },
-      	      close: function() {
-      	        $('#nuevaSemillaMultidependencia')[0].reset();
-      	        //allFields.removeClass( "ui-state-error" );
-      	      }
-    	    });
-    	
-    }
-    
-  //Guardar la nueva semilla
+<!--  JQ GRID   -->
+<script>
+	var dialog;
+
+	var windowWidth = $(window).width() * 0.8;
+	var windowHeight = $(window).height() * 0.8;
+
+	function dialogoNuevaSemilla() {
+
+		window.scrollTo(0, 0);
+
+		dialog = $("#dialogoNuevaSemilla").dialog({
+			height : windowHeight,
+			width : windowWidth,
+			modal : true,
+			buttons : {
+				"Guardar" : function() {
+					guardarNuevaSemilla();
+				},
+				"Cancelar" : function() {
+					dialog.dialog("close");
+				}
+			},
+			close : function() {
+				$('#nuevaSemillaMultidependencia')[0].reset();
+				//allFields.removeClass( "ui-state-error" );
+			}
+		});
+
+	}
+
+	//Guardar la nueva semilla
 
 	function guardarNuevaSemilla() {
-		var guardado = $
-				.ajax(
-						{
-							url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
-							dataType : 'json',
-							data :  $('#nuevaSemillaMultidependencia').serialize(),
-							method : 'POST'
-						}).done(function(){
-							reloadGrid(lastUrl);
-							dialog.dialog( "close" );
-							
-						}).fail(function() {
-							console.log("Fail :( ");
-						}
-							
-				);
-							
+		var guardado = $.ajax({
+			url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
+			dataType : 'json',
+			data : $('#nuevaSemillaMultidependencia').serialize(),
+			method : 'POST'
+		}).done(function() {
+			reloadGrid(lastUrl);
+			dialog.dialog("close");
+
+		}).fail(function() {
+			console.log("Fail :( ");
+		}
+
+		);
+
 		return guardado;
 	}
 
-    
-    
-    // Formatters de celdas
-    function categoriaFormatter (cellvalue, options, rowObject){
-   		return cellvalue.name;
-    }
-    
-    function dependenciasFormatter (cellvalue, options, rowObject){
-   		var cellFormatted = "<ul>";
-    	
-    	
-    	$.each(cellvalue, function(index, value){
-    		cellFormatted=cellFormatted+"<li>"+value.name+"</li>";	
-    	});
-    	
-    	cellFormatted=cellFormatted+"</ul>";
-    	
-    	
-    	return cellFormatted;
-    }
-    
+	// Formatters de celdas
+	function categoriaFormatter(cellvalue, options, rowObject) {
+		return cellvalue.name;
+	}
 
-    // Recarga el grid. Recibe como parámetro la url de la acción con la información de paginación.
-	function reloadGrid(path){
-		
+	function dependenciasFormatter(cellvalue, options, rowObject) {
+		var cellFormatted = "<ul style='list-style: none; padding-left: 0;' >";
+
+		$.each(cellvalue, function(index, value) {
+			cellFormatted = cellFormatted + "<li>" + value.name + "</li>";
+		});
+
+		cellFormatted = cellFormatted + "</ul>";
+
+		return cellFormatted;
+	}
+
+	// Recarga el grid. Recibe como parámetro la url de la acción con la información de paginación.
+	function reloadGrid(path) {
+
 		lastUrl = path;
-    	
-       	$('#grid').jqGrid('clearGridData')
-		
-		$.ajax({url:path ,dataType: "json"}).done(
-				
-				
-       			
-      		function(data){
-  				        				
-  				ajaxJson = JSON.stringify(data.semillas);
-  				
-  				total = data.paginador.total;
-   				
-  				$('#grid').jqGrid({
-  					editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-            		colNames: ["Id", "Nombre", "Acrónimo", "Segmento", "Dependencia", "URLs", "Activa"],
-            		colModel: [    
-                		{ name: "id", hidden : true, sortable: false},
-                		{ name: "nombre", width : 50, editrules: { required: true}, sortable: false},
-                		{ name: "acronimo", width : 20, sortable: false},
-                		{ name: "categoria", width : 20, edittype: "select", editoptions: { 
-                	 	
-                			dataUrl:'/oaw/secure/JsonSemillasObservatorio.do?action=listCategorias',
-                     		buildSelect: function(data) {
-                         	
-                     			var response = jQuery.parseJSON(data);
-                     			var s = '<select>';
-                         		
-                     			if (response && response.length) {
-                             		for (var i = 0, l=response.length; i<l ; i++) {
-                                 		var ri = response[i];
-                                 		s += '<option value="'+ri.id+'">'+ri.name+'</option>';
-                             		}
-                         		}
-                         		
-                     			return s + "</select>";
-                     		}
-                	
-                		}, editrules: { required: true }, formatter: categoriaFormatter , sortable: false},
-                		{ name: "dependencias",width : 50, editrules: {required: true}, edittype: "select", editoptions: { 
-                			multiple: true,
-                			dataUrl:'/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
-	           				buildSelect: function(data) {
-	           					
-                         		//Seleccionar las que ya asociadas
-                         		
-                         		var idsDependencias = [];
-                         		
-                         		$.each($('#grid').getLocalRow($('#grid').jqGrid ('getGridParam', 'selrow')).dependencias, function(index, value){
-                         			idsDependencias.push(value.id);
-                         		});
-	           					
-	                         		
-           						var response = jQuery.parseJSON(data);
-                         		var s = '<select multiple>';
-                         
-                         		if (response && response.length) {
-                             		for (var i = 0, l=response.length; i<l ; i++) {
-                                 		var ri = response[i];
-                                 		
-                                 		if($.inArray(ri.id,idsDependencias) >= 0){
-                                 		
-                                 			s += '<option selected="selected" value="'+ri.id+'">'+ri.name+'</option>';
-                                 		
-                                 		} else {
-                                 			s += '<option value="'+ri.id+'">'+ri.name+'</option>';	
-                                 		}
-                             		}
-                         		}
-                         		
-                   		
-                        	 	return s + "</select>";
-	                     		}	
-                			},
-                		formatter: dependenciasFormatter, sortable: false},
-                		{ name: "listaUrls", width : 50, edittype : 'textarea', sortable: false},
-                		{ name: "activa", width : 10, template: "booleanCheckboxFa", edittype: "checkbox" ,editoptions: {value:"true:false"}, sortable: false},
-                
-            		],
-            		inlineEditing: { keys: false, defaultFocusField: "nombre" },
-            		cmTemplate: { autoResizable: false, editable: true },
-            		viewrecords: false,
-            		caption: "Semillas",
-            		autowidth: true,
-            		//pager : '#gridbuttons',
-            		pgbuttons: false,
-            		pgtext:false,
-            		pginput:false,
-            		/* ondblClickRow: function (rowid, status, e) {  */
-           			onSelectRow: function (rowid, status, e) { 
-            			
-                		var $self = $(this), savedRow = $self.jqGrid("getGridParam", "savedRow");
-                			if (savedRow.length > 0 && savedRow[0].id !== rowid) {
-                    			$self.jqGrid("restoreRow", savedRow[0].id);
-                			}
 
-			                $self.jqGrid("editRow", rowid, { focusField: e.target, keys : true, 
-			                	beforeSaveRow: function(o, rowid) {
-			                		/* $('#grid').jqGrid('saveRow',rowid, true, '/oaw/secure/JsonSemillasObservatorio.do?action=update'); 
-			                		reloadGrid(lastUrl)
-		        			      	return false; */
-		        			      	$('#grid').jqGrid('saveRow',rowid,
-			                			{ 
-			                		    	successfunc: function(response) {
-			                		    		reloadGrid(lastUrl); 
-			                		    	},
-			                		    	url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-			                		    	restoreAfterError: true
-			                			}
-		        			      	);
-			                		
-			                		
+		$('#grid').jqGrid('clearGridData')
+
+		$
+				.ajax({
+					url : path,
+					dataType : "json"
+				})
+				.done(
+
+						function(data) {
+
+							ajaxJson = JSON.stringify(data.semillas);
+
+							total = data.paginador.total;
+
+							$('#grid')
+									.jqGrid(
+											{
+												editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
+												colNames : [ "Id", "Nombre",
+														"Acrónimo", "Segmento",
+														"Dependencia", "URLs",
+														"Activa" ],
+												colModel : [
+														{
+															name : "id",
+															hidden : true,
+															sortable : false
+														},
+														{
+															name : "nombre",
+															width : 60,
+															editrules : {
+																required : true
+															},
+															sortable : false,
+															align : "left"
+														},
+														{
+															name : "acronimo",
+															width : 15,
+															sortable : false,
+															align : "left"
+														},
+														{
+															name : "categoria",
+															width : 15,
+															edittype : "select",
+															align : "left",
+															editoptions : {
+
+																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listCategorias',
+																buildSelect : function(
+																		data) {
+
+																	var response = jQuery
+																			.parseJSON(data);
+																	var s = '<select>';
+
+																	if (response
+																			&& response.length) {
+																		for (var i = 0, l = response.length; i < l; i++) {
+																			var ri = response[i];
+																			s += '<option value="'+ri.id+'">'
+																					+ ri.name
+																					+ '</option>';
+																		}
+																	}
+
+																	return s
+																			+ "</select>";
+																}
+
+															},
+															editrules : {
+																required : true
+															},
+															formatter : categoriaFormatter,
+															sortable : false
+														},
+														{
+															name : "dependencias",
+															align : "left",
+															width : 60,
+															editrules : {
+																required : true
+															},
+															edittype : "select",
+															editoptions : {
+																
+																style: "height:100px; width:100%; text-align:left;",
+																multiple : true,
+																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
+																buildSelect : function(
+																		data) {
+
+																	//Seleccionar las que ya asociadas
+
+																	var idsDependencias = [];
+
+																	$
+																			.each(
+																					$(
+																							'#grid')
+																							.getLocalRow(
+																									$(
+																											'#grid')
+																											.jqGrid(
+																													'getGridParam',
+																													'selrow')).dependencias,
+																					function(
+																							index,
+																							value) {
+																						idsDependencias
+																								.push(value.id);
+																					});
+
+																	var response = jQuery
+																			.parseJSON(data);
+																	var s = '<select multiple>';
+
+																	if (response
+																			&& response.length) {
+																		for (var i = 0, l = response.length; i < l; i++) {
+																			var ri = response[i];
+
+																			if ($
+																					.inArray(
+																							ri.id,
+																							idsDependencias) >= 0) {
+
+																				s += '<option selected="selected" value="'+ri.id+'">'
+																						+ ri.name
+																						+ '</option>';
+
+																			} else {
+																				s += '<option value="'+ri.id+'">'
+																						+ ri.name
+																						+ '</option>';
+																			}
+																		}
+																	}
+
+																	return s
+																			+ "</select>";
+																}
+															},
+															formatter : dependenciasFormatter,
+															sortable : false
+														},
+														{
+															name : "listaUrls",
+															align : "left",
+															width : 60,
+															edittype : 'textarea',
+															sortable : false,
+															editoptions: { style: "height:100px; width:100%; text-align:left;" }
+														},
+														{
+															name : "activa",
+															align : "center",
+															width : 10,
+															template : "booleanCheckboxFa",
+															edittype : "checkbox",
+															editoptions : {
+																value : "true:false"
+															},
+															sortable : false
+														},
+
+												],
+												inlineEditing : {
+													keys : false,
+													defaultFocusField : "nombre"
+												},
+												cmTemplate : {
+													autoResizable : true,
+													editable : true
+												},
+												viewrecords : false,
+												caption : "Semillas",
+												autowidth : true,
+												//pager : '#gridbuttons',
+												pgbuttons : false,
+												pgtext : false,
+												pginput : false,
+												/* ondblClickRow: function (rowid, status, e) {  */
+												onSelectRow : function(rowid,
+														status, e) {
+
+													var $self = $(this), savedRow = $self
+															.jqGrid(
+																	"getGridParam",
+																	"savedRow");
+													if (savedRow.length > 0
+															&& savedRow[0].id !== rowid) {
+														$self.jqGrid(
+																"restoreRow",
+																savedRow[0].id);
+													}
+
+													$self
+															.jqGrid(
+																	"editRow",
+																	rowid,
+																	{
+																		focusField : e.target,
+																		keys : true,
+																		beforeSaveRow : function(
+																				o,
+																				rowid) {
+																			/* $('#grid').jqGrid('saveRow',rowid, true, '/oaw/secure/JsonSemillasObservatorio.do?action=update'); 
+																			reloadGrid(lastUrl)
+																			return false; */
+																			$(
+																					'#grid')
+																					.jqGrid(
+																							'saveRow',
+																							rowid,
+																							{
+																								successfunc : function(
+																										response) {
+																									reloadGrid(lastUrl);
+																								},
+																								url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
+																								restoreAfterError : true
+																							});
+
+																		}
+																	});
+
+												},
+												beforeSelectRow : function(
+														rowid) {
+													var $self = $(this), i,
+													// savedRows array is not empty if some row is in inline editing mode
+													savedRows = $self.jqGrid(
+															"getGridParam",
+															"savedRow");
+													for (i = 0; i < savedRows.length; i++) {
+														if (savedRows[i].id !== rowid) {
+															// save currently editing row
+															// one can replace saveRow to restoreRow in the next line
+															/* $self.jqGrid("saveRow", savedRows[i].id, true, '/oaw/secure/JsonSemillasObservatorio.do?action=update');*/
+
+															$self
+																	.jqGrid(
+																			'saveRow',
+																			savedRows[i].id,
+																			{
+																				successfunc : function(
+																						response) {
+																					reloadGrid(lastUrl);
+																				},
+																				url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
+																				restoreAfterError : true
+																			});
+
+														}
+													}
+													return savedRows.length === 0; // allow selection if saving successful
+												},
+											}).jqGrid("inlineNav");
+
+							//Recargar el grid
+							$('#grid').jqGrid('setGridParam', {
+								data : JSON.parse(ajaxJson)
+							}).trigger('reloadGrid');
+
+							//Paginador
+							paginas = data.paginas;
+
+							$('#paginador').empty();
+
+							$.each(paginas, function(key, value) {
+								if (value.active == true) {
+									$('#paginador').append(
+											'<a href="javascript:reloadGrid(\''
+													+ value.path
+													+ '\')" class="'
+													+ value.styleClass
+													+ ' btn btn-default">'
+													+ value.title + '</a>');
+								} else {
+									$('#paginador').append(
+											'<span class="'+value.styleClass+' btn">'
+													+ value.title + '</span>');
 								}
-			                });
-			                
-            		},
-           	       beforeSelectRow: function (rowid) {
-           	            var $self = $(this), i,
-           	                // savedRows array is not empty if some row is in inline editing mode
-           	                savedRows = $self.jqGrid("getGridParam", "savedRow");
-           	            for (i = 0; i < savedRows.length; i++) {
-           	                if (savedRows[i].id !== rowid) {
-           	                    // save currently editing row
-           	                    // one can replace saveRow to restoreRow in the next line
-           	                    /* $self.jqGrid("saveRow", savedRows[i].id, true, '/oaw/secure/JsonSemillasObservatorio.do?action=update');*/
-           	                    
-	        			      	$self.jqGrid('saveRow', savedRows[i].id,
-			                			{ 
-			                		    	successfunc: function(response) {
-			                		    		reloadGrid(lastUrl); 
-			                		    	},
-			                		    	url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-			                		    	restoreAfterError: true
-			                			}
-		        			      	);
-           	                 	
-           	                }
-           	            }
-           	            return savedRows.length === 0; // allow selection if saving successful
-           	        },
-        		}).jqGrid("inlineNav");
-  				
-  				//Recargar el grid
-       			$('#grid').jqGrid('setGridParam', {data: JSON.parse(ajaxJson)}).trigger('reloadGrid');
-  				
-		      	//Paginador
-      			paginas = data.paginas;
 
-				$('#paginador').empty();
+							});
+						}).error(function(data) {
+					console.log("Error")
+					console.log(data)
+				});
 
-				$.each(paginas, function(key, value){
-					if(value.active==true){
-						$('#paginador').append('<a href="javascript:reloadGrid(\''+value.path+'\')" class="'+value.styleClass+' btn btn-default">'+value.title+'</a>');
-					} else {
-						$('#paginador').append('<span class="'+value.styleClass+' btn">'+value.title+'</span>');	
-				}
-	
-			});
-    	}).error(function(data){
-       		console.log("Error")
-       		console.log(data)
-       	});
-      
 	}
-    
-           		
+
 	//Buscador
-	function buscar(){
-		reloadGrid('/oaw/secure/JsonSemillasObservatorio.do?action=buscar&' + $('#SemillaSearchForm').serialize());
+	function buscar() {
+		reloadGrid('/oaw/secure/JsonSemillasObservatorio.do?action=buscar&'
+				+ $('#SemillaSearchForm').serialize());
 	}
-    
-    
-    $(window).on('load', function() {
-        
-    
-    
-    var $jq = $.noConflict();
-    
-    var lastUrl;
-    
-    
-   
-	//Primera carga del grid el grid
-	$jq(document).ready(function () {
-   		reloadGrid('JsonSemillasObservatorio.do?action=buscar');
-   		//Para evitar el parpadeo al recargar
-       	$(".ui-jqgrid-bdiv").css("min-height", 500);   		
-   	});
-	
-    });
-    </script>
+
+	$(window).on('load', function() {
+
+		var $jq = $.noConflict();
+
+		var lastUrl;
+
+		//Primera carga del grid el grid
+		$jq(document).ready(function() {
+			reloadGrid('JsonSemillasObservatorio.do?action=buscar');
+		});
+
+	});
+</script>
 
 
-<div id="dialogoNuevaSemilla" style="display:none">
+<div id="dialogoNuevaSemilla" style="display: none">
 	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp"></jsp:include>
 
 </div>
@@ -345,7 +472,7 @@
 							<html:option value="">
 								<bean:message key="resultados.observatorio.cualquier.categoria" />
 							</html:option>
-							<logic:iterate name="<%= Constants.CATEGORIES_LIST %>"
+							<logic:iterate name="<%=Constants.CATEGORIES_LIST%>"
 								id="categoria">
 								<bean:define id="idCategoria">
 									<bean:write name="categoria" property="id" />
@@ -364,33 +491,34 @@
 							property="url" />
 					</div>
 					<div class="formButton">
-<%-- 						<button type="submit" class="btn btn-default btn-lg">
+						<%-- 						<button type="submit" class="btn btn-default btn-lg">
 							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 							<bean:message key="boton.buscar" />
 						</button> --%>
-						
-						<span onclick="buscar()" class="btn btn-default btn-lg">
-							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-							<bean:message key="boton.buscar" />
+
+						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
+							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
+								key="boton.buscar" />
 						</span>
 					</div>
 				</fieldset>
 			</html:form>
-			
-		
-			
-			 <table id="grid">
-			 </table>
-			 <!-- <div id="gridbuttons"></div> -->
-			 
-			 <p id="paginador">
-			 </p>
-			 
-			 <input type="button" value="<bean:message key="cargar.semilla.observatorio.nueva.semilla" />" onclick="dialogoNuevaSemilla()"/>
-			 
-			
 
-<%-- 			<div class="detail">
+
+
+			<table id="grid">
+			</table>
+			<!-- <div id="gridbuttons"></div> -->
+
+			<p id="paginador"></p>
+
+			<input type="button"
+				value="<bean:message key="cargar.semilla.observatorio.nueva.semilla" />"
+				onclick="dialogoNuevaSemilla()" />
+
+
+
+			<%-- 			<div class="detail">
 				<logic:notPresent name="<%=Constants.OBSERVATORY_SEED_LIST%>">
 					<div class="notaInformativaExito">
 						<p>
@@ -409,8 +537,8 @@
 					</div>
 			</div> 
 			</logic:notPresent> --%>
-			
-<%-- 			<logic:present name="<%=Constants.OBSERVATORY_SEED_LIST%>">
+
+			<%-- 			<logic:present name="<%=Constants.OBSERVATORY_SEED_LIST%>">
 				<logic:empty name="<%=Constants.OBSERVATORY_SEED_LIST%>">
 					<div class="notaInformativaExito">
 						<p>
