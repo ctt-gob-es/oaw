@@ -97,7 +97,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		request.getParameter("semilla");
+		//request.getParameter("semilla");
 
 		SemillaForm semilla = new SemillaForm();
 
@@ -132,8 +132,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 		ActionErrors errors = new ActionErrors();
 
-		String idSemilla = request.getParameter("id");
-		String modificada = request.getParameter(Constants.ES_PRIMERA);
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaDAO.editSeed(c, semilla);
 //			request.setAttribute(Constants.SEED_CATEGORIES, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
@@ -171,6 +169,56 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
+	
+	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+		
+		SemillaForm semilla = new SemillaForm();
+
+		semilla.setNombre(request.getParameter("nombre"));
+		semilla.setAcronimo(request.getParameter("acronimo"));
+		
+		//Soporte a múltiples dependencias
+		List<DependenciaForm> listaDependencias = new ArrayList<>();
+		
+		String[] dependencias = request.getParameterValues("dependencias");
+		if(dependencias !=null && dependencias.length>0){
+			for(int i=0; i<dependencias.length;i++){
+				DependenciaForm dependencia = new DependenciaForm();
+				dependencia.setId(Long.parseLong(dependencias[i]));
+				listaDependencias.add(dependencia);
+			}
+		}
+		
+		semilla.setDependencias(listaDependencias);
+		
+		
+		semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
+		if(request.getParameter("urls")!=null){
+			
+			semilla.setListaUrls(Arrays.asList(request.getParameter("urls").replace("\r\n", ";").split(";")));
+		}
+		CategoriaForm categoriaSemilla = new CategoriaForm();
+		categoriaSemilla.setId(request.getParameter("segmento"));
+		semilla.setCategoria(categoriaSemilla);
+		
+		
+		try (Connection c = DataBaseManager.getConnection()) {
+			SemillaDAO.saveSeedMultidependencia(c,semilla);
+			//TODO
+			
+			PrintWriter pw = response.getWriter();
+			pw.write("{}");
+			pw.flush();
+			pw.close();
+			
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		return null;
+	}
+	
 	public ActionForward listCategorias(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {

@@ -204,7 +204,7 @@ public final class SemillaDAO {
 					PreparedStatement psDependencias = c.prepareStatement(
 							"SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
 					psDependencias.setLong(1, semillaForm.getId());
-					
+
 					List<DependenciaForm> listDependencias = new ArrayList<>();
 					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
 						while (rsDependencias.next()) {
@@ -213,13 +213,12 @@ public final class SemillaDAO {
 							dependencia.setName(rsDependencias.getString("nombre"));
 							listDependencias.add(dependencia);
 						}
-						
+
 						semillaForm.setDependencias(listDependencias);
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					}
-					
 
 					seedList.add(semillaForm);
 				}
@@ -932,6 +931,82 @@ public final class SemillaDAO {
 			}
 
 			ps.executeBatch();
+
+			c.commit();
+		} catch (SQLException e) {
+			c.rollback();
+			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
+	}
+
+	public static void saveSeedMultidependencia(Connection c, SemillaForm semillaForm) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			c.setAutoCommit(false);
+
+			ps = c.prepareStatement(
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa) VALUES (?,?,?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
+
+			ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+			ps.setString(2, semillaForm.getNombre());
+			ps.setString(3, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+			ps.setString(4, semillaForm.getCategoria().getId());
+			if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+				ps.setString(5, semillaForm.getAcronimo());
+			} else {
+				ps.setString(5, null);
+			}
+			if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
+				ps.setString(6, semillaForm.getDependencia());
+			} else {
+				ps.setString(6, null);
+			}
+			if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+					&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+				ps.setBoolean(7, false);
+			} else {
+				ps.setBoolean(7, true);
+			}
+
+			int affectedRows = ps.executeUpdate();
+
+			if (affectedRows == 0) {
+				throw new SQLException("Creating user failed, no rows affected.");
+			}
+
+			ResultSet generatedKeys = ps.getGeneratedKeys();
+
+			if (generatedKeys.next()) {
+				semillaForm.setId(generatedKeys.getLong(1));
+
+				// Inserción de las nuevas
+
+				if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+					StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+							"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+
+					for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+						slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+								.append(semillaForm.getDependencias().get(i).getId()).append(")");
+
+						if (i < semillaForm.getDependencias().size() - 1) {
+							slqInsertSemillaDependencia.append(",");
+						}
+					}
+
+					PreparedStatement psInsertarSemillaDependencia = c
+							.prepareStatement(slqInsertSemillaDependencia.toString());
+
+					psInsertarSemillaDependencia.executeUpdate();
+				}
+
+			} else {
+				throw new SQLException("Creating user failed, no ID obtained.");
+			}
 
 			c.commit();
 		} catch (SQLException e) {

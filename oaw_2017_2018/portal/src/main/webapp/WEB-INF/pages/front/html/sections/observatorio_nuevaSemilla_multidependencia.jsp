@@ -3,62 +3,57 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 <script type="text/javascript">
-
 	var $jn = jQuery.noConflict();
 
 	//Cargar las categorias
-	
+
 	$jn.ajax({
 		url : '/oaw/secure/JsonSemillasObservatorio.do?action=listCategorias',
-	}).done(function(data) {
+	}).done(
+			function(data) {
 
-		var response = $jn.parseJSON(data);
+				var response = $jn.parseJSON(data);
 
-		if (response && response.length) {
-			for (var i = 0, l = response.length; i < l; i++) {
-				var ri = response[i];
-				$jn('#selectCategoriasNuevaSemilla').append('<option value="'+ri.id+'">' + ri.name + '</option>');
-			}
-		}
+				if (response && response.length) {
+					for (var i = 0, l = response.length; i < l; i++) {
+						var ri = response[i];
+						$jn('#selectCategoriasNuevaSemilla').append(
+								'<option value="'+ri.id+'">' + ri.name
+										+ '</option>');
+					}
+				}
 
-	});
-	
+			});
+
 	//Cargar las dependencias
-	
-	$jn.ajax({
-		url : '/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
-	}).done(function(data) {
 
-		var response = $jn.parseJSON(data);
+	$jn
+			.ajax(
+					{
+						url : '/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
+					}).done(
+					function(data) {
 
-		if (response && response.length) {
-			for (var i = 0, l = response.length; i < l; i++) {
-				var ri = response[i];
-				$jn('#selectDependenciasNuevaSemilla').append('<option value="'+ri.id+'">' + ri.name + '</option>');
-			}
-		}
+						var response = $jn.parseJSON(data);
 
-	});
-	
-	
-	$jn('[id^=\"addDependencia\"]').click(function (e) {
-	    
-	    $jn(this).prev('select').find('option:selected').remove().appendTo('#selectCategoriasNuevaSemillaSeleccionadas');
-	    
-	});
+						if (response && response.length) {
+							for (var i = 0, l = response.length; i < l; i++) {
+								var ri = response[i];
+								$jn('#selectDependenciasNuevaSemilla').append(
+										'<option value="'+ri.id+'">' + ri.name
+												+ '</option>');
+							}
+						}
 
-	$jn('[id^=\"removeDependencia\"]').click(function (e) {
+					});
 
-	    $jn(this).next('select').find('option:selected').remove().appendTo('#selectCategoriasNuevaSemilla');
-
-	});
-
-	
 </script>
 
 <div id="main">
 
-	<h2><bean:message key="gestion.semillas.observatorio.titulo"/></h2>
+	<h2>
+		<bean:message key="gestion.semillas.observatorio.titulo" />
+	</h2>
 
 	<form id="nuevaSemillaMultidependencia">
 		<fieldset>
@@ -73,7 +68,7 @@
 			<div class="formItem">
 				<label for="nombre" class="labelVisu"><strong
 					class="labelVisu"><bean:message
-							key="nueva.semilla.observatorio.activa" /></strong></label>&nbsp; <select>
+							key="nueva.semilla.observatorio.activa" /></strong></label>&nbsp; <select name="activa">
 					<option value="true"><bean:message key="select.yes" /></option>
 					<option value="false"><bean:message key="select.no" /></option>
 				</select>
@@ -81,24 +76,26 @@
 			<!-- Dependencias -->
 			<div class="formItem">
 				<label for="dependencia"><strong class="labelVisu"><bean:message
-							key="nueva.semilla.observatorio.dependencia" /></strong></label>
-				<select multiple id="selectDependenciasNuevaSemilla"></select>
-				<a id="addDependencia" href="#">&gt;&gt;</a>
-				<a id="removeDependencia" href="#">&lt;&lt;</a>
-				<select multiple id="selectDependenciasNuevaSemillaSeleccionadas"></select>
+							key="nueva.semilla.observatorio.dependencia" /></strong></label> <select multiple
+					id="selectDependenciasNuevaSemilla"></select> <input type='button'
+					id="addDependencia" value="&gt;&gt;"
+					onclick="$jn(this).prev('select').find('option:selected').remove().appendTo('#selectDependenciasNuevaSemillaSeleccionadas');">
+				<input type='button' id="removeDependencia" value="&lt;&lt;"
+					onclick="$jn(this).next('select').find('option:selected').remove().appendTo('#selectDependenciasNuevaSemilla');">
+				<select multiple id="selectDependenciasNuevaSemillaSeleccionadas" name="dependencias"></select>
 
 
 			</div>
 			<!-- Acronimo -->
 			<div class="formItem">
 				<label for="acronimo"><strong class="labelVisu"><bean:message
-							key="nueva.semilla.observatorio.acronimo" /></strong></label> <input type="text" />
+							key="nueva.semilla.observatorio.acronimo" /></strong></label> <input type="text" name="acronimo"/>
 			</div>
 			<!-- Categoria/Segmento -->
 			<div class="formItem">
 				<label for="categoria"><strong class="labelVisu"><bean:message
-							key="nueva.semilla.webs.categoria" /></strong></label>
-							<select id="selectCategoriasNuevaSemilla"></select>
+							key="nueva.semilla.webs.categoria" /></strong></label> <select name="segmento"
+					id="selectCategoriasNuevaSemilla"></select>
 			</div>
 			<!-- Urls -->
 			<div class="formItem">
@@ -109,12 +106,12 @@
 				</p>
 				<label for="listaUrlsString"><strong class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.url" /></strong></label>
-				<textarea rows="5" cols="50"></textarea>
+				<textarea rows="5" cols="50" name="urls"></textarea>
 			</div>
 			<!-- Directorio -->
 			<div class="formItem">
 				<label for="inDirectory"><strong class="labelVisu"><bean:message
-							key="nueva.semilla.observatorio.in.directory" /></strong></label> <select>
+							key="nueva.semilla.observatorio.in.directory" /></strong></label> <select name="directorio">
 					<option value="true">
 						<bean:message key="select.yes" />
 					</option>
@@ -123,6 +120,8 @@
 					</option>
 				</select>
 			</div>
+			
+			<!-- <input type='button' value="Guardar" onclick="guardar()"/> -->
 		</fieldset>
 	</form>
 </div>
