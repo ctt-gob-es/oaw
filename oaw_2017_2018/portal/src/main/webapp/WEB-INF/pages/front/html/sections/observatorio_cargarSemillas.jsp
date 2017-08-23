@@ -8,6 +8,30 @@
 <c:set target="${paramsNS}" property="esPrimera" value="si" />
 
 <style>
+.ui-jqgrid-htable, #grid {
+	border: none !Important;
+	margin: 0 !Important;
+	font-size: 14px !Important;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv {
+	overflow-x: hidden !Important;
+	overflow-y: auto !Important;;
+}
+
+.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
+	padding: 1%;
+	font-weight: bold;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr>td {
+	padding: 5px;
+}
+
+.ui-jqgrid {
+	clear: both;
+}
+
 /* Para evitar el parpadeo al recargar */
 .ui-jqgrid-bdiv {
 	min-height: 500px !Important;
@@ -22,6 +46,8 @@
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
+<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js"
+	type="text/javascript"></script>
 
 
 <!--  JQ GRID   -->
@@ -35,6 +61,9 @@
 
 		window.scrollTo(0, 0);
 
+		$('#exitosNuevaSemillaMD').hide();
+		$('#erroresNuevaSemillaMD').hide();
+
 		dialog = $("#dialogoNuevaSemilla").dialog({
 			height : windowHeight,
 			width : windowWidth,
@@ -47,9 +76,12 @@
 					dialog.dialog("close");
 				}
 			},
+			open : function() {
+				cargarSelect();
+			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
-				//allFields.removeClass( "ui-state-error" );
+				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
 			}
 		});
 
@@ -58,18 +90,44 @@
 	//Guardar la nueva semilla
 
 	function guardarNuevaSemilla() {
+		$('#exitosNuevaSemillaMD').hide();
+		$('#erroresNuevaSemillaMD').hide();
+		$('#erroresNuevaSemillaMD').html("");
+
 		var guardado = $.ajax({
 			url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
-			dataType : 'json',
 			data : $('#nuevaSemillaMultidependencia').serialize(),
 			method : 'POST'
-		}).done(function() {
-			reloadGrid(lastUrl);
-			dialog.dialog("close");
+		}).success(
+				function(response) {
+					$('#exitosNuevaSemillaMD').addClass('alert alert-success');
+					$('#exitosNuevaSemillaMD').append("<ul>");
 
-		}).fail(function() {
-			console.log("Fail :( ");
-		}
+					$.each(JSON.parse(response), function(index, value) {
+						$('#exitosNuevaSemillaMD').append(
+								'<li>' + value.message + '</li>');
+					});
+
+					$('#exitosNuevaSemillaMD').append("</ul>");
+					$('#exitosNuevaSemillaMD').show();
+					dialog.dialog("close");
+					reloadGrid(lastUrl);
+
+				}).error(
+				function(response) {
+					$('#erroresNuevaSemillaMD').addClass('alert alert-danger');
+					$('#erroresNuevaSemillaMD').append("<ul>");
+
+					$.each(JSON.parse(response.responseText), function(index,
+							value) {
+						$('#erroresNuevaSemillaMD').append(
+								'<li>' + value.message + '</li>');
+					});
+
+					$('#erroresNuevaSemillaMD').append("</ul>");
+					$('#erroresNuevaSemillaMD').show();
+
+				}
 
 		);
 
@@ -79,6 +137,10 @@
 	// Formatters de celdas
 	function categoriaFormatter(cellvalue, options, rowObject) {
 		return cellvalue.name;
+	}
+
+	function nombreAntiguoFormatter(cellvalue, options, rowObject) {
+		return rowObject.nombre;
 	}
 
 	function dependenciasFormatter(cellvalue, options, rowObject) {
@@ -117,13 +179,21 @@
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-												colNames : [ "Id", "Nombre",
-														"Acrónimo", "Segmento",
+												colNames : [ "Id",
+														"NombreAntiguo",
+														"Nombre", "Acrónimo",
+														"Segmento",
 														"Dependencia", "URLs",
-														"Activa" ],
+														"Activa", "Directorio" ],
 												colModel : [
 														{
 															name : "id",
+															hidden : true,
+															sortable : false
+														},
+														{
+															name : "nombreAntiguo",
+															formatter : nombreAntiguoFormatter,
 															hidden : true,
 															sortable : false
 														},
@@ -187,8 +257,8 @@
 															},
 															edittype : "select",
 															editoptions : {
-																
-																style: "height:100px; width:100%; text-align:left;",
+
+																style : "height:100px; width:100%; text-align:left;",
 																multiple : true,
 																dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
 																buildSelect : function(
@@ -254,7 +324,9 @@
 															width : 60,
 															edittype : 'textarea',
 															sortable : false,
-															editoptions: { style: "height:100px; width:100%; text-align:left;" }
+															editoptions : {
+																style : "height:100px; width:100%; text-align:left;"
+															}
 														},
 														{
 															name : "activa",
@@ -267,10 +339,21 @@
 															},
 															sortable : false
 														},
+														{
+															name : "inDirectory",
+															align : "center",
+															width : 10,
+															template : "booleanCheckboxFa",
+															edittype : "checkbox",
+															editoptions : {
+																value : "true:false"
+															},
+															sortable : false
+														},
 
 												],
 												inlineEditing : {
-													keys : false,
+													keys : true,
 													defaultFocusField : "nombre"
 												},
 												cmTemplate : {
@@ -278,13 +361,14 @@
 													editable : true
 												},
 												viewrecords : false,
-												caption : "Semillas",
+												/* caption : "Semillas", */
 												autowidth : true,
-												//pager : '#gridbuttons',
 												pgbuttons : false,
 												pgtext : false,
 												pginput : false,
-												/* ondblClickRow: function (rowid, status, e) {  */
+												hidegrid : false,
+												altRows : true,
+												mtype : 'POST',
 												onSelectRow : function(rowid,
 														status, e) {
 
@@ -306,27 +390,17 @@
 																	{
 																		focusField : e.target,
 																		keys : true,
-																		beforeSaveRow : function(
-																				o,
-																				rowid) {
-																			/* $('#grid').jqGrid('saveRow',rowid, true, '/oaw/secure/JsonSemillasObservatorio.do?action=update'); 
-																			reloadGrid(lastUrl)
-																			return false; */
-																			$(
-																					'#grid')
-																					.jqGrid(
-																							'saveRow',
-																							rowid,
-																							{
-																								successfunc : function(
-																										response) {
-																									reloadGrid(lastUrl);
-																								},
-																								url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-																								restoreAfterError : true
-																							});
-
+																		url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
+																		restoreAfterError : false,
+																		successfunc : function(
+																				response) {
+																			reloadGrid(lastUrl);
+																		},
+																		afterrestorefunc : function(
+																				response) {
+																			reloadGrid(lastUrl);
 																		}
+
 																	});
 
 												},
@@ -340,9 +414,6 @@
 													for (i = 0; i < savedRows.length; i++) {
 														if (savedRows[i].id !== rowid) {
 															// save currently editing row
-															// one can replace saveRow to restoreRow in the next line
-															/* $self.jqGrid("saveRow", savedRows[i].id, true, '/oaw/secure/JsonSemillasObservatorio.do?action=update');*/
-
 															$self
 																	.jqGrid(
 																			'saveRow',
@@ -352,8 +423,12 @@
 																						response) {
 																					reloadGrid(lastUrl);
 																				},
+																				afterrestorefunc : function(
+																						response) {
+																					reloadGrid(lastUrl);
+																				},
 																				url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-																				restoreAfterError : true
+																				restoreAfterError : false,
 																			});
 
 														}
@@ -449,6 +524,8 @@
 				<bean:message key="gestion.semillas.observatorio.titulo" />
 			</h2>
 
+			<div id="exitosNuevaSemillaMD" style="display: none"></div>
+
 			<html:form action="/secure/ViewSemillasObservatorio.do" method="get"
 				styleClass="formulario form-horizontal">
 				<input type="hidden" name="<%=Constants.ACTION%>"
@@ -504,131 +581,24 @@
 				</fieldset>
 			</html:form>
 
-
-
+			<!-- Nueva semilla -->
+			<p class="pull-right">
+				<a href="#" class="btn btn-default btn-lg"
+					onclick="dialogoNuevaSemilla()"> <span
+					class="glyphicon glyphicon-plus" aria-hidden="true"
+					data-toggle="tooltip" title=""
+					data-original-title="Crear una semilla"></span> <bean:message
+						key="cargar.semilla.observatorio.nueva.semilla" />
+				</a>
+			</p>
+			<!-- Grid -->
 			<table id="grid">
 			</table>
-			<!-- <div id="gridbuttons"></div> -->
+
+
 
 			<p id="paginador"></p>
 
-			<input type="button"
-				value="<bean:message key="cargar.semilla.observatorio.nueva.semilla" />"
-				onclick="dialogoNuevaSemilla()" />
-
-
-
-			<%-- 			<div class="detail">
-				<logic:notPresent name="<%=Constants.OBSERVATORY_SEED_LIST%>">
-					<div class="notaInformativaExito">
-						<p>
-							<bean:message key="semilla.observatorio.vacia" />
-						</p>
-						<p>
-							<html:link forward="observatorySeeds" name="paramsNS"
-								styleClass="boton">
-								<bean:message key="cargar.semilla.observatorio.nueva.semilla" />
-							</html:link>
-							<html:link styleClass="btn btn-default btn-lg"
-								forward="indexAdmin">
-								<bean:message key="boton.volver" />
-							</html:link>
-						</p>
-					</div>
-			</div> 
-			</logic:notPresent> --%>
-
-			<%-- 			<logic:present name="<%=Constants.OBSERVATORY_SEED_LIST%>">
-				<logic:empty name="<%=Constants.OBSERVATORY_SEED_LIST%>">
-					<div class="notaInformativaExito">
-						<p>
-							<bean:message key="semilla.observatorio.vacia" />
-						</p>
-						<p>
-							<html:link forward="observatorySeeds" name="paramsNS"
-								styleClass="boton">
-								<bean:message key="cargar.semilla.observatorio.nueva.semilla" />
-							</html:link>
-							<html:link styleClass="btn btn-default btn-lg"
-								forward="indexAdmin">
-								<bean:message key="boton.volver" />
-							</html:link>
-						</p>
-					</div>
-				</logic:empty>
-				<logic:notEmpty name="<%=Constants.OBSERVATORY_SEED_LIST%>">
-					<p class="pull-right">
-						<html:link forward="observatorySeeds" name="paramsNS"
-							styleClass="btn btn-default btn-lg">
-							<span class="glyphicon glyphicon-plus" aria-hidden="true"
-								data-toggle="tooltip" title="Crear una nueva semilla"></span>
-							<bean:message key="cargar.semilla.observatorio.nueva.semilla" />
-						</html:link>
-					</p>
-					<div class="pag">
-						<table class="table table-stripped table-bordered table-hover">
-							<caption>
-								<bean:message key="lista.semillas.observatorio" />
-							</caption>
-							<tr>
-								<th><bean:message key="cargar.semilla.observatorio.nombre" /></th>
-								<th><bean:message
-										key="cargar.semilla.observatorio.categoria" /></th>
-								<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
-								<th class="accion">Eliminar</th>
-							</tr>
-							<logic:iterate name="<%= Constants.OBSERVATORY_SEED_LIST %>"
-								id="semilla">
-								<bean:define id="action"><%=Constants.ACTION%></bean:define>
-								<bean:define id="semillaId" name="semilla" property="id" />
-								<bean:define id="semillaSTR"><%=Constants.SEMILLA%></bean:define>
-								<tr>
-									<td style="text-align: left"><bean:define id="actionDet"><%=Constants.ACCION_SEED_DETAIL%></bean:define>
-										<jsp:useBean id="params" class="java.util.HashMap" /> <bean:define
-											id="actionMod"><%=Constants.ACCION_MODIFICAR%></bean:define>
-										<c:set target="${params}" property="${semillaSTR}"
-											value="${semillaId}" /> <c:set target="${params}"
-											property="${action}" value="${actionMod}" /> <html:link
-											forward="observatorySeeds" name="params">
-											<span data-toggle="tooltip"
-												title="Editar la configuraci&oacute;n de esta semilla" />
-											<bean:write name="semilla" property="nombre" />
-											</span>
-										</html:link> <span class="glyphicon glyphicon-edit pull-right edit-mark"
-										aria-hidden="true" /></td>
-									<td><bean:write name="semilla" property="categoria.name" />
-									</td>
-									<td><logic:equal name="semilla" property="activa"
-											value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="activa" value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-									<td><logic:equal value="false" name="semilla"
-											property="asociada">
-											<jsp:useBean id="paramsD" class="java.util.HashMap" />
-											<bean:define id="actionDel"><%=Constants.ACCION_CONFIRMACION_BORRAR%></bean:define>
-											<c:set target="${paramsD}" property="${semillaSTR}"
-												value="${semillaId}" />
-											<c:set target="${paramsD}" property="${action}"
-												value="${actionDel}" />
-											<html:link forward="observatorySeeds" name="paramsD">
-												<span class="glyphicon glyphicon-remove" aria-hidden="true"
-													data-toggle="tooltip" title="Eliminar esta semilla" />
-												<span class="sr-only"><bean:message
-														key="eliminar.semilla.observatorio" /></span>
-											</html:link>
-										</logic:equal> <logic:equal value="true" name="semilla" property="asociada">
-											<img src="../images/bt_eliminar_escala_grises.gif"
-												alt="<bean:message key="eliminar.semilla.observatorio.desactivado" />" />
-										</logic:equal></td>
-								</tr>
-							</logic:iterate>
-						</table>
-						<jsp:include page="pagination.jsp" />
-					</div>
-				</logic:notEmpty>
-			</logic:present> --%>
 		</div>
 		<p id="pCenter">
 			<html:link forward="observatoryMenu"
