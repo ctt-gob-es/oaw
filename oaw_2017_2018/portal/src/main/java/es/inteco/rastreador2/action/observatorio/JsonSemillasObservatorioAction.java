@@ -13,14 +13,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.actions.DispatchAction;
+import org.apache.struts.util.MessageResources;
 
 import com.google.gson.Gson;
 
@@ -33,19 +31,32 @@ import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
 
 /**
- * 
- * Action para el grid de semillas
- * 
- * 
- * @author alvaro.pelaez
+ * Action para el grid de semillas.
  *
+ * @author alvaro.pelaez
  */
 
 public class JsonSemillasObservatorioAction extends DispatchAction {
 
+	/**
+	 * Buscar.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	public ActionForward buscar(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
@@ -94,131 +105,191 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		//request.getParameter("semilla");
+		// request.getParameter("semilla");
 
 		SemillaForm semilla = new SemillaForm();
 
 		semilla.setId(Long.parseLong(request.getParameter("id")));
 		semilla.setNombre(request.getParameter("nombre"));
 		semilla.setAcronimo(request.getParameter("acronimo"));
-		//semilla.setDependencia(request.getParameter("dependencia"));
-		
-		//Soporte a múltiples dependencias
+		// semilla.setDependencia(request.getParameter("dependencia"));
+
+		// Soporte a múltiples dependencias
 		List<DependenciaForm> listaDependencias = new ArrayList<>();
-		
+
 		String dependencias = request.getParameter("dependencias");
-		if(!StringUtils.isEmpty(dependencias)){
+		if (!StringUtils.isEmpty(dependencias)) {
 			String[] idsDependencias = dependencias.split(",");
-			for(int i=0; i<idsDependencias.length;i++){
+			for (int i = 0; i < idsDependencias.length; i++) {
 				DependenciaForm dependencia = new DependenciaForm();
 				dependencia.setId(Long.parseLong(idsDependencias[i]));
 				listaDependencias.add(dependencia);
 			}
 		}
-		
+
 		semilla.setDependencias(listaDependencias);
-		
-		
+
 		semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
-		if(request.getParameter("listaUrls")!=null){
-		semilla.setListaUrlsString(request.getParameter("listaUrls").replace("\r\n", ";"));
+		if (request.getParameter("listaUrls") != null) {
+			semilla.setListaUrlsString(request.getParameter("listaUrls").replace("\r\n", ";"));
 		}
 		CategoriaForm categoriaSemilla = new CategoriaForm();
 		categoriaSemilla.setId(request.getParameter("categoria"));
 		semilla.setCategoria(categoriaSemilla);
 
-		ActionErrors errors = new ActionErrors();
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
 		try (Connection c = DataBaseManager.getConnection()) {
-			SemillaDAO.editSeed(c, semilla);
-//			request.setAttribute(Constants.SEED_CATEGORIES, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
-//			if (modificada == null) {
-//				SemillaForm semillaForm = SemillaDAO.getSeedById(c, Long.parseLong(idSemilla));
-//				semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace(";", "\r\n"));
-//				semillaForm.setNombre_antiguo(semillaForm.getNombre());
-//				request.setAttribute(Constants.OBSERVATORY_SEED_FORM, semillaForm);
-//			} else {
-//				SemillaForm semillaForm = (SemillaForm) form;
-//				semillaForm.setId(Long.parseLong(idSemilla));
-//				boolean existSeed = SemillaDAO.existSeed(c, semillaForm.getNombre(),
-//						Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-//
-//				if (existSeed && !semillaForm.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
-//					errors.add("semillaDuplicada", new ActionMessage("mensaje.error.nombre.semilla.duplicado"));
-//					saveErrors(request.getSession(), errors);
-//					return mapping.findForward(Constants.EDIT_SEED);
-//				}
-//
-//				semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace("\r\n", ";"));
-//				SemillaDAO.editSeed(c, semillaForm);
-//
-//				errors.add("semillaModificada", new ActionMessage("mensaje.exito.semilla.modificada"));
-//				saveErrors(request.getSession(), errors);
-//
-//				ActionForward forward = new ActionForward(mapping.findForward(Constants.LOAD_SEEDS_FORWARD));
-//				forward.setRedirect(true);
-//				return forward;
-//			}
+
+			// Comprobar que no existe una semilla con el mismo nombre
+			boolean existSeed = SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+
+			if (existSeed && !semilla.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
+
+				response.setStatus(400);
+				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+
+			}
+
+			else {
+
+				SemillaDAO.editSeed(c, semilla);
+
+			}
+
 		} catch (Exception e) {
 			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			response.setStatus(400);
+			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 		}
 
 		return null;
 	}
 
-	
+	/**
+	 * Save.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
-		SemillaForm semilla = new SemillaForm();
 
-		semilla.setNombre(request.getParameter("nombre"));
-		semilla.setAcronimo(request.getParameter("acronimo"));
-		
-		//Soporte a múltiples dependencias
-		List<DependenciaForm> listaDependencias = new ArrayList<>();
-		
-		String[] dependencias = request.getParameterValues("dependencias");
-		if(dependencias !=null && dependencias.length>0){
-			for(int i=0; i<dependencias.length;i++){
-				DependenciaForm dependencia = new DependenciaForm();
-				dependencia.setId(Long.parseLong(dependencias[i]));
-				listaDependencias.add(dependencia);
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+
+		List<JsonMessage> errores = new ArrayList<>();
+
+		if (StringUtils.isEmpty(request.getParameter("nombre"))) {
+
+			errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.nombre.requerido")));
+		}
+
+		if (StringUtils.isEmpty(request.getParameter("urls"))) {
+			errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.requerido")));
+		}
+
+		if (!errores.isEmpty()) {
+
+			response.setStatus(400);
+			response.getWriter().write(new Gson().toJson(errores));
+
+		} else {
+
+			SemillaForm semilla = new SemillaForm();
+
+			semilla.setNombre(request.getParameter("nombre"));
+			semilla.setAcronimo(request.getParameter("acronimo"));
+
+			// Soporte a múltiples dependencias
+			List<DependenciaForm> listaDependencias = new ArrayList<>();
+
+			String[] dependencias = request.getParameterValues("dependencias");
+			if (dependencias != null && dependencias.length > 0) {
+				for (int i = 0; i < dependencias.length; i++) {
+					DependenciaForm dependencia = new DependenciaForm();
+					dependencia.setId(Long.parseLong(dependencias[i]));
+					listaDependencias.add(dependencia);
+				}
 			}
-		}
-		
-		semilla.setDependencias(listaDependencias);
-		
-		
-		semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
-		if(request.getParameter("urls")!=null){
-			
-			semilla.setListaUrls(Arrays.asList(request.getParameter("urls").replace("\r\n", ";").split(";")));
-		}
-		CategoriaForm categoriaSemilla = new CategoriaForm();
-		categoriaSemilla.setId(request.getParameter("segmento"));
-		semilla.setCategoria(categoriaSemilla);
-		
-		
-		try (Connection c = DataBaseManager.getConnection()) {
-			SemillaDAO.saveSeedMultidependencia(c,semilla);
-			//TODO
-			
-			PrintWriter pw = response.getWriter();
-			pw.write("{}");
-			pw.flush();
-			pw.close();
-			
-		} catch (Exception e) {
-			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+
+			semilla.setDependencias(listaDependencias);
+
+			semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
+			if (request.getParameter("urls") != null) {
+
+				semilla.setListaUrls(Arrays.asList(request.getParameter("urls").replace("\r\n", ";").split(";")));
+			}
+			CategoriaForm categoriaSemilla = new CategoriaForm();
+			categoriaSemilla.setId(request.getParameter("segmento"));
+			semilla.setCategoria(categoriaSemilla);
+
+			try (Connection c = DataBaseManager.getConnection()) {
+				// TODO Comporbar que no existe otra con el mismo nombre
+
+				if (SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO)) {
+					response.setStatus(400);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado")));
+					response.getWriter().write(new Gson().toJson(errores));
+				} else {
+					SemillaDAO.saveSeedMultidependencia(c, semilla);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.semilla.generada")));
+					response.getWriter().write(new Gson().toJson(errores));
+				}
+
+			} catch (Exception e) {
+				Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.generico")));
+				response.setStatus(400);
+				response.getWriter().write(new Gson().toJson(errores));
+			}
 		}
 
 		return null;
 	}
-	
+
+	/**
+	 * List categorias.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	public ActionForward listCategorias(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -239,6 +310,21 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
+	/**
+	 * List dependencias.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	public ActionForward listDependencias(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -259,6 +345,14 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
+	/**
+	 * Corregir encoding.
+	 *
+	 * @param searchForm
+	 *            the search form
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
 	private void corregirEncoding(SemillaSearchForm searchForm) throws UnsupportedEncodingException {
 		Charset utf8charset = Charset.forName("UTF-8");
 		Charset iso88591charset = Charset.forName("ISO-8859-1");
@@ -274,4 +368,5 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 		searchForm.setNombre(nombreCorregido);
 	}
+
 }
