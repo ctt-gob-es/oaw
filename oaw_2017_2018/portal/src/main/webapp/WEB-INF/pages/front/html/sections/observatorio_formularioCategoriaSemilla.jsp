@@ -4,7 +4,8 @@
 <html:javascript formName="CategoriaForm" />
 
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <style>
 .ui-jqgrid-htable, #grid {
@@ -33,7 +34,8 @@
 
 /* Para evitar el parpadeo al recargar */
 .ui-jqgrid-bdiv {
-	min-height: 500px !Important;
+	/*min-height: 500px !Important;*/
+	
 }
 </style>
 
@@ -48,23 +50,36 @@
 
 
 <script type="text/javascript">
+	$(window)
+			.on(
+					'load',
+					function() {
 
-$(window).on('load', function() {
+						if ($('[name=id]').val() != null
+								&& $('[name=id]').val() != "") {
 
-	var $jq = $.noConflict();
+							var $jq = $.noConflict();
 
-	//Primera carga del grid el grid
-	$jq(document).ready(function() {
-		reloadGrid('JsonSemillasObservatorio.do?action=buscar&categoria='+$('[name=id]').val());
-	});
+							//Primera carga del grid el grid
+							$jq(document)
+									.ready(
+											function() {
+												reloadGrid('JsonSemillasObservatorio.do?action=buscar&categoria='
+														+ $('[name=id]').val());
+											});
+						}
 
-});
+					});
 </script>
 
 <logic:present parameter="<%=Constants.ID_CATEGORIA%>">
 	<bean:parameter name="<%=Constants.ID_CATEGORIA %>" id="idcat" />
 </logic:present>
 
+<div id="dialogoNuevaSemilla" style="display: none">
+	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp" />
+
+</div>
 
 <!-- observatorio_formularioCategoriaSemilla.jsp -->
 <div id="main">
@@ -103,6 +118,8 @@ $(window).on('load', function() {
 				<bean:message key="categoria.semillas.titulo" />
 			</h2>
 
+			<div id="exitosNuevaSemillaMD" style="display: none"></div>
+
 			<p>
 				<bean:message key="categoria.semillas.fichero.info">
 					<jsp:attribute name="arg0">
@@ -119,7 +136,7 @@ $(window).on('load', function() {
 			<html:form styleClass="formulario form-horizontal" method="post"
 				action="/secure/SeedCategoriesAction" enctype="multipart/form-data"
 				onsubmit="return validateCategoriaForm(this)">
-				<html:hidden property="id"/>
+				<html:hidden property="id" />
 				<input type="hidden" name="<%=Constants.ACTION%>"
 					value="<bean:write name="<%=Constants.ACTION%>"/>" />
 				<fieldset>
@@ -127,8 +144,8 @@ $(window).on('load', function() {
 					<div class="formItem">
 						<label for="name" class="control-label"><strong
 							class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="migas.categoria" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="migas.categoria" />: </strong></label>
 						<html:text styleClass="texto form-control" property="name"
 							styleId="name" maxlength="30" />
 					</div>
@@ -176,7 +193,7 @@ $(window).on('load', function() {
 			</html:form>
 
 			<logic:present name="<%=Constants.ID_CATEGORIA%>">
-				<p class="pull-right">
+				<%-- 								<p class="pull-right">
 					<html:link forward="newCategorySeed"
 						styleClass="btn btn-default btn-lg"
 						paramName="<%=Constants.ID_CATEGORIA%>"
@@ -186,7 +203,18 @@ $(window).on('load', function() {
 						<span class="sr-only>"><bean:message
 								key="categoria.semillas.nueva.semilla" /></span>
 					</html:link>
+				</p>  --%>
+
+				<p class="pull-right">
+					<a href="#" class="btn btn-default btn-lg"
+						onclick="dialogoNuevaSemilla()"> <span
+						class="glyphicon glyphicon-plus" aria-hidden="true"
+						data-toggle="tooltip" title=""
+						data-original-title="Crear una semilla"></span> <bean:message
+							key="cargar.semilla.observatorio.nueva.semilla" />
+					</a>
 				</p>
+
 			</logic:present>
 
 

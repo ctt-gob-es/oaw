@@ -1,5 +1,5 @@
 <%@ include file="/common/taglibs.jsp"%>
-
+<%@page import="es.inteco.common.Constants"%>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 <script type="text/javascript">
@@ -69,7 +69,7 @@
 	}
 </script>
 
-<div id="main" style="overflow:hidden">
+<div id="main" style="overflow: hidden">
 
 	<h2>
 		<bean:message key="gestion.semillas.observatorio.titulo" />
@@ -139,16 +139,23 @@
 				</div>
 			</div>
 
-			<!-- Categoria/Segmento -->
-			<div class="row formItem">
-				<label for="categoria" class="control-label"><strong
-					class="labelVisu"><bean:message
-							key="nueva.semilla.webs.categoria" /></strong></label>
-				<div class="col-xs-4">
-					<select name="segmento" id="selectCategoriasNuevaSemilla"
-						class="textoSelect form-control"></select>
+
+			<logic:present parameter="<%=Constants.ID_CATEGORIA%>">
+				<input type="hidden" name="segmento"
+					value="<c:out value="${CategoriaForm.id }" />" />
+			</logic:present>
+			<logic:notPresent parameter="<%=Constants.ID_CATEGORIA%>">
+				<!-- Categoria/Segmento -->
+				<div class="row formItem">
+					<label for="categoria" class="control-label"><strong
+						class="labelVisu"><bean:message
+								key="nueva.semilla.webs.categoria" /></strong></label>
+					<div class="col-xs-4">
+						<select name="segmento" id="selectCategoriasNuevaSemilla"
+							class="textoSelect form-control"></select>
+					</div>
 				</div>
-			</div>
+			</logic:notPresent>
 
 			<!-- Urls -->
 			<div class="row formItem">
