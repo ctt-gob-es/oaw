@@ -148,8 +148,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		semilla.setDependencias(listaDependencias);
 
 		semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
+		semilla.setInDirectory(Boolean.parseBoolean(request.getParameter("inDirectory")));
+
 		if (request.getParameter("listaUrls") != null) {
-			semilla.setListaUrlsString(request.getParameter("listaUrls").replace("\r\n", ";"));
+			semilla.setListaUrlsString(request.getParameter("listaUrls").replace("\r\n", ";").replace("\n", ";"));
 		}
 		CategoriaForm categoriaSemilla = new CategoriaForm();
 		categoriaSemilla.setId(request.getParameter("categoria"));
@@ -242,6 +244,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			semilla.setDependencias(listaDependencias);
 
 			semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
+
+			semilla.setInDirectory(Boolean.parseBoolean(request.getParameter("directorio")));
 			if (request.getParameter("urls") != null) {
 
 				semilla.setListaUrls(Arrays.asList(request.getParameter("urls").replace("\r\n", ";").split(";")));
@@ -272,6 +276,27 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			}
 		}
 
+		return null;
+	}
+
+	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+
+		List<JsonMessage> errores = new ArrayList<>();
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			SemillaDAO.deleteSeed(c, Long.parseLong(request.getParameter("idSemilla")));
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.semilla.borrada")));
+			response.getWriter().write(new Gson().toJson(errores));
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.generico")));
+			response.setStatus(400);
+			response.getWriter().write(new Gson().toJson(errores));
+		}
 		return null;
 	}
 

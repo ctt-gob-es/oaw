@@ -9,6 +9,7 @@
 
 		//Cargar las categorias
 
+		$jn('#selectCategoriasNuevaSemilla').empty();
 		$jn
 				.ajax(
 						{
@@ -33,7 +34,8 @@
 						});
 
 		//Cargar las dependencias
-
+		$jn('#selectDependenciasNuevaSemilla').empty();
+		$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
 		$jn
 				.ajax(
 						{

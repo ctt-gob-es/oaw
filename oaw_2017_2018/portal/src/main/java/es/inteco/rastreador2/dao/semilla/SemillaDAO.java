@@ -198,6 +198,12 @@ public final class SemillaDAO {
 					} else {
 						semillaForm.setActiva(true);
 					}
+					
+					if (rs.getLong("l.in_directory") == 0) {
+						semillaForm.setInDirectory(false);
+					} else {
+						semillaForm.setInDirectory(true);
+					}
 
 					// Cargar las dependencias de la semilla
 
