@@ -7,37 +7,7 @@
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<style>
-.ui-jqgrid-htable, #grid {
-	border: none !Important;
-	margin: 0 !Important;
-	font-size: 14px !Important;
-}
-
-.ui-jqgrid .ui-jqgrid-bdiv {
-	overflow-x: hidden !Important;
-	overflow-y: auto !Important;;
-}
-
-.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
-	padding: 1%;
-	font-weight: bold;
-}
-
-.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr>td {
-	padding: 5px;
-}
-
-.ui-jqgrid {
-	clear: both;
-}
-
-/* Para evitar el parpadeo al recargar */
-.ui-jqgrid-bdiv {
-	/*min-height: 500px !Important;*/
-	
-}
-</style>
+<link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
 
 
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>

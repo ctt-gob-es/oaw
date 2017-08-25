@@ -38,40 +38,7 @@
 	});
 </script>
 
-<style>
-.ui-jqgrid-htable, #grid {
-	border: none !Important;
-	margin: 0 !Important;
-	font-size: 14px !Important;
-}
-
-.ui-jqgrid .ui-jqgrid-bdiv {
-	overflow-x: hidden !Important;
-	overflow-y: auto !Important;;
-}
-
-.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {
-	padding: 1%;
-	font-weight: bold;
-}
-
-.ui-jqgrid .ui-jqgrid-bdiv tr.ui-row-ltr>td {
-	padding: 5px;
-}
-
-.ui-jqgrid {
-	clear: both;
-}
-
-/* Para evitar el parpadeo al recargar */
-.ui-jqgrid-bdiv {
-	/*min-height: 500px !Important;*/
-}
-
-.ui-widget-content a , .ui-widget-content .glyphicon {
-    color: #e21430 !important;
-}
-</style>
+<link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
 
 
 <bean:define id="idCartridgeMalware">

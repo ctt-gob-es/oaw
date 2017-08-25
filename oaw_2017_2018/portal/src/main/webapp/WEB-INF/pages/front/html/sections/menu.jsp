@@ -45,6 +45,17 @@
                             <html:link forward="observatorySeed" titleKey="menu.config.observatory.seed.title"><bean:message key="menu.config.observatory.seed" /></html:link>
                         </logic:notEqual>
                         </li>
+                        
+                        <logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBS_DEPENDENCIAS %>">
+                        <li class="active">
+                            <html:link styleId="subselected" forward="observatoryDependencias" titleKey="menu.config.dependencias.title"><bean:message key="menu.config.dependencias" /></html:link>
+                        </logic:equal>
+                        <logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBS_DEPENDENCIAS %>">
+                        <li>
+                            <html:link forward="observatoryDependencias" titleKey="menu.config.dependencias.title"><bean:message key="menu.config.dependencias" /></html:link>
+                        </logic:notEqual>
+                        </li>
+                        
                     </inteco:menu>
                 </ul>
             </li>
