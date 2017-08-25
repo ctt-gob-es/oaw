@@ -225,7 +225,12 @@
 										});
 
 					});
-	
+
+	var windowWidth = $(window).width() * 0.3;
+	var windowHeight = $(window).height() * 0.3;
+
+	var dialog;
+
 	function dialogoNuevaDependencia() {
 
 		window.scrollTo(0, 0);
@@ -233,10 +238,11 @@
 		$('#exitosNuevaSemillaMD').hide();
 		$('#erroresNuevaSemillaMD').hide();
 
-		dialog = $("#dialogoNuevaSemilla").dialog({
+		dialog = $("#dialogoNuevaDependencia").dialog({
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
+			title : 'Nueva dependencia',
 			buttons : {
 				"Guardar" : function() {
 					guardarNuevaDependencia();
@@ -245,24 +251,20 @@
 					dialog.dialog("close");
 				}
 			},
-			open : function() {
-				cargarSelect();
-			},
 			close : function() {
-				$('#nuevaSemillaMultidependencia')[0].reset();
-				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
+				$('#nuevaDependenciaForm')[0].reset();
 			}
 		});
 	}
-	
+
 	function guardarNuevaDependencia() {
 		$('#exitosNuevaSemillaMD').hide();
 		$('#erroresNuevaSemillaMD').hide();
 		$('#erroresNuevaSemillaMD').html("");
 
 		var guardado = $.ajax({
-			url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
-			data : $('#nuevaSemillaMultidependencia').serialize(),
+			url : '/oaw/secure/ViewDependenciasObservatorio.do?action=save',
+			data : $('#nuevaDependenciaForm').serialize(),
 			method : 'POST'
 		}).success(
 				function(response) {
@@ -299,7 +301,6 @@
 
 		return guardado;
 	}
-	
 </script>
 
 
@@ -310,101 +311,98 @@
 	<div id="dialogoNuevaDependencia" style="display: none">
 		<div id="main" style="overflow: hidden">
 
-			<h2>
-				<bean:message key="gestion.semillas.observatorio.titulo" />
-			</h2>
-
 			<div id="erroresNuevaSemillaMD" style="display: none"></div>
 
-			<form id="nuevaSemillaMultidependencia">
+			<form id="nuevaDependenciaForm">
 				<!-- Nombre -->
 				<div class="row formItem">
 					<label for="nombre" class="control-label"><strong
 						class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 								key="nueva.dependencia.observatorio.nombre" /></strong></label>
-					<div class="col-xs-6">
+					<div class="col-xs-8">
+
 						<input type="text" id="nombre" name="nombre"
 							class="texto form-control" />
 					</div>
 				</div>
 			</form>
-
 		</div>
-
-
-		<div id="container_menu_izq">
-			<jsp:include page="menu.jsp" />
-		</div>
-
-		<div id="container_der">
-
-			<div id="migas">
-				<p class="sr-only">
-					<bean:message key="ubicacion.usuario" />
-				</p>
-				<ol class="breadcrumb">
-					<li><html:link forward="observatoryMenu">
-							<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-							<bean:message key="migas.observatorio" />
-						</html:link></li>
-					<li class="active"><bean:message
-							key="migas.dependencias.observatorio" /></li>
-				</ol>
-			</div>
-
-			<div id="cajaformularios">
-				<h2>
-					<bean:message key="gestion.dependencias.observatorio.titulo" />
-				</h2>
-
-				<div id="exitosNuevaSemillaMD" style="display: none"></div>
-
-				<form id="buscadorDependencias">
-					<fieldset>
-						<legend>Buscador</legend>
-						<jsp:include page="/common/crawler_messages.jsp" />
-						<div class="formItem">
-							<label for="nombre" class="control-label"><strong
-								class="labelVisu"><bean:message
-										key="nueva.dependencia.observatorio.nombre" /></strong></label> <input
-								type="text" class="texto form-control" id="nombre" name="nombre" />
-						</div>
-						<div class="formButton">
-							<span onclick="buscar()" class="btn btn-default btn-lg"> <span
-								class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
-									key="boton.buscar" />
-							</span>
-						</div>
-					</fieldset>
-				</form>
-
-				<!-- Nueva semilla -->
-				<p class="pull-right">
-					<a href="#" class="btn btn-default btn-lg"
-						onclick="dialogoNuevaDependencia()"> <span
-						class="glyphicon glyphicon-plus" aria-hidden="true"
-						data-toggle="tooltip" title=""
-						data-original-title="Crear una semilla"></span> <bean:message
-							key="nueva.dependencia.observatorio" />
-					</a>
-				</p>
-				<!-- Grid -->
-				<table id="grid">
-				</table>
-
-
-
-				<p id="paginador"></p>
-
-			</div>
-			<p id="pCenter">
-				<html:link forward="observatoryMenu"
-					styleClass="btn btn-default btn-lg">
-					<bean:message key="boton.volver" />
-				</html:link>
-			</p>
-		</div>
-		<!-- fin cajaformularios -->
 	</div>
+
+
+	<div id="container_menu_izq">
+		<jsp:include page="menu.jsp" />
+	</div>
+
+	<div id="container_der">
+
+		<div id="migas">
+			<p class="sr-only">
+				<bean:message key="ubicacion.usuario" />
+			</p>
+			<ol class="breadcrumb">
+				<li><html:link forward="observatoryMenu">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+						<bean:message key="migas.observatorio" />
+					</html:link></li>
+				<li class="active"><bean:message
+						key="migas.dependencias.observatorio" /></li>
+			</ol>
+		</div>
+
+		<div id="cajaformularios">
+			<h2>
+				<bean:message key="gestion.dependencias.observatorio.titulo" />
+			</h2>
+
+			<div id="exitosNuevaSemillaMD" style="display: none"></div>
+
+			<form id="buscadorDependencias">
+				<fieldset>
+					<legend>Buscador</legend>
+					<jsp:include page="/common/crawler_messages.jsp" />
+					<div class="formItem">
+						<label for="nombre" class="control-label"><strong
+							class="labelVisu"><bean:message
+									key="nueva.dependencia.observatorio.nombre" /></strong></label> <input
+							type="text" class="texto form-control" id="nombre" name="nombre" />
+					</div>
+					<div class="formButton">
+						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
+							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
+								key="boton.buscar" />
+						</span>
+					</div>
+				</fieldset>
+			</form>
+
+			<!-- Nueva semilla -->
+			<p class="pull-right">
+				<a href="#" class="btn btn-default btn-lg"
+					onclick="dialogoNuevaDependencia()"> <span
+					class="glyphicon glyphicon-plus" aria-hidden="true"
+					data-toggle="tooltip" title=""
+					data-original-title="Crear una semilla"></span> <bean:message
+						key="nueva.dependencia.observatorio" />
+				</a>
+			</p>
+			<!-- Grid -->
+			<table id="grid">
+			</table>
+
+
+
+			<p id="paginador"></p>
+
+		</div>
+		<p id="pCenter">
+			<html:link forward="observatoryMenu"
+				styleClass="btn btn-default btn-lg">
+				<bean:message key="boton.volver" />
+			</html:link>
+		</p>
+	</div>
+	<!-- fin cajaformularios -->
+</div>
 </div>
