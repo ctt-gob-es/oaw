@@ -123,8 +123,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		// request.getParameter("semilla");
-
 		SemillaForm semilla = new SemillaForm();
 
 		semilla.setId(Long.parseLong(request.getParameter("id")));

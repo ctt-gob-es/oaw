@@ -407,8 +407,8 @@ public class CrawlerJob implements InterruptableJob {
         final PropertiesManager pmgr = new PropertiesManager();
         final List<String> mailTo = getAdministradoresMails();
 
-        final String subject = MessageFormat.format(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
-        final String text = MessageFormat.format(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "incomplete.crawler.text"), crawlerData.getUrls().get(0), crawlingDomains.size());
+        final String subject = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
+        final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), crawlerData.getUrls().get(0), crawlingDomains.size());
 
         mailService.sendMail(mailTo, subject, text);
     }

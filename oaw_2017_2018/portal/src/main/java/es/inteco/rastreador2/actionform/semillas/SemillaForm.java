@@ -1,13 +1,14 @@
 package es.inteco.rastreador2.actionform.semillas;
 
 
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.validator.ValidatorForm;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.validator.ValidatorForm;
 
 public class SemillaForm extends ValidatorForm implements Serializable {
 
@@ -32,7 +33,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
     
     private List<DependenciaForm> dependencias;
 
-    public SemillaForm() {
+	public SemillaForm() {
         this.activa = true;
     }
 

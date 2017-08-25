@@ -1,87 +1,5 @@
 var lastUrl;
 
-var dialog;
-
-var windowWidth = $(window).width() * 0.8;
-var windowHeight = $(window).height() * 0.8;
-
-function dialogoNuevaSemilla() {
-
-	window.scrollTo(0, 0);
-
-	$('#exitosNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').hide();
-
-	dialog = $("#dialogoNuevaSemilla").dialog({
-		height : windowHeight,
-		width : windowWidth,
-		modal : true,
-		buttons : {
-			"Guardar" : function() {
-				guardarNuevaSemilla();
-			},
-			"Cancelar" : function() {
-				dialog.dialog("close");
-			}
-		},
-		open : function() {
-			cargarSelect();
-		},
-		close : function() {
-			$('#nuevaSemillaMultidependencia')[0].reset();
-			$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
-		}
-	});
-
-}
-
-//Guardar la nueva semilla
-
-function guardarNuevaSemilla() {
-	$('#exitosNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').html("");
-
-	var guardado = $.ajax({
-		url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
-		data : $('#nuevaSemillaMultidependencia').serialize(),
-		method : 'POST'
-	}).success(
-			function(response) {
-				$('#exitosNuevaSemillaMD').addClass('alert alert-success');
-				$('#exitosNuevaSemillaMD').append("<ul>");
-
-				$.each(JSON.parse(response), function(index, value) {
-					$('#exitosNuevaSemillaMD').append(
-							'<li>' + value.message + '</li>');
-				});
-
-				$('#exitosNuevaSemillaMD').append("</ul>");
-				$('#exitosNuevaSemillaMD').show();
-				dialog.dialog("close");
-				reloadGrid(lastUrl);
-
-			}).error(
-			function(response) {
-				$('#erroresNuevaSemillaMD').addClass('alert alert-danger');
-				$('#erroresNuevaSemillaMD').append("<ul>");
-
-				$.each(JSON.parse(response.responseText), function(index,
-						value) {
-					$('#erroresNuevaSemillaMD').append(
-							'<li>' + value.message + '</li>');
-				});
-
-				$('#erroresNuevaSemillaMD').append("</ul>");
-				$('#erroresNuevaSemillaMD').show();
-
-			}
-
-	);
-
-	return guardado;
-}
-
 // Formatters de celdas
 function categoriaFormatter(cellvalue, options, rowObject) {
 	return cellvalue.name;
@@ -103,10 +21,51 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 	return cellFormatted;
 }
 
-function irDependenciaFormatter(cellvalue, options, rowObject) {
+function resultadosFormatter(cellvalue, options, rowObject) {
+
+	// /oaw/secure/showTrackingAction.do?regeneratePDF=true&idExObs=6&observatorio=si&idCartucho=5&id_observatorio=9&id=81&idrastreo=151
 	return "<a href="
-			+ rowObject.listaUrls
-			+ "><span class='glyphicon glyphicon-new-window'></span><span class='sr-only'>Ir a la p&aacute;gina web de esta semilla</span></a>";
+			+ "/oaw/secure//showTrackingAction.do?regeneratePDF=true&observatorio=si&id_observatorio="
+			+ $('[name=id_observatorio]').val()
+			+ '&idExObs='
+			+ $('[name=idExObs]').val()
+			+ '&idCartucho='
+			+ $('[name=idCartucho]').val()
+			+ "&id="
+			+ rowObject.idFulfilledCrawling
+			+ "&idrastreo="
+			+ rowObject.idCrawling
+			+ "><span class='glyphicon glyphicon-list-alt'></span><span class='sr-only'>Resultados</span></a>";
+}
+
+function informesFormatter(cellvalue, options, rowObject) {
+	// /oaw/secure/primaryExportPdfAction.do?regeneratePDF=true&idExObs=6&observatorio=si&idCartucho=5&id_observatorio=9&id=81&idrastreo=151
+	return "<a href=/oaw/secure/primaryExportPdfAction.do?regeneratePDF=true&id_observatorio="
+			+ $('[name=id_observatorio]').val()
+			+ '&idExObs='
+			+ $('[name=idExObs]').val()
+			+ '&idCartucho='
+			+ $('[name=idCartucho]').val()
+			+ "&id="
+			+ rowObject.idFulfilledCrawling
+			+ "&idrastreo="
+			+ rowObject.idCrawling
+			+ "><span class='glyphicon glyphicon-cloud-download' aria-hidden='true' data-toggle='tooltip' title='' data-original-title='Descargar el informe individual de esta semilla' ></span><span class='sr-only'>Informe individual</span></a>";
+
+}
+
+function relanzarFormatter(cellvalue, options, rowObject) {
+	// /oaw/secure/ResultadosObservatorio.do?action=lanzarEjecucion&id_observatorio=9&idExObs=6&idCartucho=5&idSemilla=97
+	return "<a href="
+			+ "/oaw/secure/ResultadosObservatorio.do?action=lanzarEjecucion&id_observatorio="
+			+ $('[name=id_observatorio]').val()
+			+ '&idExObs='
+			+ $('[name=idExObs]').val()
+			+ '&idCartucho='
+			+ $('[name=idCartucho]').val()
+			+ "&idSemilla="
+			+ rowObject.id
+			+ "><span class='glyphicon glyphicon-refresh'></span><span class='sr-only'>Relanzar</span></a>";
 }
 
 function eliminarDependenciaFormater(cellvalue, options, rowObject) {
@@ -188,7 +147,7 @@ function reloadGrid(path) {
 
 					function(data) {
 
-						ajaxJson = JSON.stringify(data.semillas);
+						ajaxJson = JSON.stringify(data.resultados);
 
 						total = data.paginador.total;
 
@@ -200,8 +159,11 @@ function reloadGrid(path) {
 													"Nombre", "Acr\u00F3nimo",
 													"Segmento", "Dependencia",
 													"URLs", "Activa",
-													"Directorio", "Ir",
-													"Eliminar" ],
+													"Directorio",
+													"Puntuac\u00F3n",
+													"Nivel Accesibilidad",
+													"Resultados", "Informe",
+													"Relanzar", "Eliminar" ],
 											colModel : [
 													{
 														name : "id",
@@ -319,7 +281,6 @@ function reloadGrid(path) {
 																				.inArray(
 																						ri.id,
 																						idsDependencias) >= 0) {
-																			
 
 																			s += '<option selected="selected" value="'
 																					+ ri.id
@@ -334,7 +295,7 @@ function reloadGrid(path) {
 																					+ ri.name
 																					+ '</option>';
 																		}
-																		
+
 																	}
 																}
 
@@ -379,8 +340,36 @@ function reloadGrid(path) {
 														sortable : false
 													},
 													{
-														name : 'verUrl',
-														formatter : irDependenciaFormatter,
+														name : 'score',
+														align : "center",
+														width : 10,
+														editable : false,
+													},
+													{
+														name : 'nivel',
+														align : "center",
+														width : 10,
+														editable : false,
+													},
+													{
+														name : 'verResultados',
+														formatter : resultadosFormatter,
+														align : "center",
+														width : 10,
+														editable : false,
+														datatype : 'html'
+													},
+													{
+														name : 'verInformes',
+														formatter : informesFormatter,
+														align : "center",
+														width : 10,
+														editable : false,
+														datatype : 'html'
+													},
+													{
+														name : 'relanzar',
+														formatter : relanzarFormatter,
 														align : "center",
 														width : 10,
 														editable : false,
@@ -412,6 +401,7 @@ function reloadGrid(path) {
 											hidegrid : false,
 											altRows : true,
 											mtype : 'POST',
+											headertitles : true,
 											onSelectRow : function(rowid,
 													status, e) {
 
@@ -455,8 +445,12 @@ function reloadGrid(path) {
 												// selección par aevitar que se
 												// active la edidion
 												// if (iCol = 8) {
-												if (this.p.colModel[iCol].name === "verUrl"
-														|| this.p.colModel[iCol].name === "eliminarSemilla") {
+												if (this.p.colModel[iCol].name === "verResultados"
+														|| this.p.colModel[iCol].name === "verInformes"
+														|| this.p.colModel[iCol].name === "relanzar"
+														|| this.p.colModel[iCol].name === "eliminarSemilla"
+														|| this.p.colModel[iCol].name === "score"
+														|| this.p.colModel[iCol].name === "nivel") {
 													return false;
 												}
 
@@ -508,8 +502,8 @@ function reloadGrid(path) {
 						paginas = data.paginas;
 
 						$('#paginador').empty();
-						
-						//Si solo hay una página no pintamos el paginador
+
+						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {
 
 							$.each(paginas, function(key, value) {

@@ -7,6 +7,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
+import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.rastreo.*;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -1316,6 +1317,79 @@ public final class RastreoDAO {
             throw e;
         }
     }
+    
+    
+    public static Map<Long, List<FulFilledCrawling>> getFulfilledCrawlings2(Connection conn, List<ResultadoSemillaFullForm> seedsResults, Long idFulfilledObservatory) throws Exception {
+        final Map<Long, List<FulFilledCrawling>> results = new HashMap<>();
+        boolean isWhere = false;
+
+        String query = "SELECT rr.* , u.usuario, c.aplicacion, l.nombre " +
+                "FROM rastreos_realizados rr " +
+                "JOIN usuario u ON (u.id_usuario = rr.id_usuario) " +
+                "JOIN cartucho c ON (rr.id_cartucho = c.id_cartucho) " +
+                "LEFT JOIN lista l ON (rr.id_lista = l.id_lista) ";
+
+        if (seedsResults.size() != 0) {
+            query += "WHERE id_rastreo IN ";
+            StringBuilder idStrList = new StringBuilder(" (");
+            for (int i = 1; i <= seedsResults.size(); i++) {
+                if (seedsResults.size() > i) {
+                    idStrList.append("?,");
+                } else if (seedsResults.size() == i) {
+                    idStrList.append("?) ");
+                }
+            }
+            query += idStrList;
+            isWhere = true;
+        }
+
+
+        if (idFulfilledObservatory != null) {
+            if (isWhere) {
+                query += " AND rr.id_obs_realizado = ? ";
+            } else {
+                query += " WHERE rr.id_obs_realizado = ? ";
+            }
+        }
+
+        int count = 1;
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            for (ResultadoSemillaForm seedsResult : seedsResults) {
+                ps.setLong(count++, Long.parseLong(seedsResult.getIdCrawling()));
+            }
+
+            if (idFulfilledObservatory != null) {
+                ps.setLong(count, idFulfilledObservatory);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    FulFilledCrawling fulfilledCrawling = new FulFilledCrawling();
+                    fulfilledCrawling.setId(rs.getLong("id"));
+                    fulfilledCrawling.setIdCrawling(rs.getLong("id_rastreo"));
+                    fulfilledCrawling.setUser(rs.getString("usuario"));
+                    fulfilledCrawling.setDate(rs.getTimestamp("fecha"));
+                    fulfilledCrawling.setIdCartridge(rs.getLong("id_cartucho"));
+                    fulfilledCrawling.setCartridge(rs.getString("aplicacion"));
+                    fulfilledCrawling.setIdFulfilledObservatory(rs.getLong("id_obs_realizado"));
+                    SemillaForm semillaForm = new SemillaForm();
+                    semillaForm.setNombre(rs.getString("nombre"));
+                    fulfilledCrawling.setSeed(semillaForm);
+                    if (!results.containsKey(rs.getLong("id_rastreo"))) {
+                        results.put(rs.getLong("id_rastreo"), new ArrayList<FulFilledCrawling>());
+                    }
+                    results.get(rs.getLong("id_rastreo")).add(fulfilledCrawling);
+                }
+
+                return results;
+            }
+        } catch (SQLException e) {
+            Logger.putLog("Exception: ", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
+    }
+
 
     public static List<FulFilledCrawling> getOldCrawlings(Connection conn, int numDays) throws Exception {
         final List<FulFilledCrawling> crawlings = new ArrayList<>();
