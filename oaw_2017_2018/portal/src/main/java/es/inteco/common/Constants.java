@@ -499,6 +499,7 @@ public interface Constants {
     String SUBMENU_LISTADO_SEM = "submenuListadoSem";
     String SUBMENU_CATEGORIES = "submenuCategories";
     String SUBMENU_OBS_SEMILLA = "submenuSemillaObs";
+    String SUBMENU_OBS_DEPENDENCIAS = "submenuDependenciasObs";
     String SUBMENU_OBSERVATORIO = "submenuObservatorio";
     String SUBMENU_SERVICIO_DIAGNOSTICO = "submenuServicioDiagnostico";
     String URL = "url";

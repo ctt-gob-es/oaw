@@ -1,10 +1,6 @@
 package es.inteco.rastreador2.action.observatorio;
 
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +65,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				if (!StringUtils.isEmpty(searchForm.getNombre())) {
 
-					corregirEncoding(searchForm);
+					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
 
 				searchForm.setCategoria(request.getParameter("categoria"));
@@ -366,30 +362,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Corregir encoding.
-	 *
-	 * @param searchForm
-	 *            the search form
-	 * @throws UnsupportedEncodingException
-	 *             the unsupported encoding exception
-	 */
-	private void corregirEncoding(SemillaSearchForm searchForm) throws UnsupportedEncodingException {
-		Charset utf8charset = Charset.forName("UTF-8");
-		Charset iso88591charset = Charset.forName("ISO-8859-1");
-
-		// decode UTF-8
-		CharBuffer data = utf8charset.decode(ByteBuffer.wrap(searchForm.getNombre().getBytes("UTF-8")));
-
-		// encode ISO-8559-1
-		ByteBuffer outputBuffer = iso88591charset.encode(data);
-		byte[] outputData = outputBuffer.array();
-
-		String nombreCorregido = new String(outputData);
-
-		searchForm.setNombre(nombreCorregido);
 	}
 
 }

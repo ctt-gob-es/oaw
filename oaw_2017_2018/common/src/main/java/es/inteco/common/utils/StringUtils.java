@@ -3,8 +3,11 @@ package es.inteco.common.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -171,4 +174,28 @@ public final class StringUtils {
         }
         return sb.toString();
     }
+    
+	/**
+	 * Corregir encoding.
+	 *
+	 * @param searchForm
+	 *            the search form
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	public static String corregirEncoding(String originalString) throws UnsupportedEncodingException {
+		Charset utf8charset = Charset.forName("UTF-8");
+		Charset iso88591charset = Charset.forName("ISO-8859-1");
+
+		// decode UTF-8
+		CharBuffer data = utf8charset.decode(ByteBuffer.wrap(originalString.getBytes("UTF-8")));
+
+		// encode ISO-8559-1
+		ByteBuffer outputBuffer = iso88591charset.encode(data);
+		byte[] outputData = outputBuffer.array();
+
+		String fixedString = new String(outputData);
+
+		return fixedString;
+	}
 }
