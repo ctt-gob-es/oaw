@@ -9,6 +9,7 @@ import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
+import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
@@ -177,6 +178,32 @@ public final class ObservatoryUtils {
         final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
         final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults, idFulfilledObservatory);
         for (ResultadoSemillaForm seedResult : seedsResults) {
+            final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
+            if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
+                int numPages = 0;
+                BigDecimal avgScore = BigDecimal.ZERO;
+                final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(17);
+                for (ObservatoryEvaluationForm observatory : observatories) {
+                    if (observatory.getCrawlerExecutionId() == seedFulfilledCrawlings.get(0).getId()) {
+                        numPages++;
+                        avgScore = avgScore.add(observatory.getScore());
+                        paginas.add(observatory);
+                    }
+                }
+                if (numPages != 0) {
+                    seedResult.setScore(avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+                    seedResult.setNivel(IntavUtils.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
+                }
+            }
+        }
+        return seedsResults;
+    }
+
+	
+    public static List<ResultadoSemillaFullForm> setAvgScore2(final Connection c, final List<ResultadoSemillaFullForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+        final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
+        final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings2(c, seedsResults, idFulfilledObservatory);
+        for (ResultadoSemillaFullForm seedResult : seedsResults) {
             final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
                 int numPages = 0;

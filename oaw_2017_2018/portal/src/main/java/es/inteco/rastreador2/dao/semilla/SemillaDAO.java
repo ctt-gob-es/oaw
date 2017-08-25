@@ -1080,5 +1080,29 @@ public final class SemillaDAO {
 		}
 		return dependencias;
 	}
+	
+	public static List<DependenciaForm> getSeedDependenciasById(Connection c, Long idSemilla) throws SQLException{
+
+		List<DependenciaForm> listDependencias = new ArrayList<>();
+		PreparedStatement psDependencias = c.prepareStatement(
+				"SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
+		psDependencias.setLong(1, idSemilla);
+
+		
+		try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+			while (rsDependencias.next()) {
+				DependenciaForm dependencia = new DependenciaForm();
+				dependencia.setId(rsDependencias.getLong("id_dependencia"));
+				dependencia.setName(rsDependencias.getString("nombre"));
+				listDependencias.add(dependencia);
+			}
+
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		
+		return listDependencias;
+	}
 
 }

@@ -435,6 +435,13 @@
             <forward name="exito" path=".cargarSemillasObservatorio"/>
         </action>
         
+
+        <action path="/secure/JsonResultadoObservatorio"
+                type="es.inteco.rastreador2.action.observatorio.JsonResultadoSemillaObservatorioAction"
+                parameter ="action" 
+                validate="false">
+            <forward name="exito" path=".cargarSemillasObservatorio"/>
+        </action>        
         
 
         <action path="/secure/VerObservatorio"
