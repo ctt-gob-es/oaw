@@ -976,8 +976,9 @@ public final class SemillaDAO {
 							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
 
 								PreparedStatement psCreateDependencia = c.prepareStatement(
-										"INSERT INTO dependencia(nombre) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+										"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?", Statement.RETURN_GENERATED_KEYS);
 								psCreateDependencia.setString(1, currentDependencia.getName());
+								psCreateDependencia.setString(2, currentDependencia.getName());
 
 								int affectedRowsD = psCreateDependencia.executeUpdate();
 
