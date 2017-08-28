@@ -1,90 +1,14 @@
 var lastUrl;
 
-var dialog;
-
-var windowWidth = $(window).width() * 0.8;
-var windowHeight = $(window).height() * 0.8;
-
-function dialogoNuevaSemilla() {
-
-	window.scrollTo(0, 0);
-
-	$('#exitosNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').hide();
-
-	dialog = $("#dialogoNuevaSemilla").dialog({
-		height : windowHeight,
-		width : windowWidth,
-		modal : true,
-		buttons : {
-			"Guardar" : function() {
-				guardarNuevaSemilla();
-			},
-			"Cancelar" : function() {
-				dialog.dialog("close");
-			}
-		},
-		open : function() {
-			cargarSelect();
-		},
-		close : function() {
-			$('#nuevaSemillaMultidependencia')[0].reset();
-			$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
-		}
-	});
-
-}
-
-//Guardar la nueva semilla
-
-function guardarNuevaSemilla() {
-	$('#exitosNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').html("");
-
-	var guardado = $.ajax({
-		url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
-		data : $('#nuevaSemillaMultidependencia').serialize(),
-		method : 'POST'
-	}).success(
-			function(response) {
-				$('#exitosNuevaSemillaMD').addClass('alert alert-success');
-				$('#exitosNuevaSemillaMD').append("<ul>");
-
-				$.each(JSON.parse(response), function(index, value) {
-					$('#exitosNuevaSemillaMD').append(
-							'<li>' + value.message + '</li>');
-				});
-
-				$('#exitosNuevaSemillaMD').append("</ul>");
-				$('#exitosNuevaSemillaMD').show();
-				dialog.dialog("close");
-				reloadGrid(lastUrl);
-
-			}).error(
-			function(response) {
-				$('#erroresNuevaSemillaMD').addClass('alert alert-danger');
-				$('#erroresNuevaSemillaMD').append("<ul>");
-
-				$.each(JSON.parse(response.responseText), function(index,
-						value) {
-					$('#erroresNuevaSemillaMD').append(
-							'<li>' + value.message + '</li>');
-				});
-
-				$('#erroresNuevaSemillaMD').append("</ul>");
-				$('#erroresNuevaSemillaMD').show();
-
-			}
-
-	);
-
-	return guardado;
-}
-
 // Formatters de celdas
 function categoriaFormatter(cellvalue, options, rowObject) {
-	return cellvalue.name;
+	if (cellvalue.name != null) {
+
+		return cellvalue.name;
+
+	} else {
+		return "";
+	}
 }
 
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
@@ -172,16 +96,20 @@ function textareaEditValue(elem, operation, value) {
 }
 
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
-// de paginación.
+// de paginación. Si no le llega nada usa la url por defecto
 function reloadGrid(path) {
 
-	lastUrl = path;
+	if (typeof path != 'undefined' && path != null && path != '') {
+		lastUrl = path;
+	} else {
+		lastUrl = '/oaw/secure/JsonSemillasObservatorio.do?action=buscar';
+	}
 
 	$('#grid').jqGrid('clearGridData')
 
 	$
 			.ajax({
-				url : path,
+				url : lastUrl,
 				dataType : "json"
 			})
 			.done(
@@ -269,6 +197,15 @@ function reloadGrid(path) {
 													},
 													{
 														name : "dependencias",
+														// Prueba para devolver
+														// un title
+														// personalizado
+														cellattr : function(
+																rowId, val,
+																rawObject, cm,
+																rdata) {
+															return 'title="Dependencias a las que est\u00E1 asociada esta semilla"';
+														},
 														align : "left",
 														width : 60,
 														editrules : {
@@ -319,7 +256,6 @@ function reloadGrid(path) {
 																				.inArray(
 																						ri.id,
 																						idsDependencias) >= 0) {
-																			
 
 																			s += '<option selected="selected" value="'
 																					+ ri.id
@@ -334,7 +270,7 @@ function reloadGrid(path) {
 																					+ ri.name
 																					+ '</option>';
 																		}
-																		
+
 																	}
 																}
 
@@ -412,6 +348,7 @@ function reloadGrid(path) {
 											hidegrid : false,
 											altRows : true,
 											mtype : 'POST',
+											headertitles : true,
 											onSelectRow : function(rowid,
 													status, e) {
 
@@ -501,15 +438,15 @@ function reloadGrid(path) {
 						$('#grid').jqGrid('setGridParam', {
 							data : JSON.parse(ajaxJson)
 						}).trigger('reloadGrid');
-						
+
 						$('#grid').unbind("contextmenu");
 
 						// Paginador
 						paginas = data.paginas;
 
 						$('#paginador').empty();
-						
-						//Si solo hay una página no pintamos el paginador
+
+						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {
 
 							$.each(paginas, function(key, value) {

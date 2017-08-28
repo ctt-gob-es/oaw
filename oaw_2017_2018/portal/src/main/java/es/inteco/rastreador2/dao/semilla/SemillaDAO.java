@@ -157,6 +157,8 @@ public final class SemillaDAO {
 			query += " AND l.lista like ? ";
 		}
 
+		query += " ORDER BY UPPER(l.nombre) ";
+
 		query += " LIMIT ? OFFSET ?";
 
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -921,7 +923,8 @@ public final class SemillaDAO {
 			c.setAutoCommit(false);
 
 			ps = c.prepareStatement(
-					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa) VALUES (?,?,?,?,?,?,?)");
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa) VALUES (?,?,?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
 			for (SemillaForm semillaForm : semillas) {
 				ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 				ps.setString(2, semillaForm.getNombre());
@@ -943,10 +946,76 @@ public final class SemillaDAO {
 				} else {
 					ps.setBoolean(7, true);
 				}
-				ps.addBatch();
+				// ps.addBatch();
+
+				int affectedRows = ps.executeUpdate();
+
+				if (affectedRows == 0) {
+					throw new SQLException("Creating user failed, no rows affected.");
+				}
+
+				ResultSet generatedKeys = ps.getGeneratedKeys();
+
+				if (generatedKeys.next()) {
+					semillaForm.setId(generatedKeys.getLong(1));
+
+					// Inserción de las nuevas
+
+					if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+						StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+								"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+
+						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+
+							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
+
+							// Si viene informado el nombre de la depenedencia
+							// es
+							// para que se cree nueva
+
+							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
+
+								PreparedStatement psCreateDependencia = c.prepareStatement(
+										"INSERT INTO dependencia(nombre) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+								psCreateDependencia.setString(1, currentDependencia.getName());
+
+								int affectedRowsD = psCreateDependencia.executeUpdate();
+
+								if (affectedRowsD == 0) {
+									throw new SQLException("Creating user failed, no rows affected.");
+								}
+
+								ResultSet generatedKeysD = psCreateDependencia.getGeneratedKeys();
+
+								if (generatedKeysD.next()) {
+									currentDependencia.setId(generatedKeysD.getLong(1));
+								} else {
+									throw new SQLException("Creating dependencias failed, no ID obtained.");
+								}
+
+							}
+
+							slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+									.append(currentDependencia.getId()).append(")");
+
+							if (i < semillaForm.getDependencias().size() - 1) {
+								slqInsertSemillaDependencia.append(",");
+							}
+						}
+
+						PreparedStatement psInsertarSemillaDependencia = c
+								.prepareStatement(slqInsertSemillaDependencia.toString());
+
+						psInsertarSemillaDependencia.executeUpdate();
+					}
+
+				} else {
+					throw new SQLException("Creating dependencias failed, no ID obtained.");
+				}
+
 			}
 
-			ps.executeBatch();
+			// ps.executeBatch();
 
 			c.commit();
 		} catch (SQLException e) {
@@ -1006,8 +1075,11 @@ public final class SemillaDAO {
 							"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
 
 					for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+
+						DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
+
 						slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
-								.append(semillaForm.getDependencias().get(i).getId()).append(")");
+								.append(currentDependencia.getId()).append(")");
 
 						if (i < semillaForm.getDependencias().size() - 1) {
 							slqInsertSemillaDependencia.append(",");
@@ -1021,7 +1093,7 @@ public final class SemillaDAO {
 				}
 
 			} else {
-				throw new SQLException("Creating user failed, no ID obtained.");
+				throw new SQLException("Creating dependencias failed, no ID obtained.");
 			}
 
 			c.commit();

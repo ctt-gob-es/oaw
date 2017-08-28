@@ -231,6 +231,15 @@ function reloadGrid(path) {
 													},
 													{
 														name : "dependencias",
+														// Prueba para devolver
+														// un title
+														// personalizado
+														cellattr : function(
+																rowId, val,
+																rawObject, cm,
+																rdata) {
+															return 'title="Dependencias a las que est\u00E1 asociada esta semilla"';
+														},
 														align : "left",
 														width : 60,
 														editrules : {
