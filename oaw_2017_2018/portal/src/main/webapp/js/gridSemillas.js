@@ -208,9 +208,9 @@ function reloadGrid(path) {
 														},
 														align : "left",
 														width : 60,
-														editrules : {
-															required : true
-														},
+//														editrules : {
+//															required : true
+//														},
 														edittype : "select",
 														editoptions : {
 
