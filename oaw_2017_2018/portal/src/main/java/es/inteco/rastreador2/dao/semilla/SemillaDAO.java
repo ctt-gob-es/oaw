@@ -146,7 +146,7 @@ public final class SemillaDAO {
 		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
 
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-			query += " AND l.nombre like ? ";
+			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
 
 		if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
@@ -198,7 +198,7 @@ public final class SemillaDAO {
 					} else {
 						semillaForm.setActiva(true);
 					}
-					
+
 					if (rs.getLong("l.in_directory") == 0) {
 						semillaForm.setInDirectory(false);
 					} else {
@@ -208,7 +208,7 @@ public final class SemillaDAO {
 					// Cargar las dependencias de la semilla
 
 					PreparedStatement psDependencias = c.prepareStatement(
-							"SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
+							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
 					psDependencias.setLong(1, semillaForm.getId());
 
 					List<DependenciaForm> listDependencias = new ArrayList<>();
@@ -242,7 +242,7 @@ public final class SemillaDAO {
 		String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
 
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-			query += " AND l.nombre like ? ";
+			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
 
 		if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
@@ -387,9 +387,19 @@ public final class SemillaDAO {
 	}
 
 	public static void deleteSeed(Connection c, long idSemilla) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("DELETE FROM lista WHERE id_lista = ?")) {
+		try (PreparedStatement ps = c.prepareStatement("DELETE FROM lista WHERE lista.id_lista = ?")) {
 			ps.setLong(1, idSemilla);
 			ps.executeUpdate();
+
+			// Borrar las relacions (no se pueden crear FK a lista por MyISAM no
+			// lo permite
+			// https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html
+			PreparedStatement deleteSemillaDependencia = c
+					.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
+
+			deleteSemillaDependencia.setLong(1, idSemilla);
+			deleteSemillaDependencia.executeUpdate();
+
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -1051,12 +1061,15 @@ public final class SemillaDAO {
 
 	public static List<DependenciaForm> getSeedDependencias(Connection c, int page) throws SQLException {
 		final List<DependenciaForm> dependencias = new ArrayList<>();
-		final String query;
+		String query;
 		if (page == Constants.NO_PAGINACION) {
 			query = "SELECT * FROM dependencia";
 		} else {
 			query = "SELECT * FROM dependencia LIMIT ? OFFSET ?";
 		}
+
+		query += " ORDER BY UPPER(nombre) ASC ";
+
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			if (page != Constants.NO_PAGINACION) {
 				final PropertiesManager pmgr = new PropertiesManager();
@@ -1080,15 +1093,14 @@ public final class SemillaDAO {
 		}
 		return dependencias;
 	}
-	
-	public static List<DependenciaForm> getSeedDependenciasById(Connection c, Long idSemilla) throws SQLException{
+
+	public static List<DependenciaForm> getSeedDependenciasById(Connection c, Long idSemilla) throws SQLException {
 
 		List<DependenciaForm> listDependencias = new ArrayList<>();
 		PreparedStatement psDependencias = c.prepareStatement(
 				"SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
 		psDependencias.setLong(1, idSemilla);
 
-		
 		try (ResultSet rsDependencias = psDependencias.executeQuery()) {
 			while (rsDependencias.next()) {
 				DependenciaForm dependencia = new DependenciaForm();
@@ -1101,7 +1113,7 @@ public final class SemillaDAO {
 			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-		
+
 		return listDependencias;
 	}
 
