@@ -170,7 +170,7 @@ function reloadGrid(path) {
 
 																var response = jQuery
 																		.parseJSON(data);
-																var s = '<select>';
+																var s = '<select><option value=""></option>';
 
 																if (response
 																		&& response.length) {
@@ -189,9 +189,9 @@ function reloadGrid(path) {
 															}
 
 														},
-														editrules : {
-															required : true
-														},
+//														editrules : {
+//															required : true
+//														},
 														formatter : categoriaFormatter,
 														sortable : false
 													},
@@ -290,7 +290,10 @@ function reloadGrid(path) {
 														editoptions : {
 															custom_element : textareaEdit,
 															custom_value : textareaEditValue
-														}
+														},
+														editrules : {
+															required : true
+														},
 													},
 													{
 														name : "activa",

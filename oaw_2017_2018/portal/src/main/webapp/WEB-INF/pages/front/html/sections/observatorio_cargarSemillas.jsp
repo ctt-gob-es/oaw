@@ -87,7 +87,7 @@
 					$('#exitosNuevaSemillaMD').append("</ul>");
 					$('#exitosNuevaSemillaMD').show();
 					dialog.dialog("close");
-					reloadGrid(lastUrl); 
+					reloadGrid(lastUrl);
 
 				}).error(
 				function(response) {
@@ -219,6 +219,12 @@
 				</fieldset>
 			</html:form>
 
+			<p class="alert alert-info pull-left">
+				<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message
+						key="nueva.semilla.webs.informacion" /> </em>:
+				<bean:message key="nueva.semilla.webs.info" />
+			</p>
+
 			<!-- Nueva semilla -->
 			<p class="pull-right">
 				<a href="#" class="btn btn-default btn-lg"
@@ -229,6 +235,8 @@
 						key="cargar.semilla.observatorio.nueva.semilla" />
 				</a>
 			</p>
+
+
 			<!-- Grid -->
 			<table id="grid">
 			</table>
@@ -246,5 +254,4 @@
 		</p>
 	</div>
 	<!-- fin cajaformularios -->
-</div>
 </div>

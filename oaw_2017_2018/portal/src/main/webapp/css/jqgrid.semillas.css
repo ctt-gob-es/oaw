@@ -30,3 +30,7 @@
 .ui-widget-content a , .ui-jqgrid-jquery-ui .glyphicon {
     color: #e21430 !important;
 }
+
+.pagination{
+	padding: 5px 10px;
+}
