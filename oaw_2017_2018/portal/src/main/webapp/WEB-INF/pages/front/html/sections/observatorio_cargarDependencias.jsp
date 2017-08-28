@@ -74,6 +74,7 @@
 															name : "eliminar",
 															width : 20,
 															sortable : false,
+															editable : false,
 															formatter : eliminarFormatter,
 														}
 
