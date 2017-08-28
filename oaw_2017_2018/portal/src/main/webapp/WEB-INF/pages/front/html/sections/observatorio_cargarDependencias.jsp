@@ -2,11 +2,6 @@
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
 
-<jsp:useBean id="paramsNS" class="java.util.HashMap" />
-<c:set target="${paramsNS}" property="action" value="anadir" />
-<c:set target="${paramsNS}" property="esPrimera" value="si" />
-
-
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
 
@@ -49,22 +44,38 @@
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/ViewDependenciasObservatorio.do?action=update',
-												colNames : [ "Id", "Nombre" ],
-												colModel : [ {
-													name : "id",
-													hidden : true,
-													sortable : false
-												},
+												colNames : [ "Id", "Nombre",
+														"NombreAntiguo",
+														"Eliminar" ],
+												colModel : [
+														{
+															name : "id",
+															hidden : true,
+															sortable : false
+														},
 
-												{
-													name : "name",
-													width : 60,
-													editrules : {
-														required : true
-													},
-													sortable : false,
-													align : "left"
-												}
+														{
+															name : "name",
+															width : 60,
+															editrules : {
+																required : true
+															},
+															sortable : false,
+															align : "left"
+														},
+														{
+															name : "nombreAntiguo",
+															formatter : nombreAntiguoFormatter,
+															hidden : true,
+															sortable : false
+														},
+
+														{
+															name : "eliminar",
+															width : 20,
+															sortable : false,
+															formatter : eliminarFormatter,
+														}
 
 												],
 												inlineEditing : {
@@ -124,6 +135,14 @@
 															e.target).closest(
 															"td"), iCol = $.jgrid
 															.getCellIndex($td[0]);
+
+													// En la columna
+													// eliminar desactivamos la
+													// selección para evitar que se
+													// active la edidion
+													if (this.p.colModel[iCol].name === "eliminar") {
+														return false;
+													}
 
 													savedRows = $self.jqGrid(
 															"getGridParam",
@@ -202,6 +221,54 @@
 
 	}
 
+	// Conservamos el nombre original para comprobaciones posteriores
+	function nombreAntiguoFormatter(cellvalue, options, rowObject) {
+		return rowObject.nombre;
+	}
+
+	function eliminarFormatter(cellvalue, options, rowObject) {
+		return "<span style='cursor:pointer' onclick='eliminarDependencia("
+				+ options.rowId
+				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
+	}
+
+	function eliminarDependencia(rowId) {
+
+		var dependencia = $('#grid').jqGrid('getRowData', rowId);
+
+		var idDependencia = dependencia.id;
+		var dialogoEliminar = $('<div/><div>');
+
+		dialogoEliminar.append('<p>&#191;Desea eliminar la dependencia "'
+				+ dependencia.name + '"?</p>');
+
+		dialogoEliminar
+				.dialog({
+					autoOpen : false,
+					modal : true,
+					title : 'Eliminar dependencia',
+					buttons : {
+						"Aceptar" : function() {
+							$
+									.ajax(
+											{
+												url : '/oaw/secure/ViewDependenciasObservatorio.do?action=delete&idDependencia='
+														+ idDependencia,
+												method : 'POST'
+											}).success(function(response) {
+										reloadGrid(lastUrl);
+										dialogoEliminar.dialog("close");
+									});
+						},
+						"Cancelar" : function() {
+							dialogoEliminar.dialog("close");
+						}
+					}
+				});
+
+		dialogoEliminar.dialog("open");
+	}
+
 	//Buscador
 	function buscar() {
 		reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search&'
@@ -259,6 +326,7 @@
 
 	function guardarNuevaDependencia() {
 		$('#exitosNuevaSemillaMD').hide();
+		$('#exitosNuevaSemillaMD').html("");
 		$('#erroresNuevaSemillaMD').hide();
 		$('#erroresNuevaSemillaMD').html("");
 
