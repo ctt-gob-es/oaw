@@ -426,7 +426,7 @@
 
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
-			<form id="buscadorDependencias">
+			<form id="buscadorDependencias" class="formulario form-horizontal">
 				<fieldset>
 					<legend>Buscador</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
