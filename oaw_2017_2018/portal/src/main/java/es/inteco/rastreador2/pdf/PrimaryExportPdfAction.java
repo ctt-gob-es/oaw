@@ -1,5 +1,23 @@
 package es.inteco.rastreador2.pdf;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import es.ctic.rastreador2.pdf.PdfGeneratorThread;
 import es.ctic.rastreador2.pdf.SourceFilesManager;
 import es.inteco.common.Constants;
@@ -20,22 +38,6 @@ import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.pdf.utils.ZipUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.utils.FileUtils;
-import org.apache.struts.action.Action;
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class PrimaryExportPdfAction extends Action {
 
@@ -71,19 +73,27 @@ public class PrimaryExportPdfAction extends Action {
 					? Long.parseLong(request.getParameter(Constants.ID)) : 0;
 			final boolean regenerate = Boolean.parseBoolean(request.getParameter(Constants.EXPORT_PDF_REGENERATE));
 
-			final File pdfFile = buildPdf(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo, regenerate,
-					request);
-			if (pdfFile != null) {
-				try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-					ZipUtils.generateZipFile(pdfFile.getParent(), outputStream, false);
-					CrawlerUtils.returnData(response, outputStream.toByteArray(),
-							pdfFile.getName().replace(".pdf", ".zip"), "application/zip");
-				} catch (Exception e) {
-					Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class, Logger.LOG_LEVEL_ERROR,
-							e);
-					return mapping.findForward(Constants.ERROR);
+			// final File pdfFile = buildPdf(idObservatory, idExecutionOb,
+			// idRastreoRealizado, idRastreo, regenerate,
+			// request);
+
+			final List<File> pdfFiles = buildPdfs(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo,
+					regenerate, request);
+
+			for (File pdfFile : pdfFiles) {
+				if (pdfFile != null) {
+					try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+						ZipUtils.generateZipFile(pdfFile.getParent(), outputStream, false);
+						CrawlerUtils.returnData(response, outputStream.toByteArray(),
+								pdfFile.getName().replace(".pdf", ".zip"), "application/zip");
+					} catch (Exception e) {
+						Logger.putLog("Exception al exportar el PDF", PrimaryExportPdfAction.class,
+								Logger.LOG_LEVEL_ERROR, e);
+						return mapping.findForward(Constants.ERROR);
+					}
 				}
 			}
+
 		} else {
 			return mapping.findForward(Constants.NO_PERMISSION);
 		}
@@ -101,29 +111,66 @@ public class PrimaryExportPdfAction extends Action {
 		}
 	}
 
-	private File buildPdf(long idObservatory, long idExecutionOb, long idRastreoRealizado, long idRastreo,
+	/*
+	 * private File buildPdf(long idObservatory, long idExecutionOb, long
+	 * idRastreoRealizado, long idRastreo, boolean regenerate, final
+	 * HttpServletRequest request) { final int countAnalisis =
+	 * AnalisisDatos.countAnalysisByTracking(idRastreoRealizado);
+	 * 
+	 * if (countAnalisis > 0) { try (Connection c =
+	 * DataBaseManager.getConnection()) { final SemillaForm seed =
+	 * SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
+	 * final File pdfFile = getReportFile(idObservatory, idExecutionOb, seed);
+	 * final SourceFilesManager sourceFilesManager = new
+	 * SourceFilesManager(pdfFile.getParentFile()); // Si el pdf no ha sido
+	 * creado lo creamos if (regenerate || !pdfFile.exists() ||
+	 * !sourceFilesManager.existsSourcesZip()) { final List<Long> evaluationIds
+	 * = AnalisisDatos
+	 * .getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
+	 * 
+	 * final long observatoryType = ObservatorioDAO.getObservatoryForm(c,
+	 * idObservatory).getTipo(); PrimaryExportPdfUtils.exportToPdf(idRastreo,
+	 * idRastreoRealizado, request, pdfFile.getPath(), seed.getNombre(), null,
+	 * idExecutionOb, observatoryType); FileUtils.deleteDir(new
+	 * File(pdfFile.getParent() + File.separator + "temp"));
+	 * 
+	 * sourceFilesManager.writeSourceFiles(c, evaluationIds);
+	 * sourceFilesManager.zipSources(true); } return pdfFile; } catch (Exception
+	 * e) { Logger.putLog("Exception: ", ExportAction.class,
+	 * Logger.LOG_LEVEL_ERROR, e); } } return null; }
+	 */
+
+	private List<File> buildPdfs(long idObservatory, long idExecutionOb, long idRastreoRealizado, long idRastreo,
 			boolean regenerate, final HttpServletRequest request) {
 		final int countAnalisis = AnalisisDatos.countAnalysisByTracking(idRastreoRealizado);
 
 		if (countAnalisis > 0) {
 			try (Connection c = DataBaseManager.getConnection()) {
 				final SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
-				final File pdfFile = getReportFile(idObservatory, idExecutionOb, seed);
-				final SourceFilesManager sourceFilesManager = new SourceFilesManager(pdfFile.getParentFile());
-				// Si el pdf no ha sido creado lo creamos
-				if (regenerate || !pdfFile.exists() || !sourceFilesManager.existsSourcesZip()) {
-					final List<Long> evaluationIds = AnalisisDatos
-							.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
 
-					final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
-					PrimaryExportPdfUtils.exportToPdf(idRastreo, idRastreoRealizado, request, pdfFile.getPath(),
-							seed.getNombre(), null, idExecutionOb, observatoryType);
-					FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
+				final List<File> pdfFiles = getReportFiles(idObservatory, idExecutionOb, seed);
 
-					sourceFilesManager.writeSourceFiles(c, evaluationIds);
-					sourceFilesManager.zipSources(true);
+				if (pdfFiles != null && !pdfFiles.isEmpty()) {
+
+					for (File pdfFile : pdfFiles) {
+
+						final SourceFilesManager sourceFilesManager = new SourceFilesManager(pdfFile.getParentFile());
+						// Si el pdf no ha sido creado lo creamos
+						if (regenerate || !pdfFile.exists() || !sourceFilesManager.existsSourcesZip()) {
+							final List<Long> evaluationIds = AnalisisDatos
+									.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
+
+							final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
+							PrimaryExportPdfUtils.exportToPdf(idRastreo, idRastreoRealizado, request, pdfFile.getPath(),
+									seed.getNombre(), null, idExecutionOb, observatoryType);
+							FileUtils.deleteDir(new File(pdfFile.getParent() + File.separator + "temp"));
+
+							sourceFilesManager.writeSourceFiles(c, evaluationIds);
+							sourceFilesManager.zipSources(true);
+						}
+					}
 				}
-				return pdfFile;
+				return pdfFiles;
 			} catch (Exception e) {
 				Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 			}
@@ -151,7 +198,7 @@ public class PrimaryExportPdfAction extends Action {
 
 			int reportsToGenerate = 0;
 			for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
-				// final File pdfFile = getReportFile(idObservatory,
+				// final File pdfFile = getReportFile(idObservatory, //
 				// idExecutionOb, SemillaDAO.getSeedById(c,
 				// RastreoDAO.getIdSeedByIdRastreo(c,
 				// fulfilledCrawling.getIdCrawling())));
@@ -190,7 +237,10 @@ public class PrimaryExportPdfAction extends Action {
 				final boolean regenerate = request.getParameter("regenerate") != null
 						&& Boolean.parseBoolean(request.getParameter("regenerate"));
 				for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
-					buildPdf(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(),
+//					buildPdf(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(),
+//							regenerate, request);
+					
+					buildPdfs(idObservatory, idExecutionOb, fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling(),
 							regenerate, request);
 				}
 				final PropertiesManager pmgr = new PropertiesManager();
@@ -213,17 +263,18 @@ public class PrimaryExportPdfAction extends Action {
 		}
 	}
 
-	private File getReportFile(final long idObservatory, final long idExecutionOb, final SemillaForm seed) {
-		final PropertiesManager pmgr = new PropertiesManager();
-		String dependOn = PDFUtils.formatSeedName(seed.getDependencia());
-		if (dependOn == null || dependOn.isEmpty()) {
-			dependOn = Constants.NO_DEPENDENCE;
-		}
-		final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory
-				+ File.separator + idExecutionOb + File.separator + dependOn + File.separator
-				+ PDFUtils.formatSeedName(seed.getNombre());
-		return new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
-	}
+	/*
+	 * private File getReportFile(final long idObservatory, final long
+	 * idExecutionOb, final SemillaForm seed) { final PropertiesManager pmgr =
+	 * new PropertiesManager(); String dependOn =
+	 * PDFUtils.formatSeedName(seed.getDependencia()); if (dependOn == null ||
+	 * dependOn.isEmpty()) { dependOn = Constants.NO_DEPENDENCE; } final String
+	 * path = pmgr.getValue(CRAWLER_PROPERTIES,
+	 * "path.inteco.exports.observatory.intav") + idObservatory + File.separator
+	 * + idExecutionOb + File.separator + dependOn + File.separator +
+	 * PDFUtils.formatSeedName(seed.getNombre()); return new File(path +
+	 * File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf"); }
+	 */
 
 	private List<File> getReportFiles(final long idObservatory, final long idExecutionOb, final SemillaForm seed) {
 
