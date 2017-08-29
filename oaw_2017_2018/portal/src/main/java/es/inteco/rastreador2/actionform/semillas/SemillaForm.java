@@ -189,15 +189,13 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	public void setDependencias(List<DependenciaForm> dependencias) {
 		this.dependencias = dependencias;
 	}
-	
-	
+
 	public void addDependencia(DependenciaForm dependencia) {
 		if (this.dependencias == null) {
 			this.dependencias = new ArrayList<DependenciaForm>();
 		}
 		this.dependencias.add(dependencia);
 	}
-	
 
 	@Override
 	public String toString() {

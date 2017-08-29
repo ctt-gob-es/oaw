@@ -1,6 +1,7 @@
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
+<html:javascript formName="DependenciaForm"/>
 
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
@@ -224,7 +225,7 @@
 
 	// Conservamos el nombre original para comprobaciones posteriores
 	function nombreAntiguoFormatter(cellvalue, options, rowObject) {
-		return rowObject.nombre;
+		return rowObject.name;
 	}
 
 	function eliminarFormatter(cellvalue, options, rowObject) {
