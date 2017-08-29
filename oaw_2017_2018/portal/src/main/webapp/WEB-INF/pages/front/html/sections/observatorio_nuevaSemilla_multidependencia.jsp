@@ -1,5 +1,8 @@
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
+<html:javascript formName="JsonSemillaObservatorioForm"/>
+
+
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 <script type="text/javascript">
@@ -77,7 +80,7 @@
 
 	<div id="erroresNuevaSemillaMD" style="display: none"></div>
 
-	<form id="nuevaSemillaMultidependencia">
+	<html:form styleId="nuevaSemillaMultidependencia" action="/secure/JsonSemillasObservatorio.do?action=save">
 		<fieldset>
 			<!-- Nombre -->
 			<div class="row formItem">
@@ -124,7 +127,7 @@
 				<div class="col-xs-4">
 					<select multiple class="form-control"
 						id="selectDependenciasNuevaSemillaSeleccionadas"
-						name="dependencias"></select>
+						name="dependenciasSeleccionadas"></select>
 				</div>
 
 
@@ -169,7 +172,7 @@
 						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 							key="nueva.semilla.observatorio.url" /></strong></label>
 				<div class="col-xs-8">
-					<textarea rows="5" cols="50" name="urls" class="form-control"></textarea>
+					<textarea rows="5" cols="50" name="listaUrlsString" class="form-control"></textarea>
 				</div>
 			</div>
 
@@ -196,5 +199,5 @@
 
 
 		</fieldset>
-	</form>
+	</html:form>
 </div>

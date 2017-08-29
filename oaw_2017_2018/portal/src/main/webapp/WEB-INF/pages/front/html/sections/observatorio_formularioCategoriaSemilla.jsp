@@ -118,7 +118,7 @@ function dialogoNuevaSemilla() {
 							$jq(document)
 									.ready(
 											function() {
-												reloadGrid('JsonSemillasObservatorio.do?action=buscar&categoria='
+												reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&categoria='
 														+ $('[name=id]').val());
 											});
 						}

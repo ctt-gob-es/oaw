@@ -2,17 +2,24 @@ var lastUrl;
 
 // Formatters de celdas
 function categoriaFormatter(cellvalue, options, rowObject) {
-	return cellvalue.name;
+	if (rowObject.categoria.name != null) {
+
+		return rowObject.categoria.name;
+
+	} else {
+		return "";
+	}
 }
 
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 	return rowObject.nombre;
 }
 
+
 function dependenciasFormatter(cellvalue, options, rowObject) {
 	var cellFormatted = "<ul style='list-style: none; padding-left: 0;' >";
 
-	$.each(cellvalue, function(index, value) {
+	$.each(rowObject.dependencias, function(index, value) {
 		cellFormatted = cellFormatted + "<li>" + value.name + "</li>";
 	});
 
@@ -20,6 +27,12 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 
 	return cellFormatted;
 }
+
+function urlsFormatter(cellvalue, options, rowObject) {
+	return rowObject.listaUrls;
+}
+
+
 
 function resultadosFormatter(cellvalue, options, rowObject) {
 
@@ -192,7 +205,7 @@ function reloadGrid(path) {
 														align : "left"
 													},
 													{
-														name : "categoria",
+														name : "segmento",
 														width : 15,
 														edittype : "select",
 														align : "left",
@@ -230,7 +243,7 @@ function reloadGrid(path) {
 														sortable : false
 													},
 													{
-														name : "dependencias",
+														name : "dependenciasSeleccionadas",
 														// Prueba para devolver
 														// un title
 														// personalizado
@@ -316,10 +329,11 @@ function reloadGrid(path) {
 														sortable : false
 													},
 													{
-														name : "listaUrls",
+														name : "listaUrlsString",
 														align : "left",
 														width : 60,
 														edittype : 'custom',
+														formatter: urlsFormatter,
 														sortable : false,
 														editoptions : {
 															custom_element : textareaEdit,

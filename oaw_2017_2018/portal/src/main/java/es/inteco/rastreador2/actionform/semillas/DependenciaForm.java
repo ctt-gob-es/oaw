@@ -20,6 +20,9 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 
 	/** The name. */
 	private String name;
+	
+	/** The nombre antiguo. */
+	private String nombreAntiguo;
 
 	/**
 	 * Gets the id.
@@ -57,6 +60,26 @@ public class DependenciaForm extends ValidatorForm implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	
+
+	/**
+	 * Gets the nombre antiguo.
+	 *
+	 * @return the nombre antiguo
+	 */
+	public String getNombreAntiguo() {
+		return nombreAntiguo;
+	}
+
+	/**
+	 * Sets the nombre antiguo.
+	 *
+	 * @param nombreAntiguo the new nombre antiguo
+	 */
+	public void setNombreAntiguo(String nombreAntiguo) {
+		this.nombreAntiguo = nombreAntiguo;
 	}
 
 	/* (non-Javadoc)

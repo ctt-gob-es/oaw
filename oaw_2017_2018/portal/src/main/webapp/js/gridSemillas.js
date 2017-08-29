@@ -2,9 +2,9 @@ var lastUrl;
 
 // Formatters de celdas
 function categoriaFormatter(cellvalue, options, rowObject) {
-	if (cellvalue.name != null) {
+	if (rowObject.categoria.name != null) {
 
-		return cellvalue.name;
+		return rowObject.categoria.name;
 
 	} else {
 		return "";
@@ -18,7 +18,7 @@ function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 function dependenciasFormatter(cellvalue, options, rowObject) {
 	var cellFormatted = "<ul style='list-style: none; padding-left: 0;' >";
 
-	$.each(cellvalue, function(index, value) {
+	$.each(rowObject.dependencias, function(index, value) {
 		cellFormatted = cellFormatted + "<li>" + value.name + "</li>";
 	});
 
@@ -26,6 +26,11 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 
 	return cellFormatted;
 }
+
+function urlsFormatter(cellvalue, options, rowObject) {
+	return rowObject.listaUrls;
+}
+
 
 function irDependenciaFormatter(cellvalue, options, rowObject) {
 	return "<a href="
@@ -102,7 +107,7 @@ function reloadGrid(path) {
 	if (typeof path != 'undefined' && path != null && path != '') {
 		lastUrl = path;
 	} else {
-		lastUrl = '/oaw/secure/JsonSemillasObservatorio.do?action=buscar';
+		lastUrl = '/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar';
 	}
 
 	$('#grid').jqGrid('clearGridData')
@@ -158,7 +163,7 @@ function reloadGrid(path) {
 														align : "left"
 													},
 													{
-														name : "categoria",
+														name : "segmento",
 														width : 15,
 														edittype : "select",
 														align : "left",
@@ -196,7 +201,7 @@ function reloadGrid(path) {
 														sortable : false
 													},
 													{
-														name : "dependencias",
+														name : "dependenciasSeleccionadas",
 														// Prueba para devolver
 														// un title
 														// personalizado
@@ -282,11 +287,12 @@ function reloadGrid(path) {
 														sortable : false
 													},
 													{
-														name : "listaUrls",
+														name : "listaUrlsString",
 														align : "left",
 														width : 60,
 														edittype : 'custom',
 														sortable : false,
+														formatter: urlsFormatter,
 														editoptions : {
 															custom_element : textareaEdit,
 															custom_value : textareaEditValue

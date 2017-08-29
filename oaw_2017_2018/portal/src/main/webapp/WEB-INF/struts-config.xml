@@ -16,10 +16,16 @@
 			type="es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm" />
 		<form-bean name="SemillaObservatorioForm"
 			type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
+		<form-bean name="JsonSemillaObservatorioForm"
+			type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />	
 		<form-bean name="NuevoObservatorioForm"
 			type="es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm" />
 		<form-bean name="SubirConclusionesForm"
 			type="es.inteco.rastreador2.actionform.observatorio.SubirConclusionesForm" />
+		
+		<form-bean name="DependenciaObservatoryForm"
+			type="es.inteco.rastreador2.actionform.semillas.DependenciaForm" />	
+			
 
 		<!-- RASTREOS -->
 		<form-bean name="InsertarRastreoForm"
@@ -476,13 +482,21 @@
 		</action>
 
 		<!-- Devuelve las semillas en JSON -->
-		<action path="/secure/JsonSemillasObservatorio"
+		<action path="/secure/JsonViewSemillasObservatorio" name="SemillaSearchForm"
 			type="es.inteco.rastreador2.action.observatorio.JsonSemillasObservatorioAction"
 			parameter="action" validate="false">
 			<forward name="exito" path=".cargarSemillasObservatorio" />
 		</action>
 
-		<action path="/secure/ViewDependenciasObservatorio"
+
+		<!-- Devuelve las semillas en JSON -->
+		<action path="/secure/JsonSemillasObservatorio" name="JsonSemillaObservatorioForm"
+			type="es.inteco.rastreador2.action.observatorio.JsonSemillasObservatorioAction"
+			parameter="action" validate="false">
+			<forward name="exito" path=".cargarSemillasObservatorio" />
+		</action>
+
+		<action path="/secure/ViewDependenciasObservatorio" name ="DependenciaObservatoryForm"
 			type="es.inteco.rastreador2.action.observatorio.DependenciasObservatorioAction"
 			parameter="action" scope="request" validate="false">
 			<forward name="exito" path=".cargarDependenciasObservatorio" />

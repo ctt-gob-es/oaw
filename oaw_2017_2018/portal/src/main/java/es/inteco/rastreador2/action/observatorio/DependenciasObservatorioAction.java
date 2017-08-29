@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -48,7 +50,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 */
 	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		
+
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU);
 		if (request.getParameter(Constants.RETURN_OBSERVATORY_RESULTS) != null) {
@@ -56,7 +58,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 		} else {
 			request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_OBS_DEPENDENCIAS);
 		}
-		
+
 		return mapping.findForward(Constants.EXITO);
 	}
 
@@ -137,46 +139,39 @@ public class DependenciasObservatorioAction extends DispatchAction {
 
 		List<JsonMessage> errores = new ArrayList<>();
 
-		String id = request.getParameter("id");
+		DependenciaForm dependencia = (DependenciaForm) form;
 
-		String nombre = request.getParameter("name");
+		ActionErrors errors = dependencia.validate(mapping, request);
 
-		String nombreAntiguo = request.getParameter("nombreAntiguo");
-
-		if (id != null) {
-
-			if (nombre != null) {
-
-				DependenciaForm dependencia = new DependenciaForm();
-				dependencia.setId(Long.parseLong(id));
-				dependencia.setName(nombre);
-
-				try (Connection c = DataBaseManager.getConnection()) {
-
-					if (DependenciaDAO.existsDependencia(c, dependencia)
-							&& dependencia.getName().equalsIgnoreCase(nombreAntiguo)) {
-						response.setStatus(400);
-						errores.add(new JsonMessage(
-								messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado")));
-						response.getWriter().write(new Gson().toJson(errores));
-					} else {
-						DependenciaDAO.update(c, dependencia);
-						errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.dependencia.generada")));
-						response.getWriter().write(new Gson().toJson(errores));
-					}
-
-				} catch (Exception e) {
-					Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-					response.setStatus(400);
-					response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
-				}
-			} else {
-				response.setStatus(400);
-				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio"));
-			}
-		} else {
+		if (errors != null && !errors.isEmpty()) {
+			// Error de validación
 			response.setStatus(400);
-			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio"));
+		} else {
+
+			try (Connection c = DataBaseManager.getConnection()) {
+
+				if (DependenciaDAO.existsDependencia(c, dependencia)
+						&& !dependencia.getName().equalsIgnoreCase(dependencia.getNombreAntiguo())) {
+					response.setStatus(400);
+//					errores.add(
+//							new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado")));
+					//response.getWriter().write(new Gson().toJson(errores));
+					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado"));
+					
+				} else {
+					DependenciaDAO.update(c, dependencia);
+//					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.dependencia.generada")));
+//					response.getWriter().write(new Gson().toJson(errores));
+					response.getWriter().write(messageResources.getMessage("mensaje.exito.dependencia.generada"));
+				}
+
+			} catch (Exception e) {
+				Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+				response.setStatus(400);
+				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			}
+
 		}
 		return null;
 	}

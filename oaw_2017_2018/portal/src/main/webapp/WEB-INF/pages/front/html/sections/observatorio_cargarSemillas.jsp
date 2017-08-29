@@ -73,7 +73,8 @@
 		var guardado = $.ajax({
 			url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
 			data : $('#nuevaSemillaMultidependencia').serialize(),
-			method : 'POST'
+			method : 'POST',
+			traditional: true,
 		}).success(
 				function(response) {
 					$('#exitosNuevaSemillaMD').addClass('alert alert-success');
@@ -112,7 +113,7 @@
 
 	//Buscador
 	function buscar() {
-		reloadGrid('/oaw/secure/JsonSemillasObservatorio.do?action=buscar&'
+		reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&'
 				+ $('#SemillaSearchForm').serialize());
 	}
 

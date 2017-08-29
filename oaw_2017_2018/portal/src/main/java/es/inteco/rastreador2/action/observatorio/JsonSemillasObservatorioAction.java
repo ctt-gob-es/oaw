@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -37,6 +38,8 @@ import es.inteco.rastreador2.utils.Pagination;
  */
 
 public class JsonSemillasObservatorioAction extends DispatchAction {
+
+	private MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
 	/**
 	 * Buscar.
@@ -119,62 +122,77 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		SemillaForm semilla = new SemillaForm();
+		SemillaForm semilla = (SemillaForm) form;
 
-		semilla.setId(Long.parseLong(request.getParameter("id")));
-		semilla.setNombre(request.getParameter("nombre"));
-		semilla.setAcronimo(request.getParameter("acronimo"));
-		// semilla.setDependencia(request.getParameter("dependencia"));
+		List<JsonMessage> errores = new ArrayList<>();
 
-		// Soporte a múltiples dependencias
-		List<DependenciaForm> listaDependencias = new ArrayList<>();
+		ActionErrors errors = semilla.validate(mapping, request);
 
-		String dependencias = request.getParameter("dependencias");
-		if (!StringUtils.isEmpty(dependencias)) {
-			String[] idsDependencias = dependencias.split(",");
-			for (int i = 0; i < idsDependencias.length; i++) {
-				DependenciaForm dependencia = new DependenciaForm();
-				dependencia.setId(Long.parseLong(idsDependencias[i]));
-				listaDependencias.add(dependencia);
+		if (errors != null && !errors.isEmpty()) {
+			// Error de validación
+
+			if (errors.get("nombre").hasNext()) {
+
+				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.nombre.requerido")));
 			}
+
+			if (errors.get("listaUrlsString").hasNext()) {
+				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.requerido")));
+			}
+
 		}
 
-		semilla.setDependencias(listaDependencias);
+		if (!errores.isEmpty()) {
 
-		semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
-		semilla.setInDirectory(Boolean.parseBoolean(request.getParameter("inDirectory")));
-
-		if (request.getParameter("listaUrls") != null) {
-			semilla.setListaUrlsString(request.getParameter("listaUrls").replace("\r\n", ";").replace("\n", ";"));
-		}
-		CategoriaForm categoriaSemilla = new CategoriaForm();
-		categoriaSemilla.setId(request.getParameter("categoria"));
-		semilla.setCategoria(categoriaSemilla);
-
-		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-
-		try (Connection c = DataBaseManager.getConnection()) {
-
-			// Comprobar que no existe una semilla con el mismo nombre
-			boolean existSeed = SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-
-			if (existSeed && !semilla.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
-
-				response.setStatus(400);
-				response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
-
-			}
-
-			else {
-
-				SemillaDAO.editSeed(c, semilla);
-
-			}
-
-		} catch (Exception e) {
-			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			response.setStatus(400);
-			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			response.getWriter().write(new Gson().toJson(errores));
+
+		} else {
+
+			// Soporte a múltiples dependencias
+			List<DependenciaForm> listaDependencias = new ArrayList<>();
+
+			String dependencias = request.getParameter("dependenciasSeleccionadas");
+			if (!StringUtils.isEmpty(dependencias)) {
+				String[] idsDependencias = dependencias.split(",");
+				for (int i = 0; i < idsDependencias.length; i++) {
+					DependenciaForm dependencia = new DependenciaForm();
+					dependencia.setId(Long.parseLong(idsDependencias[i]));
+					listaDependencias.add(dependencia);
+				}
+			}
+
+			semilla.setDependencias(listaDependencias);
+
+			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
+
+				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().replace("\r\n", ";").split(";")));
+			}
+
+			CategoriaForm categoriaSemilla = new CategoriaForm();
+			categoriaSemilla.setId(request.getParameter("segmento"));
+			semilla.setCategoria(categoriaSemilla);
+
+			MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+
+			try (Connection c = DataBaseManager.getConnection()) {
+
+				// Comprobar que no existe una semilla con el mismo nombre
+				boolean existSeed = SemillaDAO.existSeed(c, semilla.getNombre(),
+						Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+
+				if (existSeed && !semilla.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
+					response.setStatus(400);
+					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+				} else {
+					SemillaDAO.editSeed(c, semilla);
+				}
+
+			} catch (Exception e) {
+				Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+				response.setStatus(400);
+				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			}
 		}
 
 		return null;
@@ -198,17 +216,23 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
-
 		List<JsonMessage> errores = new ArrayList<>();
 
-		if (StringUtils.isEmpty(request.getParameter("nombre"))) {
+		SemillaForm semilla = (SemillaForm) form;
 
-			errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.nombre.requerido")));
-		}
+		ActionErrors errors = semilla.validate(mapping, request);
+		if (errors != null && !errors.isEmpty()) {
+			// Error de validación
 
-		if (StringUtils.isEmpty(request.getParameter("urls"))) {
-			errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.requerido")));
+			if (errors.get("nombre").hasNext()) {
+
+				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.nombre.requerido")));
+			}
+
+			if (errors.get("listaUrlsString").hasNext()) {
+				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.requerido")));
+			}
+
 		}
 
 		if (!errores.isEmpty()) {
@@ -218,15 +242,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 		} else {
 
-			SemillaForm semilla = new SemillaForm();
-
-			semilla.setNombre(request.getParameter("nombre"));
-			semilla.setAcronimo(request.getParameter("acronimo"));
-
 			// Soporte a múltiples dependencias
 			List<DependenciaForm> listaDependencias = new ArrayList<>();
 
-			String[] dependencias = request.getParameterValues("dependencias");
+			String[] dependencias = request.getParameterValues("dependenciasSeleccionadas");
 			if (dependencias != null && dependencias.length > 0) {
 				for (int i = 0; i < dependencias.length; i++) {
 					DependenciaForm dependencia = new DependenciaForm();
@@ -237,19 +256,16 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 			semilla.setDependencias(listaDependencias);
 
-			semilla.setActiva(Boolean.parseBoolean(request.getParameter("activa")));
+			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
 
-			semilla.setInDirectory(Boolean.parseBoolean(request.getParameter("directorio")));
-			if (request.getParameter("urls") != null) {
-
-				semilla.setListaUrls(Arrays.asList(request.getParameter("urls").replace("\r\n", ";").split(";")));
+				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().replace("\r\n", ";").split(";")));
 			}
+
 			CategoriaForm categoriaSemilla = new CategoriaForm();
 			categoriaSemilla.setId(request.getParameter("segmento"));
 			semilla.setCategoria(categoriaSemilla);
 
 			try (Connection c = DataBaseManager.getConnection()) {
-				// TODO Comporbar que no existe otra con el mismo nombre
 
 				if (SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO)) {
 					response.setStatus(400);
@@ -276,7 +292,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 
-		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
 		List<JsonMessage> errores = new ArrayList<>();
 
