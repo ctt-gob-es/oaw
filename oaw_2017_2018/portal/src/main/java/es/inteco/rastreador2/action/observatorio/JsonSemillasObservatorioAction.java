@@ -152,6 +152,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			// Soporte a múltiples dependencias
 			List<DependenciaForm> listaDependencias = new ArrayList<>();
 
+			
+			
 			String dependencias = request.getParameter("dependenciasSeleccionadas");
 			if (!StringUtils.isEmpty(dependencias)) {
 				String[] idsDependencias = dependencias.split(",");
