@@ -1,6 +1,6 @@
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
-<html:javascript formName="JsonSemillaObservatorioForm"/>
+<html:javascript formName="JsonSemillaObservatorioForm" />
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -8,7 +8,7 @@
 <script type="text/javascript">
 	var $jn = jQuery.noConflict();
 
-	function cargarSelect() {
+	function cargarSelect(rowObject) {
 
 		//Cargar las categorias
 
@@ -23,6 +23,8 @@
 
 							var response = $jn.parseJSON(data);
 
+							$jn('#selectCategoriasNuevaSemilla').append(
+									"<option value=''></option>");
 							if (response && response.length) {
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
@@ -32,6 +34,12 @@
 															+ ri.name
 															+ '</option>');
 								}
+							}
+
+							if (rowObject != null) {
+
+								$jn('#selectCategoriasNuevaSemilla').val(
+										rowObject.categoria.id);
 							}
 
 						});
@@ -67,6 +75,17 @@
 														'#selectDependenciasNuevaSemilla')
 														.width()
 														+ 'px');
+
+								//Marcar seleccionadas si exiten
+
+								if (rowObject != null) {
+									
+									$.each(rowObject.dependencias, function(index,value){
+												
+												$('#selectDependenciasNuevaSemilla option[value='+value.id+']').attr('selected','selected');
+												$('#selectDependenciasNuevaSemilla').find('option:selected').remove().appendTo('#selectDependenciasNuevaSemillaSeleccionadas');
+									});
+								}
 							}
 						});
 	}
@@ -80,8 +99,12 @@
 
 	<div id="erroresNuevaSemillaMD" style="display: none"></div>
 
-	<html:form styleId="nuevaSemillaMultidependencia" action="/secure/JsonSemillasObservatorio.do?action=save">
+	<html:form styleId="nuevaSemillaMultidependencia"
+		action="/secure/JsonSemillasObservatorio.do?action=save">
 		<fieldset>
+		
+			<input type="hidden" name="id"/>
+			<input type="hidden" name="nombreAntiguo"/>
 			<!-- Nombre -->
 			<div class="row formItem">
 				<label for="nombre" class="control-label"><strong
@@ -172,7 +195,8 @@
 						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 							key="nueva.semilla.observatorio.url" /></strong></label>
 				<div class="col-xs-8">
-					<textarea rows="5" cols="50" name="listaUrlsString" class="form-control"></textarea>
+					<textarea rows="5" cols="50" name="listaUrlsString"
+						class="form-control"></textarea>
 				</div>
 			</div>
 
