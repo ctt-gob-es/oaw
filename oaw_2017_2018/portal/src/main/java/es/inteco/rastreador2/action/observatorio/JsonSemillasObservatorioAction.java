@@ -152,15 +152,30 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			// Soporte a múltiples dependencias
 			List<DependenciaForm> listaDependencias = new ArrayList<>();
 
-			
-			
-			String dependencias = request.getParameter("dependenciasSeleccionadas");
-			if (!StringUtils.isEmpty(dependencias)) {
-				String[] idsDependencias = dependencias.split(",");
-				for (int i = 0; i < idsDependencias.length; i++) {
+			// Si viene de la edición en el grid, el parámetro viene como
+			// valores separados por comas, si viene de la edición en los
+			// reslutados de observatorio viene el parametro tantas veces como
+			// valores tenga
+			String[] arrayDependendencias = request.getParameterValues("dependenciasSeleccionadas");
+			if (arrayDependendencias != null && arrayDependendencias.length > 1) {
+				for (int i = 0; i < arrayDependendencias.length; i++) {
 					DependenciaForm dependencia = new DependenciaForm();
-					dependencia.setId(Long.parseLong(idsDependencias[i]));
+					dependencia.setId(Long.parseLong(arrayDependendencias[i]));
 					listaDependencias.add(dependencia);
+				}
+
+			} else {
+				// Solo un parámetro que intentaremos separar por comas, si no
+				// las tiene devolverá un único valor
+				String dependencias = request.getParameter("dependenciasSeleccionadas");
+
+				if (!StringUtils.isEmpty(dependencias)) {
+					String[] idsDependencias = dependencias.split(",");
+					for (int i = 0; i < idsDependencias.length; i++) {
+						DependenciaForm dependencia = new DependenciaForm();
+						dependencia.setId(Long.parseLong(idsDependencias[i]));
+						listaDependencias.add(dependencia);
+					}
 				}
 			}
 
@@ -185,9 +200,14 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				if (existSeed && !semilla.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
 					response.setStatus(400);
-					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+					//response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado")));
+					response.getWriter().write(new Gson().toJson(errores));
 				} else {
 					SemillaDAO.editSeed(c, semilla);
+					//response.getWriter().write(messageResources.getMessage("mensaje.exito.semilla.editada"));
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.semilla.editada")));
+					response.getWriter().write(new Gson().toJson(errores));
 				}
 
 			} catch (Exception e) {
@@ -293,7 +313,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-
 
 		List<JsonMessage> errores = new ArrayList<>();
 

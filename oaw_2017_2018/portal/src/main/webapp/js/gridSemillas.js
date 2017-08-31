@@ -31,7 +31,6 @@ function urlsFormatter(cellvalue, options, rowObject) {
 	return rowObject.listaUrls;
 }
 
-
 function irDependenciaFormatter(cellvalue, options, rowObject) {
 	return "<a href="
 			+ rowObject.listaUrls
@@ -98,6 +97,22 @@ function textareaEditValue(elem, operation, value) {
 	} else if (operation === 'set') {
 		$('textarea', elem).val(value);
 	}
+}
+
+function dialogoErrorEdit(mensaje) {
+
+	var errorDialog = $('<div>' + mensaje + '</div>');
+
+	errorDialog.dialog({
+		modal : true,
+		title : 'Error',
+		buttons : {
+			"Cerrar" : function() {
+				errorDialog.dialog("close");
+			}
+		}
+	});
+
 }
 
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
@@ -194,9 +209,9 @@ function reloadGrid(path) {
 															}
 
 														},
-//														editrules : {
-//															required : true
-//														},
+														// editrules : {
+														// required : true
+														// },
 														formatter : categoriaFormatter,
 														sortable : false
 													},
@@ -213,9 +228,9 @@ function reloadGrid(path) {
 														},
 														align : "left",
 														width : 60,
-//														editrules : {
-//															required : true
-//														},
+														// editrules : {
+														// required : true
+														// },
 														edittype : "select",
 														editoptions : {
 
@@ -292,7 +307,7 @@ function reloadGrid(path) {
 														width : 60,
 														edittype : 'custom',
 														sortable : false,
-														formatter: urlsFormatter,
+														formatter : urlsFormatter,
 														editoptions : {
 															custom_element : textareaEdit,
 															custom_value : textareaEditValue
@@ -383,6 +398,14 @@ function reloadGrid(path) {
 																			response) {
 																		reloadGrid(lastUrl);
 																	},
+																	errorfunc : function(
+																			rowid,
+																			response) {
+																		if (response.status == 400) {
+																			dialogoErrorEdit(JSON
+																					.parse(response.responseText)[0].message);
+																		}
+																	},
 																	afterrestorefunc : function(
 																			response) {
 																		reloadGrid(lastUrl);
@@ -424,6 +447,14 @@ function reloadGrid(path) {
 																			successfunc : function(
 																					response) {
 																				reloadGrid(lastUrl);
+																			},
+																			errorfunc : function(
+																					rowid,
+																					response) {
+																				if (response.status == 400) {
+																					dialogoErrorEdit(JSON
+																							.parse(response.responseText)[0].message);
+																				}
 																			},
 																			afterrestorefunc : function(
 																					response) {

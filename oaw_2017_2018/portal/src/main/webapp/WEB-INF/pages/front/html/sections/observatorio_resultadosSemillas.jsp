@@ -7,7 +7,7 @@
 
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	
+
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -52,15 +52,13 @@
 										});
 
 					});
-	
-	
+
 	var dialog;
 
 	var windowWidth = $(window).width() * 0.8;
 	var windowHeight = $(window).height() * 0.8;
 
 	function dialogoEditarSemilla(rowid) {
-	
 
 		window.scrollTo(0, 0);
 
@@ -80,29 +78,38 @@
 				}
 			},
 			open : function() {
-				
+
 				//Pasamos la fila
 				cargarSelect($('#grid').getLocalRow(rowid));
-				
 
-				
 			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
 				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
 			}
 		});
-		
-		//Cargamos los datos
-		
-		$('#nuevaSemillaMultidependencia input[name=id]').val($('#grid').getLocalRow(rowid).id);
-		$('#nuevaSemillaMultidependencia input[name=nombre]').val($('#grid').getLocalRow(rowid).nombre);
-		$('#nuevaSemillaMultidependencia input[name=nombreAntiguo]').val($('#grid').getLocalRow(rowid).nombre);
-		$('#nuevaSemillaMultidependencia input[name=acronimo]').val($('#grid').getLocalRow(rowid).acronimo);
-		$('#nuevaSemillaMultidependencia textarea[name=listaUrlsString]').val($('#grid').getLocalRow(rowid).listaUrls.toString().replace(/\,/g, '\r\n'));		
-		$('#nuevaSemillaMultidependencia  select[name=activa] option[value='+$('#grid').getLocalRow(rowid).activa+']').attr('selected','selected');
-		$('#nuevaSemillaMultidependencia  select[name=directorio] option[value='+$('#grid').getLocalRow(rowid).inDirectory+']').attr('selected','selected');
 
+		//Cargamos los datos
+
+		$('#nuevaSemillaMultidependencia input[name=id]').val(
+				$('#grid').getLocalRow(rowid).id);
+		$('#nuevaSemillaMultidependencia input[name=nombre]').val(
+				$('#grid').getLocalRow(rowid).nombre);
+		$('#nuevaSemillaMultidependencia input[name=nombreAntiguo]').val(
+				$('#grid').getLocalRow(rowid).nombre);
+		$('#nuevaSemillaMultidependencia input[name=acronimo]').val(
+				$('#grid').getLocalRow(rowid).acronimo);
+		$('#nuevaSemillaMultidependencia textarea[name=listaUrlsString]').val(
+				$('#grid').getLocalRow(rowid).listaUrls.toString().replace(
+						/\,/g, '\r\n'));
+		$(
+				'#nuevaSemillaMultidependencia  select[name=activa] option[value='
+						+ $('#grid').getLocalRow(rowid).activa + ']').attr(
+				'selected', 'selected');
+		$(
+				'#nuevaSemillaMultidependencia  select[name=directorio] option[value='
+						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
+				.attr('selected', 'selected');
 
 	}
 
@@ -118,7 +125,7 @@
 			url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 			data : $('#nuevaSemillaMultidependencia').serialize(),
 			method : 'POST',
-			traditional: true,
+			traditional : true,
 		}).success(
 				function(response) {
 					$('#exitosNuevaSemillaMD').addClass('alert alert-success');
@@ -214,6 +221,8 @@
 			<h2>
 				<bean:message key="gestion.resultados.observatorio" />
 			</h2>
+
+			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
 			<html:form action="/secure/ResultadosObservatorio.do" method="get"
 				styleClass="formulario form-horizontal">
