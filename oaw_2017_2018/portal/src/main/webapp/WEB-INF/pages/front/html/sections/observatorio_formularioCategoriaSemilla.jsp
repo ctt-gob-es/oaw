@@ -3,60 +3,62 @@
 <html:xhtml />
 <html:javascript formName="CategoriaForm" />
 
+
+<!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
 <link rel="stylesheet"
 	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
 <script src="/oaw/js/jqgrid/i18n/grid.locale-es.js"
 	type="text/javascript"></script>
+
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
 
 
+
 <script type="text/javascript">
+	var dialog;
 
-var dialog;
+	var windowWidth = $(window).width() * 0.8;
+	var windowHeight = $(window).height() * 0.8;
 
-var windowWidth = $(window).width() * 0.8;
-var windowHeight = $(window).height() * 0.8;
+	function dialogoNuevaSemilla() {
 
-function dialogoNuevaSemilla() {
+		window.scrollTo(0, 0);
 
-	window.scrollTo(0, 0);
+		$('#exitosNuevaSemillaMD').hide();
+		$('#erroresNuevaSemillaMD').hide();
 
-	$('#exitosNuevaSemillaMD').hide();
-	$('#erroresNuevaSemillaMD').hide();
-
-	dialog = $("#dialogoNuevaSemilla").dialog({
-		height : windowHeight,
-		width : windowWidth,
-		modal : true,
-		buttons : {
-			"Guardar" : function() {
-				guardarNuevaSemilla();
+		dialog = $("#dialogoNuevaSemilla").dialog({
+			height : windowHeight,
+			width : windowWidth,
+			modal : true,
+			buttons : {
+				"Guardar" : function() {
+					guardarNuevaSemilla();
+				},
+				"Cancelar" : function() {
+					dialog.dialog("close");
+				}
 			},
-			"Cancelar" : function() {
-				dialog.dialog("close");
+			open : function() {
+				cargarSelect();
+			},
+			close : function() {
+				$('#nuevaSemillaMultidependencia')[0].reset();
+				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
 			}
-		},
-		open : function() {
-			cargarSelect();
-		},
-		close : function() {
-			$('#nuevaSemillaMultidependencia')[0].reset();
-			$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
-		}
-	});
+		});
 
-}
+	}
 
-//Guardar la nueva semilla
+	//Guardar la nueva semilla
 
 	function guardarNuevaSemilla() {
 		$('#exitosNuevaSemillaMD').hide();
@@ -109,8 +111,8 @@ function dialogoNuevaSemilla() {
 					'load',
 					function() {
 
-						if ($('[name=id]').val() != null
-								&& $('[name=id]').val() != "") {
+						if ($('#CategoriaForm input[name=id]').val() != null
+								&& $('#CategoriaForm input[name=id]').val() != "") {
 
 							var $jq = $.noConflict();
 
@@ -119,7 +121,7 @@ function dialogoNuevaSemilla() {
 									.ready(
 											function() {
 												reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&categoria='
-														+ $('[name=id]').val());
+														+ $('#CategoriaForm input[name=id]').val());
 											});
 						}
 
@@ -247,17 +249,7 @@ function dialogoNuevaSemilla() {
 			</html:form>
 
 			<logic:present name="<%=Constants.ID_CATEGORIA%>">
-				<%-- 								<p class="pull-right">
-					<html:link forward="newCategorySeed"
-						styleClass="btn btn-default btn-lg"
-						paramName="<%=Constants.ID_CATEGORIA%>"
-						paramId="<%=Constants.ID_CATEGORIA%>">
-						<span class="glyphicon glyphicon-plus" aria-hidden="true"
-							data-toggle="tooltip" title="Crear una nueva semilla"></span>
-						<span class="sr-only>"><bean:message
-								key="categoria.semillas.nueva.semilla" /></span>
-					</html:link>
-				</p>  --%>
+
 
 				<p class="pull-right">
 					<a href="#" class="btn btn-default btn-lg"
@@ -280,58 +272,6 @@ function dialogoNuevaSemilla() {
 
 			<p id="paginador"></p>
 
-
-
-
-			<%--                 <logic:notEmpty name="<%=Constants.CATEGORIA_FORM %>" property="seeds">
-                    <div class="pag">
-                        <table class="table table-stripped table-bordered table-hover">
-                            <caption><bean:message key="categoria.semillas.lista.semillas"/></caption>
-                            <tr>
-                                <th><bean:message key="categoria.semillas.nombre"/></th>
-                                <th class="accion">Ir</th>
-                                <th class="accion">Eliminar</th>
-                            </tr>
-                            <logic:iterate name="<%=Constants.CATEGORIA_FORM %>" property="seeds" id="seed">
-                                <jsp:useBean id="params" class="java.util.HashMap" />
-                                <c:set target="${params}" property="idcat" value="${CategoriaForm.id}" />
-                                <c:set target="${params}" property="idSemilla" value="${seed.id}" />
-                                <tr>
-                                    <td style="text-align: left">
-                                        <html:link forward="editCategorySeed" name="params">
-                                            <span data-toggle="tooltip" title="Editar esta semilla"><bean:write name="seed" property="nombre"/></span>
-                                        </html:link>
-                                        <span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
-                                    </td>
-                                    <td>
-                                        <logic:iterate name="seed" property="listaUrls" id="url" length="1">
-                                            <bean:define id="altLink">
-                                                <bean:message key="categoria.semillas.enlace.externo">
-                                                    <jsp:attribute name="arg0">
-                                                        <bean:write name="seed" property="nombre"/>
-                                                    </jsp:attribute>
-                                                </bean:message>
-                                            </bean:define>
-
-                                            <a href="<bean:write name="url"/>" title="<%=altLink %>">
-                                                <span class="glyphicon glyphicon-new-window"></span>
-                                                <span class="sr-only">Ir a la p&aacute;gina web de esta semilla</span>
-                                            </a>
-                                        </logic:iterate>
-                                    </td>
-                                    <td>
-                                        <html:link forward="deleteCategorySeedConfirmation" name="params">
-                                            <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta semilla"/>
-                                            <span class="sr-only"><bean:message key="indice.rastreo.img.eliminar.rastreo.alt" /></span>
-                                        </html:link>
-                                    </td>
-                                </tr>
-                            </logic:iterate>
-                        </table>
-                        <jsp:include page="pagination.jsp" />
-                    </div>
-                    <p id="pCenter"><html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
-                </logic:notEmpty> --%>
 		</div>
 	</div>
 </div>
