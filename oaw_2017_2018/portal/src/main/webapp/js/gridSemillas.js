@@ -125,11 +125,12 @@ function reloadGrid(path) {
 		lastUrl = '/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar';
 	}
 
-	$('#grid').jqGrid('clearGridData')
+	$('#grid').jqGrid('clearGridData');
 
 	$
 			.ajax({
 				url : lastUrl,
+				cache : false,
 				dataType : "json"
 			})
 			.done(
@@ -364,7 +365,6 @@ function reloadGrid(path) {
 												editable : true
 											},
 											viewrecords : false,
-											/* caption : "Semillas", */
 											autowidth : true,
 											pgbuttons : false,
 											pgtext : false,
@@ -480,6 +480,11 @@ function reloadGrid(path) {
 						}).trigger('reloadGrid');
 
 						$('#grid').unbind("contextmenu");
+						
+						//Mostrar sin resultados
+						if(total == 0){
+							$('#grid').append('<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" role="gridcell">Sin resultados</td></tr>');
+						}
 
 						// Paginador
 						paginas = data.paginas;
