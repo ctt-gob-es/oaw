@@ -169,6 +169,7 @@ function reloadGrid(path) {
 	$
 			.ajax({
 				url : path,
+				cache : false,
 				dataType : "json"
 			})
 			.done(

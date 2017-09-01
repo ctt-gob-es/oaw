@@ -74,7 +74,7 @@
 			url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
 			data : $('#nuevaSemillaMultidependencia').serialize(),
 			method : 'POST',
-			traditional: true,
+			traditional : true,
 		}).success(
 				function(response) {
 					$('#exitosNuevaSemillaMD').addClass('alert alert-success');
@@ -117,16 +117,24 @@
 				+ $('#SemillaSearchForm').serialize());
 	}
 
-	$(window).on('load', function() {
+	$(window)
+			.on(
+					'load',
+					function() {
 
-		var $jq = $.noConflict();
+						var $jq = $.noConflict();
 
-		//Primera carga del grid el grid
-		$jq(document).ready(function() {
-			reloadGrid();
-		});
+						//Primera carga del grid el grid
+						$jq(document)
+								.ready(
+										function() {
+											$('#SemillaSearchForm')[0].reset();
+											reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&'
+													+ $('#SemillaSearchForm')
+															.serialize());
+										});
 
-	});
+					});
 </script>
 
 
