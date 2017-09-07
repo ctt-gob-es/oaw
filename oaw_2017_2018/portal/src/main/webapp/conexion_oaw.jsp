@@ -155,8 +155,14 @@
             final URLCodec codec = new URLCodec();
             try {
                 final String encodedCodigo = codec.encode(codigo);
+               
+                
+                url = java.net.URLEncoder.encode(url,"UTF-8").toString();
+                
+               
+                
                 final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
-                        encodedCodigo != null ? encodedCodigo : "",
+                        encodedCodigo != null ? encodedCodigo : "UTF-8",
                         url != null ? url : "",
                         correo,
                         profundidad,
@@ -404,6 +410,7 @@
             if (requestManager.isValidRequest()) {
                 if (requestManager.isConfirmed()) {
                     out.println("<div class=\"mensaje\">");
+                    
                     out.println(requestManager.launchServicioDiagnostico());
                     out.println("</div>");
                 } else if (requestManager.isEvolutivoHistorico()) { %>

@@ -1,9 +1,47 @@
 package es.inteco.rastreador2.pdf.utils;
 
-import com.lowagie.text.*;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
+import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
+import static es.inteco.common.ConstantsFont.LINE_SPACE;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Connection;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+
+import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Image;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Section;
+import com.lowagie.text.pdf.PdfName;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfString;
+import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.events.IndexEvents;
+
+import es.ctic.rastreador2.pdf.basicservice.BasicServiceObservatoryResultsSummaryPdfSectionBuilder;
+import es.ctic.rastreador2.pdf.basicservice.ObservatoryPageResultsPdfSectionBuilder;
 import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
@@ -17,29 +55,16 @@ import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.form.ScoreForm;
-import es.ctic.rastreador2.pdf.basicservice.BasicServiceObservatoryResultsSummaryPdfSectionBuilder;
-import es.ctic.rastreador2.pdf.basicservice.ObservatoryPageResultsPdfSectionBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
-import es.inteco.rastreador2.utils.*;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-
-import javax.servlet.http.HttpServletRequest;
-import java.awt.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Connection;
-import java.text.DecimalFormat;
-import java.util.*;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.common.ConstantsFont.*;
+import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.utils.GraphicData;
+import es.inteco.rastreador2.utils.ObservatoryUtils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
+import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
 
 public final class PrimaryExportPdfUtils {
 
@@ -57,6 +82,8 @@ public final class PrimaryExportPdfUtils {
                 builder = new AnonymousResultExportPdfUNE2012();
             } else if ("UNE-2004".equalsIgnoreCase(application)) {
                 builder = new AnonymousResultExportPdfUNE2004();
+            } else if ("UNE-2017".equalsIgnoreCase(application)) {
+                builder = new AnonymousResultExportPdfUNE2017();
             }
         } catch (Exception e) {
             Logger.putLog("Error al preparar el builder de PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);

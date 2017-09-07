@@ -1,5 +1,15 @@
 package es.ctic.rastreador2.pdf;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.io.File;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.struts.util.PropertyMessageResources;
+
 import es.ctic.mail.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -13,19 +23,11 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+//import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.utils.FileUtils;
-import org.apache.struts.util.PropertyMessageResources;
-
-import java.io.File;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
  * Hilo para generar los pdfs de un observatorio de forma asíncrona
@@ -97,7 +99,16 @@ public class PdfGeneratorThread extends Thread {
 								final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory)
 										.getTipo();
 
-								PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(),
+								
+								//TODO CAMBIO CLASES NUEVAS 2017
+
+//								PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(),
+//										idRastreoRealizado, evaluationIds, previousEvaluationIds,
+//										PropertyMessageResources.getMessageResources("ApplicationResources"),
+//										pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
+//										observatoryType);
+								
+								PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2017(),
 										idRastreoRealizado, evaluationIds, previousEvaluationIds,
 										PropertyMessageResources.getMessageResources("ApplicationResources"),
 										pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,

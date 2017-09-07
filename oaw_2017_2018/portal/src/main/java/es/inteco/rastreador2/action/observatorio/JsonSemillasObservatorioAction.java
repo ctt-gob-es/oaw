@@ -39,6 +39,7 @@ import es.inteco.rastreador2.utils.Pagination;
 
 public class JsonSemillasObservatorioAction extends DispatchAction {
 
+	/** The message resources. */
 	private MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
 	/**
@@ -56,8 +57,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward buscar(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward buscar(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaSearchForm searchForm = (SemillaSearchForm) form;
@@ -92,11 +92,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			String jsonPagination = new Gson().toJson(paginas);
 
 			PrintWriter pw = response.getWriter();
-			// pw.write(json);
-			pw.write("{\"semillas\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult
-					+ "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"semillas\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
+			
 		} catch (Exception e) {
 			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -105,7 +104,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * Update.
+	 * Actualza la semilla.
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -119,8 +118,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		SemillaForm semilla = (SemillaForm) form;
 
@@ -130,7 +128,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 		if (errors != null && !errors.isEmpty()) {
 			// Error de validación
-
 			if (errors.get("nombre").hasNext()) {
 
 				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.nombre.requerido")));
@@ -183,7 +180,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
 
-				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().replace("\r\n", ";").split(";")));
+				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
+				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 			}
 
 			CategoriaForm categoriaSemilla = new CategoriaForm();
@@ -195,17 +193,16 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			try (Connection c = DataBaseManager.getConnection()) {
 
 				// Comprobar que no existe una semilla con el mismo nombre
-				boolean existSeed = SemillaDAO.existSeed(c, semilla.getNombre(),
-						Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+				boolean existSeed = SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 
 				if (existSeed && !semilla.getNombre().equals(request.getParameter(Constants.NOMBRE_ANTIGUO))) {
 					response.setStatus(400);
-					//response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
+					// response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado"));
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.semilla.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
 					SemillaDAO.editSeed(c, semilla);
-					//response.getWriter().write(messageResources.getMessage("mensaje.exito.semilla.editada"));
+					// response.getWriter().write(messageResources.getMessage("mensaje.exito.semilla.editada"));
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.semilla.editada")));
 					response.getWriter().write(new Gson().toJson(errores));
 				}
@@ -221,7 +218,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * Save.
+	 * Guarda la semilla.
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -235,8 +232,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		List<JsonMessage> errores = new ArrayList<>();
 
@@ -245,7 +241,6 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		ActionErrors errors = semilla.validate(mapping, request);
 		if (errors != null && !errors.isEmpty()) {
 			// Error de validación
-
 			if (errors.get("nombre").hasNext()) {
 
 				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.nombre.requerido")));
@@ -280,7 +275,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
 
-				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().replace("\r\n", ";").split(";")));
+				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
+				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 			}
 
 			CategoriaForm categoriaSemilla = new CategoriaForm();
@@ -311,8 +307,22 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
-	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	/**
+	 * Borra una semilla.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
+	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		List<JsonMessage> errores = new ArrayList<>();
 
@@ -331,7 +341,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * List categorias.
+	 *Obtiene un listado de todas las categorias. La respuesta se genera como un JSON
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -345,8 +355,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward listCategorias(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward listCategorias(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 
 			List<CategoriaForm> listCategorias = SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION);
@@ -366,7 +375,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * List dependencias.
+	 * Obtiene un listado de todas las dependencias. La respuesta se genera como un JSON
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -380,8 +389,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward listDependencias(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward listDependencias(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 
 			List<DependenciaForm> listDependencias = SemillaDAO.getSeedDependencias(c, Constants.NO_PAGINACION);
@@ -398,6 +406,20 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Normalizar url.
+	 * 
+	 * Elimina los espacios y los saltos de línea para generar una cadena que
+	 * pueda ser convertida en un array con el método split de {@link String}
+	 *
+	 * @param urlsSemilla
+	 *            the urls semilla Valor original
+	 * @return the string Valor normalizado
+	 */
+	private String normalizarUrl(String urlsSemilla) {
+		return urlsSemilla.replace("\r\n", ";").replace("\n", ";").replaceAll("\\s+", "");
 	}
 
 }
