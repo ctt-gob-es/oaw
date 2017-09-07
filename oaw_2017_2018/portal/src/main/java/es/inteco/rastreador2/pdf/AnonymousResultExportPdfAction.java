@@ -1,5 +1,21 @@
 package es.inteco.rastreador2.pdf;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.io.File;
+import java.sql.Connection;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -12,19 +28,11 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2004Builder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012Builder;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2017Builder;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.utils.FileUtils;
-import org.apache.struts.action.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.sql.Connection;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class AnonymousResultExportPdfAction extends Action {
 
@@ -89,6 +97,8 @@ public class AnonymousResultExportPdfAction extends Action {
     private AnonymousResultPdfBuilder getPdfBuilder(final File file, final long tipo, final String version) throws Exception {
         if ("UNE-2012".equalsIgnoreCase(version)) {
             return new AnonymousResultPdfUNE2012Builder(file, tipo);
+        } else if ("UNE-2017".equalsIgnoreCase(version)) { 		// TODO CAMBIO CLASES NUEVAS 2017
+        	 return new  AnonymousResultPdfUNE2017Builder(file, tipo);
         } else {
             return new AnonymousResultPdfUNE2004Builder(file, tipo);
         }

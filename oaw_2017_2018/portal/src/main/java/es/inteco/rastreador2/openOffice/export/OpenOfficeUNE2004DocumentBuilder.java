@@ -204,7 +204,7 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
         replaceText(odt, odfFileContent, "-451.t1.b9-", res.get(7).getGreenPercentage());
         replaceText(odt, odfFileContent, "-451.t1.c9-", res.get(7).getRedPercentage());
         replaceText(odt, odfFileContent, "-451.t1.b10-", res.get(8).getGreenPercentage());
-        replaceText(odt, odfFileContent, "-451.t1.c10-", res.get(8).getRedPercentage());
+        replaceText(odt, odfFileContent, "-451.pdat1.c10-", res.get(8).getRedPercentage());
         replaceText(odt, odfFileContent, "-451.t1.b11-", res.get(9).getGreenPercentage());
         replaceText(odt, odfFileContent, "-451.t1.c11-", res.get(9).getRedPercentage());
 

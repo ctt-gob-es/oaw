@@ -121,7 +121,9 @@
 									.ready(
 											function() {
 												reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&categoria='
-														+ $('#CategoriaForm input[name=id]').val());
+														+ $(
+																'#CategoriaForm input[name=id]')
+																.val());
 											});
 						}
 
@@ -273,6 +275,8 @@
 			<p id="paginador"></p>
 
 		</div>
+
+<p id="pCenter"><html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
 	</div>
 </div>
 
