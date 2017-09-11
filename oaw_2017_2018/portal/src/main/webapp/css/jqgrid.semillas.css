@@ -34,3 +34,8 @@
 .pagination{
 	padding: 5px 10px;
 }
+
+/** Para ocultar la primera fila que mete vacía **/
+.ui-jqgrid tr.jqgfirstrow > td {
+    padding: 0 !important;
+}
