@@ -96,6 +96,7 @@
 												hidegrid : false,
 												altRows : true,
 												mtype : 'POST',
+												
 												onSelectRow : function(rowid,
 														status, e) {
 
