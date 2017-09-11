@@ -969,9 +969,9 @@ public final class SemillaDAO {
 
 							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
 
-							// Si viene informado el nombre de la depenedencia
+							// TODO Si viene informado el nombre de la depenedencia
 							// es
-							// para que se cree nueva
+							// para que se cree nueva. Si el nombre ya existe, se devuelve el id de la dependencia existente
 
 							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
 

@@ -84,7 +84,7 @@ public final class SeedUtils {
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL,
 					"addListUrl", 0);
 
-			// Lista de dependencias
+			// TODO 2017 Lista de dependencias
 			digester.addObjectCreate("lista/semilla/dependencias/dependencia", DependenciaForm.class);
 			digester.addCallMethod("lista/semilla/dependencias/dependencia/id_dependencia", "setId", 0, new Class[]{Long.class} );
 			digester.addCallMethod("lista/semilla/dependencias/dependencia/nombre", "setName", 0);
