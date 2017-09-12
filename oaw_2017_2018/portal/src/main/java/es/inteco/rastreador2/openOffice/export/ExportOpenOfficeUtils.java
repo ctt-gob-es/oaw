@@ -61,6 +61,8 @@ public final class ExportOpenOfficeUtils {
 		if ("UNE-2012".equals(version)) {
 			return new OpenOfficeUNE2012DocumentBuilder(executionId, observatoryId, tipoObservatorio);
 		}
+		
+		//TODO 2017 - Exportacion a OF específica para la nueva metodología
 		if ("UNE-2017".equals(version)) {
 			return new OpenOfficeUNE2017DocumentBuilder(executionId, observatoryId, tipoObservatorio);
 		} else {

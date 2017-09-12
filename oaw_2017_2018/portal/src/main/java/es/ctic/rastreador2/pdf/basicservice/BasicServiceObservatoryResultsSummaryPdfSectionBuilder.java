@@ -93,9 +93,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		// final float[] widths = {0.30f, 0.07f, 0.07f, 0.07f, 0.07f, 0.07f,
 		// 0.07f, 0.07f, 0.07f, 0.07f, 0.07f};
 		
-		// TODO CAMBIO CLASES NUEVAS 2017
-				
-		// Dinámicamente para normalizar a la normativa en curso
+		// TODO 2017 -  Dinámicamente para normalizar a la normativa en curso
 		
 		float[] widths = new float[suitabilityGroups.get(0).getSubgroups().size()+1];
 		
