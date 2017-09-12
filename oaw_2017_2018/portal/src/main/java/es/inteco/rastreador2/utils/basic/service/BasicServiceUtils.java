@@ -39,7 +39,7 @@ public final class BasicServiceUtils {
         try (Connection conn = DataBaseManager.getConnection()) {
         	
         	
-        	//TODO
+        	//TODO 2017 - Fix
         	basicServiceForm.setDomain(URLDecoder.decode(basicServiceForm.getDomain(),"utf-8"));
         	
             return DiagnosisDAO.insertBasicServices(conn, basicServiceForm, status);

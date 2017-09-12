@@ -1478,6 +1478,8 @@ public final class ObservatorioDAO {
 			throw e;
 		}
 	}
+	
+	
 
 	public static List<Long> getSubsequentObservatoryExecutionIds(Connection c, Long observatoryId, Long executionId,
 			Long cartridgeId) throws SQLException {

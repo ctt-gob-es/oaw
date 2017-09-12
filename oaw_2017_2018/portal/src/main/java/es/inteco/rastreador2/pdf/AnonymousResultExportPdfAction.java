@@ -97,7 +97,7 @@ public class AnonymousResultExportPdfAction extends Action {
     private AnonymousResultPdfBuilder getPdfBuilder(final File file, final long tipo, final String version) throws Exception {
         if ("UNE-2012".equalsIgnoreCase(version)) {
             return new AnonymousResultPdfUNE2012Builder(file, tipo);
-        } else if ("UNE-2017".equalsIgnoreCase(version)) { 		// TODO CAMBIO CLASES NUEVAS 2017
+        } else if ("UNE-2017".equalsIgnoreCase(version)) { 		// TODO 2017 Desdoblamiento para nueva metodología
         	 return new  AnonymousResultPdfUNE2017Builder(file, tipo);
         } else {
             return new AnonymousResultPdfUNE2004Builder(file, tipo);

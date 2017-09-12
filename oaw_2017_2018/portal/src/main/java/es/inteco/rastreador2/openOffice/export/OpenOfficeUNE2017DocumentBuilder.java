@@ -112,7 +112,9 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 
 		if (evolution) {
 
-			// TODO
+			// TODO 2017 No está coincidiendo el contador de secciones con la
+			// plantilla. La de CCAA ha sido modificada, pero antes de modificar
+			// también la de EELL se hace este workarround
 
 			if (tipoObservatorio == Constants.OBSERVATORY_TYPE_EELL) {
 				numSection = 10;
@@ -208,7 +210,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 14
+	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSection441(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg", "image/jpeg");
@@ -236,7 +238,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 6 valores
+	// TODO Prioridad 2  - 6 niveles
 	private int replaceSection442(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", "image/jpeg");
@@ -264,7 +266,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 14
+	// TODO Prioridad 1 14 niveles
 	private int replaceSection451(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", "image/jpeg");
@@ -307,7 +309,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 6
+	// TODO Prioridad 2  - 6 niveles
 	private int replaceSection452(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
@@ -403,7 +405,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 14
+	// TODO Prioridad 1 14 niveles
 	private int replaceSectionCat31(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
@@ -436,7 +438,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 6
+	// TODO Prioridad 2  - 6 niveles
 	private int replaceSectionCat32(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -469,7 +471,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 14
+	// TODO Prioridad 1 14 niveles
 	private int replaceSectionCat41(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
@@ -517,7 +519,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO 6
+	// TODO Prioridad 2  - 6 niveles
 	private int replaceSectionCat42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
@@ -660,7 +662,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "11.t1", resultData);
 
-			// TODO 2017
+			// TODO 2017 Reorganización de los datos
 
 			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.1") + ".jpg", "image/jpeg");

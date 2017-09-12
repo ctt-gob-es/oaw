@@ -82,7 +82,7 @@ public final class PrimaryExportPdfUtils {
                 builder = new AnonymousResultExportPdfUNE2012();
             } else if ("UNE-2004".equalsIgnoreCase(application)) {
                 builder = new AnonymousResultExportPdfUNE2004();
-            } else if ("UNE-2017".equalsIgnoreCase(application)) {
+            } else if ("UNE-2017".equalsIgnoreCase(application)) { //TODO 2017 Desdoblamiento para nueva metodología
                 builder = new AnonymousResultExportPdfUNE2017();
             }
         } catch (Exception e) {

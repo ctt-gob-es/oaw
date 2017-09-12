@@ -157,7 +157,7 @@ public class BasicServiceManager {
 
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				} else {
-					// TODO CAMBIO CLASES NUEVAS 2017
+					// TODO 2017 Desdoblamiento para nueva metodología
 
 					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2017())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 
