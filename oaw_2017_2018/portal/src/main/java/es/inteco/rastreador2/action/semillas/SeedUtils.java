@@ -140,11 +140,12 @@ public final class SeedUtils {
 				hd.endElement("", "", Constants.XML_ACRONIMO);
 			}
 
-			if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
-				hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
-				hd.characters(semillaForm.getDependencia().toCharArray(), 0, semillaForm.getDependencia().length());
-				hd.endElement("", "", Constants.XML_DEPENDENCIA);
-			}
+			 // TODO 2017 Multidependencia 
+//			if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
+//				hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
+//				hd.characters(semillaForm.getDependencia().toCharArray(), 0, semillaForm.getDependencia().length());
+//				hd.endElement("", "", Constants.XML_DEPENDENCIA);
+//			}
 
 			hd.startElement("", "", Constants.XML_IN_DIRECTORY, null);
 			hd.characters(String.valueOf(semillaForm.isInDirectory()).toCharArray(), 0,

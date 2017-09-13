@@ -182,7 +182,12 @@ public final class ObservatoryUtils {
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
                 int numPages = 0;
                 BigDecimal avgScore = BigDecimal.ZERO;
-                final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(17);
+                
+                //TODO 2017 Cambio de numero de urls maximas a anilizar
+           	 PropertiesManager pmgr = new PropertiesManager();
+           	int maxUrl = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));           	
+//                final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(17);
+           	final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(maxUrl);
                 for (ObservatoryEvaluationForm observatory : observatories) {
                     if (observatory.getCrawlerExecutionId() == seedFulfilledCrawlings.get(0).getId()) {
                         numPages++;
@@ -208,7 +213,11 @@ public final class ObservatoryUtils {
             if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
                 int numPages = 0;
                 BigDecimal avgScore = BigDecimal.ZERO;
-                final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(17);
+                //TODO 2017 Cambio de numero de urls maximas a anilizar
+//                final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(17);
+           	 PropertiesManager pmgr = new PropertiesManager();
+           	int maxUrl = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+            final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(maxUrl);
                 for (ObservatoryEvaluationForm observatory : observatories) {
                     if (observatory.getCrawlerExecutionId() == seedFulfilledCrawlings.get(0).getId()) {
                         numPages++;

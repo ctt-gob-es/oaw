@@ -1559,7 +1559,8 @@ public final class RastreoDAO {
                     semilla.setId(rs.getLong("l.id_lista"));
                     semilla.setAcronimo(rs.getString("acronimo"));
                     semilla.setNombre(rs.getString("l.nombre"));
-                    semilla.setDependencia(rs.getString("dependencia"));
+                    //TODO 2017 Multidependencia
+                    //semilla.setDependencia(rs.getString("dependencia"));
                     semilla.setListaUrlsString(rs.getString("l.lista"));
 
                     final CategoriaForm categoria = new CategoriaForm();
