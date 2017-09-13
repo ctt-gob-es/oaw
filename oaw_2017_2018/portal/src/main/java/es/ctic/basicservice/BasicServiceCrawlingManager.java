@@ -2,6 +2,7 @@ package es.ctic.basicservice;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.job.CrawledLink;
 import es.inteco.crawler.job.CrawlerData;
@@ -16,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class BasicServiceCrawlingManager {
+	
+	private int maxUrl;
 
     /**
      * Realiza el crawling correspondiente a una petición del servicio de diagnóstico
@@ -24,6 +27,11 @@ public class BasicServiceCrawlingManager {
      * @return una lista con las páginas que se han recorrido
      */
     public List<CrawledLink> getCrawledLinks(final BasicServiceForm basicServiceForm) {
+    	//TODO 2017 Cambio de numero de urls maximas a anilizar
+    	 PropertiesManager pmgr = new PropertiesManager();
+    	maxUrl = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+    	
+    	
         final List<CrawledLink> crawledLinks;
         final CrawlerJob crawlerJob = new CrawlerJob();
         final CrawlerData crawlerData = createCrawlerData(basicServiceForm);
@@ -63,7 +71,10 @@ public class BasicServiceCrawlingManager {
             final String[] split = basicServiceForm.getDomain().split("\r\n");
             Collections.addAll(urls, split);
             // En el caso de lista cerrada nos quedamos con 17 urls como máximo
-            crawlerData.setUrls(urls.subList(0, Math.min(urls.size(),17)));
+            
+          //TODO 2017 Cambio de numero de urls maximas a anilizar
+            //crawlerData.setUrls(urls.subList(0, Math.min(urls.size(),17)));
+            crawlerData.setUrls(urls.subList(0, Math.min(urls.size(),maxUrl)));
         }
         crawlerData.setContent(basicServiceForm.getContent());
 

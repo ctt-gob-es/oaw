@@ -63,7 +63,9 @@ public final class AnnexUtils {
 
                             writeTag(hd, NOMBRE_ELEMENT, siteForm.getName());
                             writeTag(hd, CATEGORIA_ELEMENT, semillaForm.getCategoria().getName());
-                            writeTag(hd, DEPENDE_DE_ELEMENT, semillaForm.getDependencia());
+                            
+                            // TODO 2017 Multidependencia
+                            // writeTag(hd, DEPENDE_DE_ELEMENT, semillaForm.getDependencia());
 
                             hd.startElement(EMPTY_STRING, EMPTY_STRING, "paginas", null);
                             for (PageForm pageForm : siteForm.getPageList()) {
@@ -110,7 +112,8 @@ public final class AnnexUtils {
 
                     writeTag(hd, NOMBRE_ELEMENT, semillaForm.getNombre());
                     writeTag(hd, CATEGORY_NAME, semillaForm.getCategoria().getName());
-                    writeTag(hd, DEPENDE_DE_ELEMENT, semillaForm.getDependencia());
+                    // TODO 2017 Multidependencia
+//                    writeTag(hd, DEPENDE_DE_ELEMENT, semillaForm.getDependencia());
                     writeTag(hd, "semilla", semillaForm.getListaUrls().get(0));
 
                     for (Map.Entry<String, ScoreForm> entry : semillaEntry.getValue().entrySet()) {

@@ -20,7 +20,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private String nombre_antiguo;
 	private List<String> listaUrls;
 	private String listaUrlsString;
-	private String dependencia;
+	//private String dependencia;
 	private String acronimo;
 	private boolean asociada;
 	private boolean activa;
@@ -134,13 +134,13 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		return (int) (id ^ (id >>> 32));
 	}
 
-	public String getDependencia() {
-		return dependencia;
-	}
-
-	public void setDependencia(String dependencia) {
-		this.dependencia = dependencia;
-	}
+//	public String getDependencia() {
+//		return dependencia;
+//	}
+//
+//	public void setDependencia(String dependencia) {
+//		this.dependencia = dependencia;
+//	}
 
 	public String getAcronimo() {
 		return acronimo;
@@ -200,7 +200,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	@Override
 	public String toString() {
 		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls="
-				+ listaUrls + ", listaUrlsString=" + listaUrlsString + ", dependencia=" + dependencia + ", acronimo="
+				+ listaUrls + ", listaUrlsString=" + listaUrlsString + /*", dependencia=" + dependencia +*/ ", acronimo="
 				+ acronimo + ", asociada=" + asociada + ", activa=" + activa + ", activaStr=" + activaStr
 				+ ", rastreoAsociado=" + rastreoAsociado + ", categoria=" + categoria + ", inDirectory=" + inDirectory
 				+ ", inDirectoryStr=" + inDirectoryStr + ", dependencias=" + dependencias + "]";

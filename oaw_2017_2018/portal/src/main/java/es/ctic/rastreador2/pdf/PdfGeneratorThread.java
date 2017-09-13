@@ -124,7 +124,8 @@ public class PdfGeneratorThread extends Thread {
 		}
 	}
 
-	private File getReportFile(final SemillaForm seed) {
+	//TODO 2017 Multidependencia
+	/*private File getReportFile(final SemillaForm seed) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		String dependOn = PDFUtils.formatSeedName(seed.getDependencia());
 		if (dependOn == null || dependOn.isEmpty()) {
@@ -133,7 +134,7 @@ public class PdfGeneratorThread extends Thread {
 		final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idObservatoryExecution + File.separator + dependOn
 				+ File.separator + PDFUtils.formatSeedName(seed.getNombre());
 		return new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf");
-	}
+	}*/
 
 	private List<File> getReportFiles(final SemillaForm seed) {
 

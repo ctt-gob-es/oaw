@@ -159,7 +159,7 @@ public final class LoginDAO {
 
     public static List<CartuchoForm> getAllUserCartridge(Connection c) throws SQLException {
         final List<CartuchoForm> cartridgeList = new ArrayList<>();
-        try (PreparedStatement ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM cartucho c");
+        try (PreparedStatement ps = c.prepareStatement("SELECT c.id_cartucho, c.aplicacion FROM cartucho c WHERE c.instalado = 1");
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 final CartuchoForm cartucho = new CartuchoForm();
