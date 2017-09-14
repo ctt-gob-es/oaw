@@ -1,6 +1,6 @@
 package es.inteco.rastreador2.management;
 
-import es.ctic.mail.MailService;
+import es.gob.oaw.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.rastreador2.utils.DAOUtils;

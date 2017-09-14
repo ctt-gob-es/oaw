@@ -1,6 +1,6 @@
 package es.inteco.rastreador2.utils;
 
-import es.ctic.mail.MailService;
+import es.gob.oaw.MailService;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -58,7 +58,7 @@ public final class CrawlerUtils {
         crawlerData.setCartuchos(dcrForm.getCartuchos());
         crawlerData.setAcronimo(dcrForm.getSeedAcronym());
         crawlerData.setUrls(dcrForm.getUrls());
-        if (crawlerData.getUrls().size() > 1) {
+        if (crawlerData.getUrls()!=null && crawlerData.getUrls().size() > 1) {
             crawlerData.setProfundidad(1);
             crawlerData.setTopN(1);
         } else {

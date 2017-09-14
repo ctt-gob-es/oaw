@@ -40,9 +40,9 @@ import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.events.IndexEvents;
 
-import es.ctic.rastreador2.pdf.basicservice.BasicServiceObservatoryResultsSummaryPdfSectionBuilder;
-import es.ctic.rastreador2.pdf.basicservice.ObservatoryPageResultsPdfSectionBuilder;
-import es.ctic.rastreador2.pdf.utils.PdfTocManager;
+import es.gob.oaw.rastreador2.pdf.basicservice.BasicServiceObservatoryResultsSummaryPdfSectionBuilder;
+import es.gob.oaw.rastreador2.pdf.basicservice.ObservatoryPageResultsPdfSectionBuilder;
+import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
@@ -100,7 +100,7 @@ public final class PrimaryExportPdfUtils {
             final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
             final List<Long> previousEvaluationIds;
             if (!isBasicService) {
-                final es.ctic.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.ctic.rastreador2.observatorio.ObservatoryManager();
+                final es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
                 previousEvaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(observatoryManager.getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(idRastreo, ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution)));
             } else {
                 previousEvaluationIds = Collections.emptyList();
@@ -133,7 +133,7 @@ public final class PrimaryExportPdfUtils {
             try (Connection connection = DataBaseManager.getConnection()) {
                 final FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(connection, idRastreoRealizado);
 
-                final es.ctic.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.ctic.rastreador2.observatorio.ObservatoryManager();
+                final es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
 
                 final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(idObservatoryExecution, evaluationIds);
                 // Obtenemos el id de la ejecución anterior para cargar la metodología que se usó en ese observatorio (ya que si se modificó altera los resultados)

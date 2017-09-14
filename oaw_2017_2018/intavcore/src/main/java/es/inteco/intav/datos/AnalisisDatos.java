@@ -3,7 +3,7 @@ package es.inteco.intav.datos;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import es.ctic.css.CSSResource;
+import es.gob.oaw.css.CSSResource;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;

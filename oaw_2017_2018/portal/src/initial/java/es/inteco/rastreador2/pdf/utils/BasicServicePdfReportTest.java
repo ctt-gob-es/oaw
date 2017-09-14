@@ -17,9 +17,9 @@ import org.junit.Test;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
-import es.ctic.basicservice.historico.CheckHistoricoService;
-import es.ctic.rastreador2.observatorio.ObservatoryManager;
-import es.ctic.rastreador2.pdf.basicservice.BasicServicePdfReport;
+import es.gob.oaw.basicservice.historico.CheckHistoricoService;
+import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
+import es.gob.oaw.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;

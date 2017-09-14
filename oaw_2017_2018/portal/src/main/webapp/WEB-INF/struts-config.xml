@@ -127,7 +127,7 @@
 			type="es.inteco.rastreador2.actionform.basic.service.BasicServiceForm" />
 
 		<form-bean name="ServicioDiagnosticoForm"
-			type="es.ctic.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
+			type="es.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
 	</form-beans>
 
 	<!-- Global Exception Definitions -->
@@ -369,7 +369,7 @@
 		</action>
 
 		<action path="/checkHistorico"
-			type="es.ctic.basicservice.historico.CheckHistoricoAction" scope="request">
+			type="es.gob.oaw.basicservice.historico.CheckHistoricoAction" scope="request">
 			<forward name="exito" path=".json" />
 		</action>
 
@@ -1025,7 +1025,7 @@
 
 		<!-- SERVICIO DIAGNOSTICO -->
 		<action path="/secure/ServicioDiagnostico"
-			type="es.ctic.rastreador2.action.diagnostico.ServicioDiagnosticoAction"
+			type="es.gob.oaw.rastreador2.action.diagnostico.ServicioDiagnosticoAction"
 			scope="request" name="ServicioDiagnosticoForm" input="/secure/ServicioDiagnosticoAction.do"
 			validate="false">
 			<forward name="exito" path=".servicioDiagnostico" />
