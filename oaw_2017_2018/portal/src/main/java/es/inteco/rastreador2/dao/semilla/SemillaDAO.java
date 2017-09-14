@@ -206,7 +206,7 @@ public final class SemillaDAO {
 						semillaForm.setInDirectory(true);
 					}
 
-					// Cargar las dependencias de la semilla
+					// TODO 2017 Cargar las dependencias de la semilla
 
 					PreparedStatement psDependencias = c.prepareStatement(
 							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
@@ -751,6 +751,26 @@ public final class SemillaDAO {
 					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					// TODO 2017 Multidependencia
+					
+					PreparedStatement psDependencias = c.prepareStatement(
+							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
+					psDependencias.setLong(1, semillaForm.getId());
+
+					List<DependenciaForm> listDependencias = new ArrayList<>();
+					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+						while (rsDependencias.next()) {
+							DependenciaForm dependencia = new DependenciaForm();
+							dependencia.setId(rsDependencias.getLong("id_dependencia"));
+							dependencia.setName(rsDependencias.getString("nombre"));
+							listDependencias.add(dependencia);
+						}
+
+						semillaForm.setDependencias(listDependencias);
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					}
+					
 					// semillaForm.setDependencia(rs.getString("dependencia"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));

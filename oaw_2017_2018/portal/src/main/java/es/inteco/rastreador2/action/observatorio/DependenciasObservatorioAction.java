@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -137,8 +136,6 @@ public class DependenciasObservatorioAction extends DispatchAction {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
-		List<JsonMessage> errores = new ArrayList<>();
-
 		DependenciaForm dependencia = (DependenciaForm) form;
 
 		ActionErrors errors = dependencia.validate(mapping, request);
@@ -200,7 +197,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 
 		String nombre = request.getParameter("nombre");
 
-		if (nombre != null) {
+		if (StringUtils.isNotEmpty(nombre)) {
 
 			DependenciaForm dependencia = new DependenciaForm();
 			dependencia.setName(nombre);
@@ -225,7 +222,9 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			}
 		} else {
 			response.setStatus(400);
-			response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio"));
+			errores.add(
+					new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio")));
+			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
 	}

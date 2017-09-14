@@ -387,14 +387,13 @@
 			<form id="nuevaDependenciaForm">
 				<!-- Nombre -->
 				<div class="row formItem">
-					<label for="nombre" class="control-label"><strong
+					<label for="nombre" class="control-label" style="margin-left: 25px;"><strong
 						class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 								key="nueva.dependencia.observatorio.nombre" /></strong></label>
 					<div class="col-xs-8">
-
 						<input type="text" id="nombre" name="nombre"
-							class="texto form-control" />
+							class="textoLargo form-control" />
 					</div>
 				</div>
 			</form>
