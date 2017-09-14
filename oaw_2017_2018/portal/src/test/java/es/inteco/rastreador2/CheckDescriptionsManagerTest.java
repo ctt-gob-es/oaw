@@ -1,8 +1,9 @@
 package es.inteco.rastreador2;
 
-import es.ctic.rastreador2.pdf.utils.CheckDescriptionsManager;
 import junit.framework.Assert;
 import org.junit.Test;
+
+import es.gob.oaw.rastreador2.pdf.utils.CheckDescriptionsManager;
 
 import java.io.IOException;
 

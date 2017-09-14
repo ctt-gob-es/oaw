@@ -1,9 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <artifactId>crawler</artifactId>
-    <version>3.5</version>
+	<artifactId>crawler</artifactId>
     <packaging>jar</packaging>
 
     <name>crawler</name>
@@ -11,9 +10,14 @@
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>3.5</version>
         <relativePath>../oaw/pom.xml</relativePath>
+        <version>4.0</version>
     </parent>
+    
+    <properties>
+		<oaw.version>4.0</oaw.version>
+	</properties>
+    
 
     <build>
         <resources>
@@ -31,7 +35,7 @@
         <dependency>
             <groupId>es.minhap.oaw</groupId>
             <artifactId>intav-core</artifactId>
-            <version>3.5</version>
+            <version>${oaw.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
@@ -55,4 +59,4 @@
         </dependency>
     </dependencies>
 
-</project>
+    </project>

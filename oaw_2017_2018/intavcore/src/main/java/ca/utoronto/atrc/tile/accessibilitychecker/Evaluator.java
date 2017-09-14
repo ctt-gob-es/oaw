@@ -27,9 +27,10 @@ Telephone: (416) 978-4360
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import com.opensymphony.oscache.base.NeedsRefreshException;
-import es.ctic.css.CSSProblem;
-import es.ctic.css.utils.CSSUtils;
-import es.ctic.css.utils.ImportedCSSExtractor;
+
+import es.gob.oaw.css.CSSProblem;
+import es.gob.oaw.css.utils.CSSUtils;
+import es.gob.oaw.css.utils.ImportedCSSExtractor;
 import es.inteco.common.*;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;

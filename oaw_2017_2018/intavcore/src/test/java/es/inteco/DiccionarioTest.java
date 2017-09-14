@@ -1,7 +1,8 @@
 package es.inteco;
 
-import es.ctic.language.Diccionario;
 import org.junit.Test;
+
+import es.gob.oaw.language.Diccionario;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -31,8 +32,8 @@ public class DiccionarioTest {
         final InputStream is6 = this.getClass().getClassLoader().getResourceAsStream("/es/ctic/language/words_en.properties");
         final URL url6 = this.getClass().getClassLoader().getResource("/es/ctic/language/words_en.properties");
 
-        final InputStream is7 = this.getClass().getClassLoader().getResourceAsStream("es.ctic.language.words_en.properties");
-        final URL url7 = this.getClass().getClassLoader().getResource("es.ctic.language.words_en.properties");
+        final InputStream is7 = this.getClass().getClassLoader().getResourceAsStream("es.gob.oaw.language.words_en.properties");
+        final URL url7 = this.getClass().getClassLoader().getResource("es.gob.oaw.language.words_en.properties");
 
         final InputStream is8 = Diccionario.class.getClassLoader().getResourceAsStream("./es/ctic/language/words_en.properties");
         final URL url8 = Diccionario.class.getClassLoader().getResource("./words_en.properties");

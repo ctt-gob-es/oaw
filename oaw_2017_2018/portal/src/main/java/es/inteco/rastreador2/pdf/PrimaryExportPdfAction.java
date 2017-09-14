@@ -18,8 +18,8 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import es.ctic.rastreador2.pdf.PdfGeneratorThread;
-import es.ctic.rastreador2.pdf.SourceFilesManager;
+import es.gob.oaw.rastreador2.pdf.PdfGeneratorThread;
+import es.gob.oaw.rastreador2.pdf.SourceFilesManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;

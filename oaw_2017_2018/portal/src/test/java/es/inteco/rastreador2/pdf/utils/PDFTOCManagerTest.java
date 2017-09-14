@@ -1,7 +1,9 @@
 package es.inteco.rastreador2.pdf.utils;
 
 import com.lowagie.text.pdf.events.IndexEvents;
-import es.ctic.rastreador2.pdf.utils.PdfTocManager;
+
+import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;

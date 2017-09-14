@@ -4,6 +4,8 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPTable;
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
+
+import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
@@ -15,7 +17,6 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.ctic.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import org.apache.struts.util.MessageResources;

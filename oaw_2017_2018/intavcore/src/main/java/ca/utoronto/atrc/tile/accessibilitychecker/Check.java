@@ -26,10 +26,10 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
-import es.ctic.language.Diccionario;
-import es.ctic.language.ExtractTextHandler;
-import es.ctic.language.LanguageChecker;
-import es.ctic.utils.AccesibilityDeclarationCheckUtils;
+import es.gob.oaw.language.Diccionario;
+import es.gob.oaw.language.ExtractTextHandler;
+import es.gob.oaw.language.LanguageChecker;
+import es.gob.oaw.utils.AccesibilityDeclarationCheckUtils;
 import es.inteco.common.CheckFunctionConstants;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.ValidationError;

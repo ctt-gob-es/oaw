@@ -8,7 +8,8 @@ import com.lowagie.text.pdf.PdfChunk;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.events.IndexEvents;
-import es.ctic.rastreador2.pdf.utils.PdfTocManager;
+
+import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;

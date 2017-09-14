@@ -1,7 +1,8 @@
 package es.inteco.rastreador2.dao.basic.service;
 
 import com.opencsv.CSVWriter;
-import es.ctic.basicservice.historico.BasicServiceResultado;
+
+import es.gob.oaw.basicservice.historico.BasicServiceResultado;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;

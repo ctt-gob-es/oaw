@@ -1,4 +1,4 @@
-import es.ctic.mail.MailService;
+import es.gob.oaw.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;

@@ -1,6 +1,6 @@
 package es.inteco.rastreador2.action.basic.service;
 
-import es.ctic.basicservice.BasicServiceManager;
+import es.gob.oaw.basicservice.BasicServiceManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;

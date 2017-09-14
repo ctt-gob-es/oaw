@@ -26,7 +26,7 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
-import es.ctic.css.CSSResource;
+import es.gob.oaw.css.CSSResource;
 import es.inteco.common.CheckFunctionConstants;
 import es.inteco.common.logging.Logger;
 import org.w3c.dom.Document;

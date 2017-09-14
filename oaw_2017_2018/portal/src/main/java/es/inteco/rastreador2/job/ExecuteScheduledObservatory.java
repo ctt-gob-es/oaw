@@ -1,7 +1,7 @@
 package es.inteco.rastreador2.job;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import es.ctic.mail.MailService;
+import es.gob.oaw.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.common.Constants;
