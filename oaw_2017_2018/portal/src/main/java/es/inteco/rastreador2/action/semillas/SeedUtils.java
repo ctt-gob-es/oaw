@@ -70,23 +70,18 @@ public final class SeedUtils {
 			digester.push(new ArrayList<SemillaForm>());
 
 			digester.addObjectCreate(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, SemillaForm.class);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_NOMBRE,
-					"setNombre", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACTIVA,
-					"setActivaStr", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_IN_DIRECTORY,
-					"setInDirectoryStr", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACRONIMO,
-					"setAcronimo", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_NOMBRE, "setNombre", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACTIVA, "setActivaStr", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_IN_DIRECTORY, "setInDirectoryStr", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACRONIMO, "setAcronimo", 0);
 			// digester.addCallMethod(Constants.XML_LISTA + "/" +
 			// Constants.XML_SEMILLA + "/" + Constants.XML_DEPENDENCIA,
 			// "setDependencia", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL,
-					"addListUrl", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL, "addListUrl", 0);
 
 			// TODO 2017 Lista de dependencias
 			digester.addObjectCreate("lista/semilla/dependencias/dependencia", DependenciaForm.class);
-			digester.addCallMethod("lista/semilla/dependencias/dependencia/id_dependencia", "setId", 0, new Class[]{Long.class} );
+			digester.addCallMethod("lista/semilla/dependencias/dependencia/id_dependencia", "setId", 0, new Class[] { Long.class });
 			digester.addCallMethod("lista/semilla/dependencias/dependencia/nombre", "setName", 0);
 			digester.addSetNext("lista/semilla/dependencias/dependencia", "addDependencia");
 
@@ -123,12 +118,12 @@ public final class SeedUtils {
 			hd.endElement("", "", Constants.XML_NOMBRE);
 
 			hd.startElement("", "", Constants.XML_ACTIVA, null);
-			hd.characters(String.valueOf(semillaForm.isActiva()).toCharArray(), 0,
-					String.valueOf(semillaForm.isActiva()).length());
+			hd.characters(String.valueOf(semillaForm.isActiva()).toCharArray(), 0, String.valueOf(semillaForm.isActiva()).length());
 			hd.endElement("", "", Constants.XML_ACTIVA);
 
 			List<String> urls = Arrays.asList(semillaForm.getListaUrlsString().split(";"));
 			for (String url : urls) {
+				//TODO 2017
 				hd.startElement("", "", Constants.XML_URL, null);
 				hd.characters(url.toCharArray(), 0, url.length());
 				hd.endElement("", "", Constants.XML_URL);
@@ -140,16 +135,29 @@ public final class SeedUtils {
 				hd.endElement("", "", Constants.XML_ACRONIMO);
 			}
 
-			 // TODO 2017 Multidependencia 
-//			if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
-//				hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
-//				hd.characters(semillaForm.getDependencia().toCharArray(), 0, semillaForm.getDependencia().length());
-//				hd.endElement("", "", Constants.XML_DEPENDENCIA);
-//			}
+			// TODO 2017 Multidependencia
+
+			if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+				hd.startElement("", "", Constants.XML_DEPENDENCIAS, null);
+				for (DependenciaForm dependencia : semillaForm.getDependencias()) {
+					hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
+					hd.startElement("", "", Constants.XML_DEPENDENCIA_NOMBRE, null);
+					hd.characters(dependencia.getName().toCharArray(), 0, dependencia.getName().length());
+					hd.endElement("", "", Constants.XML_DEPENDENCIA_NOMBRE);
+					hd.endElement("", "", Constants.XML_DEPENDENCIA);
+				}
+				hd.endElement("", "", Constants.XML_DEPENDENCIAS);
+			}
+
+			// if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
+			// hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
+			// hd.characters(semillaForm.getDependencia().toCharArray(), 0,
+			// semillaForm.getDependencia().length());
+			// hd.endElement("", "", Constants.XML_DEPENDENCIA);
+			// }
 
 			hd.startElement("", "", Constants.XML_IN_DIRECTORY, null);
-			hd.characters(String.valueOf(semillaForm.isInDirectory()).toCharArray(), 0,
-					String.valueOf(semillaForm.isInDirectory()).length());
+			hd.characters(String.valueOf(semillaForm.isInDirectory()).toCharArray(), 0, String.valueOf(semillaForm.isInDirectory()).length());
 			hd.endElement("", "", Constants.XML_IN_DIRECTORY);
 
 			hd.endElement("", "", Constants.XML_SEMILLA);

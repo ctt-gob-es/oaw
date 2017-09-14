@@ -98,6 +98,7 @@ span.edit-mark {
 	.formButton {padding-top:2%;text-align:center;}
 
 	.texto {min-width:30%; width:45%;}
+	.textoLargo {min-width:90%; width:100%;}
 	.textoCorto{width: 18%; float: left; margin-right: 2%}
 	.textoSelect {min-width:30%; width:46%;}
 	.textoSelectCorto {width:9%; float: left}

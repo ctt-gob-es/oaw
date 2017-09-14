@@ -78,10 +78,15 @@ public interface Constants {
     String XML_SEMILLA = "semilla";
     String XML_NOMBRE = "nombre";
     String XML_URL = "url";
-    String XML_DEPENDENCIA = "depende_de";
+    //String XML_DEPENDENCIA = "depende_de";
     String XML_ACRONIMO = "acronimo";
     String XML_ACTIVA = "activa";
     String XML_IN_DIRECTORY = "en_directorio";
+    
+    //TODO 2017 Multidependencia
+    String XML_DEPENDENCIAS = "dependencias";
+    String XML_DEPENDENCIA = "dependencia";
+    String XML_DEPENDENCIA_NOMBRE = "nombre";
 
     String ERROR = "error";
     String ERROR1 = "error1";
@@ -675,6 +680,8 @@ public interface Constants {
     String REPORT_OBSERVATORY_1_NOBROKEN = "observatorio-1-nobroken";
     String REPORT_OBSERVATORY_2 = "observatorio-2";
     String REPORT_OBSERVATORY_2_NOBROKEN = "observatorio-2-nobroken";
+    String REPORT_OBSERVATORY_3 = "observatorio-3";
+    String REPORT_OBSERVATORY_3_NOBROKEN = "observatorio-3-nobroken";
     String REPORT_UNE = "une";
     String REPORT_OBSERVATORY_FILE = "observatorio-inteco-1-0";
     String REPORT_UNE_FILE = "une-139803";
