@@ -80,10 +80,20 @@ public final class SeedUtils {
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL, "addListUrl", 0);
 
 			// TODO 2017 Lista de dependencias
-			digester.addObjectCreate("lista/semilla/dependencias/dependencia", DependenciaForm.class);
-			digester.addCallMethod("lista/semilla/dependencias/dependencia/id_dependencia", "setId", 0, new Class[] { Long.class });
-			digester.addCallMethod("lista/semilla/dependencias/dependencia/nombre", "setName", 0);
-			digester.addSetNext("lista/semilla/dependencias/dependencia", "addDependencia");
+			// V1 Lista de dependencias
+			// <dependencias><dependencia></dependencia></dependencias>
+			// digester.addObjectCreate("lista/semilla/dependencias/dependencia",
+			// DependenciaForm.class);
+			// digester.addCallMethod("lista/semilla/dependencias/dependencia/id_dependencia",
+			// "setId", 0, new Class[] { Long.class });
+			// digester.addCallMethod("lista/semilla/dependencias/dependencia/nombre",
+			// "setName", 0);
+			// digester.addSetNext("lista/semilla/dependencias/dependencia",
+			// "addDependencia");
+
+			// V2 Etiqueta <dependencia></dependencia> tanstas veces como
+			// dependencia que contiene el nombre
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_DEPENDENCIA, "addDependenciaPorNombre", 0);
 
 			digester.addSetNext(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, "add");
 
@@ -121,14 +131,29 @@ public final class SeedUtils {
 			hd.characters(String.valueOf(semillaForm.isActiva()).toCharArray(), 0, String.valueOf(semillaForm.isActiva()).length());
 			hd.endElement("", "", Constants.XML_ACTIVA);
 
+			// TODO 2017 Lista de URLs
+
+			// List<String> urls =
+			// Arrays.asList(semillaForm.getListaUrlsString().split(";"));
+			// for (String url : urls) {
+			// hd.startElement("", "", Constants.XML_URL, null);
+			// hd.characters(url.toCharArray(), 0, url.length());
+			// hd.endElement("", "", Constants.XML_URL);
+			// }
+
 			List<String> urls = Arrays.asList(semillaForm.getListaUrlsString().split(";"));
-			for (String url : urls) {
-				//TODO 2017
-				hd.startElement("", "", Constants.XML_URL, null);
-				hd.characters(url.toCharArray(), 0, url.length());
-				hd.endElement("", "", Constants.XML_URL);
+
+			if (urls != null && !urls.isEmpty()) {
+				hd.startElement("", "", "urls", null);
+				for (String url : urls) {
+					hd.startElement("", "", Constants.XML_URL, null);
+					hd.characters(url.toCharArray(), 0, url.length());
+					hd.endElement("", "", Constants.XML_URL);
+				}
+				hd.endElement("", "", "urls");
 			}
 
+			// ACRONIMO
 			if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
 				hd.startElement("", "", Constants.XML_ACRONIMO, null);
 				hd.characters(semillaForm.getAcronimo().toCharArray(), 0, semillaForm.getAcronimo().length());
@@ -137,18 +162,31 @@ public final class SeedUtils {
 
 			// TODO 2017 Multidependencia
 
+			// V1 Lista de dependencias
+			// <dependencias><dependencia></dependencia></dependencias>
 			if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
 				hd.startElement("", "", Constants.XML_DEPENDENCIAS, null);
 				for (DependenciaForm dependencia : semillaForm.getDependencias()) {
 					hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
-					hd.startElement("", "", Constants.XML_DEPENDENCIA_NOMBRE, null);
+//					hd.startElement("", "", Constants.XML_DEPENDENCIA_NOMBRE, null);
 					hd.characters(dependencia.getName().toCharArray(), 0, dependencia.getName().length());
-					hd.endElement("", "", Constants.XML_DEPENDENCIA_NOMBRE);
+//					hd.endElement("", "", Constants.XML_DEPENDENCIA_NOMBRE);
 					hd.endElement("", "", Constants.XML_DEPENDENCIA);
 				}
 				hd.endElement("", "", Constants.XML_DEPENDENCIAS);
 			}
 
+			// V2 Una etiqueta <dependencia> por cada dependnecia que contiene
+			// el nombre de la dependencia
+//			if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+//				for (DependenciaForm dependencia : semillaForm.getDependencias()) {
+//					hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
+//					hd.characters(dependencia.getName().toCharArray(), 0, dependencia.getName().length());
+//					hd.endElement("", "", Constants.XML_DEPENDENCIA);
+//				}
+//			}
+
+			// DEPENDE_DE
 			// if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
 			// hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
 			// hd.characters(semillaForm.getDependencia().toCharArray(), 0,

@@ -1787,7 +1787,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
 
 		final PropertiesManager pmgr = new PropertiesManager();
-		final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+		final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 
 		// Se recorren las páginas de cada observatorio
 		for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
