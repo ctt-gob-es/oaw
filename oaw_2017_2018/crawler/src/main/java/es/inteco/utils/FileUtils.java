@@ -1,13 +1,15 @@
 package es.inteco.utils;
 
-import es.inteco.common.logging.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.List;
+
+import org.apache.commons.lang.StringEscapeUtils;
+
+import es.inteco.common.logging.Logger;
 
 public final class FileUtils {
 
@@ -101,7 +103,10 @@ public final class FileUtils {
      * @return the original file name where problematic characters are replaced by safe ones.
      */
     public static String normalizeFileName(final String originalFileName) {
-        return originalFileName
+    	
+    	
+    	
+        return StringEscapeUtils.unescapeHtml(originalFileName)
                 .replaceAll("[àâá]", "a")
                 .replaceAll("[èéêë]", "e")
                 .replaceAll("[ïîí]", "i")

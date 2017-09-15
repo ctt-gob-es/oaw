@@ -265,10 +265,11 @@
                 }
                 final int depth = Integer.parseInt(profundidad);
                 final int width = Integer.parseInt(amplitud);
-                if (depth < 0 || depth > 4) {
+                // TODO 2017
+                if (depth < 0 || depth > 6) {
                     errores.add("La profundidad de rastreo es incorrecta");
                 }
-                if (width < 0 || width > 4) {
+                if (width < 0 || width > 6) {
                     errores.add("La amplitud de rastreo es incorrecta");
                 }
             } else if (isListaUrlsRequest()) {

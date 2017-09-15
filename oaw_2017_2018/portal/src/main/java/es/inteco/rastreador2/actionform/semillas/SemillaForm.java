@@ -196,6 +196,15 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		}
 		this.dependencias.add(dependencia);
 	}
+	
+	public void addDependenciaPorNombre(String nombre) {
+		if (this.dependencias == null) {
+			this.dependencias = new ArrayList<DependenciaForm>();
+		}
+		DependenciaForm dependencia = new DependenciaForm();
+		dependencia.setName(nombre);
+		this.dependencias.add(dependencia);
+	}
 
 	@Override
 	public String toString() {
