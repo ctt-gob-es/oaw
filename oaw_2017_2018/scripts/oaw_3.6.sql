@@ -1,13 +1,15 @@
+ALTER TABLE  `export_page` CHANGE  `url`  `url` VARCHAR( 2050 ) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL ;
+
 -- 1. Crear nueva tabla de depndencias
 
 --create table dependencia (id_dependencia bigint(20) AUTO_INCREMENT, nombre varchar(1024), primary key pk_dependencia (id_dependencia));
 
-CREATE TABLE IF NOT EXISTS `dependencia` (
-  `id_dependencia` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(200) CHARACTER SET latin1 COLLATE latin1_spanish_ci DEFAULT NULL,
-  PRIMARY KEY (`id_dependencia`),
-  UNIQUE KEY `nombre` (`nombre`),
-  KEY `id_dependencia` (`id_dependencia`)
+CREATE TABLE IF NOT EXISTS dependencia (
+  id_dependencia bigint(20) NOT NULL AUTO_INCREMENT,
+  nombre varchar(200) CHARACTER SET latin1 COLLATE latin1_spanish_ci DEFAULT NULL,
+  PRIMARY KEY (id_dependencia),
+  UNIQUE KEY nombre (nombre),
+  KEY id_dependencia (id_dependencia)
 );
 
 
