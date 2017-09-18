@@ -275,6 +275,9 @@ public class CrawlerJob implements InterruptableJob {
 		final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
 		final int maxNumRedirections = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
 		final long timeRetry = Long.parseLong(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "time.retry"));
+		
+		
+		int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
 
 		List<IgnoredLink> ignoredLinks = null;
 
