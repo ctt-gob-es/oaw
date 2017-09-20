@@ -1,5 +1,18 @@
 package es.inteco.rastreador2.openOffice.export;
 
+import static es.inteco.common.Constants.PDF_PROPERTIES;
+
+import java.sql.Connection;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+import org.odftoolkit.odfdom.pkg.OdfPackage;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -10,17 +23,6 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.pkg.OdfPackage;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.util.List;
-
-import static es.inteco.common.Constants.PDF_PROPERTIES;
 
 public final class ExportOpenOfficeUtils {
 
@@ -61,8 +63,8 @@ public final class ExportOpenOfficeUtils {
 		if ("UNE-2012".equals(version)) {
 			return new OpenOfficeUNE2012DocumentBuilder(executionId, observatoryId, tipoObservatorio);
 		}
-		
-		//TODO 2017 - Exportacion a OF específica para la nueva metodología
+
+		// TODO 2017 - Exportacion a OF específica para la nueva metodología
 		if ("UNE-2017".equals(version)) {
 			return new OpenOfficeUNE2017DocumentBuilder(executionId, observatoryId, tipoObservatorio);
 		} else {

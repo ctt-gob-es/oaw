@@ -17,7 +17,8 @@ public final class Utils {
     private Utils() {
     }
 
-    public static List<IgnoredLink> getIgnoredLinks() throws Exception {
+    @SuppressWarnings("unchecked")
+	public static List<IgnoredLink> getIgnoredLinks() throws Exception {
         try (InputStream inputStream = Utils.class.getResourceAsStream("/ignored_links.xml")) {
             final Digester digester = new Digester();
             digester.setValidating(false);

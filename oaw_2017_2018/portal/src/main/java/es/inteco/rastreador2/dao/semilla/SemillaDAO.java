@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.opensymphony.oscache.util.StringUtil;
-
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -751,7 +749,7 @@ public final class SemillaDAO {
 					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					// TODO 2017 Multidependencia
-					
+
 					PreparedStatement psDependencias = c.prepareStatement(
 							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
 					psDependencias.setLong(1, semillaForm.getId());
@@ -770,7 +768,7 @@ public final class SemillaDAO {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					}
-					
+
 					// semillaForm.setDependencia(rs.getString("dependencia"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
@@ -974,7 +972,7 @@ public final class SemillaDAO {
 
 							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
 
-							// TODO Si viene informado el nombre de la
+							// TODO 2017 Si viene informado el nombre de la
 							// depenedencia
 							// es
 							// para que se cree nueva. Si el nombre ya existe,

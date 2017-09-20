@@ -1,16 +1,22 @@
 package es.gob.oaw.smtp;
 
-import es.gob.oaw.MailProvider;
-import es.gob.oaw.sim.MailSimProvider;
-import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
+import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 
-import javax.net.ssl.*;
-import java.util.List;
+import es.gob.oaw.MailProvider;
+import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
 
 /**
  * Clase para proporcionar el servicio mail mediante un servidor SMTP

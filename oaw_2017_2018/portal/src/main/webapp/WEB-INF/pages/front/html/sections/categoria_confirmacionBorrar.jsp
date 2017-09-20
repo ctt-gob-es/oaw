@@ -12,7 +12,7 @@
                 <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                 <ol class="breadcrumb">
                   <li><html:link forward="observatoryMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.observatorio" /></html:link></li>
-                  <li><html:link forward="categoriesMenu"><bean:message key="migas.categoria" /></html:link></html:link></li>
+                  <li><html:link forward="categoriesMenu"><bean:message key="migas.categoria" /></html:link></li>
                   <li class="active"><bean:message key="migas.eliminar.categoria" /></li>
                 </ol>
             </div>

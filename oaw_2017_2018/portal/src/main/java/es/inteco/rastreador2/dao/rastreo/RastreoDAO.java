@@ -1,5 +1,24 @@
 package es.inteco.rastreador2.dao.rastreo;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -8,7 +27,14 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
-import es.inteco.rastreador2.actionform.rastreo.*;
+import es.inteco.rastreador2.actionform.rastreo.CargarRastreosForm;
+import es.inteco.rastreador2.actionform.rastreo.CargarRastreosRealizadosSearchForm;
+import es.inteco.rastreador2.actionform.rastreo.CargarRastreosSearchForm;
+import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
+import es.inteco.rastreador2.actionform.rastreo.LenguajeForm;
+import es.inteco.rastreador2.actionform.rastreo.RastreoEjecutadoForm;
+import es.inteco.rastreador2.actionform.rastreo.VerRastreoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.UpdateListDataForm;
@@ -19,14 +45,6 @@ import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
 import es.inteco.rastreador2.utils.Rastreo;
-
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Date;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class RastreoDAO {
 
