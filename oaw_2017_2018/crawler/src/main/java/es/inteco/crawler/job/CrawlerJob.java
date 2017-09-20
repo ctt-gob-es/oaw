@@ -121,7 +121,9 @@ public class CrawlerJob implements InterruptableJob {
 
 			try {
 				Logger.putLog("Iniciando el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-				makeCrawl(crawlerData);
+				
+				makeCrawl(crawlerData);				
+				
 			} catch (Exception e) {
 				Logger.putLog("Error al ejecutar el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 
@@ -133,8 +135,11 @@ public class CrawlerJob implements InterruptableJob {
 
 				// Intentamos enviar el error por correo
 				final PropertiesManager pmgr = new PropertiesManager();
-				mailService.sendMail(crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message.subject"),
-						buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "error.mail.message"), crawlerData));
+				
+				  
+			      mailService.sendMail((crawlerData.getUsersMail()!=null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail(): getAdministradoresMails(),
+			              pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message.subject"),
+			              buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message"), crawlerData));
 			}
 
 			endCrawling(conn, crawlerData);
@@ -186,8 +191,9 @@ public class CrawlerJob implements InterruptableJob {
 						final String attachPath = pmgr.getValue("crawler.properties", "path.inteco.exports.intav") + crawlerData.getIdCrawling() + File.separator + crawlerData.getIdFulfilledCrawling()
 								+ File.separator + crawlerData.getLanguage() + File.separator + pmgr.getValue("pdf.properties", "pdf.file.intav.name");
 
-						mailService.sendMail(crawlerData.getUsersMail(), pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message.subject"),
-								buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "mail.message"), crawlerData), attachPath, "Informe.pdf");
+						mailService.sendMail((crawlerData.getUsersMail()!=null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail(): getAdministradoresMails(), pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message.subject"),
+								buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message"), crawlerData), attachPath, "Informe.pdf");
+						
 					}
 
 					if (crawlerData.getResponsiblesMail() != null && !crawlerData.getResponsiblesMail().isEmpty()) {
@@ -271,13 +277,13 @@ public class CrawlerJob implements InterruptableJob {
 
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
+		
 
 		final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
 		final int maxNumRedirections = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
 		final long timeRetry = Long.parseLong(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "time.retry"));
 		
 		
-		int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
 
 		List<IgnoredLink> ignoredLinks = null;
 
