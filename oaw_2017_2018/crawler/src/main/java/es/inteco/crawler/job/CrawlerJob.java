@@ -1,5 +1,30 @@
 package es.inteco.crawler.job;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.text.DateFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
+
+import org.quartz.InterruptableJob;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.UnableToInterruptJobException;
+import org.w3c.dom.Document;
+
 import es.gob.oaw.MailService;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -12,25 +37,8 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
-import org.quartz.*;
-import org.w3c.dom.Document;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class CrawlerJob implements InterruptableJob {
-	private static final String MAIL_ADDRESS_FROM = "mail.address.from";
-	private static final String MAIL_ADDRESS_FROM_NAME = "mail.address.from.name";
 	private static final String NOT_FILTERED_URIS_SECURITY_KEY = "not.filtered.uris.security.key";
 	private static final String EMPTY_STRING = "";
 

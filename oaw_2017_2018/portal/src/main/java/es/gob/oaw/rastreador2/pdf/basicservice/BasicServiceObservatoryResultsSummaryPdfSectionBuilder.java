@@ -1,7 +1,21 @@
 package es.gob.oaw.rastreador2.pdf.basicservice;
 
-import com.lowagie.text.*;
+import static es.inteco.common.Constants.INTAV_PROPERTIES;
+import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
+
+import java.awt.Color;
+import java.util.List;
+
+import org.apache.struts.util.MessageResources;
+
+import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Section;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -14,14 +28,6 @@ import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-
-import org.apache.struts.util.MessageResources;
-
-import java.awt.*;
-import java.util.List;
-
-import static es.inteco.common.Constants.INTAV_PROPERTIES;
-import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
 
 /**
  * Created by mikunis on 1/16/17.
@@ -94,17 +100,17 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	private PdfPTable createTablaResumenResultadosPorNivelHeader(final MessageResources messageResources, final List<ObservatorySuitabilityForm> suitabilityGroups) {
 		// final float[] widths = {0.30f, 0.07f, 0.07f, 0.07f, 0.07f, 0.07f,
 		// 0.07f, 0.07f, 0.07f, 0.07f, 0.07f};
-		
-		// TODO 2017 -  Dinámicamente para normalizar a la normativa en curso
-		
-		float[] widths = new float[suitabilityGroups.get(0).getSubgroups().size()+1];
-		
-		//El primero más grande
-		widths[0] =  0.30f;
-		
-		//El resto pequeños
-		for(int i=1;i<widths.length; i++){
-			widths[i] =  0.07f;	
+
+		// TODO 2017 - Dinámicamente para normalizar a la normativa en curso
+
+		float[] widths = new float[suitabilityGroups.get(0).getSubgroups().size() + 1];
+
+		// El primero más grande
+		widths[0] = 0.30f;
+
+		// El resto pequeños
+		for (int i = 1; i < widths.length; i++) {
+			widths[i] = 0.07f;
 		}
 
 		final PdfPTable table = new PdfPTable(widths);

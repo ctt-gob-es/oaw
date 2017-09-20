@@ -33,7 +33,7 @@ import es.inteco.rastreador2.utils.Pagination;
 public class DependenciasObservatorioAction extends DispatchAction {
 
 	/**
-	 * Load.
+	 * Load. Carga de la página.
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -47,8 +47,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU);
@@ -76,8 +75,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		try (Connection c = DataBaseManager.getConnection()) {
 
@@ -105,8 +103,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 
 			PrintWriter pw = response.getWriter();
 			// pw.write(json);
-			pw.write("{\"dependencias\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult
-					+ "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"dependencias\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
 		} catch (Exception e) {
@@ -131,8 +128,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
@@ -148,18 +144,12 @@ public class DependenciasObservatorioAction extends DispatchAction {
 
 			try (Connection c = DataBaseManager.getConnection()) {
 
-				if (DependenciaDAO.existsDependencia(c, dependencia)
-						&& !dependencia.getName().equalsIgnoreCase(dependencia.getNombreAntiguo())) {
+				if (DependenciaDAO.existsDependencia(c, dependencia) && !dependencia.getName().equalsIgnoreCase(dependencia.getNombreAntiguo())) {
 					response.setStatus(400);
-//					errores.add(
-//							new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado")));
-					//response.getWriter().write(new Gson().toJson(errores));
 					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado"));
-					
+
 				} else {
 					DependenciaDAO.update(c, dependencia);
-//					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.dependencia.generada")));
-//					response.getWriter().write(new Gson().toJson(errores));
 					response.getWriter().write(messageResources.getMessage("mensaje.exito.dependencia.generada"));
 				}
 
@@ -188,8 +178,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward save(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
@@ -206,8 +195,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 
 				if (DependenciaDAO.existsDependencia(c, dependencia)) {
 					response.setStatus(400);
-					errores.add(
-							new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado")));
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
 					DependenciaDAO.save(c, dependencia);
@@ -222,8 +210,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 			}
 		} else {
 			response.setStatus(400);
-			errores.add(
-					new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio")));
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.dependencia.obligatorio")));
 			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
@@ -244,8 +231,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 

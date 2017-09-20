@@ -1,16 +1,16 @@
 package es.inteco.rastreador2.dao.cartucho;
 
-import es.inteco.common.logging.Logger;
-import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.plugin.dao.WebAnalyzerDao;
-import es.inteco.rastreador2.dao.login.LoginDAO;
-import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import es.inteco.common.logging.Logger;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.plugin.dao.WebAnalyzerDao;
+import es.inteco.rastreador2.dao.login.LoginDAO;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 
 public final class CartuchoDAO {
 
@@ -97,10 +97,10 @@ public final class CartuchoDAO {
 		return false;
 	}
 
-	
-	
 	/**
-	 * TODO 2017 - Obtiene el nombre de la aplicación del cartucho asociado a un rastreo realizado
+	 * TODO 2017 - Obtiene el nombre de la aplicación del cartucho asociado a un
+	 * rastreo realizado
+	 * 
 	 * @param c
 	 * @param idRastreoRealizado
 	 * @param idRastreo

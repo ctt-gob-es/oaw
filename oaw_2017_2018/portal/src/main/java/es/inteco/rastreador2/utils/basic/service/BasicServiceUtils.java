@@ -1,6 +1,31 @@
 package es.inteco.rastreador2.utils.basic.service;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.io.UnsupportedEncodingException;
+import java.net.IDN;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.sql.Connection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.Globals;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMessage;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerFactory;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
+
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -12,23 +37,6 @@ import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.ws.CrawlerWS;
 import es.inteco.rastreador2.ws.CrawlerWSJob;
 import es.inteco.utils.FileUtils;
-import org.apache.struts.Globals;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMessage;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.net.IDN;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.sql.Connection;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public final class BasicServiceUtils {
 
@@ -38,7 +46,10 @@ public final class BasicServiceUtils {
 	public static long saveRequestData(final BasicServiceForm basicServiceForm, final String status) {
 		try (Connection conn = DataBaseManager.getConnection()) {
 
-			// TODO 2017 - Fix
+			// TODO 2017 - Fix Se envia la url codificada en UTF desde el
+			// servicio de diagnostico para solucionar otros problemas y es
+			// necesario almacenarla en base de datos decodificada para el
+			// historico
 			basicServiceForm.setDomain(URLDecoder.decode(basicServiceForm.getDomain(), "utf-8"));
 
 			return DiagnosisDAO.insertBasicServices(conn, basicServiceForm, status);
@@ -159,7 +170,8 @@ public final class BasicServiceUtils {
 			return Long.valueOf(pmgr.getValue(CRAWLER_PROPERTIES, "cartridge.wcag2.intav.id"));
 		} else if (report.equals(Constants.REPORT_OBSERVATORY_2) || report.equals(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
 			return 7L;
-		} else if (report.equals(Constants.REPORT_OBSERVATORY_3) || report.equals(Constants.REPORT_OBSERVATORY_3_NOBROKEN)) { //TODO 2017 
+		} else if (report.equals(Constants.REPORT_OBSERVATORY_3) || report.equals(Constants.REPORT_OBSERVATORY_3_NOBROKEN)) {
+			// TODO 2017 Nueva metodologia
 			return 8L;
 		} else {
 			return -1;

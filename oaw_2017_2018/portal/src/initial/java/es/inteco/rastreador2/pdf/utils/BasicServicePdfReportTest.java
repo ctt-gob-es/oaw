@@ -77,7 +77,7 @@ public class BasicServicePdfReportTest {
 
 		final BasicServiceForm basicServiceForm = DiagnosisDAO
 				.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
-		// TODO CAMBIO CLASES NUEVAS 2017
+		// TODO 2017 Test
 		// final BasicServicePdfReport basicServicePdfReport = new
 		// BasicServicePdfReport(new
 		// AnonymousResultExportPdfUNE2012(basicServiceForm));
@@ -118,7 +118,7 @@ public class BasicServicePdfReportTest {
 
 		Assert.assertFalse(previousEvaluationsPageList.isEmpty());
 		Assert.assertEquals(2, previousEvaluationsPageList.size());
-		// TODO CAMBIO CLASES NUEVAS 2017
+		// TODO 2017 Test
 		// final BasicServicePdfReport basicServicePdfReport = new
 		// BasicServicePdfReport(new
 		// AnonymousResultExportPdfUNE2012(basicServiceForm));

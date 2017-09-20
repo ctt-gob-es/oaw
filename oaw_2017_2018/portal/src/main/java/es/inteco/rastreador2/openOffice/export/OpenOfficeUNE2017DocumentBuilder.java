@@ -34,30 +34,6 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2017Utils;
  */
 public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder {
 
-	// public static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION);
-	//
-	// public static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION,
-	// Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
-
 	// Reorganización de las verificaciones
 
 	public static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION,
@@ -238,7 +214,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO Prioridad 2  - 6 niveles
+	// TODO 2017 Prioridad 2  - 6 niveles
 	private int replaceSection442(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", "image/jpeg");
@@ -254,19 +230,10 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		replaceText(odt, odfFileContent, "-442.t1.b6-", labelsL2.get(4).getValue());
 		replaceText(odt, odfFileContent, "-442.t1.b7-", labelsL2.get(5).getValue());
 
-		// replaceText(odt, odfFileContent, "-442.t1.b8-",
-		// labelsL2.get(6).getValue());
-		// replaceText(odt, odfFileContent, "-442.t1.b9-",
-		// labelsL2.get(7).getValue());
-		// replaceText(odt, odfFileContent, "-442.t1.b10-",
-		// labelsL2.get(8).getValue());
-		// replaceText(odt, odfFileContent, "-442.t1.b11-",
-		// labelsL2.get(9).getValue());
-
 		return numImg;
 	}
 
-	// TODO Prioridad 1 14 niveles
+	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSection451(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", "image/jpeg");
@@ -309,7 +276,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO Prioridad 2  - 6 niveles
+	//  TODO 2017 Prioridad 2  - 6 niveles
 	private int replaceSection452(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
@@ -330,22 +297,6 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		replaceText(odt, odfFileContent, "-452.t1.c6-", res.get(4).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452.t1.c7-", res.get(5).getRedPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.b8-",
-		// res.get(6).getGreenPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.c8-",
-		// res.get(6).getRedPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.b9-",
-		// res.get(7).getGreenPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.c9-",
-		// res.get(7).getRedPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.b10-",
-		// res.get(8).getGreenPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.c10-",
-		// res.get(8).getRedPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.b11-",
-		// res.get(9).getGreenPercentage());
-		// replaceText(odt, odfFileContent, "-452.t1.c11-",
-		// res.get(9).getRedPercentage());
 
 		return numImg;
 	}
@@ -405,7 +356,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO Prioridad 1 14 niveles
+	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSectionCat31(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
@@ -438,7 +389,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO Prioridad 2  - 6 niveles
+	// TODO 2017 Prioridad 2  - 6 niveles
 	private int replaceSectionCat32(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -454,14 +405,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 			replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b5-", labelsL2.get(3).getValue());
 			replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b6-", labelsL2.get(4).getValue());
 			replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b7-", labelsL2.get(5).getValue());
-			// replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b8-",
-			// labelsL2.get(6).getValue());
-			// replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b9-",
-			// labelsL2.get(7).getValue());
-			// replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b10-",
-			// labelsL2.get(8).getValue());
-			// replaceText(odt, odfFileContent, "-" + numSection + "32.t1.b11-",
-			// labelsL2.get(9).getValue());
+			
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.graphic.noResults"), "image/jpeg");
@@ -471,7 +415,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO Prioridad 1 14 niveles
+	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSectionCat41(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
@@ -519,7 +463,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		return numImg;
 	}
 
-	// TODO Prioridad 2  - 6 niveles
+	// TODO 2017 Prioridad 2  - 6 niveles
 	private int replaceSectionCat42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
@@ -539,22 +483,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 			replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c6-", labels.get(4).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c7-", labels.get(5).getRedPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b8-",
-			// labels.get(6).getGreenPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c8-",
-			// labels.get(6).getRedPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b9-",
-			// labels.get(7).getGreenPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c9-",
-			// labels.get(7).getRedPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b10-",
-			// labels.get(8).getGreenPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c10-",
-			// labels.get(8).getRedPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b11-",
-			// labels.get(9).getGreenPercentage());
-			// replaceText(odt, odfFileContent, "-" + numSection + "42.t1.c11-",
-			// labels.get(9).getRedPercentage());
+
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.graphic.noResults"), "image/jpeg");

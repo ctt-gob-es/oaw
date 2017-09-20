@@ -262,7 +262,7 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		// TODO 2017 Desdoblamiento para nueva metodologia
 
 		final DefaultCategoryDataset dataSet;
-		
+
 		int numVerficationsLevel;
 
 		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
@@ -286,7 +286,7 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		// TODO 2017 Desdoblamiento para nueva metodologia
 
 		for (int i = 0; i < numVerficationsLevel; i++) {
-//		for (int i = 0; i < 10; i++) {
+			// for (int i = 0; i < 10; i++) {
 			tablaRankings.addCell(PDFUtils.createTableCell(scores.values().iterator().next().getVerifications1().get(i).getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT,
 					DEFAULT_PADDING, -1));
 			for (Map.Entry<Date, ScoreForm> dateScoreFormEntry : scores.entrySet()) {
@@ -305,7 +305,7 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		// TODO 2017 Desdoblamiento para nueva metodologia
 
 		final DefaultCategoryDataset dataSet;
-		
+
 		int numVerficationsLevel;
 
 		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
@@ -326,11 +326,10 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		final Map<Date, ScoreForm> scores = new TreeMap<>();
 		final PdfPTable tablaRankings = createTablaRankings(messageResources, pdfBuilder, evaluationPageList, scores, dateFormat);
 
-		
 		// TODO 2017 Desdoblamiento para nueva metodologia
 
 		for (int i = 0; i < numVerficationsLevel; i++) {
-//		for (int i = 0; i < 10; i++) {
+			// for (int i = 0; i < 10; i++) {
 			tablaRankings.addCell(PDFUtils.createTableCell(scores.values().iterator().next().getVerifications2().get(i).getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT,
 					DEFAULT_PADDING, -1));
 			for (Map.Entry<Date, ScoreForm> dateScoreFormEntry : scores.entrySet()) {
