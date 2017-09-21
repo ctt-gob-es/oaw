@@ -102,8 +102,16 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		// 0.07f, 0.07f, 0.07f, 0.07f, 0.07f};
 
 		// TODO 2017 - Dinámicamente para normalizar a la normativa en curso
+		
+		int subgroupsSize = 0;
+		
+		for (ObservatorySuitabilityForm suitabilityForm : suitabilityGroups) {
+			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+				subgroupsSize++;
+			}
+		}
 
-		float[] widths = new float[suitabilityGroups.get(0).getSubgroups().size() + 1];
+		float[] widths = new float[subgroupsSize + 1];
 
 		// El primero más grande
 		widths[0] = 0.30f;
