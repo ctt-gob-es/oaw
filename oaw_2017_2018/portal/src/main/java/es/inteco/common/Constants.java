@@ -77,6 +77,7 @@ public interface Constants {
     String XML_LISTA = "lista";
     String XML_SEMILLA = "semilla";
     String XML_NOMBRE = "nombre";
+    String XML_URLS = "urls";
     String XML_URL = "url";
     //String XML_DEPENDENCIA = "depende_de";
     String XML_ACRONIMO = "acronimo";
