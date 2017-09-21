@@ -123,10 +123,16 @@
                                         </html:link>
                                     </td>
                                     <td>
-                                        <html:link forward="deleteFulfilledObservatory">
+                                     	<jsp:useBean id="paramsDeleteExecution" class="java.util.HashMap" />
+                                    	<c:set target="${paramsDeleteExecution}" property="id_observatorio" value="${id_observatorio}" />
+                                        <c:set target="${paramsDeleteExecution}" property="${id_ex_obs}" value="${fulfilledObservatory.id}" />
+                                        <c:set target="${paramsDeleteExecution}" property="esPrimera" value="true"/>
+                                        <c:set target="${paramsDeleteExecution}" property="isPrimary" value="true"/>
+                                        <c:set target="${paramsDeleteExecution}" property="idExObs" value="${fulfilledObservatory.id}" />
+                                        <html:link forward="deleteFulfilledObservatory" name="paramsDeleteExecution">
                                             <span class="glyphicon glyphicon-remove" aria-hidden="true" data-toggle="tooltip" title="Eliminar esta iteraci&oacute;n del observatorio"/><span class="sr-only">Eliminar esta iteraci&oacute;n del observatorio</span>
                                         </html:link>
-                                    </td
+                                    </td>
                                 </tr>
                             </logic:iterate>
                         </table>
