@@ -25,11 +25,11 @@
 		<bean:write name="accionVolver" />
 	</bean:define>
 
-	<h1>
+<%-- 	<h1>
 		<img src="../images/bullet_h1.gif" />
 		<bean:message key="pagina.exito" />
 	</h1>
-
+ --%>
 
 
 	<div id="container_menu_izq">
