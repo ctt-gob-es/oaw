@@ -16,7 +16,7 @@ function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 }
 
 function dependenciasFormatter(cellvalue, options, rowObject) {
-	var cellFormatted = "<ul style='list-style: none; padding-left: 0;' >";
+	var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' >";
 
 	$.each(rowObject.dependencias, function(index, value) {
 		cellFormatted = cellFormatted + "<li>" + value.name + "</li>";
@@ -483,7 +483,7 @@ function reloadGrid(path) {
 						
 						//Mostrar sin resultados
 						if(total == 0){
-							$('#grid').append('<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" role="gridcell">Sin resultados</td></tr>');
+							$('#grid').append('<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 						}
 
 						// Paginador
