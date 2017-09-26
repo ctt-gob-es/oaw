@@ -207,7 +207,7 @@
 					class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.in.directory" /></strong></label>
 				<div class="col-xs-2">
-					<select name="directorio" class="textoSelect form-control">
+					<select name="inDirectory" class="textoSelect form-control">
 						<option value="true">
 							<bean:message key="select.yes" />
 						</option>
