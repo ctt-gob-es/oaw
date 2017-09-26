@@ -188,6 +188,29 @@ public final class Check_1_1_3_ListTest {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
     }
+    
+    //TODO 2017 Test Bug 0011916
+    @Test
+    public void evaluateUlList2() {
+        checkAccessibility.setContent("<ul>" +
+                "<li>Modelo 400</li>" +
+                "<li>Modelo 400-A</li>" +
+                "<li>Modelo 400-B</li>" +
+                "<li>Modelo 400-C</li>" +
+                "</ul>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
+        
+        
+        checkAccessibility.setContent("<ul>" +
+                "<li>Introduccion</li>" +
+                "<li>1. A</li>" +
+                "<li>2) A</li>" +
+                "<li>3- A</li>" +
+                "</ul>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
+    }
 
     @Test
     public void evaluateUlSimulatingOl() {

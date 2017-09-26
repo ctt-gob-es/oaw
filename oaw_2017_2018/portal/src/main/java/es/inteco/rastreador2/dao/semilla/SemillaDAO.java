@@ -1043,7 +1043,7 @@ public final class SemillaDAO {
 			// acronimo, dependencia, activa) VALUES (?,?,?,?,?,?,?)",
 			// Statement.RETURN_GENERATED_KEYS);
 
-			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			ps.setString(2, semillaForm.getNombre());
@@ -1060,6 +1060,7 @@ public final class SemillaDAO {
 			} else {
 				ps.setString(5, null);
 			}
+			
 
 			// TODO 2017 Multidependencia
 			/*
@@ -1072,12 +1073,17 @@ public final class SemillaDAO {
 			 * true); }
 			 */
 
-			if (StringUtils.isNotEmpty(semillaForm.getActivaStr()) && semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-				ps.setBoolean(6, false);
-			} else {
-				ps.setBoolean(6, true);
-			}
+//			if (StringUtils.isNotEmpty(semillaForm.getActivaStr()) && semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+//				ps.setBoolean(6, false);
+//			} else {
+//				ps.setBoolean(6, true);
+//			}
+			
+			ps.setBoolean(6, semillaForm.isActiva());
 
+			ps.setBoolean(7, semillaForm.isInDirectory());
+			
+			
 			int affectedRows = ps.executeUpdate();
 
 			if (affectedRows == 0) {

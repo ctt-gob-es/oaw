@@ -266,7 +266,7 @@ function reloadGrid(path) {
 
 																var response = jQuery
 																		.parseJSON(data);
-																var s = '<select><option disabled></option>';
+																var s = '<select><option disabled style="display: none;"></option>';
 
 																if (response
 																		&& response.length) {

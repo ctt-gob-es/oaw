@@ -64,6 +64,16 @@
 				<targetPath>${basedir}/target/oaw/META-INF</targetPath>
 			</resource>
 		</resources>
+<!-- 
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>META-INF/context.xml</packagingExcludes>
+				</configuration>
+			</plugin>
+		</plugins> -->
+
 	</build>
 
 	<dependencies>
