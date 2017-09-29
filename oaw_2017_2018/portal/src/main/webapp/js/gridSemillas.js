@@ -19,7 +19,7 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 	var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' >";
 
 	$.each(rowObject.dependencias, function(index, value) {
-		cellFormatted = cellFormatted + "<li>" + value.name + "</li>";
+		cellFormatted = cellFormatted + "<li class='listado-grid'>" + value.name + "</li>";
 	});
 
 	cellFormatted = cellFormatted + "</ul>";
@@ -27,13 +27,25 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 	return cellFormatted;
 }
 
+function titleDependenciasFormatter(cellvalue, options, rowObject) {
+	var cellFormatted = "";
+
+	$.each(rowObject.dependencias, function(index, value) {
+		cellFormatted = cellFormatted + value.name + "\n";
+	});
+
+	return cellFormatted;
+}
+
+
 function urlsFormatter(cellvalue, options, rowObject) {
-	return rowObject.listaUrls;
+
+	return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');;
 }
 
 function irDependenciaFormatter(cellvalue, options, rowObject) {
-	return "<a href="
-			+ rowObject.listaUrls
+	return "<a target='blank' href="
+			+ rowObject.listaUrls[0]
 			+ "><span class='glyphicon glyphicon-new-window'></span><span class='sr-only'>Ir a la p&aacute;gina web de esta semilla</span></a>";
 }
 
@@ -83,15 +95,17 @@ function eliminarSemilla(rowId) {
 
 // Edicion de las urls en linea formatea el texto para colocar una por línea
 
-function textareaEdit(value, options) {
+function textareaEdit(value, options, rowObject) {
 	var el = document.createElement("textarea");
 	el.setAttribute("style", "height:100px; width:100%; text-align:left;");
-
+	
 	el.value = value.replace(/\,/g, '\r\n');
 	return el;
 }
 
 function textareaEditValue(elem, operation, value) {
+
+	
 	if (operation === 'get') {
 		return $(elem).val();
 	} else if (operation === 'set') {
@@ -165,7 +179,7 @@ function reloadGrid(path) {
 													},
 													{
 														name : "nombre",
-														width : 60,
+														width : 50,
 														editrules : {
 															required : true
 														},
@@ -174,13 +188,13 @@ function reloadGrid(path) {
 													},
 													{
 														name : "acronimo",
-														width : 15,
+														width : 20,
 														sortable : false,
 														align : "left"
 													},
 													{
 														name : "segmento",
-														width : 15,
+														width : 20,
 														edittype : "select",
 														align : "left",
 														editoptions : {
@@ -225,10 +239,10 @@ function reloadGrid(path) {
 																rowId, val,
 																rawObject, cm,
 																rdata) {
-															return 'title="Dependencias a las que est\u00E1 asociada esta semilla"';
+															return 'title="'+titleDependenciasFormatter(val,null,rawObject)+'"';
 														},
 														align : "left",
-														width : 60,
+														width : 50,
 														// editrules : {
 														// required : true
 														// },
@@ -305,7 +319,7 @@ function reloadGrid(path) {
 													{
 														name : "listaUrlsString",
 														align : "left",
-														width : 60,
+														width : 50,
 														edittype : 'custom',
 														sortable : false,
 														formatter : urlsFormatter,

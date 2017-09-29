@@ -21,7 +21,7 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 	var cellFormatted = "<ul style='list-style: none; padding-left: 0;' >";
 
 	$.each(rowObject.dependencias, function(index, value) {
-		cellFormatted = cellFormatted + "<li>" + value.name + "</li>";
+		cellFormatted = cellFormatted + "<li class='listado-grid'>" + value.name + "</li>";
 	});
 
 	cellFormatted = cellFormatted + "</ul>";
@@ -29,8 +29,19 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 	return cellFormatted;
 }
 
+function titleDependenciasFormatter(cellvalue, options, rowObject) {
+	var cellFormatted = "";
+
+	$.each(rowObject.dependencias, function(index, value) {
+		cellFormatted = cellFormatted + value.name + "\n";
+	});
+
+	return cellFormatted;
+}
+
+
 function urlsFormatter(cellvalue, options, rowObject) {
-	return rowObject.listaUrls;
+	return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');;
 }
 
 function nombreSemillaFormatter(cellvalue, options, rowObject) {
@@ -207,7 +218,7 @@ function reloadGrid(path) {
 													},
 													{
 														name : "nombre",
-														width : 60,
+														width : 50,
 														editrules : {
 															required : true
 														},
@@ -299,7 +310,7 @@ function reloadGrid(path) {
 																}
 															}
 														}
-													},
+													},class='listado-dependencias-grid'
 													{
 														name : "segmento",
 														width : 15,
@@ -360,7 +371,7 @@ function reloadGrid(path) {
 																rowId, val,
 																rawObject, cm,
 																rdata) {
-															return 'title="Dependencias a las que est\u00E1 asociada esta semilla"';
+															return 'title="'+titleDependenciasFormatter(val,null,rawObject)+'"';
 														},
 														align : "left",
 														width : 60,
