@@ -25,17 +25,30 @@
 /* Para evitar el parpadeo al recargar */
 .ui-jqgrid-bdiv {
 	/*min-height: 500px !Important;*/
+	
 }
 
-.ui-widget-content a , .ui-jqgrid-jquery-ui .glyphicon {
-    color: #e21430 !important;
+.ui-widget-content a, .ui-jqgrid-jquery-ui .glyphicon {
+	color: #e21430 !important;
 }
 
-.pagination{
+.pagination {
 	padding: 5px 10px;
 }
 
 /** Para ocultar la primera fila que mete vacía **/
-.ui-jqgrid tr.jqgfirstrow > td {
-    padding: 0 !important;
+.ui-jqgrid tr.jqgfirstrow>td {
+	padding: 0 !important;
 }
+
+.ui-jqgrid tr.jqgrow td, .ui-jqgrid-cell-wrapper {
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
+.listado-grid {
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+    
