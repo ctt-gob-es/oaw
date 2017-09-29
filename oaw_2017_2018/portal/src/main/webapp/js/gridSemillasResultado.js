@@ -310,7 +310,7 @@ function reloadGrid(path) {
 																}
 															}
 														}
-													},class='listado-dependencias-grid'
+													},
 													{
 														name : "segmento",
 														width : 15,
