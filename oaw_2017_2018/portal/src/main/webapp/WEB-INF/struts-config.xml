@@ -17,15 +17,15 @@
 		<form-bean name="SemillaObservatorioForm"
 			type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
 		<form-bean name="JsonSemillaObservatorioForm"
-			type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />	
+			type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
 		<form-bean name="NuevoObservatorioForm"
 			type="es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm" />
 		<form-bean name="SubirConclusionesForm"
 			type="es.inteco.rastreador2.actionform.observatorio.SubirConclusionesForm" />
-		
+
 		<form-bean name="DependenciaObservatoryForm"
-			type="es.inteco.rastreador2.actionform.semillas.DependenciaForm" />	
-			
+			type="es.inteco.rastreador2.actionform.semillas.DependenciaForm" />
+
 
 		<!-- RASTREOS -->
 		<form-bean name="InsertarRastreoForm"
@@ -352,6 +352,10 @@
 		<!-- Nuevo mantenimiento de dependencias -->
 		<forward name="observatoryDependencias"
 			path="/secure/ViewDependenciasObservatorio.do?action=load" />
+
+<!-- Página de comprobación de conectividad -->
+		<forward name="conectividadMenu" path="/secure/conectividad.do" />
+
 	</global-forwards>
 
 	<!-- Action Mapping Definitions -->
@@ -496,7 +500,7 @@
 			<forward name="exito" path=".cargarSemillasObservatorio" />
 		</action>
 
-		<action path="/secure/ViewDependenciasObservatorio" name ="DependenciaObservatoryForm"
+		<action path="/secure/ViewDependenciasObservatorio" name="DependenciaObservatoryForm"
 			type="es.inteco.rastreador2.action.observatorio.DependenciasObservatorioAction"
 			parameter="action" scope="request" validate="false">
 			<forward name="exito" path=".cargarDependenciasObservatorio" />
@@ -1031,6 +1035,15 @@
 			<forward name="exito" path=".servicioDiagnostico" />
 			<forward name="volver" path=".indexAdmin" />
 		</action>
+
+		<!-- CONECTIVIDAD -->
+		<action path="/secure/conectividad"
+			type="es.gob.oaw.rastreador2.action.comun.ConectividadAction">
+			<forward name="exito" path=".conectividad" />
+			<forward name="volver" path=".indexAdmin" />
+		</action>
+
+
 
 	</action-mappings>
 

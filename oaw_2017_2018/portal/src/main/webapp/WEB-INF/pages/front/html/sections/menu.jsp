@@ -129,6 +129,9 @@
                         <li>
                             <html:link forward="googleSeedsMenu" styleId="subselected" titleKey="menuadmin.semillas.resultados.google.title"><bean:message key="menuadmin.semillas.resultados.google" /></html:link>
                         </li>
+                        <li>
+                            <html:link forward="conectividadMenu" styleId="subselected" titleKey="menuadmin.conectividad.title"><bean:message key="menuadmin.conectividad" /></html:link>
+                        </li>
                     </ul>
                 </li>
                 </inteco:menu>

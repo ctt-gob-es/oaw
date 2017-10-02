@@ -156,13 +156,16 @@
             try {
                 final String encodedCodigo = codec.encode(codigo);
                
+                System.err.println("url: " +url);
                 
                 url = java.net.URLEncoder.encode(url,"UTF-8").toString();
+
                 
+                System.err.println("url (enc): " +url);
                 
                 final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
-                        encodedCodigo != null ? encodedCodigo : "UTF-8",
-                        url != null ? url : "",
+                        encodedCodigo != null ? encodedCodigo : "",
+                        url != null ? url : "UTF-8",
                         correo,
                         profundidad,
                         amplitud,

@@ -872,4 +872,13 @@
 
 	<definition name=".json" path="/json.jsp" />
 
+
+	<!-- Página de conectividad -->
+	<definition name=".conectividad" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents"
+			value="/WEB-INF/pages/front/html/sections/conectividad.jsp" />
+	</definition>
+
+
 </tiles-definitions>    
