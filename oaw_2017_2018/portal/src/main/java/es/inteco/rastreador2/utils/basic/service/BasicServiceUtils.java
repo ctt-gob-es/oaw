@@ -117,9 +117,10 @@ public final class BasicServiceUtils {
 
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
 		// ¡No validan que la URL esté bien codificada!
-		if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+		//TODO 2017 Se codifica en la JSP como UTF-88 y se decodifica anteriormente 
+		/*if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
 			basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
-		}
+		}*/
 		return basicServiceForm;
 	}
 

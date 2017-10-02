@@ -508,6 +508,7 @@ public interface Constants {
     String SUBMENU_OBS_DEPENDENCIAS = "submenuDependenciasObs";
     String SUBMENU_OBSERVATORIO = "submenuObservatorio";
     String SUBMENU_SERVICIO_DIAGNOSTICO = "submenuServicioDiagnostico";
+    String SUBMENU_CONECTIVIDAD = "submenuConectividad";
     String URL = "url";
     String BROKEN_LINKS = "brokenLinks";
     String ALIAS = "alias";
