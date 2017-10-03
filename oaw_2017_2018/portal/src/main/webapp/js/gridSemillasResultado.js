@@ -1,5 +1,14 @@
 var lastUrl;
 
+function cambiaTitulo(){
+	$("option").hover(function(e) {
+		var $target = $(e.target);
+		if ($target.is('option')) {
+			this.title = $target.text();
+		}
+	});
+}
+
 var gridSelRow;
 
 // Formatters de celdas
@@ -332,7 +341,7 @@ function reloadGrid(path) {
 																		if(ri.id == $('#grid').getLocalRow(gridSelRow).categoria.id){
 																			
 
-																			s += '<option selected="selected" value="'
+																			s += '<option onmouseover="cambiaTitulo()" selected="selected" value="'
 																					+ ri.id
 																					+ '">'
 																					+ ri.name
@@ -340,7 +349,7 @@ function reloadGrid(path) {
 																		} else {
 																		
 																		
-																		s += '<option value="'
+																		s += '<option onmouseover="cambiaTitulo()" value="'
 																				+ ri.id
 																				+ '">'
 																				+ ri.name

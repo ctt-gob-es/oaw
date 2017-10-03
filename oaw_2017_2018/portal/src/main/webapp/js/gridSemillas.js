@@ -1,5 +1,14 @@
 var lastUrl;
 
+function cambiaTitulo(){
+	$("option").hover(function(e) {
+		var $target = $(e.target);
+		if ($target.is('option')) {
+			this.title = $target.text();
+		}
+	});
+}
+
 // Formatters de celdas
 function categoriaFormatter(cellvalue, options, rowObject) {
 	if (rowObject.categoria.name != null) {
@@ -19,7 +28,8 @@ function dependenciasFormatter(cellvalue, options, rowObject) {
 	var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' >";
 
 	$.each(rowObject.dependencias, function(index, value) {
-		cellFormatted = cellFormatted + "<li class='listado-grid'>" + value.name + "</li>";
+		cellFormatted = cellFormatted + "<li class='listado-grid'>"
+				+ value.name + "</li>";
 	});
 
 	cellFormatted = cellFormatted + "</ul>";
@@ -37,10 +47,10 @@ function titleDependenciasFormatter(cellvalue, options, rowObject) {
 	return cellFormatted;
 }
 
-
 function urlsFormatter(cellvalue, options, rowObject) {
 
-	return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');;
+	return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');
+	;
 }
 
 function irDependenciaFormatter(cellvalue, options, rowObject) {
@@ -98,14 +108,13 @@ function eliminarSemilla(rowId) {
 function textareaEdit(value, options, rowObject) {
 	var el = document.createElement("textarea");
 	el.setAttribute("style", "height:100px; width:100%; text-align:left;");
-	
+
 	el.value = value.replace(/\,/g, '\r\n');
 	return el;
 }
 
 function textareaEditValue(elem, operation, value) {
 
-	
 	if (operation === 'get') {
 		return $(elem).val();
 	} else if (operation === 'set') {
@@ -211,7 +220,7 @@ function reloadGrid(path) {
 																		&& response.length) {
 																	for (var i = 0, l = response.length; i < l; i++) {
 																		var ri = response[i];
-																		s += '<option value="'
+																		s += '<option class="dependenciaOption" value="'
 																				+ ri.id
 																				+ '">'
 																				+ ri.name
@@ -239,7 +248,12 @@ function reloadGrid(path) {
 																rowId, val,
 																rawObject, cm,
 																rdata) {
-															return 'title="'+titleDependenciasFormatter(val,null,rawObject)+'"';
+															return 'title="'
+																	+ titleDependenciasFormatter(
+																			val,
+																			null,
+																			rawObject)
+																	+ '"';
 														},
 														align : "left",
 														width : 50,
@@ -249,7 +263,7 @@ function reloadGrid(path) {
 														edittype : "select",
 														editoptions : {
 
-															style : "height:100px; width:100%; text-align:left;",
+															style : "height:100px; width:100%; text-align:left; overflow-x: scroll;",
 															multiple : true,
 															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listDependencias',
 															buildSelect : function(
@@ -292,14 +306,14 @@ function reloadGrid(path) {
 																						ri.id,
 																						idsDependencias) >= 0) {
 
-																			s += '<option selected="selected" value="'
+																			s += '<option onmouseover="cambiaTitulo()" selected="selected" value="'
 																					+ ri.id
 																					+ '">'
 																					+ ri.name
 																					+ '</option>';
 
 																		} else {
-																			s += '<option value="'
+																			s += '<option onmouseover="cambiaTitulo()" value="'
 																					+ ri.id
 																					+ '">'
 																					+ ri.name
@@ -494,10 +508,12 @@ function reloadGrid(path) {
 						}).trigger('reloadGrid');
 
 						$('#grid').unbind("contextmenu");
-						
-						//Mostrar sin resultados
-						if(total == 0){
-							$('#grid').append('<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+
+						// Mostrar sin resultados
+						if (total == 0) {
+							$('#grid')
+									.append(
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 						}
 
 						// Paginador
