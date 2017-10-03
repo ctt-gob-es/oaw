@@ -31,6 +31,7 @@
 
 	var windowWidth = $(window).width() * 0.8;
 	var windowHeight = $(window).height() * 0.8;
+	
 
 	function dialogoNuevaSemilla() {
 
