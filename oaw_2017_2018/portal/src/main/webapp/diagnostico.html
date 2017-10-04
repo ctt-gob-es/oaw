@@ -195,8 +195,6 @@ fieldset p {
 										<option value="2">2</option>
 										<option value="3">3</option>
 										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
 									</select>
 								</p>
 
@@ -209,6 +207,8 @@ fieldset p {
 										<option value="4">4</option>
 										<option value="5">5</option>
 										<option value="6">6</option>
+										<option value="7">7</option>
+										<option value="8">8</option>
 									</select>
 								</p>
 
@@ -241,7 +241,7 @@ fieldset p {
 									cols="50"></textarea>
 								<span style="display: block; padding-left: 5px">Introduce
 									una URL por l&iacute;nea. Solo se analizar&aacute;n un
-									m&aacute;ximo de 17 p&aacute;ginas</span>
+									m&aacute;ximo de <span id="maxUrl">17</span> p&aacute;ginas</span>
 							</p>
 						</div>
 					</fieldset>
@@ -285,14 +285,14 @@ fieldset p {
 
 							<!-- Nueva metodología -->
 
-<!-- 							<li><input id="informe-obs-3" type="radio" name="informe"
+							<li><input id="informe-obs-3" type="radio" name="informe"
 								value="observatorio-3" checked> <label
 									for="informe-obs-3">Observatorio UNE 2017</label> <span
 									class="help-block"> Informe conforme a la <a
 										href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012">metodolog&iacute;a
 											del Observatorio de Accesibilidad, basada en la UNE
 											139803:2012</a>.
-								</span></li> -->
+								</span></li>
 
 
 							<li><input id="informe-obs-2" type="radio" name="informe"
@@ -351,12 +351,34 @@ fieldset p {
 	</div>
 	<script type="application/javascript">
 	<!--
-				        $("#radio-1").click(function () {
+	
+
+		$("#informe-obs-3").click(function () {
+			$("#disabled_info").text("(Esta opción solo está disponible para análisis de 33 páginas [profundidad 4, anchura 8])");
+			$("#maxUrl").text("33");
+			checkHistoricoCrawler();
+			checkHistoricoListaUrls();
+		});
+		
+		$("#informe-obs-2").click(function () {
+			$("#disabled_info").text("(Esta opción solo está disponible para análisis de 17 páginas)")
+			$("#maxUrl").text("17");
+			checkHistoricoCrawler();
+			checkHistoricoListaUrls();
+		});
+		
+		$("#informe-obs").click(function () {
+			$("#disabled_info").text("(Esta opción solo está disponible para análisis de 17 páginas)")
+			$("#maxUrl").text("17");
+			checkHistoricoCrawler();
+		});
+	
+		$("#radio-1").click(function () {
           $("#crawler").show();
           $("#urlset").hide();
           $("#source").hide();
           $("#historico").show();
-          checkHistoricoCrawler()
+          checkHistoricoCrawler();
         });
 
         $("#radio-2").click(function () {
@@ -378,7 +400,8 @@ fieldset p {
         $("#urls").on('input', checkHistoricoListaUrls);
 
         function checkHistoricoCrawler() {
-            if ($("#profundidad option:selected").val()>=4 && $("#amplitud option:selected").val()>=4) {
+            if (($("#profundidad option:selected").val()==4 && $("#amplitud option:selected").val()==4 && $('#informe-obs-2').prop("checked")) || 
+            		($("#profundidad option:selected").val()==4 && $("#amplitud option:selected").val()==8	&& $('#informe-obs-3').prop("checked"))) {
                 $("#registerAnalysis").prop("disabled", false);
                 $("#disabled_info").hide();
             } else {
@@ -388,7 +411,13 @@ fieldset p {
             }
         }
         function checkHistoricoListaUrls() {
-          if ($("#urls").val().split("http").length == 18) {
+          if (
+        		  ($("#urls").val().split("http").length == 18 && $('#informe-obs-2').prop("checked")) ||
+        		  ($("#urls").val().split("http").length == 34 && $('#informe-obs-3').prop("checked"))
+        		  ) {
+        	  
+        
+        	  
             $("#registerAnalysis").prop("disabled", false);
             $("#disabled_info").hide();
           } else {
@@ -415,6 +444,7 @@ fieldset p {
         $("#radio-1").click();
      -->
     
+	
 	
 	</script>
 	<!-- Bootstrap core JavaScript -->

@@ -713,7 +713,7 @@
 				<var>
 					<var-name>max</var-name>
 					<!-- <var-value>4</var-value> -->
-					<var-value>6</var-value>
+					<var-value>4</var-value>
 				</var>
 			</field>
 			<field property="amplitud" depends="required, intRange, integer">
@@ -727,7 +727,7 @@
 				<var>
 					<var-name>max</var-name>
 					<!-- <var-value>4</var-value> -->
-					<var-value>6</var-value>
+					<var-value>8</var-value>
 				</var>
 			</field>
 		</form>
