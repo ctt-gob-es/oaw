@@ -162,9 +162,9 @@
 							Mensajería (SIM). Se intentará enviar un correo electrónico a la
 							dirección indicada.</p>
 
-						<p>
+<%-- 						<p>
 							<bean:message key="leyenda.campo.obligatorio" />
-						</p>
+						</p> --%>
 
 						<p>
 							<label for="url" class="labelCorto"><strong
@@ -227,9 +227,12 @@
 						<div id="urlcheck-error-message" class="alert alert-danger hidden">Debe
 							introducir una URL válida</div>
 
-						<p>
+						<p>Comprobar la conectividad con la URL indicada.</p>
+
+<%-- 						<p>
 							<bean:message key="leyenda.campo.obligatorio" />
-						</p>
+						</p> --%>
+						
 						<div class="formItem">
 							<label for="url" class="labelCorto"><strong
 								class="labelVisu"><acronym

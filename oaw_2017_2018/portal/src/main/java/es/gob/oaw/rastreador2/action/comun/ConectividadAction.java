@@ -133,31 +133,20 @@ public class ConectividadAction extends Action {
 			final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
 			final ResponseStatusType respuestaStatus = respuesta.getStatus();
 			if (!"1000".equals(respuestaStatus.getStatusCode())) {
-				// request.setAttribute("simURL", url);
-				// request.setAttribute("simConnection", false);
-				// request.setAttribute("simError",
-				// respuestaStatus.getStatusCode() + " - " +
-				// respuestaStatus.getStatusText() + " - " +
-				// respuestaStatus.getDetails());
 				simConnection = false;
 				simError = respuestaStatus.getStatusCode() + " -  " + respuestaStatus.getStatusText() + " - " + respuestaStatus.getDetails();
 
 			} else {
-				// request.setAttribute("simURL", url);
-				// request.setAttribute("simConnection", true);
 				simConnection = true;
 			}
 
 		} catch (MalformedURLException e) {
-			// request.setAttribute("simURL", url);
-			// request.setAttribute("simConnection", false);
-			// request.setAttribute("simError", e.getMessage());
 			simConnection = false;
 			simError = e.getMessage();
 		} catch (IOException e) {
-			// request.setAttribute("simURL", url);
-			// request.setAttribute("simConnection", false);
-			// request.setAttribute("simError", e.getMessage());
+			simConnection = false;
+			simError = e.getMessage();
+		} catch (Exception e) {
 			simConnection = false;
 			simError = e.getMessage();
 		}
@@ -216,30 +205,15 @@ public class ConectividadAction extends Action {
 			int responseCode = connection.getResponseCode();
 
 			if (HttpURLConnection.HTTP_OK == responseCode) {
-				// request.setAttribute("url", url);
-				// request.setAttribute("urlConnection", true);
-
 				urlConnection = true;
 
 			} else {
-				// request.setAttribute("url", url);
-				// request.setAttribute("urlConnection", false);
-				// request.setAttribute("urlError", "Error al conectar a la URL
-				// código: " + responseCode);
-
 				urlError = "Error al conectar a la URL código: " + responseCode;
 			}
 
 		} catch (MalformedURLException e) {
-			// request.setAttribute("url", urlAdress);
-			// request.setAttribute("urlConnection", false);
-			// request.setAttribute("urlError", "URL mal formada");
 			urlError = "URL mal formada";
 		} catch (IOException e1) {
-			// request.setAttribute("url", urlAdress);
-			// request.setAttribute("urlConnection", false);
-			// request.setAttribute("urlError", "Error de conexión");
-
 			urlError = "Error de conexión";
 		}
 
@@ -277,8 +251,6 @@ public class ConectividadAction extends Action {
 		final Mensajes mensajes = factory.createMensajes();
 		final MensajeEmail mensajeEmail = factory.createMensajeEmail();
 		mensajeEmail.setAsunto("Test de conectividad SIM");
-		// Convertimos los saltos de línea en la etiqueta HTML equivalente
-		// porque SIM envía el mensaje como text/HTML
 		mensajeEmail.setCuerpo("Mensaje de prueba de conectividad");
 
 		final DestinatariosMail destinatariosMail = factory.createDestinatariosMail();
