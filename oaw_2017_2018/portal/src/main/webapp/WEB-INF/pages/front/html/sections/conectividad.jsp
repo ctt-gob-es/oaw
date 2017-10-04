@@ -82,7 +82,7 @@
 					.ajax(
 							{
 								url : '/oaw/secure/conectividad.do?action=checkurl&url='
-										+ $('#urlcheck').val(),
+										+ decodeURI($('#urlcheck').val()),
 								method : 'POST'
 							}).success(
 							function(data) {

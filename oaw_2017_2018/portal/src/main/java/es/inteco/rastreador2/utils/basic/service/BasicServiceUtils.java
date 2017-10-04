@@ -50,7 +50,7 @@ public final class BasicServiceUtils {
 			// servicio de diagnostico para solucionar otros problemas y es
 			// necesario almacenarla en base de datos decodificada para el
 			// historico
-			basicServiceForm.setDomain(URLDecoder.decode(basicServiceForm.getDomain(), "utf-8"));
+			//basicServiceForm.setDomain(URLDecoder.decode(basicServiceForm.getDomain(), "utf-8"));
 
 			return DiagnosisDAO.insertBasicServices(conn, basicServiceForm, status);
 		} catch (Exception e) {
@@ -79,11 +79,33 @@ public final class BasicServiceUtils {
 	public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) {
 		Logger.putLog("getBasicServiceForm " + basicServiceForm.toString(), BasicServiceUtils.class, Logger.LOG_LEVEL_ERROR);
 		basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
-		try {
-			basicServiceForm.setDomain(URLDecoder.decode(request.getParameter(Constants.PARAM_URL), "utf-8"));
-		} catch (UnsupportedEncodingException e) {
-			basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
+		/*
+		 * try {
+		 * basicServiceForm.setDomain(URLDecoder.decode(request.getParameter(
+		 * Constants.PARAM_URL), "utf-8")); } catch
+		 * (UnsupportedEncodingException e) {
+		 * basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL))
+		 * ; }
+		 */
+
+		if (request.getParameter(Constants.PARAM_URL) != null) {
+
+			try {
+				basicServiceForm.setDomain(new String(request.getParameter(Constants.PARAM_URL).getBytes("ISO-8859-1")));
+			} catch (UnsupportedEncodingException e) {
+
+				try {
+					basicServiceForm.setDomain(new String(request.getParameter(Constants.PARAM_URL).getBytes("UTF-8")));
+				} catch (UnsupportedEncodingException e1) {
+					basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
+				}
+			}
+
+			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+				basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
+			}
 		}
+
 		basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
 		basicServiceForm.setProfundidad(request.getParameter(Constants.PARAM_DEPTH));
 		basicServiceForm.setAmplitud(request.getParameter(Constants.PARAM_WIDTH));
@@ -117,10 +139,13 @@ public final class BasicServiceUtils {
 
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
 		// ¡No validan que la URL esté bien codificada!
-		//TODO 2017 Se codifica en la JSP como UTF-88 y se decodifica anteriormente 
-		/*if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
-			basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
-		}*/
+		// TODO 2017 Se codifica en la JSP como UTF-88 y se decodifica
+		// anteriormente
+		/*
+		 * if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
+		 * basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(
+		 * basicServiceForm.getDomain())); }
+		 */
 		return basicServiceForm;
 	}
 
