@@ -2,16 +2,19 @@ package es.gob.oaw.rastreador2.action.comun;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
@@ -37,7 +40,6 @@ import es.inteco.common.Constants;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 
 /**
  * Action para mostrar la conectividad con los sistemas externos como SIM.
@@ -80,9 +82,7 @@ public class ConectividadAction extends Action {
 					saveErrors(request, errors);
 				} else {
 
-					String fixedUrl = new String(url.getBytes("ISO-8859-1"));
-
-					return checkUrl(fixedUrl, request, response);
+					return checkUrl(url, request, response);
 				}
 			} else if ("checksim".equals(action)) {
 				String email = request.getParameter("email");
@@ -165,7 +165,8 @@ public class ConectividadAction extends Action {
 
 		String jsonCheck = new Gson().toJson(checkSim);
 
-		response.setContentType("text/json");
+		response.setContentType("text/json; charset=UTF-8");
+		
 
 		PrintWriter pw;
 		try {
@@ -197,7 +198,7 @@ public class ConectividadAction extends Action {
 
 		try {
 
-			URL url = new URI(encodeUrl(urlAdress)).toURL();
+			URL url = new URL(encodeUrl(urlAdress));
 
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -223,9 +224,7 @@ public class ConectividadAction extends Action {
 			urlError = "URL mal formada";
 		} catch (IOException e1) {
 			urlError = "Error de conexión";
-		} catch (URISyntaxException e) {
-			urlError = "URL mal formada";
-		}
+		} 
 
 		response.setContentType("text/json");
 
@@ -237,7 +236,7 @@ public class ConectividadAction extends Action {
 
 		String jsonCheck = new Gson().toJson(checkSim);
 
-		response.setContentType("text/json");
+		response.setContentType("text/json; charset=UTF-8");
 
 		PrintWriter pw;
 		try {
@@ -311,7 +310,8 @@ public class ConectividadAction extends Action {
 	/**
 	 * Codifica la URL para eliminar caracteres acentuados, espacios...
 	 * 
-	 * @param url URL original
+	 * @param url
+	 *            URL original
 	 * @return Resultado codificado
 	 */
 	private String encodeUrl(String url) {
