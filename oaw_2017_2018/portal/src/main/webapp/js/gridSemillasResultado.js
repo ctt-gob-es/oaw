@@ -1,4 +1,5 @@
 var lastUrl;
+var scroll;
 
 function cambiaTitulo(){
 	$("option").hover(function(e) {
@@ -54,42 +55,14 @@ function urlsFormatter(cellvalue, options, rowObject) {
 }
 
 function nombreSemillaFormatter(cellvalue, options, rowObject) {
-
-	// /oaw/secure/showTrackingAction.do?regeneratePDF=true&idExObs=6&observatorio=si&idCartucho=5&id_observatorio=9&id=81&idrastreo=151
+	
 	return "<a onclick=dialogoEditarSemilla("
 			+ options.rowId
 			+ ") class='pull-left col-lg-12'><span class='glyphicon glyphicon-edit pull-right edit-mark'></span><span class='sr-only'>Resultados</span>"
 			+ rowObject.nombre + "</a>";
 }
 
-//function dialogoEditarSemilla(rowid) {
-	
-//	dialogoEditarSemilla(rowid);
-
-//	var dialog;
-//
-//	var windowWidth = $(window).width() * 0.4;
-//	var windowHeight = $(window).height() * 0.6;
-//
-//	$("#grid").jqGrid("editGridRow", rowid, {
-//		url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
-//		restoreAfterError : false,
-//		successfunc : function(response) {
-//			reloadGrid(lastUrl);
-//		},
-//		afterrestorefunc : function(response) {
-//			reloadGrid(lastUrl);
-//		},
-//		width : windowWidth,
-//		top : -200,
-//		viewPagerButtons : false
-//
-//	});
-//}
-
 function resultadosFormatter(cellvalue, options, rowObject) {
-
-	// /oaw/secure/showTrackingAction.do?regeneratePDF=true&idExObs=6&observatorio=si&idCartucho=5&id_observatorio=9&id=81&idrastreo=151
 	return "<a href="
 			+ "/oaw/secure//showTrackingAction.do?regeneratePDF=true&observatorio=si&id_observatorio="
 			+ $('[name=id_observatorio]').val()
@@ -105,7 +78,6 @@ function resultadosFormatter(cellvalue, options, rowObject) {
 }
 
 function informesFormatter(cellvalue, options, rowObject) {
-	// /oaw/secure/primaryExportPdfAction.do?regeneratePDF=true&idExObs=6&observatorio=si&idCartucho=5&id_observatorio=9&id=81&idrastreo=151
 	return "<a href=/oaw/secure/primaryExportPdfAction.do?regeneratePDF=true&id_observatorio="
 			+ $('[name=id_observatorio]').val()
 			+ '&idExObs='
@@ -121,7 +93,6 @@ function informesFormatter(cellvalue, options, rowObject) {
 }
 
 function relanzarFormatter(cellvalue, options, rowObject) {
-	// /oaw/secure/ResultadosObservatorio.do?action=lanzarEjecucion&id_observatorio=9&idExObs=6&idCartucho=5&idSemilla=97
 	return "<a href="
 			+ "/oaw/secure/ResultadosObservatorio.do?action=lanzarEjecucion&id_observatorio="
 			+ $('[name=id_observatorio]').val()
@@ -135,9 +106,6 @@ function relanzarFormatter(cellvalue, options, rowObject) {
 }
 
 function eliminarResultadoFormater(cellvalue, options, rowObject) {
-
-	// http://localhost:8080/oaw/secure/ResultadosObservatorio.do?action=confirmacionExSeed&id_observatorio=12&id=109&idExObs=21&idCartucho=5&idSemilla=97
-
 	return "<a href="
 			+ "/oaw/secure/ResultadosObservatorio.do?action=confirmacionExSeed&id_observatorio="
 			+ $('[name=id_observatorio]').val()
@@ -183,6 +151,9 @@ function textareaEditValue(elem, operation, value) {
 function reloadGrid(path) {
 
 	lastUrl = path;
+	
+	// Mantener el scroll
+	scroll = $(window).scrollTop();
 
 	$('#grid').jqGrid('clearGridData')
 
@@ -584,6 +555,11 @@ function reloadGrid(path) {
 													return false;
 												}
 											},
+											gridComplete : function() {
+												// Restaurar el scroll
+												console.log(prevsel)
+												$(window).scrollTop(scroll);
+											}
 										}).jqGrid("inlineNav");
 
 						// Recargar el grid

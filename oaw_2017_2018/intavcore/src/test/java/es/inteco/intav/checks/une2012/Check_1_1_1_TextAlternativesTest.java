@@ -28,7 +28,7 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test
@@ -436,4 +436,17 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
         Assert.assertEquals(4, getNumProblems(checkAccessibility, AREA_HREF_ALT_ID));
     }
 
+    
+    
+    @Test
+    public void evaluateAreaAriaLabeledReferenced() throws Exception {
+        checkAccessibility.setContent("<html><body><area aria-labelledby=\"foo\"><h1 id=\"foo\">Label</h1></area></body></html>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, AREA_ALT_ID));
+        
+        checkAccessibility.setContent("<html><body><span id=\\\"foo1\\\">Label</span><area aria-labelledby=\"foo1 foo2\"><span id=\"foo2\">Label</span></area></body></html>");
+        Assert.assertEquals(0, getNumProblems(checkAccessibility, AREA_ALT_ID));
+        
+        checkAccessibility.setContent("<html><body><area aria-labelledby=\"foo\"><h1 id=\"var\">Label</h1></area></body></html>");
+        Assert.assertEquals(1, getNumProblems(checkAccessibility, AREA_ALT_ID));
+    }
 }

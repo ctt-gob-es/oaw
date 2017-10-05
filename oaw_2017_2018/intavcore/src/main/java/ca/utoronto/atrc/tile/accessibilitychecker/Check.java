@@ -845,6 +845,13 @@ public class Check {
 
 		case CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS:
 			return functionTitleNotContains(checkCode, nodeNode, elementGiven);
+			
+			
+			
+			//TODO 2017 Nuevas funciones
+			
+		case CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED:
+			return ariaLabelledbyReferences(checkCode,nodeNode,elementGiven);
 
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
@@ -4109,6 +4116,34 @@ public class Check {
 
 		return false;
 	}
+	
+
+	//TODO 2017 aria-labelledby references one or more id elements in the page
+	
+	private boolean ariaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		
+		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
+
+		final Document document = elementGiven.getOwnerDocument();
+		
+		String[] references = ariaLabelledby.split("\\s");
+		
+		boolean fail = true;
+		
+		
+		for(int i=0;i<references.length;i++) {
+			if(document.getElementById(references[i])!=null) {
+				fail = false;
+				
+			} else {
+				fail = true;
+			}
+		}
+		
+		return fail;
+		
+	}
+	
 
 	public List<CheckCode> getVectorCode() {
 		return vectorCode;

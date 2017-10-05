@@ -2,10 +2,12 @@ package es.inteco.rastreador2.actionform.semillas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.ValidatorForm;
 
@@ -20,7 +22,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private String nombre_antiguo;
 	private List<String> listaUrls;
 	private String listaUrlsString;
-	//private String dependencia;
+	// private String dependencia;
 	private String acronimo;
 	private boolean asociada;
 	private boolean activa;
@@ -72,7 +74,11 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (this.listaUrls == null) {
 			this.listaUrls = new ArrayList<>();
 		}
-		this.listaUrls.add(url);
+		// this.listaUrls.add(url);
+
+		this.setListaUrlsString(url.replace("\n", ";"));
+		this.listaUrls.addAll(Arrays.asList(url.split("\n")));
+
 	}
 
 	public String getListaUrlsString() {
@@ -134,13 +140,13 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		return (int) (id ^ (id >>> 32));
 	}
 
-//	public String getDependencia() {
-//		return dependencia;
-//	}
-//
-//	public void setDependencia(String dependencia) {
-//		this.dependencia = dependencia;
-//	}
+	// public String getDependencia() {
+	// return dependencia;
+	// }
+	//
+	// public void setDependencia(String dependencia) {
+	// this.dependencia = dependencia;
+	// }
 
 	public String getAcronimo() {
 		return acronimo;
@@ -196,23 +202,31 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		}
 		this.dependencias.add(dependencia);
 	}
-	
+
 	public void addDependenciaPorNombre(String nombre) {
 		if (this.dependencias == null) {
 			this.dependencias = new ArrayList<DependenciaForm>();
 		}
-		DependenciaForm dependencia = new DependenciaForm();
-		dependencia.setName(nombre);
-		this.dependencias.add(dependencia);
+		// DependenciaForm dependencia = new DependenciaForm();
+		// dependencia.setName(nombre);
+		// this.dependencias.add(dependencia);
+
+		if (!StringUtils.isEmpty(nombre)) {
+			String[] nombres = nombre.split("\n");
+			for (String currentNombre : nombres) {
+				DependenciaForm dependencia = new DependenciaForm();
+				dependencia.setName(currentNombre);
+				this.dependencias.add(dependencia);
+			}
+		}
+
 	}
 
 	@Override
 	public String toString() {
-		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls="
-				+ listaUrls + ", listaUrlsString=" + listaUrlsString + /*", dependencia=" + dependencia +*/ ", acronimo="
-				+ acronimo + ", asociada=" + asociada + ", activa=" + activa + ", activaStr=" + activaStr
-				+ ", rastreoAsociado=" + rastreoAsociado + ", categoria=" + categoria + ", inDirectory=" + inDirectory
-				+ ", inDirectoryStr=" + inDirectoryStr + ", dependencias=" + dependencias + "]";
+		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls=" + listaUrls + ", listaUrlsString=" + listaUrlsString
+				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada + ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado="
+				+ rastreoAsociado + ", categoria=" + categoria + ", inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr + ", dependencias=" + dependencias + "]";
 	}
 
 }

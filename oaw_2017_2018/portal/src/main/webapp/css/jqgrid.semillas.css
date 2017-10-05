@@ -1,3 +1,7 @@
+#gbox_grid table#grid {
+	border-collapse: inherit;
+}
+
 .ui-jqgrid-htable, #grid {
 	border: none !Important;
 	margin: 0 !Important;
@@ -5,7 +9,7 @@
 }
 
 .ui-jqgrid .ui-jqgrid-bdiv {
-	overflow-x: hidden !Important;
+	overflow-x: auto !Important;
 	overflow-y: auto !Important;;
 }
 
@@ -50,5 +54,3 @@
 	text-overflow: ellipsis;
 	overflow: hidden;
 }
-
-    

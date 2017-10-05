@@ -1,6 +1,7 @@
 var lastUrl;
+var scroll;
 
-function cambiaTitulo(){
+function cambiaTitulo() {
 	$("option").hover(function(e) {
 		var $target = $(e.target);
 		if ($target.is('option')) {
@@ -88,7 +89,8 @@ function eliminarSemilla(rowId) {
 										{
 											url : '/oaw/secure/JsonSemillasObservatorio.do?action=delete&idSemilla='
 													+ idSemilla,
-											method : 'POST'
+											method : 'POST',
+											cache : false
 										}).success(function(response) {
 									reloadGrid(lastUrl);
 									dialogoEliminar.dialog("close");
@@ -142,6 +144,9 @@ function dialogoErrorEdit(mensaje) {
 // de paginación. Si no le llega nada usa la url por defecto
 function reloadGrid(path) {
 
+	// Mantener el scroll
+	scroll = $(window).scrollTop();
+	
 	if (typeof path != 'undefined' && path != null && path != '') {
 		lastUrl = path;
 	} else {
@@ -486,7 +491,9 @@ function reloadGrid(path) {
 																			},
 																			afterrestorefunc : function(
 																					response) {
+
 																				reloadGrid(lastUrl);
+
 																			},
 																			url : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 																			restoreAfterError : false,
@@ -500,6 +507,10 @@ function reloadGrid(path) {
 												// saving
 												// successful
 											},
+											gridComplete : function() {
+												// Restaurar el scroll
+												$(window).scrollTop(scroll);
+											}
 										}).jqGrid("inlineNav");
 
 						// Recargar el grid
