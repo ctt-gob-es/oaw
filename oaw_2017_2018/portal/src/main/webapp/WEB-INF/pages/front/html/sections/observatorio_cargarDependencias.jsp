@@ -20,18 +20,23 @@
 
 <!--  JQ GRID   -->
 <script>
+	var scroll;
 	//Recarga el grid. Recibe como parámetro la url de la acción con la información
 	//de paginación.
 	function reloadGrid(path) {
 
 		lastUrl = path;
+		
+		// Mantener el scroll
+		scroll = $(window).scrollTop();
 
 		$('#grid').jqGrid('clearGridData')
 
 		$
 				.ajax({
 					url : path,
-					dataType : "json"
+					dataType : "json",
+					cache : false
 				})
 				.done(
 
@@ -175,6 +180,10 @@
 													}
 													return savedRows.length === 0;
 												},
+												gridComplete : function() {
+													// Restaurar el scroll
+													$(window).scrollTop(scroll);
+												}
 											}).jqGrid("inlineNav");
 
 							// Recargar el grid
@@ -257,7 +266,8 @@
 											{
 												url : '/oaw/secure/ViewDependenciasObservatorio.do?action=delete&idDependencia='
 														+ idDependencia,
-												method : 'POST'
+												method : 'POST',
+												cache : false
 											}).success(function(response) {
 										reloadGrid(lastUrl);
 										dialogoEliminar.dialog("close");
@@ -336,7 +346,8 @@
 		var guardado = $.ajax({
 			url : '/oaw/secure/ViewDependenciasObservatorio.do?action=save',
 			data : $('#nuevaDependenciaForm').serialize(),
-			method : 'POST'
+			method : 'POST',
+			cache : false
 		}).success(
 				function(response) {
 					$('#exitosNuevaSemillaMD').addClass('alert alert-success');

@@ -835,17 +835,14 @@ Telephone: (416) 978-4360
             <function call="attribute-missing" node="." value="alt"/>
             <!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65  -->
 			<condition type="and">
-				<function call="attribute-missing" node="." value="aria-labelledby" />
-				<function call="aria-labelledby-referenced" node="@aria-labelledby" />
-				<!-- <function call="accessibility-supported" node="@aria-labelledby" /> -->
+				<function call="attribute-exists" node="." value="aria-labelledby" />
+				<function call="aria-labelledby-referenced" node="." />
 			</condition>
 			<condition type="and">
 				<function call="attribute-missing" node="." value="aria-label" />
-				<!-- <function call="accessibility-supported" node="@aria-label" /> -->
 			</condition>
 			<condition type="and">
 				<function call="attribute-missing" node="." value="title" />
-				<!-- <function call="accessibility-supported" node="@title" /> -->
 			</condition>
         </machine>
     </check>
@@ -5332,17 +5329,14 @@ Telephone: (416) 978-4360
             <condition type="and">
             	<function call="attribute-missing" node="." value="alt"/>
             	<condition type="and">
-            		<function call="attribute-missing" node="." value="aria-labelledby"/>
-            		<function call="aria-labelledby-referenced" node="@aria-labelledby" />
-            		<function call="accessibility-supported" node="@aria-labelledby" />
+					<function call="attribute-exists" node="." value="aria-labelledby" />
+					<function call="aria-labelledby-referenced" node="." />
             	</condition>
             	<condition type="and">
             		<function call="attribute-missing" node="." value="aria-label"/>
-            		<function call="accessibility-supported" node="@aria-label" />
             	</condition>
             	<condition type="and">
             		<function call="attribute-missing" node="." value="title"/>
-            		<function call="accessibility-supported" node="@title" />
             	</condition>
             </condition>
             

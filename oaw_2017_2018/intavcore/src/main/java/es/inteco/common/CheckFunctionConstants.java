@@ -164,6 +164,10 @@ public interface CheckFunctionConstants {
     int FUNCTION_TABLE_HEADING_BLANK = 155;
     int FUNCTION_TITLE_NOT_CONTAINS = 156;
     int FUNCTION_TABLE_COMPLEX = 157;
+    
+    //TODO 2017
+    int FUNCTION_ARIA_LABELLEDBY_REFERENCED = 158;
+    
 
 
     // check codes
@@ -191,4 +195,5 @@ public interface CheckFunctionConstants {
     int COMPARE_EQUAL = 0;
     int COMPARE_LESS_THAN = 1;
     int COMPARE_GREATER_THAN = 2;
+	
 }

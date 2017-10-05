@@ -501,7 +501,7 @@ public final class SemillaDAO {
 			// "UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?,
 			// acronimo = ?, dependencia = ?, activa = ?, in_directory = ? WHERE
 			// id_lista = ? ")) {
-			ps.setString(1, semillaForm.getListaUrlsString());
+			ps.setString(1, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 			ps.setString(2, semillaForm.getNombre());
 			if (semillaForm.getCategoria().getId() != null && !StringUtils.isEmpty(semillaForm.getCategoria().getId())) {
 				ps.setString(3, semillaForm.getCategoria().getId());

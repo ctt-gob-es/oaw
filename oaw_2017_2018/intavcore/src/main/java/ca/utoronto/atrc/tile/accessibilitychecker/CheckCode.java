@@ -483,7 +483,21 @@ public class CheckCode {
                 functionId = CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS;
             } else if ("previous-sibling-no-header".equals(stringCall)) {
                 functionId = CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD;
-            } else {
+            } 
+            
+            //TODO 2017 Nuevas funciones
+            
+            else if ("aria-labelledby-referenced".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED;
+            }
+            
+            
+            
+            
+            
+            
+            
+            else {
                 Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
                 return false;
             }
