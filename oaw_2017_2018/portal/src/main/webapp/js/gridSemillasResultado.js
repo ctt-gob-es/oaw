@@ -557,7 +557,6 @@ function reloadGrid(path) {
 											},
 											gridComplete : function() {
 												// Restaurar el scroll
-												console.log(prevsel)
 												$(window).scrollTop(scroll);
 											}
 										}).jqGrid("inlineNav");

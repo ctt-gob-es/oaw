@@ -51,7 +51,6 @@ function titleDependenciasFormatter(cellvalue, options, rowObject) {
 function urlsFormatter(cellvalue, options, rowObject) {
 
 	return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');
-	;
 }
 
 function irDependenciaFormatter(cellvalue, options, rowObject) {
@@ -76,6 +75,37 @@ function eliminarSemilla(rowId) {
 
 	dialogoEliminar.append('<p>&#191;Desea eliminar la semilla "'
 			+ semilla.nombre + '"?</p>');
+
+	$
+			.ajax(
+					{
+						url : '/oaw/secure/JsonSemillasObservatorio.do?action=listObservatoriosSemillaDelete&semilla='
+								+ idSemilla,
+						method : 'POST',
+						cache : false
+					})
+			.success(
+					function(data) {
+
+						if (data != null) {
+
+							if (JSON.parse(data).size() > 0) {
+
+								dialogoEliminar
+										.append('<p>La semilla est&#225; o ha estado asociada a los siguientes observatorios: </p></ul>');
+
+								$.each(JSON.parse(data),
+										function(index, value) {
+											dialogoEliminar.append('<li>'
+													+ value.nombre + '</li>')
+										});
+
+								dialogoEliminar.append("</ul>");
+							}
+
+						}
+
+					});
 
 	dialogoEliminar
 			.dialog({
@@ -146,7 +176,7 @@ function reloadGrid(path) {
 
 	// Mantener el scroll
 	scroll = $(window).scrollTop();
-	
+
 	if (typeof path != 'undefined' && path != null && path != '') {
 		lastUrl = path;
 	} else {

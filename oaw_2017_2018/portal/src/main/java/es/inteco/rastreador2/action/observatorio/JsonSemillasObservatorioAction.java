@@ -23,14 +23,17 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
 
+// TODO: Auto-generated Javadoc
 /**
  * Action para el grid de semillas.
  *
@@ -95,7 +98,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			pw.write("{\"semillas\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
-			
+
 		} catch (Exception e) {
 			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -341,7 +344,40 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 *Obtiene un listado de todas las categorias. La respuesta se genera como un JSON
+	 * List observatorios semilla delete.
+	 *
+	 * @param mapping the mapping
+	 * @param form the form
+	 * @param request the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward listObservatoriosSemillaDelete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			final String idSemilla = request.getParameter(Constants.SEMILLA);
+
+			final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
+			
+			String jsonObservatorios = new Gson().toJson(observatoryFormList);
+
+			PrintWriter pw = response.getWriter();
+			pw.write(jsonObservatorios);
+			pw.flush();
+			pw.close();
+			
+			
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+
+	}
+
+	/**
+	 * Obtiene un listado de todas las categorias. La respuesta se genera como
+	 * un JSON
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -375,7 +411,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * Obtiene un listado de todas las dependencias. La respuesta se genera como un JSON
+	 * Obtiene un listado de todas las dependencias. La respuesta se genera como
+	 * un JSON
 	 *
 	 * @param mapping
 	 *            the mapping
