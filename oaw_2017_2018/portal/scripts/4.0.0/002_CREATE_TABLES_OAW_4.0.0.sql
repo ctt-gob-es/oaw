@@ -1,5 +1,5 @@
 -- SOPORTE PARA SEMILLAS CON MULTIDEPENDENCIA
-USE oaw_pruebas_rollback;
+-- USE oaw_pruebas_rollback;
 
 -- TABLA DEPENDENCIA 
 CREATE TABLE IF NOT EXISTS dependencia (

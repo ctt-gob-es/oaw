@@ -2,36 +2,30 @@
 <lista>
 	<semilla>
 		<nombre>semilla1</nombre>
-		<urls>
-			<url>http://www.semilla1.com</url>
-		</urls>
+		<url>
+			http://www.semilla1.com
+		</url>
 		<activa>true</activa>
 		<acronimo>S1</acronimo>
 		<en_directorio>false</en_directorio>
 	</semilla>
 	<semilla>
 		<nombre>semilla2</nombre>
-		<urls>
-			<url>http://www.semilla2.com/directory/</url>
-		</urls>
+		<url>http://www.semilla2.com/directory/</url>
 		<activa>false</activa>
-		<dependencias>
-			<dependencia>Órgano 1</dependencia>
-		</dependencias>
+		<dependencias>Órgano 1</dependencias>
 		<en_directorio>true</en_directorio>
 	</semilla>
 	<semilla>
 		<nombre>semilla3</nombre>
 		<activa>true</activa>
-		<urls>
-			<url>http://www.semilla3-1.com</url>
-			<url>http://www.semilla3-2.com</url>
-			<url>http://www.semilla3-3.com/index.html&amp;param=value</url>
-		</urls>
-		<dependencias>
-			<dependencia>Órgano 1</dependencia>
-			<dependencia>Órgano 2</dependencia>
-		</dependencias>
+		<!-- Una URL en cada línea -->
+		<url>http://www.semilla3-1.com
+			http://www.semilla3-2.com
+			http://www.semilla3-3.com/index.html&amp;param=value</url>
+		<!-- Una dependencia por línea -->
+		<dependencias>Órgano 1
+			Órgano 2</dependencias>
 		<en_directorio>false</en_directorio>
 	</semilla>
 </lista>
