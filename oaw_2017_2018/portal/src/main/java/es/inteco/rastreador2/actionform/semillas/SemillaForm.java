@@ -74,10 +74,13 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (this.listaUrls == null) {
 			this.listaUrls = new ArrayList<>();
 		}
-		// this.listaUrls.add(url);
 
 		this.setListaUrlsString(url.replace("\n", ";"));
-		this.listaUrls.addAll(Arrays.asList(url.split("\n")));
+		List<String> tmp = Arrays.asList(url.split("\n"));
+		for(int i=0;i<tmp.size();i++) {
+			this.listaUrls.add(tmp.get(i).trim());	
+		}
+		
 
 	}
 
@@ -215,7 +218,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 			String[] nombres = nombre.split("\n");
 			for (String currentNombre : nombres) {
 				DependenciaForm dependencia = new DependenciaForm();
-				dependencia.setName(currentNombre);
+				dependencia.setName(currentNombre.trim());
 				this.dependencias.add(dependencia);
 			}
 		}

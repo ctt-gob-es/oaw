@@ -20,7 +20,7 @@
 		<nombre>semilla3</nombre>
 		<activa>true</activa>
 		<!-- Una URL en cada línea -->
-		<url>http://www.semilla3-1.com
+		<url>http://www.semilla3-1.com 
 			http://www.semilla3-2.com
 			http://www.semilla3-3.com/index.html&amp;param=value</url>
 		<!-- Una dependencia por línea -->

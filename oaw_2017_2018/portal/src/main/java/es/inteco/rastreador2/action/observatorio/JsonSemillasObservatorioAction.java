@@ -4,7 +4,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +35,6 @@ import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
 
-// TODO: Auto-generated Javadoc
 /**
  * Action para el grid de semillas.
  *
@@ -186,6 +187,27 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 			}
+			
+			// TODO Comprobar duplicados
+
+			Set<String> testDuplicates = findDuplicates(semilla.getListaUrls());
+
+			if (!testDuplicates.isEmpty()) {
+
+				String duplicadosStr = "";
+
+				for (String duplicado : testDuplicates) {
+					duplicadosStr += duplicado + "\n";
+				}
+
+				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.duplicados") + duplicadosStr));
+
+				response.setStatus(400);
+				response.getWriter().write(new Gson().toJson(errores));
+				
+				return null;
+
+			}
 
 			CategoriaForm categoriaSemilla = new CategoriaForm();
 			categoriaSemilla.setId(request.getParameter("segmento"));
@@ -282,6 +304,27 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 			}
 
+			// TODO Comprobar duplicados
+
+			Set<String> testDuplicates = findDuplicates(semilla.getListaUrls());
+
+			if (!testDuplicates.isEmpty()) {
+
+				String duplicadosStr = "";
+
+				for (String duplicado : testDuplicates) {
+					duplicadosStr += duplicado + "\n";
+				}
+
+				errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.duplicados") + duplicadosStr));
+
+				response.setStatus(400);
+				response.getWriter().write(new Gson().toJson(errores));
+				
+				return null;
+
+			}
+
 			CategoriaForm categoriaSemilla = new CategoriaForm();
 			categoriaSemilla.setId(request.getParameter("segmento"));
 			semilla.setCategoria(categoriaSemilla);
@@ -346,12 +389,17 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	/**
 	 * List observatorios semilla delete.
 	 *
-	 * @param mapping the mapping
-	 * @param form the form
-	 * @param request the request
-	 * @param response the response
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
 	 * @return the action forward
-	 * @throws Exception the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	public ActionForward listObservatoriosSemillaDelete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -359,15 +407,14 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			final String idSemilla = request.getParameter(Constants.SEMILLA);
 
 			final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
-			
+
 			String jsonObservatorios = new Gson().toJson(observatoryFormList);
 
 			PrintWriter pw = response.getWriter();
 			pw.write(jsonObservatorios);
 			pw.flush();
 			pw.close();
-			
-			
+
 		} catch (Exception e) {
 			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -457,6 +504,24 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 */
 	private String normalizarUrl(String urlsSemilla) {
 		return urlsSemilla.replace("\r\n", ";").replace("\n", ";").replaceAll("\\s+", "");
+	}
+
+	/**
+	 * Comprueba duplicados
+	 * 
+	 * @param urls
+	 * @return
+	 */
+	private Set<String> findDuplicates(List<String> urls) {
+		final Set<String> setDuplicados = new HashSet();
+		final Set<String> setUnicos = new HashSet<>();
+
+		for (String url : urls) {
+			if (!setUnicos.add(url)) {
+				setDuplicados.add(url);
+			}
+		}
+		return setDuplicados;
 	}
 
 }
