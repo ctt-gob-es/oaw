@@ -182,7 +182,7 @@
 				<bean:message key="categoria.semillas.fichero.info">
 					<jsp:attribute name="arg0">
                             <a href="../xml/seeds.xml"
-							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>"><bean:message
+							title="<bean:message key="categoria.semillas.fichero.ejemplo.title"/>" download><bean:message
 								key="categoria.semillas.fichero.ejemplo" /></a>
                         </jsp:attribute>
 				</bean:message>
