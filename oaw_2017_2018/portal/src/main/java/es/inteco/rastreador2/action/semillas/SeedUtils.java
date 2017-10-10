@@ -82,7 +82,7 @@ public final class SeedUtils {
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL, "addListUrl", 0);
 
 			// TODO 2017 Lista de dependencias
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_DEPENDENCIAS + "/", "addDependenciaPorNombre", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_DEPENDENCIA + "/", "addDependenciaPorNombre", 0);
 			
 
 			digester.addSetNext(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, "add");
@@ -146,9 +146,8 @@ public final class SeedUtils {
 
 			// TODO 2017 Multidependencia
 
-			// V1 Lista de dependencias
-			// <dependencias><dependencia></dependencia></dependencias>
-			hd.startElement("", "", Constants.XML_DEPENDENCIAS, null);
+			// Depenencias separadas por salto de linea
+			hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
 			List<DependenciaForm> dependencias = semillaForm.getDependencias();
 			
 			if (dependencias != null && !dependencias.isEmpty()) {
@@ -162,7 +161,7 @@ public final class SeedUtils {
 				}
 				
 			}
-			hd.endElement("", "", Constants.XML_DEPENDENCIAS);
+			hd.endElement("", "", Constants.XML_DEPENDENCIA);
 
 			hd.startElement("", "", Constants.XML_IN_DIRECTORY, null);
 			hd.characters(String.valueOf(semillaForm.isInDirectory()).toCharArray(), 0, String.valueOf(semillaForm.isInDirectory()).length());

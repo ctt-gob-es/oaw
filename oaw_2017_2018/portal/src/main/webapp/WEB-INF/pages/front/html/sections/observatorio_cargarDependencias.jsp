@@ -192,6 +192,13 @@
 							}).trigger('reloadGrid');
 
 							$('#grid').unbind("contextmenu");
+							
+							// Mostrar sin resultados
+							if (total == 0) {
+								$('#grid')
+										.append(
+												'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+							}
 
 							// Paginador
 							paginas = data.paginas;
@@ -302,6 +309,16 @@
 								.ready(
 										function() {
 											reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search');
+											
+											
+											$('#buscadorDependencias').on('keyup keypress', function(e) {
+												  var keyCode = e.keyCode || e.which;
+												  if (keyCode === 13) { 
+												    e.preventDefault();
+												    return false;
+												  }
+												});
+											
 										});
 
 					});
@@ -439,7 +456,7 @@
 
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
-			<form id="buscadorDependencias" class="formulario form-horizontal">
+			<form id="buscadorDependencias" class="formulario form-horizontal" onsubmit="buscar()">
 				<fieldset>
 					<legend>Buscador</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
