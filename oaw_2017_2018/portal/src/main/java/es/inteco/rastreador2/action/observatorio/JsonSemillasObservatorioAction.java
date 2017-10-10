@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
@@ -186,8 +187,22 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
+
+				// TODO Comprobar que sólo se introduzcen el max.url
+				
+				PropertiesManager pmgr = new PropertiesManager();
+				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				if (semilla.getListaUrls() != null && semilla.getListaUrls().size() > maxUrls) {
+					
+					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado",new String[] {String.valueOf(maxUrls)})));
+
+					response.setStatus(400);
+					response.getWriter().write(new Gson().toJson(errores));
+
+					return null;
+				}
 			}
-			
+
 			// TODO Comprobar duplicados
 
 			Set<String> testDuplicates = findDuplicates(semilla.getListaUrls());
@@ -204,7 +219,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				response.setStatus(400);
 				response.getWriter().write(new Gson().toJson(errores));
-				
+
 				return null;
 
 			}
@@ -302,6 +317,20 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
+				
+				// TODO Comprobar que sólo se introduzcen el max.url
+				
+				PropertiesManager pmgr = new PropertiesManager();
+				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				if (semilla.getListaUrls() != null && semilla.getListaUrls().size() > maxUrls) {
+					
+					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado",new String[] {String.valueOf(maxUrls)})));
+
+					response.setStatus(400);
+					response.getWriter().write(new Gson().toJson(errores));
+
+					return null;
+				}
 			}
 
 			// TODO Comprobar duplicados
@@ -320,7 +349,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				response.setStatus(400);
 				response.getWriter().write(new Gson().toJson(errores));
-				
+
 				return null;
 
 			}

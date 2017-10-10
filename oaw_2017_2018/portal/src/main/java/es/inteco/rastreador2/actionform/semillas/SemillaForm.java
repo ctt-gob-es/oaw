@@ -76,7 +76,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		}
 
 		this.setListaUrlsString(url.replace("\n", ";"));
-		List<String> tmp = Arrays.asList(url.split("\n"));
+		
+		List<String> tmp = Arrays.asList(url.split("\r\n"));
 		for(int i=0;i<tmp.size();i++) {
 			this.listaUrls.add(tmp.get(i).trim());	
 		}
@@ -215,7 +216,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		// this.dependencias.add(dependencia);
 
 		if (!StringUtils.isEmpty(nombre)) {
-			String[] nombres = nombre.split("\n");
+			String[] nombres = nombre.split("\r\n");
 			for (String currentNombre : nombres) {
 				DependenciaForm dependencia = new DependenciaForm();
 				dependencia.setName(currentNombre.trim());

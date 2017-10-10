@@ -79,15 +79,10 @@ public interface Constants {
     String XML_NOMBRE = "nombre";
     String XML_URLS = "urls";
     String XML_URL = "url";
-    //String XML_DEPENDENCIA = "depende_de";
+    String XML_DEPENDENCIA = "depende_de";
     String XML_ACRONIMO = "acronimo";
     String XML_ACTIVA = "activa";
     String XML_IN_DIRECTORY = "en_directorio";
-    
-    //TODO 2017 Multidependencia
-    String XML_DEPENDENCIAS = "dependencias";
-    String XML_DEPENDENCIA = "dependencia";
-    String XML_DEPENDENCIA_NOMBRE = "nombre";
 
     String ERROR = "error";
     String ERROR1 = "error1";
