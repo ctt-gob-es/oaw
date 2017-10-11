@@ -327,5 +327,29 @@ public final class Check_1_1_2_HeadersTest {
     @Test
     public void evaluateWaiHeading() {
     	
+    	checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\"></span</body></html>");
+    	Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), EXISTS_HEADERS_ID));
+        
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"2\"></span</body></html>");
+    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), EXISTS_H1_ID));
+    	
+    }
+    
+    //TODO 2017 Headings WAI vacíos
+    @Test
+    public void evaluateWaiHeadingEmpty() {
+    	
+    	Evaluation evaluation;
+    	
+//    	checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING</span></body></html>");
+//    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 469));
+        
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\"></span></body></html>");
+    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 469));
+    	
     }
 }

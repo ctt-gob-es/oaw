@@ -490,7 +490,7 @@ Telephone: (416) 978-4360
             <trigger element="html"/>
             <condition type="and">
             	<function call="headers-missing" node="."/>
-            	<!-- <function call="headers-wai-missing" node="."/> -->
+            	<function call="headers-wai-missing" node="."/> 
             </condition>
             
         </machine>
@@ -4723,6 +4723,7 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <function call="element-count-equals" node="." value="h1" number="0"/>
+            <function call="headers-wai-level-1-missing" node="."/>
         </machine>
     </check>
 
@@ -5365,6 +5366,32 @@ Telephone: (416) 978-4360
            		</condition>
             </condition>
             
+        </machine>
+    </check>
+
+    <check id="469" key="headers" confidence="high">
+        <name>Encabezados WAI vacíos</name>
+        <error>check.469.error</error>
+        <rationale>check.469.rationale</rationale>
+        <machine>
+            <trigger element="*"/>
+            <condition type="and">
+            	<!-- El elemento es role=heading  -->
+                <condition type="and">
+                	<function call="attribute-exists" node="." value="role"/>
+                	<function call="text-equals" node="@role" value="heading"/>
+            	</condition>
+                <condition type="and">
+                    <condition type="or">
+                        <function call="characters-less-than" node="." value="1"/>
+                        <function call="is-only-blanks" node="."/>
+                    </condition>
+                    <condition type="or">
+                        <function call="characters-less-than" node=".//img/@alt" value="1"/>
+                        <function call="is-only-blanks" node=".//img/@alt"/>
+                    </condition>
+                </condition>
+            </condition>
         </machine>
     </check>
     

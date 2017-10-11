@@ -62,6 +62,12 @@
 					<check id="422" />
 					<!-- Más de un encabezado si hay más de 15 párrafos -->
 					<check id="433" />
+					
+					
+					<!-- Encabezados WAI vacíos -->
+					<check id="469" />
+					
+					
 				</checks>
 			</subgroup>
 
