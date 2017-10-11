@@ -496,7 +496,12 @@ public class CheckCode {
             else if("attribute-labeledby-length".equals(stringCall)) {
             	functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT;
             }
-            
+            else if("headers-wai-missing".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_HEADERS_WAI_MISSING;
+            }
+            else if("headers-wai-level-1-missing".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_HEADERS_WAI_LEVEL_1_MISSING;
+            }
             
             
             

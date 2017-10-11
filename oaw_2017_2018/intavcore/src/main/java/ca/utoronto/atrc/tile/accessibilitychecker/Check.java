@@ -855,8 +855,13 @@ public class Check {
 			return attributeLength(checkCode, nodeNode, elementGiven);
 
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT:
-
 			return attributeLengthLabeledBy(checkCode, nodeNode, elementGiven);
+
+		case CheckFunctionConstants.FUNCTION_HEADERS_WAI_MISSING:
+			return functionWAIHeadersMissing(checkCode, nodeNode, elementGiven);
+			
+		case CheckFunctionConstants.FUNCTION_HEADERS_WAI_LEVEL_1_MISSING:
+			return functionWAIHeadersLevel1Missing(checkCode, nodeNode, elementGiven);
 
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
@@ -1798,45 +1803,6 @@ public class Check {
 		for (int i = 1; i < 7; i++) {
 			if (!EvaluatorUtils.getElementsByTagName(elementGiven, "h" + i).isEmpty()) {
 				return false;
-			}
-		}
-		return true;
-	}
-
-	// TODO 2017 Comprueba si el documento tiene o no encabezados
-	private boolean functionWAIHeadersMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
-		// check for any child
-		NodeList nodeList = elementGiven.getChildNodes();
-		if (nodeList != null && nodeList.getLength() > 0) {
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				if (nodeList.item(i).hasAttributes()) {
-					for (int j = 0; j < nodeList.item(i).getAttributes().getLength(); j++) {
-						if ("role".equals(nodeList.item(i).getAttributes().item(j).getLocalName()) && "heading".equals(nodeList.item(i).getAttributes().item(j).getNodeValue())) {
-							return false;
-						}
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	// TODO 2017 Comprueba si el documento tiene encabezado de nivel 1 WAI
-	private boolean functionWAIHeadersLevel1Missing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
-		// role="heading" y aria-level=”1”
-		// check for any child
-		NodeList nodeList = elementGiven.getChildNodes();
-		if (nodeList != null && nodeList.getLength() > 0) {
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				if (nodeList.item(i).hasAttributes()) {
-					for (int j = 0; j < nodeList.item(i).getAttributes().getLength(); j++) {
-						if ("role".equals(nodeList.item(i).getAttributes().item(j).getLocalName()) && "heading".equals(nodeList.item(i).getAttributes().item(j).getNodeValue())) {
-							return false;
-						}
-					}
-				}
 			}
 		}
 		return true;
@@ -4122,6 +4088,60 @@ public class Check {
 		return false;
 	}
 
+	/******************************************************************************/
+	/******************************************************************************/
+	/******* NUEVAS FUNCIONES METODOLOGIA 2012 V2017 *******/
+	/******************************************************************************/
+	/******************************************************************************/
+	/******************************************************************************/
+
+	// TODO 2017 Comprueba si el documento tiene o no encabezados
+	private boolean functionWAIHeadersMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+
+		boolean fail = true;
+
+		// Todos los elementos del DOM
+		NodeList allElements = elementGiven.getElementsByTagName("*");
+		for (int i = 0; i < allElements.getLength(); i++) {
+			Element item = (Element) allElements.item(i);
+			if (item.hasAttributes()) {
+				for (int j = 0; j < item.getAttributes().getLength(); j++) {
+					if ("role".equals(item.getAttributes().item(j).getNodeName()) && "heading".equals(item.getAttributes().item(j).getNodeValue())) {
+						fail = false;
+						break;
+					}
+				}
+			}
+		}
+
+		return fail;
+	}
+
+	// TODO 2017 Comprueba si el documento tiene encabezado de nivel 1 WAI
+	private boolean functionWAIHeadersLevel1Missing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+
+		boolean fail = true;
+
+		// Todos los elementos del DOM
+		NodeList allElements = elementGiven.getElementsByTagName("*");
+		for (int i = 0; i < allElements.getLength(); i++) {
+			Element item = (Element) allElements.item(i);
+			if (item.hasAttributes()) {
+
+				Node roleAttribute = item.getAttributes().getNamedItem("role");
+				Node ariaLevelAttribute = item.getAttributes().getNamedItem("aria-level");
+				
+				if (roleAttribute != null && "heading".equals(roleAttribute.getNodeValue())
+						&& ariaLevelAttribute != null && "1".equals(ariaLevelAttribute.getNodeValue())) {
+					fail = false;
+					break;
+				}
+			}
+		}
+
+		return fail;
+	}
+
 	// TODO 2017 aria-labelledby references one or more id elements in the page
 
 	private boolean ariaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
@@ -4148,7 +4168,7 @@ public class Check {
 
 	// TODO 2017 atributos alt, aria-label o aria-labelledby cuyo contenido
 	// textual sea superior a 150 caracteres
-	public boolean attributeLength(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+	private boolean attributeLength(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = true;
 
 		if (nodeNode == null) {
@@ -4161,7 +4181,9 @@ public class Check {
 		return fail;
 	}
 
-	public boolean attributeLengthLabeledBy(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+	// TODO 2017 aria-labelledby cuyo contenido textual sea superior a 150
+	// caracteres
+	private boolean attributeLengthLabeledBy(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = false;
 
 		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
@@ -4190,6 +4212,7 @@ public class Check {
 
 	/**
 	 * Devuelve el texto de un elemento y sus hijos
+	 * 
 	 * @param element
 	 * @return
 	 */
@@ -4199,18 +4222,19 @@ public class Check {
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
 			switch (node.getNodeType()) {
-			//Si es un elemento, extraemos su texto. P.e.: <strong>texto</strong> --> texto
+			// Si es un elemento, extraemos su texto. P.e.:
+			// <strong>texto</strong> --> texto
 			case Node.ELEMENT_NODE:
-				Element nodeElement = (Element)node;
-				
-				if(nodeElement.hasAttribute("alt")) {
+				Element nodeElement = (Element) node;
+
+				if (nodeElement.hasAttribute("alt")) {
 					content.append(nodeElement.getAttribute("alt"));
 				}
-				
-				if(nodeElement.hasAttribute("title")) {
+
+				if (nodeElement.hasAttribute("title")) {
 					content.append(nodeElement.getAttribute("title"));
 				}
-				
+
 				content.append(getTextContent(nodeElement));
 				break;
 			case Node.TEXT_NODE:
