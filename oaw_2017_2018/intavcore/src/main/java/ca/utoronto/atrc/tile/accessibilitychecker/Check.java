@@ -845,13 +845,18 @@ public class Check {
 
 		case CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS:
 			return functionTitleNotContains(checkCode, nodeNode, elementGiven);
-			
-			
-			
-			//TODO 2017 Nuevas funciones
-			
+
+		// TODO 2017 Nuevas funciones
+
 		case CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED:
-			return ariaLabelledbyReferences(checkCode,nodeNode,elementGiven);
+			return ariaLabelledbyReferences(checkCode, nodeNode, elementGiven);
+
+		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LENGHT:
+			return attributeLength(checkCode, nodeNode, elementGiven);
+
+		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT:
+
+			return attributeLengthLabeledBy(checkCode, nodeNode, elementGiven);
 
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
@@ -1819,7 +1824,7 @@ public class Check {
 
 	// TODO 2017 Comprueba si el documento tiene encabezado de nivel 1 WAI
 	private boolean functionWAIHeadersLevel1Missing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		
+
 		// role="heading" y aria-level=”1”
 		// check for any child
 		NodeList nodeList = elementGiven.getChildNodes();
@@ -4116,34 +4121,105 @@ public class Check {
 
 		return false;
 	}
-	
 
-	//TODO 2017 aria-labelledby references one or more id elements in the page
-	
+	// TODO 2017 aria-labelledby references one or more id elements in the page
+
 	private boolean ariaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		
+
 		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
 
 		final Document document = elementGiven.getOwnerDocument();
-		
+
 		String[] references = ariaLabelledby.split("\\s");
-		
-		boolean fail = true;
-		
-		
-		for(int i=0;i<references.length;i++) {
-			if(document.getElementById(references[i])!=null) {
-				fail = false;
-				
-			} else {
+
+		boolean fail = false;
+
+		for (int i = 0; i < references.length; i++) {
+			if (document.getElementById(references[i]) == null) {
 				fail = true;
+				break;
+
 			}
 		}
-		
+
 		return fail;
-		
+
 	}
-	
+
+	// TODO 2017 atributos alt, aria-label o aria-labelledby cuyo contenido
+	// textual sea superior a 150 caracteres
+	public boolean attributeLength(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		boolean fail = true;
+
+		if (nodeNode == null) {
+			return false;
+		}
+
+		String stringValue = nodeNode.getNodeValue();
+		fail = stringValue.length() > 150;
+
+		return fail;
+	}
+
+	public boolean attributeLengthLabeledBy(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		boolean fail = false;
+
+		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
+
+		final Document document = elementGiven.getOwnerDocument();
+
+		String[] references = ariaLabelledby.split("\\s");
+
+		for (int i = 0; i < references.length; i++) {
+			Element elementById = document.getElementById(references[i]);
+
+			if (elementById != null) {
+
+				String textContent = getTextContent(elementById);
+
+				if (textContent != null && textContent.length() > 150) {
+
+					fail = true;
+					break;
+				}
+			}
+		}
+
+		return fail;
+	}
+
+	/**
+	 * Devuelve el texto de un elemento y sus hijos
+	 * @param element
+	 * @return
+	 */
+	private String getTextContent(Element element) {
+		NodeList nl = element.getChildNodes();
+		StringBuffer content = new StringBuffer();
+		for (int i = 0; i < nl.getLength(); i++) {
+			Node node = nl.item(i);
+			switch (node.getNodeType()) {
+			//Si es un elemento, extraemos su texto. P.e.: <strong>texto</strong> --> texto
+			case Node.ELEMENT_NODE:
+				Element nodeElement = (Element)node;
+				
+				if(nodeElement.hasAttribute("alt")) {
+					content.append(nodeElement.getAttribute("alt"));
+				}
+				
+				if(nodeElement.hasAttribute("title")) {
+					content.append(nodeElement.getAttribute("title"));
+				}
+				
+				content.append(getTextContent(nodeElement));
+				break;
+			case Node.TEXT_NODE:
+				content.append(node.getNodeValue());
+				break;
+			}
+		}
+		return content.toString().trim();
+	}
 
 	public List<CheckCode> getVectorCode() {
 		return vectorCode;

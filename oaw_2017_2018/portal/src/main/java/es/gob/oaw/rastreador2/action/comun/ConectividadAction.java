@@ -2,19 +2,14 @@ package es.gob.oaw.rastreador2.action.comun;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang3.CharEncoding;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionErrors;
@@ -41,6 +36,7 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 
+// TODO: Auto-generated Javadoc
 /**
  * Action para mostrar la conectividad con los sistemas externos como SIM.
  *
@@ -104,8 +100,10 @@ public class ConectividadAction extends Action {
 	/**
 	 * Realiza una llamada a la URL del WSDL de SIM.
 	 *
-	 * @param request
-	 *            Request
+	 * @param request            Request
+	 * @param response the response
+	 * @param email the email
+	 * @return the action forward
 	 */
 	private ActionForward checkSIM(HttpServletRequest request, HttpServletResponse response, String email) {
 
@@ -129,7 +127,7 @@ public class ConectividadAction extends Action {
 			peticion.setPassword(pmgr.getValue(MAIL_PROPERTIES, "sim.user.password"));
 			peticion.setServicio(pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.id"));
 			peticion.setNombreLote("OAW-" + System.currentTimeMillis());
-			peticion.setMensajes(createMensajes(email));
+			peticion.setMensajes(createMensajes(email, url));
 
 			url = pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url");
 
@@ -166,7 +164,6 @@ public class ConectividadAction extends Action {
 		String jsonCheck = new Gson().toJson(checkSim);
 
 		response.setContentType("text/json; charset=UTF-8");
-		
 
 		PrintWriter pw;
 		try {
@@ -185,10 +182,10 @@ public class ConectividadAction extends Action {
 	/**
 	 * Comprueba la conexión a una URL.
 	 *
-	 * @param urlAdress
-	 *            the url adress
-	 * @param request
-	 *            Request
+	 * @param urlAdress            the url adress
+	 * @param request            Request
+	 * @param response the response
+	 * @return the action forward
 	 */
 	private ActionForward checkUrl(String urlAdress, HttpServletRequest request, HttpServletResponse response) {
 
@@ -224,7 +221,7 @@ public class ConectividadAction extends Action {
 			urlError = "URL mal formada";
 		} catch (IOException e1) {
 			urlError = "Error de conexión";
-		} 
+		}
 
 		response.setContentType("text/json");
 
@@ -251,16 +248,19 @@ public class ConectividadAction extends Action {
 		return null;
 	}
 
+
 	/**
-	 * Creates the mensajes.
+	 * Crea los mensajes a enviar por SIM
 	 *
-	 * @return the mensajes
+	 * @param email Dirección de correo electrónico
+	 * @param urlWsdlSim URL del WSDL de SIM para incorporarlo en el mensaje de correo
+	 * @return Mensajes generados.
 	 */
-	private Mensajes createMensajes(String email) {
+	private Mensajes createMensajes(String email, String urlWsdlSim) {
 		final Mensajes mensajes = factory.createMensajes();
 		final MensajeEmail mensajeEmail = factory.createMensajeEmail();
 		mensajeEmail.setAsunto("Test de conectividad SIM");
-		mensajeEmail.setCuerpo("Mensaje de prueba de conectividad");
+		mensajeEmail.setCuerpo("Mensaje de prueba de conectividad. \nEste mensaje se ha enviado a través de SIM en: " + urlWsdlSim);
 
 		final DestinatariosMail destinatariosMail = factory.createDestinatariosMail();
 		final DestinatarioMail destinatarioMail = factory.createDestinatarioMail();
@@ -275,32 +275,70 @@ public class ConectividadAction extends Action {
 		return mensajes;
 	}
 
+	/**
+	 * The Class Check.
+	 */
 	public class Check {
 
+		/** The url. */
 		private String url;
+		
+		/** The connection. */
 		private boolean connection;
+		
+		/** The error. */
 		private String error;
 
+		/**
+		 * Gets the url.
+		 *
+		 * @return the url
+		 */
 		public String getUrl() {
 			return url;
 		}
 
+		/**
+		 * Sets the url.
+		 *
+		 * @param url the new url
+		 */
 		public void setUrl(String url) {
 			this.url = url;
 		}
 
+		/**
+		 * Checks if is connection.
+		 *
+		 * @return true, if is connection
+		 */
 		public boolean isConnection() {
 			return connection;
 		}
 
+		/**
+		 * Sets the connection.
+		 *
+		 * @param connection the new connection
+		 */
 		public void setConnection(boolean connection) {
 			this.connection = connection;
 		}
 
+		/**
+		 * Gets the error.
+		 *
+		 * @return the error
+		 */
 		public String getError() {
 			return error;
 		}
 
+		/**
+		 * Sets the error.
+		 *
+		 * @param error the new error
+		 */
 		public void setError(String error) {
 			this.error = error;
 		}

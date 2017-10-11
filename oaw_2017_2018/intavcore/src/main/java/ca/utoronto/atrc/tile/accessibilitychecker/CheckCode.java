@@ -490,8 +490,12 @@ public class CheckCode {
             else if ("aria-labelledby-referenced".equals(stringCall)) {
             	functionId = CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED;
             }
-            
-            
+            else if ("attribute-length".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_LENGHT;
+            }
+            else if("attribute-labeledby-length".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT;
+            }
             
             
             

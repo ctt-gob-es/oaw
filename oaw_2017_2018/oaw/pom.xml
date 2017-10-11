@@ -82,7 +82,8 @@
 			</activation>
 			<properties>
 				<profile.name>desarrollo</profile.name>
-				<deploy.path>/home/alvaro/programas/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
+				<!-- <deploy.path>/home/alvaro/programas/apache-tomcat-7.0.54/webapps/oaw</deploy.path> -->
+				<deploy.path>/usr/local/tomcat/webapps/oaw</deploy.path>
 				<files.path>/tmp/oaw/files</files.path>
 			</properties>
 		</profile>
@@ -90,14 +91,6 @@
 			<id>integracion</id>
 			<properties>
 				<profile.name>integracion</profile.name>
-				<deploy.path>/opt/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
-				<files.path>/tmp/oaw/files</files.path>
-			</properties>
-		</profile>
-		<profile>
-			<id>pre-pro</id>
-			<properties>
-				<profile.name>pre-pro</profile.name>
 				<deploy.path>/opt/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
 				<files.path>/tmp/oaw/files</files.path>
 			</properties>
