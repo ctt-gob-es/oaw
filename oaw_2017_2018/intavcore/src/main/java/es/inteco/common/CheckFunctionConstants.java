@@ -167,6 +167,9 @@ public interface CheckFunctionConstants {
     
     //TODO 2017
     int FUNCTION_ARIA_LABELLEDBY_REFERENCED = 158;
+    int FUNCTION_ATTRIBUTE_LENGHT = 159;
+    
+    int FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT = 160;
     
 
 

@@ -38,6 +38,10 @@
 					<!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, 
 						role=presentation) -->
 					<check id="426" />
+					
+					<!-- Textos alternativos menosres de 150  -->
+					<check id="468" />
+					
 				</checks>
 			</subgroup>
 			<subgroup aspect="observatory.aspect.structure" level="A">

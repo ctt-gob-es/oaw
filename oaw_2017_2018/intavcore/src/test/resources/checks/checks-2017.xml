@@ -490,7 +490,7 @@ Telephone: (416) 978-4360
             <trigger element="html"/>
             <condition type="and">
             	<function call="headers-missing" node="."/>
-            	<function call="headers-wai-missing" node="."/>
+            	<!-- <function call="headers-wai-missing" node="."/> -->
             </condition>
             
         </machine>
@@ -5350,18 +5350,18 @@ Telephone: (416) 978-4360
         <rationale>check.468.rationale</rationale>
         <machine>
             <trigger element="img"/>
-            <condition type="and">
+            <condition type="or">
             	<condition type="and">
             		<function call="attribute-exists" node="." value="alt"/>
             		<function call="attribute-length" node="@alt" value="150"/>
            		</condition>
            		<condition type="and">
             		<function call="attribute-exists" node="." value="aria-labelledby"/>
-            		<function call="attribute-length" node="aria-labelledby" value="150"/>
+            		<function call="attribute-labeledby-length" node="@aria-labelledby" value="150"/>
            		</condition>
            		<condition type="and">
             		<function call="attribute-exists" node="." value="aria-label"/>
-            		<function call="attribute-length" node="aria-label" value="150"/>
+            		<function call="attribute-length" node="@aria-label" value="150"/>
            		</condition>
             </condition>
             
