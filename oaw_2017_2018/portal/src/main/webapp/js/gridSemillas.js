@@ -75,7 +75,7 @@ function eliminarSemilla(rowId) {
 
 	dialogoEliminar.append('<p>&#191;Desea eliminar la semilla "'
 			+ semilla.nombre + '"?</p>');
-
+	
 	$
 			.ajax(
 					{
