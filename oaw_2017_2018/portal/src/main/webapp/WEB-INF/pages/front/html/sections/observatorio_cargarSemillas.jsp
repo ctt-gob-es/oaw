@@ -129,6 +129,9 @@
 						$jq(document)
 								.ready(
 										function() {
+											//Desactivar cache de AJAX de forma global
+											$.ajaxSetup({ cache: false });
+											
 											$('#SemillaSearchForm')[0].reset();
 											reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&'
 													+ $('#SemillaSearchForm')
