@@ -34,7 +34,7 @@ public final class Check_1_1_2_HeadersTest {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test
@@ -343,13 +343,101 @@ public final class Check_1_1_2_HeadersTest {
     	
     	Evaluation evaluation;
     	
-//    	checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING</span></body></html>");
-//    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-//        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 469));
+    	checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING</span></body></html>");
+    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 469));
         
         checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\"></span></body></html>");
     	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 469));
     	
     }
+    
+    
+    @Test
+    public void evaluateAdjacentSameWAIHeadings() throws Exception {
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">foo</span><p>Some content</p><span role=\"heading\" aria-level=\"2\">Foo bar</span><p>Some content</p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 470));
+        
+        
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">foo</span><span role=\"heading\" aria-level=\"2\">Foo bar</span><p>Some content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 470));
+        
+        
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">foo</span><p>Some content</p><span role=\"heading\" aria-level=\"2\">Foo bar</span><span role=\"heading\" aria-level=\"2\">Foo bar</span><p>Some content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 470));
+
+        
+    }
+    
+    
+    @Test
+    public void evaluateWaiHeadingLevelOrder() {
+    	
+    	Evaluation evaluation;
+    	
+    	checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING 1</span><span role=\"heading\" aria-level=\"2\">HEADING 2</span></body></html>");
+    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 471));
+        
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING 1</span><span role=\"heading\" aria-level=\"1\">HEADING 2</span></body></html>");
+    	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), 471));
+    	
+    }
+    
+    
+    @Test
+    public void evaluateWAIComplexStructure() throws Exception {
+        // Solo se contabilizan los párrafos con al menos 80 caracteres
+        final String complexParagraph = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut interdum massa nunc semper.</p>";
+        final String simpleParagraph = "<p>Lorem ipsum dolor sit amet.</p>";
+        final StringBuilder structure = new StringBuilder();
+
+        structure.setLength(0);
+        structure.append("<html><body><span role=\"heading\" aria-level=\"1\">foo</span>");
+        for (int i = 5; i != 0; i--) {
+            structure.append(complexParagraph);
+        }
+        structure.append("</body></html>");
+        checkAccessibility.setContent(structure.toString());
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 472));
+
+        structure.setLength(0);
+        structure.append("<html><body><span role=\"heading\" aria-level=\"1\">foo</span>");
+        for (int i = 20; i != 0; i--) {
+            structure.append(simpleParagraph);
+        }
+        structure.append("</body></html>");
+        checkAccessibility.setContent(structure.toString());
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 472));
+
+        structure.setLength(0);
+        structure.append("<html><body>");
+        for (int i = 16; i != 0; i--) {
+            structure.append(complexParagraph);
+        }
+        structure.append("</body></html>");
+        checkAccessibility.setContent(structure.toString());
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 472));
+
+        
+        
+        structure.setLength(0);
+        structure.append("<html><body><span role=\"heading\" aria-level=\"1\">foo</span><span role=\"heading\" aria-level=\"2\">bar</span>");
+        for (int i = 16; i != 0; i--) {
+            structure.append(complexParagraph);
+        }
+        structure.append("</body></html>");
+        checkAccessibility.setContent(structure.toString());
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 472));
+    }
+    
 }

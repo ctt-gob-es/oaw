@@ -859,10 +859,20 @@ public class Check {
 
 		case CheckFunctionConstants.FUNCTION_HEADERS_WAI_MISSING:
 			return functionWAIHeadersMissing(checkCode, nodeNode, elementGiven);
-			
+
 		case CheckFunctionConstants.FUNCTION_HEADERS_WAI_LEVEL_1_MISSING:
 			return functionWAIHeadersLevel1Missing(checkCode, nodeNode, elementGiven);
 
+		case CheckFunctionConstants.FUNCTION_FOLLOWING_WAI_HEADERS_WITHOUT_CONTENT:
+			return functionFollowingWAIHeadersWithoutContent(checkCode, nodeNode, elementGiven);
+
+		case CheckFunctionConstants.FUNCTION_SKIP_WAI_HEADERS_LEVEL:
+			return skipWaiHeadersLevel(checkCode, nodeNode, elementGiven);
+
+		case CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE:
+			return functionCountAttributeValue(checkCode, nodeNode, elementGiven);
+			
+			
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
@@ -4130,9 +4140,8 @@ public class Check {
 
 				Node roleAttribute = item.getAttributes().getNamedItem("role");
 				Node ariaLevelAttribute = item.getAttributes().getNamedItem("aria-level");
-				
-				if (roleAttribute != null && "heading".equals(roleAttribute.getNodeValue())
-						&& ariaLevelAttribute != null && "1".equals(ariaLevelAttribute.getNodeValue())) {
+
+				if (roleAttribute != null && "heading".equals(roleAttribute.getNodeValue()) && ariaLevelAttribute != null && "1".equals(ariaLevelAttribute.getNodeValue())) {
 					fail = false;
 					break;
 				}
@@ -4210,6 +4219,101 @@ public class Check {
 		return fail;
 	}
 
+	// 2017 aria @role heading consecutivos sin contenido entre ellos
+	private boolean functionFollowingWAIHeadersWithoutContent(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+
+		boolean fail = true;
+
+		// Siguiente elemento en el arbol que no sea un role="heading"
+		Element nextSibling = (Element) elementGiven.getNextSibling();
+		if (nextSibling != null && !"heading".equals(nextSibling.getAttribute("role"))) {
+			fail = false;
+		}
+
+		return fail;
+	}
+
+	// 2017 Comprueba que no se saltan niveles con encabezados wai
+	private boolean skipWaiHeadersLevel(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+
+		boolean failPrevious = false;
+		
+		boolean failNext = false;
+
+		// Comprobar que se sigue el orden
+
+		// Nivel de aria del anterior
+		int ariaLevel = Integer.parseInt(elementGiven.getAttribute("aria-level"));
+
+		// Comprobamos que el anterior es del nivel inferior
+
+		// Comprobamos que no existe uno igual o de otro nivel superioe
+		Element current = elementGiven;
+
+		while ((current = (Element) current.getPreviousSibling()) != null) {
+
+			// Si encontramos un encabezado del mismo nivelm entonces falla
+			if ("heading".equals(current.getAttribute("role")) && ariaLevel <= Integer.parseInt(current.getAttribute("aria-level"))) {
+				failPrevious = true;
+				break;
+			}
+
+		}
+		
+		// Comprobamos que el siguiente (si existe) es del nivel superior
+
+		current = elementGiven;
+
+		while ((current = (Element) current.getNextSibling()) != null) {
+
+			// Si encontramos un encabezado del mismo nivelm entonces falla
+			if ("heading".equals(current.getAttribute("role")) && ariaLevel >= Integer.parseInt(current.getAttribute("aria-level"))) {
+				failNext = true;
+				break;
+			}
+
+		}
+
+
+
+		return (failPrevious || failNext);
+	}
+
+	//TODO 2017 Cuenta el número de elementos exsitentes con el atributo indicado y el valor indicado
+	private boolean functionCountAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final int limit = Integer.parseInt(checkCode.getFunctionNumber());
+		
+		final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : checkCode.getFunctionPosition();
+		
+		int counter = 0;
+		
+		//Todos los hijos
+		NodeList nodeList = elementGiven.getElementsByTagName("*");
+		
+		
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Element element = (Element) nodeList.item(i);
+			if (element.hasAttribute(checkCode.getFunctionAttribute1())) {
+				counter++;
+			}
+		}
+		
+		
+				
+
+		if ("greater".equalsIgnoreCase(compare)) {
+			// Si la comparación es mayor damos un error si el número de
+			// elementos es mayor que el valor indicado
+			return counter > limit;
+		} else {
+			// Si la comparación es menor damos un error si el número de
+			// elementos es menor que el valor indicado
+			return limit > counter;
+		}
+	}
+	
+
+	
 	/**
 	 * Devuelve el texto de un elemento y sus hijos
 	 * 
