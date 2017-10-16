@@ -3022,11 +3022,24 @@ Telephone: (416) 978-4360
             <trigger element="input"/>
             <condition type="and">
                 <function call="text-equals" node="@type" value="image"/>
-                <condition type="or">
-                    <function call="attribute-missing" node="." value="alt"/>
-                    <function call="characters-less-than" node="@alt" value="1"/>
-                    <function call="is-only-blanks" node="@alt"/>
-                </condition>
+                <!--  https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65  -->
+                <condition type="and">
+	                <condition type="or">
+	                    <function call="attribute-missing" node="." value="alt"/>
+	                    <function call="characters-less-than" node="@alt" value="1"/>
+	                    <function call="is-only-blanks" node="@alt"/>
+	                </condition>
+	                <!--  https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65 --> 
+                   	<condition type="and">
+						<function call="attribute-exists" node="." value="aria-labelledby" />
+						<function call="aria-labelledby-referenced" node="." />
+            		</condition>
+            		<condition type="and">
+	            		<function call="attribute-missing" node="." value="aria-label"/>
+    	        	</condition>
+            	</condition>
+                
+                
             </condition>
         </machine>
     </check>
@@ -5395,5 +5408,60 @@ Telephone: (416) 978-4360
         </machine>
     </check>
     
+    
+    <check id="470" key="headers" confidence="high">
+        <name>Hay dos encabedados WAI del mismo nivel seguidos sin contenido entre ellos</name>
+        <error>check.470.error</error>
+        <error>check.470.rationale</error>
+        <machine>
+            <trigger element="*"/>
+            <condition type="and">
+               <condition type="and">
+                	<function call="attribute-exists" node="." value="role"/>
+                	<function call="text-equals" node="@role" value="heading"/>
+            	</condition>
+            	<condition type="and">
+               		<function call="attribute-exists" node="." value="aria-level"/>
+               	</condition>
+               	<condition type="and">
+                	<function call="following-wai-headers-without-content" node="."/>
+                </condition>
+            </condition>
+        </machine>
+    </check>
+    
+    <check id="471" key="headers" confidence="high">
+        <name>No se saltan niveles de aria-level</name>
+        <error>check.470.error</error>
+        <error>check.470.rationale</error>
+        <machine>
+            <trigger element="*"/>
+            <condition type="and">
+               <condition type="and">
+                	<function call="attribute-exists" node="." value="role"/>
+                	<function call="text-equals" node="@role" value="heading"/>
+            	</condition>
+            	<condition type="and">
+               		<function call="attribute-exists" node="." value="aria-level"/>
+               	</condition>
+               	<condition type="and">
+                	<function call="skip-wai-headers-level" node="."/>
+                </condition>
+            </condition>
+        </machine>
+    </check>
+    
+    <check id="472" key="html" confidence="medium" status="1">
+        <name>Un único encabezado WAI aria-level=1 y más de x párrafos</name>
+        <error>check.472.error</error>
+        <rationale>check.472.rationale</rationale>
+        <machine>
+            <trigger element="html"/>
+            <condition type="and">
+	            <function call="count-attribute-value" node="." attribute1="aria-level" number="2" position="less"/>
+                <function call="has-complex-structure" node="." number="15"/>
+            </condition>
+        </machine>
+    </check>
     
 </checks>

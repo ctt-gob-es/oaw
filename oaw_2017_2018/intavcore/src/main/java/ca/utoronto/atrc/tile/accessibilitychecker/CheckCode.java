@@ -501,6 +501,18 @@ public class CheckCode {
             }
             else if("headers-wai-level-1-missing".equals(stringCall)) {
             	functionId = CheckFunctionConstants.FUNCTION_HEADERS_WAI_LEVEL_1_MISSING;
+            } 
+            
+            else if("following-wai-headers-without-content".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_FOLLOWING_WAI_HEADERS_WITHOUT_CONTENT;
+            } 
+            
+            else if("skip-wai-headers-level".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_SKIP_WAI_HEADERS_LEVEL;
+            }
+            
+            else if("count-attribute-value".equals(stringCall)) {
+            	functionId = CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE;
             }
             
             
