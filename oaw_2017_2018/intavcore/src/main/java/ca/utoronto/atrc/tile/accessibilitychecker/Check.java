@@ -1055,6 +1055,7 @@ public class Check {
 
 			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false);
 			try {
+					
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
 				final String extractedText = extractTextHandler.getExtractedText();
 				final String[] words = extractedText.toLowerCase().split("\\s+");

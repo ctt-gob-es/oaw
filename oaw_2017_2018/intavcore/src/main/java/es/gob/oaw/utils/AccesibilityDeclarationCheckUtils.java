@@ -84,6 +84,16 @@ public final class AccesibilityDeclarationCheckUtils {
                 }
             }
         }
+        
+        //TODO 2017 Texto de contacto en formularios de la página
+        final List<Element> forms = EvaluatorUtils.getElementsByTagName(document, "form");
+        
+        // TODO 2017 Texto de contacto en label de formularios
+        
+        // TODO 2017 Texto de contacto en botones de formularios
+        
+        // TODO 2017 Texto de contacto en fieldset
+        
 
         return false;
     }

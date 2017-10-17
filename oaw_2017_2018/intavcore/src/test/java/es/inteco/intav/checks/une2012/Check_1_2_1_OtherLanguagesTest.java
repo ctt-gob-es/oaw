@@ -31,7 +31,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test

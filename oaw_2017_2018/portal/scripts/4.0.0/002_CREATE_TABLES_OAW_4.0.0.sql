@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS dependencia (
 );
 
 -- INSERTAR LAS DEPENENCIAS SACADAS DE LA TABLA LISTA
-INSERT INTO dependencia(nombre) SELECT DISTINCT(dependencia) FROM lista WHERE dependencia IS NOT NULL ORDER BY dependencia ASC;
+-- INSERT INTO dependencia(nombre) SELECT DISTINCT(dependencia) FROM lista WHERE dependencia IS NOT NULL ORDER BY dependencia ASC;
+INSERT INTO dependencia(nombre) SELECT DISTINCT(dependencia) FROM lista WHERE dependencia IS NOT NULL ORDER BY dependencia ASC ON DUPLICATE KEY UPDATE nombre = VALUES(nombre);
 
 
 -- ACTUALIZAMOS LAS DEPENDENCIA QUE HAN CAMBIADO DE NOMBRE
@@ -29,7 +30,9 @@ CREATE TABLE semilla_dependencia (
 -- foreign key (id_lista) references lista (id_lista), foreign key (id_dependencia) references dependencia (id_dependencia) <-- lista esta MyISAM que no permite FK
 
 -- RELLENAMOS LA TABLA ANTERIOR CON  LA TABLA DE RELACION CON LAS DEPENDENCIAS DE LA NUEVA TABLA
-INSERT INTO semilla_dependencia(id_lista, id_dependencia) SELECT l.id_lista, d.id_dependencia FROM lista l, dependencia d WHERE l.dependencia=d.nombre;
+--INSERT INTO semilla_dependencia(id_lista, id_dependencia) SELECT l.id_lista, d.id_dependencia FROM lista l, dependencia d WHERE l.dependencia=d.nombre;
+INSERT INTO semilla_dependencia(id_lista, id_dependencia) SELECT l.id_lista, d.id_dependencia FROM lista l, dependencia d  WHERE l.dependencia collate utf8_general_ci like d.nombre collate latin1_spanish_ci;
+
 
 -- ELIMINAR LA COLUMNA ANTERIOR DE DEPENDENCIA
 ALTER TABLE lista DROP COLUMN dependencia;
