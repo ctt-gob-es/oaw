@@ -26,6 +26,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
+import es.gob.oaw.basicservice.historico.CheckHistoricoAction;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -87,24 +88,49 @@ public final class BasicServiceUtils {
 		 * basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL))
 		 * ; }
 		 */
+		
+		
 
-		if (request.getParameter(Constants.PARAM_URL) != null) {
+		String urlParameter = request.getParameter(Constants.PARAM_URL);
+		
+		
 
-			try {
-				basicServiceForm.setDomain(new String(request.getParameter(Constants.PARAM_URL).getBytes("ISO-8859-1")));
-			} catch (UnsupportedEncodingException e) {
+        
+		if (urlParameter != null) {
 
-				try {
-					basicServiceForm.setDomain(new String(request.getParameter(Constants.PARAM_URL).getBytes("UTF-8")));
-				} catch (UnsupportedEncodingException e1) {
-					basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL));
-				}
-			}
+//			try {
+//				basicServiceForm.setDomain(new String(urlParameter.getBytes("ISO-8859-1")));
+//			} catch (UnsupportedEncodingException e) {
+//
+//				try {
+//					basicServiceForm.setDomain(new String(urlParameter.getBytes("UTF-8")));
+//				} catch (UnsupportedEncodingException e1) {
+//					basicServiceForm.setDomain(urlParameter);
+//				}
+//			}
+			String url = "";
+			
+	        try {
+	            url = URLDecoder.decode(urlParameter, "ISO-8859-1");
+	        } catch (UnsupportedEncodingException e) {
+	            Logger.putLog("No se puede decodificar la url como ISO-8859-1", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
+	            try {
+	                url = URLDecoder.decode(urlParameter, "UTF-8");
+	            } catch (UnsupportedEncodingException e1) {
+	                url = "";
+	                Logger.putLog("No se puede decodificar la url como UTF-8", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
+	            }
+	        }
+	        
+	        basicServiceForm.setDomain(url);
 
 			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
 				basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
 			}
 		}
+		
+		
+
 
 		basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
 		basicServiceForm.setProfundidad(request.getParameter(Constants.PARAM_DEPTH));
