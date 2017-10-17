@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/portal"/>
 <!-- <Context path="/oaw" reloadable="true">
 	<Resource auth="Container" driverClassName="com.mysql.jdbc.Driver"
 		type="javax.sql.DataSource" name="jdbc/oaw" url="jdbc:mysql://localhost:3306/OAW"
@@ -7,6 +9,3 @@
 		testWhileIdle="true" defaultTransactionIsolation="READ_UNCOMMITTED"
 		username="USR_OAW" password="ttztrH" />
 </Context> -->
-
-<?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/portal"/>
