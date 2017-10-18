@@ -284,5 +284,21 @@ public final class Check_1_2_1_OtherLanguagesTest {
         final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), LANGUAGE_CHANGE_LINKS));
     }
+    
+    //TODO 2017 Prueba de detección de siglas como palabras en otro idioma dentro de etiquetas abbr o acronym
+    @Test
+    public void evaluateLanguageChangesAbbrAcronym() throws Exception {
+
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <abbr>SEE</abbr></p></body></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+        
+        checkAccessibility.setContent("<html lang=\"es\"><body><p>Lorem <acronym>SEE</acronym></p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
+
+    }
 
 }

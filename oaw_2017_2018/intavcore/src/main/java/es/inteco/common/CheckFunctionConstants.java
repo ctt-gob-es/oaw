@@ -174,7 +174,7 @@ public interface CheckFunctionConstants {
     int FUNCTION_FOLLOWING_WAI_HEADERS_WITHOUT_CONTENT = 170;
     int FUNCTION_SKIP_WAI_HEADERS_LEVEL= 171;
     int FUNCTION_COUNT_ATTRIBUTE_VALUE = 172;
-
+    int FUNCTION_ACCESSIBILITY_CONTACT_FORM = 173;
 
     // check codes
     int CHECK_STATUS_OK = 1;
@@ -201,5 +201,6 @@ public interface CheckFunctionConstants {
     int COMPARE_EQUAL = 0;
     int COMPARE_LESS_THAN = 1;
     int COMPARE_GREATER_THAN = 2;
+	
 	
 }
