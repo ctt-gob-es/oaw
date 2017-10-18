@@ -1254,4 +1254,31 @@ public final class EvaluatorUtils {
             return null;
         }
     }
+    
+    /**
+     * Devuelve todos los elementos que son encabezados ya sean h1, h2... o WAI
+     * @param document Documento a evaluar
+     * @return Elementos
+     */
+    public static List<Element> getHeadings(Document document) {
+        final List<Element> elements = new ArrayList<>();
+
+        NodeList allElements = document.getElementsByTagName("*");
+        for (int i = 0; i < allElements.getLength(); i++) {
+            Element tagElement = (Element) allElements.item(i);
+            if (tagElement.getNodeName().equalsIgnoreCase("h1") 
+            		|| tagElement.getNodeName().equalsIgnoreCase("h2")
+            		|| tagElement.getNodeName().equalsIgnoreCase("h3")
+            		|| tagElement.getNodeName().equalsIgnoreCase("h4")
+            		|| tagElement.getNodeName().equalsIgnoreCase("h5")
+            		|| tagElement.getNodeName().equalsIgnoreCase("h6")
+            		|| "heading".equals(tagElement.getAttribute("role"))) {
+                elements.add(tagElement);
+            }
+        }
+
+        return elements;
+    }
+
+    
 }

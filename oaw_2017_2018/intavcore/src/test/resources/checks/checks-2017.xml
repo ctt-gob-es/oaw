@@ -1892,6 +1892,9 @@ Telephone: (416) 978-4360
                       value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
                       attribute1="contacto|contacte|contacta|contactar|contacte con nosotros|contáctenos|le atendemos|atendémolo/a|buzón|contact|contact us|kontaktua|harremanak|harremanetan jarri|harremanetarako|harremanetan jartzeko|sugerencias|contactar con el administrador del portal sugerencias y quejas|suxestións e queixas"
                       attribute2="\w+@\w+\.\w+"/>
+            <function call="accessibility-contact-form" node="."
+                      value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
+                      attribute1="contacto|contacte|contacta|contactar|contacte con nosotros|contáctenos|le atendemos|atendémolo/a|buzón|contact|contact us|kontaktua|harremanak|harremanetan jarri|harremanetarako|harremanetan jartzeko|sugerencias|contactar con el administrador del portal sugerencias y quejas|suxestións e queixas"/>          
         </machine>
     </check>
 

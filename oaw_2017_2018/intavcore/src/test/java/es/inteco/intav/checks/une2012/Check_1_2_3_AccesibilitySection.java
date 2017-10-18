@@ -33,7 +33,7 @@ public final class Check_1_2_3_AccesibilitySection {
 
     @Before
     public void setUp() throws Exception {
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012-no-broken");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test
@@ -406,4 +406,164 @@ public final class Check_1_2_3_AccesibilitySection {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONFORMANCE_LEVEL));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+    
+    //TODO 2017 Formulario de contacto en la propia página
+    @Test
+    public void testAccesibilityPageContactForm() throws Exception {
+        checkAccessibility.setContent("<html>\n" + 
+        		"    <head>\n" + 
+        		"        <title>Accesibilidad</title>\n" + 
+        		"    </head>\n" + 
+        		"    <body>\n" + 
+        		"        <p>Lorem ipsum</p>\n" + 
+        		"        <p>Nivel de conformidad AA (doble A)</p>\n" + 
+        		"        <p>Fecha última revisión 01/01/2015</p>\n" + 
+        		"        <form>\n" + 
+        		"			<label for='nombre'>Nombre</label>\n" + 
+        		"			<input type='text' id='nombre' name='nombre' placeholder='Nombre...'>\n" + 
+        		"			\n" + 
+        		"			<label for='contacto'>Forma de contacto</label>\n" + 
+        		"			<input type='text' id='contacto' name='contacto' placeholder='Forma de contacto...'>\n" + 
+        		"			\n" + 
+        		"			\n" + 
+        		"			<input type='submit' value='Enviar'>\n" + 
+        		"		</form>\n" + 
+        		"    </body>\n" + 
+        		"</html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+        
+        checkAccessibility.setContent("<html>\n" + 
+        		"    <head>\n" + 
+        		"        <title>Accesibilidad</title>\n" + 
+        		"    </head>\n" + 
+        		"    <body>\n" + 
+        		"        <p>Lorem ipsum</p>\n" + 
+        		"        <p>Nivel de conformidad AA (doble A)</p>\n" + 
+        		"        <p>Fecha última revisión 01/01/2015</p>\n" + 
+        		"        <form>\n" + 
+        		"			<label for='nombre'>Nombre</label>\n" + 
+        		"			<input type='text' id='nombre' name='nombre' placeholder='Nombre...'>\n" + 
+        		"			\n" + 
+        		"			<label for='mensaje'>Mensaje</label>\n" + 
+        		"			<input type='text' id='mensaje' name='mensaje' placeholder='Mensaje...'>\n" + 
+        		"			\n" + 
+        		"			\n" + 
+        		"			<input type='submit' value='Contacto'>\n" + 
+        		"		</form>\n" + 
+        		"    </body>\n" + 
+        		"</html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+        
+        checkAccessibility.setContent("<html>\n" + 
+        		"    <head>\n" + 
+        		"        <title>Accesibilidad</title>\n" + 
+        		"    </head>\n" + 
+        		"    <body>\n" + 
+        		"        <p>Lorem ipsum</p>\n" + 
+        		"        <p>Nivel de conformidad AA (doble A)</p>\n" + 
+        		"        <p>Fecha última revisión 01/01/2015</p>\n" + 
+        		"        <form>\n" + 
+        		"			<label for='nombre'>Nombre</label>\n" + 
+        		"			<input type='text' id='nombre' name='nombre' placeholder='Nombre...'>\n" + 
+        		"			\n" + 
+        		"			<label for='mensaje'>Mensaje</label>\n" + 
+        		"			<input type='text' id='mensaje' name='mensaje' placeholder='Mensaje...'>\n" + 
+        		"			\n" + 
+        		"			\n" + 
+        		"			<input type='submit' value='Enviar'>\n" + 
+        		"		</form>\n" + 
+        		"    </body>\n" + 
+        		"</html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+    }
+    
+    @Test
+    public void testAccessibiltyContactFormFieldset() {
+        checkAccessibility.setContent("<html>\n" + 
+        		"    <head>\n" + 
+        		"        <title>Accesibilidad</title>\n" + 
+        		"    </head>\n" + 
+        		"    <body>\n" + 
+        		"        <p>Lorem ipsum</p>\n" + 
+        		"        <p>Nivel de conformidad AA (doble A)</p>\n" + 
+        		"        <p>Fecha última revisión 01/01/2015</p>\n" + 
+        		"        <form>\n" + 
+        		"			<fieldset>"+
+        		"           No dudes en ponerte en contacto con nosotros"+
+        		"			<label for='nombre'>Nombre</label>\n" + 
+        		"			<input type='text' id='nombre' name='nombre' placeholder='Nombre...'>\n" + 
+        		"			\n" + 
+        		"			<label for='mensaje'>Mensaje</label>\n" + 
+        		"			<input type='text' id='mensaje' name='mensaje' placeholder='Mensaje...'>\n" +
+        		"			</fieldset>"+
+        		"			\n" + 
+        		"			\n" + 
+        		"			<input type='submit' value='Enviar'>\n" + 
+        		"		</form>\n" + 
+        		"    </body>\n" + 
+        		"</html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+    }
+    
+    @Test
+    public void testAccessibiltyContactFormHeading() {
+        checkAccessibility.setContent("<html>\n" + 
+        		"    <head>\n" + 
+        		"        <title>Accesibilidad</title>\n" + 
+        		"    </head>\n" + 
+        		"    <body>\n" + 
+        		"        <h3>Contacto</h3>"+
+        		"        <p>Lorem ipsum</p>\n" + 
+        		"        <p>Nivel de conformidad AA (doble A)</p>\n" + 
+        		"        <p>Fecha última revisión 01/01/2015</p>\n" + 
+        		"        <form>\n" + 
+        		"			<fieldset>"+
+        		"           Rellena los campos"+
+        		"			<label for='nombre'>Nombre</label>\n" + 
+        		"			<input type='text' id='nombre' name='nombre' placeholder='Nombre...'>\n" + 
+        		"			\n" + 
+        		"			<label for='mensaje'>Mensaje</label>\n" + 
+        		"			<input type='text' id='mensaje' name='mensaje' placeholder='Mensaje...'>\n" +
+        		"			</fieldset>"+
+        		"			\n" + 
+        		"			\n" + 
+        		"			<input type='submit' value='Enviar'>\n" + 
+        		"		</form>\n" + 
+        		"    </body>\n" + 
+        		"</html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+        
+        checkAccessibility.setContent("<html>\n" + 
+        		"    <head>\n" + 
+        		"        <title>Accesibilidad</title>\n" + 
+        		"    </head>\n" + 
+        		"    <body>\n" + 
+        		"        <span role='heading' aria-level='1'>Contacto</span>"+
+        		"        <p>Lorem ipsum</p>\n" + 
+        		"        <p>Nivel de conformidad AA (doble A)</p>\n" + 
+        		"        <p>Fecha última revisión 01/01/2015</p>\n" + 
+        		"        <form>\n" + 
+        		"			<fieldset>"+
+        		"           Rellena los campos"+
+        		"			<label for='nombre'>Nombre</label>\n" + 
+        		"			<input type='text' id='nombre' name='nombre' placeholder='Nombre...'>\n" + 
+        		"			\n" + 
+        		"			<label for='mensaje'>Mensaje</label>\n" + 
+        		"			<input type='text' id='mensaje' name='mensaje' placeholder='Mensaje...'>\n" +
+        		"			</fieldset>"+
+        		"			\n" + 
+        		"			\n" + 
+        		"			<input type='submit' value='Enviar'>\n" + 
+        		"		</form>\n" + 
+        		"    </body>\n" + 
+        		"</html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), ACCESSIBILITY_DECLARATION_NOT_CONTACT));
+    }
+    
 }

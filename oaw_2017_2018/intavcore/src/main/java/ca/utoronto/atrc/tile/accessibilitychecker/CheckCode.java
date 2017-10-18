@@ -515,6 +515,12 @@ public class CheckCode {
             	functionId = CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE;
             }
             
+            else if("accessibility-contact-form".equals(stringCall)){
+            	functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_CONTACT_FORM;
+            }
+            
+            
+            
             
             
             

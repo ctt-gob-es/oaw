@@ -872,6 +872,9 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE:
 			return functionCountAttributeValue(checkCode, nodeNode, elementGiven);
 			
+		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_CONTACT_FORM:
+			return functionAccessibilityContactForm(checkCode, nodeNode, elementGiven);			
+			
 			
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
@@ -1053,7 +1056,7 @@ public class Check {
 				maxNumber = 4;
 			}
 
-			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false);
+			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false, new String[] {"abbr", "acronym"});
 			try {
 					
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
@@ -1238,6 +1241,7 @@ public class Check {
 			} else if (((Element) node).getElementsByTagName("img") != null) {
 				NodeList imgList = ((Element) node).getElementsByTagName("img");
 				for (int j = 0; j < imgList.getLength(); j++) {
+					//TODO 2017 alt, title o aria-label,  aria-describedby
 					String alt = ((Element) imgList.item(j)).getAttribute("alt");
 					if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
 						cellsWithText++;
@@ -4310,6 +4314,44 @@ public class Check {
 			// Si la comparación es menor damos un error si el número de
 			// elementos es menor que el valor indicado
 			return limit > counter;
+		}
+	}
+	
+	//TODO 2017 Ampliación de la comprobación de forma de contacto para ver si la página de accesibilidad lo tiene ella misma incluido
+	private boolean functionAccessibilityContactForm(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, checkCode.getFunctionValue());
+
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				return !AccesibilityDeclarationCheckUtils.hasContactExtended(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1());
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasContact = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						hasContact |= AccesibilityDeclarationCheckUtils.hasContactExtended(document, checkCode.getFunctionAttribute1());
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+
+			return !hasContact;
 		}
 	}
 	
