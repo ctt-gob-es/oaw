@@ -183,8 +183,7 @@ public final class SemillaDAO {
 
 					// Rellenamos campos adicionales para el nuevo grid de
 					// búsqueda
-					// TODO 2017 Multidependencia
-					// semillaForm.setDependencia(rs.getString("l.dependencia"));
+					// Multidependencia
 					semillaForm.setAcronimo(rs.getString("l.acronimo"));
 
 					final CategoriaForm categoriaForm = new CategoriaForm();
@@ -204,7 +203,7 @@ public final class SemillaDAO {
 						semillaForm.setInDirectory(true);
 					}
 
-					// TODO 2017 Cargar las dependencias de la semilla
+					// Cargar las dependencias de la semilla
 
 					PreparedStatement psDependencias = c.prepareStatement(
 							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
@@ -440,8 +439,7 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
-					// TODO 2017 Multidependencia
-					// semillaForm.setDependencia(rs.getString("dependencia"));
+					// Multidependencia
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
@@ -495,12 +493,9 @@ public final class SemillaDAO {
 	}
 
 	public static void editSeed(Connection c, SemillaForm semillaForm) throws SQLException {
-		// TODO 2017 Multidependencia
+		// Multidependencia
 		try (PreparedStatement ps = c.prepareStatement("UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory = ? WHERE id_lista = ? ")) {
-			// try (PreparedStatement ps = c.prepareStatement(
-			// "UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?,
-			// acronimo = ?, dependencia = ?, activa = ?, in_directory = ? WHERE
-			// id_lista = ? ")) {
+
 			ps.setString(1, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 			ps.setString(2, semillaForm.getNombre());
 			if (semillaForm.getCategoria().getId() != null && !StringUtils.isEmpty(semillaForm.getCategoria().getId())) {
@@ -513,16 +508,7 @@ public final class SemillaDAO {
 			} else {
 				ps.setString(4, null);
 			}
-			// TODO 2017 Multidependencia
-
-			/*
-			 * if (semillaForm.getDependencia() != null &&
-			 * !StringUtils.isEmpty(semillaForm.getDependencia())) {
-			 * ps.setString(5, semillaForm.getDependencia()); } else {
-			 * ps.setString(5, null); } ps.setBoolean(6,
-			 * semillaForm.isActiva()); ps.setBoolean(7,
-			 * semillaForm.isInDirectory()); ps.setLong(8, semillaForm.getId());
-			 */
+			// Multidependencia
 
 			ps.setBoolean(5, semillaForm.isActiva());
 			ps.setBoolean(6, semillaForm.isInDirectory());
@@ -748,7 +734,7 @@ public final class SemillaDAO {
 					semillaForm.setListaUrlsString(rs.getString("lista"));
 					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
 					semillaForm.setAcronimo(rs.getString("acronimo"));
-					// TODO 2017 Multidependencia
+					// Multidependencia
 
 					PreparedStatement psDependencias = c.prepareStatement(
 							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
@@ -916,11 +902,7 @@ public final class SemillaDAO {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
-			// TODO 2017 Multidependencia
-			// ps = c.prepareStatement(
-			// "INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria,
-			// acronimo, dependencia, activa) VALUES (?,?,?,?,?,?,?)",
-			// Statement.RETURN_GENERATED_KEYS);
+			// Multidependencia
 
 			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
@@ -934,18 +916,7 @@ public final class SemillaDAO {
 				} else {
 					ps.setString(5, null);
 				}
-				// TODO 2017 Multidependencia
-				/*
-				 * if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
-				 * ps.setString(6, semillaForm.getDependencia()); } else {
-				 * ps.setString(6, null); } if
-				 * (StringUtils.isNotEmpty(semillaForm.getActivaStr()) &&
-				 * semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.
-				 * toString())) { ps.setBoolean(7, false); } else {
-				 * ps.setBoolean(7, true); }
-				 */
-				// ps.addBatch();
-
+				// Multidependencia
 				if (StringUtils.isNotEmpty(semillaForm.getActivaStr()) && semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 					ps.setBoolean(6, false);
 				} else {
@@ -972,7 +943,7 @@ public final class SemillaDAO {
 
 							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
 
-							// TODO 2017 Si viene informado el nombre de la
+							// Si viene informado el nombre de la
 							// depenedencia
 							// es
 							// para que se cree nueva. Si el nombre ya existe,
@@ -1037,11 +1008,7 @@ public final class SemillaDAO {
 		try {
 			c.setAutoCommit(false);
 
-			// TODO 2017 Multidependencia
-			// ps = c.prepareStatement(
-			// "INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria,
-			// acronimo, dependencia, activa) VALUES (?,?,?,?,?,?,?)",
-			// Statement.RETURN_GENERATED_KEYS);
+			// Multidependencia
 
 			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
 
@@ -1062,23 +1029,7 @@ public final class SemillaDAO {
 			}
 			
 
-			// TODO 2017 Multidependencia
-			/*
-			 * if (StringUtils.isNotEmpty(semillaForm.getDependencia())) {
-			 * ps.setString(6, semillaForm.getDependencia()); } else {
-			 * ps.setString(6, null); } if
-			 * (StringUtils.isNotEmpty(semillaForm.getActivaStr()) &&
-			 * semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.
-			 * toString())) { ps.setBoolean(7, false); } else { ps.setBoolean(7,
-			 * true); }
-			 */
-
-//			if (StringUtils.isNotEmpty(semillaForm.getActivaStr()) && semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-//				ps.setBoolean(6, false);
-//			} else {
-//				ps.setBoolean(6, true);
-//			}
-			
+			// Multidependencia
 			ps.setBoolean(6, semillaForm.isActiva());
 
 			ps.setBoolean(7, semillaForm.isInDirectory());

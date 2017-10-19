@@ -1,16 +1,15 @@
 package es.inteco.intav.checks.une2012;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
-import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import es.inteco.common.CheckAccessibility;
-import es.inteco.intav.TestUtils;
-import es.inteco.intav.utils.EvaluatorUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.regex.Pattern;
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
+import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.inteco.common.CheckAccessibility;
+import es.inteco.intav.TestUtils;
+import es.inteco.intav.utils.EvaluatorUtils;
 
 /**
  *

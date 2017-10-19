@@ -384,7 +384,7 @@ public class SeedCategoriesAction extends Action {
         if (!isCancelled(request)) {
             try (Connection c = DataBaseManager.getConnection()) {
                 semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace("\r\n", ";"));
-                final Long idSeed = SemillaDAO.insertList(c, 4, semillaForm.getNombre(), semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), semillaForm.getAcronimo(),  /* TODO 2017 Multidependencia semillaForm.getDependencia()*/ null);
+                final Long idSeed = SemillaDAO.insertList(c, 4, semillaForm.getNombre(), semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), semillaForm.getAcronimo(),  null);
 
                 final List<ObservatorioForm> observatoryIds = ObservatorioDAO.getObservatoriesFromCategory(c, semillaForm.getCategoria().getId());
                 for (ObservatorioForm observatorioForm : observatoryIds) {

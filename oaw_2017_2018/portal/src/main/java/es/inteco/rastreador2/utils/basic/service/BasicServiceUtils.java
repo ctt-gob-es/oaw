@@ -46,13 +46,6 @@ public final class BasicServiceUtils {
 
 	public static long saveRequestData(final BasicServiceForm basicServiceForm, final String status) {
 		try (Connection conn = DataBaseManager.getConnection()) {
-
-			// TODO 2017 - Fix Se envia la url codificada en UTF desde el
-			// servicio de diagnostico para solucionar otros problemas y es
-			// necesario almacenarla en base de datos decodificada para el
-			// historico
-			//basicServiceForm.setDomain(URLDecoder.decode(basicServiceForm.getDomain(), "utf-8"));
-
 			return DiagnosisDAO.insertBasicServices(conn, basicServiceForm, status);
 		} catch (Exception e) {
 			Logger.putLog("Excepción: Error al insertar los datos del servicio básico,", BasicServiceThread.class, Logger.LOG_LEVEL_ERROR, e);
@@ -164,14 +157,7 @@ public final class BasicServiceUtils {
 		basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
 
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
-		// ¡No validan que la URL esté bien codificada!
-		// TODO 2017 Se codifica en la JSP como UTF-88 y se decodifica
-		// anteriormente
-		/*
-		 * if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
-		 * basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(
-		 * basicServiceForm.getDomain())); }
-		 */
+
 		return basicServiceForm;
 	}
 

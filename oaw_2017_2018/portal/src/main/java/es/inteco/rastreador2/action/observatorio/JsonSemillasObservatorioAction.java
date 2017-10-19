@@ -188,7 +188,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 
-				// TODO Comprobar que sólo se introduzcen el max.url
+				// Comprobar que sólo se introduzcen el max.url
 				
 				PropertiesManager pmgr = new PropertiesManager();
 				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
@@ -203,7 +203,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				}
 			}
 
-			// TODO Comprobar duplicados
+			// Comprobar duplicados
 
 			Set<String> testDuplicates = findDuplicates(semilla.getListaUrls());
 
@@ -318,7 +318,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 				
-				// TODO Comprobar que sólo se introduzcen el max.url
+				// Comprobar que sólo se introduzcen el max.url
 				
 				PropertiesManager pmgr = new PropertiesManager();
 				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
@@ -333,7 +333,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				}
 			}
 
-			// TODO Comprobar duplicados
+			// Comprobar duplicados
 
 			Set<String> testDuplicates = findDuplicates(semilla.getListaUrls());
 
