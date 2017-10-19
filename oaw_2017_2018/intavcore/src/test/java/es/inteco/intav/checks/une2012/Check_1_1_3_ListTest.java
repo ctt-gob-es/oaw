@@ -189,7 +189,6 @@ public final class Check_1_1_3_ListTest {
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), UL_SIMULATING_OL_ID));
     }
     
-    //TODO 2017 Test Bug 0011916
     @Test
     public void evaluateUlList2() {
         checkAccessibility.setContent("<ul>" +

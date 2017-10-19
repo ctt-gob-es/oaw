@@ -819,8 +819,7 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
                             seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
                             seedForm.setAcronym(ffCrawling.getSeed().getAcronimo());
                             seedForm.setName(ffCrawling.getSeed().getNombre());
-                            // TODO 2017 Multidependencia
-                            // seedForm.setDependence(ffCrawling.getSeed().getDependencia());
+                            // Multidependencia
                             seedForm.setCategory(ffCrawling.getSeed().getCategoria().getName());
                             evaluationForm.setSeed(seedForm);
                         }
