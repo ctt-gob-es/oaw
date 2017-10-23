@@ -456,6 +456,20 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 		
 		checkAccessibility.setContent("<html><body><p id=\"foo\">Imagen alt<img alt=\"Lorem ipsum alt\" src=\"http://tawmonitorurl.local/w3c_home.png\"/></p><img aria-labelledby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 468));
+		
+		
+	}
+	@Test
+	public void evaluateLocal() {
+		checkAccessibility.setContent("<div>\n" + 
+				"		<a href='/index.html' class='left-align'><img src='w3c_home.png' alt='Logotipo del W3C' aria-labelledby='logoW3Cdesc'/></a>\n" + 
+				"        <h1 class='left-align'>P&#225;gina de pruebas</h1>\n" + 
+				"	</div>\n" + 
+				"	\n" + 
+				"	<div>\n" + 
+				"		<p id='logoW3Cdesc'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus iaculis sem eu ante malesuada egestas. Sed hendrerit hendrerit purus, vel tincidunt orci facilisis eget. Cras dignissim egestas vehicula. Morbi ut elit non elit condimentum accumsan. Suspendisse tortor ligula, iaculis quis eros non, vehicula aliquam ipsum. Praesent nisi erat, dignissim non volutpat in, facilisis eget nisl. Etiam eleifend ultrices erat, eu iaculis ante aliquet eu. Curabitur accumsan ultrices vehicula. Nullam purus lacus, malesuada sed quam nec, pretium efficitur orci. In hac habitasse platea dictumst.</p>\n" + 
+				"	</div>");
+		Assert.assertEquals(1, getNumProblems(checkAccessibility, 468));
 	}
 	
 }
