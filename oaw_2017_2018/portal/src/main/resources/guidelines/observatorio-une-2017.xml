@@ -38,6 +38,10 @@
 					<!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, 
 						role=presentation) -->
 					<check id="426" />
+					
+					<!-- Textos alternativos menosres de 150  -->
+					<check id="468" />
+					
 				</checks>
 			</subgroup>
 			<subgroup aspect="observatory.aspect.structure" level="A">
@@ -58,6 +62,18 @@
 					<check id="422" />
 					<!-- Más de un encabezado si hay más de 15 párrafos -->
 					<check id="433" />
+					
+					
+					<!-- Encabezados WAI vacíos -->
+					<check id="469" />
+					<!-- Encabezados WAI seguidos vacíos -->
+					<check id="470" />
+					<!-- Encabezados WAI siguen el orden -->
+					<check id="471" />
+					<!-- Más de un encabezad WAI si hay más de 15 párrafos -->
+					<check id="472" />
+					
+					
 				</checks>
 			</subgroup>
 

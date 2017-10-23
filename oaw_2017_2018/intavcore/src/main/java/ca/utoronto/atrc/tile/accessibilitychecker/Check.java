@@ -871,11 +871,10 @@ public class Check {
 
 		case CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE:
 			return functionCountAttributeValue(checkCode, nodeNode, elementGiven);
-			
+
 		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_CONTACT_FORM:
-			return functionAccessibilityContactForm(checkCode, nodeNode, elementGiven);			
-			
-			
+			return functionAccessibilityContactForm(checkCode, nodeNode, elementGiven);
+
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
@@ -1056,9 +1055,9 @@ public class Check {
 				maxNumber = 4;
 			}
 
-			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false, new String[] {"abbr", "acronym"});
+			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false, new String[] { "abbr", "acronym" });
 			try {
-					
+
 				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
 				final String extractedText = extractTextHandler.getExtractedText();
 				final String[] words = extractedText.toLowerCase().split("\\s+");
@@ -1241,7 +1240,7 @@ public class Check {
 			} else if (((Element) node).getElementsByTagName("img") != null) {
 				NodeList imgList = ((Element) node).getElementsByTagName("img");
 				for (int j = 0; j < imgList.getLength(); j++) {
-					//TODO 2017 alt, title o aria-label,  aria-describedby
+					// TODO 2017 alt, title o aria-label, aria-describedby
 					String alt = ((Element) imgList.item(j)).getAttribute("alt");
 					if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
 						cellsWithText++;
@@ -4105,7 +4104,9 @@ public class Check {
 
 	/******************************************************************************/
 	/******************************************************************************/
-	/*************** NUEVAS FUNCIONES METODOLOGIA 2012 V2017 **********************/
+	/***************
+	 * NUEVAS FUNCIONES METODOLOGIA 2012 V2017
+	 **********************/
 	/******************************************************************************/
 	/******************************************************************************/
 
@@ -4113,10 +4114,14 @@ public class Check {
 	/**
 	 * Comprobación de la existencia de encabezados marcados WAI-ARIA
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si no hay encabezados. false en caso de encontrar algún encabezado WAI-ARIA
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir si no hay encabezados. false en caso de
+	 *         encontrar algún encabezado WAI-ARIA
 	 */
 	private boolean functionWAIHeadersMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
@@ -4143,10 +4148,14 @@ public class Check {
 	/**
 	 * Comprueba si existe encabezado marcado WAI-ARIA de primer nivel
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si existe encabezado de primer nivel. false en caso de encontrar encabezado de nivel 1 WAI-ARIA
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir si existe encabezado de primer nivel.
+	 *         false en caso de encontrar encabezado de nivel 1 WAI-ARIA
 	 */
 	private boolean functionWAIHeadersLevel1Missing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
@@ -4173,12 +4182,18 @@ public class Check {
 
 	// TODO 2017 aria-labelledby references one or more id elements in the page
 	/**
-	 * Comprueba si un elemento con el atributo "aria-labelledby" hace referencia a un elemento existente en el documento.
+	 * Comprueba si un elemento con el atributo "aria-labelledby" hace
+	 * referencia a un elemento existente en el documento.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir no se encuentra el elelemento con el id del atributo aria-labelledby. false en caso de encontrar el elemento con el id.
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir no se encuentra el elelemento con el id
+	 *         del atributo aria-labelledby. false en caso de encontrar el
+	 *         elemento con el id.
 	 */
 	private boolean ariaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
@@ -4202,14 +4217,19 @@ public class Check {
 
 	}
 
-	// TODO 2017 atributos alt, aria-label o aria-labelledby cuyo contenido textual sea superior a 150 caracteres
+	// TODO 2017 atributos alt, aria-label o aria-labelledby cuyo contenido
+	// textual sea superior a 150 caracteres
 	/**
 	 * Comprueba si elemento dado tiene una longitud mayor de 150.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si la longitud es superior a 150. false en caso contrario.
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir si la longitud es superior a 150. false
+	 *         en caso contrario.
 	 */
 	private boolean attributeLength(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = true;
@@ -4227,12 +4247,17 @@ public class Check {
 	// TODO 2017 aria-labelledby cuyo contenido textual sea superior a 150
 	// caracteres
 	/**
-	 * Comprueba si el contenido del elemento al que hace referencia el elemento "aria-labelledby" tiene una longiutud superior a 150 caracteres.
+	 * Comprueba si el contenido del elemento al que hace referencia el elemento
+	 * "aria-labelledby" tiene una longiutud superior a 150 caracteres.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si la longitud es superior a 150. false en caso contrario.
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir si la longitud es superior a 150. false
+	 *         en caso contrario.
 	 */
 	private boolean attributeLengthLabeledBy(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = false;
@@ -4263,39 +4288,53 @@ public class Check {
 
 	// TODO 2017 aria @role heading consecutivos sin contenido entre ellos
 	/**
-	 * Comprueba que existe contenido a continación de un encabezado WAI-ARIA y que no lo sigue otro encabezado.
+	 * Comprueba que existe contenido a continación de un encabezado WAI-ARIA y
+	 * que no lo sigue otro encabezado del mismo nive sin contenido de por
+	 * medio.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si el siguiente elemento es otro encabezado WAI. false en caso contrario.
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir, si el siguiente elemento es otro
+	 *         encabezado WAI. false en caso contrario.
 	 */
 	private boolean functionFollowingWAIHeadersWithoutContent(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
-		boolean fail = true;
+		boolean fail = false;
 
-		// Siguiente elemento en el arbol que no sea un role="heading"
-		Element nextSibling = (Element) elementGiven.getNextSibling();
-		if (nextSibling != null && !"heading".equals(nextSibling.getAttribute("role"))) {
-			fail = false;
+		Element nextSibling = EvaluatorUtils.getNextElement(elementGiven, false);
+
+		int ariaLevel = Integer.parseInt(elementGiven.getAttribute("aria-level"));
+
+		if (nextSibling != null && "heading".equals(nextSibling.getAttribute("role")) && nextSibling.getAttribute("aria-level") != null
+				&& ariaLevel == Integer.parseInt(nextSibling.getAttribute("aria-level"))) {
+			fail = true;
 		}
 
 		return fail;
+
 	}
 
 	// TODO 2017 Comprueba que no se saltan niveles con encabezados wai
 	/**
 	 * Comprueba que los encabezados WAI-ARIA son secuenciales.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si no se sigue la secuencia. false en caso contrario.
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir, si no se sigue la secuencia. false en
+	 *         caso contrario.
 	 */
 	private boolean skipWaiHeadersLevel(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
 		boolean failPrevious = false;
-		
+
 		boolean failNext = false;
 
 		// Comprobar que se sigue el orden
@@ -4305,65 +4344,76 @@ public class Check {
 
 		// Comprobamos que el anterior es del nivel inferior
 
-		// Comprobamos que no existe uno igual o de otro nivel superioe
+		// Comprobamos que no existe uno igual o de otro nivel superior
 		Element current = elementGiven;
 
-		while ((current = (Element) current.getPreviousSibling()) != null) {
+		while ((current = EvaluatorUtils.getPreviousElement(current, false)) != null) {
 
-			// Si encontramos un encabezado del mismo nivelm entonces falla
-			if ("heading".equals(current.getAttribute("role")) && ariaLevel <= Integer.parseInt(current.getAttribute("aria-level"))) {
-				failPrevious = true;
+			// Si el encabezado anterior no es del mismo nivel o de una menos
+			// entonces falla (p.e: 2-->2 ok, 2-->4 ko)
+			if ("heading".equals(current.getAttribute("role"))) {
+				if (current.getAttribute("aria-level") != null && ariaLevel != Integer.parseInt(current.getAttribute("aria-level"))
+						&& ariaLevel - 1 != Integer.parseInt(current.getAttribute("aria-level"))) {
+					failPrevious = true;
+				}
 				break;
 			}
 
 		}
-		
+
 		// Comprobamos que el siguiente (si existe) es del nivel superior
 
 		current = elementGiven;
 
-		while ((current = (Element) current.getNextSibling()) != null) {
+		while ((current = EvaluatorUtils.getNextElement(current, false)) != null) {
 
-			// Si encontramos un encabezado del mismo nivelm entonces falla
-			if ("heading".equals(current.getAttribute("role")) && ariaLevel >= Integer.parseInt(current.getAttribute("aria-level"))) {
-				failNext = true;
-				break;
+			// Si el encabezado siguiente no es del mismo nivel o de uno
+			// superior
+			// entonces falla (p.e: 2-->2 ok, 2-->4 ko)
+			if ("heading".equals(current.getAttribute("role"))) {
+				if (current.getAttribute("aria-level") != null && ariaLevel != Integer.parseInt(current.getAttribute("aria-level"))
+						&& ariaLevel + 1 != Integer.parseInt(current.getAttribute("aria-level"))) {
+					failNext = true;
+				}
+				break; // Ya encontramos el siguiente encabezado y no seguimos
 			}
-
 		}
-
-
 
 		return (failPrevious || failNext);
 	}
 
-	//TODO 2017 Cuenta el número de elementos exsitentes con el atributo indicado y el valor indicado
+	// TODO 2017 Cuenta el número de elementos exsitentes con el atributo
+	// indicado y el valor indicado
 	/**
-	 * Cuenta el número de elementos existentes con un atributo determinado y comprueba si se supera el máximo indicado.
+	 * Cuenta el número de elementos existentes con un atributo determinado y
+	 * comprueba si se supera el máximo indicado.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si se supera el número elementos. false en caso contrario
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir, si se supera el número elementos. false
+	 *         en caso contrario
 	 */
 	private boolean functionCountAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int limit = Integer.parseInt(checkCode.getFunctionNumber());
-		
+
 		final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : checkCode.getFunctionPosition();
-		
+
 		int counter = 0;
-		
-		//Todos los hijos
+
+		// Todos los hijos
 		NodeList nodeList = elementGiven.getElementsByTagName("*");
-		
-		
+
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element) nodeList.item(i);
 			if (element.hasAttribute(checkCode.getFunctionAttribute1())) {
 				counter++;
 			}
 		}
-		
+
 		if ("greater".equalsIgnoreCase(compare)) {
 			// Si la comparación es mayor damos un error si el número de
 			// elementos es mayor que el valor indicado
@@ -4374,15 +4424,20 @@ public class Check {
 			return limit > counter;
 		}
 	}
-	
-	//TODO 2017 Ampliación de la comprobación de forma de contacto para ver si la página de accesibilidad lo tiene ella misma incluido
+
+	// TODO 2017 Ampliación de la comprobación de forma de contacto para ver si
+	// la página de accesibilidad lo tiene ella misma incluido
 	/**
 	 * Comprueba si en un documento existe un formulario de contacto.
 	 * 
-	 * @param checkCode Información del check
-	 * @param nodeNode Nodo
-	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si no se consigue detectar el formulario. False en caso contrario.
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir, si no se consigue detectar el
+	 *         formulario. False en caso contrario.
 	 */
 	private boolean functionAccessibilityContactForm(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
@@ -4420,9 +4475,8 @@ public class Check {
 			return !hasContact;
 		}
 	}
-	
 
-	//TODO 2017 Texto de un elemento y sus hijos
+	// TODO 2017 Texto de un elemento y sus hijos
 	/**
 	 * Devuelve el texto de un elemento y sus hijos
 	 * 

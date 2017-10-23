@@ -31,13 +31,15 @@ Telephone: (416) 978-4360
         <status>draft</status>
     </header>
 
+
     <check id="1" key="img" confidence="high" status="5">
         <name>Todos los elementos <code>img</code> tienen un atributo <code>alt</code> alternativo.</name>
         <error>check.1.error</error>
         <rationale>check.1.rationale</rationale>
         <machine>
             <trigger element="img"/>
-<!--             <condition type="or">
+            
+            <condition type="or">
                 <condition type="or">
                     <condition type="and">
                         <function call="attribute-missing" node="." value="alt"/>
@@ -63,18 +65,6 @@ Telephone: (416) 978-4360
                     <function call="attribute-exists" node="." value="role"/>
                     <function call="text-not-match" node="@role" value="\s*presentation\s*"/>
                 </condition>
-            </condition> -->
-            
-			<!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F38  -->
-            <condition type="and">	            
-	            <condition type="or">
-	            	<function call="attribute-missing" node="." value="role"/>
-	            	<function call="text-not-match" node="@role" value="\s*presentation\s*"/>
-	            </condition>
-	            <condition type="or">
-	            	<function call="attribute-missing" node="." value="alt"/>
-	            	<function call="text-match" node="@alt" value="\w+"/>
-	            </condition>
             </condition>
         </machine>
     </check>
@@ -5339,8 +5329,8 @@ Telephone: (416) 978-4360
     
     <check id="467" key="img" confidence="high" status="5">
         <name>Todos los elementos <code>img</code> tienen un atributo <code>alt</code> alternativo.</name>
-        <error>check.1.error</error>
-        <rationale>check.1.rationale</rationale>
+        <error>check.467.error</error>
+        <rationale>check.467.rationale</rationale>
         <machine>
             <trigger element="img"/>
             <!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65 -->
@@ -5375,7 +5365,7 @@ Telephone: (416) 978-4360
            		</condition>
            		<condition type="and">
             		<function call="attribute-exists" node="." value="aria-labelledby"/>
-            		<function call="attribute-labeledby-length" node="@aria-labelledby" value="150"/>
+            		<function call="attribute-labelledby-length" node="@aria-labelledby" value="150"/>
            		</condition>
            		<condition type="and">
             		<function call="attribute-exists" node="." value="aria-label"/>
@@ -5387,7 +5377,7 @@ Telephone: (416) 978-4360
     </check>
 
     <check id="469" key="headers" confidence="high">
-        <name>Encabezados WAI vacíos</name>
+        <name>Encabezados WAI-ARIA vacíos</name>
         <error>check.469.error</error>
         <rationale>check.469.rationale</rationale>
         <machine>
@@ -5436,8 +5426,8 @@ Telephone: (416) 978-4360
     
     <check id="471" key="headers" confidence="high">
         <name>No se saltan niveles de aria-level</name>
-        <error>check.470.error</error>
-        <error>check.470.rationale</error>
+        <error>check.471.error</error>
+        <error>check.471.rationale</error>
         <machine>
             <trigger element="*"/>
             <condition type="and">

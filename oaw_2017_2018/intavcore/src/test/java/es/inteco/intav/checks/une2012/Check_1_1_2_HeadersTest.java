@@ -363,6 +363,10 @@ public final class Check_1_1_2_HeadersTest {
         
         checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">foo</span><span role=\"heading\" aria-level=\"2\">Foo bar</span><p>Some content</p></body></html>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 470));
+        
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"2\">foo</span><span role=\"heading\" aria-level=\"2\">Foo bar</span><p>Some content</p></body></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 470));
         
         
@@ -383,7 +387,7 @@ public final class Check_1_1_2_HeadersTest {
     	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 471));
         
-        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING 1</span><span role=\"heading\" aria-level=\"1\">HEADING 2</span></body></html>");
+        checkAccessibility.setContent("<html><body><span role=\"heading\" aria-level=\"1\">HEADING 1</span><span role=\"heading\" aria-level=\"3\">HEADING 2</span></body></html>");
     	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(2, TestUtils.getNumProblems(evaluation.getProblems(), 471));
     	
