@@ -598,6 +598,7 @@ public interface Constants {
     String CAPTION = "caption";
     String CONFIRMACION_ELIMINAR_TERM = "eliminaTerminoConf";
     String CONFIRMACION_DELETE = "confirmacionDelete";
+    String CONFIRMACION_RELANZAR = "confirmacionRelanzar";
     String TERM = "term";
     String MALWARE_TERM_FORM = "MalwareTermForm";
     String SAVE_TERM = "saveTerm";

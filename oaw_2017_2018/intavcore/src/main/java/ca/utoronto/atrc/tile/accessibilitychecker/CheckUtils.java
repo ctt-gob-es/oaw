@@ -235,6 +235,12 @@ public final class CheckUtils {
             // Si la url no está bien formada porque usa protocolos no http (javascript:, tel:, mailto:...) se considera igualmente válida
             return true;
         } catch (Exception e) {
+        	
+        	if("Already connected".equals(e.getMessage())) {
+        		return true;
+        	}
+        	
+        	
             Logger.putLog("Error al verificar si el elemento " + remoteUrl + " está roto:" + e.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_WARNING);
             return false;
         } finally {

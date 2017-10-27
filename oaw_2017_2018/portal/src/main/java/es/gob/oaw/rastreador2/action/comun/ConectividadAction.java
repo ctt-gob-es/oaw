@@ -7,6 +7,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,8 +40,9 @@ import es.inteco.common.Constants;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.rastreador2.utils.CrawlerUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * Action para mostrar la conectividad con los sistemas externos como SIM.
  *
@@ -100,9 +106,12 @@ public class ConectividadAction extends Action {
 	/**
 	 * Realiza una llamada a la URL del WSDL de SIM.
 	 *
-	 * @param request            Request
-	 * @param response the response
-	 * @param email the email
+	 * @param request
+	 *            Request
+	 * @param response
+	 *            the response
+	 * @param email
+	 *            the email
 	 * @return the action forward
 	 */
 	private ActionForward checkSIM(HttpServletRequest request, HttpServletResponse response, String email) {
@@ -182,9 +191,12 @@ public class ConectividadAction extends Action {
 	/**
 	 * Comprueba la conexión a una URL.
 	 *
-	 * @param urlAdress            the url adress
-	 * @param request            Request
-	 * @param response the response
+	 * @param urlAdress
+	 *            the url adress
+	 * @param request
+	 *            Request
+	 * @param response
+	 *            the response
 	 * @return the action forward
 	 */
 	private ActionForward checkUrl(String urlAdress, HttpServletRequest request, HttpServletResponse response) {
@@ -195,32 +207,42 @@ public class ConectividadAction extends Action {
 
 		try {
 
-			URL url = new URL(encodeUrl(urlAdress));
+			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
 
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-			connection.setInstanceFollowRedirects(true);
+			if (connection instanceof HttpsURLConnection) {
+				((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
+			}
+
+			connection.setInstanceFollowRedirects(false);
 
 			connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
 			connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
 			connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
 			connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
 
-			connection.connect();
-
 			int responseCode = connection.getResponseCode();
 
 			if (HttpURLConnection.HTTP_OK == responseCode) {
 				urlConnection = true;
 
+			} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+
+				String newUrl = connection.getHeaderField("Location");
+
+				this.checkUrl(newUrl, request, response);
+
 			} else {
+
 				urlError = "Error al conectar a la URL código: " + responseCode;
+
 			}
 
 		} catch (MalformedURLException e) {
 			urlError = "URL mal formada";
 		} catch (IOException e1) {
-			urlError = "Error de conexión";
+			urlError = "Error de conexión" + e1.getMessage() != null ? e1.getMessage() : "";
 		}
 
 		response.setContentType("text/json");
@@ -248,12 +270,38 @@ public class ConectividadAction extends Action {
 		return null;
 	}
 
+	private static SSLSocketFactory getNaiveSSLSocketFactory() {
+		// Create a trust manager that does not validate certificate chains
+		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+
+			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+
+			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+		} };
+
+		// Install the all-trusting trust manager
+		try {
+			final SSLContext sc = SSLContext.getInstance("TLSv1.2");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			return sc.getSocketFactory();
+		} catch (Exception e) {
+			Logger.putLog("Excepción: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
 
 	/**
 	 * Crea los mensajes a enviar por SIM
 	 *
-	 * @param email Dirección de correo electrónico
-	 * @param urlWsdlSim URL del WSDL de SIM para incorporarlo en el mensaje de correo
+	 * @param email
+	 *            Dirección de correo electrónico
+	 * @param urlWsdlSim
+	 *            URL del WSDL de SIM para incorporarlo en el mensaje de correo
 	 * @return Mensajes generados.
 	 */
 	private Mensajes createMensajes(String email, String urlWsdlSim) {
@@ -282,10 +330,10 @@ public class ConectividadAction extends Action {
 
 		/** The url. */
 		private String url;
-		
+
 		/** The connection. */
 		private boolean connection;
-		
+
 		/** The error. */
 		private String error;
 
@@ -301,7 +349,8 @@ public class ConectividadAction extends Action {
 		/**
 		 * Sets the url.
 		 *
-		 * @param url the new url
+		 * @param url
+		 *            the new url
 		 */
 		public void setUrl(String url) {
 			this.url = url;
@@ -319,7 +368,8 @@ public class ConectividadAction extends Action {
 		/**
 		 * Sets the connection.
 		 *
-		 * @param connection the new connection
+		 * @param connection
+		 *            the new connection
 		 */
 		public void setConnection(boolean connection) {
 			this.connection = connection;
@@ -337,7 +387,8 @@ public class ConectividadAction extends Action {
 		/**
 		 * Sets the error.
 		 *
-		 * @param error the new error
+		 * @param error
+		 *            the new error
 		 */
 		public void setError(String error) {
 			this.error = error;
@@ -345,17 +396,5 @@ public class ConectividadAction extends Action {
 
 	}
 
-	/**
-	 * Codifica la URL para eliminar caracteres acentuados, espacios...
-	 * 
-	 * @param url
-	 *            URL original
-	 * @return Resultado codificado
-	 */
-	private String encodeUrl(String url) {
 
-		return url.replaceAll(" ", "%20").replaceAll("Á", "%E1").replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1")
-				.replaceAll("é", "%E9").replaceAll("í", "%ED").replaceAll("ó", "%F3").replaceAll("ú", "%FA").replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&");
-
-	}
 }

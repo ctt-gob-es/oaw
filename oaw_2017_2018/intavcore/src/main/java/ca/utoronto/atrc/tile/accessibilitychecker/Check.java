@@ -846,10 +846,19 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS:
 			return functionTitleNotContains(checkCode, nodeNode, elementGiven);
 
+		/****************************************************************************/
+		/****************************************************************************/
+		/****************************************************************************/
+		/****************************************************************************/
 		// TODO 2017 Nuevas funciones
 
+		/****************************************************************************/
+		/****************************************************************************/
+		/****************************************************************************/
+		/****************************************************************************/
+
 		case CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED:
-			return ariaLabelledbyReferences(checkCode, nodeNode, elementGiven);
+			return functionAriaLabelledbyReferences(checkCode, nodeNode, elementGiven);
 
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LENGHT:
 			return attributeLength(checkCode, nodeNode, elementGiven);
@@ -869,12 +878,16 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_SKIP_WAI_HEADERS_LEVEL:
 			return skipWaiHeadersLevel(checkCode, nodeNode, elementGiven);
 
-		case CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE:
-			return functionCountAttributeValue(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_ATTRIBUTE_VALUE:
+			return functionElementCountAttributeValue(checkCode, nodeNode, elementGiven);
 
 		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_CONTACT_FORM:
 			return functionAccessibilityContactForm(checkCode, nodeNode, elementGiven);
 
+		/****************************************************************************/
+		/****************************************************************************/
+		/****************************************************************************/
+		/****************************************************************************/
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
@@ -1229,7 +1242,7 @@ public class Check {
 		}
 		return false;
 	}
-
+	// TODO Método original
 	private int countNodesWithText(NodeList nodeList) {
 		int cellsWithText = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -1251,6 +1264,61 @@ public class Check {
 		}
 		return cellsWithText;
 	}
+//Métodos nuevos
+//	private int countNodesWithText(NodeList nodeList) {
+//		int cellsWithText = 0;
+//		for (int i = 0; i < nodeList.getLength(); i++) {
+//			final Node node = nodeList.item(i);
+//			if ((node.getTextContent() != null)
+//					&& (StringUtils.isNotEmpty(node.getTextContent()) && (!StringUtils.isOnlyBlanks(node.getTextContent()) && (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
+//				cellsWithText++;
+//			} else if (((Element) node).getElementsByTagName("img") != null) {
+//				NodeList imgList = ((Element) node).getElementsByTagName("img");
+//				for (int j = 0; j < imgList.getLength(); j++) {
+//
+//					Node item = imgList.item(j);
+//
+//					if (cellWithText(item)) {
+//						cellsWithText++;
+//						break;
+//					}
+//				}
+//			} else if (cellWithText(node)) {
+//				cellsWithText++;
+//				break;
+//			}
+//		}
+//		return cellsWithText;
+//	}
+//
+//	/**
+//	 * Comprueba si un nodo tiene atributos alt, title, aria-label o
+//	 * aria-describedby correctos.
+//	 * 
+//	 * @param item
+//	 *            Nodo.
+//	 * @return true si alguno de los atributos mencionados tiene valor, false en
+//	 *         caso contrario.
+//	 */
+//	private boolean cellWithText(Node item) {
+//
+//		String alt = ((Element) item).getAttribute("alt");
+//		String title = ((Element) item).getAttribute("title");
+//		String ariaLabel = ((Element) item).getAttribute("aria-label");
+//		String ariaDescribedby = ((Element) item).getAttribute("aria-describedby");
+//		if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
+//			return true;
+//		} else if (title != null && StringUtils.isNotEmpty(title) && !StringUtils.isOnlyBlanks(title) && !StringUtils.isOnlyWhiteChars(title)) {
+//			return true;
+//
+//		} else if (ariaLabel != null && StringUtils.isNotEmpty(ariaLabel) && !StringUtils.isOnlyBlanks(ariaLabel) && !StringUtils.isOnlyWhiteChars(ariaLabel)) {
+//			return true;
+//
+//		} else if (ariaDescribedby != null && StringUtils.isNotEmpty(ariaDescribedby) && !StringUtils.isOnlyBlanks(ariaDescribedby) && !StringUtils.isOnlyWhiteChars(ariaDescribedby)) {
+//			return true;
+//		}
+//		return false;
+//	}
 
 	private boolean functionTextCellsPercentageGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		BigDecimal totalCells = BigDecimal.ZERO;
@@ -1863,6 +1931,21 @@ public class Check {
 				return false;
 			}
 		}
+		
+		// TODO 2017 Correción para tener en cuenta que puede haber varios
+		// ids en el atributo
+		/**if (elementGiven.hasAttribute("aria-labelledby")) {
+
+			String[] ids = elementGiven.getAttribute("aria-labelledby").split("\\s");
+
+			for (String id : ids) {
+				Element labelledBy = elementGiven.getOwnerDocument().getElementById(id);
+				if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
+					return false;
+				}
+			}
+
+		}*/
 
 		// check if the input element is contained by a label element
 		Element elementParent = DOMUtil.getParent(elementGiven);
@@ -1898,9 +1981,13 @@ public class Check {
 				}
 			}
 
-			// Si hay una y solo una una etiqueta asociada a ese control de
+			// 2012 Si hay una y solo una una etiqueta asociada a ese control de
 			// formulario, está bien y retornamos false
 			return cont != 1;
+			
+			// TODO 2017 Si es cero devolvemos true porque no hay label, si hay
+			// más de una está bien
+			//return cont == 0;
 		} else {
 			return false;
 		}
@@ -4195,7 +4282,7 @@ public class Check {
 	 *         del atributo aria-labelledby. false en caso de encontrar el
 	 *         elemento con el id.
 	 */
-	private boolean ariaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+	private boolean functionAriaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
 		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
 
@@ -4203,14 +4290,16 @@ public class Check {
 
 		String[] references = ariaLabelledby.split("\\s");
 
-		boolean fail = false;
+		boolean fail = true;
 
 		for (int i = 0; i < references.length; i++) {
-			if (document.getElementById(references[i]) == null) {
-				fail = true;
-				break;
 
+			Element labelledBy = document.getElementById(references[i]);
+			if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
+				fail = false;
+				break;
 			}
+
 		}
 
 		return fail;
@@ -4397,7 +4486,7 @@ public class Check {
 	 * @return true si falla, es decir, si se supera el número elementos. false
 	 *         en caso contrario
 	 */
-	private boolean functionCountAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+	private boolean functionElementCountAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int limit = Integer.parseInt(checkCode.getFunctionNumber());
 
 		final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : checkCode.getFunctionPosition();
@@ -4410,7 +4499,19 @@ public class Check {
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element) nodeList.item(i);
 			if (element.hasAttribute(checkCode.getFunctionAttribute1())) {
+				
+				
+				//Si está indicado el attribute2 se comprueba además que el atributo tiene el valor indicado en este campo
+				
+				if(!StringUtils.isEmpty(checkCode.getFunctionAttribute2()) && checkCode.getFunctionAttribute2().equals(element.getAttribute(checkCode.getFunctionAttribute1()))) {
+				
+					counter++;
+					
+				} else {
+				
 				counter++;
+				
+				}
 			}
 		}
 

@@ -59,7 +59,7 @@ public final class Check_1_1_4_DataTableTest {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test

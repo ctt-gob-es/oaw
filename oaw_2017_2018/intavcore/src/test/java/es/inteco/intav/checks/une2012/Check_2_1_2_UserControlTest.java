@@ -29,7 +29,7 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test
@@ -160,5 +160,27 @@ public final class Check_2_1_2_UserControlTest extends EvaluateCheck {
         Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), CSS_BLINK));
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_2, TestUtils.OBS_VALUE_GREEN_ONE);
     }
+    
+    //TODO 2017 Check 57 Actualización para comprobar que se permite más de una label por input
+    @Test
+    public void evaluateMultipleLabels() throws Exception {
+        checkAccessibility.setContent("<label for='foo'>Label1</label>"
+        		+ "<label for='foo'>Label2</label><input id='foo' type='text'/>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 57));
+    }
+    
+    @Test
+    public void evaluateMultipleIdsAriaLabelledBy() throws Exception {
+        checkAccessibility.setContent("<input aria-labelledby='foo var' type='text'/>"
+        		+ "<div id='foo'>Lorem ipsum</div>"
+        		+ "<div id='var'>Lorem ipsum</div>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 57));
+    }
+
+    
 
 }

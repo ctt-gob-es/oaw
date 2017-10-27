@@ -877,5 +877,12 @@
 			value="/WEB-INF/pages/front/html/sections/conectividad.jsp" />
 	</definition>
 	
+		<!-- Confirmación de relanzar observatorio -->
+	<definition name=".confirmarRelanzarObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents"
+			value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionRelanzar.jsp" />
+	</definition>
+	
 
 </tiles-definitions>    

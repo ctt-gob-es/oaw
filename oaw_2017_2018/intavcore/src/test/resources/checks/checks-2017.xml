@@ -826,7 +826,7 @@ Telephone: (416) 978-4360
             <!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65  -->
 			<condition type="and">
 				<function call="attribute-exists" node="." value="aria-labelledby" />
-				<function call="aria-labelledby-referenced" node="." />
+				<function call="aria-labelledby-ids-missing" node="." />
 			</condition>
 			<condition type="and">
 				<function call="attribute-missing" node="." value="aria-label" />
@@ -3026,7 +3026,7 @@ Telephone: (416) 978-4360
 	                <!--  https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65 --> 
                    	<condition type="and">
 						<function call="attribute-exists" node="." value="aria-labelledby" />
-						<function call="aria-labelledby-referenced" node="." />
+						<function call="aria-labelledby-ids-missing" node="." />
             		</condition>
             		<condition type="and">
 	            		<function call="attribute-missing" node="." value="aria-label"/>
@@ -4858,6 +4858,8 @@ Telephone: (416) 978-4360
                 <function call="num-more-controls" node="." number="12"/>
                 <function call="element-count-less-than" node="." value="fieldset" number="1"/>
                 <function call="element-count-less-than" node="." value="legend" number="1"/>
+                <function call="element-count-attribute-value" node="." attribute1="role" attribute2="group" number="1" position="less"/>
+                <function call="element-count-attribute-value" node="." attribute1="role" attribute2="radiogroup" number="1" position="less"/>
             </condition>
         </machine>
     </check>
@@ -5338,7 +5340,7 @@ Telephone: (416) 978-4360
             	<function call="attribute-missing" node="." value="alt"/>
             	<condition type="and">
 					<function call="attribute-exists" node="." value="aria-labelledby" />
-					<function call="aria-labelledby-referenced" node="." />
+					<function call="aria-labelledby-ids-missing" node="." />
             	</condition>
             	<condition type="and">
             		<function call="attribute-missing" node="." value="aria-label"/>
@@ -5452,10 +5454,101 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="html"/>
             <condition type="and">
-	            <function call="count-attribute-value" node="." attribute1="aria-level" number="2" position="less"/>
+	            <function call="element-count-attribute-value" node="." attribute1="aria-level" number="2" position="less"/>
                 <function call="has-complex-structure" node="." number="15"/>
             </condition>
         </machine>
     </check>
+    
+    
+<!--     <check id="473" key="html" confidence="medium" status="1">
+        <name>Elementos con role=”group” o role=""radiogroup” tienen un atributo aria-label o un atributo aria-labelledby.</name>
+        <error>check.473.error</error>
+        <rationale>check.473.rationale</rationale>
+        <machine>
+            <trigger element="*"/>
+            
+            <condition type="or">
+            	
+            	role group
+	            <condition type="and">
+	            	<function call="attribute-exists" node="." value="role"/>
+	            	<function call="text-match" node="@role" value="\s*group\s*"/>
+	            	<function call="attribute-missing" node="." value="aria-label"/>
+	            	<condition type="or">	
+		            	<function call="attribute-missing" node="." value="aria-labelledby"/>
+		           		<condition type="and">
+		            		<function call="attribute-exists" node="." value="aria-labelledby"/>
+		            		<function call="aria-labelledby-ids-missing" node="." />
+		           		</condition>
+	           		</condition>
+	            </condition>
+            
+    			role radiogroup
+	    		<condition type="and">
+	    			<function call="attribute-exists" node="." value="role"/>
+	    			<function call="text-match" node="@role" value="\s*radiogroup\s*"/>
+	    			<function call="attribute-missing" node="." value="aria-label"/>
+	                <condition type="or">
+	           			<function call="attribute-missing" node="." value="aria-labelledby"/>
+	           			<condition type="and">
+	            			<function call="attribute-exists" node="." value="aria-labelledby"/>
+	            			<function call="aria-labelledby-ids-missing" node="." />
+	           			</condition>
+	           		</condition>
+	    		</condition>        
+            
+	        </condition>
+            
+        </machine>
+    </check>
+    
+    
+    
+    
+    
+    <check id="474" key="html" confidence="medium" status="1">
+        <name>Elemento con role=”link” o role="button" tenga un contenido textual, un atributo aria-label o un atributo aria-labelledby.</name>
+        <error>check.474.error</error>
+        <rationale>check.474.rationale</rationale>
+        <machine>
+            <trigger element="*"/>
+            
+                        <condition type="or">
+            	
+            	role group
+	            <condition type="and">
+	            	<function call="attribute-exists" node="." value="role"/>
+	            	<function call="text-match" node="@role" value="\s*link\s*"/>
+	            	<function call="object-has-not-alternative" node="."/>
+	            	<function call="attribute-missing" node="." value="aria-label"/>
+	            	<condition type="or">	
+		            	<function call="attribute-missing" node="." value="aria-labelledby"/>
+		           		<condition type="and">
+		            		<function call="attribute-exists" node="." value="aria-labelledby"/>
+		            		<function call="aria-labelledby-ids-missing" node="." />
+		           		</condition>
+	           		</condition>
+	            </condition>
+            
+    			role radiogroup
+	    		<condition type="and">
+	    			<function call="attribute-exists" node="." value="role"/>
+	    			<function call="text-match" node="@role" value="\s*button\s*"/>
+	    			<function call="object-has-not-alternative" node="."/>
+	    			<function call="attribute-missing" node="." value="aria-label"/>
+	                <condition type="or">
+	           			<function call="attribute-missing" node="." value="aria-labelledby"/>
+	           			<condition type="and">
+	            			<function call="attribute-exists" node="." value="aria-labelledby"/>
+	            			<function call="aria-labelledby-ids-missing" node="." />
+	           			</condition>
+	           		</condition>
+	    		</condition>        
+            
+	        </condition>  
+
+        </machine>
+    </check> -->
     
 </checks>
