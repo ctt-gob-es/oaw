@@ -30,7 +30,7 @@ public class BasicServiceThread extends Thread {
             final String url = pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.url");
 
             BasicServiceConcurrenceSystem.incrementConcurrentUsers();
-            final HttpURLConnection connection = CrawlerUtils.getConnection(url, null, true);
+            final HttpURLConnection connection = CrawlerUtils.getConnection(url, "BASIC_SERVICE_URL", true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             connection.setDoOutput(true);

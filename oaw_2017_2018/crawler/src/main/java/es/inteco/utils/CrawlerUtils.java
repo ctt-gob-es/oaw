@@ -35,372 +35,410 @@ import static es.inteco.utils.CrawlerDOMUtils.hasAttribute;
 
 public final class CrawlerUtils {
 
-    private CrawlerUtils() {
-    }
+	private CrawlerUtils() {
+	}
 
-    public static boolean domainMatchs(List<String> domainList, String domain) {
-        boolean hasMatched = false;
-        for (String domainRegExp : domainList) {
-            Pattern pattern = Pattern.compile(domainRegExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+	public static boolean domainMatchs(List<String> domainList, String domain) {
+		boolean hasMatched = false;
+		for (String domainRegExp : domainList) {
+			Pattern pattern = Pattern.compile(domainRegExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
-            Matcher matcher = pattern.matcher(domain);
-            if (matcher.find()) {
-                hasMatched = true;
-                break;
-            }
-        }
+			Matcher matcher = pattern.matcher(domain);
+			if (matcher.find()) {
+				hasMatched = true;
+				break;
+			}
+		}
 
-        return hasMatched;
-    }
+		return hasMatched;
+	}
 
-    public static boolean isSwitchLanguageLink(Element link, List<IgnoredLink> ignoredLinks) {
-        if (ignoredLinks != null && hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))) {
-            for (IgnoredLink ignoredLink : ignoredLinks) {
-                if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink) || (link.getNodeName().equalsIgnoreCase("area") && matchsAlt(link, ignoredLink))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+	public static boolean isSwitchLanguageLink(Element link, List<IgnoredLink> ignoredLinks) {
+		if (ignoredLinks != null && hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))) {
+			for (IgnoredLink ignoredLink : ignoredLinks) {
+				if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink) || (link.getNodeName().equalsIgnoreCase("area") && matchsAlt(link, ignoredLink))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-    private static boolean matchsText(Element link, IgnoredLink ignoredLink) {
-        return matchs(removeInlineTags(link.getTextContent()).trim(), ignoredLink.getText())
-                || (hasAttribute(link, "title") && matchs(getAttribute(link, "title").trim(), ignoredLink.getTitle()));
-    }
+	private static boolean matchsText(Element link, IgnoredLink ignoredLink) {
+		return matchs(removeInlineTags(link.getTextContent()).trim(), ignoredLink.getText()) || (hasAttribute(link, "title") && matchs(getAttribute(link, "title").trim(), ignoredLink.getTitle()));
+	}
 
-    private static boolean matchsAlt(Element link, IgnoredLink ignoredLink) {
-        return hasAttribute(link, "alt") && matchs(getAttribute(link, "alt").trim(), ignoredLink.getText());
-    }
+	private static boolean matchsAlt(Element link, IgnoredLink ignoredLink) {
+		return hasAttribute(link, "alt") && matchs(getAttribute(link, "alt").trim(), ignoredLink.getText());
+	}
 
-    private static String removeInlineTags(String content) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> inlineTags = Arrays.asList(pmgr.getValue("crawler.core.properties", "inline.tags").split(";"));
+	private static String removeInlineTags(String content) {
+		PropertiesManager pmgr = new PropertiesManager();
+		List<String> inlineTags = Arrays.asList(pmgr.getValue("crawler.core.properties", "inline.tags").split(";"));
 
-        for (String tag : inlineTags) {
-            content = Pattern.compile(String.format("</?%s +[^>]*>|</?%s>", tag, tag), Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(content).replaceAll(" ");
-        }
+		for (String tag : inlineTags) {
+			content = Pattern.compile(String.format("</?%s +[^>]*>|</?%s>", tag, tag), Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(content).replaceAll(" ");
+		}
 
-        return content;
-    }
+		return content;
+	}
 
-    private static boolean matchsImage(Element link, IgnoredLink ignoredLink) {
-        List<Element> images = CrawlerDOMUtils.getElementsByTagName(link, "frame");
+	private static boolean matchsImage(Element link, IgnoredLink ignoredLink) {
+		List<Element> images = CrawlerDOMUtils.getElementsByTagName(link, "frame");
 
-        if (images.size() == 1) {
-            for (Element image : images) {
-                if (matchs(image.getAttribute("alt"), ignoredLink.getText())
-                        || (StringUtils.isEmpty(image.getAttribute("alt").trim()) && matchs(image.getAttribute("title"), ignoredLink.getText()))) {
-                    return true;
-                }
-            }
-        }
+		if (images.size() == 1) {
+			for (Element image : images) {
+				if (matchs(image.getAttribute("alt"), ignoredLink.getText()) || (StringUtils.isEmpty(image.getAttribute("alt").trim()) && matchs(image.getAttribute("title"), ignoredLink.getText()))) {
+					return true;
+				}
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public static boolean matchs(String text, String regExp) {
-        Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(text);
-        return matcher.find();
-    }
+	public static boolean matchs(String text, String regExp) {
+		Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(text);
+		return matcher.find();
+	}
 
-    public static String removeHtmlComments(String textContent) {
-        return textContent.replaceAll("(?s)<!--.*?-->", "");
-    }
+	public static String removeHtmlComments(String textContent) {
+		return textContent.replaceAll("(?s)<!--.*?-->", "");
+	}
 
-    public static URL getAbsoluteUrl(Document document, String rootUrl, String urlLink) throws MalformedURLException {
-        String base = CrawlerDOMUtils.getBaseUrl(document);
-        return StringUtils.isEmpty(base) ? new URL(new URL(rootUrl), urlLink) : new URL(new URL(base), urlLink);
-    }
+	public static URL getAbsoluteUrl(Document document, String rootUrl, String urlLink) throws MalformedURLException {
+		String base = CrawlerDOMUtils.getBaseUrl(document);
+		return StringUtils.isEmpty(base) ? new URL(new URL(rootUrl), urlLink) : new URL(new URL(base), urlLink);
+	}
 
-    public static List<String> addDomainsToList(String seedsList, boolean getOnlyDomain, int type) {
-        if (StringUtils.isNotEmpty(seedsList)) {
-            final String[] seeds = seedsList.split(";");
-            final List<String> domains = new ArrayList<>(seeds.length);
-            for (int i = 0; i < seeds.length; i++) {
-                if (type == Constants.ID_LISTA_SEMILLA && !seeds[i].startsWith("http://") && !seeds[i].startsWith("https://")) {
-                    seeds[i] = "http://" + seeds[i];
-                }
-                if (getOnlyDomain) {
-                    domains.add(convertDomains(seeds[i]));
-                } else {
-                    domains.add(seeds[i]);
-                }
-            }
+	public static List<String> addDomainsToList(String seedsList, boolean getOnlyDomain, int type) {
+		if (StringUtils.isNotEmpty(seedsList)) {
+			final String[] seeds = seedsList.split(";");
+			final List<String> domains = new ArrayList<>(seeds.length);
+			for (int i = 0; i < seeds.length; i++) {
+				if (type == Constants.ID_LISTA_SEMILLA && !seeds[i].startsWith("http://") && !seeds[i].startsWith("https://")) {
+					seeds[i] = "http://" + seeds[i];
+				}
+				if (getOnlyDomain) {
+					domains.add(convertDomains(seeds[i]));
+				} else {
+					domains.add(seeds[i]);
+				}
+			}
 
-            return domains;
-        } else {
-            return null;
-        }
-    }
+			return domains;
+		} else {
+			return null;
+		}
+	}
 
-    /**
-     * Obtiene el host de una dirección url
-     *
-     * @param domain cadena que representa una url
-     * @return el host de la url o vacío si no la cadena no representa una url válida
-     */
-    public static String convertDomains(final String domain) {
-        try {
-            final URL domainUrl = new URL(domain);
+	/**
+	 * Obtiene el host de una dirección url
+	 *
+	 * @param domain
+	 *            cadena que representa una url
+	 * @return el host de la url o vacío si no la cadena no representa una url
+	 *         válida
+	 */
+	public static String convertDomains(final String domain) {
+		try {
+			final URL domainUrl = new URL(domain);
 
-            return domainUrl.getHost();
-        } catch (MalformedURLException e) {
-            Logger.putLog("Error al obtener el dominio base de la URL", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
-        }
+			return domainUrl.getHost();
+		} catch (MalformedURLException e) {
+			Logger.putLog("Error al obtener el dominio base de la URL", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+		}
 
-        return "";
-    }
+		return "";
+	}
 
-    public static String getHash(String string) {
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-            messageDigest.update(string.getBytes());
-            return new BigInteger(1, messageDigest.digest()).toString(16);
-        } catch (Exception e) {
-            Logger.putLog("Error al obtener la codificación MD5 de una cadena de texto", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
-            return null;
-        }
-    }
+	public static String getHash(String string) {
+		try {
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
+			messageDigest.update(string.getBytes());
+			return new BigInteger(1, messageDigest.digest()).toString(16);
+		} catch (Exception e) {
+			Logger.putLog("Error al obtener la codificación MD5 de una cadena de texto", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+			return null;
+		}
+	}
 
-    public static boolean hasToBeFilteredUri(HttpServletRequest request) {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> notFilteredUris = Arrays.asList(pmgr.getValue("crawler.properties", "not.filtered.uris").split(";"));
+	public static boolean hasToBeFilteredUri(HttpServletRequest request) {
+		PropertiesManager pmgr = new PropertiesManager();
+		List<String> notFilteredUris = Arrays.asList(pmgr.getValue("crawler.properties", "not.filtered.uris").split(";"));
 
-        if (request.getParameter("key") != null
-                && request.getParameter("key").equals(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"))
-                && containsUriFragment(notFilteredUris, request.getRequestURI())) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+		if (request.getParameter("key") != null && request.getParameter("key").equals(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"))
+				&& containsUriFragment(notFilteredUris, request.getRequestURI())) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
-    private static boolean containsUriFragment(List<String> uriFragments, String uri) {
-        for (String uriFragment : uriFragments) {
-            if (uri.contains(uriFragment)) {
-                return true;
-            }
-        }
-        return false;
-    }
+	private static boolean containsUriFragment(List<String> uriFragments, String uri) {
+		for (String uriFragment : uriFragments) {
+			if (uri.contains(uriFragment)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public static String encodeUrl(String url) {
-    	
-        return url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").replaceAll(" ", "%20").replaceAll("Á", "%E1").replaceAll("É", "%C9").replaceAll("Í", "%CD")
-                .replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9")
-                .replaceAll("í", "%ED").replaceAll("ó", "%F3").replaceAll("ú", "%FA")
-                .replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&");
-    }
+	public static String encodeUrl(String url) {
 
-    public static List<String> getDomainsList(final Long idCrawling, final int type, final boolean getOnlyDomain) {
-        try (Connection conn = DataBaseManager.getConnection()) {
-            return CrawlerUtils.addDomainsToList(RastreoDAO.getList(conn, idCrawling, type), getOnlyDomain, type);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").replaceAll(" ", "%20").replaceAll("Á", "%E1")
+				.replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9").replaceAll("í", "%ED").replaceAll("ó", "%F3")
+				.replaceAll("ú", "%FA").replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&").replaceAll("Âº", "º").replaceAll("º", "%BA").replaceAll("Âª", "ª")
+				.replaceAll("ª", "%AA");
 
-    public static String getCharset(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
-        String charset = Constants.DEFAULT_CHARSET;
-        boolean found = false;
+		return replaceAll;
 
-        // Buscamos primero en las cabeceras de la respuesta
-        try {
-            String header = connection.getHeaderField("Content-type");
-            String charsetValue = header.substring(header.indexOf("charset"));
-            charsetValue = charsetValue.substring(charsetValue.indexOf('=') + 1);
-            if (StringUtils.isNotEmpty(charsetValue)) {
-                charset = charsetValue;
-                found = true;
-            }
-        } catch (Exception e) {
-            // found = false;
-        }
+	}
 
-        if (!found || !isValidCharset(charset)) {
-            charset = getCharsetWithUniversalDetector(markableInputStream);
-            markableInputStream.reset();
-        }
+	public static List<String> getDomainsList(final Long idCrawling, final int type, final boolean getOnlyDomain) {
+		try (Connection conn = DataBaseManager.getConnection()) {
+			return CrawlerUtils.addDomainsToList(RastreoDAO.getList(conn, idCrawling, type), getOnlyDomain, type);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-        if (found && !isValidCharset(charset)) {
-            charset = Constants.DEFAULT_CHARSET;
-        }
+	public static String getCharset(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
+		String charset = Constants.DEFAULT_CHARSET;
+		boolean found = false;
 
-        return charset;
-    }
+		// Buscamos primero en las cabeceras de la respuesta
+		try {
+			String header = connection.getHeaderField("Content-type");
+			String charsetValue = header.substring(header.indexOf("charset"));
+			charsetValue = charsetValue.substring(charsetValue.indexOf('=') + 1);
+			if (StringUtils.isNotEmpty(charsetValue)) {
+				charset = charsetValue;
+				found = true;
+			}
+		} catch (Exception e) {
+			// found = false;
+		}
 
-    private static String getCharsetWithUniversalDetector(final InputStream markableInputStream) {
-        try {
-            final UniversalDetector detector = new UniversalDetector(null);
-            final byte[] buf = new byte[4096];
+		if (!found || !isValidCharset(charset)) {
+			charset = getCharsetWithUniversalDetector(markableInputStream);
+			markableInputStream.reset();
+		}
 
-            int nread = markableInputStream.read(buf);
-            while (nread > 0 && !detector.isDone()) {
-                detector.handleData(buf, 0, nread);
-                nread = markableInputStream.read(buf);
-            }
-            detector.dataEnd();
+		if (found && !isValidCharset(charset)) {
+			charset = Constants.DEFAULT_CHARSET;
+		}
 
-            return detector.getDetectedCharset();
-        } catch (Exception e) {
-            Logger.putLog("Error al detectar la codificación con Universal Detector", CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-            return null;
-        }
-    }
+		return charset;
+	}
 
-    private static boolean isValidCharset(String charset) {
-        try {
-            byte[] test = new byte[10];
-            new String(test, charset);
-            return true;
-        } catch (UnsupportedEncodingException e) {
-            return false;
-        }
-    }
+	private static String getCharsetWithUniversalDetector(final InputStream markableInputStream) {
+		try {
+			final UniversalDetector detector = new UniversalDetector(null);
+			final byte[] buf = new byte[4096];
 
-    public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
-        String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
+			int nread = markableInputStream.read(buf);
+			while (nread > 0 && !detector.isDone()) {
+				detector.handleData(buf, 0, nread);
+				nread = markableInputStream.read(buf);
+			}
+			detector.dataEnd();
 
-        textContent = removeHtmlComments(textContent);
+			return detector.getDetectedCharset();
+		} catch (Exception e) {
+			Logger.putLog("Error al detectar la codificación con Universal Detector", CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
+			return null;
+		}
+	}
 
-        return textContent;
-    }
+	private static boolean isValidCharset(String charset) {
+		try {
+			byte[] test = new byte[10];
+			new String(test, charset);
+			return true;
+		} catch (UnsupportedEncodingException e) {
+			return false;
+		}
+	}
 
-    public static InputStream getMarkableInputStream(final HttpURLConnection connection) throws IOException {
-        final InputStream content = connection.getInputStream();
+	public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
+		String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 
-        final BufferedInputStream stream = new BufferedInputStream(content);
+		textContent = removeHtmlComments(textContent);
 
-        // mark InputStream so we can restart it for validator
-        if (stream.markSupported()) {
-            stream.mark(Integer.MAX_VALUE);
-        }
-        return stream;
-    }
+		return textContent;
+	}
 
-    public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws IOException {
-        final PropertiesManager pmgr = new PropertiesManager();
-        final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        if (connection instanceof HttpsURLConnection) {
-            final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
-            httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
-            httpsConnection.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String s, SSLSession sslSession) {
-                    return true;
-                }
-            });
-        }
-        connection.setInstanceFollowRedirects(followRedirects);
-        connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-        connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-        connection.addRequestProperty("Accept", pmgr.getValue("crawler.core.properties", "method.accept.header"));
-        connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
-        connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
-        if (refererUrl != null) {
-            connection.addRequestProperty("Referer", refererUrl);
-        }
-        return connection;
-    }
+	public static InputStream getMarkableInputStream(final HttpURLConnection connection) throws IOException {
+		final InputStream content = connection.getInputStream();
 
-    private static SSLSocketFactory getNaiveSSLSocketFactory() {
-        // Create a trust manager that does not validate certificate chains
-        final TrustManager[] trustAllCerts = new TrustManager[]{
-                new X509TrustManager() {
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return null;
-                    }
+		final BufferedInputStream stream = new BufferedInputStream(content);
 
-                    public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-                    }
+		// mark InputStream so we can restart it for validator
+		if (stream.markSupported()) {
+			stream.mark(Integer.MAX_VALUE);
+		}
+		return stream;
+	}
 
-                    public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-                    }
-                }
-        };
+	public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws IOException {
+		final HttpURLConnection connection = generateConnection(url, refererUrl);
 
-        // Install the all-trusting trust manager
-        try {
-            final SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            SSLContext.setDefault(sc);
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String s, SSLSession sslSession) {
-                    return true;
-                }
-            });
-            return sc.getSocketFactory();
-        } catch (Exception e) {
-            Logger.putLog("Excepción: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-        return null;
-    }
+		// TODO Omitimos la redirección y si detectamos una, actualizamos el
+		// conector
+		// COmo se usa este método para las conexiones por las conexiones por la JSP, se hace este apaño
+		if (!"BASIC_SERVICE_URL".equals(refererUrl)) {
 
+			
+			int status = connection.getResponseCode();
+			connection.disconnect();
 
-    public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
-        final URL metaRedirection = new URL(url, redirectTo);
-        final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
-        connection.setRequestProperty("Cookie", cookie);
-        Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
-        return connection;
-    }
+			if (status != HttpURLConnection.HTTP_OK && followRedirects) {
+				if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
+					// get redirect url from "location" header field
+					String newUrl = connection.getHeaderField("Location");
+					
+					connection.disconnect();
 
-    public static String getCookie(final HttpURLConnection connection) {
-        // Cogemos la lista de cookies, teniendo en cuenta que el parametro set-cookie no es sensible a mayusculas o minusculas
-        final Map<String, List<String>> headerFields = connection.getHeaderFields();
-        final List<String> headers = new ArrayList<>();
-        if (headerFields != null && !headerFields.isEmpty()) {
-            for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
-                if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {
-                    headers.addAll(entry.getValue());
-                }
-            }
-        }
+					return getConnection(encodeUrl(newUrl), refererUrl, false);
+				} 
+			}
+		} else {
+			connection.setInstanceFollowRedirects(followRedirects);
+		}
 
-        final StringBuilder headerText = new StringBuilder();
-        for (String header : headers) {
-            if (header.contains(";")) {
-                if (!header.substring(0, header.indexOf(';')).toLowerCase().endsWith("deleted")) {
-                    headerText.append(header.substring(0, header.indexOf(';'))).append("; ");
-                }
-            } else {
-                headerText.append(header).append("; ");
-            }
-        }
+		return generateConnection(url, refererUrl);
+	}
 
-        return headerText.toString();
-    }
+	private static HttpURLConnection generateConnection(String url, String refererUrl) throws IOException, MalformedURLException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+		if (connection instanceof HttpsURLConnection) {
+			final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+			httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
+			httpsConnection.setHostnameVerifier(new HostnameVerifier() {
+				@Override
+				public boolean verify(String s, SSLSession sslSession) {
+					return true;
+				}
+			});
+		}
+		connection.setInstanceFollowRedirects(false);
+		connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+		connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+		connection.addRequestProperty("Accept", pmgr.getValue("crawler.core.properties", "method.accept.header"));
+		connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+		connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+		if (refererUrl != null) {
+			connection.addRequestProperty("Referer", refererUrl);
+		}
+		return connection;
+	}
 
-    /**
-     * Comprueba si la conexión se ha realizado a la página de OpenDNS
-     *
-     * @param connection la conexión que se quiere comprobar
-     * @return true si la conexión se ha realizado a la página de OpenDNS o false en caso contrario.
-     */
-    public static boolean isOpenDNSResponse(final HttpURLConnection connection) {
-        return connection.getHeaderField("Server") != null && connection.getHeaderField("Server").toLowerCase().contains("opendns");
-    }
+	private static SSLSocketFactory getNaiveSSLSocketFactory() {
+		// Create a trust manager that does not validate certificate chains
+		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
 
-    /**
-     * Comprueba si un contenido es un RSS
-     *
-     * @param content una cadena con un contenido textual
-     * @return true si corresponde a un RSS o false en caso contrario
-     */
-    public static boolean isRss(final String content) {
-        return !content.toLowerCase().contains("</html>") && content.toLowerCase().contains("</rss>");
-    }
+			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
 
-    /**
-     * Comprueba si un enlace es de tipo http: o usa otro protocolo (mailto:, javascript:,...)
-     * @param link enlace a comprobar
-     * @return true si el enlace es de tipo http o false en caso contrario.
-     */
-    public static boolean isHTTPLink(final Element link) {
-        return link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript:") && !link.getAttribute("href").toLowerCase().startsWith("mailto:") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("tel:");
-    }
+			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+		} };
+
+		// Install the all-trusting trust manager
+		try {
+			// TODO Modificamos el protocolo SSL para solucionar la conexión con
+			// algunos páginas que no son accesibles con SSL/TSL (v1)
+			final SSLContext sc = SSLContext.getInstance("TLSv1.2");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			SSLContext.setDefault(sc);
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+				@Override
+				public boolean verify(String s, SSLSession sslSession) {
+					return true;
+				}
+			});
+			return sc.getSocketFactory();
+		} catch (Exception e) {
+			Logger.putLog("Excepción: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+
+	public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
+		final URL metaRedirection = new URL(url, redirectTo);
+		final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
+		connection.setRequestProperty("Cookie", cookie);
+		Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
+		return connection;
+	}
+
+	public static String getCookie(final HttpURLConnection connection) {
+		// Cogemos la lista de cookies, teniendo en cuenta que el parametro
+		// set-cookie no es sensible a mayusculas o minusculas
+		final Map<String, List<String>> headerFields = connection.getHeaderFields();
+		final List<String> headers = new ArrayList<>();
+		if (headerFields != null && !headerFields.isEmpty()) {
+			for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
+				if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {
+					headers.addAll(entry.getValue());
+				}
+			}
+		}
+
+		final StringBuilder headerText = new StringBuilder();
+		for (String header : headers) {
+			if (header.contains(";")) {
+				if (!header.substring(0, header.indexOf(';')).toLowerCase().endsWith("deleted")) {
+					headerText.append(header.substring(0, header.indexOf(';'))).append("; ");
+				}
+			} else {
+				headerText.append(header).append("; ");
+			}
+		}
+
+		return headerText.toString();
+	}
+
+	/**
+	 * Comprueba si la conexión se ha realizado a la página de OpenDNS
+	 *
+	 * @param connection
+	 *            la conexión que se quiere comprobar
+	 * @return true si la conexión se ha realizado a la página de OpenDNS o
+	 *         false en caso contrario.
+	 */
+	public static boolean isOpenDNSResponse(final HttpURLConnection connection) {
+		return connection.getHeaderField("Server") != null && connection.getHeaderField("Server").toLowerCase().contains("opendns");
+	}
+
+	/**
+	 * Comprueba si un contenido es un RSS
+	 *
+	 * @param content
+	 *            una cadena con un contenido textual
+	 * @return true si corresponde a un RSS o false en caso contrario
+	 */
+	public static boolean isRss(final String content) {
+		return !content.toLowerCase().contains("</html>") && content.toLowerCase().contains("</rss>");
+	}
+
+	/**
+	 * Comprueba si un enlace es de tipo http: o usa otro protocolo (mailto:,
+	 * javascript:,...)
+	 * 
+	 * @param link
+	 *            enlace a comprobar
+	 * @return true si el enlace es de tipo http o false en caso contrario.
+	 */
+	public static boolean isHTTPLink(final Element link) {
+		return link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript:") && !link.getAttribute("href").toLowerCase().startsWith("mailto:")
+				&& !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("tel:");
+	}
 }

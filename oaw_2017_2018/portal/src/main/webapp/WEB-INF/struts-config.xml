@@ -353,7 +353,10 @@
 		<forward name="observatoryDependencias"
 			path="/secure/ViewDependenciasObservatorio.do?action=load" />
 
-<!-- Página de comprobación de conectividad -->
+		<forward name="relanzarObservatorio"
+			path="/secure/RelanzarObservatorio.do" />
+
+		<!-- Página de comprobación de conectividad -->
 		<forward name="conectividadMenu" path="/secure/conectividad.do" />
 
 	</global-forwards>
@@ -1042,6 +1045,16 @@
 			<forward name="exito" path=".conectividad" />
 			<forward name="volver" path=".indexAdmin" />
 		</action>
+		
+
+		<!-- CONECTIVIDAD -->
+		<action path="/secure/RelanzarObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.RelanzarObservatorioAction">
+			<forward name="volver" path=".indexAdmin" />
+			<forward name="exito" path=".Exito" />
+			<forward name="confirmacionRelanzar" path=".confirmarRelanzarObservatorio" />
+		</action>
+				
 
 
 

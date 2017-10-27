@@ -1630,4 +1630,38 @@ public final class RastreoDAO {
             throw e;
         }
     }
+    
+    /**
+     * Recuperamos los rastreos que no estén marcados como finalizados
+     * @param c
+     * @param idObservatory
+     * @return
+     * @throws Exception
+     */
+    public static List<Long> getPendingCrawlerFromSeedAndObservatory(Connection c, Long idObservatory, Long idObsRealizado) throws Exception {
+    	final List<Long> crawlerIds = new ArrayList<>();
+    	// Union de rastreos no realizados y rastreos empezados pero no terminados (<> estado 4)
+        try (PreparedStatement ps = c.prepareStatement("SELECT u.id_rastreo FROM (" + 
+        		"	(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (" + 
+        		"		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + 
+        		"	UNION ALL" + 
+        		"	(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.estado <> 4)" + 
+        		"	) u ORDER BY u.id_rastreo ASC")) {
+            ps.setLong(1, idObservatory);
+            ps.setLong(2, idObsRealizado);
+            ps.setLong(3, idObservatory);
+            try (ResultSet rs = ps.executeQuery()) {
+            	   while (rs.next()) {
+                       crawlerIds.add(rs.getLong("id_rastreo"));
+                   }
+                   return crawlerIds;
+            }
+        } catch (Exception e) {
+            Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+            throw e;
+        }
+
+    }
+    
+    
 }

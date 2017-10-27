@@ -49,7 +49,7 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 
     @Before
     public void setUp() {
-        checkAccessibility = getCheckAccessibility("observatorio-une-2012");
+        checkAccessibility = getCheckAccessibility("observatorio-une-2017");
     }
 
     @Test
@@ -961,4 +961,251 @@ public final class Check_2_1_3_FormsTest extends EvaluateCheck {
 //        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_1_3, TestUtils.OBS_VALUE_GREEN_ZERO);
 //    }
 
+    
+    //TODO 2017 Check 473 Group o radio group con aria-label o aria-labelledby con contenido
+    @Test
+    public void evaluateGroupAlternative() {
+    	
+    	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='group'></div>"
+    			+ "</form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+        
+        
+       	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='group' aria-label='Lorem ipsum'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='group' aria-labelledby='foo'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='group' aria-labelledby='foo'><div id='foo'>Lorem ipsum</div></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+    }
+    
+    @Test
+    public void evaluateRadiogroupAlternative() {
+    	
+    	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='radiogroup'></div>"
+    			+ "</form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+        
+        
+       	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='radiogroup' aria-label='Lorem ipsum'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='radiogroup' aria-labelledby='foo'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='radiogroup' aria-labelledby='foo'><div id='foo'>Lorem ipsum</div></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 473));
+    }
+    
+    // TODO 2017 Check 474 
+    @Test
+    public void evaluateLinksAlternative() {
+    	
+    	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='link'></div>"
+    			+ "</form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        
+       	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='link' aria-label='Lorem ipsum'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='link' aria-labelledby='foo'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='link' aria-labelledby='foo'><div id='foo'>Lorem ipsum</div></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='link'>Lorem ipsum</div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+    }
+    
+    @Test
+    public void evaluateButtomAlternative() {
+    	
+    	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='button'></div>"
+    			+ "</form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        
+       	checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='button' aria-label='Lorem ipsum'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='button' aria-labelledby='foo'></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='button' aria-labelledby='foo'><div id='foo'>Lorem ipsum</div></div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+        
+        checkAccessibility.setContent("<div>"
+    			+ "<form>"
+    			+ "<div role='button'>Lorem ipsum</div>"
+    			+ "</form>");
+       	evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 474));
+    }
+    
+    @Test
+    public void evaluateCheck430() {
+    	
+    	checkAccessibility.setContent("<form>" + 
+    			"  <input type='text' name='input1'>" + 
+    			"  <input type='text' name='input2'>" + 
+    			"  <input type='text' name='input3'>" + 
+    			"  <input type='text' name='input4'>" + 
+    			"  <input type='text' name='input5'>" + 
+    			"  <input type='text' name='input6'>" + 
+    			"  <input type='submit' value='Submit'>" + 
+    			"</form>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 430));
+    	
+    	checkAccessibility.setContent("<form>" + 
+    			"  <input type='text' name='input1'>" + 
+    			"  <input type='text' name='input2'>" + 
+    			"  <input type='text' name='input3'>" + 
+    			"  <input type='text' name='input4'>" + 
+    			"  <input type='text' name='input5'>" + 
+    			"  <input type='text' name='input6'>" + 
+    			"  <input type='text' name='input7'>" + 
+    			"  <input type='text' name='input8'>" + 
+    			"  <input type='text' name='input9'>" + 
+    			"  <input type='text' name='input10'>" + 
+    			"  <input type='text' name='input11'>" + 
+    			"  <input type='text' name='input12'>" + 
+    			"  <input type='text' name='input13'>" + 
+    			"  <input type='submit' value='Submit'>" + 
+    			"</form>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), 430));
+        
+        checkAccessibility.setContent("<form>\n" + 
+        		"  <input type='text' name='input1'>\n" + 
+        		"  <input type='text' name='input2'>\n" + 
+        		"  <input type='text' name='input3'>\n" + 
+        		"  <input type='text' name='input4'>\n" + 
+        		"  <fieldset><legend>Legend</legend>\n" + 
+        		"  <input type='text' name='input5'>\n" + 
+        		"  <input type='text' name='input6'>\n" + 
+        		"  <input type='text' name='input7'>\n" + 
+        		"  <input type='text' name='input8'>\n" + 
+        		"  <input type='text' name='input9'>\n" + 
+        		"  <input type='text' name='input10'>\n" + 
+        		"  </fieldset>\n" + 
+        		"  <input type='text' name='input11'>\n" + 
+        		"  <input type='text' name='input12'>\n" + 
+        		"  <input type='text' name='input13'>\n" + 
+        		"  <input type='submit' value='Submit'>\n" + 
+        		"</form> ");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 430));
+        
+        checkAccessibility.setContent("<form>\n" + 
+        		"  <input type='text' name='input1'>\n" + 
+        		"  <input type='text' name='input2'>\n" + 
+        		"  <input type='text' name='input3'>\n" + 
+        		"  <input type='text' name='input4'>\n" + 
+        		"  <div role='group'>" + 
+        		"  <input type='text' name='input5'>\n" + 
+        		"  <input type='text' name='input6'>\n" + 
+        		"  <input type='text' name='input7'>\n" + 
+        		"  <input type='text' name='input8'>\n" + 
+        		"  <input type='text' name='input9'>\n" + 
+        		"  <input type='text' name='input10'>\n" + 
+        		"  </div>\n" + 
+        		"  <input type='text' name='input11'>\n" + 
+        		"  <input type='text' name='input12'>\n" + 
+        		"  <input type='text' name='input13'>\n" + 
+        		"  <input type='submit' value='Submit'>\n" + 
+        		"</form> ");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 430));
+        
+        checkAccessibility.setContent("<form>\n" + 
+        		"  <input type='text' name='input1'>\n" + 
+        		"  <input type='text' name='input2'>\n" + 
+        		"  <input type='text' name='input3'>\n" + 
+        		"  <input type='text' name='input4'>\n" + 
+        		"  <div role='radiogroup'>" + 
+        		"  <input type='text' name='input5'>\n" + 
+        		"  <input type='text' name='input6'>\n" + 
+        		"  <input type='text' name='input7'>\n" + 
+        		"  <input type='text' name='input8'>\n" + 
+        		"  <input type='text' name='input9'>\n" + 
+        		"  <input type='text' name='input10'>\n" + 
+        		"  </div>\n" + 
+        		"  <input type='text' name='input11'>\n" + 
+        		"  <input type='text' name='input12'>\n" + 
+        		"  <input type='text' name='input13'>\n" + 
+        		"  <input type='submit' value='Submit'>\n" + 
+        		"</form> ");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), 430));
+        
+    }
 }

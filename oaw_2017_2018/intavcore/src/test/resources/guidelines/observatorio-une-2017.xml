@@ -283,6 +283,13 @@
 						“obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas 
 						o títulos presentes dentro del formulario <form>). (N = 4) -->
 					<check id="446" />
+					
+					<!-- Elementos role group o radio group con atributos aria-label o aria-labelledby -->
+					<check id="473" />
+					
+					<!-- Elementos role link o button con contenido textual o atributos aria-label o aria-labelledby -->
+					<check id="474" />
+					
 				</checks>
 			</subgroup>
 
