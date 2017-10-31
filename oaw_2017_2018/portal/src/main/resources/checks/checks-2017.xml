@@ -4517,7 +4517,7 @@ Telephone: (416) 978-4360
             <trigger element="select"/>
             <condition type="and">
                 <function call="element-count-equals" node="." value="optgroup" number="0"/>
-                <function call="element-count-greater-than" node="." value="option" attribute1="1" number="25"/>
+                <function call="element-count-greater-than" node="." value="option" attribute1="1" number="100"/>
             </condition>
         </machine>
     </check>
@@ -5041,8 +5041,8 @@ Telephone: (416) 978-4360
             <trigger element="form"/>
             <condition type="or">
                 <!-- value el tipo de boton a buscar y number el número de botones que permitimos antes de requirir fieldset -->
-                <function call="grouped-selection-buttons" node="." value="radio" number="2"/>
-                <function call="grouped-selection-buttons" node="." value="checkbox" number="2"/>
+                <function call="grouped-selection-buttons" node="." value="radio" number="5"/>
+                <function call="grouped-selection-buttons" node="." value="checkbox" number="5"/>
             </condition>
         </machine>
     </check>
@@ -5077,12 +5077,12 @@ Telephone: (416) 978-4360
         <rationale>check.446.rationale</rationale>
         <machine>
             <trigger element="form" />
-            <function call="required-controls" node="." number="4" value="\bobligatorios?\b|\bobligado\b|\bexigido\b|\bpreciso\b|\brequeridos?\b|\bnecesarios?\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b|\bopcionales\b|\bblanco\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatory\b|\bobliged\b|\bmandatory\b|\bcompulsory\b|\brequisite\b|\brequired\b|\brequested\b|\bnecessary\b|\bneeded\b|\bindispensable\b|\bessential\b|\bimperative\b|\boptional\b|\bvoluntary\b|\bblank\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatoire\b|\bexigé\b|\bprécis\b|\brequis\b|\bnécessaire\b|\bindispoensable\b|\bessential\b|\bimpératif\b|\boption\b|\bbénévoles\b"/>
-            <function call="required-controls" node="." number="4" value="\bobligatori\b|\bobligat\b|\bobligats\b|\bexigit\b|\brequerit\b|\bnecessari\b|\bindispensable\b|\bimprescindible\b|\bimperatiu\b|\bopcional\b|\bopcionals\b|\bvoluntari\b"/>
-            <function call="required-controls" node="." number="4" value="\bobrigatorio\b|\bobrigado\b|\besixido\b|\bpreciso\b|\brequirido\b|\bnecesario\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b"/>
-            <function call="required-controls" node="." number="4" value="\bnahitaezkoa\b|\bbetebeharpekoa\b|\beskatuta\b|\bbeharrezkoa\b|\berrekeritua\b|\bezinbestekoa\b|\bagindua\b|\baukerakoa\b|\bboluntarioa\b"/>
+            <function call="required-controls" node="." number="5" value="\bobligatorios?\b|\bobligado\b|\bexigido\b|\bpreciso\b|\brequeridos?\b|\bnecesarios?\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b|\bopcionales\b|\bblanco\b"/>
+            <function call="required-controls" node="." number="5" value="\bobligatory\b|\bobliged\b|\bmandatory\b|\bcompulsory\b|\brequisite\b|\brequired\b|\brequested\b|\bnecessary\b|\bneeded\b|\bindispensable\b|\bessential\b|\bimperative\b|\boptional\b|\bvoluntary\b|\bblank\b"/>
+            <function call="required-controls" node="." number="5" value="\bobligatoire\b|\bexigé\b|\bprécis\b|\brequis\b|\bnécessaire\b|\bindispoensable\b|\bessential\b|\bimpératif\b|\boption\b|\bbénévoles\b"/>
+            <function call="required-controls" node="." number="5" value="\bobligatori\b|\bobligat\b|\bobligats\b|\bexigit\b|\brequerit\b|\bnecessari\b|\bindispensable\b|\bimprescindible\b|\bimperatiu\b|\bopcional\b|\bopcionals\b|\bvoluntari\b"/>
+            <function call="required-controls" node="." number="5" value="\bobrigatorio\b|\bobrigado\b|\besixido\b|\bpreciso\b|\brequirido\b|\bnecesario\b|\bindispensable\b|\bimprescindible\b|\bimperativo\b|\bopcional\b|\bvoluntario\b"/>
+            <function call="required-controls" node="." number="5" value="\bnahitaezkoa\b|\bbetebeharpekoa\b|\beskatuta\b|\bbeharrezkoa\b|\berrekeritua\b|\bezinbestekoa\b|\bagindua\b|\baukerakoa\b|\bboluntarioa\b"/>
         </machine>
     </check>
 

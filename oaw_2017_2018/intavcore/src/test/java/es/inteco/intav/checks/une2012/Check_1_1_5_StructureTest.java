@@ -216,4 +216,90 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
 
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_RED_ZERO);
     }
+    
+    @Test
+    public void evaluateExcessiveUsageExclingTags() {
+    	// 10 <br> no tiene errores
+        checkAccessibility.setContent("<html><p>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "</p></html>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
+        
+    	// 11 <br> --> error
+        checkAccessibility.setContent("<html><p>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(11, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
+        
+        
+    	// 11 <br>  con algunos en addres --> ok
+        checkAccessibility.setContent("<html><p>" +
+                "Lorem ipsum<br/>" +
+                "<address>Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/></addres>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
+        
+        
+       	// 21  <br> 10 en <addres>--> error
+        checkAccessibility.setContent("<html><p>" +
+                "<address>Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/></address>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "Lorem ipsum<br/>" +
+                "</p></html>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+
+        Assert.assertEquals(21, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
+        
+    }
 }
