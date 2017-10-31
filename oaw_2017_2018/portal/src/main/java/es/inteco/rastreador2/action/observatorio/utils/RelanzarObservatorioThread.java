@@ -51,7 +51,7 @@ public class RelanzarObservatorioThread extends Thread {
 			List<Long> pendindCrawlings = RastreoDAO.getPendingCrawlerFromSeedAndObservatory(c, Long.parseLong(idObservatorio), Long.parseLong(idEjecucionObservatorio));
 			
 			// TODO Cambiar el estado del observatorio a lanzado
-			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idObservatorio), es.inteco.crawler.common.Constants.LAUNCHED_OBSERVATORY_STATUS);
+			ObservatorioDAO.updateObservatoryStatus(c, Long.parseLong(idEjecucionObservatorio), es.inteco.crawler.common.Constants.RELAUNCHED_OBSERVATORY_STATUS);
 
 			if (pendindCrawlings != null && !pendindCrawlings.isEmpty()) {
 
@@ -59,6 +59,8 @@ public class RelanzarObservatorioThread extends Thread {
 
 				for (Long idCrawling : pendindCrawlings) {
 
+					RastreoDAO.actualizarEstadoRastreo(c, idCrawling.intValue(), es.inteco.crawler.common.Constants.STATUS_LAUNCHED);
+					
 					// Borramos la cache
 					CacheUtils.removeFromCache(Constants.OBSERVATORY_KEY_CACHE + idEjecucionObservatorio);
 
