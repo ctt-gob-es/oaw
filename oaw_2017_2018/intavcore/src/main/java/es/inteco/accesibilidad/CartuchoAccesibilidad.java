@@ -54,7 +54,7 @@ public class CartuchoAccesibilidad extends Cartucho {
             Logger.putLog("Realizando tareas post-analisis", CartuchoAccesibilidad.class, Logger.LOG_LEVEL_DEBUG);
 
             // Calculamos el resultado de la comprobacion titulos diferentes ya que requiere haber realizado el rastreo completo
-            if (checkAccesibility.getGuidelineFile().startsWith("observatorio-une-2012")) {
+            if (checkAccesibility.getGuidelineFile().startsWith("observatorio-une-2012") || checkAccesibility.getGuidelineFile().startsWith("observatorio-une-2017")) {
                 final long idRastreo = (Long) datos.get("idFulfilledCrawling");
                 final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreo);
                 processDiferentTitlesCheck(idRastreo, evaluationIds);

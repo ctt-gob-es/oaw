@@ -1243,7 +1243,7 @@ public class Check {
 		return false;
 	}
 	// TODO Método original
-	private int countNodesWithText(NodeList nodeList) {
+	/*private int countNodesWithText(NodeList nodeList) {
 		int cellsWithText = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			final Node node = nodeList.item(i);
@@ -1263,62 +1263,64 @@ public class Check {
 			}
 		}
 		return cellsWithText;
+	}*/
+	
+	
+	// 	TODO Métodos nuevos
+	private int countNodesWithText(NodeList nodeList) {
+		int cellsWithText = 0;
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			final Node node = nodeList.item(i);
+			if ((node.getTextContent() != null)
+					&& (StringUtils.isNotEmpty(node.getTextContent()) && (!StringUtils.isOnlyBlanks(node.getTextContent()) && (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
+				cellsWithText++;
+			} else if (((Element) node).getElementsByTagName("img") != null) {
+				NodeList imgList = ((Element) node).getElementsByTagName("img");
+				for (int j = 0; j < imgList.getLength(); j++) {
+
+					Node item = imgList.item(j);
+
+					if (cellWithText(item)) {
+						cellsWithText++;
+						break;
+					}
+				}
+			} else if (cellWithText(node)) {
+				cellsWithText++;
+				break;
+			}
+		}
+		return cellsWithText;
 	}
-//Métodos nuevos
-//	private int countNodesWithText(NodeList nodeList) {
-//		int cellsWithText = 0;
-//		for (int i = 0; i < nodeList.getLength(); i++) {
-//			final Node node = nodeList.item(i);
-//			if ((node.getTextContent() != null)
-//					&& (StringUtils.isNotEmpty(node.getTextContent()) && (!StringUtils.isOnlyBlanks(node.getTextContent()) && (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
-//				cellsWithText++;
-//			} else if (((Element) node).getElementsByTagName("img") != null) {
-//				NodeList imgList = ((Element) node).getElementsByTagName("img");
-//				for (int j = 0; j < imgList.getLength(); j++) {
-//
-//					Node item = imgList.item(j);
-//
-//					if (cellWithText(item)) {
-//						cellsWithText++;
-//						break;
-//					}
-//				}
-//			} else if (cellWithText(node)) {
-//				cellsWithText++;
-//				break;
-//			}
-//		}
-//		return cellsWithText;
-//	}
-//
-//	/**
-//	 * Comprueba si un nodo tiene atributos alt, title, aria-label o
-//	 * aria-describedby correctos.
-//	 * 
-//	 * @param item
-//	 *            Nodo.
-//	 * @return true si alguno de los atributos mencionados tiene valor, false en
-//	 *         caso contrario.
-//	 */
-//	private boolean cellWithText(Node item) {
-//
-//		String alt = ((Element) item).getAttribute("alt");
-//		String title = ((Element) item).getAttribute("title");
-//		String ariaLabel = ((Element) item).getAttribute("aria-label");
-//		String ariaDescribedby = ((Element) item).getAttribute("aria-describedby");
-//		if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
-//			return true;
-//		} else if (title != null && StringUtils.isNotEmpty(title) && !StringUtils.isOnlyBlanks(title) && !StringUtils.isOnlyWhiteChars(title)) {
-//			return true;
-//
-//		} else if (ariaLabel != null && StringUtils.isNotEmpty(ariaLabel) && !StringUtils.isOnlyBlanks(ariaLabel) && !StringUtils.isOnlyWhiteChars(ariaLabel)) {
-//			return true;
-//
-//		} else if (ariaDescribedby != null && StringUtils.isNotEmpty(ariaDescribedby) && !StringUtils.isOnlyBlanks(ariaDescribedby) && !StringUtils.isOnlyWhiteChars(ariaDescribedby)) {
-//			return true;
-//		}
-//		return false;
-//	}
+
+	/**
+	 * Comprueba si un nodo tiene atributos alt, title, aria-label o
+	 * aria-describedby correctos.
+	 * 
+	 * @param item
+	 *            Nodo.
+	 * @return true si alguno de los atributos mencionados tiene valor, false en
+	 *         caso contrario.
+	 */
+	private boolean cellWithText(Node item) {
+
+		String alt = ((Element) item).getAttribute("alt");
+		String title = ((Element) item).getAttribute("title");
+		String ariaLabel = ((Element) item).getAttribute("aria-label");
+		String ariaDescribedby = ((Element) item).getAttribute("aria-describedby");
+		if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
+			return true;
+		} else if (title != null && StringUtils.isNotEmpty(title) && !StringUtils.isOnlyBlanks(title) && !StringUtils.isOnlyWhiteChars(title)) {
+			return true;
+
+		} else if (ariaLabel != null && StringUtils.isNotEmpty(ariaLabel) && !StringUtils.isOnlyBlanks(ariaLabel) && !StringUtils.isOnlyWhiteChars(ariaLabel)) {
+			return true;
+
+		} else if (ariaDescribedby != null && StringUtils.isNotEmpty(ariaDescribedby) && !StringUtils.isOnlyBlanks(ariaDescribedby) && !StringUtils.isOnlyWhiteChars(ariaDescribedby)) {
+			return true;
+		}
+		return false;
+	}
 
 	private boolean functionTextCellsPercentageGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		BigDecimal totalCells = BigDecimal.ZERO;
@@ -1456,7 +1458,34 @@ public class Check {
 		int counter = 0;
 		for (String element : elementsList) {
 			counter += elementGiven.getElementsByTagName(element).getLength();
+			
+			
+			//TODO 2017 Si viene informado attribute1, tenemos que excluir del total las etiqietas que estén dentro de estas exclusiones
+			if(!StringUtils.isEmpty(checkCode.getFunctionAttribute1())) {
+				final List<String> elementsExclude = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
+				
+				for(String exclude:elementsExclude) {
+					
+					NodeList excludeNodes = elementGiven.getElementsByTagName(exclude);
+					
+					for(int i=0;i<excludeNodes.getLength();i++) {
+						Node tmp = excludeNodes.item(i);
+						
+						if(Node.ELEMENT_NODE == tmp.getNodeType()) {
+							
+							counter-= ((Element)tmp).getElementsByTagName(element).getLength();
+						}
+						
+					}
+					
+				}
+			}
+			
 		}
+		
+	
+		
+		
 
 		if ("greater".equalsIgnoreCase(compare)) {
 			// Si la comparación es mayor damos un error si el número de
@@ -1925,16 +1954,17 @@ public class Check {
 			return false;
 		}
 
-		if (elementGiven.hasAttribute("aria-labelledby")) {
+		// TODO 2017 Original: un únido id 
+		/**if (elementGiven.hasAttribute("aria-labelledby")) {
 			final Element labelledBy = elementGiven.getOwnerDocument().getElementById(elementGiven.getAttribute("aria-labelledby"));
 			if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
 				return false;
 			}
-		}
+		}*/
 		
 		// TODO 2017 Correción para tener en cuenta que puede haber varios
 		// ids en el atributo
-		/**if (elementGiven.hasAttribute("aria-labelledby")) {
+		if (elementGiven.hasAttribute("aria-labelledby")) {
 
 			String[] ids = elementGiven.getAttribute("aria-labelledby").split("\\s");
 
@@ -1945,7 +1975,7 @@ public class Check {
 				}
 			}
 
-		}*/
+		}
 
 		// check if the input element is contained by a label element
 		Element elementParent = DOMUtil.getParent(elementGiven);
@@ -1983,11 +2013,11 @@ public class Check {
 
 			// 2012 Si hay una y solo una una etiqueta asociada a ese control de
 			// formulario, está bien y retornamos false
-			return cont != 1;
+			//return cont != 1;
 			
 			// TODO 2017 Si es cero devolvemos true porque no hay label, si hay
 			// más de una está bien
-			//return cont == 0;
+			return cont == 0;
 		} else {
 			return false;
 		}

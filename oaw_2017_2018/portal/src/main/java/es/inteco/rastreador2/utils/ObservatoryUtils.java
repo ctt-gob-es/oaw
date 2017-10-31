@@ -20,11 +20,14 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
@@ -123,7 +126,27 @@ public final class ObservatoryUtils {
 	// Calcula el nivel de adecuacion de la pagina de un portal
 	public static String pageSuitabilityLevel(ObservatoryEvaluationForm observatoryEvaluationForm) {
 		PropertiesManager pmgr = new PropertiesManager();
-		final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		int maxFails = 0;
+		
+		Connection c;
+		try {
+			c = DataBaseManager.getConnection();
+			ObservatorioForm of = ObservatorioDAO.getObservatoryFormFromExecution(c, observatoryEvaluationForm.getObservatoryExecutionId());
+			if(of!=null) {
+				
+				if(of.getId_guideline()==7) {
+					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+				} else if(of.getId_guideline()==8) {
+					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+				}
+			}
+			
+		} catch (Exception e) {
+			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		}
+		
+		
+		
 		boolean isA = true;
 		boolean isAA = true;
 		// Se recorren los niveles de análisis
