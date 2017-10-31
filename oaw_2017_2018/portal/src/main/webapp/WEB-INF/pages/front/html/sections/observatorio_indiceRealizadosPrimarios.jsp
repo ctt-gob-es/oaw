@@ -67,6 +67,21 @@
                         						<c:set target="${paramsRelanzar}" property="action" value="confirm" />
                         						<c:set target="${paramsRelanzar}" property="id_observatorio" value="${id_observatorio}" />
                         						<c:set target="${paramsRelanzar}" property="idExObs" value="${fulfilledObservatory.id}" />
+                        						
+                        						
+                        						<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="3">
+                                            <bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
+                                            
+                       
+                        
+                        <html:link forward="relanzarObservatorio" name="paramsRelanzar">
+                        	<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip" title="Relanzar esta iteraci&oacute;n del observatorio"/>
+                        	<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+                        </html:link>
+                                            
+                                        </logic:equal>
+                       
+                        						
                                         <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
                                             <bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
                                             
