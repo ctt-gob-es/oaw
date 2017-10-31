@@ -26,7 +26,9 @@ import es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
+import es.inteco.rastreador2.actionform.rastreo.RastreoEjecutadoForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
@@ -128,22 +130,37 @@ public final class ObservatoryUtils {
 		PropertiesManager pmgr = new PropertiesManager();
 		int maxFails = 0;
 		
-		Connection c;
-		try {
-			c = DataBaseManager.getConnection();
-			ObservatorioForm of = ObservatorioDAO.getObservatoryFormFromExecution(c, observatoryEvaluationForm.getObservatoryExecutionId());
-			if(of!=null) {
+		
+		try (Connection c = DataBaseManager.getConnection()) {
+			
+			//ObservatorioForm of = ObservatorioDAO.getObservatoryFormFromExecution(c, observatoryEvaluationForm.getObservatoryExecutionId());
+			
+			
+			
+			RastreoEjecutadoForm rastreo = RastreoDAO.cargarRastreoEjecutado(c, observatoryEvaluationForm.getCrawlerExecutionId());
+			
+			if(rastreo!=null) {
 				
-				if(of.getId_guideline()==7) {
-					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
-				} else if(of.getId_guideline()==8) {
+				String aplicacion = CartuchoDAO.getApplication(c, rastreo.getId_cartucho());
+				
+				if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
 					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+				} else  {
+					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 				}
+			} else {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 			}
+			
+			DataBaseManager.closeConnection(c);
 			
 		} catch (Exception e) {
 			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		} finally {
+			
 		}
+		
+	//	maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 		
 		
 		
