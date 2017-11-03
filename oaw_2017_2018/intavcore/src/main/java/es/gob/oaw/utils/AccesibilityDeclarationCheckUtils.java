@@ -41,7 +41,8 @@ public final class AccesibilityDeclarationCheckUtils {
 		for (int i = 0; i < links.getLength(); i++) {
 			final Element link = (Element) links.item(i);
 			final String href = link.getAttribute("href").toLowerCase();
-			if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
+			if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto") 
+					&&! link.getAttribute("href").toLowerCase().endsWith(".pdf") &&! link.getAttribute("href").toLowerCase().endsWith(".doc")   ) {
 				if (StringUtils.isNotEmpty(link.getTextContent()) && StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp) && includedLinks.add(href)) {
 					linksFound.add(link);
 				}
