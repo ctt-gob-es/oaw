@@ -4962,7 +4962,8 @@ Telephone: (416) 978-4360
         <rationale>check.436.rationale</rationale>
         <machine>
             <trigger element="html"/>
-            <function call="elements-excessive-usage" node="." element="br" number="10" position="greater"/>
+            <!-- En attribute1 indicamos las etiquetas que se ignorarán (separadas por punto y coma ;) -->
+            <function call="elements-excessive-usage" node="." element="br" number="10" position="greater" attribute1="address"/>
         </machine>
     </check>
 

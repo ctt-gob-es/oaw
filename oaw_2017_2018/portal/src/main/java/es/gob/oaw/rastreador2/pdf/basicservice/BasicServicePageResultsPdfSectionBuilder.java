@@ -195,5 +195,84 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
         Matcher matcher = pattern.matcher(text);
         return matcher.find() ? matcher.group(1) : null;
     }
+    
+    //TODO 2007 Nuevos métodos para metodología
+    public void addPageResultsWithoutLevels(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws Exception {
+        int counter = 1;
+        for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
+            final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
+            final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
+
+            chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
+
+            // Creación de las tablas resumen de resultado por verificación de cada página
+            for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+                final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L);
+                levelTitle.setSpacingBefore(HALF_LINE_SPACE);
+                chapter.add(levelTitle);
+                chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
+            }
+
+            addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
+
+            document.add(chapter);
+            pdfTocManager.addChapterCount();
+            counter++;
+        }
+    }
+
+
+    private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
+        for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
+            if (hasProblems(priority)) {
+                final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, 1, 0);
+                for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
+                    if (hasProblems(level)) {
+                      //  final Section levelSection = PDFUtils.createSection(getLevelName(messageResources, level), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, prioritySection, 1, 0);
+                        for (ObservatorySubgroupForm verification : level.getSubgroups()) {
+                            if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
+                                for (ProblemForm problem : verification.getProblems()) {
+                                    final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, prioritySection, verification, problem);
+
+                                    final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
+                                    final String rationaleMessage = checkDescriptionsManager.getRationaleMessage(problem.getCheck());
+                                    if (rationaleMessage != null && StringUtils.isNotEmpty(rationaleMessage)) {
+                                        final Paragraph rationale = new Paragraph();
+                                        boolean isFirst = true;
+                                        for (String phraseText : Arrays.asList(rationaleMessage.split("<p>|</p>"))) {
+                                            if (isFirst) {
+                                                if (StringUtils.isNotEmpty(phraseText)) {
+                                                    rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
+                                                }
+                                                isFirst = false;
+                                            } else {
+                                                rationale.add(new Phrase(StringUtils.removeHtmlTags(phraseText) + "\n", ConstantsFont.descriptionFont));
+                                            }
+                                        }
+
+                                        tablaVerificacionProblema.addCell(PDFUtils.createEmptyTableCell());
+
+                                        final PdfPCell celdaRationale = new PdfPCell(rationale);
+                                        celdaRationale.setBorder(0);
+                                        celdaRationale.setBackgroundColor(Color.WHITE);
+                                        celdaRationale.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
+                                        celdaRationale.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                                        celdaRationale.setPadding(DEFAULT_PADDING);
+                                        tablaVerificacionProblema.addCell(celdaRationale);
+                                    }
+
+                                    addSpecificProblems(messageResources, prioritySection, problem.getSpecificProblems());
+
+                                    if ("232".equals(problem.getCheck()) || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
+                                        addW3CCopyright(prioritySection, problem.getCheck());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

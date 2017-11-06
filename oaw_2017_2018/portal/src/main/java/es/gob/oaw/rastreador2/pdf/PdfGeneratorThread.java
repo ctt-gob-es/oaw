@@ -96,11 +96,12 @@ public class PdfGeneratorThread extends Thread {
 								String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idRastreoRealizado, idRastreo);
 
 								// TODO 2017 Desdoblamiento nueva metodologia
+								// Nuevo fichero con los textos para las exportaciones
 
 								if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
 
 									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2017(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
-											PropertyMessageResources.getMessageResources("ApplicationResources"), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
+											PropertyMessageResources.getMessageResources("ApplicationResources-2017"), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
 								} else {
 
 									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds,

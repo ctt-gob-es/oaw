@@ -310,4 +310,60 @@ public class ObservatoryPageResultsPdfSectionBuilder {
             return "";
         }
     }
+    
+    
+    //TODO 2017 Nuevos métodos para la nueva metodología
+    public void addPageResultsWithoutLevels(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws Exception {
+        int counter = 1;
+        for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
+            final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
+            final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
+
+            chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
+
+            // Creación de las tablas resumen de resultado por verificación de cada página
+            for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+                final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L);
+                levelTitle.setSpacingBefore(HALF_LINE_SPACE);
+                chapter.add(levelTitle);
+                chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
+            }
+
+            addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
+
+            final SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("observatory.servicio.diagnostico.url"), ConstantsFont.ANCHOR_FONT);
+            externalLink.setExternalLink(true);
+            externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
+            final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+            specialChunkMap.put(1, externalLink);
+            chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
+
+            document.add(chapter);
+            pdfTocManager.addChapterCount();
+            counter++;
+        }
+    }
+    
+    private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
+        for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
+            if (hasProblems(priority)) {
+                final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, 1, 0);
+                for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
+                    if (hasProblems(level)) {
+                        for (ObservatorySubgroupForm verification : level.getSubgroups()) {
+                            if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
+                                for (ProblemForm problem : verification.getProblems()) {
+                                    final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, prioritySection, verification, problem);
+
+                                    if (problem.getCheck().equals("232") || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
+                                        addW3CCopyright(prioritySection, problem.getCheck());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
