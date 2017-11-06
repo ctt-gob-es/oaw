@@ -4,6 +4,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import com.mysql.jdbc.Messages;
 
 import es.gob.oaw.rastreador2.pdf.utils.CheckDescriptionsManager;
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
@@ -127,8 +128,11 @@ public class ObservatoryPageResultsPdfSectionBuilder {
         int contador = 1;
         for (BigDecimal puntuacionMediaNivel : puntuacionesMediasNivel) {
             // Puntuación Media Nivel Accesibilidad
-            table.addCell(PDFUtils.createTableCell("Puntuación Media\nNivel de Análisis " + contador++, Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+        	//TODO 2017 Exportado a message para unificar
+        	
+            table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] {String.valueOf(contador)}) , Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
             table.addCell(PDFUtils.createTableCell(puntuacionMediaNivel.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+            contador++;
         }
 
         return table;
