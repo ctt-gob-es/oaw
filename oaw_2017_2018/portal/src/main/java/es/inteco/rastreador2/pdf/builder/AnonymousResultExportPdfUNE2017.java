@@ -485,24 +485,29 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p1"), ConstantsFont.PARAGRAPH, section);
 
 		com.lowagie.text.List list = new com.lowagie.text.List();
+		com.lowagie.text.List list2 = new com.lowagie.text.List();
+		
+		ListItem item = null;
+		ListItem itemL2 = null;
+		
 
 		final ArrayList<String> boldWords = new ArrayList<>();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p2"));
-		ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+//		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p2"));
+//		ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+//
+//		com.lowagie.text.List list2 = new com.lowagie.text.List();
+//		boldWords.clear();
+//		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p4"));
+//		ListItem itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+//		list2.add(itemL2);
+//		boldWords.clear();
+//		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p6"));
+//		itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+//		list2.add(itemL2);
+//		list2.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+//		item.add(list2);
 
-		com.lowagie.text.List list2 = new com.lowagie.text.List();
-		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p4"));
-		ListItem itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
-		list2.add(itemL2);
-		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p6"));
-		itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
-		list2.add(itemL2);
-		list2.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-		item.add(list2);
-
-		list.add(item);
+		//list.add(item);
 
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p8"));
@@ -802,8 +807,8 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		List list = new List();
 		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p3"), list, ConstantsFont.PARAGRAPH, false, true);
 		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p4"), list, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p5"), list, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p6"), list, ConstantsFont.PARAGRAPH, false, true);
+//		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p5"), list, ConstantsFont.PARAGRAPH, false, true);
+//		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p6"), list, ConstantsFont.PARAGRAPH, false, true);
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
