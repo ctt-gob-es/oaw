@@ -123,14 +123,11 @@ public class BasicServicePdfReport {
 				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
 
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-
-				
-					observatoryPageResultsSectionBuilder.addPageResultsWithoutLevels(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
-
-				} else {
-
 					
-					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager);
+					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, true);
+
+				} else {					
+					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
 				}
 
 				pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());

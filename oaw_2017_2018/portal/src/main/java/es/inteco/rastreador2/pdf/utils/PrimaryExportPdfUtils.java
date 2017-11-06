@@ -222,12 +222,14 @@ public final class PrimaryExportPdfUtils {
 				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 				
 					
-					observatoryPageResultsSectionBuilder.addPageResultsWithoutLevels(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
+					//observatoryPageResultsSectionBuilder.addPageResultsWithoutLevels(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
+					
+					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, true);
 					
 				} else {
 				
 					
-					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager);
+					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
 				}
 				
 				
