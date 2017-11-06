@@ -968,7 +968,7 @@ public final class ObservatorioDAO {
 		}
 
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
-			query += " AND l.nombre like ?";
+			query += " AND UPPER(l.nombre) like UPPER(?)";
 		}
 
 		if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {

@@ -262,10 +262,10 @@
                 final int depth = Integer.parseInt(profundidad);
                 final int width = Integer.parseInt(amplitud);
                 // TODO 2017
-                if (depth < 0 || depth > 6) {
+                if (depth < 0 || depth > 4) {
                     errores.add("La profundidad de rastreo es incorrecta");
                 }
-                if (width < 0 || width > 6) {
+                if (width < 0 || width > 8) {
                     errores.add("La amplitud de rastreo es incorrecta");
                 }
             } else if (isListaUrlsRequest()) {

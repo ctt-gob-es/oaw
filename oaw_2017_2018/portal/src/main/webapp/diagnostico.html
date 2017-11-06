@@ -205,10 +205,10 @@ fieldset p {
 										<option value="2">2</option>
 										<option value="3">3</option>
 										<option value="4">4</option>
-										<!-- <option value="5">5</option>
+										<option value="5">5</option>
 										<option value="6">6</option>
 										<option value="7">7</option>
-										<option value="8">8</option> -->
+										<option value="8">8</option> 
 									</select>
 								</p>
 
@@ -411,7 +411,10 @@ fieldset p {
             }
         }
         function checkHistoricoListaUrls() {
-          if (
+        	
+        	
+        	if($("#radio-2").prop("checked") ){
+          if ($("#radio-2").prop("checked")
         		  ($("#urls").val().split("http").length == 18 && $('#informe-obs-2').prop("checked")) ||
         		  ($("#urls").val().split("http").length == 34 && $('#informe-obs-3').prop("checked"))
         		  ) {
@@ -425,6 +428,7 @@ fieldset p {
             $("#registerAnalysis").prop("disabled", true);
             $("#disabled_info").show();
           }
+        	}
         }
         $("form#basic_service").submit(function() {
           if ($("#radio-1").prop("checked")) {
