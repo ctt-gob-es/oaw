@@ -304,7 +304,7 @@
                 if (depth < 0 || depth > 4) {
                     errores.add("La profundidad de rastreo es incorrecta");
                 }
-                if (width < 0 || width > 4) {
+                if (width < 0 || width > 8) {
                     errores.add("La amplitud de rastreo es incorrecta");
                 }
             } else if (isListaUrlsRequest()) {

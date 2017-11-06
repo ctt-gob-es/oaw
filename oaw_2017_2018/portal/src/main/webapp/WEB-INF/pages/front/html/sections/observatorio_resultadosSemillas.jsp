@@ -22,20 +22,32 @@
 <!--  JQ GRID   -->
 <script>
 	//Buscador
-	function buscar() {
-		reloadGrid('/oaw/secure/JsonSemillasObservatorio.do?action=buscar&'
-				+ $('#SemillaSearchForm').serialize());
+	function buscar() {		
+		reloadGrid('JsonResultadoObservatorio.do?action=resultados&id_observatorio='
+				+ $(
+						'[name=id_observatorio]')
+						.val()
+				+ '&idExObs='
+				+ $('[name=idExObs]').val()
+				+ '&idCartucho='
+				+ $('[name=idCartucho]')
+						.val()+'&'+$('#resultadosObsBuscador').serialize());
 	}
 
 	$(window)
 			.on(
 					'load',
 					function() {
+						
+						//Desactivar cache de AJAX de forma global
+						$.ajaxSetup({ cache: false });
 
 						var $jq = $.noConflict();
 
 						var lastUrl;
 
+						$('#resultadosObsBuscador')[0].reset();
+						
 						//Primera carga del grid el grid
 						$jq(document)
 								.ready(
@@ -225,7 +237,7 @@
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
 			<html:form action="/secure/ResultadosObservatorio.do" method="get"
-				styleClass="formulario form-horizontal">
+				styleClass="formulario form-horizontal" styleId="resultadosObsBuscador">
 				<input type="hidden" name="<%=Constants.ACTION%>"
 					value="<%=Constants.GET_SEEDS%>" />
 				<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>"
@@ -251,12 +263,18 @@
 						<html:text styleClass="texto form-control"
 							styleId="listaUrlsString" property="listaUrlsString" />
 					</div>
-					<div class="formButton">
+<%-- 					<div class="formButton">
 						<button type="submit" class="btn btn-default btn-lg">
 							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 							<bean:message key="boton.buscar" />
 						</button>
-					</div>
+					</div> --%>
+									<div class="formButton">
+											<span onclick="buscar()" class="btn btn-default btn-lg"> <span
+							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
+								key="boton.buscar" />
+						</span>
+					</button>
 				</fieldset>
 			</html:form>
 

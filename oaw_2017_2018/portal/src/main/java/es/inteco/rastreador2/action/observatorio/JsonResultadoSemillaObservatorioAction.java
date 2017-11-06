@@ -9,19 +9,20 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.google.gson.Gson;
+import com.opensymphony.oscache.util.StringUtil;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
@@ -39,6 +40,18 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
         try (Connection c = DataBaseManager.getConnection()) {
             final PropertiesManager pmgr = new PropertiesManager();
+            
+            
+            
+            //Nombre
+            if(request.getParameter("nombre")!=null && !StringUtils.isEmpty(request.getParameter("nombre").toString())) {
+            	semillaForm.setNombre(request.getParameter("nombre").toString());
+            }
+            
+            //URL
+            if(request.getParameter("listaUrlsString")!=null && !StringUtils.isEmpty(request.getParameter("listaUrlsString").toString())) {
+            	semillaForm.setListaUrlsString(request.getParameter("listaUrlsString").toString());
+            }            
 
             final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
             final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
