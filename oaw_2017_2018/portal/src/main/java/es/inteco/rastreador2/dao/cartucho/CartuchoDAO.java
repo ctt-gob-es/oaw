@@ -124,5 +124,23 @@ public final class CartuchoDAO {
 			throw e;
 		}
 	}
+	
+	public static String getApplicationFromAnalisisId(final Connection c, final Long idAnalisis) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("select c.aplicacion from cartucho c, tanalisis ta where c.id_guideline=ta.cod_guideline and ta.cod_analisis=?")) {
+			ps.setLong(1, idAnalisis);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getString("aplicacion");
+				} else {
+					return null;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+	
 
 }

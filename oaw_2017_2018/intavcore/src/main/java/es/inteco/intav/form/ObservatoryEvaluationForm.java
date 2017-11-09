@@ -16,6 +16,7 @@ public class ObservatoryEvaluationForm implements Serializable {
     private List<AspectScoreForm> aspects;
     private List<Integer> checksFailed;
     private String source;
+    private Long idAnalysis;
 
     public ObservatoryEvaluationForm() {
         this.groups = new ArrayList<>();
@@ -103,5 +104,15 @@ public class ObservatoryEvaluationForm implements Serializable {
     public void setSeed(SeedForm seed) {
         this.seed = seed;
     }
+
+
+	public Long getIdAnalysis() {
+		return idAnalysis;
+	}
+
+
+	public void setIdAnalysis(Long idAnalysis) {
+		this.idAnalysis = idAnalysis;
+	}
 
 }

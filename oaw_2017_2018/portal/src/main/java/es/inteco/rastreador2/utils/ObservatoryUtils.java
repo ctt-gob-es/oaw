@@ -129,41 +129,24 @@ public final class ObservatoryUtils {
 	public static String pageSuitabilityLevel(ObservatoryEvaluationForm observatoryEvaluationForm) {
 		PropertiesManager pmgr = new PropertiesManager();
 		int maxFails = 0;
-		
-		
+
+		// Recuperamos el cartucho asociado al analsis
 		try (Connection c = DataBaseManager.getConnection()) {
-			
-			//ObservatorioForm of = ObservatorioDAO.getObservatoryFormFromExecution(c, observatoryEvaluationForm.getObservatoryExecutionId());
-			
-			
-			
-			RastreoEjecutadoForm rastreo = RastreoDAO.cargarRastreoEjecutado(c, observatoryEvaluationForm.getCrawlerExecutionId());
-			
-			if(rastreo!=null) {
-				
-				String aplicacion = CartuchoDAO.getApplication(c, rastreo.getId_cartucho());
-				
-				if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
-					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
-				} else  {
-					maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
-				}
+
+			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationForm.getIdAnalysis());
+
+			if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 			}
-			
+
 			DataBaseManager.closeConnection(c);
 			
 		} catch (Exception e) {
 			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
-		} finally {
-			
-		}
-		
-	//	maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
-		
-		
-		
+		} 
+
 		boolean isA = true;
 		boolean isAA = true;
 		// Se recorren los niveles de análisis

@@ -38,10 +38,10 @@
 					<!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, 
 						role=presentation) -->
 					<check id="426" />
-					
-					<!-- Textos alternativos menosres de 150  -->
+
+					<!-- Textos alternativos menosres de 150 -->
 					<check id="468" />
-					
+
 				</checks>
 			</subgroup>
 			<subgroup aspect="observatory.aspect.structure">
@@ -62,8 +62,8 @@
 					<check id="422" />
 					<!-- Más de un encabezado si hay más de 15 párrafos -->
 					<check id="433" />
-					
-					
+
+
 					<!-- Encabezados WAI vacíos -->
 					<check id="469" />
 					<!-- Encabezados WAI seguidos vacíos -->
@@ -72,8 +72,8 @@
 					<check id="471" />
 					<!-- Más de un encabezad WAI si hay más de 15 párrafos -->
 					<check id="472" />
-					
-					
+
+
 				</checks>
 			</subgroup>
 
@@ -211,13 +211,8 @@
 						(enlaces, botones) o bien tienen asignado un atributo “tabindex” y un “role” 
 						de WAI-ARIA adecuado -->
 					<check id="432" />
-				</checks>
-			</subgroup>
 
-			<subgroup aspect="observatory.aspect.navigation">
-				<!-- Control del usuario -->
-				<name>minhap.observatory.2_0.subgroup.2.1.2</name>
-				<checks>
+					<!-- MOVIDAS DE 2.1.2 -->
 					<!-- Se verifica que no se use la etiqueta "blink" o “marquee” -->
 					<check id="130" />
 					<!-- No se debe redigir automáticamente con el elemento "meta" y el 
@@ -228,13 +223,17 @@
 					<check id="72" />
 					<!-- No se emplea la propiedad de CSS 'text-decoration: blink' -->
 					<check id="449" />
+					<!-- /MOVIDAS DE 2.1.2 -->
+
 				</checks>
 			</subgroup>
 
-			<subgroup aspect="observatory.aspect.structure">
-				<!-- Formularios -->
-				<name>minhap.observatory.2_0.subgroup.2.1.3</name>
+			<subgroup aspect="observatory.aspect.navigation">
+				<!-- Control del usuario -->
+				<name>minhap.observatory.2_0.subgroup.2.1.2</name>
 				<checks>
+
+					<!-- /MOVIDAS DE 2.1.3 -->
 					<!-- Nota: Se considera etiqueta asociada a <label> (con texto) asociado 
 						explícitamente; “aria-labelledby” con un “id” correspondiente a un elemento 
 						con contenido textual; “aria-label” o “títle” con contenido. -->
@@ -251,6 +250,23 @@
 						explícitamente y son la única etiqueta asociada a un control (título, aria-label, 
 						etc.) no están ocultos con CSS. -->
 					<check id="461" />
+
+
+					<!-- Se identifican los campos obligatorios en los formularios con más 
+						de N campos de introducción de texto (se busca la presencia de los términos 
+						“obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas 
+						o títulos presentes dentro del formulario <form>). (N = 4) -->
+					<check id="446" />
+					<!-- /MOVIDAS DE 2.1.3 -->
+
+				</checks>
+			</subgroup>
+
+			<subgroup aspect="observatory.aspect.structure">
+				<!-- Formularios -->
+				<name>minhap.observatory.2_0.subgroup.2.1.3</name>
+				<checks>
+
 					<!-- Tres o más de botones de radio y/o casillas de verificación agrupadas 
 						(mismo name) se agrupan bajo un fieldset. -->
 					<check id="443" />
@@ -278,18 +294,12 @@
 					<check id="417" />
 					<!-- Elementos optgroup tienen un atributo “label” con contenido -->
 					<check id="407" />
-					<!-- Se identifican los campos obligatorios en los formularios con más 
-						de N campos de introducción de texto (se busca la presencia de los términos 
-						“obligatorio”, “opcional” o sinónimos equivalentes en el texto, alternativas 
-						o títulos presentes dentro del formulario <form>). (N = 4) -->
-					<check id="446" />
-					
-<!-- 					Elementos role group o radio group con atributos aria-label o aria-labelledby
-					<check id="473" />
-					
-					Elementos role link o button con contenido textual o atributos aria-label o aria-labelledby
-					<check id="474" /> -->
-					
+
+
+					<!-- Elementos role group o radio group con atributos aria-label o aria-labelledby 
+						<check id="473" /> Elementos role link o button con contenido textual o atributos 
+						aria-label o aria-labelledby <check id="474" /> -->
+
 				</checks>
 			</subgroup>
 
