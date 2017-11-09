@@ -1641,7 +1641,7 @@ public final class RastreoDAO {
     public static List<Long> getPendingCrawlerFromSeedAndObservatory(Connection c, Long idObservatory, Long idObsRealizado) throws Exception {
     	final List<Long> crawlerIds = new ArrayList<>();
     	// Union de rastreos no realizados y rastreos empezados pero no terminados (<> estado 4)
-        try (PreparedStatement ps = c.prepareStatement("SELECT u.id_rastreo FROM (" + 
+        try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT u.id_rastreo FROM (" + 
         		"	(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo NOT IN (" + 
         		"		SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ?) AND r.activo = 1 )" + 
         		"	UNION ALL" + 

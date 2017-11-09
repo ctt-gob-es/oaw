@@ -426,7 +426,9 @@ public final class Check_1_1_3_ListTest {
                 "6 Opción 3<br/>" +
                 "7-) Opción 4</p>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
+        //Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
+        // Debido a cambios en el patrón, sólo las listas que empiecen en 1 serán inválidas
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
 
         checkAccessibility.setContent("<blockquote>\n" +
                 "<p>a)&nbsp;La declaración de inadmisibilidad de la petición.<br>\n" +
@@ -435,6 +437,23 @@ public final class Check_1_1_3_ListTest {
                 "</blockquote>");
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
+        
+        //TODO Al cambiar el patrón, se adminten listas así?
+        checkAccessibility.setContent("<p>2. Elemento 1<br/>" +
+                "3. Elemento 2<br/>" +
+                "4. Elemento 3<br/>" +
+                "5- Elemento 4</p>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
+        
+        checkAccessibility.setContent("<p>5. Opción 1 - Lorem ipsum<br/>" +
+                "6. Opción 2<br/>" +
+                "7. Opción 3<br/>" +
+                "8. Opción 4</p>");
+        evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
+        
+        
     }
 
     @Test

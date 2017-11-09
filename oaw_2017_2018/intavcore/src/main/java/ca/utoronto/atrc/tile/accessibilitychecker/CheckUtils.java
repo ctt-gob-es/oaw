@@ -105,7 +105,9 @@ public final class CheckUtils {
             connection.setRequestProperty("referer", documentUrlStr);
             connection.connect();
             final int responseCode = connection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
+            String type = connection.getHeaderField("Content-Type");
+            
+            if (responseCode == HttpURLConnection.HTTP_OK  && !type.contains("application/pdf")) {
                 final DOMParser parser = new CheckerParser(true);
                 parser.parse(new InputSource(connection.getInputStream()));
                 return parser.getDocument();

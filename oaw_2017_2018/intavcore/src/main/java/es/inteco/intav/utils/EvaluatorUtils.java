@@ -694,6 +694,15 @@ public final class EvaluatorUtils {
 		evaluationForm.setCrawlerExecutionId(evaluation.getRastreo());
 		evaluationForm.setChecksFailed(evaluation.getChecksFailed());
 		evaluationForm.setSource(evaluation.getSource());
+		//TODO 2017 Guardamos el id de análisis para tener acceso a información del cartucho y otros datos más adelante
+		evaluationForm.setIdAnalysis(evaluation.getIdAnalisis());
+		
+		
+
+		
+		
+		
+		
 		final Map<String, List<Integer>> aspects = initializeAspects();
 
 		for (int i = 0; i < guideline.getGroups().size(); i++) {

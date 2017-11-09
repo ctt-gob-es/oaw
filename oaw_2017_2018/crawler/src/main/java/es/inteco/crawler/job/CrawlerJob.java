@@ -150,7 +150,7 @@ public class CrawlerJob implements InterruptableJob {
 			              buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message"), crawlerData));
 			}
 
-			endCrawling(conn, crawlerData);
+			endCrawling(DataBaseManager.getConnection(), crawlerData);
 
 		} catch (Exception e) {
 			Logger.putLog("Error al ejecutar el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);

@@ -4567,8 +4567,12 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="br"/>
             <condition type="or">
-                <function call="false-br-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"/>
-                <function call="false-br-list" node="." number="3" value="^(\w)[ \.)-]+"/>
+                <!-- <function call="false-br-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"/> -->
+                <function call="false-br-list" node="." number="3" value="^([1-3])[ \.ºª)-]+" attribute1="sorted"/>
+                
+                <!-- <function call="false-br-list" node="." number="3" value="^(\w)[ \.)-]+"/> -->
+                <function call="false-br-list" node="." number="3" value="^(a|b|c)[ \.)-]+"/>
+                
                 <function call="false-br-list" node="." number="3" value="^(i{1,3})[ \.)-]+"/>
             </condition>
         </machine>
@@ -4657,8 +4661,13 @@ Telephone: (416) 978-4360
         <machine>
             <trigger element="li"/>
             <condition type="or">
-                <function call="false-paragraph-list" node="." element="li" number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
-                <function call="false-paragraph-list" node="." element="li" number="3" value="^([a-z])[ \.ºª)-]+" attribute1="sorted" attribute2="char"/>
+                <!-- <function call="false-paragraph-list" node="." element="li" number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/> -->
+                <function call="false-paragraph-list" node="." element="li" number="3" value="^([1-3])[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/>
+                
+                <!-- <function call="false-paragraph-list" node="." element="li" number="3" value="^([a-z])[ \.ºª)-]+" attribute1="sorted" attribute2="char"/> -->
+                <function call="false-paragraph-list" node="." element="li" number="3" value="^(a|b|c)[ \.)-]+" attribute1="sorted" attribute2="char"/>
+                
+                
                 <function call="false-paragraph-list" node="." element="li" number="3" value="^(i){1,3}[ \.ºª)-]+" />
             </condition>
         </machine>
@@ -5448,13 +5457,14 @@ Telephone: (416) 978-4360
         </machine>
     </check>
     
-    <check id="472" key="html" confidence="medium" status="1">
+    <check id="472" key="html" confidence="medium">
         <name>Un único encabezado WAI aria-level=1 y más de x párrafos</name>
         <error>check.472.error</error>
         <rationale>check.472.rationale</rationale>
         <machine>
             <trigger element="html"/>
             <condition type="and">
+            	<function call="element-count-attribute-value" node="." attribute1="aria-level" number="0" position="greater"/>
 	            <function call="element-count-attribute-value" node="." attribute1="aria-level" number="2" position="less"/>
                 <function call="has-complex-structure" node="." number="15"/>
             </condition>
