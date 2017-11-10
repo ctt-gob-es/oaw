@@ -126,13 +126,13 @@ public final class PrimaryExportPdfUtils {
 		final FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idRastreoRealizado);
 		final String application = CartuchoDAO.getApplication(c, Long.valueOf(crawling.getIdCartridge()));
 		
-		if ("UNE-2017".equalsIgnoreCase(application)) {
-			exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, PropertyMessageResources.getMessageResources("ApplicationResources-2017"), generalExpPath, seed, content, idObservatoryExecution, observatoryType);
-		} 
-		else {
-			exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, CrawlerUtils.getResources(request), generalExpPath, seed, content, idObservatoryExecution, observatoryType);
-		}
+		if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 		
+		exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, MessageResources.getMessageResources("ApplicationResources-2017"), generalExpPath, seed, content, idObservatoryExecution, observatoryType);
+		
+		} else {
+			exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, CrawlerUtils.getResources(request), generalExpPath, seed, content, idObservatoryExecution, observatoryType);	
+		}
 		
 		
 		} catch (Exception e) {
@@ -205,13 +205,22 @@ public final class PrimaryExportPdfUtils {
 				// Resumen de las puntuaciones del Observatorio
 				final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRanking(idObservatoryExecution, crawling.getSeed()) : null;
 				final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRanking(idObservatoryExecution, crawling.getSeed()) : null;
-				addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
+				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+					addObservatoryScoreSummary(pdfBuilder, MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
+				} else {
+					addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
+				}
 				pdfTocManager.addChapterCount();
 
 				// Resumen de las puntuaciones del Observatorio
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 						currentEvaluationPageList);
-				observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
+				
+				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
+				} else {
+					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
+				}
 
 				// Resultados por página
 				//TODO 2017 Desdoblamiento para aprovecha codigo
@@ -222,7 +231,6 @@ public final class PrimaryExportPdfUtils {
 				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 				
 					
-					//observatoryPageResultsSectionBuilder.addPageResultsWithoutLevels(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
 					
 					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, true);
 					

@@ -35,6 +35,8 @@ import static es.inteco.common.ConstantsFont.LINE_SPACE;
  * The Class AnonymousResultExportPdfUNE2017.
  */
 public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
+	
+	private MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources-2017");
 
 	/**
 	 * Instantiates a new anonymous result export pdf UNE 2017.
@@ -63,7 +65,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	@Override
 	public void createIntroductionChapter(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, final Font titleFont) throws Exception {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), pdfTocManager, titleFont);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(this.messageResources.getMessage("ob.resAnon.intav.report.chapter1.title"), pdfTocManager, titleFont);
 		if (!isBasicService()) {
 			final SpecialChunk externalLink = new SpecialChunk("Observatorio de Accesibilidad Web", ConstantsFont.ANCHOR_FONT);
 			externalLink.setExternalLink(true);
@@ -85,12 +87,12 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 					"Las diferentes iteraciones del Estudio de Observatorio se realizan según una metodología propia acordada (disponible en el [anchor1]) y que supone una abstracción de los principios de accesibilidad en función de un conjunto de evaluaciones significativas. De este modo se consigue una estimación del estado de accesibilidad de los portales.",
 					specialChunkMap, ConstantsFont.PARAGRAPH));
 
-			final Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter11.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
+			final Section section1 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter11.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
 					chapter, pdfTocManager.addSection(), 1);
-			createSection11(messageResources, section1);
+			createSection11(this.messageResources, section1);
 		} else {
 			final ArrayList<String> boldWords = new ArrayList<>();
-			boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
+			boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
 			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(
 					"El {0} realiza un análisis estimativo del grado de cumplimiento en materia de accesibilidad de los portales de las Administraciones Públicas realizando iteraciones oficiales en los ámbitos:  Administración General del Estado, Comunidades Autónomas y Entidades Locales. Todo ello con el objetivo de ofrecer un informe de situación que ayude a mejorar la accesibilidad de estos portales y centrar los esfuerzos futuros.",
 					boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
@@ -142,24 +144,24 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	protected void createChapter1(final MessageResources messageResources, Chapter chapter) {
 		final ArrayList<String> boldWords = new ArrayList<>();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.1.p1.bold"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.1.p1.bold"));
 		chapter.add(
-				PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+				PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.1.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.1.p2.bold"));
-		Paragraph p = PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.1.p2"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.1.p2.bold"));
+		Paragraph p = PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.1.p2"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true);
-		Phrase ph = new Phrase(messageResources.getMessage("ob.resAnon.intav.report.1.p2.m1"), ConstantsFont.paragraphUnderlinedFont);
+		Phrase ph = new Phrase(this.messageResources.getMessage("ob.resAnon.intav.report.1.p2.m1"), ConstantsFont.paragraphUnderlinedFont);
 		p.add(ph);
 		chapter.add(p);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.1.p3.bold"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.1.p3.bold"));
 		chapter.add(
-				PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.1.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+				PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.1.p3"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 		if (isBasicService()) {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.1.p4"), ConstantsFont.PARAGRAPH, chapter);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.1.p4"), ConstantsFont.PARAGRAPH, chapter);
 		}
 	}
 
@@ -173,14 +175,14 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	protected void createSection11(final MessageResources messageResources, Section section) {
 		final ArrayList<String> boldWords = new ArrayList<>();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.11.p4.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.11.p4"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.11.p4.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.11.p4"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true));
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.11.p5"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.11.p5"), ConstantsFont.PARAGRAPH, section);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.11.p1.bold"));
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.11.p1"), ConstantsFont.PARAGRAPH, section);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.11.p1.bold"));
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.11.p1"), ConstantsFont.PARAGRAPH, section);
 	}
 
 	/*
@@ -197,9 +199,9 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 			long observatoryType) throws DocumentException {
 		if (isBasicService() && getBasicServiceForm().isContentAnalysis()) {
 			// Añadir el código fuente analizado
-			createContentChapter(messageResources, document, getBasicServiceForm().getContent(), pdfTocManager);
+			createContentChapter(this.messageResources, document, getBasicServiceForm().getContent(), pdfTocManager);
 		} else {
-			createMuestraPaginasChapter(messageResources, document, pdfTocManager, titleFont, evaList);
+			createMuestraPaginasChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		}
 	}
 
@@ -213,9 +215,9 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	@Override
 	public void createContentChapter(final MessageResources messageResources, final Document d, final String contents, final PdfTocManager pdfTocManager) throws DocumentException {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(this.messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
-		PDFUtils.addParagraph(messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
+		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
 		PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
 
 		PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
@@ -251,7 +253,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		final Chapter chapter = PDFUtils.createChapterWithTitle("Muestra de páginas", pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(), titleFont, true);
 		PDFUtils.addParagraph("A continuación, se incluye la muestra de páginas incluidas en este análisis:", ConstantsFont.PARAGRAPH, chapter);
 
-		chapter.add(addURLTable(messageResources, evaList));
+		chapter.add(addURLTable(this.messageResources, evaList));
 		if (isBasicService()) {
 			PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
 			final List listaConfiguracionRastreo = new List();
@@ -309,21 +311,21 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	protected void createChapter2(MessageResources messageResources, IndexEvents index, int countSections, Chapter chapter, java.util.List<ObservatoryEvaluationForm> evaList, long observatoryType) {
 		ArrayList<String> boldWords = new ArrayList<>();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.2.p1.bold"));
 		chapter.add(
-				PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+				PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.2.p1"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
 		if (observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.PARAGRAPH, chapter);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.2.p5.AGE"), ConstantsFont.PARAGRAPH, chapter);
 		} else if (observatoryType == Constants.OBSERVATORY_TYPE_CCAA) {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.PARAGRAPH, chapter);
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.2.p5.CCAA"), ConstantsFont.PARAGRAPH, chapter);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.2.p4.CCAA"), ConstantsFont.PARAGRAPH, chapter);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.2.p5.CCAA"), ConstantsFont.PARAGRAPH, chapter);
 		}
 
-		Section section = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections, 1);
+		Section section = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, countSections, 1);
 		if (evaList != null) {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p9"), ConstantsFont.PARAGRAPH, section);
-			section.add(addURLTable(messageResources, evaList));
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p9"), ConstantsFont.PARAGRAPH, section);
+			section.add(addURLTable(this.messageResources, evaList));
 			section.newPage();
 		}
 	}
@@ -340,7 +342,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	@Override
 	public void createMethodologyChapter(final MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont,
 			java.util.List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception {
-		final Chapter chapter = PDFUtils.createChapterWithTitle("ANEXO I: " + messageResources.getMessage("ob.resAnon.intav.report.chapter3.title"), pdfTocManager.getIndex(),
+		final Chapter chapter = PDFUtils.createChapterWithTitle("ANEXO I: " + this.messageResources.getMessage("ob.resAnon.intav.report.chapter3.title"), pdfTocManager.getIndex(),
 				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), titleFont, true, "anchor_annex");
 		chapter.setNumberDepth(0);
 		
@@ -359,38 +361,38 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		p.add(PDFUtils.createPhraseLink(anexoMetodologiaParrafo3Link, anexoMetodologiaParrafo3Link, ConstantsFont.LINK_FONT));
 		chapter.add(p);
 
-		Section section1 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+		Section section1 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter31.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.31.intro"), ConstantsFont.PARAGRAPH, section1);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.31.intro"), ConstantsFont.PARAGRAPH, section1);
 
-		createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_AGE, "AGE");
-		createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_CCAA, "CCAA");
-		createSection31(messageResources, section1, Constants.OBSERVATORY_TYPE_EELL, "EELL");
+		createSection31(this.messageResources, section1, Constants.OBSERVATORY_TYPE_AGE, "AGE");
+		createSection31(this.messageResources, section1, Constants.OBSERVATORY_TYPE_CCAA, "CCAA");
+		createSection31(this.messageResources, section1, Constants.OBSERVATORY_TYPE_EELL, "EELL");
 
-		Section section2 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter32.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+		Section section2 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter32.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
-		createSection32(messageResources, section2, primaryReportPageList, observatoryType, isBasicService);
+		createSection32(this.messageResources, section2, primaryReportPageList, observatoryType, isBasicService);
 
-		Section section3 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter33.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
-				pdfTocManager.addSection(), 1, messageResources.getMessage("anchor.met.table"));
-		createSection33(messageResources, section3, observatoryType);
-		Section section31 = PDFUtils.createSection(messageResources.getMessage("une2012.resAnon.intav.report.chapter331.title"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section3,
+		Section section3 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter33.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+				pdfTocManager.addSection(), 1, this.messageResources.getMessage("anchor.met.table"));
+		createSection33(this.messageResources, section3, observatoryType);
+		Section section31 = PDFUtils.createSection(this.messageResources.getMessage("une2012.resAnon.intav.report.chapter331.title"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section3,
 				pdfTocManager.addSection(), 2);
-		createSection331(messageResources, section31);
-		Section section4 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter34.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+		createSection331(this.messageResources, section31);
+		Section section4 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter34.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
-		createSection34(messageResources, section4);
-		Section section41 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter341.title"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4,
+		createSection34(this.messageResources, section4);
+		Section section41 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter341.title"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4,
 				pdfTocManager.addSection(), 2);
-		createSection341(messageResources, section41);
-		Section section42 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter342.title"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4,
+		createSection341(this.messageResources, section41);
+		Section section42 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter342.title"), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L, section4,
 				pdfTocManager.addSection(), 2);
-		createSection342(messageResources, section42);
+		createSection342(this.messageResources, section42);
 		// Solo sale en el agregado
 		if (primaryReportPageList == null) {
-			Section section43 = PDFUtils.createSection(messageResources.getMessage("ob.resAnon.intav.report.chapter343.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L,
+			Section section43 = PDFUtils.createSection(this.messageResources.getMessage("ob.resAnon.intav.report.chapter343.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L,
 					section4, pdfTocManager.addSection(), 2);
-			createSection343(messageResources, section43);
+			createSection343(this.messageResources, section43);
 		}
 
 		document.add(chapter);
@@ -414,55 +416,55 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 			boolean isBasicService) {
 		final ArrayList<String> boldWords = new ArrayList<>();
 		if (!isBasicService) {
-			boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p1.bold"));
-			section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.32.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+			boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.32.p1.bold"));
+			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.32.p1"), boldWords, ConstantsFont.paragraphBoldFont,
 					ConstantsFont.PARAGRAPH, true));
 
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p3"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p3"), ConstantsFont.PARAGRAPH, section);
 		} else {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p3.bs"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p3.bs"), ConstantsFont.PARAGRAPH, section);
 		}
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p4"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p4"), ConstantsFont.PARAGRAPH, section);
 
 		com.lowagie.text.List list = new com.lowagie.text.List();
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p5.bold"));
-		list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.32.p5.bold"));
+		list.add(PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p5"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.32.p6.bold"));
-		list.add(PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.32.p6.bold"));
+		list.add(PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p6"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p7"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p7"), ConstantsFont.PARAGRAPH, section);
 
 		PropertiesManager pmgr = new PropertiesManager();
 		if (!isBasicService) {
 			section.newPage();
 		}
 
-		PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.grafico.rastreo"), messageResources.getMessage("ob.resAnon.intav.report.32.img.alt"), 60);
+		PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.grafico.rastreo"), this.messageResources.getMessage("ob.resAnon.intav.report.32.img.alt"), 60);
 
 		if (!isBasicService && observatoryType == Constants.OBSERVATORY_TYPE_AGE) {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p8"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8"), ConstantsFont.PARAGRAPH, section);
 			com.lowagie.text.List listp8 = new com.lowagie.text.List();
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l1"), listp8, ConstantsFont.PARAGRAPH);
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l2"), listp8, ConstantsFont.PARAGRAPH);
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l3"), listp8, ConstantsFont.PARAGRAPH);
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l4"), listp8, ConstantsFont.PARAGRAPH);
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l5"), listp8, ConstantsFont.PARAGRAPH);
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l6"), listp8, ConstantsFont.PARAGRAPH);
-			PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.32.p8.l7"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l1"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l2"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l3"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l4"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l5"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l6"), listp8, ConstantsFont.PARAGRAPH);
+			PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.32.p8.l7"), listp8, ConstantsFont.PARAGRAPH);
 			listp8.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 			section.add(listp8);
 		}
 
 		if (observatoryType != Constants.OBSERVATORY_TYPE_EELL) {
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p10"), ConstantsFont.PARAGRAPH, section);
-			PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.32.p11"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p10"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.32.p11"), ConstantsFont.PARAGRAPH, section);
 		}
 	}
 
@@ -482,7 +484,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	protected Section createSection33(final MessageResources messageResources, Section section, long observatoryType) throws BadElementException, IOException {
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p1"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.33.p1"), ConstantsFont.PARAGRAPH, section);
 
 		com.lowagie.text.List list = new com.lowagie.text.List();
 		com.lowagie.text.List list2 = new com.lowagie.text.List();
@@ -510,17 +512,17 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		//list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p8"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p8"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 
 		list2 = new com.lowagie.text.List();
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p10"));
-		itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("une2012.resAnon.intav.report.33.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p10"));
+		itemL2 = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("une2012.resAnon.intav.report.33.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list2.add(itemL2);
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p12"));
-		itemL2 = PDFUtils.addMixFormatListItem(messageResources.getMessage("une2012.resAnon.intav.report.33.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p12"));
+		itemL2 = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("une2012.resAnon.intav.report.33.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list2.add(itemL2);
 		list2.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		item.add(list2);
@@ -530,64 +532,64 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p14"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.33.p14"), ConstantsFont.PARAGRAPH, section);
 
 		list = new com.lowagie.text.List();
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p15"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p15"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p17"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p18"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p17"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p18"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p19"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p20"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p19"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p20"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p21"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p22"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p21"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p22"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p23"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p23"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p25"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.33.p26"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p25"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.33.p26"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p27.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.33.p27"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p27.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.33.p27"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true));
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p28"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.33.p28"), ConstantsFont.PARAGRAPH, section);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p29.bold1"));
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p29.bold2"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("une2012.resAnon.intav.report.33.p29"), boldWords, ConstantsFont.paragraphBoldFont,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p29.bold1"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p29.bold2"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("une2012.resAnon.intav.report.33.p29"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.33.p30.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("une2012.resAnon.intav.report.33.p30"), boldWords, ConstantsFont.paragraphBoldFont,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.33.p30.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("une2012.resAnon.intav.report.33.p30"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.33.p31"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.33.p31"), ConstantsFont.PARAGRAPH, section);
 
-		PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.33.table.ppalTitle1"), section, 400);
-		section.add(createMethodologyTable1(messageResources));
+		PDFUtils.createTitleTable(this.messageResources.getMessage("ob.resAnon.intav.report.33.table.ppalTitle1"), section, 400);
+		section.add(createMethodologyTable1(this.messageResources));
 
 		// section.newPage();
 
-		PDFUtils.createTitleTable(messageResources.getMessage("ob.resAnon.intav.report.33.table.ppalTitle2"), section, 400);
-		section.add(createMethodologyTable2(messageResources));
+		PDFUtils.createTitleTable(this.messageResources.getMessage("ob.resAnon.intav.report.33.table.ppalTitle2"), section, 400);
+		section.add(createMethodologyTable2(this.messageResources));
 
 		return section;
 	}
@@ -606,41 +608,41 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		table.setWidthPercentage(100);
 
 		try {
-			createMethodologyHeaderTable(messageResources, table, messageResources.getMessage("ob.resAnon.intav.report.33.table.title1"));
+			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title1"));
 
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.111", "une2012.resAnon.intav.report.33.table.111.name",
-					"une2012.resAnon.intav.report.33.table.111.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.111.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.111.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.111.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.112", "une2012.resAnon.intav.report.33.table.112.name",
-					"une2012.resAnon.intav.report.33.table.112.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.112.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.112.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.112.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.113", "une2012.resAnon.intav.report.33.table.113.name",
-					"une2012.resAnon.intav.report.33.table.113.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.113.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.113.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.113.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.114", "une2012.resAnon.intav.report.33.table.114.name",
-					"une2012.resAnon.intav.report.33.table.114.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.114.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.114.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.114.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.115", "une2012.resAnon.intav.report.33.table.115.name",
-					"une2012.resAnon.intav.report.33.table.115.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.115.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.115.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.115.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.116", "une2012.resAnon.intav.report.33.table.116.name",
-					"une2012.resAnon.intav.report.33.table.116.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.116.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.116.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.116.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.117", "une2012.resAnon.intav.report.33.table.117.name",
-					"une2012.resAnon.intav.report.33.table.117.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.117.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.117.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.117.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.111", "une2012.resAnon.intav.report.33.table.111.name",
+					"une2012.resAnon.intav.report.33.table.111.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.111.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.111.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.111.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.112", "une2012.resAnon.intav.report.33.table.112.name",
+					"une2012.resAnon.intav.report.33.table.112.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.112.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.112.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.112.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.113", "une2012.resAnon.intav.report.33.table.113.name",
+					"une2012.resAnon.intav.report.33.table.113.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.113.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.113.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.113.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.114", "une2012.resAnon.intav.report.33.table.114.name",
+					"une2012.resAnon.intav.report.33.table.114.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.114.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.114.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.114.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.115", "une2012.resAnon.intav.report.33.table.115.name",
+					"une2012.resAnon.intav.report.33.table.115.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.115.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.115.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.115.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.116", "une2012.resAnon.intav.report.33.table.116.name",
+					"une2012.resAnon.intav.report.33.table.116.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.116.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.116.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.116.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.117", "une2012.resAnon.intav.report.33.table.117.name",
+					"une2012.resAnon.intav.report.33.table.117.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.117.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.117.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.117.modality"));
 
-			createMethodologyHeaderTable(messageResources, table, messageResources.getMessage("ob.resAnon.intav.report.33.table.title2"));
+			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title2"));
 
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.121", "une2012.resAnon.intav.report.33.table.121.name",
-					"une2012.resAnon.intav.report.33.table.121.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.121.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.121.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.121.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.122", "une2012.resAnon.intav.report.33.table.122.name",
-					"une2012.resAnon.intav.report.33.table.122.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.122.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.122.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.122.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.123", "une2012.resAnon.intav.report.33.table.123.name",
-					"une2012.resAnon.intav.report.33.table.123.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.123.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.123.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.123.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.121", "une2012.resAnon.intav.report.33.table.121.name",
+					"une2012.resAnon.intav.report.33.table.121.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.121.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.121.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.121.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.122", "une2012.resAnon.intav.report.33.table.122.name",
+					"une2012.resAnon.intav.report.33.table.122.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.122.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.122.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.122.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.123", "une2012.resAnon.intav.report.33.table.123.name",
+					"une2012.resAnon.intav.report.33.table.123.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.123.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.123.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.123.modality"));
 		} catch (Exception e) {
 			Logger.putLog("Error al crear la tabla 3.3", AnonymousResultExportPdf.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -661,41 +663,41 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		table.setWidthPercentage(100);
 
 		try {
-			createMethodologyHeaderTable(messageResources, table, messageResources.getMessage("ob.resAnon.intav.report.33.table.title1"));
+			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title1"));
 
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.211", "une2012.resAnon.intav.report.33.table.211.name",
-					"une2012.resAnon.intav.report.33.table.211.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.211.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.211.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.211.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.212", "une2012.resAnon.intav.report.33.table.212.name",
-					"une2012.resAnon.intav.report.33.table.212.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.212.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.212.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.212.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.213", "une2012.resAnon.intav.report.33.table.213.name",
-					"une2012.resAnon.intav.report.33.table.213.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.213.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.213.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.213.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.214", "une2012.resAnon.intav.report.33.table.214.name",
-					"une2012.resAnon.intav.report.33.table.214.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.214.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.214.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.214.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.215", "une2012.resAnon.intav.report.33.table.215.name",
-					"une2012.resAnon.intav.report.33.table.215.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.215.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.215.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.215.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.216", "une2012.resAnon.intav.report.33.table.216.name",
-					"une2012.resAnon.intav.report.33.table.216.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.216.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.216.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.216.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.217", "une2012.resAnon.intav.report.33.table.217.name",
-					"une2012.resAnon.intav.report.33.table.217.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.217.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.217.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.217.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.211", "une2012.resAnon.intav.report.33.table.211.name",
+					"une2012.resAnon.intav.report.33.table.211.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.211.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.211.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.211.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.212", "une2012.resAnon.intav.report.33.table.212.name",
+					"une2012.resAnon.intav.report.33.table.212.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.212.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.212.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.212.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.213", "une2012.resAnon.intav.report.33.table.213.name",
+					"une2012.resAnon.intav.report.33.table.213.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.213.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.213.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.213.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.214", "une2012.resAnon.intav.report.33.table.214.name",
+					"une2012.resAnon.intav.report.33.table.214.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.214.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.214.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.214.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.215", "une2012.resAnon.intav.report.33.table.215.name",
+					"une2012.resAnon.intav.report.33.table.215.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.215.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.215.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.215.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.216", "une2012.resAnon.intav.report.33.table.216.name",
+					"une2012.resAnon.intav.report.33.table.216.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.216.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.216.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.216.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.217", "une2012.resAnon.intav.report.33.table.217.name",
+					"une2012.resAnon.intav.report.33.table.217.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.217.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.217.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.217.modality"));
 
-			createMethodologyHeaderTable(messageResources, table, messageResources.getMessage("ob.resAnon.intav.report.33.table.title2"));
+			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title2"));
 
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.221", "une2012.resAnon.intav.report.33.table.221.name",
-					"une2012.resAnon.intav.report.33.table.221.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.221.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.221.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.221.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.222", "une2012.resAnon.intav.report.33.table.222.name",
-					"une2012.resAnon.intav.report.33.table.222.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.222.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.222.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.222.modality"));
-			createMethodologyTableRow(messageResources, table, "une2012.resAnon.intav.report.33.table.id.223", "une2012.resAnon.intav.report.33.table.223.name",
-					"une2012.resAnon.intav.report.33.table.223.question", createTextList(messageResources, "une2012.resAnon.intav.report.33.table.223.answer"),
-					createTextList(messageResources, "une2012.resAnon.intav.report.33.table.223.value"), createImageList(messageResources, "une2012.resAnon.intav.report.33.table.223.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.221", "une2012.resAnon.intav.report.33.table.221.name",
+					"une2012.resAnon.intav.report.33.table.221.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.221.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.221.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.221.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.222", "une2012.resAnon.intav.report.33.table.222.name",
+					"une2012.resAnon.intav.report.33.table.222.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.222.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.222.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.222.modality"));
+			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.223", "une2012.resAnon.intav.report.33.table.223.name",
+					"une2012.resAnon.intav.report.33.table.223.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.223.answer"),
+					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.223.value"), createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.223.modality"));
 
 		} catch (Exception e) {
 			Logger.putLog("Error al crear la tabla 3.3", AnonymousResultExportPdf.class, Logger.LOG_LEVEL_ERROR, e);
@@ -716,10 +718,10 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	private void createSection331(final MessageResources messageResources, final Section section) throws BadElementException, IOException {
-		PDFUtils.addParagraph(messageResources.getMessage("une2012.resAnon.intav.report.331.p1"), ConstantsFont.PARAGRAPH, section);
-		PDFUtils.addParagraph(messageResources.getMessage("une2012.resAnon.intav.report.331.p2"), ConstantsFont.PARAGRAPH, section);
-		PDFUtils.createTitleTable(messageResources.getMessage("une2012.resAnon.intav.report.331.table.title"), section, 450);
-		section.add(create331Table(messageResources));
+		PDFUtils.addParagraph(this.messageResources.getMessage("une2012.resAnon.intav.report.331.p1"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("une2012.resAnon.intav.report.331.p2"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.createTitleTable(this.messageResources.getMessage("une2012.resAnon.intav.report.331.table.title"), section, 450);
+		section.add(create331Table(this.messageResources));
 	}
 
 	/**
@@ -735,27 +737,27 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
 		table.setWidthPercentage(100);
 		table.setHeaderRows(1);
-		create331HeaderTable(messageResources, table);
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.1", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.111"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.2", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.112"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.3", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.113"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.4", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.114"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.5", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.115"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.6", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.116"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.1.7", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.117"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.2.1", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.121"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.2.2", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.122"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.1.2.3", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.123"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.1", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.211"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.2", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.212"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.3", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.213"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.4", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.214"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.5", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.215"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.6", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.216"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.1.7", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.217"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.2.1", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.221"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.2.2", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.222"));
-		create331TableRow(messageResources, table, "minhap.observatory.2_0.subgroup.2.2.3", createTextList(messageResources, "une2012.resAnon.intav.report.331.table.verP.223"));
+		create331HeaderTable(this.messageResources, table);
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.1", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.111"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.2", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.112"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.3", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.113"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.4", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.114"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.5", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.115"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.6", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.116"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.7", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.117"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.1", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.121"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.2", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.122"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.3", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.123"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.8", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.211"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.9", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.212"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.10", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.213"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.11", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.214"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.12", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.215"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.13", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.216"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.14", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.217"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.4", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.221"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.5", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.222"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.6", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.223"));
 
 		return table;
 	}
@@ -770,9 +772,9 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	protected void create331HeaderTable(final MessageResources messageResources, final PdfPTable table) {
 		table.addCell(
-				PDFUtils.createTableCell(messageResources.getMessage("une2012.resAnon.intav.report.331.table.header1"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+				PDFUtils.createTableCell(this.messageResources.getMessage("une2012.resAnon.intav.report.331.table.header1"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 		table.addCell(
-				PDFUtils.createTableCell(messageResources.getMessage("une2012.resAnon.intav.report.331.table.header2"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
+				PDFUtils.createTableCell(this.messageResources.getMessage("une2012.resAnon.intav.report.331.table.header2"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 	}
 
 	/**
@@ -788,7 +790,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 *            the ver P
 	 */
 	protected void create331TableRow(final MessageResources messageResources, PdfPTable table, String verification, com.lowagie.text.List verP) {
-		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 10, -1));
+		table.addCell(PDFUtils.createTableCell(this.messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 10, -1));
 		table.addCell(PDFUtils.createListTableCell(verP, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
@@ -801,85 +803,85 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 *            the section
 	 */
 	protected void createSection342(final MessageResources messageResources, final Section section) {
-		PDFUtils.addParagraph(messageResources.getMessage("une2012.resAnon.intav.report.342.p1"), ConstantsFont.PARAGRAPH, section);
-		PDFUtils.addParagraph(messageResources.getMessage("une2012.resAnon.intav.report.342.p2"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("une2012.resAnon.intav.report.342.p1"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("une2012.resAnon.intav.report.342.p2"), ConstantsFont.PARAGRAPH, section);
 
 		List list = new List();
-		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p3"), list, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p4"), list, ConstantsFont.PARAGRAPH, false, true);
-//		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p5"), list, ConstantsFont.PARAGRAPH, false, true);
-//		PDFUtils.addListItem(messageResources.getMessage("une2012.resAnon.intav.report.342.p6"), list, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem(this.messageResources.getMessage("une2012.resAnon.intav.report.342.p3"), list, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem(this.messageResources.getMessage("une2012.resAnon.intav.report.342.p4"), list, ConstantsFont.PARAGRAPH, false, true);
+//		PDFUtils.addListItem(this.messageResources.getMessage("une2012.resAnon.intav.report.342.p5"), list, ConstantsFont.PARAGRAPH, false, true);
+//		PDFUtils.addListItem(this.messageResources.getMessage("une2012.resAnon.intav.report.342.p6"), list, ConstantsFont.PARAGRAPH, false, true);
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
 		final ArrayList<String> boldWords = new ArrayList<>();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p7.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.342.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p7.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.342.p7"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true));
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p8.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.342.p8"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p8.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.342.p8"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true));
 
 		list = new List();
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p9.bold"));
-		ListItem item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.bold"));
+		ListItem item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p10.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p10"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p11.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p12.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.342.p12"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p12.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.342.p12"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true));
 
 		list = new List();
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p13.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p13.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p14.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p14"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p14.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p14"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p15.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p15"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p15.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p15"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p16.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("ob.resAnon.intav.report.342.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p16.bold"));
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.342.p16"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH,
 				true));
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.342.p17"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.342.p17"), ConstantsFont.PARAGRAPH, section);
 
 		list = new List();
-		PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p18"), list, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p19"), list, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p20"), list, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p18"), list, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p19"), list, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p20"), list, ConstantsFont.PARAGRAPH, false, true);
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.342.p21"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.342.p21"), ConstantsFont.PARAGRAPH, section);
 
 		PropertiesManager pmgr = new PropertiesManager();
 		PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.images") + "VNP.png", "VNP = SP/NP", 80);
@@ -887,44 +889,44 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		list = new List();
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p22.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p22"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p22.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p22"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p23.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p23.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p23"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p24.bold"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p24.bold"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p24"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
 
-		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.342.p25"), ConstantsFont.PARAGRAPH, section);
+		PDFUtils.addParagraph(this.messageResources.getMessage("ob.resAnon.intav.report.342.p25"), ConstantsFont.PARAGRAPH, section);
 
 		list = new List();
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p26.bold1"));
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p26.bold2"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p26"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p26.bold1"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p26.bold2"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p26"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p27.bold1"));
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p27.bold2"));
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p27.bold3"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p27"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p27.bold1"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p27.bold2"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p27.bold3"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p27"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		boldWords.clear();
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p28.bold1"));
-		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.342.p28.bold2"));
-		item = PDFUtils.addMixFormatListItem(messageResources.getMessage("ob.resAnon.intav.report.342.p28"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p28.bold1"));
+		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p28.bold2"));
+		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p28"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
@@ -942,7 +944,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	@Override
 	public void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess,
 			java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean regenerate) throws Exception {
-		ResultadosAnonimosObservatorioUNE2017Utils.getMidsComparationByVerificationLevelGraphic(messageResources, new HashMap<String, Object>(), level, title, filePath, noDataMess, evaList, value,
+		ResultadosAnonimosObservatorioUNE2017Utils.getMidsComparationByVerificationLevelGraphic(this.messageResources, new HashMap<String, Object>(), level, title, filePath, noDataMess, evaList, value,
 				regenerate);
 	}
 
@@ -957,8 +959,8 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	protected void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, java.util.List<ObservatoryEvaluationForm> evaList) {
 		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
 		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
-		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
-		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
+		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIVerificationMidsComparison(this.messageResources, resultL1);
+		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIIVerificationMidsComparison(this.messageResources, resultL2);
 		scoreForm.setVerifications1(labelsL1);
 		scoreForm.setVerifications2(labelsL2);
 	}

@@ -118,7 +118,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 
 		// El resto pequeños
 		for (int i = 1; i < widths.length; i++) {
-			widths[i] = 0.07f;
+			widths[i] = 0.10f;
 		}
 
 		final PdfPTable table = new PdfPTable(widths);
@@ -131,7 +131,12 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 
 		for (ObservatorySuitabilityForm suitabilityForm : suitabilityGroups) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-				table.addCell(PDFUtils.createTableCell(messageResources.getMessage(subgroupForm.getDescription()).substring(0, 6), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
+				//TODO 2017 Hacer el substring para sacar el "numero" que sirva para todas las metodologías...
+				
+				
+				
+				String subgroupDescription = messageResources.getMessage(subgroupForm.getDescription());
+				table.addCell(PDFUtils.createTableCell(subgroupDescription.substring(0, subgroupDescription.indexOf(" ")), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 						Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
 			}
 		}

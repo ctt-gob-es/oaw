@@ -124,7 +124,7 @@ public class BasicServicePdfReport {
 
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 					
-					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, true);
+					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, true);
 
 				} else {					
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);

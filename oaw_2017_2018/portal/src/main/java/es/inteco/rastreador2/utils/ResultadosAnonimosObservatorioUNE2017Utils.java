@@ -506,57 +506,57 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		final List<LabelValueBean> labelValueList = new ArrayList<>();
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.1.7"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.7"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.8"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.9"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.10"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.11"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.12"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.13"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.1.7"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.14"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION)));
 
 		// labelValueList.add(createLabelValueScore(messageResources,
-		// messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.1"),
+		// messageResources.getMessage("minhap.observatory.3_0.subgroup.2.1"),
 		// result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)));
 		//
 		// labelValueList.add(createLabelValueScore(messageResources,
-		// messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.2"),
+		// messageResources.getMessage("minhap.observatory.3_0.subgroup.2.2"),
 		// result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)));
 		//
 		// labelValueList.add(createLabelValueScore(messageResources,
-		// messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.3"),
+		// messageResources.getMessage("minhap.observatory.3_0.subgroup.2.3"),
 		// result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)));
 
 		return labelValueList;
@@ -575,22 +575,22 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		final List<LabelValueBean> labelValueList = new ArrayList<>();
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.1.2.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.2_0.subgroup.2.2.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)));
 
 		return labelValueList;
 	}
