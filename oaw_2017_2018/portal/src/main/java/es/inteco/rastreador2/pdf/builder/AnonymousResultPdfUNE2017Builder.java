@@ -129,6 +129,6 @@ public class AnonymousResultPdfUNE2017Builder extends AnonymousResultPdfBuilder 
 	 */
 	@Override
 	protected void createSummaryChapter(MessageResources resources, Font titleFont) throws Exception {
-
 	}
+	
 }

@@ -613,7 +613,7 @@ public abstract class AnonymousResultPdfBuilder {
         return table;
     }
 
-    protected void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final java.util.List<ObservatoryEvaluationForm> evaList, final String noDataMess) throws Exception {
+    private void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final java.util.List<ObservatoryEvaluationForm> evaList, final String noDataMess) throws Exception {
         final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
         final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.PARAGRAPH_ANCHOR_FONT);
         anchorMap.put(1, anchor);
@@ -648,7 +648,7 @@ public abstract class AnonymousResultPdfBuilder {
         chapter.add(table);
     }
 
-    private static void addLevelAllocationResultsSummary(final MessageResources messageResources, final Section section,
+    protected static void addLevelAllocationResultsSummary(final MessageResources messageResources, final Section section,
                                                          final File file, final java.util.List<ObservatoryEvaluationForm> evaList, final String noDataMess) throws Exception {
         final Map<String, Integer> result = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(evaList);
         final java.util.List<GraphicData> labelValueBeanList = ResultadosAnonimosObservatorioIntavUtils.infoGlobalAccessibilityLevel(messageResources, result);

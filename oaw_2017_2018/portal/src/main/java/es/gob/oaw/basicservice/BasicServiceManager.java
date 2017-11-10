@@ -166,7 +166,7 @@ public class BasicServiceManager {
 
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 
-					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(MessageResources.getMessageResources("ApplicationResources-2017"), new AnonymousResultExportPdfUNE2017(basicServiceForm));
+					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2017(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				}
 
