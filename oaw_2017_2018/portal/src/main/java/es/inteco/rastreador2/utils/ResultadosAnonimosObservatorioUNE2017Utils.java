@@ -184,14 +184,21 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 	/**
 	 * Genera el gráfico de una categoria.
 	 *
-	 * @param messageResources            Message resources para los textos parametrizados
-	 * @param idExecution the id execution
-	 * @param category            Categoria a generar
-	 * @param filePath            Ruta para guardar los temporales
-	 * @param color            Color del gráfico
-	 * @param regenerate            Indica si hay que regenerar el gráfico o no.
+	 * @param messageResources
+	 *            Message resources para los textos parametrizados
+	 * @param idExecution
+	 *            the id execution
+	 * @param category
+	 *            Categoria a generar
+	 * @param filePath
+	 *            Ruta para guardar los temporales
+	 * @param color
+	 *            Color del gráfico
+	 * @param regenerate
+	 *            Indica si hay que regenerar el gráfico o no.
 	 * @return Mapa de gráficos
-	 * @throws Exception             the exception
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static Map<String, Object> generateCategoryGraphics(final MessageResources messageResources, final String idExecution, final CategoriaForm category, final String filePath,
 			final String color, final boolean regenerate) throws Exception {
@@ -276,45 +283,45 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				file = filePath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + ".jpg";
 				getMidMarkEvolutionGraphic(messageResources, evolutionGraphics, noDataMess, file, pageObservatoryMap, color, regenerate);
 
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
-				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
+				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
 						regenerate);
 
 				Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
@@ -331,12 +338,13 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		return evolutionGraphics;
 	}
 
-
 	/**
 	 * Info global accessibility level.
 	 *
-	 * @param messageResources the message resources
-	 * @param result the result
+	 * @param messageResources
+	 *            the message resources
+	 * @param result
+	 *            the result
 	 * @return the list
 	 */
 	public static List<GraphicData> infoGlobalAccessibilityLevel(final MessageResources messageResources, final Map<String, Integer> result) {
@@ -505,59 +513,47 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 	public static List<LabelValueBean> infoLevelIVerificationMidsComparison(final MessageResources messageResources, final Map<String, BigDecimal> result) {
 		final List<LabelValueBean> labelValueList = new ArrayList<>();
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.7"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.8"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION)));
+
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.9"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.10"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.11"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.12"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.13"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION)));
 
 		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.7"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.8"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.9"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.10"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.11"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.12"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.13"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION)));
-
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.14"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION)));
-
-		// labelValueList.add(createLabelValueScore(messageResources,
-		// messageResources.getMessage("minhap.observatory.3_0.subgroup.2.1"),
-		// result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)));
-		//
-		// labelValueList.add(createLabelValueScore(messageResources,
-		// messageResources.getMessage("minhap.observatory.3_0.subgroup.2.2"),
-		// result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)));
-		//
-		// labelValueList.add(createLabelValueScore(messageResources,
-		// messageResources.getMessage("minhap.observatory.3_0.subgroup.2.3"),
-		// result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)));
+				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.1.14"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION)));
 
 		return labelValueList;
 	}
@@ -574,23 +570,23 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 	public static List<LabelValueBean> infoLevelIIVerificationMidsComparison(final MessageResources messageResources, final Map<String, BigDecimal> result) {
 		final List<LabelValueBean> labelValueList = new ArrayList<>();
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.1"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION)));
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.2"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION)));
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.3"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION)));
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.4"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION)));
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.5"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION)));
 
-		labelValueList.add(
-				createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)));
+		labelValueList
+				.add(createLabelValueScore(messageResources, messageResources.getMessage("minhap.observatory.3_0.subgroup.2.6"), result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION)));
 
 		return labelValueList;
 	}
@@ -957,25 +953,25 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		final Map<String, BigDecimal> resultData = calculateVerificationEvolutionPuntuationDataSet(verification, result);
 
 		// Los incluimos en la request
-		if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION)) {
+		if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V111, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V112, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V113, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V114, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V115, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V116, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V117, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V121, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V122, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V123, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
 		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_124_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V124, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
@@ -983,25 +979,25 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V125, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
 		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_126_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V126, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V211, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V212, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V213, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V214, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V215, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V216, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V217, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V221, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V222, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
-		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION)) {
+		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V223, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
 		} else if (verification.equals(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION)) {
 			evolutionGraphics.put(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_V224, infoMidMarkVerificationEvolutionGraphic(messageResources, resultData));
@@ -2046,9 +2042,35 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 		}
 		// Cambiamos las claves por el nombre y calculamos la media
-		final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>();
+		// TODO 2017 Necesitamos implementar un orden específico para que p.e. 1.10 vaya después de 1.9 y no de 1.
+		final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String version1, String version2) {
+				String[] v1 = version1.split("\\.");
+				String[] v2 = version2.split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
+
+			private int major(String[] version) {
+				return Integer.parseInt(version[0]);
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(version[1]) : 0;
+			}
+		});
 		for (Map.Entry<String, Integer> resultEntry : results.entrySet()) {
-			final String name = resultEntry.getKey().substring(resultEntry.getKey().length() - 5);
+			// TODO 2017 Generar las claves con minhap.observatory.3_0.subgroup.
+			final String name = resultEntry.getKey().substring(resultEntry.getKey().indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length());
+
+			// final String name =
+			// resultEntry.getKey().substring(resultEntry.getKey().length() -
+			// 5);
 			final BigDecimal value;
 			if (numPoint.get(resultEntry.getKey()) != -1 && numPoint.get(resultEntry.getKey()) != 0) {
 				value = BigDecimal.valueOf(resultEntry.getValue()).divide(BigDecimal.valueOf(numPoint.get(resultEntry.getKey())), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
@@ -2059,6 +2081,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 			verificationResultsByPoint.put(name, value);
 		}
+
 		return verificationResultsByPoint;
 	}
 
