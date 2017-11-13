@@ -45,14 +45,19 @@ public class BasicServicePdfReport {
 
 	public BasicServicePdfReport(final AnonymousResultExportPdf pdfBuilder) {
 
-		//TODO 2017 Fichero de textos en fucnión de builder
+		// TODO 2017 Fichero de textos en fucnión de builder
 		this((pdfBuilder instanceof AnonymousResultExportPdfUNE2017) ? MessageResources.getMessageResources("ApplicationResources-2017") : MessageResources.getMessageResources("ApplicationResources"),
 				pdfBuilder);
 
 	}
 
 	public BasicServicePdfReport(final MessageResources messageResources, final AnonymousResultExportPdf pdfBuilder) {
-		this.messageResources = messageResources;
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+			this.messageResources = MessageResources.getMessageResources("ApplicationResources-2017");
+		} else {
+
+			this.messageResources = messageResources;
+		}
 		this.pdfBuilder = pdfBuilder;
 		this.pdfBuilder.setBasicService(true);
 	}
@@ -98,12 +103,12 @@ public class BasicServicePdfReport {
 
 				pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0);
 				pdfTocManager.addChapterCount();
-				
+
 				// Resumen de las puntuaciones del Observatorio
-				
+
 				final List<ObservatoryEvaluationForm> previousEvaluation = getPreviousEvaluation(historicoEvaluationPageList);
 				final BasicServiceObservatoryScorePdfSectionBuilder observatoryScoreSectionBuilder = new BasicServiceObservatoryScorePdfSectionBuilder(currentEvaluationPageList, previousEvaluation);
-				observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, file);			
+				observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, file);
 
 				// Resumen de las puntuaciones del Observatorio
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
@@ -119,14 +124,14 @@ public class BasicServicePdfReport {
 
 				// TODO 2017 Desdoblamiento
 				// Resultados por página
-				
+
 				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
 
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-					
+
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, true);
 
-				} else {					
+				} else {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
 				}
 

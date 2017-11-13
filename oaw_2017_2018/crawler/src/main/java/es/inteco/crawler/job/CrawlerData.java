@@ -32,6 +32,13 @@ public class CrawlerData {
     private boolean test;
     private String acronimo;
     private boolean inDirectory;
+    
+    //TODO 2017 Indicadores para saber si hemos encontrado urls de ciertos tipos
+    private boolean checkTablePage;
+
+    private boolean checkFormPage;
+    
+    private int maxIntentosBuscarTipos = 15;
 
     public boolean isInDirectory() {
         return inDirectory;
@@ -268,4 +275,48 @@ public class CrawlerData {
     public void setContent(String content) {
         this.content = content;
     }
+
+	/**
+	 * @return the checkTablePage
+	 */
+	public boolean isCheckTablePage() {
+		return checkTablePage;
+	}
+
+	/**
+	 * @param checkTablePage the checkTablePage to set
+	 */
+	public void setCheckTablePage(boolean checkTablePage) {
+		this.checkTablePage = checkTablePage;
+	}
+
+	/**
+	 * @return the checkFormPage
+	 */
+	public boolean isCheckFormPage() {
+		return checkFormPage;
+	}
+
+	/**
+	 * @param checkFormPage the checkFormPage to set
+	 */
+	public void setCheckFormPage(boolean checkFormPage) {
+		this.checkFormPage = checkFormPage;
+	}
+
+	/**
+	 * @return the maxIntentosBuscarTipos
+	 */
+	public int getMaxIntentosBuscarTipos() {
+		return maxIntentosBuscarTipos;
+	}
+
+	/**
+	 * @param maxIntentosBuscarTipos the maxIntentosBuscarTipos to set
+	 */
+	public void setMaxIntentosBuscarTipos(int maxIntentosBuscarTipos) {
+		this.maxIntentosBuscarTipos = maxIntentosBuscarTipos;
+	}
+    
+    
 }

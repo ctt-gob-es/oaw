@@ -1,5 +1,6 @@
 package es.inteco.crawler.job;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,6 +18,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
@@ -24,8 +27,12 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
+import ca.utoronto.atrc.tile.accessibilitychecker.CheckerParser;
+import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.gob.oaw.MailService;
+import es.inteco.common.CheckAccessibility;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -129,9 +136,9 @@ public class CrawlerJob implements InterruptableJob {
 
 			try {
 				Logger.putLog("Iniciando el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-				
-				makeCrawl(crawlerData);				
-				
+
+				makeCrawl(crawlerData);
+
 			} catch (Exception e) {
 				Logger.putLog("Error al ejecutar el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 
@@ -143,11 +150,9 @@ public class CrawlerJob implements InterruptableJob {
 
 				// Intentamos enviar el error por correo
 				final PropertiesManager pmgr = new PropertiesManager();
-				
-				  
-			      mailService.sendMail((crawlerData.getUsersMail()!=null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail(): getAdministradoresMails(),
-			              pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message.subject"),
-			              buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message"), crawlerData));
+
+				mailService.sendMail((crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail() : getAdministradoresMails(),
+						pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message.subject"), buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "error.mail.message"), crawlerData));
 			}
 
 			endCrawling(DataBaseManager.getConnection(), crawlerData);
@@ -199,9 +204,10 @@ public class CrawlerJob implements InterruptableJob {
 						final String attachPath = pmgr.getValue("crawler.properties", "path.inteco.exports.intav") + crawlerData.getIdCrawling() + File.separator + crawlerData.getIdFulfilledCrawling()
 								+ File.separator + crawlerData.getLanguage() + File.separator + pmgr.getValue("pdf.properties", "pdf.file.intav.name");
 
-						mailService.sendMail((crawlerData.getUsersMail()!=null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail(): getAdministradoresMails(), pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message.subject"),
-								buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message"), crawlerData), attachPath, "Informe.pdf");
-						
+						mailService.sendMail((crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail() : getAdministradoresMails(),
+								pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message.subject"), buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message"), crawlerData), attachPath,
+								"Informe.pdf");
+
 					}
 
 					if (crawlerData.getResponsiblesMail() != null && !crawlerData.getResponsiblesMail().isEmpty()) {
@@ -285,13 +291,10 @@ public class CrawlerJob implements InterruptableJob {
 
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		
 
 		final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
 		final int maxNumRedirections = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
 		final long timeRetry = Long.parseLong(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "time.retry"));
-		
-		
 
 		List<IgnoredLink> ignoredLinks = null;
 
@@ -329,6 +332,8 @@ public class CrawlerJob implements InterruptableJob {
 						final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
 						if (StringUtils.isEmpty(metaRedirect)) {
 							final String textContentHash = CrawlerUtils.getHash(textContent);
+
+							// Si no está ya incluida en el rastreo
 							if (!md5Content.contains(textContentHash)) {
 								final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries, numRedirections);
 								crawlingDomains.add(crawledLink);
@@ -342,6 +347,8 @@ public class CrawlerJob implements InterruptableJob {
 										// coger enlaces de cambio de idioma
 										ignoredLinks = Utils.getIgnoredLinks();
 									}
+									crawlerData.setCheckFormPage(true);
+									crawlerData.setCheckTablePage(true);
 									makeCrawl(domain, url, url, cookie, crawlerData, ignoredLinks);
 								}
 							} else {
@@ -384,7 +391,7 @@ public class CrawlerJob implements InterruptableJob {
 					try {
 						if ((!interrupt) && (crawlingDomains.size() <= (chosenDepth * crawlerData.getTopN()))) {
 							if (!contains(crawlingDomains, auxDomain) && !rejectedDomains.contains(auxDomain)) {
-								isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks);
+								isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks, false, false);
 							}
 						} else {
 							break;
@@ -533,15 +540,30 @@ public class CrawlerJob implements InterruptableJob {
 						Collections.shuffle(urlLinks, new Random(System.currentTimeMillis()));
 					}
 
+					int maxIntentosBuscarTipos = 0;
 					int cont = 0;
 					for (String urlLink : urlLinks) {
 						try {
 							final String absoluteUrlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", EMPTY_STRING);
 							if (isValidUrl(rootUrl, domain, absoluteUrlLink, crawlerData)) {
-								if ((crawlerData.getTopN() == unlimitedTopN) || (cont < crawlerData.getTopN())) {
-									if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData, true, ignoredLinks)) {
+								if ((crawlerData.getTopN() == unlimitedTopN) || ((cont < crawlerData.getTopN()) && maxIntentosBuscarTipos < crawlerData.getMaxIntentosBuscarTipos())) {
+
+									if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData, true, ignoredLinks, crawlerData.isCheckFormPage(),
+											crawlerData.isCheckTablePage())) {
 										cont++;
+									} else if (!auxDomains.contains(absoluteUrlLink)) {
+										// TODO 2017 La guardamos como auxiliar para que
+										// la finalizar el reastreo se puedan
+										// incluir si no llegamos al número de
+										// URL requeridas en el rastreo y
+										// aumentamos el contador de número
+										// máximo de búsquedas
+										// de tipos para salir de este bucle
+										auxDomains.add(absoluteUrlLink);
+										maxIntentosBuscarTipos++;
+
 									}
+
 								} else if (!auxDomains.contains(absoluteUrlLink)) {
 									auxDomains.add(absoluteUrlLink);
 									cont++;
@@ -564,8 +586,125 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
-			List<IgnoredLink> ignoredLinks) throws Exception {
-		return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
+			List<IgnoredLink> ignoredLinks, boolean checkIsFormPage, boolean checkIsTablePage) throws Exception {
+
+		// TODO 2017 ver si es de tipos indicados
+		if (checkIsFormPage || checkIsTablePage) {
+
+			boolean isFormPage = false;
+			boolean isTablePage = false;
+
+			Document doc = loadDocumentFromURL(domain, urlLink, cookie);
+
+			if (checkIsFormPage && doc != null && doc.getElementsByTagName("form") != null && doc.getElementsByTagName("form").getLength() != 0) {
+				isTablePage = true;
+				// Quitamos el flag ya que ya hemos encontrado al menos una
+				// página de este tipo
+				crawlerData.setCheckFormPage(false);
+
+			}
+
+			if (checkIsTablePage && doc != null && doc.getElementsByTagName("table") != null && doc.getElementsByTagName("table").getLength() != 0) {
+				isTablePage = true;
+				// Quitamos el flag ya que ya hemos encontrado al menos una
+				// página de este tipo
+				crawlerData.setCheckTablePage(false);
+			}
+
+			if (isFormPage || isTablePage) {
+				return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
+			} else {
+				// Si no es ninguno de los tipos que buscamos, respondemos falso
+				return false;
+			}
+
+		}
+
+		return
+
+		isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
+	}
+
+	/**
+	 * Devuelve el DOM de una URL
+	 * 
+	 * @param domain
+	 * @param urlLink
+	 * @param cookie
+	 * @return
+	 * @throws IOException
+	 * @throws Exception
+	 */
+	private Document loadDocumentFromURL(String domain, String urlLink, String cookie) throws IOException, Exception {
+
+		Document doc = null;
+
+		final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
+		connection.setRequestProperty("Cookie", cookie);
+		connection.connect();
+		int responseCode = connection.getResponseCode();
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+
+			if (connection.getHeaderField("content-type") != null && connection.getHeaderField("content-type").contains("text/html")) {
+
+				CheckAccessibility checkAccessibility = new CheckAccessibility();
+				checkAccessibility.setUrl(urlLink);
+
+				CheckerParser parser = new CheckerParser();
+
+				String content = StringUtils.getContentAsString(connection.getInputStream(), "UTF-8");
+				for (int i = 0; i < 2 && doc == null; i++) {
+					content = addFinalTags(content);
+					final InputStream newInputStream = new ByteArrayInputStream(content.getBytes("UTF-8"));
+					if (newInputStream.markSupported()) {
+						newInputStream.mark(Integer.MAX_VALUE);
+					}
+
+					try {
+						// Reseteamos el stream para volver a analizarlo
+						newInputStream.reset();
+						final InputSource inputSource = new InputSource(newInputStream);
+						parser.parse(inputSource);
+						doc = parser.getDocument();
+					} catch (Exception e) {
+						parser = new CheckerParser(true);
+						Logger.putLog("Error al parsear al documento. Se intentará de nuevo con el balanceo de etiquetas", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
+					}
+				}
+
+			}
+
+		} else {
+			Logger.putLog(String.format("La url %s ha sido rechazada por devolver el código %d", urlLink, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+			rejectedDomains.add(urlLink);
+		}
+		connection.disconnect();
+
+		return doc;
+	}
+
+	/**
+	 * Cierra etiquetas mal cerradas para que el parseador no de error
+	 * 
+	 * @param inStr
+	 * @return
+	 */
+	private static String addFinalTags(String inStr) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final String regExpMatcher = pmgr.getValue("intav.properties", "incompleted.tags.reg.exp.matcher");
+
+		final String[] tags = pmgr.getValue("intav.properties", "incompleted.tags").split(";");
+		for (String tag : tags) {
+			final Pattern pattern = Pattern.compile(regExpMatcher.replace("@", tag), Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+			final Matcher matcher = pattern.matcher(inStr);
+			String matchedTag;
+			while (matcher.find()) {
+				matchedTag = matcher.group(1);
+				inStr = inStr.replace(matchedTag, matchedTag.subSequence(0, matchedTag.length() - 1) + "/>");
+			}
+		}
+
+		return inStr;
 	}
 
 	/**
