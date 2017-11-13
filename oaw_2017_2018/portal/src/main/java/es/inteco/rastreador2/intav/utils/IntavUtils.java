@@ -169,7 +169,7 @@ public final class IntavUtils {
         return scoreForm;
     }
 
-    public static Map<String, List<String>> getFailedChecks(HttpServletRequest request, ObservatoryEvaluationForm evaluationForm, Guideline guideline) {
+    public static Map<String, List<String>> getFailedChecks(HttpServletRequest request, ObservatoryEvaluationForm evaluationForm, Guideline guideline, MessageResources messageResources) {
         Map<String, List<String>> failedChecks = new TreeMap<>();
 
         for (Integer idFailed : evaluationForm.getChecksFailed()) {
@@ -180,7 +180,7 @@ public final class IntavUtils {
                     for (int k = 0; k < suitabilityGroup.getGroupsVector().size(); k++) {
                         GuidelineGroup subgroup = suitabilityGroup.getGroupsVector().get(k);
                         if (subgroup.containsCheck(idFailed) && !thereIsBiggerError(idFailed, subgroup.getRelatedChecks(), evaluationForm.getChecksFailed())) {
-                            String subgroupName = CrawlerUtils.getResources(request).getMessage(CrawlerUtils.getLocale(request), subgroup.getName());
+                            String subgroupName = messageResources.getMessage(CrawlerUtils.getLocale(request), subgroup.getName());
                             if (!failedChecks.containsKey(subgroupName)) {
                                 failedChecks.put(subgroupName, new ArrayList<String>());
                             }
