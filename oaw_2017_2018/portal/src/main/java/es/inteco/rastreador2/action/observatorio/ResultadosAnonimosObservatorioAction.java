@@ -18,6 +18,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+import org.apache.struts.util.MessageResources;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -222,8 +223,8 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 				// TODO 2017 Desdoblamiento para nueva metodología
 
 				if ("UNE-2017".equalsIgnoreCase(application)) {
-					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateGlobalGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID),
-							graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateGlobalGraphics(MessageResources.getMessageResources("ApplicationResources-2017"),
+							request.getParameter(Constants.ID), graphicsPath, categories, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
 					haveResults = graphics.size();
 					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
 						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
@@ -273,8 +274,9 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 				// TODO 2017 Desdoblamiento para nueva metodología
 
 				if ("UNE-2017".equalsIgnoreCase(application)) {
-					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateCategoryGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID),
-							ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateCategoryGraphics(MessageResources.getMessageResources("ApplicationResources-2017"),
+							request.getParameter(Constants.ID), ObservatorioDAO.getCategoryById(c, idCategory), graphicsPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"),
+							false);
 					haveResults = graphics.size();
 					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
 						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
@@ -325,14 +327,14 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 				// TODO 2017 Desdoblamiento para nueva metodología
 
 				if ("UNE-2017".equalsIgnoreCase(application)) {
-					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateEvolutionGraphics(CrawlerUtils.getResources(request),
+					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateEvolutionGraphics(MessageResources.getMessageResources("ApplicationResources-2017"),
 							request.getParameter(Constants.ID_OBSERVATORIO), request.getParameter(Constants.ID), fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"),
 							false);
 					haveResults = graphics.size();
 					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
 						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
 					}
-					forward = "getEvolutionGraphicsUNE2102";
+					forward = "getEvolutionGraphicsUNE2017";
 				} else if ("UNE-2012".equalsIgnoreCase(application)) {
 					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2012Utils.generateEvolutionGraphics(CrawlerUtils.getResources(request),
 							request.getParameter(Constants.ID_OBSERVATORIO), request.getParameter(Constants.ID), fileEvolutionPath, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"),
