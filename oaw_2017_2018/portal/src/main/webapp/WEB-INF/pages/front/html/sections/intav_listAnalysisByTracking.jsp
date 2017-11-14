@@ -104,6 +104,26 @@
 												<strong><bean:message key="observatorio.puntuacion.total"/>: </strong>
 												<bean:write name="<%=Constants.SCORE %>" property="totalScore"/>
 											</p>
+											
+											
+											<!-- Textos en función de la metodología -->
+											
+											<logic:present name="aplicacion">
+											
+											<p>
+												<strong><bean:message key="observatorio.puntuacion.prioridad.1"/>: </strong>
+												<bean:write name="<%=Constants.SCORE %>" property="scoreLevel1"/>
+											</p>
+											<p>
+												<strong><bean:message key="observatorio.puntuacion.prioridad.2"/>: </strong>
+												<bean:write name="<%=Constants.SCORE %>" property="scoreLevel2"/>
+											</p>
+											
+											
+											</logic:present>
+											<logic:notPresent name="aplicacion">
+											
+											
 											<p>
 												<strong><bean:message key="observatorio.puntuacion.nivel.1"/>: </strong>
 												<bean:write name="<%=Constants.SCORE %>" property="scoreLevel1"/>
@@ -112,6 +132,7 @@
 												<strong><bean:message key="observatorio.puntuacion.nivel.2"/>: </strong>
 												<bean:write name="<%=Constants.SCORE %>" property="scoreLevel2"/>
 											</p>
+											</logic:notPresent>
 										</div>
 									</logic:present>
 								

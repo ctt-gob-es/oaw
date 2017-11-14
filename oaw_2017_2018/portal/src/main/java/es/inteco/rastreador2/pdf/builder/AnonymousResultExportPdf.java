@@ -141,14 +141,14 @@ public abstract class AnonymousResultExportPdf {
 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
-
+/*
         anchorMap = new HashMap<>();
         anchor = new SpecialChunk(messageResources.getMessage("ob.resAnon.intav.report.341.p22.bold"), messageResources.getMessage("anchor.PMNA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
         section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("ob.resAnon.intav.report.341.p22"), anchorMap, ConstantsFont.PARAGRAPH));
 
         PDFUtils.addImageToSection(section, imagesPath + "PMNA.png", " PMNA= SPMVN/VN", 80);
-
+*/
         list = new com.lowagie.text.List();
 
         boldWords.clear();

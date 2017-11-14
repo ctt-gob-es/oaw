@@ -8,11 +8,15 @@ import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.AnalysisForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
 import org.apache.struts.action.*;
+import org.apache.struts.util.PropertyMessageResources;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,6 +90,19 @@ public class ResultsAction extends Action {
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
 					request.setAttribute(Constants.OBSERVATORY, request.getParameter(Constants.OBSERVATORY));
 					request.setAttribute(Constants.SCORE, IntavUtils.calculateScore(request, idExecution));
+					
+
+					// TODO 2017 Parametro adicional para los textos en la JSP
+					String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idExecution, idRastreo );
+
+
+
+					if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
+
+						request.setAttribute("aplicacion", "UNE-2017");
+					}
+					
+					
 				}
 			} else {
 				return mapping.findForward(Constants.NO_PERMISSION);
