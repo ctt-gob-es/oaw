@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -593,6 +594,7 @@ public class CrawlerJob implements InterruptableJob {
 
 			boolean isFormPage = false;
 			boolean isTablePage = false;
+			boolean crawledLinkSameDirectory = false;
 
 			Document doc = loadDocumentFromURL(domain, urlLink, cookie);
 
@@ -610,11 +612,39 @@ public class CrawlerJob implements InterruptableJob {
 				// página de este tipo
 				crawlerData.setCheckTablePage(false);
 			}
+			
+			//TODO 2017 Es un directorio del que ya tenemos alguna página
+			// Si es la raiz va a descartar todo
+			
+			//URLs en directorio
+			if(urlLink.lastIndexOf("/")>0) {
+				
+				String directorio = urlLink.substring(0, urlLink.lastIndexOf("/")+1);
+				// Si el patrón está en la lista este de descarta temporalmente
+				for (CrawledLink link : crawlingDomains) {
+					if (link!=null && !StringUtils.isEmpty(link.getUrl()) && link.getUrl().startsWith(directorio)) {
+						crawledLinkSameDirectory = true;
+				    	break;
 
-			if (isFormPage || isTablePage) {
+					}
+				}
+			}
+			
+	
+			if ((isFormPage || isTablePage) && !crawledLinkSameDirectory) {
 				return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
 			} else {
 				// Si no es ninguno de los tipos que buscamos, respondemos falso
+				/*
+				if(!isFormPage || !isTablePage) {
+					Logger.putLog("******* La URL " + urlLink + " se ha descartado inicialmente por no contener tablas o formularios.", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+				} 
+				
+				if(crawledLinkSameDirectory) {
+					Logger.putLog("*******  La URL " + urlLink + " se ha descartado inicialmente por existir otras en el mismo directorio.", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+				}
+				*/
+				
 				return false;
 			}
 

@@ -224,4 +224,6 @@ public final class Check_2_2_3_NavigationTest {
         TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_2_2_3, TestUtils.OBS_VALUE_GREEN_ONE);
     } //*/
 
+    
+    
 }

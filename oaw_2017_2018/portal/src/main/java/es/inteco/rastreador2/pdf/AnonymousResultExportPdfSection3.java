@@ -446,7 +446,7 @@ public final class AnonymousResultExportPdfSection3 {
         section.add(list);
 
         //TODO 2017 Eliminar PMNA
-        /*
+        
         anchorMap = new HashMap<>();
         anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.341.p22.bold"), CrawlerUtils.getResources(request).getMessage("anchor.PMNA"), true, ConstantsFont.paragraphBoldFont);
         anchorMap.put(1, anchor);
@@ -454,7 +454,7 @@ public final class AnonymousResultExportPdfSection3 {
         
 
         PDFUtils.addImageToSection(section, pmgr.getValue(Constants.PDF_PROPERTIES, "path.images") + "PMNA.png", " PMNA= SPMVN/VN", 80);
-        */
+        
 
         list = new List();
 
