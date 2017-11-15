@@ -1,11 +1,13 @@
 package es.inteco.crawler.job;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -55,4 +57,35 @@ public class CrawlerTest {
 
         return crawlerData;
     }
+    
+    
+	@Test
+	public void testSameDirectory() {
+
+		java.util.List<String> urls = new ArrayList<String>();
+
+		urls.add("http://www.fundacionctic.org/");
+		urls.add("http://www.fundacionctic.org/lineas-de-especializacion/analisis-inteligente-de-datos");
+
+		Assert.assertTrue(checkUrlList(urls, "http://www.fundacionctic.org/lineas-de-especializacion/interoperabilidad-od"));
+		Assert.assertFalse(checkUrlList(urls, "http://www.fundacionctic.org/focos/cities"));
+
+	}
+
+	private boolean checkUrlList(java.util.List<String> urls, String urlLink) {
+		
+		if (urlLink.lastIndexOf("/") > 0) {
+			String directorio = urlLink.substring(0, urlLink.lastIndexOf("/")+1);
+			
+			// Si el patrón está en la lista este de descarta temporalmente
+			for (String link : urls) {
+				if (!StringUtils.isEmpty(link) && link.startsWith(directorio)) {
+					return true;
+
+				}
+			}
+		}
+
+		return false;
+	}
 }
