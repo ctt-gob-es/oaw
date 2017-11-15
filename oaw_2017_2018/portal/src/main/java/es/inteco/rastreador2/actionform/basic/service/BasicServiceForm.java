@@ -174,6 +174,7 @@ public class BasicServiceForm extends ValidatorForm {
 	}
 
 	private boolean isEvolutivo() {
+		
 		// TODO 2017 Cambio por la nueva metodología
 		final boolean isEvolutivoCrawl = analysisType == BasicServiceAnalysisType.URL && ("4".equals(amplitud) || "8".equals(amplitud)) && "4".equals(profundidad);
 		final boolean isEvolutivoLista = analysisType == BasicServiceAnalysisType.LISTA_URLS && domain.split("\r\n|\n").length > 17;
