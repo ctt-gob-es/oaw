@@ -15,6 +15,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.view.forms.CategoryViewListForm;
@@ -1726,7 +1727,28 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
         globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+        
+        int maxFails = 0;
+        
+    	// Recuperamos el cartucho asociado al analsis
+		try (Connection c = DataBaseManager.getConnection()) {
+
+			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationList.get(0).getIdAnalysis());
+
+			if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+			} else {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+			}
+
+			DataBaseManager.closeConnection(c);
+			
+		} catch (Exception e) {
+			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		} 
+        
+        
+        
 
         //Se recorren las páginas de cada observatorio
         for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
