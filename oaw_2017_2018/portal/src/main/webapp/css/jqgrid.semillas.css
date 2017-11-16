@@ -50,6 +50,12 @@
 	-o-text-overflow: ellipsis;
 }
 
+.ui-jqgrid-cell-wrapper a {
+	overflow:hidden;
+	text-overflow: ellipsis;
+	-o-text-overflow: ellipsis;
+}
+
 .listado-grid {
 	text-overflow: ellipsis;
 	overflow: hidden;
