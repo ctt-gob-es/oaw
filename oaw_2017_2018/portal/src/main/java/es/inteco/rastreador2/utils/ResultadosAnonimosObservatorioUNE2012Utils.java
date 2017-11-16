@@ -1,29 +1,7 @@
 package es.inteco.rastreador2.utils;
 
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
-import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
-import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import es.inteco.common.Constants;
-import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.datos.AnalisisDatos;
-import es.inteco.intav.form.*;
-import es.inteco.intav.utils.CacheUtils;
-import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
-import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
-import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
-import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
-import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
-import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
-import es.inteco.view.forms.CategoryViewListForm;
-import org.apache.commons.lang.StringUtils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.rastreador2.utils.GraphicsUtils.parseLevelLabel;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +10,48 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.rastreador2.utils.GraphicsUtils.parseLevelLabel;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+
+import com.opensymphony.oscache.base.NeedsRefreshException;
+
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
+import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
+import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
+import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.intav.datos.AnalisisDatos;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatoryLevelForm;
+import es.inteco.intav.form.ObservatorySiteEvaluationForm;
+import es.inteco.intav.form.ObservatorySubgroupForm;
+import es.inteco.intav.form.ObservatorySuitabilityForm;
+import es.inteco.intav.form.SeedForm;
+import es.inteco.intav.utils.CacheUtils;
+import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
+import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
+import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
+import es.inteco.view.forms.CategoryViewListForm;
 
 public final class ResultadosAnonimosObservatorioUNE2012Utils {
 
@@ -1421,7 +1437,24 @@ public final class ResultadosAnonimosObservatorioUNE2012Utils {
         globalResult.put(Constants.OBS_AA, new ArrayList<ObservatoryEvaluationForm>());
 
         final PropertiesManager pmgr = new PropertiesManager();
-        final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		int maxFails = 0;
+
+		// Recuperamos el cartucho asociado al analsis
+		try (Connection c = DataBaseManager.getConnection()) {
+
+			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationList.get(0).getIdAnalysis());
+
+			if ("UNE-2017".equalsIgnoreCase(aplicacion)) {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+			} else {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+			}
+
+			DataBaseManager.closeConnection(c);
+			
+		} catch (Exception e) {
+			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
+		}
 
         //Se recorren las páginas de cada observatorio
         for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
