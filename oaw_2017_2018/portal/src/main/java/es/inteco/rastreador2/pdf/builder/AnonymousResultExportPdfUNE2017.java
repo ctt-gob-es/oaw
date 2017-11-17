@@ -31,9 +31,11 @@ import java.util.Map;
 
 import static es.inteco.common.ConstantsFont.LINE_SPACE;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class AnonymousResultExportPdfUNE2017.
+ * AnonymousResultExportPdfUNE2017. Clase replicada de
+ * {@link AnonymousResultExportPdfUNE2012} para la nueva versión de la
+ * metodología basada en la misma norma que la mencionada y conservar ambas para
+ * futuras consultas o comparativas.
  */
 public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 

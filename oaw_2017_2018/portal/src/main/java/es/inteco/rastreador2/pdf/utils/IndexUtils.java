@@ -1,20 +1,24 @@
 package es.inteco.rastreador2.pdf.utils;
 
-import com.lowagie.text.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.events.IndexEvents;
 import com.lowagie.text.pdf.events.IndexEvents.Entry;
+
 import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
-import org.apache.struts.util.MessageResources;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public final class IndexUtils {
 

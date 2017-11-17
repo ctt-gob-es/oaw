@@ -1,10 +1,6 @@
 package es.inteco.rastreador2.action.observatorio;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.rastreador2.utils.CrawlerUtils.getResources;
-
 import java.sql.Connection;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,24 +11,26 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import es.inteco.common.Constants;
-import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.crawler.job.CrawlerJob;
-import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.observatorio.utils.RelanzarObservatorioThread;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
-import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
-import es.inteco.rastreador2.dao.login.DatosForm;
-import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
-import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
-import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import es.inteco.rastreador2.utils.RastreoUtils;
 
+/**
+ * RelanzarObservatorioAction. Action para relanzar un observatorio incompleto.
+ */
 public class RelanzarObservatorioAction extends Action {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.
+	 * ActionMapping, org.apache.struts.action.ActionForm,
+	 * javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
+	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 
 		try {
@@ -59,6 +57,17 @@ public class RelanzarObservatorioAction extends Action {
 
 	}
 
+	/**
+	 * Confirmar la acción.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param request
+	 *            the request
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	private ActionForward confirm(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		final Long idObservatory = Long.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -70,9 +79,18 @@ public class RelanzarObservatorioAction extends Action {
 		return mapping.findForward(Constants.CONFIRMACION_RELANZAR);
 	}
 
+	/**
+	 * Lanzar rastreos pendientes.
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param request
+	 *            the request
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
 	private ActionForward lanzarRastreosPendientes(ActionMapping mapping, HttpServletRequest request) throws Exception {
-
-		ActionForward forward = null;
 
 		String idObservatorio = request.getParameter(Constants.ID_OBSERVATORIO);
 		String idEjecucionObservatorio = request.getParameter(Constants.ID_EX_OBS);

@@ -14,8 +14,10 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2017Utils;
 
 /**
- * Clase la generación de los informes anónimos de resultados de la normativa
- * observatorio UNE-2012 en PDF.
+ * AnonymousResultPdfUNE2017Builder. Clase replicada de
+ * {@link AnonymousResultPdfUNE2012Builder} para la nueva versión de la
+ * metodología basada en la misma norma que la mencionada y conservar ambas para
+ * futuras consultas o comparativas.
  */
 public class AnonymousResultPdfUNE2017Builder extends AnonymousResultPdfBuilder {
 
@@ -130,5 +132,5 @@ public class AnonymousResultPdfUNE2017Builder extends AnonymousResultPdfBuilder 
 	@Override
 	protected void createSummaryChapter(MessageResources resources, Font titleFont) throws Exception {
 	}
-	
+
 }

@@ -51,7 +51,6 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.view.forms.CategoryViewListForm;
-// TODO: Auto-generated Javadoc
 
 /**
  * Generadora de resultados para la nueva metodología de 2017 basada en
@@ -2042,7 +2041,8 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 		}
 		// Cambiamos las claves por el nombre y calculamos la media
-		// TODO 2017 Necesitamos implementar un orden específico para que p.e. 1.10 vaya después de 1.9 y no de 1.
+		// TODO 2017 Necesitamos implementar un orden específico para que p.e.
+		// 1.10 vaya después de 1.9 y no de 1.
 		final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>(new Comparator<String>() {
 			@Override
 			public int compare(String version1, String version2) {
