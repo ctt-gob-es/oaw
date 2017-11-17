@@ -2,6 +2,8 @@ package es.inteco.rastreador2.json;
 
 /**
  * JsonResponse Respuesta básica para los action json.
+ * 
+ * @author alvaro.pelaez
  */
 public class JsonMessage {
 

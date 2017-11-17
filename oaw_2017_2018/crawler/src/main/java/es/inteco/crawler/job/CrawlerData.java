@@ -35,7 +35,6 @@ public class CrawlerData {
     
     //TODO 2017 Indicadores para saber si hemos encontrado urls de ciertos tipos
     private boolean checkTablePage;
-
     private boolean checkFormPage;
     
     private int maxIntentosBuscarTipos = 15;

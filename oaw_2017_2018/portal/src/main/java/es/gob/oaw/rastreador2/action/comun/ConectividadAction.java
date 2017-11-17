@@ -41,16 +41,15 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.EvaluatorUtils;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 
 /**
- * Action para mostrar la conectividad con los sistemas externos como SIM.
+ * ConectividadAction. {@link Action} Para comprobaciones de conectividad.
  *
- * @author alvaro
+ * @author alvaro.pelaez
  */
 public class ConectividadAction extends Action {
 
-	/** The Constant MAIL_PROPERTIES. */
+	/** Fichero de propiedades MAIL_PROPERTIES. */
 	private static final String MAIL_PROPERTIES = "mail.properties";
 
 	/** Properties Manager. */
@@ -270,6 +269,11 @@ public class ConectividadAction extends Action {
 		return null;
 	}
 
+	/**
+	 * Configuración del socket SSL.
+	 *
+	 * @return the naive SSL socket factory
+	 */
 	private static SSLSocketFactory getNaiveSSLSocketFactory() {
 		// Create a trust manager that does not validate certificate chains
 		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -296,7 +300,7 @@ public class ConectividadAction extends Action {
 	}
 
 	/**
-	 * Crea los mensajes a enviar por SIM
+	 * Crea los mensajes a enviar por SIM.
 	 *
 	 * @param email
 	 *            Dirección de correo electrónico
@@ -324,7 +328,7 @@ public class ConectividadAction extends Action {
 	}
 
 	/**
-	 * The Class Check.
+	 * Check. DTO para resultados de comprobaciones.
 	 */
 	public class Check {
 
@@ -395,6 +399,5 @@ public class ConectividadAction extends Action {
 		}
 
 	}
-
 
 }

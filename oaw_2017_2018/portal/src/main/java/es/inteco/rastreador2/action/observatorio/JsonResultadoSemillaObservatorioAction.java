@@ -16,7 +16,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.actions.DispatchAction;
 
 import com.google.gson.Gson;
-import com.opensymphony.oscache.util.StringUtil;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -29,62 +28,79 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.Pagination;
 
+/**
+ * JsonResultadoSemillaObservatorioAction.
+ * 
+ * @author alvaro.pelaez
+ */
 public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
-	
-    public ActionForward resultados(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, HttpServletResponse response) throws Exception {
-        SemillaForm semillaForm = new SemillaForm();
-        //SemillaForm semillaForm = (SemillaForm) form;
-        
-        final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
+	/**
+	 * Devuelve un JSON con los resultados de un observatorio
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
+	public ActionForward resultados(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, HttpServletResponse response) throws Exception {
+		SemillaForm semillaForm = new SemillaForm();
+		// SemillaForm semillaForm = (SemillaForm) form;
 
-        try (Connection c = DataBaseManager.getConnection()) {
-            final PropertiesManager pmgr = new PropertiesManager();
-            
-            
-            
-            //Nombre
-            if(request.getParameter("nombre")!=null && !StringUtils.isEmpty(request.getParameter("nombre").toString())) {
-            	semillaForm.setNombre(request.getParameter("nombre").toString());
-            }
-            
-            //URL
-            if(request.getParameter("listaUrlsString")!=null && !StringUtils.isEmpty(request.getParameter("listaUrlsString").toString())) {
-            	semillaForm.setListaUrlsString(request.getParameter("listaUrlsString").toString());
-            }            
+		final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 
-            final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
-            final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-            // Obtenemos las semillas de esa página del listado
-            //final List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE, pagina - 1);
+		try (Connection c = DataBaseManager.getConnection()) {
+			final PropertiesManager pmgr = new PropertiesManager();
 
-            
-            final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE, pagina - 1);
-            
-            // Calculamos la puntuación media de cada semilla y la guardamos en sesion
-            ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution);
-            
+			// Nombre
+			if (request.getParameter("nombre") != null && !StringUtils.isEmpty(request.getParameter("nombre").toString())) {
+				semillaForm.setNombre(request.getParameter("nombre").toString());
+			}
+
+			// URL
+			if (request.getParameter("listaUrlsString") != null && !StringUtils.isEmpty(request.getParameter("listaUrlsString").toString())) {
+				semillaForm.setListaUrlsString(request.getParameter("listaUrlsString").toString());
+			}
+
+			final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
+			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+			// Obtenemos las semillas de esa página del listado
+			// final List<ResultadoSemillaForm> seedsResults =
+			// ObservatorioDAO.getResultSeedsFromObservatory(c, semillaForm,
+			// idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE,
+			// pagina - 1);
+
+			final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE,
+					pagina - 1);
+
+			// Calculamos la puntuación media de cada semilla y la guardamos en
+			// sesion
+			ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution);
+
 			String jsonResultados = new Gson().toJson(seedsResults2);
-            
-            List<PageForm> paginas = Pagination.createPagination(request, numResultA, pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"), pagina, Constants.PAG_PARAM);
+
+			List<PageForm> paginas = Pagination.createPagination(request, numResultA, pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"), pagina, Constants.PAG_PARAM);
 
 			String jsonPagination = new Gson().toJson(paginas);
 
 			PrintWriter pw = response.getWriter();
-			// pw.write(json);
-			pw.write("{\"resultados\": " + jsonResultados.toString() + ",\"paginador\": {\"total\":" + numResultA
-					+ "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"resultados\": " + jsonResultados.toString() + ",\"paginador\": {\"total\":" + numResultA + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
-            
-        } catch (Exception e) {
-            Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-            throw new Exception(e);
-        }
 
-        return null;
-    }
-	
+		} catch (Exception e) {
+			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			throw new Exception(e);
+		}
+
+		return null;
+	}
+
 }
-
-

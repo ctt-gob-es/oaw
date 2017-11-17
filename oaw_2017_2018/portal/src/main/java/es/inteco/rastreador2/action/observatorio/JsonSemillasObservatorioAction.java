@@ -189,12 +189,12 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
 
 				// Comprobar que sólo se introduzcen el max.url
-				
+
 				PropertiesManager pmgr = new PropertiesManager();
 				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
 				if (semilla.getListaUrls() != null && semilla.getListaUrls().size() > maxUrls) {
-					
-					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado",new String[] {String.valueOf(maxUrls)})));
+
+					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) })));
 
 					response.setStatus(400);
 					response.getWriter().write(new Gson().toJson(errores));
@@ -317,14 +317,14 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
 				semilla.setListaUrls(Arrays.asList(semilla.getListaUrlsString().split(";")));
-				
+
 				// Comprobar que sólo se introduzcen el max.url
-				
+
 				PropertiesManager pmgr = new PropertiesManager();
 				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
 				if (semilla.getListaUrls() != null && semilla.getListaUrls().size() > maxUrls) {
-					
-					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado",new String[] {String.valueOf(maxUrls)})));
+
+					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) })));
 
 					response.setStatus(400);
 					response.getWriter().write(new Gson().toJson(errores));
@@ -542,7 +542,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @return
 	 */
 	private Set<String> findDuplicates(List<String> urls) {
-		final Set<String> setDuplicados = new HashSet();
+		final Set<String> setDuplicados = new HashSet<>();
 		final Set<String> setUnicos = new HashSet<>();
 
 		for (String url : urls) {

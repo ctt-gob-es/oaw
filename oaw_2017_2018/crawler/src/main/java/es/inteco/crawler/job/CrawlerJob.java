@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -46,17 +45,46 @@ import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
 
+/**
+ * CrawlerJob. Clase para realizar el rastreo de URL.
+ */
 public class CrawlerJob implements InterruptableJob {
+
+	/** Clave NOT_FILTERED_URIS_SECURITY_KEY. */
 	private static final String NOT_FILTERED_URIS_SECURITY_KEY = "not.filtered.uris.security.key";
+
+	/** Constante EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
 
+	/** Listado de dominios rastreados. */
 	private final List<CrawledLink> crawlingDomains = new ArrayList<>();
+
+	/**
+	 * Listado de dominios auxiliares para completar los dominios rastreados.
+	 */
 	private final List<String> auxDomains = new ArrayList<>();
+
+	/** Contenido de las URL rastreadas en MD5. */
 	private final List<String> md5Content = new ArrayList<>();
+
+	/** Listado de dominios rechazados. */
 	private final List<String> rejectedDomains = new ArrayList<>();
+
+	/** {@link MailService} */
 	private final MailService mailService = new MailService();
+
+	/** Solicitud de interrupción. */
 	private boolean interrupt = false;
 
+	/**
+	 * Comprueba si una URL pertenece al dominio
+	 *
+	 * @param domain
+	 *            Dominio
+	 * @param url
+	 *            URL a validar
+	 * @return true, si la URL está fuera del dominio. false en caso contrario
+	 */
 	private boolean isOuterDomain(final String domain, final String url) {
 		try {
 			if (domain.equalsIgnoreCase(new URL(url).getHost())) {
@@ -68,6 +96,15 @@ public class CrawlerJob implements InterruptableJob {
 		return true;
 	}
 
+	/**
+	 * Comprueba si la lista de {@link CrawledLink} contiene una URL
+	 *
+	 * @param crawledLinks
+	 *            Lista de {@link CrawledLink}.
+	 * @param url
+	 *            URL a validar.
+	 * @return true, si la URL está en la lista. false en caso contrario.
+	 */
 	private boolean contains(final List<CrawledLink> crawledLinks, final String url) {
 		for (CrawledLink crawledLink : crawledLinks) {
 			if (crawledLink.getUrl().equals(url)) {
@@ -77,6 +114,15 @@ public class CrawlerJob implements InterruptableJob {
 		return false;
 	}
 
+	/**
+	 * Comprueba si la URL está en el mismo directrorio que la raiz dada.
+	 *
+	 * @param link
+	 *            the link
+	 * @param urlRoot
+	 *            the url root
+	 * @return true, if is in the same directory
+	 */
 	private boolean isInTheSameDirectory(final String link, final String urlRoot) {
 		final String protocolRegExp = "https?://";
 		final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, EMPTY_STRING).lastIndexOf('/') != -1
@@ -122,6 +168,11 @@ public class CrawlerJob implements InterruptableJob {
 		return mails;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+	 */
 	@Override
 	public void execute(final JobExecutionContext jobContext) throws JobExecutionException {
 		final JobDataMap jobDataMap = jobContext.getJobDetail().getJobDataMap();
@@ -130,6 +181,12 @@ public class CrawlerJob implements InterruptableJob {
 		launchCrawler(crawlerData);
 	}
 
+	/**
+	 * Lanza el crawler.
+	 *
+	 * @param crawlerData
+	 *            the crawler data
+	 */
 	public void launchCrawler(final CrawlerData crawlerData) {
 		try (Connection conn = DataBaseManager.getConnection()) {
 
@@ -163,6 +220,13 @@ public class CrawlerJob implements InterruptableJob {
 		}
 	}
 
+	/**
+	 * Test crawler.
+	 *
+	 * @param crawlerData
+	 *            the crawler data
+	 * @return the list
+	 */
 	public List<CrawledLink> testCrawler(final CrawlerData crawlerData) {
 		try {
 			makeCrawl(crawlerData);
@@ -172,6 +236,13 @@ public class CrawlerJob implements InterruptableJob {
 		return crawlingDomains;
 	}
 
+	/**
+	 * Lanza un análisis simple.
+	 *
+	 * @param crawlerData
+	 *            the crawler data
+	 * @return the list
+	 */
 	public List<CrawledLink> runSimpleAnalysis(final CrawlerData crawlerData) {
 		final List<CrawledLink> simpleAnalysisiDomains = new ArrayList<>();
 		final CrawledLink crawledLink = new CrawledLink(crawlerData.getNombreRastreo(), crawlerData.getContent(), 0, 0);
@@ -186,6 +257,16 @@ public class CrawlerJob implements InterruptableJob {
 		return simpleAnalysisiDomains;
 	}
 
+	/**
+	 * Finaliza el rastreo. Actualizando los datos en la base de datos.
+	 *
+	 * @param c
+	 *            the c
+	 * @param crawlerData
+	 *            the crawler data
+	 * @throws Exception
+	 *             the exception
+	 */
 	private void endCrawling(final Connection c, final CrawlerData crawlerData) throws Exception {
 		if (!interrupt) {
 			final PropertiesManager pmgr = new PropertiesManager();
@@ -238,6 +319,14 @@ public class CrawlerJob implements InterruptableJob {
 		}
 	}
 
+	/**
+	 * Genera un PDF con la información del rastreo.
+	 *
+	 * @param crawlerData
+	 *            the crawler data
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void generatePDFFile(final CrawlerData crawlerData) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 
@@ -262,6 +351,15 @@ public class CrawlerJob implements InterruptableJob {
 		}
 	}
 
+	/**
+	 * Compone un mensaje de correo electrónico.
+	 *
+	 * @param mensaje
+	 *            the mensaje
+	 * @param crawlerData
+	 *            the crawler data
+	 * @return the string
+	 */
 	private String buildMensajeCorreo(final String mensaje, final CrawlerData crawlerData) {
 		final PropertiesManager pmgr = new PropertiesManager();
 
@@ -271,7 +369,7 @@ public class CrawlerJob implements InterruptableJob {
 
 	/**
 	 * Construye una cadena con los dominios de un crawler a partir de la lista
-	 * de cadenas que representa los dominios
+	 * de cadenas que representa los dominios.
 	 *
 	 * @param dominiosList
 	 *            lista de cadenas de dominios pertenecientes a un crawler
@@ -290,6 +388,14 @@ public class CrawlerJob implements InterruptableJob {
 		return dominios.toString();
 	}
 
+	/**
+	 * Inicia el rastreo de URL.
+	 *
+	 * @param crawlerData
+	 *            the crawler data
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 
@@ -424,7 +530,7 @@ public class CrawlerJob implements InterruptableJob {
 
 	/**
 	 * Comprueba si en el proceso de "crawling" se han obtenido menos páginas de
-	 * las esperadas
+	 * las esperadas.
 	 *
 	 * @param crawlerData
 	 *            la información CrawlerData del proceso
@@ -459,6 +565,16 @@ public class CrawlerJob implements InterruptableJob {
 		mailService.sendMail(mailTo, subject, text);
 	}
 
+	/**
+	 * Analiza los datos recopilados.
+	 *
+	 * @param analyzeDomains
+	 *            the analyze domains
+	 * @param crawlerData
+	 *            the crawler data
+	 * @param cookie
+	 *            the cookie
+	 */
 	private void analyze(final List<CrawledLink> analyzeDomains, final CrawlerData crawlerData, final String cookie) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "crawler.date.format"));
@@ -477,6 +593,19 @@ public class CrawlerJob implements InterruptableJob {
 		}
 	}
 
+	/**
+	 * Comprueba si una URL es válida par añadir al rastreo.
+	 *
+	 * @param urlRoot
+	 *            the url root
+	 * @param domain
+	 *            the domain
+	 * @param urlLink
+	 *            the url link
+	 * @param crawlerData
+	 *            the crawler data
+	 * @return true, if is valid url
+	 */
 	private boolean isValidUrl(final String urlRoot, final String domain, final String urlLink, final CrawlerData crawlerData) {
 		final PropertiesManager pmgr = new PropertiesManager();
 
@@ -514,6 +643,24 @@ public class CrawlerJob implements InterruptableJob {
 		return false;
 	}
 
+	/**
+	 * Realiza el rastreo completo de una URL.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @param rootUrl
+	 *            the root url
+	 * @param url
+	 *            the url
+	 * @param cookie
+	 *            the cookie
+	 * @param crawlerData
+	 *            the crawler data
+	 * @param ignoredLinks
+	 *            the ignored links
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie, final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int unlimitedTopN = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "amplitud.ilimitada.value"));
@@ -553,7 +700,8 @@ public class CrawlerJob implements InterruptableJob {
 											crawlerData.isCheckTablePage())) {
 										cont++;
 									} else if (!auxDomains.contains(absoluteUrlLink)) {
-										// TODO 2017 La guardamos como auxiliar para que
+										// TODO 2017 La guardamos como auxiliar
+										// para que
 										// la finalizar el reastreo se puedan
 										// incluir si no llegamos al número de
 										// URL requeridas en el rastreo y
@@ -586,15 +734,42 @@ public class CrawlerJob implements InterruptableJob {
 		}
 	}
 
+	/**
+	 * Comprueba si un link es válido para añadir a los links a analizar.
+	 *
+	 * @param rootUrl
+	 *            the root url
+	 * @param domain
+	 *            the domain
+	 * @param urlLink
+	 *            the url link
+	 * @param cookie
+	 *            the cookie
+	 * @param levelLinks
+	 *            the level links
+	 * @param crawlerData
+	 *            the crawler data
+	 * @param addAuxiliaryLinks
+	 *            the add auxiliary links
+	 * @param ignoredLinks
+	 *            the ignored links
+	 * @param checkIsFormPage
+	 *            the check is form page
+	 * @param checkIsTablePage
+	 *            the check is table page
+	 * @return true, if is link to add
+	 * @throws Exception
+	 *             the exception
+	 */
 	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
 			List<IgnoredLink> ignoredLinks, boolean checkIsFormPage, boolean checkIsTablePage) throws Exception {
 
+		boolean ckecks = checkIsFormPage && checkIsTablePage;
+		boolean isFormPage = false;
+		boolean isTablePage = false;
+
 		// TODO 2017 ver si es de tipos indicados
 		if (checkIsFormPage || checkIsTablePage) {
-
-			boolean isFormPage = false;
-			boolean isTablePage = false;
-			boolean crawledLinkSameDirectory = false;
 
 			Document doc = loadDocumentFromURL(domain, urlLink, cookie);
 
@@ -612,58 +787,89 @@ public class CrawlerJob implements InterruptableJob {
 				// página de este tipo
 				crawlerData.setCheckTablePage(false);
 			}
-			
-			//TODO 2017 Es un directorio del que ya tenemos alguna página
-			// Si es la raiz va a descartar todo
-			
-			//URLs en directorio
-			if(urlLink.lastIndexOf("/")>0) {
-				
-				String directorio = urlLink.substring(0, urlLink.lastIndexOf("/")+1);
-				// Si el patrón está en la lista este de descarta temporalmente
-				for (CrawledLink link : crawlingDomains) {
-					if (link!=null && !StringUtils.isEmpty(link.getUrl()) && link.getUrl().startsWith(directorio)) {
-						crawledLinkSameDirectory = true;
-				    	break;
-
-					}
-				}
-			}
-			
-	
-			if ((isFormPage || isTablePage) && !crawledLinkSameDirectory) {
-				return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
-			} else {
-				// Si no es ninguno de los tipos que buscamos, respondemos falso
-				/*
-				if(!isFormPage || !isTablePage) {
-					Logger.putLog("******* La URL " + urlLink + " se ha descartado inicialmente por no contener tablas o formularios.", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-				} 
-				
-				if(crawledLinkSameDirectory) {
-					Logger.putLog("*******  La URL " + urlLink + " se ha descartado inicialmente por existir otras en el mismo directorio.", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-				}
-				*/
-				
-				return false;
-			}
-
+		}
+		// Ya existe otra en el mismo directorio entonces directamente
+		// respondemos falso para que se guarde como auxiliar
+		if (checkIsSameDirectory(domain, urlLink)) {
+			return false;
 		}
 
+		// No es un directorio repetido en el directorio pero aún no encontramos
+		// páginas con los
+		// tipos indicados respondemos falso para que se guarde como auxiliar
+		else if (ckecks && (!isFormPage || !isTablePage)) {
+			return false;
+		}
+
+		// En caso contrario (no hay otra del mismo directorio y pasó los
+		// checks) seguimos con las comprobaciones
 		return
 
 		isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
 	}
 
 	/**
-	 * Devuelve el DOM de una URL
+	 * Comprueba si en los dominios registrados por el crawler existe una URL
+	 * del mismo directorio que la URL dada.
 	 * 
+	 * Se excluye la comprobación si el directorio de la URL es el raiz de la
+	 * página.
+	 *
 	 * @param domain
+	 *            Dominio de la página.
 	 * @param urlLink
+	 *            URL a comprobar
+	 * @return true si ya existe otra URL del mismo directorio. false en caso
+	 *         contrario.
+	 */
+	private boolean checkIsSameDirectory(String domain, String urlLink) {
+
+		boolean crawledLinkSameDirectory = false;
+		// TODO 2017 Es un directorio del que ya tenemos alguna página
+		// Si es la raiz va a descartar todo
+
+		// URLs en directorio
+		if (urlLink.lastIndexOf("/") > 0) {
+
+			// String directorio = urlLink.substring(0,
+			// urlLink.lastIndexOf("/") + 1);
+
+			String part1 = urlLink.substring(0, urlLink.indexOf(domain) + domain.length());
+			String dirTmp = urlLink.substring(urlLink.indexOf(part1) + part1.length());
+			String dirTmp2 = dirTmp.indexOf("/") != -1 ? dirTmp.substring(dirTmp.indexOf("/") + 1) : "";
+			String directorio = dirTmp2 != "" && dirTmp2.indexOf("/") != -1 ? dirTmp2.substring(0, dirTmp2.indexOf("/")) : "";
+
+			// Si el patrón está en la lista este de descarta temporalmente
+			// Si el directorio no la raiz
+
+			if (!StringUtils.isEmpty(directorio)) {
+				for (CrawledLink link : crawlingDomains) {
+					if (link != null && !StringUtils.isEmpty(link.getUrl()) && link.getUrl().startsWith(directorio)) {
+						crawledLinkSameDirectory = true;
+						Logger.putLog("*******  La URL " + urlLink + " se ha descartado inicialmente por existir otras en el mismo directorio.", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+						break;
+
+					}
+				}
+			}
+		}
+		return crawledLinkSameDirectory;
+	}
+
+	/**
+	 * Devuelve el DOM de una URL.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @param urlLink
+	 *            the url link
 	 * @param cookie
-	 * @return
+	 *            the cookie
+	 * @return the document
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 * @throws Exception
+	 *             the exception
 	 */
 	private Document loadDocumentFromURL(String domain, String urlLink, String cookie) throws IOException, Exception {
 
@@ -714,10 +920,11 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	/**
-	 * Cierra etiquetas mal cerradas para que el parseador no de error
-	 * 
+	 * Cierra etiquetas mal cerradas para que el parseador no de error.
+	 *
 	 * @param inStr
-	 * @return
+	 *            the in str
+	 * @return the string
 	 */
 	private static String addFinalTags(String inStr) {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -749,6 +956,7 @@ public class CrawlerJob implements InterruptableJob {
 	 * @return true si la URL corresponde a un recurso text/html o false en caso
 	 *         contrario
 	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
 	 */
 	private boolean isHtmlTextContent(final String refererUrl, final String urlLink, final String cookie) throws IOException {
 		final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, refererUrl, true);
@@ -770,9 +978,33 @@ public class CrawlerJob implements InterruptableJob {
 		return false;
 	}
 
+	/**
+	 * Comprueba si se tiene acceso a una URL.
+	 *
+	 * @param rootUrl
+	 *            the root url
+	 * @param domain
+	 *            the domain
+	 * @param urlLink
+	 *            the url link
+	 * @param cookie
+	 *            the cookie
+	 * @param levelLinks
+	 *            the level links
+	 * @param crawlerData
+	 *            the crawler data
+	 * @param addAuxiliaryLinks
+	 *            the add auxiliary links
+	 * @param ignoredLinks
+	 *            the ignored links
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 */
 	private boolean hasAccessToUrl(final String rootUrl, final String domain, final String urlLink, final String cookie, final List<CrawledLink> levelLinks, final CrawlerData crawlerData,
 			final boolean addAuxiliaryLinks, final List<IgnoredLink> ignoredLinks) throws Exception {
-		HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, false);
+		// TODO 2017 Follow redirects
+		HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
 		connection.setRequestProperty("Cookie", cookie);
 		int responseCode = Integer.MAX_VALUE;
 		int numRetries = 0;
@@ -847,6 +1079,11 @@ public class CrawlerJob implements InterruptableJob {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.quartz.InterruptableJob#interrupt()
+	 */
 	@Override
 	public void interrupt() throws UnableToInterruptJobException {
 		Logger.putLog("Se ha pedido una interrupción!!", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
