@@ -841,15 +841,53 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 	 *            the message resources
 	 * @return the default category dataset
 	 */
-	private static DefaultCategoryDataset createStackedBarDataSetForModality(final Map<String, BigDecimal> results, final MessageResources messageResources) {
+	private static DefaultCategoryDataset createStackedBarDataSetForModality(final Map<String, BigDecimal> unorderedResults, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+
+		// TODO 2017 Necesitamos reordenar los resputados para que el valor 1.10
+		// vaya después de 1.9 y no de 1.1
+
+		Map<String, BigDecimal> results = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String version1, String version2) {
+				String[] v1 = version1.split("\\.");
+				String[] v2 = version2.split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					if (minor(v1) == minor(v2)) { // Devolvemos 1
+													// aunque sean iguales
+													// porque las claves lleva
+													// asociado un subfijo que
+													// aqui no tenemos en cuenta
+						return 1;
+					}
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
+
+			private int major(String[] version) {
+				return Integer.parseInt(version[4].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""));
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(version[5].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")) : 0;
+			}
+		});
+
+		for (Map.Entry<String, BigDecimal> entry : unorderedResults.entrySet()) {
+			results.put(entry.getKey(), entry.getValue());
+		}
+
 		for (Map.Entry<String, BigDecimal> entry : results.entrySet()) {
 			if (entry.getKey().contains(Constants.OBS_VALUE_RED_SUFFIX)) {
-				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.red"),
-						entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").length() - 5));
+				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.red"), entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "")
+						.substring(entry.getKey().replace(Constants.OBS_VALUE_RED_SUFFIX, "").indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length()));
 			} else if (entry.getKey().contains(Constants.OBS_VALUE_GREEN_SUFFIX)) {
-				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.green"),
-						entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").length() - 5));
+				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.modality.green"), entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")
+						.substring(entry.getKey().replace(Constants.OBS_VALUE_GREEN_SUFFIX, "").indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length()));
+
 			}
 		}
 
@@ -1641,12 +1679,25 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				result.put(entry.getKey(), BigDecimal.ZERO);
 			}
 			totalPercentage = totalPercentage.add(result.get(entry.getKey()));
+			
 			fitResultKey = entry.getKey();
+			
+			//TODO 2017 Si nos pasamos de 100, restamos 1 al valor actual
+			if(totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) > 0) {
+				BigDecimal subtract = result.get(fitResultKey).subtract(totalPercentage.subtract(BIG_DECIMAL_HUNDRED));
+
+				//TODO 2017 Correción por si ocurre que el valor de ajuste es cero para que no se devuelvan negativos
+				result.put(fitResultKey, subtract.compareTo(BigDecimal.ZERO) > 0 ? subtract : BigDecimal.ZERO);
+			}
+			
 		}
 		// ajustamos el resultado por si se pasa de 100 a causa del redondeo
-		if (totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) != 0) {
-			result.put(fitResultKey, result.get(fitResultKey).subtract(totalPercentage.subtract(BIG_DECIMAL_HUNDRED)));
-		}
+		/*if (totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) != 0) {
+			BigDecimal subtract = result.get(fitResultKey).subtract(totalPercentage.subtract(BIG_DECIMAL_HUNDRED));
+
+			//TODO 2017 Correción por si ocurre que el valor de ajuste es cero para que no se devuelvan negativos
+			result.put(fitResultKey, subtract.compareTo(BigDecimal.ZERO) > 0 ? subtract : BigDecimal.ZERO);
+		}*/
 
 		return result;
 	}
