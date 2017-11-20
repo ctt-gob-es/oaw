@@ -81,7 +81,7 @@
                         <logic:iterate name="<%= Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPS %>" id="item">
                             <bean:define id="categoryForm" type="es.inteco.rastreador2.actionform.semillas.CategoriaForm" name="item" property="category" />
                             <table>
-                                <caption><bean:write name="categoryForm" property="name"/></caption>
+                                <caption class="global-results-caption"><bean:write name="categoryForm" property="name"/></caption>
                                 <tr>
                                     <th><bean:message key="resultados.anonimos.level"/></th>
                                     <th><bean:message key="resultados.anonimos.porc.portales"/></th>
@@ -136,7 +136,7 @@
                         <logic:iterate name="<%= Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CAS %>" id="item">
                             <bean:define id="categoryForm" type="es.inteco.rastreador2.actionform.semillas.CategoriaForm" name="item" property="category" />
                             <table>
-                                <caption><bean:write name="categoryForm" property="name"/></caption>
+                                <caption class="global-results-caption"><bean:write name="categoryForm" property="name"/></caption>
                                 <tr>
                                     <th><bean:message key="resultados.anonimos.level"/></th>
                                     <th><bean:message key="resultados.anonimos.punt.portales"/></th>
