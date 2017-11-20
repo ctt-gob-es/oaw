@@ -89,7 +89,7 @@ public final class PrimaryExportPdfUtils {
 																	// nueva
 																	// metodología
 				builder = new AnonymousResultExportPdfUNE2017();
-				
+
 			}
 		} catch (Exception e) {
 			Logger.putLog("Error al preparar el builder de PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -119,22 +119,23 @@ public final class PrimaryExportPdfUtils {
 
 	public static void exportToPdf(final AnonymousResultExportPdf pdfBuilder, final Long idRastreoRealizado, final List<Long> evaluationIds, final List<Long> previousEvaluationIds,
 			final HttpServletRequest request, final String generalExpPath, final String seed, final String content, final long idObservatoryExecution, final long observatoryType) throws Exception {
-		
-		//TODO 2017 Nuevos textos
+
+		// TODO 2017 Nuevos textos
 		try (Connection c = DataBaseManager.getConnection()) {
-		
-		final FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idRastreoRealizado);
-		final String application = CartuchoDAO.getApplication(c, Long.valueOf(crawling.getIdCartridge()));
-		
-		if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-		
-		exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, MessageResources.getMessageResources("ApplicationResources-2017"), generalExpPath, seed, content, idObservatoryExecution, observatoryType);
-		
-		} else {
-			exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, CrawlerUtils.getResources(request), generalExpPath, seed, content, idObservatoryExecution, observatoryType);	
-		}
-		
-		
+
+			final FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idRastreoRealizado);
+			final String application = CartuchoDAO.getApplication(c, Long.valueOf(crawling.getIdCartridge()));
+
+			if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+
+				exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, MessageResources.getMessageResources("ApplicationResources-2017"), generalExpPath, seed, content,
+						idObservatoryExecution, observatoryType);
+
+			} else {
+				exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, CrawlerUtils.getResources(request), generalExpPath, seed, content, idObservatoryExecution,
+						observatoryType);
+			}
+
 		} catch (Exception e) {
 			Logger.putLog("Error al preparar el builder de PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -205,8 +206,9 @@ public final class PrimaryExportPdfUtils {
 				// Resumen de las puntuaciones del Observatorio
 				final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRanking(idObservatoryExecution, crawling.getSeed()) : null;
 				final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRanking(idObservatoryExecution, crawling.getSeed()) : null;
-				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-					addObservatoryScoreSummary(pdfBuilder, MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+					addObservatoryScoreSummary(pdfBuilder, MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, currentEvaluationPageList,
+							previousEvaluationPageList, file, rankingActual, rankingPrevio);
 				} else {
 					addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
 				}
@@ -215,34 +217,29 @@ public final class PrimaryExportPdfUtils {
 				// Resumen de las puntuaciones del Observatorio
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 						currentEvaluationPageList);
-				
-				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
 				} else {
 					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
 				}
 
 				// Resultados por página
-				//TODO 2017 Desdoblamiento para aprovecha codigo
-				
+				// TODO 2017 Desdoblamiento para aprovecha codigo
+
 				final ObservatoryPageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new ObservatoryPageResultsPdfSectionBuilder(currentEvaluationPageList);
-				
-				
-				if(pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-				
-					
-					
+
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+
 					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, true);
-					
+
 				} else {
-				
-					
+
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
 				}
-				
-				
-				
-				//observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager);
+
+				// observatoryPageResultsSectionBuilder.addPageResults(messageResources,
+				// document, pdfTocManager);
 
 				pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType,
 						pdfBuilder.isBasicService());
@@ -285,8 +282,83 @@ public final class PrimaryExportPdfUtils {
 		boldWord.add(messageResources.getMessage("resultados.primarios.4.p3.bold1"));
 		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("resultados.primarios.4.p3"), boldWord, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, true));
 
+		// TODO 2017 Aqui falla si el observatorio anterior era de otro cartucho
 		final ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
-		final ScoreForm previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
+
+		ScoreForm previousScore = null;
+
+
+
+		if (previousEvaluationPageList != null && !previousEvaluationPageList.isEmpty()) {
+			
+			// Recuperamos el cartucho asociado al analsis
+			Connection c = DataBaseManager.getConnection();
+
+			String aplicacionCurrent = CartuchoDAO.getApplicationFromAnalisisId(c, currentEvaluationPageList.get(0).getIdAnalysis());
+			String aplicacionPrevious = CartuchoDAO.getApplicationFromAnalisisId(c, previousEvaluationPageList.get(0).getIdAnalysis());
+
+			//TODO 2017	Prueba por si es necesario mezclar evolutivos de diferentes cartuchos
+			if ("UNE-2017".equalsIgnoreCase(aplicacionCurrent) && "UNE-2012".equalsIgnoreCase(aplicacionPrevious)) {
+				AnonymousResultExportPdfUNE2012 tmpPdfBuilder = new AnonymousResultExportPdfUNE2012();
+
+				previousScore = tmpPdfBuilder.generateScores(PropertyMessageResources.getMessageResources("ApplicationResources"), previousEvaluationPageList);
+
+				// TODO 2017 Reorganizar puntuaciones para que encajen con la
+				// nueva
+				// metodología
+
+				List<LabelValueBean> originalVerifications1 = previousScore.getVerifications1();
+				List<LabelValueBean> originalVerifications2 = previousScore.getVerifications2();
+
+				List<LabelValueBean> tmpVerificacions1 = new ArrayList<>();
+				List<LabelValueBean> tmpVerificacions2 = new ArrayList<>();
+
+				String[] puntosOriginales1 = new String[] { "1.1.1", "1.1.2", "1.1.3", "1.1.4", "1.1.5", "1.1.6", "1.1.7", "2.1.1", "2.1.2", "2.1.3", "2.1.4", "2.1.5", "2.1.6", "2.1.7" };
+				String[] puntosNuevos1 = new String[] { "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14" };
+
+				String[] puntosOriginales2 = new String[] { "1.2.1", "1.2.2", "1.2.3", "2.2.1", "2.2.2", "2.2.3" };
+				String[] puntosNuevos2 = new String[] { "2.1", "2.2", "2.3", "2.4", "2.5", "2.6" };
+
+				// Prioridad 1
+				for (int i = 0; i < 7; i++) {
+					LabelValueBean tmp = originalVerifications1.get(i);
+					tmp.setLabel(tmp.getLabel().replaceAll(puntosOriginales1[i], puntosNuevos1[i]));
+					tmpVerificacions1.add(tmp);
+				}
+
+				for (int i = 0; i < 7; i++) {
+					LabelValueBean tmp = originalVerifications2.get(i);
+					tmp.setLabel(tmp.getLabel().replaceAll(puntosOriginales1[i + 7], puntosNuevos1[i + 7]));
+					tmpVerificacions1.add(tmp);
+				}
+
+				// Prioridad 2
+				for (int i = 7; i < 10; i++) {
+					LabelValueBean tmp = originalVerifications1.get(i);
+					tmp.setLabel(tmp.getLabel().replaceAll(puntosOriginales2[(i - 7)], puntosNuevos2[(i - 7)]));
+					tmpVerificacions2.add(tmp);
+				}
+
+				for (int i = 7; i < 10; i++) {
+					LabelValueBean tmp = originalVerifications2.get(i);
+					tmp.setLabel(tmp.getLabel().replaceAll(puntosOriginales2[(i - 7 + 3)], puntosNuevos2[(i - 7 + 3)]));
+					tmpVerificacions2.add(tmp);
+				}
+
+				previousScore.setVerifications1(tmpVerificacions1);
+				previousScore.setVerifications2(tmpVerificacions2);
+
+			} else {
+				previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
+			}
+
+			DataBaseManager.closeConnection(c);
+
+		}
+
+		// final ScoreForm previousScore =
+		// pdfBuilder.generateScores(messageResources,
+		// previousEvaluationPageList);
 
 		//// TABLA PUNTUCAION OBSERVATORIO
 		final float[] columnWidths;

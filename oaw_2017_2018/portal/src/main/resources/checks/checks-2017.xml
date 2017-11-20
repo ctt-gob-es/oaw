@@ -5513,10 +5513,7 @@ Telephone: (416) 978-4360
             
         </machine>
     </check>
-    
-    
-    
-    
+
     
     <check id="474" key="html" confidence="medium" status="1">
         <name>Elemento con role=”link” o role="button" tenga un contenido textual, un atributo aria-label o un atributo aria-labelledby.</name>
