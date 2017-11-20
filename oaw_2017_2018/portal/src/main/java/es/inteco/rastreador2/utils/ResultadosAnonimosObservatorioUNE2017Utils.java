@@ -2097,6 +2097,11 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>(new Comparator<String>() {
 			@Override
 			public int compare(String version1, String version2) {
+				
+				//TODO 2017 Evolutivo diferentres verificaciones
+//				if(version1.length()>3 || version2.length()>3) {
+//					return 1;
+//				}
 				String[] v1 = version1.split("\\.");
 				String[] v2 = version2.split("\\.");
 				int major1 = major(v1);

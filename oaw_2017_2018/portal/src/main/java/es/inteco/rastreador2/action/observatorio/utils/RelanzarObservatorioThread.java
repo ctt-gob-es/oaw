@@ -77,37 +77,41 @@ public class RelanzarObservatorioThread extends Thread {
 				Logger.putLog("Se van relanzar " + pendindCrawlings.size() + " rastreos", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 
 				for (Long idCrawling : pendindCrawlings) {
+					try {
 
-					RastreoDAO.actualizarEstadoRastreo(c, idCrawling.intValue(), es.inteco.crawler.common.Constants.STATUS_LAUNCHED);
+						RastreoDAO.actualizarEstadoRastreo(c, idCrawling.intValue(), es.inteco.crawler.common.Constants.STATUS_LAUNCHED);
 
-					// Borramos la cache
-					CacheUtils.removeFromCache(Constants.OBSERVATORY_KEY_CACHE + idEjecucionObservatorio);
+						// Borramos la cache
+						CacheUtils.removeFromCache(Constants.OBSERVATORY_KEY_CACHE + idEjecucionObservatorio);
 
-					// Si existe un rastreo antiguo, lo eliminamos
-					Long idOldExecution = RastreoDAO.getExecutedCrawlerId(c, idCrawling, Long.parseLong(idEjecucionObservatorio));
-					if (idOldExecution != null) {
-						RastreoUtils.borrarArchivosAsociados(c, String.valueOf(idOldExecution));
-						RastreoDAO.borrarRastreoRealizado(c, idOldExecution);
+						// Si existe un rastreo antiguo, lo eliminamos
+						Long idOldExecution = RastreoDAO.getExecutedCrawlerId(c, idCrawling, Long.parseLong(idEjecucionObservatorio));
+						if (idOldExecution != null) {
+							RastreoUtils.borrarArchivosAsociados(c, String.valueOf(idOldExecution));
+							RastreoDAO.borrarRastreoRealizado(c, idOldExecution);
+						}
+
+						c.commit();
+
+						// Lanzamos el rastreo y recuperamos el id de
+						// ejecución
+						lanzarRastreo(String.valueOf(idCrawling));
+
+						// Por si tarda mucho en acabar el rastreo, volvemos a
+						// inicializar una conexion
+
+						c = DataBaseManager.getConnection();
+						c.setAutoCommit(false);
+
+						Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, RastreoDAO.getIdSeedByIdRastreo(c, idCrawling)).getId());
+						RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(idEjecucionObservatorio), idNewExecution);
+
+						RastreoDAO.actualizarEstadoRastreo(c, idCrawling.intValue(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
+
+						c.commit();
+					} catch (Exception e) {
+						Logger.putLog("Error al relanzar el rastreo  " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 					}
-
-					c.commit();
-
-					// Lanzamos el rastreo y recuperamos el id de
-					// ejecución
-					lanzarRastreo(String.valueOf(idCrawling));
-
-					// Por si tarda mucho en acabar el rastreo, volvemos a
-					// inicializar una conexion
-
-					c = DataBaseManager.getConnection();
-					c.setAutoCommit(false);
-
-					Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, RastreoDAO.getIdSeedByIdRastreo(c, idCrawling)).getId());
-					RastreoDAO.setObservatoryExecutionToCrawlerExecution(c, Long.parseLong(idEjecucionObservatorio), idNewExecution);
-
-					RastreoDAO.actualizarEstadoRastreo(c, idCrawling.intValue(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
-
-					c.commit();
 				}
 
 			} else {
@@ -139,7 +143,6 @@ public class RelanzarObservatorioThread extends Thread {
 	 *             the exception
 	 */
 	private void lanzarRastreo(final String idCrawling) throws Exception {
-		try {
 
 			Logger.putLog("Realanzado el rastreo " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_INFO);
 
@@ -171,9 +174,7 @@ public class RelanzarObservatorioThread extends Thread {
 			crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
 
 			DataBaseManager.closeConnection(c);
-		} catch (Exception e) {
-			Logger.putLog("Error al relanzar el rastreo  " + idCrawling, ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
-		}
+		
 
 	}
 }
