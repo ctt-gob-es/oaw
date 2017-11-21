@@ -272,10 +272,7 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 
 
 				// TODO 2017 Desdoblamiento para nueva metodología
-//				final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());				
-				final String application = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, Long.parseLong(request.getParameter(Constants.ID)),
-						Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
-
+				final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());				
 
 				if ("UNE-2017".equalsIgnoreCase(application)) {
 					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNE2017Utils.generateCategoryGraphics(MessageResources.getMessageResources("ApplicationResources-2017"),
