@@ -758,6 +758,36 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				modalityComparisonList.add(modalityComparisonForm);
 			}
 		}
+		
+		
+
+		// TODO 2017 Necesitamos implementar un orden específico para que p.e.
+		// 1.10 vaya después de 1.9 y no de 1.
+		Collections.sort(modalityComparisonList,new Comparator<ModalityComparisonForm>() {
+			@Override
+			public int compare(ModalityComparisonForm version1, ModalityComparisonForm version2) {
+				
+				String[] v1 = version1.getVerification().substring(version1.getVerification().indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length()).split("\\.");
+				String[] v2 = version2.getVerification().substring(version2.getVerification().indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length()).split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
+
+			private int major(String[] version) {
+				return Integer.parseInt(version[0]);
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(version[1]) : 0;
+			}
+		});
+		
+		
+		
 
 		return modalityComparisonList;
 	}
@@ -2178,8 +2208,42 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				}
 			}
 		}
+		
+		
+		Map<String, BigDecimal> orderedResults = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String version1, String version2) {
+				String[] v1 = version1.split("\\.");
+				String[] v2 = version2.split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					if (minor(v1) == minor(v2)) { // Devolvemos 1
+													// aunque sean iguales
+													// porque las claves lleva
+													// asociado un subfijo que
+													// aqui no tenemos en cuenta
+						return 1;
+					}
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
 
-		for (Map.Entry<String, BigDecimal> stringBigDecimalEntry : results.entrySet()) {
+			private int major(String[] version) {
+				return Integer.parseInt(version[4].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, ""));
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(version[5].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")) : 0;
+			}
+		});
+		
+		for (Map.Entry<String, BigDecimal> entry : results.entrySet()) {
+			orderedResults.put(entry.getKey(), entry.getValue());
+		}
+
+		for (Map.Entry<String, BigDecimal> stringBigDecimalEntry : orderedResults.entrySet()) {
 			results.put(stringBigDecimalEntry.getKey(), stringBigDecimalEntry.getValue().divide(new BigDecimal(resultData.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
 		}
 
