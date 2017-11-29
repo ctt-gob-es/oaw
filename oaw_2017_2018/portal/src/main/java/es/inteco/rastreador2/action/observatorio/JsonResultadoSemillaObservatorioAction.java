@@ -83,11 +83,7 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
 			final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
-			// Obtenemos las semillas de esa página del listado
-			// final List<ResultadoSemillaForm> seedsResults =
-			// ObservatorioDAO.getResultSeedsFromObservatory(c, semillaForm,
-			// idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE,
-			// pagina - 1);
+
 
 			final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE,
 					pagina - 1);
