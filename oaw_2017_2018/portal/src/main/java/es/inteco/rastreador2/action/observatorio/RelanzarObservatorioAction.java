@@ -106,7 +106,7 @@ public class RelanzarObservatorioAction extends Action {
 
 		String idObservatorio = request.getParameter(Constants.ID_OBSERVATORIO);
 		String idEjecucionObservatorio = request.getParameter(Constants.ID_EX_OBS);
-		// Lanzar en un hilo nuevo
+		// Lanzar en un hilo nuevo para acabar la acción
 
 		new RelanzarObservatorioThread(idObservatorio, idEjecucionObservatorio).start();
 
