@@ -540,9 +540,9 @@ public class CrawlerJob implements InterruptableJob {
 		}
 
 		// Llamamos al analizador
-		if (!crawlerData.isTest()) {
+		//if (!crawlerData.isTest()) {
 			analyze(crawlingDomains, crawlerData, cookie);
-		}
+		//}
 	}
 
 	/**
