@@ -1,3 +1,15 @@
+/*******************************************************************************
+* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+* This program is licensed and may be used, modified and redistributed under the terms
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* version as soon as they are approved by the European Commission.
+* Unless required by applicable law or agreed to in writing, software distributed under the 
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+* ANY KIND, either express or implied. See the License for the specific language governing 
+* permissions and more details.
+* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+******************************************************************************/
 package es.inteco.rastreador2.pdf.builder;
 
 import com.lowagie.text.*;
@@ -26,6 +38,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +53,7 @@ import static es.inteco.common.ConstantsFont.LINE_SPACE;
 public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 
 	/** The message resources. */
-	private MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources-2017");
+	private MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
 
 	/**
 	 * Instantiates a new anonymous result export pdf UNE 2017.
@@ -723,53 +736,69 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		PdfPTable table = new PdfPTable(widths);
 		table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
 		table.setWidthPercentage(100);
+		
 
 		try {
 			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title1"));
 
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.111", "une2012.resAnon.intav.report.33.table.111.name",
-					"une2012.resAnon.intav.report.33.table.111.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.111.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.111.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.111.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.112", "une2012.resAnon.intav.report.33.table.112.name",
-					"une2012.resAnon.intav.report.33.table.112.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.112.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.112.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.112.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.113", "une2012.resAnon.intav.report.33.table.113.name",
-					"une2012.resAnon.intav.report.33.table.113.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.113.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.113.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.113.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.114", "une2012.resAnon.intav.report.33.table.114.name",
-					"une2012.resAnon.intav.report.33.table.114.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.114.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.114.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.114.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.115", "une2012.resAnon.intav.report.33.table.115.name",
-					"une2012.resAnon.intav.report.33.table.115.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.115.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.115.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.115.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.116", "une2012.resAnon.intav.report.33.table.116.name",
-					"une2012.resAnon.intav.report.33.table.116.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.116.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.116.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.116.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.117", "une2012.resAnon.intav.report.33.table.117.name",
-					"une2012.resAnon.intav.report.33.table.117.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.117.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.117.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.117.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.1.id", "une2012_b.resAnon.intav.report.33.table.1.1.name",
+					"une2012_b.resAnon.intav.report.33.table.1.1.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.1.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.1.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.1.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.2.id", "une2012_b.resAnon.intav.report.33.table.1.2.name",
+					"une2012_b.resAnon.intav.report.33.table.1.2.question",this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.2.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.2.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.2.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.3.id", "une2012_b.resAnon.intav.report.33.table.1.3.name",
+					"une2012_b.resAnon.intav.report.33.table.1.3.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.3.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.3.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.3.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.4.id", "une2012_b.resAnon.intav.report.33.table.1.4.name",
+					"une2012_b.resAnon.intav.report.33.table.1.4.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.4.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.4.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.4.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.5.id", "une2012_b.resAnon.intav.report.33.table.1.5.name",
+					"une2012_b.resAnon.intav.report.33.table.1.5.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.5.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.5.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.5.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.6.id", "une2012_b.resAnon.intav.report.33.table.1.6.name",
+					"une2012_b.resAnon.intav.report.33.table.1.6.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.6.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.6.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.6.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.7.id", "une2012_b.resAnon.intav.report.33.table.1.7.name",
+					"une2012_b.resAnon.intav.report.33.table.1.7.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.7.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.7.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.7.modality"));
 
-			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title2"));
-
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.121", "une2012.resAnon.intav.report.33.table.121.name",
-					"une2012.resAnon.intav.report.33.table.121.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.121.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.121.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.121.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.122", "une2012.resAnon.intav.report.33.table.122.name",
-					"une2012.resAnon.intav.report.33.table.122.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.122.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.122.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.122.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.123", "une2012.resAnon.intav.report.33.table.123.name",
-					"une2012.resAnon.intav.report.33.table.123.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.123.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.123.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.123.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.8.id", "une2012_b.resAnon.intav.report.33.table.1.8.name",
+					"une2012_b.resAnon.intav.report.33.table.1.8.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.8.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.8.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.8.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.9.id", "une2012_b.resAnon.intav.report.33.table.1.9.name",
+					"une2012_b.resAnon.intav.report.33.table.1.9.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.9.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.9.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.9.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.10.id", "une2012_b.resAnon.intav.report.33.table.1.10.name",
+					"une2012_b.resAnon.intav.report.33.table.1.10.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.10.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.10.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.10.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.11.id", "une2012_b.resAnon.intav.report.33.table.1.11.name",
+					"une2012_b.resAnon.intav.report.33.table.1.11.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.11.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.11.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.11.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.12.id", "une2012_b.resAnon.intav.report.33.table.1.12.name",
+					"une2012_b.resAnon.intav.report.33.table.1.12.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.12.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.12.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.12.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.13.id", "une2012_b.resAnon.intav.report.33.table.1.13.name",
+					"une2012_b.resAnon.intav.report.33.table.1.13.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.13.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.13.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.13.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.1.14.id", "une2012_b.resAnon.intav.report.33.table.1.14.name",
+					"une2012_b.resAnon.intav.report.33.table.1.14.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.14.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.14.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.1.14.modality"));
+			
 		} catch (Exception e) {
 			Logger.putLog("Error al crear la tabla 3.3", AnonymousResultExportPdf.class, Logger.LOG_LEVEL_ERROR, e);
 		}
@@ -784,64 +813,77 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 * @return the pdf P table
 	 */
 	protected PdfPTable createMethodologyTable2(final MessageResources messageResources) {
-		float[] widths = { 10f, 30f, 45f, 25f, 15f, 15f };
+		float[] widths = { 8f, 30f, 40f, 32f, 15f, 15f };
 		PdfPTable table = new PdfPTable(widths);
 		table.setSpacingBefore(ConstantsFont.THIRD_LINE_SPACE);
 		table.setWidthPercentage(100);
 
-		try {
-			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title1"));
-
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.211", "une2012.resAnon.intav.report.33.table.211.name",
-					"une2012.resAnon.intav.report.33.table.211.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.211.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.211.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.211.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.212", "une2012.resAnon.intav.report.33.table.212.name",
-					"une2012.resAnon.intav.report.33.table.212.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.212.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.212.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.212.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.213", "une2012.resAnon.intav.report.33.table.213.name",
-					"une2012.resAnon.intav.report.33.table.213.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.213.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.213.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.213.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.214", "une2012.resAnon.intav.report.33.table.214.name",
-					"une2012.resAnon.intav.report.33.table.214.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.214.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.214.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.214.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.215", "une2012.resAnon.intav.report.33.table.215.name",
-					"une2012.resAnon.intav.report.33.table.215.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.215.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.215.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.215.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.216", "une2012.resAnon.intav.report.33.table.216.name",
-					"une2012.resAnon.intav.report.33.table.216.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.216.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.216.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.216.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.217", "une2012.resAnon.intav.report.33.table.217.name",
-					"une2012.resAnon.intav.report.33.table.217.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.217.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.217.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.217.modality"));
-
+		try {		
+			
 			createMethodologyHeaderTable(this.messageResources, table, this.messageResources.getMessage("ob.resAnon.intav.report.33.table.title2"));
 
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.221", "une2012.resAnon.intav.report.33.table.221.name",
-					"une2012.resAnon.intav.report.33.table.221.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.221.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.221.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.221.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.222", "une2012.resAnon.intav.report.33.table.222.name",
-					"une2012.resAnon.intav.report.33.table.222.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.222.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.222.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.222.modality"));
-			createMethodologyTableRow(this.messageResources, table, "une2012.resAnon.intav.report.33.table.id.223", "une2012.resAnon.intav.report.33.table.223.name",
-					"une2012.resAnon.intav.report.33.table.223.question", createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.223.answer"),
-					createTextList(this.messageResources, "une2012.resAnon.intav.report.33.table.223.value"),
-					createImageList(this.messageResources, "une2012.resAnon.intav.report.33.table.223.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.2.1.id", "une2012_b.resAnon.intav.report.33.table.2.1.name",
+					"une2012_b.resAnon.intav.report.33.table.2.1.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.1.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.1.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.1.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.2.2.id", "une2012_b.resAnon.intav.report.33.table.2.2.name",
+					"une2012_b.resAnon.intav.report.33.table.2.2.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.2.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.2.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.2.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.2.3.id", "une2012_b.resAnon.intav.report.33.table.2.3.name",
+					"une2012_b.resAnon.intav.report.33.table.2.3.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.3.answer"),
+					createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.3.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.3.modality"));
+
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.2.4.id", "une2012_b.resAnon.intav.report.33.table.2.4.name",
+					"une2012_b.resAnon.intav.report.33.table.2.4.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.4.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.4.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.4.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.2.5.id", "une2012_b.resAnon.intav.report.33.table.2.5.name",
+					"une2012_b.resAnon.intav.report.33.table.2.5.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.5.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.5.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.5.modality"));
+			this.createMethodologyTableRow(this.messageResources, table, "une2012_b.resAnon.intav.report.33.table.2.6.id", "une2012_b.resAnon.intav.report.33.table.2.6.name",
+					"une2012_b.resAnon.intav.report.33.table.2.6.question", this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.6.answer"),
+					this.createTextList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.6.value"),
+					createImageList(this.messageResources, "une2012_b.resAnon.intav.report.33.table.2.6.modality"));
 
 		} catch (Exception e) {
 			Logger.putLog("Error al crear la tabla 3.3", AnonymousResultExportPdf.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return table;
 	}
+	
+	@Override
+	protected void createMethodologyTableRow(final MessageResources messageResources, final PdfPTable table, final String id, final String name, final String question,
+			final com.lowagie.text.List answer, final com.lowagie.text.List value, final com.lowagie.text.List modality) {
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(id), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_CENTER, 0, -1));
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(name), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_CENTER, 0, -1));
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(question), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_LEFT, 1, -1));
+		table.addCell(PDFUtils.createListTableCell(answer, Color.WHITE, Element.ALIGN_LEFT, 0));
+		table.addCell(PDFUtils.createListTableCell(value, Color.WHITE, Element.ALIGN_CENTER, 0));
+		table.addCell(PDFUtils.createListTableCell(modality, Color.WHITE, Element.ALIGN_CENTER, 0));
+	}
+	
+	@Override
+	protected com.lowagie.text.List createTextList(final MessageResources messageResources, final String text) {
+		return this.createTextList(messageResources, text, Element.ALIGN_LEFT);
+	}
+	
+	@Override
+	protected com.lowagie.text.List createTextList(final MessageResources messageResources, final String text, final int align) {
+		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
+		final com.lowagie.text.List pdfList = new com.lowagie.text.List();
+		for (String str : list) {
+			PDFUtils.addListItem(str, pdfList, ConstantsFont.noteCellFont8, false, false, align);
+		}
+		if (align == Element.ALIGN_LEFT) {
+			pdfList.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE / 5);
+		}
 
+		return pdfList;
+	}
+	
 	/**
 	 * Creates the section 331.
 	 *
@@ -875,26 +917,27 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		table.setWidthPercentage(100);
 		table.setHeaderRows(1);
 		create331HeaderTable(this.messageResources, table);
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.1", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.111"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.2", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.112"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.3", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.113"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.4", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.114"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.5", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.115"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.6", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.116"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.7", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.117"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.1", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.121"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.2", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.122"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.3", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.123"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.8", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.211"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.9", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.212"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.10", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.213"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.11", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.214"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.12", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.215"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.13", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.216"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.14", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.217"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.4", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.221"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.5", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.222"));
-		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.6", createTextList(this.messageResources, "une2012.resAnon.intav.report.331.table.verP.223"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.1", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.1"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.2", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.2"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.3", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.3"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.4", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.4"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.5", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.5"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.6", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.6"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.7", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.7"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.8", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.8"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.9", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.9"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.10", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.10"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.11", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.11"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.12", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.12"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.13", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.13"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.1.14", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.1.14"));
+		
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.1", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.2.1"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.2", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.2.2"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.3", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.2.3"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.4", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.2.4"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.5", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.2.5"));
+		create331TableRow(this.messageResources, table, "minhap.observatory.3_0.subgroup.2.6", createTextList(this.messageResources, "une2012_b.resAnon.intav.report.331.table.verP.2.6"));
 
 		return table;
 	}
@@ -927,7 +970,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 *            the ver P
 	 */
 	protected void create331TableRow(final MessageResources messageResources, PdfPTable table, String verification, com.lowagie.text.List verP) {
-		table.addCell(PDFUtils.createTableCell(this.messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, 10, -1));
+		table.addCell(PDFUtils.createTableCell(this.messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_LEFT, 10, -1));
 		table.addCell(PDFUtils.createListTableCell(verP, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 

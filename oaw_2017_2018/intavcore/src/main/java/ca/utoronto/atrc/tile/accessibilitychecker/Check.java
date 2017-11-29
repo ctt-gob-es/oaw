@@ -1,3 +1,18 @@
+/*******************************************************************************
+* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+* This program is licensed and may be used, modified and redistributed under the terms
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* version as soon as they are approved by the European Commission.
+* Unless required by applicable law or agreed to in writing, software distributed under the 
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+* ANY KIND, either express or implied. See the License for the specific language governing 
+* permissions and more details.
+* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+* Email: observ.accesibilidad@correo.gob.es
+******************************************************************************/
 /*
 Copyright ©2006, University of Toronto. All rights reserved.
 
@@ -860,6 +875,9 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED:
 			return functionAriaLabelledbyReferences(checkCode, nodeNode, elementGiven);
 
+		case CheckFunctionConstants.FUNCTION_ARIA_DESCRIBEDBY_REFERENCED:
+			return functionAriaDescribedbyReferences(checkCode, nodeNode, elementGiven);
+
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LENGHT:
 			return attributeLength(checkCode, nodeNode, elementGiven);
 
@@ -1243,30 +1261,25 @@ public class Check {
 		return false;
 	}
 	// TODO Método original
-	/*private int countNodesWithText(NodeList nodeList) {
-		int cellsWithText = 0;
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			final Node node = nodeList.item(i);
-			if ((node.getTextContent() != null)
-					&& (StringUtils.isNotEmpty(node.getTextContent()) && (!StringUtils.isOnlyBlanks(node.getTextContent()) && (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
-				cellsWithText++;
-			} else if (((Element) node).getElementsByTagName("img") != null) {
-				NodeList imgList = ((Element) node).getElementsByTagName("img");
-				for (int j = 0; j < imgList.getLength(); j++) {
-					// TODO 2017 alt, title o aria-label, aria-describedby
-					String alt = ((Element) imgList.item(j)).getAttribute("alt");
-					if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
-						cellsWithText++;
-						break;
-					}
-				}
-			}
-		}
-		return cellsWithText;
-	}*/
-	
-	
-	// 	TODO Métodos nuevos
+	/*
+	 * private int countNodesWithText(NodeList nodeList) { int cellsWithText =
+	 * 0; for (int i = 0; i < nodeList.getLength(); i++) { final Node node =
+	 * nodeList.item(i); if ((node.getTextContent() != null) &&
+	 * (StringUtils.isNotEmpty(node.getTextContent()) &&
+	 * (!StringUtils.isOnlyBlanks(node.getTextContent()) &&
+	 * (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
+	 * cellsWithText++; } else if (((Element) node).getElementsByTagName("img")
+	 * != null) { NodeList imgList = ((Element)
+	 * node).getElementsByTagName("img"); for (int j = 0; j <
+	 * imgList.getLength(); j++) { // TODO 2017 alt, title o aria-label,
+	 * aria-describedby String alt = ((Element)
+	 * imgList.item(j)).getAttribute("alt"); if (alt != null &&
+	 * StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) &&
+	 * !StringUtils.isOnlyWhiteChars(alt)) { cellsWithText++; break; } } } }
+	 * return cellsWithText; }
+	 */
+
+	// TODO Métodos nuevos
 	private int countNodesWithText(NodeList nodeList) {
 		int cellsWithText = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -1458,34 +1471,30 @@ public class Check {
 		int counter = 0;
 		for (String element : elementsList) {
 			counter += elementGiven.getElementsByTagName(element).getLength();
-			
-			
-			//TODO 2017 Si viene informado attribute1, tenemos que excluir del total las etiqietas que estén dentro de estas exclusiones
-			if(!StringUtils.isEmpty(checkCode.getFunctionAttribute1())) {
+
+			// TODO 2017 Si viene informado attribute1, tenemos que excluir del
+			// total las etiqietas que estén dentro de estas exclusiones
+			if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1())) {
 				final List<String> elementsExclude = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
-				
-				for(String exclude:elementsExclude) {
-					
+
+				for (String exclude : elementsExclude) {
+
 					NodeList excludeNodes = elementGiven.getElementsByTagName(exclude);
-					
-					for(int i=0;i<excludeNodes.getLength();i++) {
+
+					for (int i = 0; i < excludeNodes.getLength(); i++) {
 						Node tmp = excludeNodes.item(i);
-						
-						if(Node.ELEMENT_NODE == tmp.getNodeType()) {
-							
-							counter-= ((Element)tmp).getElementsByTagName(element).getLength();
+
+						if (Node.ELEMENT_NODE == tmp.getNodeType()) {
+
+							counter -= ((Element) tmp).getElementsByTagName(element).getLength();
 						}
-						
+
 					}
-					
+
 				}
 			}
-			
+
 		}
-		
-	
-		
-		
 
 		if ("greater".equalsIgnoreCase(compare)) {
 			// Si la comparación es mayor damos un error si el número de
@@ -1954,14 +1963,16 @@ public class Check {
 			return false;
 		}
 
-		// TODO 2017 Original: un únido id 
-		/**if (elementGiven.hasAttribute("aria-labelledby")) {
-			final Element labelledBy = elementGiven.getOwnerDocument().getElementById(elementGiven.getAttribute("aria-labelledby"));
-			if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
-				return false;
-			}
-		}*/
-		
+		// TODO 2017 Original: un únido id
+		/**
+		 * if (elementGiven.hasAttribute("aria-labelledby")) { final Element
+		 * labelledBy =
+		 * elementGiven.getOwnerDocument().getElementById(elementGiven.getAttribute("aria-labelledby"));
+		 * if (labelledBy != null &&
+		 * !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty())
+		 * { return false; } }
+		 */
+
 		// TODO 2017 Correción para tener en cuenta que puede haber varios
 		// ids en el atributo
 		if (elementGiven.hasAttribute("aria-labelledby")) {
@@ -2013,8 +2024,8 @@ public class Check {
 
 			// 2012 Si hay una y solo una una etiqueta asociada a ese control de
 			// formulario, está bien y retornamos false
-			//return cont != 1;
-			
+			// return cont != 1;
+
 			// TODO 2017 Si es cero devolvemos true porque no hay label, si hay
 			// más de una está bien
 			return cont == 0;
@@ -3509,6 +3520,20 @@ public class Check {
 		return cont;
 	}
 
+	private int getNumDataInputsExcludeCheckRadio(Element form) {
+		final NodeList inputs = form.getElementsByTagName("input");
+		final List<String> dataInputs = Arrays.asList("file", "password", "text", "");
+
+		int cont = 0;
+		for (int i = 0; i < inputs.getLength(); i++) {
+			if (dataInputs.contains(((Element) inputs.item(i)).getAttribute("type"))) {
+				cont++;
+			}
+		}
+
+		return cont;
+	}
+
 	private boolean functionLabelIncorrectlyAssociated(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String attributeFor = elementGiven.getAttribute("for");
 
@@ -3537,7 +3562,7 @@ public class Check {
 	}
 
 	private boolean functionNumMoreControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		final int numControls = elementGiven.getElementsByTagName("select").getLength() + elementGiven.getElementsByTagName("textarea").getLength() + getNumDataInputs(elementGiven);
+		final int numControls = elementGiven.getElementsByTagName("select").getLength() + elementGiven.getElementsByTagName("textarea").getLength() + getNumDataInputsExcludeCheckRadio(elementGiven);
 
 		return numControls > Integer.parseInt(checkCode.getFunctionNumber());
 	}
@@ -4336,6 +4361,30 @@ public class Check {
 
 	}
 
+	private boolean functionAriaDescribedbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+
+		final String ariaLabelledby = elementGiven.getAttribute("aria-describedby");
+
+		final Document document = elementGiven.getOwnerDocument();
+
+		String[] references = ariaLabelledby.split("\\s");
+
+		boolean fail = true;
+
+		for (int i = 0; i < references.length; i++) {
+
+			Element labelledBy = document.getElementById(references[i]);
+			if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
+				fail = false;
+				break;
+			}
+
+		}
+
+		return fail;
+
+	}
+
 	// TODO 2017 atributos alt, aria-label o aria-labelledby cuyo contenido
 	// textual sea superior a 150 caracteres
 	/**
@@ -4529,18 +4578,18 @@ public class Check {
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element) nodeList.item(i);
 			if (element.hasAttribute(checkCode.getFunctionAttribute1())) {
-				
-				
-				//Si está indicado el attribute2 se comprueba además que el atributo tiene el valor indicado en este campo
-				
-				if(!StringUtils.isEmpty(checkCode.getFunctionAttribute2()) && checkCode.getFunctionAttribute2().equals(element.getAttribute(checkCode.getFunctionAttribute1()))) {
-				
+
+				// Si está indicado el attribute2 se comprueba además que el
+				// atributo tiene el valor indicado en este campo
+
+				if (!StringUtils.isEmpty(checkCode.getFunctionAttribute2()) && checkCode.getFunctionAttribute2().equals(element.getAttribute(checkCode.getFunctionAttribute1()))) {
+
 					counter++;
-					
+
 				} else {
-				
-				counter++;
-				
+
+					counter++;
+
 				}
 			}
 		}

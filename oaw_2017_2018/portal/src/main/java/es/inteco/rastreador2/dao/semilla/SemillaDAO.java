@@ -1,3 +1,18 @@
+/*******************************************************************************
+* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+* This program is licensed and may be used, modified and redistributed under the terms
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* version as soon as they are approved by the European Commission.
+* Unless required by applicable law or agreed to in writing, software distributed under the 
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+* ANY KIND, either express or implied. See the License for the specific language governing 
+* permissions and more details.
+* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+* Email: observ.accesibilidad@correo.gob.es
+******************************************************************************/
 package es.inteco.rastreador2.dao.semilla;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
@@ -630,6 +645,30 @@ public final class SemillaDAO {
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
 					// Multidependencia
+					
+					// Multidependencia
+
+					PreparedStatement psDependencias = c.prepareStatement(
+							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
+					psDependencias.setLong(1, semillaForm.getId());
+
+					List<DependenciaForm> listDependencias = new ArrayList<>();
+					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+						while (rsDependencias.next()) {
+							DependenciaForm dependencia = new DependenciaForm();
+							dependencia.setId(rsDependencias.getLong("id_dependencia"));
+							dependencia.setName(rsDependencias.getString("nombre"));
+							listDependencias.add(dependencia);
+						}
+
+						semillaForm.setDependencias(listDependencias);
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					}
+					
+					
+					
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));

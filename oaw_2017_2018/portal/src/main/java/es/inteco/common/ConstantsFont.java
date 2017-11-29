@@ -1,3 +1,18 @@
+/*******************************************************************************
+* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+* This program is licensed and may be used, modified and redistributed under the terms
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* version as soon as they are approved by the European Commission.
+* Unless required by applicable law or agreed to in writing, software distributed under the 
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+* ANY KIND, either express or implied. See the License for the specific language governing 
+* permissions and more details.
+* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+* Email: observ.accesibilidad@correo.gob.es
+******************************************************************************/
 package es.inteco.common;
 
 import com.lowagie.text.Chunk;
@@ -80,6 +95,11 @@ public final class ConstantsFont {
     public static final Font labelHeaderCellFont = new Font(arial, 10, Font.BOLD, Color.WHITE);
     public static final Font codeCellFont = FontFactory.getFont(FontFactory.COURIER, 8, Font.NORMAL);
     public static final Font noteCellFont = new Font(arial, 10, Font.NORMAL);
+    
+    //TODO 2017 Fuente más pequeña 
+    public static final Font noteCellFont8 = new Font(arial, 7, Font.NORMAL);
+    
+    
     public static final Font strongNoteCellFont = new Font(arial, 10, Font.BOLD);
     public static final Font noteCellGreenFont = new Font(arial, 8, Font.NORMAL, Color.GREEN);
     public static final Font noteCellRedFont = new Font(arial, 8, Font.NORMAL, Color.RED);

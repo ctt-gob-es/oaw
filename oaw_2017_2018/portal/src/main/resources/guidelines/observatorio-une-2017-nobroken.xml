@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+-->
 <guideline>
 	<type>observatory</type>
-	<title abbr="observatorio-une-2012 - b" long-name="Pautas de verificación del Observatorio v2.0b">Observatorio
-		MINHAP 2.0b
+	<title abbr="observatorio-une-2012 - b" long-name="Pautas de verificación del Observatorio v3.0">Observatorio
+		MINHAP 3.0
 	</title>
 	<date>2017-08-30</date>
-	<status>Observatorio MINHAP v2.0b</status>
+	<status>Observatorio MINHAP v3.0</status>
 	<earlid>URL donde están definidas las pautas</earlid>
 	<preamble>Comentario sobre el Observatorio</preamble>
 
@@ -16,7 +28,7 @@
 		<suitability>
 			<name>A</name>
 			<subgroup aspect="observatory.aspect.alternatives">
-				<name>minhap.observatory.2_0.subgroup.1.1.1</name>
+				<name>minhap.observatory.3_0.subgroup.1.1</name>
 				<checks>
 					<!-- Imágenes con atributo alt -->
 					<check id="1" />
@@ -38,15 +50,19 @@
 					<!-- Imágenes menores a X*Y deben ser decorativas (alt blank, no title, 
 						role=presentation) -->
 					<check id="426" />
-
+					<!-- Imágenes con textos alternativos WAI -->
+					<check id="467" />
 					<!-- Textos alternativos menosres de 150 -->
 					<check id="468" />
+
+					<!-- Textos alternativos menosres de 150 -->
+					<check id="475" />
 
 				</checks>
 			</subgroup>
 			<subgroup aspect="observatory.aspect.structure">
 				<!-- Uso de encabezados -->
-				<name>minhap.observatory.2_0.subgroup.1.1.2</name>
+				<name>minhap.observatory.3_0.subgroup.1.2</name>
 				<checks>
 					<!-- Anidación correcta de encabezados -->
 					<check id="37" />
@@ -79,7 +95,7 @@
 
 			<subgroup aspect="observatory.aspect.structure">
 				<!-- Uso de listas -->
-				<name>minhap.observatory.2_0.subgroup.1.1.3</name>
+				<name>minhap.observatory.3_0.subgroup.1.3</name>
 				<checks>
 					<!-- Listas ordenadas mal creadas con elementos p -->
 					<check id="101" noExecutedMark="true" />
@@ -129,7 +145,7 @@
 
 			<subgroup aspect="observatory.aspect.structure">
 				<!-- Uso de Tablas -->
-				<name>minhap.observatory.2_0.subgroup.1.1.4</name>
+				<name>minhap.observatory.3_0.subgroup.1.4</name>
 				<checks>
 					<!-- Tabla de datos sin encabezados -->
 					<check id="7" noExecutedMark="true" />
@@ -159,7 +175,7 @@
 
 			<subgroup aspect="observatory.aspect.structure">
 				<!-- Agrupación estructural -->
-				<name>minhap.observatory.2_0.subgroup.1.1.5</name>
+				<name>minhap.observatory.3_0.subgroup.1.5</name>
 				<checks>
 					<!-- Utilizar br para simular párrafos -->
 					<!-- TODO: Comprobar que se buscan dos o más br SEGUIDOS -->
@@ -173,7 +189,7 @@
 
 			<subgroup aspect="observatory.aspect.presentation">
 				<!-- Separación contenido y presentación -->
-				<name>minhap.observatory.2_0.subgroup.1.1.6</name>
+				<name>minhap.observatory.3_0.subgroup.1.6</name>
 				<checks>
 					<!-- Utilizar en tablas de maquetación elementos de tablas de datos 
 						(th, caption, summary,...) -->
@@ -190,7 +206,7 @@
 
 			<subgroup aspect="observatory.aspect.general">
 				<!-- Identificación del idioma principal -->
-				<name>minhap.observatory.2_0.subgroup.1.1.7</name>
+				<name>minhap.observatory.3_0.subgroup.1.7</name>
 				<checks>
 					<!-- Documento con atributos lang/xml:lang adecuados al tipo de documento 
 						(html/xhtml) -->
@@ -203,7 +219,7 @@
 
 			<subgroup aspect="observatory.aspect.navigation">
 				<!-- Navegación con Javascript accesible -->
-				<name>minhap.observatory.2_0.subgroup.2.1.1</name>
+				<name>minhap.observatory.3_0.subgroup.1.8</name>
 				<checks>
 					<!-- Si se usan eventos dependientes de dispositivo, éstos están replicados -->
 					<check id="160" />
@@ -230,7 +246,7 @@
 
 			<subgroup aspect="observatory.aspect.navigation">
 				<!-- Control del usuario -->
-				<name>minhap.observatory.2_0.subgroup.2.1.2</name>
+				<name>minhap.observatory.3_0.subgroup.1.9</name>
 				<checks>
 
 					<!-- /MOVIDAS DE 2.1.3 -->
@@ -264,7 +280,7 @@
 
 			<subgroup aspect="observatory.aspect.structure">
 				<!-- Formularios -->
-				<name>minhap.observatory.2_0.subgroup.2.1.3</name>
+				<name>minhap.observatory.3_0.subgroup.1.10</name>
 				<checks>
 
 					<!-- Tres o más de botones de radio y/o casillas de verificación agrupadas 
@@ -305,7 +321,7 @@
 
 			<subgroup aspect="observatory.aspect.general">
 				<!-- Títulos de página y marcos descriptivos -->
-				<name>minhap.observatory.2_0.subgroup.2.1.4</name>
+				<name>minhap.observatory.3_0.subgroup.1.11</name>
 				<checks>
 					<!-- Existencia de title -->
 					<check id="50" />
@@ -330,7 +346,7 @@
 
 			<subgroup aspect="observatory.aspect.navigation">
 				<!-- Enlaces descriptivos -->
-				<name>minhap.observatory.2_0.subgroup.2.1.5</name>
+				<name>minhap.observatory.3_0.subgroup.1.12</name>
 				<checks>
 					<!-- Enlaces con solo una imagen que no tenga atributo alt -->
 					<check id="69" />
@@ -353,7 +369,7 @@
 				<!-- Se entiende por cambio de contexto una nueva página, ventana, pestaña 
 					o aplicación, o cambio de foco (window.location, window.history, window.open, 
 					window.focus, etc.). -->
-				<name>minhap.observatory.2_0.subgroup.2.1.6</name>
+				<name>minhap.observatory.3_0.subgroup.1.13</name>
 				<checks>
 					<!-- No se produce ningún cambio de contexto en los eventos “onfocus” 
 						u “onblur” -->
@@ -369,7 +385,7 @@
 
 			<subgroup aspect="observatory.aspect.general">
 				<!-- Compatibilidad -->
-				<name>minhap.observatory.2_0.subgroup.2.1.7</name>
+				<name>minhap.observatory.3_0.subgroup.1.14</name>
 				<checks>
 					<!-- Comprobación para validación estricta de la gramática del docuemnto -->
 					<!--<check id="232"/> -->
@@ -402,7 +418,7 @@
 			<name>AA</name>
 			<subgroup aspect="observatory.aspect.general">
 				Identificación de cambios de idioma
-				<name>minhap.observatory.2_0.subgroup.1.2.1</name>
+				<name>minhap.observatory.3_0.subgroup.2.1</name>
 				<checks>
 					Elementos (*todos*) con código de idioma no válido
 					<check id="161" />
@@ -415,7 +431,7 @@
 
 			<subgroup aspect="observatory.aspect.presentation">
 				Contraste mínimo
-				<name>minhap.observatory.2_0.subgroup.1.2.2</name>
+				<name>minhap.observatory.3_0.subgroup.2.2</name>
 				<checks>
 					Se verifica que las combinaciones de color de primer plano y de
 					color de fondo en una misma regla de las hojas de estilo tiene el
@@ -426,7 +442,7 @@
 
 			<subgroup aspect="observatory.aspect.general" type="goodpractice">
 				Sección de accesibilidad
-				<name>minhap.observatory.2_0.subgroup.1.2.3</name>
+				<name>minhap.observatory.3_0.subgroup.2.3</name>
 				<checks>
 					<check id="126" />
 					<check id="148" onlyWarning="true" relatedWith="126" />
@@ -440,7 +456,7 @@
 
 			<subgroup aspect="observatory.aspect.navigation">
 				<!-- Multiples Ways -->
-				<name>minhap.observatory.2_0.subgroup.2.2.1</name>
+				<name>minhap.observatory.3_0.subgroup.2.4</name>
 				<checks>
 					<!-- Se proporciona un mapa del sitio o una función de búsqueda dentro 
 						del sitio web. -->
@@ -450,7 +466,7 @@
 
 			<subgroup aspect="observatory.aspect.general">
 				<!-- Foco Visible -->
-				<name>minhap.observatory.2_0.subgroup.2.2.2</name>
+				<name>minhap.observatory.3_0.subgroup.2.5</name>
 				<checks>
 					<!-- Se verifica que en las hojas de estilo no se emplee la propiedad 
 						“outline” con valor “0” o “none” en elementos de interacción. -->
@@ -466,7 +482,7 @@
 
 			<subgroup aspect="observatory.aspect.navigation">
 				<!-- Navegación Consistente -->
-				<name>minhap.observatory.2_0.subgroup.2.2.3</name>
+				<name>minhap.observatory.3_0.subgroup.2.6</name>
 				<checks>
 					<!-- Enlaces adyacentes al mismo recurso deben estar combinados -->
 					<check id="180" />
