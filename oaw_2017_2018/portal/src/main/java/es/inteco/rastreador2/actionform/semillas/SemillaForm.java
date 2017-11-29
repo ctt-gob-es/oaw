@@ -92,7 +92,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 		this.setListaUrlsString(url.replace("\n", ";"));
 		
-		List<String> tmp = Arrays.asList(url.split("\r\n"));
+		List<String> tmp = Arrays.asList(this.listaUrlsString.split(";"));
 		for(int i=0;i<tmp.size();i++) {
 			this.listaUrls.add(tmp.get(i).trim());	
 		}
