@@ -1,3 +1,18 @@
+/*******************************************************************************
+* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+* This program is licensed and may be used, modified and redistributed under the terms
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* version as soon as they are approved by the European Commission.
+* Unless required by applicable law or agreed to in writing, software distributed under the 
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+* ANY KIND, either express or implied. See the License for the specific language governing 
+* permissions and more details.
+* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+* Email: observ.accesibilidad@correo.gob.es
+******************************************************************************/
 package es.inteco.rastreador2.pdf.utils;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
@@ -79,11 +94,11 @@ public final class PrimaryExportPdfUtils {
 			final FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idRastreoRealizado);
 			final String application = CartuchoDAO.getApplication(c, Long.valueOf(crawling.getIdCartridge()));
 			Logger.putLog("Normativa " + application, PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_INFO);
-			if ("UNE-2012".equalsIgnoreCase(application)) {
+			if (Constants.NORMATIVA_UNE_2012.equalsIgnoreCase(application)) {
 				builder = new AnonymousResultExportPdfUNE2012();
 			} else if ("UNE-2004".equalsIgnoreCase(application)) {
 				builder = new AnonymousResultExportPdfUNE2004();
-			} else if ("UNE-2017".equalsIgnoreCase(application)) { // TODO 2017
+			} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(application)) { // TODO 2017
 																	// Desdoblamiento
 																	// para
 																	// nueva
@@ -128,7 +143,7 @@ public final class PrimaryExportPdfUtils {
 
 			if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 
-				exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, MessageResources.getMessageResources("ApplicationResources-2017"), generalExpPath, seed, content,
+				exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), generalExpPath, seed, content,
 						idObservatoryExecution, observatoryType);
 
 			} else {
@@ -207,7 +222,7 @@ public final class PrimaryExportPdfUtils {
 				final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRanking(idObservatoryExecution, crawling.getSeed()) : null;
 				final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRanking(idObservatoryExecution, crawling.getSeed()) : null;
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-					addObservatoryScoreSummary(pdfBuilder, MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, currentEvaluationPageList,
+					addObservatoryScoreSummary(pdfBuilder, MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), document, pdfTocManager, currentEvaluationPageList,
 							previousEvaluationPageList, file, rankingActual, rankingPrevio);
 				} else {
 					addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file, rankingActual, rankingPrevio);
@@ -219,7 +234,7 @@ public final class PrimaryExportPdfUtils {
 						currentEvaluationPageList);
 
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager);
+					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), document, pdfTocManager);
 				} else {
 					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
 				}
@@ -231,7 +246,7 @@ public final class PrimaryExportPdfUtils {
 
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
 
-					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources("ApplicationResources-2017"), document, pdfTocManager, true);
+					observatoryPageResultsSectionBuilder.addPageResults(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), document, pdfTocManager, true);
 
 				} else {
 
@@ -298,7 +313,7 @@ public final class PrimaryExportPdfUtils {
 			String aplicacionPrevious = CartuchoDAO.getApplicationFromAnalisisId(c, previousEvaluationPageList.get(0).getIdAnalysis());
 
 			//TODO 2017	Prueba por si es necesario mezclar evolutivos de diferentes cartuchos
-			if ("UNE-2017".equalsIgnoreCase(aplicacionCurrent) && "UNE-2012".equalsIgnoreCase(aplicacionPrevious)) {
+			if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacionCurrent) && Constants.NORMATIVA_UNE_2012.equalsIgnoreCase(aplicacionPrevious)) {
 				AnonymousResultExportPdfUNE2012 tmpPdfBuilder = new AnonymousResultExportPdfUNE2012();
 
 				previousScore = tmpPdfBuilder.generateScores(PropertyMessageResources.getMessageResources("ApplicationResources"), previousEvaluationPageList);
