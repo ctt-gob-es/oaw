@@ -68,8 +68,8 @@ public class CheckHistoricoService {
 		final SimpleDateFormat dateFormat = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.basicservice.evolutivo.format"));
 
 		if (basicServiceForm.isRegisterAnalysis()) {
-			final List<BasicServiceResultado> historicoResultados = getHistoricoResultados(basicServiceForm.getDomain(), basicServiceForm.getAnalysisType(), basicServiceForm.getAmplitud(),
-					basicServiceForm.getProfundidad(), basicServiceForm.getReport());
+			final List<BasicServiceResultado> historicoResultados = getHistoricoResultados(basicServiceForm.getDomain(), basicServiceForm.getAnalysisType(), basicServiceForm.getProfundidad(),
+					basicServiceForm.getAmplitud(), basicServiceForm.getReport());
 			for (BasicServiceResultado historicoResultado : historicoResultados) {
 				if (!historicoResultado.getId().equals(String.valueOf(basicServiceForm.getId()))) {
 					try {
