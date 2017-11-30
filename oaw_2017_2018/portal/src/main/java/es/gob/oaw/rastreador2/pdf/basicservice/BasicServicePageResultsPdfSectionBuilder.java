@@ -216,10 +216,9 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 		return matcher.find() ? matcher.group(1) : null;
 	}
 
-	// TODO 2007 Nuevos métodos para metodología
 
 	/**
-	 * Resultados por paǵinas agrudos por prioridad
+	 * Resultados por paǵinas agrudos por prioridad para la nueva metodología UNE-2012-B
 	 * @param messageResources
 	 * @param evaluationForm
 	 * @param chapter

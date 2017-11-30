@@ -856,6 +856,6 @@ public interface Constants {
 	String NORMATIVA_UNE_2012 = "UNE-2012";
 	String NORMATIVA_UNE_2012_B = "UNE-2012-B";
 
-	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2017";
+	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
 
 }

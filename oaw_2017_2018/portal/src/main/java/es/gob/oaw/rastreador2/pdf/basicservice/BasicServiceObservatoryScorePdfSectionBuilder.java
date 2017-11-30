@@ -88,18 +88,16 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			previousScore = null;
 		}
 
-		//// TABLA PUNTUACION OBSERVATORIO
-		// TODO 2017 Tabla con evolucion
-		// final float[] columnWidths = new float[]{0.6f, 0.4f};
-		
+		// TABLA PUNTUACION OBSERVATORIO
+		// Tabla con evolucion
+
 		final float[] columnWidths;
 		if (previousScore != null) {
-			columnWidths = new float[] { 0.6f, 0.4f, 0.4f, 0.4f };	
+			columnWidths = new float[] { 0.6f, 0.4f, 0.4f, 0.4f };
 		} else {
-			columnWidths = new float[]{0.6f, 0.4f};
+			columnWidths = new float[] { 0.6f, 0.4f };
 		}
 
-		
 		final PdfPTable tablaRankings = new PdfPTable(columnWidths);
 		tablaRankings.setSpacingBefore(LINE_SPACE);
 		tablaRankings.setSpacingAfter(HALF_LINE_SPACE);

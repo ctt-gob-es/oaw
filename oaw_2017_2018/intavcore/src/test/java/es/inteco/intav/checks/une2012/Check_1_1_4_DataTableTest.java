@@ -71,7 +71,7 @@ public final class Check_1_1_4_DataTableTest {
     @Before
     public void setUp() throws Exception {
         EvaluatorUtility.initialize();
-        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
+        checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012-b");
     }
 
     @Test
@@ -749,8 +749,6 @@ public final class Check_1_1_4_DataTableTest {
                 "\n" +
                 "  <tfoot>\n" +
                 "    <tr>\n" +
-                // TODO: ¿Cambiar?
-                // No se permiten encabezados vacios ni siquiera en el pie de tabla tfoot
                 "    \t<th></th>\n" +
                 "      <td colspan=\"4\">\n" +
                 "      \n" +

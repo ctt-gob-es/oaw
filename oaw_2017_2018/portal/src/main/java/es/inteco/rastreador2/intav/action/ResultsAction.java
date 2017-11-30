@@ -26,7 +26,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
@@ -105,19 +105,15 @@ public class ResultsAction extends Action {
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
 					request.setAttribute(Constants.OBSERVATORY, request.getParameter(Constants.OBSERVATORY));
 					request.setAttribute(Constants.SCORE, IntavUtils.calculateScore(request, idExecution));
-					
 
-					// TODO 2017 Parametro adicional para los textos en la JSP
-					String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idExecution, idRastreo );
-
-
+					// Parametro adicional para los textos en la JSP
+					String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idExecution, idRastreo);
 
 					if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 
 						request.setAttribute("aplicacion", Constants.NORMATIVA_UNE_2012_B);
 					}
-					
-					
+
 				}
 			} else {
 				return mapping.findForward(Constants.NO_PERMISSION);

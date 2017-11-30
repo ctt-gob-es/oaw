@@ -43,7 +43,7 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2004Builder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012Builder;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2017Builder;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012bBuilder;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
@@ -113,8 +113,7 @@ public class AnonymousResultExportPdfAction extends Action {
 		if (Constants.NORMATIVA_UNE_2012.equalsIgnoreCase(version)) {
 			return new AnonymousResultPdfUNE2012Builder(file, tipo);
 		} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(version)) {
-			// TODO 2017 Desdoblamiento para nueva metodología
-			return new AnonymousResultPdfUNE2017Builder(file, tipo);
+			return new AnonymousResultPdfUNE2012bBuilder(file, tipo);
 		} else {
 			return new AnonymousResultPdfUNE2004Builder(file, tipo);
 		}

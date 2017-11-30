@@ -30,7 +30,7 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2017Utils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012BUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
@@ -45,30 +45,30 @@ import java.util.Map;
 import static es.inteco.common.ConstantsFont.LINE_SPACE;
 
 /**
- * AnonymousResultExportPdfUNE2017. Clase replicada de
+ * AnonymousResultExportPdfUNE2012b. Clase replicada de
  * {@link AnonymousResultExportPdfUNE2012} para la nueva versión de la
  * metodología basada en la misma norma que la mencionada y conservar ambas para
  * futuras consultas o comparativas.
  */
-public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
+public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 
 	/** The message resources. */
 	private MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
 
 	/**
-	 * Instantiates a new anonymous result export pdf UNE 2017.
+	 * Instantiates a new anonymous result export pdf UNE 2012b.
 	 */
-	public AnonymousResultExportPdfUNE2017() {
+	public AnonymousResultExportPdfUNE2012b() {
 		super(new BasicServiceForm());
 	}
 
 	/**
-	 * Instantiates a new anonymous result export pdf UNE 2017.
+	 * Instantiates a new anonymous result export pdf UNE 2012b.
 	 *
 	 * @param basicServiceForm
 	 *            the basic service form
 	 */
-	public AnonymousResultExportPdfUNE2017(final BasicServiceForm basicServiceForm) {
+	public AnonymousResultExportPdfUNE2012b(final BasicServiceForm basicServiceForm) {
 		super(basicServiceForm);
 	}
 
@@ -832,9 +832,9 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	@Override
 	protected void createMethodologyTableRow(final MessageResources messageResources, final PdfPTable table, final String id, final String name, final String question,
 			final com.lowagie.text.List answer, final com.lowagie.text.List value, final com.lowagie.text.List modality) {
-		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(id), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_CENTER, 0, -1));
-		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(name), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_CENTER, 0, -1));
-		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(question), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_LEFT, 1, -1));
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(id), Color.WHITE, ConstantsFont.noteCellFont7, Element.ALIGN_CENTER, 0, -1));
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(name), Color.WHITE, ConstantsFont.noteCellFont7, Element.ALIGN_CENTER, 0, -1));
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(question), Color.WHITE, ConstantsFont.noteCellFont7, Element.ALIGN_LEFT, 1, -1));
 		table.addCell(PDFUtils.createListTableCell(answer, Color.WHITE, Element.ALIGN_LEFT, 0));
 		table.addCell(PDFUtils.createListTableCell(value, Color.WHITE, Element.ALIGN_CENTER, 0));
 		table.addCell(PDFUtils.createListTableCell(modality, Color.WHITE, Element.ALIGN_CENTER, 0));
@@ -850,7 +850,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
 		final com.lowagie.text.List pdfList = new com.lowagie.text.List();
 		for (String str : list) {
-			PDFUtils.addListItem(str, pdfList, ConstantsFont.noteCellFont8, false, false, align);
+			PDFUtils.addListItem(str, pdfList, ConstantsFont.noteCellFont7, false, false, align);
 		}
 		if (align == Element.ALIGN_LEFT) {
 			pdfList.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE / 5);
@@ -945,7 +945,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 *            the ver P
 	 */
 	protected void create331TableRow(final MessageResources messageResources, PdfPTable table, String verification, com.lowagie.text.List verP) {
-		table.addCell(PDFUtils.createTableCell(this.messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont8, Element.ALIGN_LEFT, 10, -1));
+		table.addCell(PDFUtils.createTableCell(this.messageResources.getMessage(verification), Color.WHITE, ConstantsFont.noteCellFont7, Element.ALIGN_LEFT, 10, -1));
 		table.addCell(PDFUtils.createListTableCell(verP, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
@@ -1098,7 +1098,7 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	@Override
 	public void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess,
 			java.util.List<ObservatoryEvaluationForm> evaList, String value, boolean regenerate) throws Exception {
-		ResultadosAnonimosObservatorioUNE2017Utils.getMidsComparationByVerificationLevelGraphic(this.messageResources, new HashMap<String, Object>(), level, title, filePath, noDataMess, evaList,
+		ResultadosAnonimosObservatorioUNE2012BUtils.getMidsComparationByVerificationLevelGraphic(this.messageResources, new HashMap<String, Object>(), level, title, filePath, noDataMess, evaList,
 				value, regenerate);
 	}
 
@@ -1111,10 +1111,10 @@ public class AnonymousResultExportPdfUNE2017 extends AnonymousResultExportPdf {
 	 */
 	@Override
 	protected void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, java.util.List<ObservatoryEvaluationForm> evaList) {
-		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
-		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
-		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIVerificationMidsComparison(this.messageResources, resultL1);
-		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIIVerificationMidsComparison(this.messageResources, resultL2);
+		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
+		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
+		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelIVerificationMidsComparison(this.messageResources, resultL1);
+		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelIIVerificationMidsComparison(this.messageResources, resultL2);
 		scoreForm.setVerifications1(labelsL1);
 		scoreForm.setVerifications2(labelsL2);
 	}

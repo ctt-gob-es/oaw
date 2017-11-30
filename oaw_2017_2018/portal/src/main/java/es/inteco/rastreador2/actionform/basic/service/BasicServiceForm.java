@@ -174,11 +174,10 @@ public class BasicServiceForm extends ValidatorForm {
 			return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(report)) {
 			return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
-			// TODO 2017 Cambio por la nueva metodología
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(report)) {
-			return "Observatorio UNE 2017";
+			return "Observatorio UNE 2012 B";
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(report)) {
-			return "Observatorio UNE 2017 (sin comprobar enlaces rotos)";
+			return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
 		} else {
 			return report;
 		}
@@ -189,7 +188,6 @@ public class BasicServiceForm extends ValidatorForm {
 	}
 
 	private boolean isEvolutivo() {
-		// TODO 2017 Cambio por la nueva metodología
 		final boolean isEvolutivoCrawl = analysisType == BasicServiceAnalysisType.URL && ("4".equals(amplitud) || "8".equals(amplitud)) && "4".equals(profundidad);
 		final boolean isEvolutivoLista = analysisType == BasicServiceAnalysisType.LISTA_URLS && domain.split("\r\n|\n").length > 17;
 

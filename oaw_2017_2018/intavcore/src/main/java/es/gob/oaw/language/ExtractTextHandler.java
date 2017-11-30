@@ -83,8 +83,7 @@ public class ExtractTextHandler extends DefaultHandler {
 			skipCharacters = true;
 		}
 
-		// TODO 2017 Omitir etiquetas indicadas en el constructor
-
+		// Omitir etiquetas indicadas en el constructor
 		else if (this.skipTags != null && this.skipTags.length > 0) {
 			if (Arrays.asList(skipTags).contains(localName.toLowerCase())) {
 				skipCharacters = true;

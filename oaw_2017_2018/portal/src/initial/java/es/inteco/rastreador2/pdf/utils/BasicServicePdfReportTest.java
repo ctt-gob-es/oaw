@@ -1,3 +1,15 @@
+/*******************************************************************************
+* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+* This program is licensed and may be used, modified and redistributed under the terms
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* version as soon as they are approved by the European Commission.
+* Unless required by applicable law or agreed to in writing, software distributed under the 
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+* ANY KIND, either express or implied. See the License for the specific language governing 
+* permissions and more details.
+* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+******************************************************************************/
 package es.inteco.rastreador2.pdf.utils;
 
 import java.io.File;
@@ -25,7 +37,7 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 import junit.framework.Assert;
 
 /**
@@ -75,22 +87,16 @@ public class BasicServicePdfReportTest {
 		final long analisisId = -131;
 		final long basicServiceId = analisisId * -1;
 
-		final BasicServiceForm basicServiceForm = DiagnosisDAO
-				.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
-		// TODO 2017 Test
+		final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
 		// final BasicServicePdfReport basicServicePdfReport = new
 		// BasicServicePdfReport(new
 		// AnonymousResultExportPdfUNE2012(basicServiceForm));
-		final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(
-				new AnonymousResultExportPdfUNE2017(basicServiceForm));
-		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(),
-				analisisId);
+		final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2012b(basicServiceForm));
+		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
 
-		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager
-				.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
 
-		basicServicePdfReport.exportToPdf(currentEvaluationPageList,
-				Collections.<Date, List<ObservatoryEvaluationForm>>emptyMap(), exportFile.getAbsolutePath());
+		basicServicePdfReport.exportToPdf(currentEvaluationPageList, Collections.<Date, List<ObservatoryEvaluationForm>>emptyMap(), exportFile.getAbsolutePath());
 		Assert.assertTrue(exportFile.exists());
 	}
 
@@ -104,27 +110,21 @@ public class BasicServicePdfReportTest {
 		final long basicServiceId = 211;
 		final long analisisId = basicServiceId * -1;
 
-		final BasicServiceForm basicServiceForm = DiagnosisDAO
-				.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
-		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(),
-				analisisId);
+		final BasicServiceForm basicServiceForm = DiagnosisDAO.getBasicServiceRequestById(DataBaseManager.getConnection(), basicServiceId);
+		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
 
-		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager
-				.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
+		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
 
 		final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
-		final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService
-				.getHistoricoResultadosOfBasicService(basicServiceForm);
+		final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 
 		Assert.assertFalse(previousEvaluationsPageList.isEmpty());
 		Assert.assertEquals(2, previousEvaluationsPageList.size());
-		// TODO 2017 Test
 		// final BasicServicePdfReport basicServicePdfReport = new
 		// BasicServicePdfReport(new
 		// AnonymousResultExportPdfUNE2012(basicServiceForm));
-		final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2017(basicServiceForm));
-		basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList,
-				exportFile.getAbsolutePath());
+		final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(new AnonymousResultExportPdfUNE2012b(basicServiceForm));
+		basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, exportFile.getAbsolutePath());
 		Assert.assertTrue(exportFile.exists());
 	}
 

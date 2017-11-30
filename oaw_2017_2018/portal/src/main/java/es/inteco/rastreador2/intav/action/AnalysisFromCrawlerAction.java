@@ -85,7 +85,7 @@ public class AnalysisFromCrawlerAction extends Action {
 
 				MessageResources messageResources = getResources(request);
 
-				// TODO 2017 Fichero de mensajes si es la nueva metodología
+				// Fichero de mensajes si es la nueva metodología
 				String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
 				if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);

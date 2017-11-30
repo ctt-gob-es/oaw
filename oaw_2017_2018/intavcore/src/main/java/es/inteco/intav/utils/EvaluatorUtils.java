@@ -709,15 +709,10 @@ public final class EvaluatorUtils {
 		evaluationForm.setCrawlerExecutionId(evaluation.getRastreo());
 		evaluationForm.setChecksFailed(evaluation.getChecksFailed());
 		evaluationForm.setSource(evaluation.getSource());
-		//TODO 2017 Guardamos el id de análisis para tener acceso a información del cartucho y otros datos más adelante
+		// Guardamos el id de análisis para tener acceso a información del
+		// cartucho y otros datos más adelante
 		evaluationForm.setIdAnalysis(evaluation.getIdAnalisis());
-		
-		
 
-		
-		
-		
-		
 		final Map<String, List<Integer>> aspects = initializeAspects();
 
 		for (int i = 0; i < guideline.getGroups().size(); i++) {
@@ -1011,12 +1006,11 @@ public final class EvaluatorUtils {
 	public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects) throws IOException {
 		final HttpURLConnection connection = generateConnection(url, method);
 
-		// TODO Omitimos la redirección y si detectamos una, actualizamos el
+		// Omitimos la redirección y si detectamos una, actualizamos el
 		// conector
 
 		int status = connection.getResponseCode();
-		
-		
+
 		connection.disconnect();
 
 		if (status != HttpURLConnection.HTTP_OK && followRedirects) {
@@ -1025,7 +1019,7 @@ public final class EvaluatorUtils {
 				String newUrl = connection.getHeaderField("Location");
 
 				return getConnection(encodeUrl(newUrl), method, false);
-			} 
+			}
 		}
 
 		return generateConnection(url, method);
@@ -1033,6 +1027,7 @@ public final class EvaluatorUtils {
 
 	/**
 	 * Genera una conexión
+	 * 
 	 * @param url
 	 * @param method
 	 * @return
@@ -1083,8 +1078,7 @@ public final class EvaluatorUtils {
 
 		// Install the all-trusting trust manager
 		try {
-			// final SSLContext sc = SSLContext.getInstance("SSL");
-			// TODO Modificamos el protocolo SSL para solucionar la conexión con
+			// Modificamos el protocolo SSL para solucionar la conexión con
 			// algunos páginas que no son accesibles con SSL
 			final SSLContext sc = SSLContext.getInstance("TLSv1.2");
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());

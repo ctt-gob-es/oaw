@@ -861,16 +861,15 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS:
 			return functionTitleNotContains(checkCode, nodeNode, elementGiven);
 
-		/****************************************************************************/
-		/****************************************************************************/
-		/****************************************************************************/
-		/****************************************************************************/
-		// TODO 2017 Nuevas funciones
-
-		/****************************************************************************/
-		/****************************************************************************/
-		/****************************************************************************/
-		/****************************************************************************/
+		/*----------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------*/
+		/*--------------------- NUEVAS FUNCIONES PARA UNE 2012 -B --------------------*/
+		/*----------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------*/
+		/*----------------------------------------------------------------------------*/
 
 		case CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED:
 			return functionAriaLabelledbyReferences(checkCode, nodeNode, elementGiven);
@@ -1260,26 +1259,7 @@ public class Check {
 		}
 		return false;
 	}
-	// TODO Método original
-	/*
-	 * private int countNodesWithText(NodeList nodeList) { int cellsWithText =
-	 * 0; for (int i = 0; i < nodeList.getLength(); i++) { final Node node =
-	 * nodeList.item(i); if ((node.getTextContent() != null) &&
-	 * (StringUtils.isNotEmpty(node.getTextContent()) &&
-	 * (!StringUtils.isOnlyBlanks(node.getTextContent()) &&
-	 * (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
-	 * cellsWithText++; } else if (((Element) node).getElementsByTagName("img")
-	 * != null) { NodeList imgList = ((Element)
-	 * node).getElementsByTagName("img"); for (int j = 0; j <
-	 * imgList.getLength(); j++) { // TODO 2017 alt, title o aria-label,
-	 * aria-describedby String alt = ((Element)
-	 * imgList.item(j)).getAttribute("alt"); if (alt != null &&
-	 * StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) &&
-	 * !StringUtils.isOnlyWhiteChars(alt)) { cellsWithText++; break; } } } }
-	 * return cellsWithText; }
-	 */
 
-	// TODO Métodos nuevos
 	private int countNodesWithText(NodeList nodeList) {
 		int cellsWithText = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -1472,7 +1452,7 @@ public class Check {
 		for (String element : elementsList) {
 			counter += elementGiven.getElementsByTagName(element).getLength();
 
-			// TODO 2017 Si viene informado attribute1, tenemos que excluir del
+			// Si viene informado attribute1, tenemos que excluir del
 			// total las etiqietas que estén dentro de estas exclusiones
 			if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1())) {
 				final List<String> elementsExclude = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
@@ -1963,18 +1943,8 @@ public class Check {
 			return false;
 		}
 
-		// TODO 2017 Original: un únido id
-		/**
-		 * if (elementGiven.hasAttribute("aria-labelledby")) { final Element
-		 * labelledBy =
-		 * elementGiven.getOwnerDocument().getElementById(elementGiven.getAttribute("aria-labelledby"));
-		 * if (labelledBy != null &&
-		 * !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty())
-		 * { return false; } }
-		 */
-
-		// TODO 2017 Correción para tener en cuenta que puede haber varios
-		// ids en el atributo
+		// Correción para tener en cuenta que puede haber varios ids en el
+		// atributo
 		if (elementGiven.hasAttribute("aria-labelledby")) {
 
 			String[] ids = elementGiven.getAttribute("aria-labelledby").split("\\s");
@@ -2022,11 +1992,7 @@ public class Check {
 				}
 			}
 
-			// 2012 Si hay una y solo una una etiqueta asociada a ese control de
-			// formulario, está bien y retornamos false
-			// return cont != 1;
-
-			// TODO 2017 Si es cero devolvemos true porque no hay label, si hay
+			// i es cero devolvemos true porque no hay label, si hay
 			// más de una está bien
 			return cont == 0;
 		} else {
@@ -4252,7 +4218,6 @@ public class Check {
 	/******************************************************************************/
 	/******************************************************************************/
 
-	// TODO 2017 Comprueba si el documento tiene o no encabezados
 	/**
 	 * Comprobación de la existencia de encabezados marcados WAI-ARIA
 	 * 
@@ -4286,7 +4251,6 @@ public class Check {
 		return fail;
 	}
 
-	// TODO 2017 Comprueba si el documento tiene encabezado de nivel 1 WAI
 	/**
 	 * Comprueba si existe encabezado marcado WAI-ARIA de primer nivel
 	 * 
@@ -4322,7 +4286,6 @@ public class Check {
 		return fail;
 	}
 
-	// TODO 2017 aria-labelledby references one or more id elements in the page
 	/**
 	 * Comprueba si un elemento con el atributo "aria-labelledby" hace
 	 * referencia a un elemento existente en el documento.
@@ -4385,8 +4348,6 @@ public class Check {
 
 	}
 
-	// TODO 2017 atributos alt, aria-label o aria-labelledby cuyo contenido
-	// textual sea superior a 150 caracteres
 	/**
 	 * Comprueba si elemento dado tiene una longitud mayor de 150.
 	 * 
@@ -4412,8 +4373,6 @@ public class Check {
 		return fail;
 	}
 
-	// TODO 2017 aria-labelledby cuyo contenido textual sea superior a 150
-	// caracteres
 	/**
 	 * Comprueba si el contenido del elemento al que hace referencia el elemento
 	 * "aria-labelledby" tiene una longiutud superior a 150 caracteres.
@@ -4454,7 +4413,6 @@ public class Check {
 		return fail;
 	}
 
-	// TODO 2017 aria @role heading consecutivos sin contenido entre ellos
 	/**
 	 * Comprueba que existe contenido a continación de un encabezado WAI-ARIA y
 	 * que no lo sigue otro encabezado del mismo nive sin contenido de por
@@ -4486,9 +4444,8 @@ public class Check {
 
 	}
 
-	// TODO 2017 Comprueba que no se saltan niveles con encabezados wai
 	/**
-	 * Comprueba que los encabezados WAI-ARIA son secuenciales.
+	 * Comprueba que los encabezados WAI-ARIA que no se saltan niveles.
 	 * 
 	 * @param checkCode
 	 *            Información del check
@@ -4550,8 +4507,6 @@ public class Check {
 		return (failPrevious || failNext);
 	}
 
-	// TODO 2017 Cuenta el número de elementos exsitentes con el atributo
-	// indicado y el valor indicado
 	/**
 	 * Cuenta el número de elementos existentes con un atributo determinado y
 	 * comprueba si se supera el máximo indicado.
@@ -4605,10 +4560,10 @@ public class Check {
 		}
 	}
 
-	// TODO 2017 Ampliación de la comprobación de forma de contacto para ver si
-	// la página de accesibilidad lo tiene ella misma incluido
 	/**
-	 * Comprueba si en un documento existe un formulario de contacto.
+	 * Comprueba si en un documento existe un formulario de contacto. Ampliación
+	 * de la comprobación de forma de contacto para ver si la página de
+	 * accesibilidad lo tiene ella misma incluido.
 	 * 
 	 * @param checkCode
 	 *            Información del check
@@ -4655,8 +4610,7 @@ public class Check {
 			return !hasContact;
 		}
 	}
-
-	// TODO 2017 Texto de un elemento y sus hijos
+	
 	/**
 	 * Devuelve el texto de un elemento y sus hijos
 	 * 

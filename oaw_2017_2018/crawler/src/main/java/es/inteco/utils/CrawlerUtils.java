@@ -300,24 +300,23 @@ public final class CrawlerUtils {
 	public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws IOException {
 		final HttpURLConnection connection = generateConnection(url, refererUrl);
 
-		// TODO Omitimos la redirección y si detectamos una, actualizamos el
+		// Omitimos la redirección y si detectamos una, actualizamos el
 		// conector
-		// COmo se usa este método para las conexiones por las conexiones por la JSP, se hace este apaño
+		// Como se usa este método para las conexiones al servicio de
+		// diagnóstico mediante la JSP se hace esta comprobación para siga la
+		// redirreción
 		if (!"BASIC_SERVICE_URL".equals(refererUrl)) {
 
-			
 			int status = connection.getResponseCode();
 			connection.disconnect();
 
 			if (status != HttpURLConnection.HTTP_OK && followRedirects) {
 				if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
-					// get redirect url from "location" header field
+					// Obtenemos la redirección
 					String newUrl = connection.getHeaderField("Location");
-					
 					connection.disconnect();
-
 					return getConnection(encodeUrl(newUrl), refererUrl, false);
-				} 
+				}
 			}
 		} else {
 			connection.setInstanceFollowRedirects(followRedirects);
@@ -367,7 +366,7 @@ public final class CrawlerUtils {
 
 		// Install the all-trusting trust manager
 		try {
-			// TODO Modificamos el protocolo SSL para solucionar la conexión con
+			// Modificamos el protocolo SSL para solucionar la conexión con
 			// algunos páginas que no son accesibles con SSL/TSL (v1)
 			final SSLContext sc = SSLContext.getInstance("TLSv1.2");
 			sc.init(null, trustAllCerts, new java.security.SecureRandom());

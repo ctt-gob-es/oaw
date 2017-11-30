@@ -24,7 +24,7 @@ import java.util.Map;
  * identificar que imagen existente en la plantilla, que actua como placeholder,
  * hay que sobreescribir.
  */
-public final class OpenOfficeUNE2017ImageUtils {
+public final class OpenOfficeUNE2012BImageUtils {
 
 	/** Identificadores de las imágenss de AGE. */
 	private static final Map<String, String> AGE_IMAGES = Collections.unmodifiableMap(new HashMap<String, String>() {
@@ -317,9 +317,9 @@ public final class OpenOfficeUNE2017ImageUtils {
 	});
 
 	/**
-	 * Instantiates a new open office UNE 2017 image utils.
+	 * Instantiates a new open office UNE 2012b image utils.
 	 */
-	private OpenOfficeUNE2017ImageUtils() {
+	private OpenOfficeUNE2012BImageUtils() {
 	}
 
 	/**

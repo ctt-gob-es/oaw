@@ -96,8 +96,8 @@ public final class ConstantsFont {
     public static final Font codeCellFont = FontFactory.getFont(FontFactory.COURIER, 8, Font.NORMAL);
     public static final Font noteCellFont = new Font(arial, 10, Font.NORMAL);
     
-    //TODO 2017 Fuente más pequeña 
-    public static final Font noteCellFont8 = new Font(arial, 7, Font.NORMAL);
+    //Fuente más pequeña para las tablas de metodología 
+    public static final Font noteCellFont7 = new Font(arial, 7, Font.NORMAL);
     
     
     public static final Font strongNoteCellFont = new Font(arial, 10, Font.BOLD);

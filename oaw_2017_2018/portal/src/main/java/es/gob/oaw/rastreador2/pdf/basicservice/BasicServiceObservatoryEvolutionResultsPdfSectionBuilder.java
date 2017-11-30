@@ -57,9 +57,9 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.openOffice.export.OpenOfficeUNE2012DocumentBuilder;
-import es.inteco.rastreador2.openOffice.export.OpenOfficeUNE2017DocumentBuilder;
+import es.inteco.rastreador2.openOffice.export.OpenOfficeUNE2012BDocumentBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.ChartForm;
 import es.inteco.rastreador2.utils.GraphicsUtils;
@@ -271,15 +271,14 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 
 		final Section subSection = PDFUtils.createSection("Nivel de Accesibilidad I", pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.getNumSection(), 2);
 
-		// TODO 2017 Desdoblamiento para nueva metodologia
-
 		final DefaultCategoryDataset dataSet;
 
 		int numVerficationsLevel;
 
-		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-			dataSet = createEvolutionAverageScoreByVerificationDataSet(evaluationPageList, OpenOfficeUNE2017DocumentBuilder.LEVEL_I_VERIFICATIONS);
-			numVerficationsLevel = OpenOfficeUNE2017DocumentBuilder.LEVEL_I_VERIFICATIONS.size();
+		// Desdoblamiento nueva metodología
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
+			dataSet = createEvolutionAverageScoreByVerificationDataSet(evaluationPageList, OpenOfficeUNE2012BDocumentBuilder.LEVEL_I_VERIFICATIONS);
+			numVerficationsLevel = OpenOfficeUNE2012BDocumentBuilder.LEVEL_I_VERIFICATIONS.size();
 		} else {
 
 			dataSet = createEvolutionAverageScoreByVerificationDataSet(evaluationPageList, LEVEL_I_VERIFICATIONS);
@@ -295,10 +294,8 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		final Map<Date, ScoreForm> scores = new TreeMap<>();
 		final PdfPTable tablaRankings = createTablaRankings(messageResources, pdfBuilder, evaluationPageList, scores, dateFormat);
 
-		// TODO 2017 Desdoblamiento para nueva metodologia
-
+		// Desdoblamiento nueva metodología
 		for (int i = 0; i < numVerficationsLevel; i++) {
-			// for (int i = 0; i < 10; i++) {
 			tablaRankings.addCell(PDFUtils.createTableCell(scores.values().iterator().next().getVerifications1().get(i).getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT,
 					DEFAULT_PADDING, -1));
 			for (Map.Entry<Date, ScoreForm> dateScoreFormEntry : scores.entrySet()) {
@@ -314,15 +311,15 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 			Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, Section section) {
 		final Section subSection = PDFUtils.createSection("Nivel de Accesibilidad II", pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.getNumSection(), 2);
 
-		// TODO 2017 Desdoblamiento para nueva metodologia
+		// Desdoblamiento nueva metodología
 
 		final DefaultCategoryDataset dataSet;
 
 		int numVerficationsLevel;
 
-		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
-			dataSet = createEvolutionAverageScoreByVerificationDataSet(evaluationPageList, OpenOfficeUNE2017DocumentBuilder.LEVEL_II_VERIFICATIONS);
-			numVerficationsLevel = OpenOfficeUNE2017DocumentBuilder.LEVEL_II_VERIFICATIONS.size();
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
+			dataSet = createEvolutionAverageScoreByVerificationDataSet(evaluationPageList, OpenOfficeUNE2012BDocumentBuilder.LEVEL_II_VERIFICATIONS);
+			numVerficationsLevel = OpenOfficeUNE2012BDocumentBuilder.LEVEL_II_VERIFICATIONS.size();
 		} else {
 
 			dataSet = createEvolutionAverageScoreByVerificationDataSet(evaluationPageList, LEVEL_II_VERIFICATIONS);
@@ -338,10 +335,8 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		final Map<Date, ScoreForm> scores = new TreeMap<>();
 		final PdfPTable tablaRankings = createTablaRankings(messageResources, pdfBuilder, evaluationPageList, scores, dateFormat);
 
-		// TODO 2017 Desdoblamiento para nueva metodologia
-
+		// Desdoblamiento nueva metodología
 		for (int i = 0; i < numVerficationsLevel; i++) {
-			// for (int i = 0; i < 10; i++) {
 			tablaRankings.addCell(PDFUtils.createTableCell(scores.values().iterator().next().getVerifications2().get(i).getLabel(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT,
 					DEFAULT_PADDING, -1));
 			for (Map.Entry<Date, ScoreForm> dateScoreFormEntry : scores.entrySet()) {
