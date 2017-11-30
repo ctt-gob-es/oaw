@@ -42,7 +42,7 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.pdf.BasicServiceExport;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 //import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
@@ -119,7 +119,8 @@ public class BasicServiceManager {
 				final CheckHistoricoService checkHistoricoService = new CheckHistoricoService();
 				if (basicServiceForm.isRegisterAnalysis()) {
 					if (basicServiceForm.isDeleteOldAnalysis()) {
-						if (checkHistoricoService.isAnalysisOfUrl(basicServiceForm.getAnalysisToDelete(), basicServiceForm.getDomain(), basicServiceForm.getAnalysisType())) {
+						if (checkHistoricoService.isAnalysisOfUrl(basicServiceForm.getAnalysisToDelete(), basicServiceForm.getDomain(), basicServiceForm.getAnalysisType(),
+								basicServiceForm.getAmplitud(), basicServiceForm.getProfundidad(), basicServiceForm.getReport())) {
 							// Si el analisis marcado corresponde a un análisis
 							// de esa url lo borramos
 							Logger.putLog("Borrando analisis antiguo " + basicServiceForm.getAnalysisToDelete(), BasicServiceManager.class, Logger.LOG_LEVEL_ERROR);
@@ -169,16 +170,14 @@ public class BasicServiceManager {
 
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				} else if (Constants.REPORT_OBSERVATORY_3.equals(basicServiceForm.getReport()) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(basicServiceForm.getReport())) {
-					// TODO 2017 Desdoblamiento para nueva metodología
-
-					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2017())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
+					Logger.putLog("Exportando desde BasicService a BasicServicePdfReport(new AnonymousResultExportPdfUNE2012b())", BasicServiceManager.class, Logger.LOG_LEVEL_DEBUG);
 
 					final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
 					final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
 
 					final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationsPageList = checkHistoricoService.getHistoricoResultadosOfBasicService(basicServiceForm);
 
-					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2017(basicServiceForm));
+					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfUNE2012b(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				}
 

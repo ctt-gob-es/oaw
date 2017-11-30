@@ -196,11 +196,11 @@
 			value="/WEB-INF/pages/front/html/sections/observatorio_graficas_comparativa_une_2012.jsp" />
 	</definition>
 	
-		<definition name=".graficasObservatorioEvolucionUNE2017"
+		<definition name=".graficasObservatorioEvolucionUNE2012b"
 		extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents"
-			value="/WEB-INF/pages/front/html/sections/observatorio_graficas_comparativa_une_2017.jsp" />
+			value="/WEB-INF/pages/front/html/sections/observatorio_graficas_comparativa_une_2012_b.jsp" />
 	</definition>
 	
 

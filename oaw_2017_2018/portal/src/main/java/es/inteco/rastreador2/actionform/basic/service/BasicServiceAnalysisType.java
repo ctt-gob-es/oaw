@@ -9,6 +9,7 @@ public enum BasicServiceAnalysisType {
     LISTA_URLS("lista_urls");
 
     private final String label;
+    
 
     BasicServiceAnalysisType(final String label) {
         this.label = label;

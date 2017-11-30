@@ -27,278 +27,268 @@ import java.util.List;
 
 public class EscribirXML {
 
+	private String archivo = "";
+	private String[] datos = null;
+	private SAXBuilder sb = null;
+	private Document doc = null;
+	private XMLOutputter out = null;
+	private FileWriter fw = null;
 
-    private String archivo = "";
-    private String[] datos = null;
-    private SAXBuilder sb = null;
-    private Document doc = null;
-    private XMLOutputter out = null;
-    private FileWriter fw = null;
+	public EscribirXML(String archivo, String[] datos) {
+		this.archivo = archivo;
+		this.datos = datos;
 
+	}
 
-    public EscribirXML(String archivo, String[] datos) {
-        this.archivo = archivo;
-        this.datos = datos;
+	public void escribeProfile() {
+		this.inicializa();
 
-    }
+		Element root = doc.getRootElement();
+		Element profile = new Element("profile");
 
-    public void escribeProfile() {
-        this.inicializa();
+		root.addContent(profile);
 
-        Element root = doc.getRootElement();
-        Element profile = new Element("profile");
+		Element name = new Element("name");
+		name.setText(datos[0]);
+		profile.addContent(name);
+		Element plugin = null;
 
-        root.addContent(profile);
+		for (int contaplugin = 1; contaplugin < datos.length; contaplugin++) {
+			plugin = new Element("plugin");
+			plugin.setText(datos[contaplugin]);
+			profile.addContent(plugin);
+			plugin = null;
+		}
 
-        Element name = new Element("name");
-        name.setText(datos[0]);
-        profile.addContent(name);
-        Element plugin = null;
+		this.escribe();
 
-        for (int contaplugin = 1; contaplugin < datos.length; contaplugin++) {
-            plugin = new Element("plugin");
-            plugin.setText(datos[contaplugin]);
-            profile.addContent(plugin);
-            plugin = null;
-        }
+		this.limpia();
 
-        this.escribe();
+	}
 
-        this.limpia();
+	public void escribeCommand() {
 
-    }
+		this.inicializa();
 
+		Element root = doc.getRootElement();
+		Element wrapCommand = new Element("wrapCommand");
 
-    public void escribeCommand() {
+		root.addContent(wrapCommand);
 
+		Element name = new Element("name");
+		name.setText(datos[3]);
+		wrapCommand.addContent(name);
 
-        this.inicializa();
+		Element command = new Element("command");
+		command.setText(datos[1]);
+		wrapCommand.addContent(command);
 
-        Element root = doc.getRootElement();
-        Element wrapCommand = new Element("wrapCommand");
+		Element user = new Element("user");
+		user.setText(datos[2]);
+		wrapCommand.addContent(user);
 
-        root.addContent(wrapCommand);
+		Element reqCode = new Element("reqCode");
+		reqCode.setText(datos[3]);
+		wrapCommand.addContent(reqCode);
 
-        Element name = new Element("name");
-        name.setText(datos[3]);
-        wrapCommand.addContent(name);
+		Element id_rastreo = new Element("id_rastreo");
+		id_rastreo.setText(datos[4]);
+		wrapCommand.addContent(id_rastreo);
 
-        Element command = new Element("command");
-        command.setText(datos[1]);
-        wrapCommand.addContent(command);
+		Element fecha = new Element("fecha");
+		fecha.setText(datos[5]);
+		wrapCommand.addContent(fecha);
 
-        Element user = new Element("user");
-        user.setText(datos[2]);
-        wrapCommand.addContent(user);
+		this.escribe();
 
-        Element reqCode = new Element("reqCode");
-        reqCode.setText(datos[3]);
-        wrapCommand.addContent(reqCode);
+		this.limpia();
 
-        Element id_rastreo = new Element("id_rastreo");
-        id_rastreo.setText(datos[4]);
-        wrapCommand.addContent(id_rastreo);
+	}
 
-        Element fecha = new Element("fecha");
-        fecha.setText(datos[5]);
-        wrapCommand.addContent(fecha);
+	public void escribeCrawlDefs(List<String> carts, List<String> tips) {
+		this.inicializa();
 
-        this.escribe();
+		Element cartucho = null;
 
-        this.limpia();
+		Element root = doc.getRootElement();
+		Element crawlDef = new Element("crawlDef");
 
-    }
+		root.addContent(crawlDef);
 
+		Element id_rastreo = new Element("id_rastreo");
+		id_rastreo.setText(datos[0]);
+		crawlDef.addContent(id_rastreo);
 
-    public void escribeCrawlDefs(List<String> carts, List<String> tips) {
-        this.inicializa();
+		Element name = new Element("name");
+		name.setText(datos[1]);
+		crawlDef.addContent(name);
 
-        Element cartucho = null;
+		Element fechaDef = new Element("fechaDef");
+		fechaDef.setText(datos[2]);
+		crawlDef.addContent(fechaDef);
 
-        Element root = doc.getRootElement();
-        Element crawlDef = new Element("crawlDef");
+		Element id_cartucho = new Element("id_cartucho");
+		id_cartucho.setText(datos[3]);
+		crawlDef.addContent(id_cartucho);
 
-        root.addContent(crawlDef);
+		Element hilos = new Element("hilos");
+		hilos.setText(datos[4]);
+		crawlDef.addContent(hilos);
 
-        Element id_rastreo = new Element("id_rastreo");
-        id_rastreo.setText(datos[0]);
-        crawlDef.addContent(id_rastreo);
+		Element profundidad = new Element("profundidad");
+		profundidad.setText(datos[5]);
+		crawlDef.addContent(profundidad);
 
-        Element name = new Element("name");
-        name.setText(datos[1]);
-        crawlDef.addContent(name);
+		Element topN = new Element("topN");
+		topN.setText(datos[6]);
+		crawlDef.addContent(topN);
 
-        Element fechaDef = new Element("fechaDef");
-        fechaDef.setText(datos[2]);
-        crawlDef.addContent(fechaDef);
+		Element modo = new Element("modo");
+		modo.setText(datos[7]);
+		crawlDef.addContent(modo);
 
-        Element id_cartucho = new Element("id_cartucho");
-        id_cartucho.setText(datos[3]);
-        crawlDef.addContent(id_cartucho);
+		Element categorizacion = new Element("categorizacion");
+		categorizacion.setText(datos[8]);
+		crawlDef.addContent(categorizacion);
 
-        Element hilos = new Element("hilos");
-        hilos.setText(datos[4]);
-        crawlDef.addContent(hilos);
+		Element semilla = new Element("semilla");
+		semilla.setText(datos[9]);
+		crawlDef.addContent(semilla);
 
-        Element profundidad = new Element("profundidad");
-        profundidad.setText(datos[5]);
-        crawlDef.addContent(profundidad);
+		Element alertas = new Element("alertas");
+		alertas.setText(datos[10]);
+		crawlDef.addContent(alertas);
 
-        Element topN = new Element("topN");
-        topN.setText(datos[6]);
-        crawlDef.addContent(topN);
+		Element cartuchos = new Element("cartuchos");
+		Iterator<String> it = carts.iterator();
+		while (it.hasNext()) {
+			cartucho = new Element("cartucho");
+			cartucho.setText(it.next());
+			cartuchos.addContent(cartucho);
+		}
+		crawlDef.addContent(cartuchos);
 
-        Element modo = new Element("modo");
-        modo.setText(datos[7]);
-        crawlDef.addContent(modo);
+		Element whitelist = new Element("whitelist");
+		whitelist.setText(datos[11]);
+		crawlDef.addContent(whitelist);
 
-        Element categorizacion = new Element("categorizacion");
-        categorizacion.setText(datos[8]);
-        crawlDef.addContent(categorizacion);
+		Element listaRastreable = new Element("listaRastreable");
+		listaRastreable.setText(datos[12]);
+		crawlDef.addContent(listaRastreable);
 
-        Element semilla = new Element("semilla");
-        semilla.setText(datos[9]);
-        crawlDef.addContent(semilla);
+		Element umbralAlarma = new Element("umbralAlarma");
+		umbralAlarma.setText(datos[13]);
+		crawlDef.addContent(umbralAlarma);
 
-        Element alertas = new Element("alertas");
-        alertas.setText(datos[10]);
-        crawlDef.addContent(alertas);
+		Element as = new Element("as");
+		as.setText(datos[14]);
+		crawlDef.addContent(as);
 
-        Element cartuchos = new Element("cartuchos");
-        Iterator<String> it = carts.iterator();
-        while (it.hasNext()) {
-            cartucho = new Element("cartucho");
-            cartucho.setText(it.next());
-            cartuchos.addContent(cartucho);
-        }
-        crawlDef.addContent(cartuchos);
+		Element tipos = new Element("tipos");
+		it = tips.iterator();
+		while (it.hasNext()) {
+			Element tipo = new Element("tipo");
+			tipo.setText(it.next());
+			tipos.addContent(tipo);
+		}
+		crawlDef.addContent(tipos);
 
-        Element whitelist = new Element("whitelist");
-        whitelist.setText(datos[11]);
-        crawlDef.addContent(whitelist);
+		this.escribe();
 
-        Element listaRastreable = new Element("listaRastreable");
-        listaRastreable.setText(datos[12]);
-        crawlDef.addContent(listaRastreable);
+		this.limpia();
+	}
 
-        Element umbralAlarma = new Element("umbralAlarma");
-        umbralAlarma.setText(datos[13]);
-        crawlDef.addContent(umbralAlarma);
+	public void escribeUsers() {
 
-        Element as = new Element("as");
-        as.setText(datos[14]);
-        crawlDef.addContent(as);
+		Element profile = null;
 
-        Element tipos = new Element("tipos");
-        it = tips.iterator();
-        while (it.hasNext()) {
-            Element tipo = new Element("tipo");
-            tipo.setText(it.next());
-            tipos.addContent(tipo);
-        }
-        crawlDef.addContent(tipos);
+		this.inicializa();
 
-        this.escribe();
+		Element root = doc.getRootElement();
+		Element user = new Element("user");
 
-        this.limpia();
-    }
+		root.addContent(user);
 
+		Element name = new Element("name");
+		name.setText(datos[0]);
+		user.addContent(name);
 
-    public void escribeUsers() {
+		Element password = new Element("password");
+		password.setText(datos[1]);
+		user.addContent(password);
 
-        Element profile = null;
+		for (int contaprof = 2; contaprof < datos.length; contaprof++) {
+			profile = new Element("profile");
+			profile.setText(datos[contaprof]);
+			user.addContent(profile);
+			profile = null;
+		}
 
-        this.inicializa();
+		this.escribe();
 
+		this.limpia();
 
-        Element root = doc.getRootElement();
-        Element user = new Element("user");
+	}
 
-        root.addContent(user);
+	public void escribePlugin() {
+		this.inicializa();
 
-        Element name = new Element("name");
-        name.setText(datos[0]);
-        user.addContent(name);
+		Element root = doc.getRootElement();
+		Element plugin = new Element("plugin");
 
-        Element password = new Element("password");
-        password.setText(datos[1]);
-        user.addContent(password);
+		root.addContent(plugin);
 
-        for (int contaprof = 2; contaprof < datos.length; contaprof++) {
-            profile = new Element("profile");
-            profile.setText(datos[contaprof]);
-            user.addContent(profile);
-            profile = null;
-        }
+		Element name = new Element("name");
+		name.setText(datos[0]);
+		plugin.addContent(name);
 
-        this.escribe();
+		Element source = new Element("source");
+		source.setText(datos[1]);
+		plugin.addContent(source);
 
-        this.limpia();
+		Element config = new Element("config");
+		config.setText(datos[2]);
+		plugin.addContent(config);
 
-    }
+		this.escribe();
 
-    public void escribePlugin() {
-        this.inicializa();
+		this.limpia();
 
-        Element root = doc.getRootElement();
-        Element plugin = new Element("plugin");
+	}
 
-        root.addContent(plugin);
+	private void inicializa() {
+		sb = new SAXBuilder(false);
 
-        Element name = new Element("name");
-        name.setText(datos[0]);
-        plugin.addContent(name);
+		try {
+			doc = sb.build(archivo);
+		} catch (Exception e) {
+			System.out.println("EXCEPCION: " + e.getMessage());
+		}
 
-        Element source = new Element("source");
-        source.setText(datos[1]);
-        plugin.addContent(source);
+	}
 
-        Element config = new Element("config");
-        config.setText(datos[2]);
-        plugin.addContent(config);
+	private void limpia() {
+		try {
+			fw.flush();
+			fw = null;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		out = null;
+		doc = null;
+		sb = null;
+	}
 
-        this.escribe();
+	private void escribe() {
 
-        this.limpia();
+		out = new XMLOutputter();
 
-    }
-
-
-    private void inicializa() {
-        sb = new SAXBuilder(false);
-
-        try {
-            doc = sb.build(archivo);
-        } catch (Exception e) {
-            System.out.println("EXCEPCION: " + e.getMessage());
-        }
-
-    }
-
-
-    private void limpia() {
-        try {
-            fw.flush();
-            fw = null;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        out = null;
-        doc = null;
-        sb = null;
-    }
-
-    private void escribe() {
-
-        out = new XMLOutputter();
-
-        try {
-            fw = new FileWriter(archivo);
-            out.output(doc, fw);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		try {
+			fw = new FileWriter(archivo);
+			out.output(doc, fw);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

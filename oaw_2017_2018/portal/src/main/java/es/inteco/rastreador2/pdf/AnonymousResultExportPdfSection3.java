@@ -459,8 +459,6 @@ public final class AnonymousResultExportPdfSection3 {
 
         list.setIndentationLeft(5 * ConstantsFont.IDENTATION_LEFT_SPACE);
         section.add(list);
-
-        //TODO 2017 Eliminar PMNA
         
         anchorMap = new HashMap<>();
         anchor = new SpecialChunk(CrawlerUtils.getResources(request).getMessage("ob.resAnon.intav.report.341.p22.bold"), CrawlerUtils.getResources(request).getMessage("anchor.PMNA"), true, ConstantsFont.paragraphBoldFont);

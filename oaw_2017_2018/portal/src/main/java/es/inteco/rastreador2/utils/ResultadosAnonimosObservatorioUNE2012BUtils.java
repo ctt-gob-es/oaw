@@ -70,7 +70,7 @@ import es.inteco.view.forms.CategoryViewListForm;
  *
  * @author alvaro.pelaez
  */
-public final class ResultadosAnonimosObservatorioUNE2017Utils {
+public final class ResultadosAnonimosObservatorioUNE2012BUtils {
 
 	/** The Constant BIG_DECIMAL_HUNDRED. */
 	public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
@@ -91,7 +91,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 	/**
 	 * COnstructor.
 	 */
-	private ResultadosAnonimosObservatorioUNE2017Utils() {
+	private ResultadosAnonimosObservatorioUNE2012BUtils() {
 	}
 
 	/**
@@ -132,7 +132,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 			generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate);
 		} catch (Exception e) {
-			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -246,7 +246,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 			return categoryGraphics;
 		} catch (Exception e) {
-			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			return categoryGraphics;
 		}
 	}
@@ -770,15 +770,13 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				modalityComparisonList.add(modalityComparisonForm);
 			}
 		}
-		
-		
 
-		// TODO 2017 Necesitamos implementar un orden específico para que p.e.
+		// Necesitamos implementar un orden específico para que p.e.
 		// 1.10 vaya después de 1.9 y no de 1.
-		Collections.sort(modalityComparisonList,new Comparator<ModalityComparisonForm>() {
+		Collections.sort(modalityComparisonList, new Comparator<ModalityComparisonForm>() {
 			@Override
 			public int compare(ModalityComparisonForm version1, ModalityComparisonForm version2) {
-				
+
 				String[] v1 = version1.getVerification().substring(version1.getVerification().indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length()).split("\\.");
 				String[] v2 = version2.getVerification().substring(version2.getVerification().indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length()).split("\\.");
 				int major1 = major(v1);
@@ -797,9 +795,6 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				return version.length > 1 ? Integer.parseInt(version[1]) : 0;
 			}
 		});
-		
-		
-		
 
 		return modalityComparisonList;
 	}
@@ -886,7 +881,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 	private static DefaultCategoryDataset createStackedBarDataSetForModality(final Map<String, BigDecimal> unorderedResults, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
-		// TODO 2017 Necesitamos reordenar los resputados para que el valor 1.10
+		// Necesitamos reordenar los resputados para que el valor 1.10
 		// vaya después de 1.9 y no de 1.1
 
 		Map<String, BigDecimal> results = new TreeMap<>(new Comparator<String>() {
@@ -1339,7 +1334,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 		try {
 			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 		} catch (NeedsRefreshException nre) {
-			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNE2017Utils.class,
+			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNE2012BUtils.class,
 					Logger.LOG_LEVEL_INFO);
 			try (Connection c = DataBaseManager.getConnection()) {
 				observatoryEvaluationList = new ArrayList<>();
@@ -1387,7 +1382,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 					}
 				}
 			} catch (SQLException e) {
-				Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 			CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
@@ -1423,7 +1418,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 					}
 				}
 			} catch (Exception e) {
-				Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 			return results;
@@ -1467,7 +1462,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 					final Date fecha2 = new Date(df.parse(o2).getTime());
 					return fecha1.compareTo(fecha2);
 				} catch (Exception e) {
-					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 				return 0;
 			}
@@ -1500,7 +1495,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 					final Date fecha2 = new Date(df.parse(o2).getTime());
 					return fecha1.compareTo(fecha2);
 				} catch (Exception e) {
-					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 				return 0;
 			}
@@ -1551,7 +1546,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 					final Date fecha2 = new Date(df.parse(o2).getTime());
 					return fecha1.compareTo(fecha2);
 				} catch (Exception e) {
-					Logger.putLog("Error al ordenar fechas de evolución. ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+					Logger.putLog("Error al ordenar fechas de evolución. ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 				return 0;
 			}
@@ -1608,7 +1603,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 					final Date fecha2 = new Date(dateFormat.parse(o2).getTime());
 					return fecha1.compareTo(fecha2);
 				} catch (Exception e) {
-					Logger.putLog("Error al ordenar fechas de evolución. ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+					Logger.putLog("Error al ordenar fechas de evolución. ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 				return 0;
 			}
@@ -1668,7 +1663,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				resultData.put(longDateEntry.getValue(), sites);
 			}
 		} catch (Exception e) {
-			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return resultData;
 	}
@@ -1693,7 +1688,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				resultData.put(entry.getValue(), pageList);
 			}
 		} catch (Exception e) {
-			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 
 		return resultData;
@@ -1721,25 +1716,19 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				result.put(entry.getKey(), BigDecimal.ZERO);
 			}
 			totalPercentage = totalPercentage.add(result.get(entry.getKey()));
-			
+
 			fitResultKey = entry.getKey();
-			
-			//TODO 2017 Si nos pasamos de 100, restamos 1 al valor actual
-			if(totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) > 0) {
+
+			// Si nos pasamos de 100, restamos 1 al valor actual
+			if (totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) > 0) {
 				BigDecimal subtract = result.get(fitResultKey).subtract(totalPercentage.subtract(BIG_DECIMAL_HUNDRED));
 
-				//TODO 2017 Correción por si ocurre que el valor de ajuste es cero para que no se devuelvan negativos
+				// Correción por si ocurre que el valor de ajuste es cero para
+				// que no se devuelvan negativos
 				result.put(fitResultKey, subtract.compareTo(BigDecimal.ZERO) > 0 ? subtract : BigDecimal.ZERO);
 			}
-			
-		}
-		// ajustamos el resultado por si se pasa de 100 a causa del redondeo
-		/*if (totalPercentage.compareTo(BIG_DECIMAL_HUNDRED) != 0) {
-			BigDecimal subtract = result.get(fitResultKey).subtract(totalPercentage.subtract(BIG_DECIMAL_HUNDRED));
 
-			//TODO 2017 Correción por si ocurre que el valor de ajuste es cero para que no se devuelvan negativos
-			result.put(fitResultKey, subtract.compareTo(BigDecimal.ZERO) > 0 ? subtract : BigDecimal.ZERO);
-		}*/
+		}
 
 		return result;
 	}
@@ -1783,7 +1772,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				siteList.add(siteEntry.getValue());
 			}
 		} catch (Exception e) {
-			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 
 		return siteList;
@@ -2134,16 +2123,12 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 		}
 		// Cambiamos las claves por el nombre y calculamos la media
-		// TODO 2017 Necesitamos implementar un orden específico para que p.e.
+		// Necesitamos implementar un orden específico para que p.e.
 		// 1.10 vaya después de 1.9 y no de 1.
 		final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>(new Comparator<String>() {
 			@Override
 			public int compare(String version1, String version2) {
-				
-				//TODO 2017 Evolutivo diferentres verificaciones
-//				if(version1.length()>3 || version2.length()>3) {
-//					return 1;
-//				}
+
 				String[] v1 = version1.split("\\.");
 				String[] v2 = version2.split("\\.");
 				int major1 = major(v1);
@@ -2163,12 +2148,9 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			}
 		});
 		for (Map.Entry<String, Integer> resultEntry : results.entrySet()) {
-			// TODO 2017 Generar las claves con minhap.observatory.3_0.subgroup.
+			// Generar las claves con minhap.observatory.3_0.subgroup.
 			final String name = resultEntry.getKey().substring(resultEntry.getKey().indexOf("minhap.observatory.3_0.subgroup.") + "minhap.observatory.3_0.subgroup.".length());
 
-			// final String name =
-			// resultEntry.getKey().substring(resultEntry.getKey().length() -
-			// 5);
 			final BigDecimal value;
 			if (numPoint.get(resultEntry.getKey()) != -1 && numPoint.get(resultEntry.getKey()) != 0) {
 				value = BigDecimal.valueOf(resultEntry.getValue()).divide(BigDecimal.valueOf(numPoint.get(resultEntry.getKey())), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN);
@@ -2220,8 +2202,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				}
 			}
 		}
-		
-		
+
 		Map<String, BigDecimal> orderedResults = new TreeMap<>(new Comparator<String>() {
 			@Override
 			public int compare(String version1, String version2) {
@@ -2250,7 +2231,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 				return version.length > 1 ? Integer.parseInt(version[5].replace(Constants.OBS_VALUE_RED_SUFFIX, "").replace(Constants.OBS_VALUE_GREEN_SUFFIX, "")) : 0;
 			}
 		});
-		
+
 		for (Map.Entry<String, BigDecimal> entry : results.entrySet()) {
 			orderedResults.put(entry.getKey(), entry.getValue());
 		}
@@ -2452,7 +2433,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 
 			return resultDataBySegment;
 		} catch (Exception e) {
-			Logger.putLog("Error al recuperar datos de la BBDD.", ResultadosAnonimosObservatorioUNE2017Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al recuperar datos de la BBDD.", ResultadosAnonimosObservatorioUNE2012BUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -2554,7 +2535,7 @@ public final class ResultadosAnonimosObservatorioUNE2017Utils {
 			throws IOException {
 		final Map<Date, Map<String, BigDecimal>> resultsByAspect = new LinkedHashMap<>();
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2017Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012BUtils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 		}
 
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();

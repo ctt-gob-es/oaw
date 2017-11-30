@@ -23,18 +23,18 @@ import com.lowagie.text.Font;
 import es.inteco.common.Constants;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2017Utils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012BUtils;
 
 /**
- * AnonymousResultPdfUNE2017Builder. Clase replicada de
+ * AnonymousResultPdfUNE2012bBuilder. Clase replicada de
  * {@link AnonymousResultPdfUNE2012Builder} para la nueva versión de la
  * metodología basada en la misma norma que la mencionada y conservar ambas para
  * futuras consultas o comparativas.
  */
-public class AnonymousResultPdfUNE2017Builder extends AnonymousResultPdfBuilder {
+public class AnonymousResultPdfUNE2012bBuilder extends AnonymousResultPdfBuilder {
 
 	/**
-	 * Instantiates a new anonymous result pdf UNE 2017 builder.
+	 * Instantiates a new anonymous result pdf UNE 2012b builder.
 	 *
 	 * @param fileOut
 	 *            the file out
@@ -43,7 +43,7 @@ public class AnonymousResultPdfUNE2017Builder extends AnonymousResultPdfBuilder 
 	 * @throws Exception
 	 *             the exception
 	 */
-	public AnonymousResultPdfUNE2017Builder(File fileOut, long observatoryType) throws Exception {
+	public AnonymousResultPdfUNE2012bBuilder(File fileOut, long observatoryType) throws Exception {
 		super(fileOut, observatoryType);
 	}
 
@@ -56,7 +56,7 @@ public class AnonymousResultPdfUNE2017Builder extends AnonymousResultPdfBuilder 
 	 */
 	@Override
 	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath) throws Exception {
-		ResultadosAnonimosObservatorioUNE2017Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
+		ResultadosAnonimosObservatorioUNE2012BUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
 	}
 
 	/*

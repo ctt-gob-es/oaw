@@ -472,7 +472,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<forward name="getSegmentGraphics" path=".graficasObservatorioSegmento" />
 			<forward name="getEvolutionGraphics" path=".graficasObservatorioEvolucion" />
 			<forward name="getEvolutionGraphicsUNE2102" path=".graficasObservatorioEvolucionUNE2012" />
-			<forward name="getEvolutionGraphicsUNE2017" path=".graficasObservatorioEvolucionUNE2017" />
+			<forward name="getEvolutionGraphicsUNE2012b" path=".graficasObservatorioEvolucionUNE2012b" />
 			
 			<forward name="categoryList" path=".indiceGraficasCatObservatorio" />
 		</action>

@@ -310,10 +310,9 @@
 					<check id="407" />
 
 					<!-- Elementos role group o radio group con atributos aria-label o aria-labelledby -->
-					<check id="473" />
+					<check id="473" noExecutedMark="true"/>
 					<!-- Elementos role link o button con contenido textual o atributos -->
-					aria-label o aria-labelledby
-					<check id="474" />
+					<check id="474" noExecutedMark="true"/>
 
 				</checks>
 			</subgroup>

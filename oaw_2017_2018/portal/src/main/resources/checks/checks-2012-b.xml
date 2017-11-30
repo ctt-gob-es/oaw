@@ -6225,7 +6225,7 @@
 		<error>check.473.error</error>
 		<rationale>check.473.rationale</rationale>
 		<machine>
-			<trigger element="*" />
+			<trigger element="form" />
 
 			<condition type="or">
 
@@ -6270,7 +6270,7 @@
 		<error>check.474.error</error>
 		<rationale>check.474.rationale</rationale>
 		<machine>
-			<trigger element="*" />
+			<trigger element="form" />
 
 			<condition type="or">
 

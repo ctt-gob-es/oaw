@@ -295,7 +295,7 @@ public abstract class AnonymousResultExportPdf {
 		for (ObservatoryEvaluationForm evaluationForm : evaList) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
 
-			// TODO: codigo duplicado en IntavUtils
+			// Codigo duplicado en IntavUtils
 
 			final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
 			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {

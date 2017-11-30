@@ -18,276 +18,277 @@ package es.inteco.crawler.job;
 import java.util.List;
 
 public class CrawlerData {
-    private String nombreRastreo;
-    private long idCrawling;
-    private long idFulfilledCrawling;
-    private int idCartridge;
-    private int numHilos;
-    private int profundidad;
-    private int topN;
-    private boolean modo;
-    private boolean categorizacion;
-    private boolean actionScript;
-    private String user;
-    private List<String> usersMail;
-    private List<String> responsiblesMail;
-    private long idCustomerAccount;
-    private long idObservatory;
-    private boolean pseudoaleatorio;
-    private String language;
-    private String[] cartuchos;
-    private List<String> urls;
-    private String content;
-    private List<String> domains;
-    private List<String> exceptions;
-    private List<String> crawlingList;
-    private long idGuideline;
-    private String ficheroNorma;
-    private boolean exhaustive;
-    private boolean test;
-    private String acronimo;
-    private boolean inDirectory;
-    
-    //TODO 2017 Indicadores para saber si hemos encontrado urls de ciertos tipos
-    private boolean checkTablePage;
-    private boolean checkFormPage;
-    private int maxIntentosBuscarTipos = 5; //Máximo número de intentos de comprobar tipos por cada URL
+	private String nombreRastreo;
+	private long idCrawling;
+	private long idFulfilledCrawling;
+	private int idCartridge;
+	private int numHilos;
+	private int profundidad;
+	private int topN;
+	private boolean modo;
+	private boolean categorizacion;
+	private boolean actionScript;
+	private String user;
+	private List<String> usersMail;
+	private List<String> responsiblesMail;
+	private long idCustomerAccount;
+	private long idObservatory;
+	private boolean pseudoaleatorio;
+	private String language;
+	private String[] cartuchos;
+	private List<String> urls;
+	private String content;
+	private List<String> domains;
+	private List<String> exceptions;
+	private List<String> crawlingList;
+	private long idGuideline;
+	private String ficheroNorma;
+	private boolean exhaustive;
+	private boolean test;
+	private String acronimo;
+	private boolean inDirectory;
 
-    public boolean isInDirectory() {
-        return inDirectory;
-    }
+	// Indicadores para saber si hemos encontrado urls de ciertos tipos
+	private boolean checkTablePage;
+	private boolean checkFormPage;
+	// Máximo número de intentos de comprobar tipos por cada URL
+	private int maxIntentosBuscarTipos = 5;
 
-    public void setInDirectory(boolean inDirectory) {
-        this.inDirectory = inDirectory;
-    }
+	public boolean isInDirectory() {
+		return inDirectory;
+	}
 
-    public String getFicheroNorma() {
-        return ficheroNorma;
-    }
+	public void setInDirectory(boolean inDirectory) {
+		this.inDirectory = inDirectory;
+	}
 
-    public void setFicheroNorma(String ficheroNorma) {
-        this.ficheroNorma = ficheroNorma;
-    }
+	public String getFicheroNorma() {
+		return ficheroNorma;
+	}
 
-    public List<String> getUrls() {
-        return urls;
-    }
+	public void setFicheroNorma(String ficheroNorma) {
+		this.ficheroNorma = ficheroNorma;
+	}
 
-    public void setUrls(List<String> urls) {
-        this.urls = urls;
-    }
+	public List<String> getUrls() {
+		return urls;
+	}
 
-    public List<String> getDomains() {
-        return domains;
-    }
+	public void setUrls(List<String> urls) {
+		this.urls = urls;
+	}
 
-    public void setDomains(List<String> domains) {
-        this.domains = domains;
-    }
+	public List<String> getDomains() {
+		return domains;
+	}
 
-    public List<String> getExceptions() {
-        return exceptions;
-    }
+	public void setDomains(List<String> domains) {
+		this.domains = domains;
+	}
 
-    public void setExceptions(List<String> exceptions) {
-        this.exceptions = exceptions;
-    }
+	public List<String> getExceptions() {
+		return exceptions;
+	}
 
-    public List<String> getCrawlingList() {
-        return crawlingList;
-    }
+	public void setExceptions(List<String> exceptions) {
+		this.exceptions = exceptions;
+	}
 
-    public void setCrawlingList(List<String> crawlingList) {
-        this.crawlingList = crawlingList;
-    }
+	public List<String> getCrawlingList() {
+		return crawlingList;
+	}
 
-    public long getIdGuideline() {
-        return idGuideline;
-    }
+	public void setCrawlingList(List<String> crawlingList) {
+		this.crawlingList = crawlingList;
+	}
 
-    public void setIdGuideline(long idGuideline) {
-        this.idGuideline = idGuideline;
-    }
+	public long getIdGuideline() {
+		return idGuideline;
+	}
 
-    public CrawlerData() {
-        test = false;
-    }
+	public void setIdGuideline(long idGuideline) {
+		this.idGuideline = idGuideline;
+	}
 
-    public String[] getCartuchos() {
-        return cartuchos;
-    }
+	public CrawlerData() {
+		test = false;
+	}
 
-    public void setCartuchos(String[] cartuchos) {
-        this.cartuchos = cartuchos;
-    }
+	public String[] getCartuchos() {
+		return cartuchos;
+	}
 
-    public long getIdCrawling() {
-        return idCrawling;
-    }
+	public void setCartuchos(String[] cartuchos) {
+		this.cartuchos = cartuchos;
+	}
 
-    public void setIdCrawling(long idCrawling) {
-        this.idCrawling = idCrawling;
-    }
+	public long getIdCrawling() {
+		return idCrawling;
+	}
 
-    public long getIdFulfilledCrawling() {
-        return idFulfilledCrawling;
-    }
+	public void setIdCrawling(long idCrawling) {
+		this.idCrawling = idCrawling;
+	}
 
-    public void setIdFulfilledCrawling(long idFulfilledCrawling) {
-        this.idFulfilledCrawling = idFulfilledCrawling;
-    }
+	public long getIdFulfilledCrawling() {
+		return idFulfilledCrawling;
+	}
 
-    public int getIdCartridge() {
-        return idCartridge;
-    }
+	public void setIdFulfilledCrawling(long idFulfilledCrawling) {
+		this.idFulfilledCrawling = idFulfilledCrawling;
+	}
 
-    public void setIdCartridge(int idCartridge) {
-        this.idCartridge = idCartridge;
-    }
+	public int getIdCartridge() {
+		return idCartridge;
+	}
 
-    public int getNumHilos() {
-        return numHilos;
-    }
+	public void setIdCartridge(int idCartridge) {
+		this.idCartridge = idCartridge;
+	}
 
-    public void setNumHilos(int numHilos) {
-        this.numHilos = numHilos;
-    }
+	public int getNumHilos() {
+		return numHilos;
+	}
 
-    public int getProfundidad() {
-        return profundidad;
-    }
+	public void setNumHilos(int numHilos) {
+		this.numHilos = numHilos;
+	}
 
-    public void setProfundidad(int profundidad) {
-        this.profundidad = profundidad;
-    }
+	public int getProfundidad() {
+		return profundidad;
+	}
 
-    public int getTopN() {
-        return topN;
-    }
+	public void setProfundidad(int profundidad) {
+		this.profundidad = profundidad;
+	}
 
-    public void setTopN(int topN) {
-        this.topN = topN;
-    }
+	public int getTopN() {
+		return topN;
+	}
 
-    public boolean isModo() {
-        return modo;
-    }
+	public void setTopN(int topN) {
+		this.topN = topN;
+	}
 
-    public void setModo(boolean modo) {
-        this.modo = modo;
-    }
+	public boolean isModo() {
+		return modo;
+	}
 
-    public boolean isCategorizacion() {
-        return categorizacion;
-    }
+	public void setModo(boolean modo) {
+		this.modo = modo;
+	}
 
-    public void setCategorizacion(boolean categorizacion) {
-        this.categorizacion = categorizacion;
-    }
+	public boolean isCategorizacion() {
+		return categorizacion;
+	}
 
-    public boolean isActionScript() {
-        return actionScript;
-    }
+	public void setCategorizacion(boolean categorizacion) {
+		this.categorizacion = categorizacion;
+	}
 
-    public void setActionScript(boolean actionScript) {
-        this.actionScript = actionScript;
-    }
+	public boolean isActionScript() {
+		return actionScript;
+	}
 
-    public String getUser() {
-        return user;
-    }
+	public void setActionScript(boolean actionScript) {
+		this.actionScript = actionScript;
+	}
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+	public String getUser() {
+		return user;
+	}
 
-    public List<String> getUsersMail() {
-        return usersMail;
-    }
+	public void setUser(String user) {
+		this.user = user;
+	}
 
-    public void setUsersMail(List<String> usersMail) {
-        this.usersMail = usersMail;
-    }
+	public List<String> getUsersMail() {
+		return usersMail;
+	}
 
-    public long getIdCustomerAccount() {
-        return idCustomerAccount;
-    }
+	public void setUsersMail(List<String> usersMail) {
+		this.usersMail = usersMail;
+	}
 
-    public void setIdCustomerAccount(long idCustomerAccount) {
-        this.idCustomerAccount = idCustomerAccount;
-    }
+	public long getIdCustomerAccount() {
+		return idCustomerAccount;
+	}
 
-    public long getIdObservatory() {
-        return idObservatory;
-    }
+	public void setIdCustomerAccount(long idCustomerAccount) {
+		this.idCustomerAccount = idCustomerAccount;
+	}
 
-    public void setIdObservatory(long idObservatory) {
-        this.idObservatory = idObservatory;
-    }
+	public long getIdObservatory() {
+		return idObservatory;
+	}
 
-    public boolean isPseudoaleatorio() {
-        return pseudoaleatorio;
-    }
+	public void setIdObservatory(long idObservatory) {
+		this.idObservatory = idObservatory;
+	}
 
-    public void setPseudoaleatorio(boolean pseudoaleatorio) {
-        this.pseudoaleatorio = pseudoaleatorio;
-    }
+	public boolean isPseudoaleatorio() {
+		return pseudoaleatorio;
+	}
 
-    public String getNombreRastreo() {
-        return nombreRastreo;
-    }
+	public void setPseudoaleatorio(boolean pseudoaleatorio) {
+		this.pseudoaleatorio = pseudoaleatorio;
+	}
 
-    public void setNombreRastreo(String nombreRastreo) {
-        this.nombreRastreo = nombreRastreo;
-    }
+	public String getNombreRastreo() {
+		return nombreRastreo;
+	}
 
-    public String getLanguage() {
-        return language;
-    }
+	public void setNombreRastreo(String nombreRastreo) {
+		this.nombreRastreo = nombreRastreo;
+	}
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+	public String getLanguage() {
+		return language;
+	}
 
-    public boolean isExhaustive() {
-        return exhaustive;
-    }
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
-    public void setExhaustive(boolean exhaustive) {
-        this.exhaustive = exhaustive;
-    }
+	public boolean isExhaustive() {
+		return exhaustive;
+	}
 
-    public boolean isTest() {
-        return test;
-    }
+	public void setExhaustive(boolean exhaustive) {
+		this.exhaustive = exhaustive;
+	}
 
-    public void setTest(boolean test) {
-        this.test = test;
-    }
+	public boolean isTest() {
+		return test;
+	}
 
-    public List<String> getResponsiblesMail() {
-        return responsiblesMail;
-    }
+	public void setTest(boolean test) {
+		this.test = test;
+	}
 
-    public void setResponsiblesMail(List<String> responsiblesMail) {
-        this.responsiblesMail = responsiblesMail;
-    }
+	public List<String> getResponsiblesMail() {
+		return responsiblesMail;
+	}
 
-    public String getAcronimo() {
-        return acronimo;
-    }
+	public void setResponsiblesMail(List<String> responsiblesMail) {
+		this.responsiblesMail = responsiblesMail;
+	}
 
-    public void setAcronimo(String acronimo) {
-        this.acronimo = acronimo;
-    }
+	public String getAcronimo() {
+		return acronimo;
+	}
 
-    public String getContent() {
-        return content;
-    }
+	public void setAcronimo(String acronimo) {
+		this.acronimo = acronimo;
+	}
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
 
 	/**
 	 * @return the checkTablePage
@@ -297,7 +298,8 @@ public class CrawlerData {
 	}
 
 	/**
-	 * @param checkTablePage the checkTablePage to set
+	 * @param checkTablePage
+	 *            the checkTablePage to set
 	 */
 	public void setCheckTablePage(boolean checkTablePage) {
 		this.checkTablePage = checkTablePage;
@@ -311,7 +313,8 @@ public class CrawlerData {
 	}
 
 	/**
-	 * @param checkFormPage the checkFormPage to set
+	 * @param checkFormPage
+	 *            the checkFormPage to set
 	 */
 	public void setCheckFormPage(boolean checkFormPage) {
 		this.checkFormPage = checkFormPage;
@@ -325,11 +328,11 @@ public class CrawlerData {
 	}
 
 	/**
-	 * @param maxIntentosBuscarTipos the maxIntentosBuscarTipos to set
+	 * @param maxIntentosBuscarTipos
+	 *            the maxIntentosBuscarTipos to set
 	 */
 	public void setMaxIntentosBuscarTipos(int maxIntentosBuscarTipos) {
 		this.maxIntentosBuscarTipos = maxIntentosBuscarTipos;
 	}
-    
-    
+
 }

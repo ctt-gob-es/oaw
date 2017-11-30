@@ -450,7 +450,6 @@ public final class Check_1_1_3_ListTest {
         evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
         Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), BR_SIMULATING_OL));
         
-        //TODO Al cambiar el patrón, se adminten listas así?
         checkAccessibility.setContent("<p>2. Elemento 1<br/>" +
                 "3. Elemento 2<br/>" +
                 "4. Elemento 3<br/>" +

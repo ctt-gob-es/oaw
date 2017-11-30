@@ -224,7 +224,6 @@ public final class BasicServiceUtils {
 		} else if (report.equals(Constants.REPORT_OBSERVATORY_2) || report.equals(Constants.REPORT_OBSERVATORY_2_NOBROKEN)) {
 			return 7L;
 		} else if (report.equals(Constants.REPORT_OBSERVATORY_3) || report.equals(Constants.REPORT_OBSERVATORY_3_NOBROKEN)) {
-			// TODO 2017 Nueva metodologia
 			return 8L;
 		} else {
 			return -1;

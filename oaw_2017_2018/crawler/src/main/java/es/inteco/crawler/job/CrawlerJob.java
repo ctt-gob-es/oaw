@@ -540,9 +540,9 @@ public class CrawlerJob implements InterruptableJob {
 		}
 
 		// Llamamos al analizador
-		//if (!crawlerData.isTest()) {
-			analyze(crawlingDomains, crawlerData, cookie);
-		//}
+		// if (!crawlerData.isTest()) {
+		analyze(crawlingDomains, crawlerData, cookie);
+		// }
 	}
 
 	/**
@@ -717,7 +717,7 @@ public class CrawlerJob implements InterruptableJob {
 											crawlerData.isCheckTablePage())) {
 										cont++;
 									} else if (!auxDomains.contains(absoluteUrlLink)) {
-										// TODO 2017 La guardamos como auxiliar
+										// La guardamos como auxiliar
 										// para que
 										// la finalizar el reastreo se puedan
 										// incluir si no llegamos al número de
@@ -785,7 +785,7 @@ public class CrawlerJob implements InterruptableJob {
 		boolean isFormPage = false;
 		boolean isTablePage = false;
 
-		// TODO 2017 ver si es de tipos indicados
+		// Comprobar si es necesario buscar de tipos indicados
 		if (checkIsFormPage || checkIsTablePage) {
 
 			Document doc = loadDocumentFromURL(domain, urlLink, cookie);
@@ -842,7 +842,7 @@ public class CrawlerJob implements InterruptableJob {
 	private boolean checkIsSameDirectory(String domain, String urlLink) {
 
 		boolean crawledLinkSameDirectory = false;
-		// TODO 2017 Es un directorio del que ya tenemos alguna página
+		// Es un directorio del que ya tenemos alguna página
 		// Si es la raiz va a descartar todo
 
 		// URLs en directorio
@@ -1020,7 +1020,7 @@ public class CrawlerJob implements InterruptableJob {
 	 */
 	private boolean hasAccessToUrl(final String rootUrl, final String domain, final String urlLink, final String cookie, final List<CrawledLink> levelLinks, final CrawlerData crawlerData,
 			final boolean addAuxiliaryLinks, final List<IgnoredLink> ignoredLinks) throws Exception {
-		// TODO 2017 Follow redirects
+		// Follow redirects en le primera conexión a la url
 		HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
 		connection.setRequestProperty("Cookie", cookie);
 		int responseCode = Integer.MAX_VALUE;

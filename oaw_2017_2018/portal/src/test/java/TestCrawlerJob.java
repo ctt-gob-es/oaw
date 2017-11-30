@@ -73,7 +73,7 @@ public class TestCrawlerJob {
 
 				observatory.getDatosRastreo().setId_guideline(8);
 
-				observatory.getDatosRastreo().setFicheroNorma("observatorio-une-2017.xml");
+				observatory.getDatosRastreo().setFicheroNorma("observatorio-une-2012-b.xml");
 
 				CrawlerData crawlerData = CrawlerUtils.getCrawlerData(observatory.getDatosRastreo(), 0L, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null);
 				crawlerData.setTest(true);

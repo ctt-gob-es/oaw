@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y FunciÃ³n PÃºblica, 
+Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
 This program is licensed and may be used, modified and redistributed under the terms
 of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 version as soon as they are approved by the European Commission.
@@ -30,7 +30,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<c:set target="${params}" property="${grParam}" value="${grValue}" />
 	<c:set target="${params}" property="Otype" value="${observatoryType}" />
 	
-	<!-- observatorio_graficas_comparativa_une _2017.jsp-->
+	<!-- observatorio_graficas_comparativa_une_2012_b.jsp-->
     <div id="main">
 
         <div id="container_menu_izq">

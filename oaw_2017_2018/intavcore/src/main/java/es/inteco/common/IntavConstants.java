@@ -241,5 +241,8 @@ public interface IntavConstants {
 
     public static final String MARKUP_HTML = "HTML";
     public static final String MARKUP_XHTML = "XHTML";
+    
+    public static final String GUIDELINE_FILENAME_START_2012 = "observatorio-une-2012";
+    public static final String GUIDELINE_FILENAME_START_2012_B = "observatorio-une-2012-b";
 
 }

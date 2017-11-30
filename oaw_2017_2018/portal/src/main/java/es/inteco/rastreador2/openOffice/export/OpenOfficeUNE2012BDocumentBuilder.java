@@ -38,13 +38,13 @@ import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2017Utils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012BUtils;
 
 /**
  * Clase encargada de construir el documento OpenOffice con los resultados del
  * observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
-public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder {
+public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder {
 
 	// Reorganización de las verificaciones
 
@@ -61,7 +61,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
 
 	/**
-	 * Instantiates a new open office UNE 2017 document builder.
+	 * Instantiates a new open office UNE 2012b document builder.
 	 *
 	 * @param executionId
 	 *            the execution id
@@ -70,7 +70,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	 * @param tipoObservatorio
 	 *            the tipo observatorio
 	 */
-	public OpenOfficeUNE2017DocumentBuilder(final String executionId, final String observatoryId, final Long tipoObservatorio) {
+	public OpenOfficeUNE2012BDocumentBuilder(final String executionId, final String observatoryId, final Long tipoObservatorio) {
 		super(executionId, observatoryId, tipoObservatorio);
 		numImg = 8;
 		numSection = 5;
@@ -86,7 +86,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	public OdfTextDocument buildDocument(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution,
 			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
 		final MessageResources messageResources = CrawlerUtils.getResources(request);
-		ResultadosAnonimosObservatorioUNE2017Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
+		ResultadosAnonimosObservatorioUNE2012BUtils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
 				Constants.MINISTERIO_P, true);
 		final OdfTextDocument odt = getOdfTemplate();
 		final OdfFileDom odfFileContent = odt.getContentDom();
@@ -105,7 +105,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		replaceSection46(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 
 		for (CategoriaForm category : categories) {
-			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioUNE2017Utils.getGlobalResultData(executionId, Long.parseLong(category.getId()),
+			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioUNE2012BUtils.getGlobalResultData(executionId, Long.parseLong(category.getId()),
 					pageExecutionList);
 			replaceSectionCat1(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
 			replaceSectionCat2(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
@@ -119,36 +119,32 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 
 		if (evolution) {
 
-			// TODO 2017 No está coincidiendo el contador de secciones con la
-			// plantilla. La de CCAA ha sido modificada, pero antes de modificar
-			// también la de EELL se hace este workarround
-
 			if (tipoObservatorio == Constants.OBSERVATORY_TYPE_EELL) {
 				numSection = 10;
 			}
 
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNE2017Utils.resultEvolutionData(Long.valueOf(observatoryId),
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNE2012BUtils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId));
 			final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
 			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-				resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2017Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+				resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012BUtils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 			}
 
-			ResultadosAnonimosObservatorioUNE2017Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap);
+			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap);
 			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
 			replaceImg(odt, graphicPath + "EvolucionNivelConformidadCombinada.jpg", "image/jpg");
 
 			replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
 
-			ResultadosAnonimosObservatorioUNE2017Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinada.jpg",
+			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinada.jpg",
 					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
-			ResultadosAnonimosObservatorioUNE2017Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
+			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
 					pageObservatoryMap, LEVEL_II_VERIFICATIONS);
 			replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinada.jpg", "image/jpg");
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", "image/jpg");
 
-			ResultadosAnonimosObservatorioUNE2017Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
+			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
 			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", "image/jpg");
 		}
@@ -163,7 +159,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	 */
 	@Override
 	protected String getEmbededIdImage(final Long tipoObservatorio, final String name) {
-		return OpenOfficeUNE2017ImageUtils.getEmbededIdImage(tipoObservatorio, name);
+		return OpenOfficeUNE2012BImageUtils.getEmbededIdImage(tipoObservatorio, name);
 	}
 
 	/**
@@ -188,8 +184,8 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg", "image/jpeg");
 
 		numImg++;
-		Map<String, Integer> result = ResultadosAnonimosObservatorioUNE2017Utils.getResultsBySiteLevel(pageExecutionList);
-		List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioUNE2017Utils.infoGlobalAccessibilityLevel(messageResources, result);
+		Map<String, Integer> result = ResultadosAnonimosObservatorioUNE2012BUtils.getResultsBySiteLevel(pageExecutionList);
+		List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioUNE2012BUtils.infoGlobalAccessibilityLevel(messageResources, result);
 		replaceText(odt, odfFileContent, "-41.t1.b3-", labelValueBean.get(1).getPercentageP());
 		replaceText(odt, odfFileContent, "-41.t1.b2-", labelValueBean.get(0).getPercentageP());
 		replaceText(odt, odfFileContent, "-41.t1.b4-", labelValueBean.get(2).getPercentageP());
@@ -221,15 +217,15 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	 */
 	private int replaceSection42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<CategoriaForm> categories,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNE2017Utils.createGraphicsMap(categories);
+		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNE2012BUtils.createGraphicsMap(categories);
 		for (Integer i : resultLists.keySet()) {
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + i + ".jpg", "image/jpeg");
 			numImg++;
 		}
-		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNE2017Utils.calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, categories);
+		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNE2012BUtils.calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, categories);
 		int tableNum = 1;
 		for (CategoriaForm category : categories) {
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNE2017Utils.infoComparisonBySegment(messageResources, res.get(category));
+			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNE2012BUtils.infoComparisonBySegment(messageResources, res.get(category));
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b2-", results.get(0).getValue() + "%");
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b3-", results.get(1).getValue() + "%");
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b4-", results.get(2).getValue() + "%");
@@ -260,15 +256,15 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	 */
 	private int replaceSection43(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<CategoriaForm> categories,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNE2017Utils.createGraphicsMap(categories);
+		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNE2012BUtils.createGraphicsMap(categories);
 		for (Integer i : resultLists.keySet()) {
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + i + ".jpg", "image/jpeg");
 			numImg++;
 		}
-		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNE2017Utils.calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, categories);
+		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNE2012BUtils.calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, categories);
 		int tableNum = 1;
 		for (CategoriaForm category : categories) {
-			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNE2017Utils.infoComparisonBySegmentPuntuation(messageResources, res.get(category));
+			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNE2012BUtils.infoComparisonBySegmentPuntuation(messageResources, res.get(category));
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b2-", results.get(0).getValue());
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b3-", results.get(1).getValue());
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b4-", results.get(2).getValue());
@@ -279,30 +275,15 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section 441.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 1 : 14 niveles
 	 */
-	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSection441(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg", "image/jpeg");
 		numImg++;
 
-		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
-		final List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
+		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
+		final List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
 
 		replaceText(odt, odfFileContent, "-441.t1.b2-", labelsL1.get(0).getValue());
 		replaceText(odt, odfFileContent, "-441.t1.b3-", labelsL1.get(1).getValue());
@@ -324,30 +305,15 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section 442.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 2 : 6 niveles
 	 */
-	// TODO 2017 Prioridad 2 - 6 niveles
 	private int replaceSection442(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", "image/jpeg");
 		numImg++;
 
-		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
-		final List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
+		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
+		final List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
 
 		replaceText(odt, odfFileContent, "-442.t1.b2-", labelsL2.get(0).getValue());
 		replaceText(odt, odfFileContent, "-442.t1.b3-", labelsL2.get(1).getValue());
@@ -360,30 +326,15 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section 451.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 1 : 14 niveles
 	 */
-	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSection451(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", "image/jpeg");
 		numImg++;
 
-		final Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
-		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelVerificationModalityComparison(results1);
+		final Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
+		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelVerificationModalityComparison(results1);
 
 		replaceText(odt, odfFileContent, "-451.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451.t1.c2-", res.get(0).getRedPercentage());
@@ -420,30 +371,15 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section 452.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 2 : 6 niveles
 	 */
-	// TODO 2017 Prioridad 2 - 6 niveles
 	private int replaceSection452(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
 		numImg++;
 
-		final Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
-		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelVerificationModalityComparison(results2);
+		final Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
+		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelVerificationModalityComparison(results2);
 
 		replaceText(odt, odfFileContent, "-452.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452.t1.c2-", res.get(0).getRedPercentage());
@@ -483,8 +419,8 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 		replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + ".jpg", "image/jpeg");
 		numImg++;
 
-		final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioUNE2017Utils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
-		final List<LabelValueBean> labels = ResultadosAnonimosObservatorioUNE2017Utils.infoAspectMidsComparison(messageResources, result);
+		final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioUNE2012BUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
+		final List<LabelValueBean> labels = ResultadosAnonimosObservatorioUNE2012BUtils.infoAspectMidsComparison(messageResources, result);
 
 		replaceText(odt, odfFileContent, "-46.t1.b2-", labels.get(0).getValue());
 		replaceText(odt, odfFileContent, "-46.t1.b3-", labels.get(1).getValue());
@@ -517,8 +453,8 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	private int replaceSectionCat1(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-			final Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioUNE2017Utils.getResultsBySiteLevel(pageExecutionList);
-			final List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioUNE2017Utils.infoGlobalAccessibilityLevel(messageResources, resultsMap);
+			final Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioUNE2012BUtils.getResultsBySiteLevel(pageExecutionList);
+			final List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioUNE2012BUtils.infoGlobalAccessibilityLevel(messageResources, resultsMap);
 
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", category.getOrden()) + ".jpg", "image/jpeg");
 			numImg++;
@@ -572,31 +508,14 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section cat 31.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param category
-	 *            the category
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 1 : 14 niveles
 	 */
-	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSectionCat31(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
+		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
 
 		if (!pageExecutionList.isEmpty()) {
-			final List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
+			final List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelIVerificationMidsComparison(messageResources, resultL1);
 
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + category.getOrden() + ".jpg", "image/jpeg");
 			numImg++;
@@ -624,31 +543,14 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section cat 32.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param category
-	 *            the category
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 2 : 6 niveles
 	 */
-	// TODO 2017 Prioridad 2 - 6 niveles
 	private int replaceSectionCat32(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
-		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
+		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
 
 		if (!pageExecutionList.isEmpty()) {
-			final List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
+			final List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelIIVerificationMidsComparison(messageResources, resultL2);
 
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + category.getOrden() + ".jpg", "image/jpeg");
 			numImg++;
@@ -669,30 +571,13 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section cat 41.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param category
-	 *            the category
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 1 : 14 niveles
 	 */
-	// TODO 2017 Prioridad 1 14 niveles
 	private int replaceSectionCat41(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-			final Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
-			final List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelVerificationModalityComparison(results1);
+			final Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
+			final List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelVerificationModalityComparison(results1);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + category.getOrden() + ".jpg", "image/jpeg");
 			numImg++;
 			replaceText(odt, odfFileContent, "-" + numSection + "41.t1.b2-", labels.get(0).getGreenPercentage());
@@ -736,30 +621,13 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	}
 
 	/**
-	 * Replace section cat 42.
-	 *
-	 * @param messageResources
-	 *            the message resources
-	 * @param odt
-	 *            the odt
-	 * @param odfFileContent
-	 *            the odf file content
-	 * @param graphicPath
-	 *            the graphic path
-	 * @param category
-	 *            the category
-	 * @param pageExecutionList
-	 *            the page execution list
-	 * @return the int
-	 * @throws Exception
-	 *             the exception
+	 * Prioridad 2 : 6 niveles
 	 */
-	// TODO 2017 Prioridad 2 - 6 niveles
 	private int replaceSectionCat42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-			final Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioUNE2017Utils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
-			final List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioUNE2017Utils.infoLevelVerificationModalityComparison(results2);
+			final Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioUNE2012BUtils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
+			final List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioUNE2012BUtils.infoLevelVerificationModalityComparison(results2);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + category.getOrden() + ".jpg", "image/jpeg");
 			numImg++;
 			replaceText(odt, odfFileContent, "-" + numSection + "42.t1.b2-", labels.get(0).getGreenPercentage());
@@ -804,13 +672,13 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	private int replaceSectionEvolutionSuitabilityLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNE2017Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
+			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNE2012BUtils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
 					pageExecutionList);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
-			final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNE2017Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
-			final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNE2017Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
-			final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNE2017Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
+			final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNE2012BUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
+			final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNE2012BUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
+			final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNE2012BUtils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
 
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg", "image/jpeg");
 			numImg++;
@@ -860,7 +728,7 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	private int replaceSectionEvolutionAverageScore(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-			final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateEvolutionPuntuationDataSet(pageExecutionList);
+			final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateEvolutionPuntuationDataSet(pageExecutionList);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + ".jpg", "image/jpeg");
 			numImg++;
 
@@ -897,107 +765,107 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 
 			// TABLA 1
 
-			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION,
+			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION,
 					pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.1") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "5.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.2") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "6.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.3") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "7.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.4") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "8.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.5") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "9.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.6") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "10.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.7") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "11.t1", resultData);
 
-			// TODO 2017 Reorganización de los datos
+			//  Reorganización de los datos
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.1") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "12.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.2") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "13.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.3") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "14.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.4") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "15.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.5") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "16.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.6") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "17.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.7") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "18.t1", resultData);
 
 			// TABLA 2
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.2.1") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "19.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.2.2") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "20.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.2.3") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "21.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.1") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "22.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.2") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "23.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION, pageObservatoryMap);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.3") + ".jpg", "image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "24.t1", resultData);
@@ -1036,32 +904,32 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 			final PropertiesManager pmgr = new PropertiesManager();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
 
-			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.general"),
+			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.general"),
 					resultsByAspect, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID) + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "25.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.presentation"), resultsByAspect, df);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.presentation"), resultsByAspect, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID) + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "26.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.structure"), resultsByAspect, df);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.structure"), resultsByAspect, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID) + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "27.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.navigation"), resultsByAspect, df);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.navigation"), resultsByAspect, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID) + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "28.t1", resultData);
 
-			resultData = ResultadosAnonimosObservatorioUNE2017Utils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.alternatives"), resultsByAspect, df);
+			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateAspectEvolutionPuntuationDataSet(messageResources.getMessage("observatory.aspect.alternatives"), resultsByAspect, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.aspect.mid.puntuation.name", Constants.OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID) + ".jpg",
 					"image/jpeg");
 			numImg++;
@@ -1099,8 +967,8 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	private int replaceSectionCat5(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
-			final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioUNE2017Utils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
-			final List<LabelValueBean> labels = ResultadosAnonimosObservatorioUNE2017Utils.infoAspectMidsComparison(messageResources, result);
+			final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioUNE2012BUtils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
+			final List<LabelValueBean> labels = ResultadosAnonimosObservatorioUNE2012BUtils.infoAspectMidsComparison(messageResources, result);
 
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + category.getOrden() + ".jpg", "image/jpeg");
 			numImg++;
@@ -1128,13 +996,13 @@ public class OpenOfficeUNE2017DocumentBuilder extends OpenOfficeDocumentBuilder 
 	private OdfTextDocument getOdfTemplate() throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (tipoObservatorio == Constants.OBSERVATORY_TYPE_AGE) {
-			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2017.AGE"));
+			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2012b.AGE"));
 		} else if (tipoObservatorio == Constants.OBSERVATORY_TYPE_CCAA) {
-			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2017.CCAA"));
+			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2012b.CCAA"));
 		} else if (tipoObservatorio == Constants.OBSERVATORY_TYPE_EELL) {
-			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2017.EELL"));
+			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2012b.EELL"));
 		} else {
-			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2017.AGE"));
+			return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.une.2012b.AGE"));
 		}
 	}
 

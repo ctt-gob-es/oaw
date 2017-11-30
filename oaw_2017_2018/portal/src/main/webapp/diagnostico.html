@@ -366,7 +366,15 @@ fieldset p {
 	
 
 		$("#informe-obs-3").click(function () {
-			$("#disabled_info").text("(Esta opción solo está disponible para análisis de 33 páginas [profundidad 4, anchura 8])");
+			
+			if($("#radio-1").prop("checked") ){
+				$("#disabled_info").text("(Esta opción solo está disponible para análisis de 33 páginas [profundidad 4, anchura 8])");	
+			}
+			
+			if($("#radio-2").prop("checked") ){
+				$("#disabled_info").text("(Esta opción solo está disponible para análisis de 33 páginas)");	
+			}
+			
 			$("#maxUrl").text("33");
 			checkHistoricoCrawler();
 			checkHistoricoListaUrls();
@@ -390,6 +398,10 @@ fieldset p {
           $("#urlset").hide();
           $("#source").hide();
           $("#historico").show();
+          
+          if($("#informe-obs-3").prop("checked")){
+        	  $("#disabled_info").text("(Esta opción solo está disponible para análisis de 33 páginas [profundidad 4, anchura 8])");
+          }
           checkHistoricoCrawler();
         });
 

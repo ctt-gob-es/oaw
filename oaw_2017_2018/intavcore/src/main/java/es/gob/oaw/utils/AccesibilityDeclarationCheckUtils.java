@@ -66,8 +66,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					&& !link.getAttribute("href").toLowerCase().startsWith("tel") && !link.getAttribute("href").toLowerCase().endsWith(".pdf")
 					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")) {
 
-				// TODO 2017 Comprueba que no sean PDF lo que devuelve el link
-
+				// Comprueba que no sean PDF lo que devuelve el link
 				try {
 
 					if (StringUtils.isNotEmpty(link.getTextContent()) && StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp) && includedLinks.add(href) && !checkIsPDFContent(link)) {
@@ -188,7 +187,7 @@ public final class AccesibilityDeclarationCheckUtils {
 
 		final List<String> contactTexts = Arrays.asList(contactRegExp.split("\\|"));
 
-		// TODO 2017 Encabezados en esta página
+		// Encabezados en esta página
 
 		final List<Element> headings = EvaluatorUtils.getHeadings(document);
 
@@ -204,14 +203,14 @@ public final class AccesibilityDeclarationCheckUtils {
 			}
 		}
 
-		// TODO 2017 Texto de contacto en formularios de la página
+		// Texto de contacto en formularios de la página
 		final List<Element> forms = EvaluatorUtils.getElementsByTagName(document, "form");
 
 		if (forms != null && !forms.isEmpty()) {
 
 			for (Element form : forms) {
 
-				// TODO 2017 Texto de contacto en fieldset
+				// 2017 Texto de contacto en fieldset
 				NodeList formFieldsets = form.getElementsByTagName("fieldset");
 
 				if (formFieldsets != null && formFieldsets.getLength() > 0) {
@@ -227,7 +226,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					}
 				}
 
-				// TODO 2017 Texto de contacto en label de formularios
+				// Texto de contacto en label de formularios
 				NodeList formLabels = form.getElementsByTagName("label");
 
 				if (formLabels != null && formLabels.getLength() > 0) {
@@ -243,7 +242,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					}
 				}
 
-				// TODO 2017 Texto de contacto en botones de formularios
+				// Texto de contacto en botones de formularios
 				NodeList formInputs = form.getElementsByTagName("input");
 
 				if (formInputs != null && formInputs.getLength() > 0) {
@@ -264,7 +263,7 @@ public final class AccesibilityDeclarationCheckUtils {
 			}
 		}
 
-		// TODO 2017 Texto de contacto en botones que puedan estar fuera de
+		// Texto de contacto en botones que puedan estar fuera de
 		// formularios
 		final List<Element> buttons = EvaluatorUtils.getElementsByTagName(document, "buttons");
 
@@ -280,8 +279,6 @@ public final class AccesibilityDeclarationCheckUtils {
 				}
 			}
 		}
-
-		// TODO 2017 Texto de contacto en fieldset
 
 		return false;
 	}

@@ -113,7 +113,7 @@ public final class CartuchoDAO {
 	}
 
 	/**
-	 * TODO 2017 - Obtiene el nombre de la aplicación del cartucho asociado a un
+	 * Obtiene el nombre de la aplicación del cartucho asociado a un
 	 * rastreo realizado
 	 * 
 	 * @param c

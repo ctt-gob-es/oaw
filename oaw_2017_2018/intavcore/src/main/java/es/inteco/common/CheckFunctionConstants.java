@@ -180,7 +180,7 @@ public interface CheckFunctionConstants {
     int FUNCTION_TITLE_NOT_CONTAINS = 156;
     int FUNCTION_TABLE_COMPLEX = 157;
     
-    //TODO 2017 Nuevos códigos de funciones
+    //Nuevos códigos de funciones une-2012-b
     int FUNCTION_ARIA_LABELLEDBY_REFERENCED = 158;
     int FUNCTION_ATTRIBUTE_LENGHT = 159;
     int FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT = 160;

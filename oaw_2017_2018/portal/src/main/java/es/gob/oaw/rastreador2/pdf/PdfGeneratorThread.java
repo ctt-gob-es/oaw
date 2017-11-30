@@ -37,7 +37,7 @@ import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 //import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
@@ -107,12 +107,11 @@ public class PdfGeneratorThread extends Thread {
 
 								String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idRastreoRealizado, idRastreo);
 
-								// TODO 2017 Desdoblamiento nueva metodologia
-								// Nuevo fichero con los textos para las exportaciones
+								// Desdoblamiento nueva metodologia Nuevo fichero con los textos para las exportaciones
 
 								if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 
-									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2017(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
+									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012b(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
 											PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
 								} else {
 

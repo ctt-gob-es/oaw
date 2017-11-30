@@ -848,7 +848,7 @@ public final class ObservatorioDAO {
 		if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
 			query += " AND l.id_categoria = ?";
 		}
-		//TODO 2017 Ordernar los resultados
+		// Ordernar los resultados por categoría y nombre
 		query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
 
 		if (page != Constants.NO_PAGINACION) {
@@ -931,7 +931,7 @@ public final class ObservatorioDAO {
 			query += " AND l.id_categoria = ?";
 		}
 
-		//TODO 2017 Ordernar los resultados
+		// Ordernar los resultados por categoría y nombre
 		query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
 
 		if (page != Constants.NO_PAGINACION) {

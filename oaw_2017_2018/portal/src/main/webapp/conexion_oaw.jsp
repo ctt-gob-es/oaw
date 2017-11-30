@@ -185,9 +185,9 @@
             try {
                 final String historicoParamQuery;
                 if ( "url".equalsIgnoreCase(type) ) {
-                    historicoParamQuery = "?type="+type+"&url=" + java.net.URLEncoder.encode(url, "ISO-8859-1");
+                    historicoParamQuery = "?type="+type+"&url=" + java.net.URLEncoder.encode(url, "ISO-8859-1")+"&depth="+profundidad+"&width="+amplitud+"&report="+informe;
                 } else if ( "lista_urls".equalsIgnoreCase(type) ) {
-                    historicoParamQuery = "?type="+type+"&url=" + java.net.URLEncoder.encode(urls, "ISO-8859-1");
+                    historicoParamQuery = "?type="+type+"&url=" + java.net.URLEncoder.encode(urls, "ISO-8859-1")+"&depth="+profundidad+"&width="+amplitud+"&report="+informe;
                 } else {
                     historicoParamQuery = "";
                 }

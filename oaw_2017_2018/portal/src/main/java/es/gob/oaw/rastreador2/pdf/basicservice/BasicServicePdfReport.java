@@ -30,7 +30,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2017;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
@@ -57,14 +57,15 @@ public class BasicServicePdfReport {
 
 	public BasicServicePdfReport(final AnonymousResultExportPdf pdfBuilder) {
 
-		// TODO 2017 Fichero de textos en fucnión de builder
-		this((pdfBuilder instanceof AnonymousResultExportPdfUNE2017) ? MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B) : MessageResources.getMessageResources("ApplicationResources"),
-				pdfBuilder);
+		// Fichero de textos en fucnión de builder para aplicar los nuevos
+		// textos al nuevo builder
+		this((pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) ? MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B)
+				: MessageResources.getMessageResources("ApplicationResources"), pdfBuilder);
 
 	}
 
 	public BasicServicePdfReport(final MessageResources messageResources, final AnonymousResultExportPdf pdfBuilder) {
-		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 			this.messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
 		} else {
 
@@ -134,12 +135,11 @@ public class BasicServicePdfReport {
 						evolutionObservatoryEvaluation);
 				observatoryEvolutionResultsSectionBuilder.addEvolutionResults(pdfBuilder, messageResources, document, pdfTocManager, file);
 
-				// TODO 2017 Desdoblamiento
-				// Resultados por página
-
+				// Desdoblamiento para la nueva versión de la metodología
+				// UNE-2012 ya que cambian los niveles
 				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
 
-				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2017) {
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, true);
 

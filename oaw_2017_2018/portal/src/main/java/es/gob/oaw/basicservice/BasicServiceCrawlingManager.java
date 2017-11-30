@@ -40,7 +40,7 @@ public class BasicServiceCrawlingManager {
 	 * @return una lista con las páginas que se han recorrido
 	 */
 	public List<CrawledLink> getCrawledLinks(final BasicServiceForm basicServiceForm) {
-		// TODO 2017 Cambio de numero de urls maximas a anilizar
+		// Cambio de numero de urls maximas a anilizar
 		PropertiesManager pmgr = new PropertiesManager();
 		maxUrl = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
 
@@ -84,9 +84,7 @@ public class BasicServiceCrawlingManager {
 			final String[] split = basicServiceForm.getDomain().split("\r\n");
 			Collections.addAll(urls, split);
 
-			// TODO 2017 Cambio de numero de urls maximas a anilizar
-			// En el caso de lista cerrada nos quedamos con 17 urls como máximo
-			// crawlerData.setUrls(urls.subList(0, Math.min(urls.size(),17)));
+			// Cambio de numero de urls maximas a anilizar
 			crawlerData.setUrls(urls.subList(0, Math.min(urls.size(), maxUrl)));
 		}
 		crawlerData.setContent(basicServiceForm.getContent());

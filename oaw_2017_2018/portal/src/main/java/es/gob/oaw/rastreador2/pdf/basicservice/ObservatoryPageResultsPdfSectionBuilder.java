@@ -149,8 +149,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		// Puntuaciones Medias Nivel Accesibilidad
 		int contador = 1;
 		for (BigDecimal puntuacionMediaNivel : puntuacionesMediasNivel) {
-			// Puntuación Media Nivel Accesibilidad
-			// TODO 2017 Exportado a message para unificar
 
 			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { String.valueOf(contador) }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 					Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));

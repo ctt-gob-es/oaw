@@ -39,7 +39,7 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 
 	@Before
 	public void setUp() throws Exception {
-		checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2017");
+		checkAccessibility = TestUtils.getCheckAccessibility("observatorio-une-2012-b");
 	}
 
 	@Test
@@ -421,7 +421,11 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 		Assert.assertEquals(4, getNumProblems(checkAccessibility, AREA_HREF_ALT_ID));
 	}
 
-	// TODO 2017 ariaLabelledbyReferences
+	/**
+	 * ariaLabelledbyReferences
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void evaluateAreaAriaLabeledReferenced() throws Exception {
 		checkAccessibility.setContent("<html><body><area aria-labelledby=\"foo\"><h1 id=\"foo\">Label</h1></area></body></html>");
@@ -434,7 +438,11 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, AREA_ALT_ID));
 	}
 
-	// TODO 2017 atributos alt, aria-label o aria-labelledby <= 150 caracteres
+	/**
+	 * atributos alt, aria-label o aria-labelledby <= 150 caracteres
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void evaluateAltsLength() throws Exception {
 		checkAccessibility.setContent("<img alt=\"Menos 150\" src=\"http://tawmonitorurl.local/w3c_home.png\" />");
@@ -456,32 +464,34 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 
 	}
 
-	// TODO 2017 atributos alt, aria-label o aria-labelledby <= 150 caracteres
+	/**
+	 * atributos alt, aria-label o aria-labelledby <= 150 caracteres
+	 * 
+	 * @throws Exception
+	 */
 	@Test
 	public void evaluateLabeledByLength() throws Exception {
 
 		checkAccessibility.setContent("<html><body><p id=\"foo\">TEXTO</p><img aria-labelledby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 468));
 
-		checkAccessibility.setContent("<html><body><p id=\"foo\">Este es un texto alternativo que tiene una longitud muy superior a <strong>150</strong> quitando las etiquetas como el strong anterior, por lo que falla el check correspondiente y existe por lo tanto un fallo.</p><img aria-labelledby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
+		checkAccessibility.setContent(
+				"<html><body><p id=\"foo\">Este es un texto alternativo que tiene una longitud muy superior a <strong>150</strong> quitando las etiquetas como el strong anterior, por lo que falla el check correspondiente y existe por lo tanto un fallo.</p><img aria-labelledby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, 468));
-		
-		checkAccessibility.setContent("<html><body><p id=\"foo\">Imagen alt<img alt=\"Lorem ipsum alt\" src=\"http://tawmonitorurl.local/w3c_home.png\"/></p><img aria-labelledby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
+
+		checkAccessibility.setContent(
+				"<html><body><p id=\"foo\">Imagen alt<img alt=\"Lorem ipsum alt\" src=\"http://tawmonitorurl.local/w3c_home.png\"/></p><img aria-labelledby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 468));
-		
-		
+
 	}
+
 	@Test
 	public void evaluateLocal() {
-		checkAccessibility.setContent("<div>\n" + 
-				"		<a href='/index.html' class='left-align'><img src='w3c_home.png' alt='Logotipo del W3C' aria-labelledby='logoW3Cdesc'/></a>\n" + 
-				"        <h1 class='left-align'>P&#225;gina de pruebas</h1>\n" + 
-				"	</div>\n" + 
-				"	\n" + 
-				"	<div>\n" + 
-				"		<p id='logoW3Cdesc'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus iaculis sem eu ante malesuada egestas. Sed hendrerit hendrerit purus, vel tincidunt orci facilisis eget. Cras dignissim egestas vehicula. Morbi ut elit non elit condimentum accumsan. Suspendisse tortor ligula, iaculis quis eros non, vehicula aliquam ipsum. Praesent nisi erat, dignissim non volutpat in, facilisis eget nisl. Etiam eleifend ultrices erat, eu iaculis ante aliquet eu. Curabitur accumsan ultrices vehicula. Nullam purus lacus, malesuada sed quam nec, pretium efficitur orci. In hac habitasse platea dictumst.</p>\n" + 
-				"	</div>");
+		checkAccessibility.setContent("<div>\n" + "		<a href='/index.html' class='left-align'><img src='w3c_home.png' alt='Logotipo del W3C' aria-labelledby='logoW3Cdesc'/></a>\n"
+				+ "        <h1 class='left-align'>P&#225;gina de pruebas</h1>\n" + "	</div>\n" + "	\n" + "	<div>\n"
+				+ "		<p id='logoW3Cdesc'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus iaculis sem eu ante malesuada egestas. Sed hendrerit hendrerit purus, vel tincidunt orci facilisis eget. Cras dignissim egestas vehicula. Morbi ut elit non elit condimentum accumsan. Suspendisse tortor ligula, iaculis quis eros non, vehicula aliquam ipsum. Praesent nisi erat, dignissim non volutpat in, facilisis eget nisl. Etiam eleifend ultrices erat, eu iaculis ante aliquet eu. Curabitur accumsan ultrices vehicula. Nullam purus lacus, malesuada sed quam nec, pretium efficitur orci. In hac habitasse platea dictumst.</p>\n"
+				+ "	</div>");
 		Assert.assertEquals(1, getNumProblems(checkAccessibility, 468));
 	}
-	
+
 }

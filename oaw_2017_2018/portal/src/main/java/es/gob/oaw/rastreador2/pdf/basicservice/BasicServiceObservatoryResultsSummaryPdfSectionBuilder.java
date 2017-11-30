@@ -110,13 +110,10 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	}
 
 	private PdfPTable createTablaResumenResultadosPorNivelHeader(final MessageResources messageResources, final List<ObservatorySuitabilityForm> suitabilityGroups) {
-		// final float[] widths = {0.30f, 0.07f, 0.07f, 0.07f, 0.07f, 0.07f,
-		// 0.07f, 0.07f, 0.07f, 0.07f, 0.07f};
 
-		// TODO 2017 - Dinámicamente para normalizar a la normativa en curso
-		
 		int subgroupsSize = 0;
-		
+
+		// Calculamos las columnas en función de la normativa en curso
 		for (ObservatorySuitabilityForm suitabilityForm : suitabilityGroups) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
 				subgroupsSize++;
@@ -143,13 +140,11 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 
 		for (ObservatorySuitabilityForm suitabilityForm : suitabilityGroups) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-				//TODO 2017 Hacer el substring para sacar el "numero" que sirva para todas las metodologías...
-				
-				
-				
+				// Hacer el substring para sacar el "numero" que sirva para
+				// todas las metodologías...
 				String subgroupDescription = messageResources.getMessage(subgroupForm.getDescription());
-				table.addCell(PDFUtils.createTableCell(subgroupDescription.substring(0, subgroupDescription.indexOf(" ")), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
-						Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+				table.addCell(PDFUtils.createTableCell(subgroupDescription.substring(0, subgroupDescription.indexOf(" ")), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER,
+						DEFAULT_PADDING, -1));
 			}
 		}
 		return table;
