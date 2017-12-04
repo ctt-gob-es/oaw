@@ -109,11 +109,10 @@ public final class AccesibilityDeclarationCheckUtils {
 		Element elementRoot = link.getOwnerDocument().getDocumentElement();
 		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
 
-		// u = new URL(documentUrl,link.getAttribute("href")).openConnection();
 		HttpURLConnection u = EvaluatorUtils.getConnection(new URL(documentUrl, link.getAttribute("href")).toString(), "GET", true);
 		String type = u.getHeaderField("Content-Type");
 
-		if (type != null && !type.contains("application/pdf")) {
+		if (!StringUtils.isEmpty(type) && type.contains("application/pdf")) {
 			esPDF = true;
 
 		}
