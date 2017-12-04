@@ -4324,6 +4324,20 @@ public class Check {
 
 	}
 
+	/**
+	 * Comprueba si un elemento con el atributo "aria-describedby" hace
+	 * referencia a un elemento existente en el documento.
+	 * 
+	 * @param checkCode
+	 *            Información del check
+	 * @param nodeNode
+	 *            Nodo
+	 * @param elementGiven
+	 *            Elemento
+	 * @return true si falla, es decir no se encuentra el elelemento con el id
+	 *         del atributo aria-labelledby. false en caso de encontrar el
+	 *         elemento con el id.
+	 */
 	private boolean functionAriaDescribedbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 
 		final String ariaLabelledby = elementGiven.getAttribute("aria-describedby");
@@ -4610,7 +4624,7 @@ public class Check {
 			return !hasContact;
 		}
 	}
-	
+
 	/**
 	 * Devuelve el texto de un elemento y sus hijos
 	 * 
