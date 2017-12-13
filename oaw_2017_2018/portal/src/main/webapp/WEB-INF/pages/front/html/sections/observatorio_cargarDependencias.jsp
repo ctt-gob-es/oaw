@@ -13,7 +13,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
 <html:xhtml />
-<html:javascript formName="DependenciaForm"/>
+<html:javascript formName="DependenciaForm" />
 
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
@@ -38,7 +38,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function reloadGrid(path) {
 
 		lastUrl = path;
-		
+
 		// Mantener el scroll
 		scroll = $(window).scrollTop();
 
@@ -113,7 +113,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 												hidegrid : false,
 												altRows : true,
 												mtype : 'POST',
-												
+
 												onSelectRow : function(rowid,
 														status, e) {
 
@@ -204,7 +204,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							}).trigger('reloadGrid');
 
 							$('#grid').unbind("contextmenu");
-							
+
 							// Mostrar sin resultados
 							if (total == 0) {
 								$('#grid')
@@ -268,7 +268,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var dependencia = $('#grid').jqGrid('getRowData', rowId);
 
 		var idDependencia = dependencia.id;
-		var dialogoEliminar = $('<div/><div>');
+		var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
 		dialogoEliminar.append('<p>&#191;Desea eliminar la dependencia "'
 				+ dependencia.name + '"?</p>');
@@ -276,24 +276,34 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		dialogoEliminar
 				.dialog({
 					autoOpen : false,
+					minHeight : $(window).height() * 0.25,
+					minWidth : $(window).width() * 0.25,
 					modal : true,
-					title : 'Eliminar dependencia',
+					title : 'RASTREADOR WEB - Eliminar dependencia',
 					buttons : {
-						"Aceptar" : function() {
-							$
-									.ajax(
-											{
-												url : '/oaw/secure/ViewDependenciasObservatorio.do?action=delete&idDependencia='
-														+ idDependencia,
-												method : 'POST',
-												cache : false
-											}).success(function(response) {
-										reloadGrid(lastUrl);
-										dialogoEliminar.dialog("close");
-									});
+						"Aceptar" : {
+							click: function() {
+								$
+								.ajax(
+										{
+											url : '/oaw/secure/ViewDependenciasObservatorio.do?action=delete&idDependencia='
+													+ idDependencia,
+											method : 'POST',
+											cache : false
+										}).success(function(response) {
+									reloadGrid(lastUrl);
+									dialogoEliminar.dialog("close");
+								});
+					},
+					text: 'Aceptar',
+					class: 'jdialog-btn-save'
 						},
-						"Cancelar" : function() {
-							dialogoEliminar.dialog("close");
+						"Cancelar" : {
+							click:function() {
+								dialogoEliminar.dialog("close");
+							},
+							text: 'Cancelar',
+							class: 'jdialog-btn-cancel'
 						}
 					}
 				});
@@ -303,6 +313,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	//Buscador
 	function buscar() {
+		reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search&'
+				+ $('#buscadorDependencias').serialize());
+	}
+	
+	function limpiar(){
+		$('#buscadorDependencias')[0].reset();
 		reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search&'
 				+ $('#buscadorDependencias').serialize());
 	}
@@ -321,16 +337,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								.ready(
 										function() {
 											reloadGrid('/oaw/secure/ViewDependenciasObservatorio.do?action=search');
-											
-											
-											$('#buscadorDependencias').on('keyup keypress', function(e) {
-												  var keyCode = e.keyCode || e.which;
-												  if (keyCode === 13) { 
-												    e.preventDefault();
-												    return false;
-												  }
-												});
-											
+
+											$('#buscadorDependencias').on(
+													'keyup keypress',
+													function(e) {
+														var keyCode = e.keyCode
+																|| e.which;
+														if (keyCode === 13) {
+															e.preventDefault();
+															return false;
+														}
+													});
+
 										});
 
 					});
@@ -351,13 +369,21 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
-			title : 'Nueva dependencia',
+			title : 'RASTREADOR WEB - Nueva dependencia',
 			buttons : {
-				"Guardar" : function() {
-					guardarNuevaDependencia();
+				"Guardar" : {
+					click: function() {
+						guardarNuevaDependencia();
+					},
+					text : "Guardar",
+					class: 'jdialog-btn-save'
 				},
-				"Cancelar" : function() {
-					dialog.dialog("close");
+				"Cancelar" : {
+					click: function() {
+						dialog.dialog("close");
+					},
+					text: "Cancelar",
+					class: 'jdialog-btn-cancel'
 				}
 			},
 			close : function() {
@@ -427,8 +453,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<form id="nuevaDependenciaForm">
 				<!-- Nombre -->
 				<div class="row formItem">
-					<label for="nombre" class="control-label" style="margin-left: 25px;"><strong
-						class="labelVisu"><acronym
+					<label for="nombre" class="control-label"
+						style="margin-left: 25px;"><strong class="labelVisu"><acronym
 							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 								key="nueva.dependencia.observatorio.nombre" /></strong></label>
 					<div class="col-xs-8">
@@ -468,7 +494,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
-			<form id="buscadorDependencias" class="formulario form-horizontal" onsubmit="buscar()">
+			<form id="buscadorDependencias" class="formulario form-horizontal"
+				onsubmit="buscar()">
 				<fieldset>
 					<legend>Buscador</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
@@ -482,6 +509,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
 							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
 								key="boton.buscar" />
+						</span> <span onclick="limpiar()" class="btn btn-default btn-lg">
+							<span aria-hidden="true"></span> <bean:message
+								key="boton.limpiar" />
 						</span>
 					</div>
 				</fieldset>

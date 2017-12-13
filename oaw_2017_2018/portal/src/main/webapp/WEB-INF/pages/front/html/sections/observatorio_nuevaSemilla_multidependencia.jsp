@@ -121,9 +121,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 <div id="main" style="overflow: hidden">
 
-	<h2>
-		<bean:message key="gestion.semillas.observatorio.titulo" />
-	</h2>
+	<!-- <h2>Nueva Semilla</h2> -->
 
 	<div id="erroresNuevaSemillaMD" style="display: none"></div>
 
@@ -213,7 +211,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<!-- Urls -->
 			<div class="row formItem">
-				<p class="alert alert-info">
+				<p class="alert alert-info" style="margin-left: 23%;">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message
 							key="nueva.semilla.webs.informacion" /> </em>:
 					<bean:message key="nueva.semilla.webs.info" />
@@ -236,11 +234,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							key="nueva.semilla.observatorio.in.directory" /></strong></label>
 				<div class="col-xs-2">
 					<select name="inDirectory" class="textoSelect form-control">
-						<option value="true">
-							<bean:message key="select.yes" />
-						</option>
 						<option value="false">
 							<bean:message key="select.no" />
+						</option>
+						<option value="true">
+							<bean:message key="select.yes" />
 						</option>
 					</select>
 				</div>

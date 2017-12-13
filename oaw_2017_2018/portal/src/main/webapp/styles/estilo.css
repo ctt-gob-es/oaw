@@ -301,7 +301,7 @@ td {
 
 .textoSelect {
 	min-width: 30%;
-	width: 46%;
+	width: 45%;
 }
 
 .textoSelectCorto {
@@ -1152,4 +1152,38 @@ ul.tabbernav li.tabberactive a:hover {
 @-moz-keyframes spinm {
     from { -moz-transform: rotate(0deg);}
     to { -moz-transform: rotate(360deg);}
+}
+
+
+
+
+.jdialog-btn-save{
+	color: #fff !important;
+    background-color: #337ab7 !important;
+    border-color: #337ab7 !important;
+    padding: 10px 16px !important;
+    font-size: 16px !important;
+    line-height: 1.3333333 !important;
+    border-radius: 6px !important;
+}
+.jdialog-btn-cancel{
+	color: #e21430 !important;
+    background-color: #fff !important;
+    border-color: #ccc !important;
+    padding: 10px 16px !important;
+    font-size: 16px !important;
+    line-height: 1.3333333 !important;
+    border-radius: 6px !important;
+}
+
+.ui-dialog-titlebar  {
+	background: #e1120d !important;;
+    background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%) !important;;
+    background: -webkit-linear-gradient(top, #e1120d 0%, #ff8e8e 100%) !important;;
+    background: linear-gradient(to bottom, #e1120d 0%, #ff8e8e 100%) !important;;
+    color: #FFF !important;
+}
+
+#dialogoEliminarContent p{
+	padding: 10px;
 }

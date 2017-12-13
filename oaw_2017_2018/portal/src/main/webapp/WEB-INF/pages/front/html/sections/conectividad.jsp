@@ -171,12 +171,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							introducir un email válido</div>
 
 						<p>Comprobar la conectividad con el Sistema Integral de
-							Mensajería (SIM). Se intentará enviar un correo electrónico a la
-							dirección indicada.</p>
+							Mensajer&#237;a (SIM). Se intentará enviar un correo electr&#243;nico a la
+							direcci&#243;n indicada.</p>
 
-<%-- 						<p>
-							<bean:message key="leyenda.campo.obligatorio" />
-						</p> --%>
 
 						<p>
 							<label for="url" class="labelCorto"><strong
@@ -185,9 +182,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									Email:</strong></label> <input type="text" id="checksimemail" />
 
 							<button id="checksim" onclick="checksim()"
-								class="btn btn-primary btn-sm">Comprobar</button>
+								class="btn btn-default btn-sm">Comprobar</button>
 
-							<button id="checkingsim" class="btn btn-primary btn-sm hidden">
+							<button id="checkingsim" class="btn btn-default btn-sm hidden">
 								<span
 									class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;Comprobando
 							</button>
@@ -237,13 +234,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</legend>
 
 						<div id="urlcheck-error-message" class="alert alert-danger hidden">Debe
-							introducir una URL válida</div>
+							introducir una URL v&#225;lida</div>
 
 						<p>Comprobar la conectividad con la URL indicada.</p>
 
-<%-- 						<p>
-							<bean:message key="leyenda.campo.obligatorio" />
-						</p> --%>
 						
 						<div class="formItem">
 							<label for="url" class="labelCorto"><strong
@@ -252,8 +246,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									<bean:message key="conectividad.form.url" />: </strong></label> <input
 								id="urlcheck" type="text" class="textoCorto" name="url"
 								required="required" /> <span id="checkurl" onclick="checkurl()"
-								class="btn btn-primary btn-sm">Comprobar</span> <span
-								id="checkingurl" class="btn btn-primary btn-sm hidden"> <span
+								class="btn btn-default btn-sm">Comprobar</span> <span
+								id="checkingurl" class="btn btn-default btn-sm hidden"> <span
 								class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>&nbsp;Comprobando
 							</span>
 						</div>

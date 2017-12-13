@@ -42,7 +42,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var dialog;
 
 	var windowWidth = $(window).width() * 0.8;
-	var windowHeight = $(window).height() * 0.8;
+	var windowHeight = $(window).height() * 0.85;
 	
 
 	function dialogoNuevaSemilla() {
@@ -53,15 +53,24 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		$('#erroresNuevaSemillaMD').hide();
 
 		dialog = $("#dialogoNuevaSemilla").dialog({
-			height : windowHeight,
-			width : windowWidth,
+			minHeight : windowHeight,
+			minWidth : windowWidth,
+			title: 'RASTREADOR WEB - Nueva semilla',
 			modal : true,
 			buttons : {
-				"Guardar" : function() {
-					guardarNuevaSemilla();
+				"Guardar" : {
+					click: function() {
+						guardarNuevaSemilla();
+					},
+					text: 'Guardar',
+					class: 'jdialog-btn-save'
 				},
-				"Cancelar" : function() {
-					dialog.dialog("close");
+				"Cancelar" : {
+					click: function() {
+						dialog.dialog("close");
+					},
+					text: "Cancelar", 
+					class :'jdialog-btn-cancel'
 				}
 			},
 			open : function() {
@@ -70,7 +79,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
 				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
-			}
+			},
 		});
 
 	}
@@ -128,6 +137,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	function buscar() {
 		reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&'
 				+ $('#SemillaSearchForm').serialize());
+	}
+	
+	function limpiar(){
+		$('#SemillaSearchForm')[0].reset();
+		reloadGrid('/oaw/secure/JsonViewSemillasObservatorio.do?action=buscar&'
+				+ $('#SemillaSearchForm')
+						.serialize());
 	}
 
 	$(window)
@@ -231,14 +247,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							property="url" />
 					</div>
 					<div class="formButton">
-						<%-- 						<button type="submit" class="btn btn-default btn-lg">
-							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-							<bean:message key="boton.buscar" />
-						</button> --%>
-
 						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
 							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
 								key="boton.buscar" />
+						</span>
+						
+						<span onclick="limpiar()" class="btn btn-default btn-lg"> <span
+							 aria-hidden="true"></span> <bean:message
+								key="boton.limpiar" />
 						</span>
 					</div>
 				</fieldset>
@@ -263,11 +279,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 			<!-- Grid -->
-			<table id="grid">
-			</table>
-
-
-
+			<table id="grid"></table>
 			<p id="paginador"></p>
 
 		</div>
