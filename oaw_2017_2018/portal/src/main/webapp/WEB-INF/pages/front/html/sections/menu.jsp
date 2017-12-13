@@ -26,10 +26,10 @@ Email: observ.accesibilidad@correo.gob.es
 
     <ul role="presentation" class="nav nav-pills nav-stacked">
         <inteco:menu roles="<%=rolAdmin + \";\" + rolConfig + \";\" + rolObservatory%>">
-            <logic:equal name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBSERVATORIO %>">
+            <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
             <li class="active"><a><bean:message key="menuadmin.observatorio" /></a></li>
             </logic:equal>
-            <logic:notEqual name="<%=Constants.SUBMENU %>" value="<%=Constants.SUBMENU_OBSERVATORIO %>">
+            <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_INTECO_OBS %>">
             <li><html:link forward="observatoryMenu" titleKey="menuadmin.observatorio.title"><bean:message key="menuadmin.observatorio" /></html:link></li>
             </logic:notEqual>
             <li>
@@ -100,8 +100,13 @@ Email: observ.accesibilidad@correo.gob.es
             </li>
         </inteco:menu>
 
-        <li role="presentation" class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Otras opciones <span class="caret pull-right"></span></a>
+		<logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_OTHER_OPTIONS %>">
+	        <li role="presentation" class="dropdown active">
+        </logic:equal>
+        <logic:notEqual name="<%=Constants.MENU %>" value="<%=Constants.MENU_OTHER_OPTIONS %>">
+        	<li role="presentation" class="dropdown">
+        </logic:notEqual>
+             <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Otras opciones <span style="margin-top: 8px;" class="caret pull-right"></span></a>
             <ul class="dropdown-menu nav nav-stacked nav-pills">
                 <li>
                     <logic:equal name="<%=Constants.MENU %>" value="<%=Constants.MENU_PASSWORD %>">

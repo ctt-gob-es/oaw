@@ -503,6 +503,7 @@ public interface Constants {
 	String MENU_USERS = "menuUsers";
 	String MENU_CLIENT = "menuClient";
 	String MENU_INTECO_OBS = "menuObservatory";
+	String MENU_OTHER_OPTIONS = "menuOtherOptions";
 	String MENU_SERVICIO_DIAGNOSTICO = "menuServicioDiagnostico";
 	String MENU_CRAWLINGS = "menuCrawlings";
 	String MENU_SEEDS = "menuSeeds";

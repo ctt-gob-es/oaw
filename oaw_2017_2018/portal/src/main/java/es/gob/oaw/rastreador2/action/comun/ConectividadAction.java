@@ -82,7 +82,9 @@ public class ConectividadAction extends Action {
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_CONECTIVIDAD);
+		  // Marcamos el menú
+        request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
+        request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_CONECTIVIDAD);
 
 		String action = request.getParameter(Constants.ACTION);
 		if (action != null) {

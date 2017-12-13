@@ -569,7 +569,7 @@ function reloadGrid(path) {
 						$('#grid').unbind("contextmenu");
 						
 						// Mostrar sin resultados
-						if (total == 0) {
+						if (data.resultados.length == 0) {
 							$('#grid')
 									.append(
 											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');

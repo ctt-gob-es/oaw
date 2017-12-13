@@ -992,9 +992,9 @@ public final class SemillaDAO {
 		final List<CategoriaForm> categories = new ArrayList<>();
 		final String query;
 		if (page == Constants.NO_PAGINACION) {
-			query = "SELECT * FROM categorias_lista";
+			query = "SELECT * FROM categorias_lista ORDER BY id_categoria ASC";
 		} else {
-			query = "SELECT * FROM categorias_lista LIMIT ? OFFSET ?";
+			query = "SELECT * FROM categorias_lista ORDER BY id_categoria ASC LIMIT ? OFFSET ?";
 		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			if (page != Constants.NO_PAGINACION) {
