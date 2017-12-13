@@ -37,32 +37,46 @@ Email: observ.accesibilidad@correo.gob.es
 <!--  JQ GRID   -->
 <script>
 	//Buscador
-	function buscar() {		
+	function buscar() {
 		reloadGrid('JsonResultadoObservatorio.do?action=resultados&id_observatorio='
-				+ $(
-						'[name=id_observatorio]')
-						.val()
+				+ $('[name=id_observatorio]').val()
 				+ '&idExObs='
 				+ $('[name=idExObs]').val()
 				+ '&idCartucho='
-				+ $('[name=idCartucho]')
-						.val()+'&'+$('#resultadosObsBuscador').serialize());
+				+ $('[name=idCartucho]').val()
+				+ '&'
+				+ $('#resultadosObsBuscador').serialize());
+	}
+
+	function limpiar() {
+
+		$('#resultadosObsBuscador')[0].reset();
+
+		reloadGrid('JsonResultadoObservatorio.do?action=resultados&id_observatorio='
+				+ $('[name=id_observatorio]').val()
+				+ '&idExObs='
+				+ $('[name=idExObs]').val()
+				+ '&idCartucho='
+				+ $('[name=idCartucho]').val());
+
 	}
 
 	$(window)
 			.on(
 					'load',
 					function() {
-						
+
 						//Desactivar cache de AJAX de forma global
-						$.ajaxSetup({ cache: false });
+						$.ajaxSetup({
+							cache : false
+						});
 
 						var $jq = $.noConflict();
 
 						var lastUrl;
 
 						$('#resultadosObsBuscador')[0].reset();
-						
+
 						//Primera carga del grid el grid
 						$jq(document)
 								.ready(
@@ -96,13 +110,22 @@ Email: observ.accesibilidad@correo.gob.es
 			height : windowHeight,
 			width : windowWidth,
 			modal : true,
+			title: 'RASTREADOR WEB - Editar semilla',
 			buttons : {
-				"Guardar" : function() {
-					editarNuevaSemilla();
+				"Guardar" : {
+					click: function() {
+						editarNuevaSemilla();
+					},
+					text : "Guardar",
+					class: 'jdialog-btn-save'
 				},
-				"Cancelar" : function() {
-					dialog.dialog("close");
-				}
+				"Cancelar" : {
+					click: function() {
+						dialog.dialog("close");
+					},
+					text: "Cancelar", 
+					class :'jdialog-btn-cancel'
+				} 
 			},
 			open : function() {
 
@@ -252,7 +275,8 @@ Email: observ.accesibilidad@correo.gob.es
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
 			<html:form action="/secure/ResultadosObservatorio.do" method="get"
-				styleClass="formulario form-horizontal" styleId="resultadosObsBuscador">
+				styleClass="formulario form-horizontal"
+				styleId="resultadosObsBuscador">
 				<input type="hidden" name="<%=Constants.ACTION%>"
 					value="<%=Constants.GET_SEEDS%>" />
 				<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>"
@@ -278,18 +302,15 @@ Email: observ.accesibilidad@correo.gob.es
 						<html:text styleClass="texto form-control"
 							styleId="listaUrlsString" property="listaUrlsString" />
 					</div>
-<%-- 					<div class="formButton">
-						<button type="submit" class="btn btn-default btn-lg">
-							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-							<bean:message key="boton.buscar" />
-						</button>
-					</div> --%>
-									<div class="formButton">
-											<span onclick="buscar()" class="btn btn-default btn-lg"> <span
+					<div class="formButton">
+						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
 							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
 								key="boton.buscar" />
+						</span> <span onclick="limpiar()" class="btn btn-default btn-lg">
+							<span aria-hidden="true"></span> <bean:message
+								key="boton.limpiar" />
 						</span>
-					</button>
+						</button>
 				</fieldset>
 			</html:form>
 

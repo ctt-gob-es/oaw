@@ -567,6 +567,13 @@ function reloadGrid(path) {
 						}).trigger('reloadGrid');
 
 						$('#grid').unbind("contextmenu");
+						
+						// Mostrar sin resultados
+						if (total == 0) {
+							$('#grid')
+									.append(
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="9" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+						}
 
 						// Paginador
 						paginas = data.paginas;

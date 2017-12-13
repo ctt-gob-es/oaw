@@ -71,7 +71,7 @@ function eliminarSemilla(rowId) {
 	var semilla = $('#grid').jqGrid('getRowData', rowId);
 
 	var idSemilla = semilla.id;
-	var dialogoEliminar = $('<div/><div>');
+	var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
 
 	dialogoEliminar.append('<p>&#191;Desea eliminar la semilla "'
 			+ semilla.nombre + '"?</p>');
@@ -89,7 +89,7 @@ function eliminarSemilla(rowId) {
 
 						if (data != null) {
 
-							if (JSON.parse(data).size() > 0) {
+							if (JSON.parse(data).length > 0) {
 
 								dialogoEliminar
 										.append('<p>La semilla est&#225; o ha estado asociada a los siguientes observatorios: </p></ul>');
@@ -110,24 +110,34 @@ function eliminarSemilla(rowId) {
 	dialogoEliminar
 			.dialog({
 				autoOpen : false,
+				minHeight : $(window).height() * 0.25,
+				minWidth : $(window).width() * 0.25,
 				modal : true,
-				title : 'Eliminar semilla',
+				title : 'RASTREADOR WEB - Eliminar semilla',
 				buttons : {
-					"Aceptar" : function() {
-						$
-								.ajax(
-										{
-											url : '/oaw/secure/JsonSemillasObservatorio.do?action=delete&idSemilla='
-													+ idSemilla,
-											method : 'POST',
-											cache : false
-										}).success(function(response) {
-									reloadGrid(lastUrl);
-									dialogoEliminar.dialog("close");
-								});
+					"Aceptar" : {
+						click: function() {
+							$
+							.ajax(
+									{
+										url : '/oaw/secure/JsonSemillasObservatorio.do?action=delete&idSemilla='
+												+ idSemilla,
+										method : 'POST',
+										cache : false
+									}).success(function(response) {
+								reloadGrid(lastUrl);
+								dialogoEliminar.dialog("close");
+							});
+						},
+						text: 'Aceptar',
+						class: 'jdialog-btn-save'
 					},
-					"Cancelar" : function() {
-						dialogoEliminar.dialog("close");
+					"Cancelar" : {
+						click: function() {
+							dialogoEliminar.dialog("close");
+						},
+						text: 'Cancelar',
+						class: 'jdialog-btn-cancel'
 					}
 				}
 			});
