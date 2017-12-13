@@ -62,7 +62,7 @@ public class DependenciasObservatorioAction extends DispatchAction {
 	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		// Marcamos el menú
-		request.getSession().setAttribute(Constants.MENU, Constants.MENU);
+		request.getSession().setAttribute(Constants.MENU, Constants.MENU_INTECO_OBS);
 		if (request.getParameter(Constants.RETURN_OBSERVATORY_RESULTS) != null) {
 			request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_OBSERVATORIO);
 		} else {

@@ -133,7 +133,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(email);
 	}
-
 </script>
 
 <!-- conectividad.jsp -->
@@ -149,8 +148,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li class="active"><span class="glyphicon glyphicon-home"
-					aria-hidden="true"></span> <bean:message key="migas.conectividad" /></li>
+				<li>
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+						Otras opciones
+					</li>
+				<li class="active"></span> <bean:message key="migas.conectividad" /></li>
+
 			</ol>
 		</div>
 
@@ -171,8 +174,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							introducir un email válido</div>
 
 						<p>Comprobar la conectividad con el Sistema Integral de
-							Mensajer&#237;a (SIM). Se intentará enviar un correo electr&#243;nico a la
-							direcci&#243;n indicada.</p>
+							Mensajer&#237;a (SIM). Se intentará enviar un correo
+							electr&#243;nico a la direcci&#243;n indicada.</p>
 
 
 						<p>
@@ -238,7 +241,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 						<p>Comprobar la conectividad con la URL indicada.</p>
 
-						
+
 						<div class="formItem">
 							<label for="url" class="labelCorto"><strong
 								class="labelVisu"><acronym
