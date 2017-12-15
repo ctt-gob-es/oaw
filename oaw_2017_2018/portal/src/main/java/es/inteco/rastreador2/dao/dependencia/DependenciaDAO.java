@@ -155,7 +155,7 @@ public final class DependenciaDAO {
 			ps.setString(1, dependencia.getName());
 			ResultSet result = ps.executeQuery();
 
-			if (result != null && result.next()) {
+			if (result.next()) {
 				exists = true;
 			}
 

@@ -54,12 +54,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                         <c:set target="${paramsSI}" property="id_observatorio" value="${observatoryForm.id}" />
                         <c:set target="${paramsSI}" property="idExObs" value="${idExObs}" />
                         
-
-                        <c:set target="${paramsNO}" property="${confirmacion}" value="${confNo}" />
-                        <c:set target="${paramsNO}" property="${observatorioSTR}" value="${observatoryForm.id}" />
+                        <c:set target="${paramsNO}" property="id_observatorio" value="${observatoryForm.id}" />
 
                         <html:link styleClass="btn btn-primary btn-lg" forward="relanzarObservatorio" name="paramsSI"><bean:message key="boton.aceptar"/></html:link>
-                        <html:link styleClass="btn btn-default btn-lg" forward="relanzarObservatorio" name="paramsNO"><bean:message key="boton.cancelar"/></html:link>
+                        <html:link styleClass="btn btn-default btn-lg" forward="resultadosPrimariosObservatorio" name="paramsNO"><bean:message key="boton.cancelar"/></html:link>
                     </div>
                 </div>
 
