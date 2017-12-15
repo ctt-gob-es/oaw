@@ -151,7 +151,7 @@ code {
 	font-style: bold
 }
 
-/* �nfasis */
+/* Enfasis */
 strong {
 	font-weight: bold;
 	color: #e21430;
@@ -823,7 +823,7 @@ div.detail p {
 
 /* SELECTORES */
 /**************/
-/* Cabecera de la p�gina */
+/* Cabecera de la página */
 #cabeza {
 	padding-left: 0%;
 	margin: 0;
@@ -843,7 +843,7 @@ div.detail p {
 .breadcrumb {
 	text-align: left;
 }
-/* Cuerpo de la p�gina */
+/* Cuerpo de la página */
 #main {
 	float: left;
 	margin-top: 30px;
@@ -975,7 +975,7 @@ div.detail p {
 	padding: 4px
 }
 
-/* Paginaci�n */
+/* Paginación */
 .pag a.pagination, .pag .current, .pag a.paginationPF {
 	display: inline-block;
 	border: 1px solid #666;
@@ -1011,7 +1011,7 @@ div.detail p {
 	text-align: center
 }
 
-/* Pie de la p�gina */
+/* Pie de la página */
 #pie {
 	clear: both
 }
@@ -1031,7 +1031,7 @@ div.detail p {
 /**************/
 
 /****************/
-/*  PESTA�AS	*/
+/*  PESTAÑAS	*/
 /****************/
 .tabberlive .tabbertabhide {
 	display: none;

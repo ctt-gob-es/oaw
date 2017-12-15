@@ -1061,7 +1061,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		</action>
 		
 
-		<!-- CONECTIVIDAD -->
+		<!-- RELANZAR -->
 		<action path="/secure/RelanzarObservatorio"
 			type="es.inteco.rastreador2.action.observatorio.RelanzarObservatorioAction">
 			<forward name="volver" path=".indexAdmin" />

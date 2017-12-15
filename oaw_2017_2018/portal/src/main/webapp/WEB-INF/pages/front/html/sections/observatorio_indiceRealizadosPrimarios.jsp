@@ -130,7 +130,7 @@ Email: observ.accesibilidad@correo.gob.es
                                             </html:link>
                                         </logic:equal>
                                         <logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="0">
-                                            <img src="../images/list_disable.gif" alt="<bean:message key="indice.observatorio.resultados.alt"/>"/>
+                                            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true" data-toggle="tooltip" title="Resultados no disponibles"/><span class="sr-only">Resultados</span>
                                         </logic:notEqual>
                                     </td>
                                     <td>

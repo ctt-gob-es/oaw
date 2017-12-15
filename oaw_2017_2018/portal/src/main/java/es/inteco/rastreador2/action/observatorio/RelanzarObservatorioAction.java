@@ -56,7 +56,7 @@ public class RelanzarObservatorioAction extends Action {
 						return mapping.findForward(Constants.VOLVER);
 					}
 				} else {
-					return mapping.findForward(Constants.NO_PERMISSION);
+					return mapping.findForward(Constants.VOLVER);
 				}
 
 			} else {
