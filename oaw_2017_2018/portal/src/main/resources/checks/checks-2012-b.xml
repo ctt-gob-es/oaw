@@ -2209,7 +2209,7 @@
 					node="."
 					value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun"
 					attribute1="(Xaneiro|Febreiro|Marzo|Abril|Maio|Xuño|Xullo|Agosto|Setembro|Outubro|Novembro|decembro)\s+del?\s+(19|20)(\d{2})\D"
-					position="end" />
+					position="end" />					
 			</condition>
 		</machine>
 	</check>
