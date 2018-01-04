@@ -66,12 +66,13 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	}
 
 	private void addResultsByVerification(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager) {
+		chapter.newPage();
 		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
 
-		if (evaList.size() > 2 && evaList.size() < 17) {
+		/*if (evaList.size() > 2 && evaList.size() < 17) {
 			chapter.newPage();
-		}
-
+		}*/
+		chapter.newPage();
 		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager);
 	}
 

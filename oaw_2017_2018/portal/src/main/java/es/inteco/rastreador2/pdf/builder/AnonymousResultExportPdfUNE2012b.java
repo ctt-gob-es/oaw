@@ -983,12 +983,63 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.bold"));
 		ListItem item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
-
+		
+		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+		section.add(list);
+	
+		//Sublista
+		List sublist = new List();
+		final ArrayList<String> subboldWords = new ArrayList<>();
+		
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.1.a"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.1.b"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.1.c"));
+		ListItem sublistitem = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.1"), subboldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		sublist.add(sublistitem);
+		
+		subboldWords.clear();
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.2.a"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.2.b"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.2.c"));
+		sublistitem = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p9.2"), subboldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		sublist.add(sublistitem);
+		
+		sublist.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE*2);		
+		section.add(sublist);
+		
+		list = new List();
 		boldWords.clear();
 		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.bold"));
 		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
 		list.add(item);
 
+		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+		section.add(list);
+		
+		
+		//Sublista
+		sublist = new List();
+		subboldWords.clear();
+		
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.1.a"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.1.b"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.1.c"));
+		sublistitem = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.1"), subboldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		sublist.add(sublistitem);
+		
+		subboldWords.clear();
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.2.a"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.2.b"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.2.c"));
+		sublistitem = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.2"), subboldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		sublist.add(sublistitem);
+		
+		sublist.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE*2);		
+		section.add(sublist);
+		
+		
+		
+		list = new List();
 		boldWords.clear();
 		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11.bold"));
 		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
@@ -996,30 +1047,45 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 
 		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
 		section.add(list);
+		
+		
+		//Sublista
+		sublist = new List();
+		subboldWords.clear();
+		
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11.1.a"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11.1.b"));
+		subboldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p11.1.c"));
+		sublistitem = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p10.1"), subboldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+		sublist.add(sublistitem);
+		
+		sublist.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE*2);		
+		section.add(sublist);
+		
 
-		boldWords.clear();
-		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p12.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.342.p12"), boldWords, ConstantsFont.paragraphBoldFont,
-				ConstantsFont.PARAGRAPH, true));
-
-		list = new List();
-		boldWords.clear();
-		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p13.bold"));
-		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
-		list.add(item);
-
-		boldWords.clear();
-		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p14.bold"));
-		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p14"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
-		list.add(item);
-
-		boldWords.clear();
-		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p15.bold"));
-		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p15"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
-		list.add(item);
-
-		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-		section.add(list);
+//		boldWords.clear();
+//		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p12.bold"));
+//		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("ob.resAnon.intav.report.342.p12"), boldWords, ConstantsFont.paragraphBoldFont,
+//				ConstantsFont.PARAGRAPH, true));
+//
+//		list = new List();
+//		boldWords.clear();
+//		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p13.bold"));
+//		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p13"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+//		list.add(item);
+//
+//		boldWords.clear();
+//		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p14.bold"));
+//		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p14"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+//		list.add(item);
+//
+//		boldWords.clear();
+//		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p15.bold"));
+//		item = PDFUtils.addMixFormatListItem(this.messageResources.getMessage("ob.resAnon.intav.report.342.p15"), boldWords, ConstantsFont.paragraphBoldFont, ConstantsFont.PARAGRAPH, false);
+//		list.add(item);
+//
+//		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+//		section.add(list);
 
 		boldWords.clear();
 		boldWords.add(this.messageResources.getMessage("ob.resAnon.intav.report.342.p16.bold"));

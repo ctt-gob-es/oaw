@@ -1093,7 +1093,7 @@ public class Check {
 				final String[] words = extractedText.toLowerCase().split("\\s+");
 				final List<String> enWords = new ArrayList<>();
 				for (String word : words) {
-					if (Diccionario.containsWord("en", word)) {
+					if (Diccionario.containsWord("en", word) && !enWords.contains(word)) {
 						enWords.add(word);
 					}
 				}
