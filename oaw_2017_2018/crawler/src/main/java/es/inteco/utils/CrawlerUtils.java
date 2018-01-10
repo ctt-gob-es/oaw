@@ -318,9 +318,7 @@ public final class CrawlerUtils {
 					return getConnection(encodeUrl(newUrl), refererUrl, false);
 				}
 			}
-		} else {
-			connection.setInstanceFollowRedirects(followRedirects);
-		}
+		} 
 
 		return generateConnection(url, refererUrl);
 	}
@@ -388,7 +386,9 @@ public final class CrawlerUtils {
 	public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
 		final URL metaRedirection = new URL(url, redirectTo);
 		final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
-		connection.setRequestProperty("Cookie", cookie);
+		if(!StringUtils.isEmpty(cookie)) {
+			connection.setRequestProperty("Cookie", cookie);
+		}
 		Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
 		return connection;
 	}
