@@ -12,14 +12,15 @@
 ******************************************************************************/
 package es.inteco.intav.checks.une2012;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.intav.EvaluateCheck;
 import es.inteco.intav.TestUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
 
 /**
  *
@@ -314,4 +315,22 @@ public final class Check_1_1_5_StructureTest extends EvaluateCheck {
         Assert.assertEquals(21, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
         
     }
+    
+    @Test
+    public void evaluateCticAddress() {
+        checkAccessibility.setContent("<div class='datos_contacto' itemscope='' itemtype='http://schema.org/Organization'>\r\n" + 
+				"		<p><a href='http://www.fundacionctic.org' id='logoFooter' itemprop='name' rel='home' title='Inicio'><img alt='Inicio' src='http://www.fundacionctic.org/sites/default/files/logo-ct-bueno-mov.png'></a></p>\r\n" + 
+				"		<p>&nbsp;</p>\r\n" + 
+				"		<address>\r\n" + 
+				"			<span id='direct' itemprop='address'><span itemprop='streetAddress postalCode addressLocality'>Parque Científico Tecnológico de Gijón<br>\r\n" + 
+				"			C/ Ada Byron, 39 Edificio Centros Tecnológicos Cabueñes s/n<br>\r\n" + 
+				"			33203 GIJÓN - ASTURIAS - ESPAÑA</span></span> <span class='tfn'><span>Tfno: <span class='phone' itemprop='telephone'>+34 984 29 12 12</span> - Fax: +34 984 39 06 12</span></span> <span class='coordenadas' itemprop='location' itemscope='' itemtype='http://schema.org/Place'><span itemprop='geo'><abbr title='Latitud'>Lat</abbr> 43.5212, <abbr title='Longitud'>Long</abbr> -5.6100</span></span></address>\r\n" + 
+				"		<p>&nbsp;</p>\r\n" + 
+				"	</div>");
+        Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), MORE_TEN_BRS));
+        Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), DIV_MORE_THAN_150_CHARS));
+        TestUtils.checkVerificacion(evaluation, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_5, TestUtils.OBS_VALUE_GREEN_ONE);
+    }
+
 }

@@ -427,6 +427,8 @@ public class CrawlerJob implements InterruptableJob {
 			String domain = null;
 
 			try {
+				//TODO Redirigir en la raiz 
+//				HttpURLConnection connection = CrawlerUtils.getConnection(url, null, true);
 				HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
 				// Para la conexión inicial aumentamos los tiempos de espera
 				connection.setConnectTimeout(connection.getConnectTimeout() * 2);
