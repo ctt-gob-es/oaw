@@ -855,7 +855,7 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION = "2.6";
 
 	String NORMATIVA_UNE_2012 = "UNE-2012";
-	String NORMATIVA_UNE_2012_B = "UNE-2012-B";
+	String NORMATIVA_UNE_2012_B = "UNE-2012-Beta";
 
 	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
 

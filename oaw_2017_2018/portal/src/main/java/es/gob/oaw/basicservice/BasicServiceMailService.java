@@ -50,7 +50,7 @@ public class BasicServiceMailService {
 		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
 			return MessageFormat.format(message, "Observatorio UNE 2012");
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
-			return MessageFormat.format(message, "Observatorio UNE 2012 B");
+			return MessageFormat.format(message, "Observatorio UNE 2012 Beta");
 		} else if ("une".equals(reportType)) {
 			return MessageFormat.format(message, "UNE 139803");
 		} else {
@@ -83,9 +83,9 @@ public class BasicServiceMailService {
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
 			return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)) { 
-			return "Observatorio UNE 2012 B";
+			return "Observatorio UNE 2012 Beta";
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
-			return "Observatorio UNE 2012 B (sin comprobar enlaces rotos)";
+			return "Observatorio UNE 2012 Beta (sin comprobar enlaces rotos)";
 		} else {
 			return reportType;
 		}
