@@ -3801,7 +3801,7 @@ public class Check {
 				if (!matcher.find()) {
 					return false;
 				} else if ("sorted".equals(checkCode.getFunctionAttribute1())) {
-					final String match = matcher.group(1);
+					String match = matcher.group(1);
 					if (!first) {
 						// Para verificar si la lista es ordenada, se comprueba
 						// que, a partir del
@@ -3810,6 +3810,11 @@ public class Check {
 						// se devuelve falso.
 						if ("char".equals(checkCode.getFunctionAttribute2())) {
 							if (match.charAt(0) - previousMatch.charAt(0) != 1) {
+								return false;
+							}
+						} else if ("roman".equals(checkCode.getFunctionAttribute2())) {
+							match = matcher.group(0);
+							if (EvaluatorUtils.romanToDecimal(match) - EvaluatorUtils.romanToDecimal(previousMatch) <= 0) {
 								return false;
 							}
 						} else {

@@ -5291,8 +5291,11 @@
 					number="3" value="^(a|b|c)[ \.)-]+" attribute1="sorted" attribute2="char" />
 
 
-				<function call="false-paragraph-list" node="." element="li"
-					number="3" value="^(i){1,3}[ \.ºª)-]+" />
+<!-- 				<function call="false-paragraph-list" node="." element="li"
+					number="3" value="^(i){1,3}[ \.ºª)-]+" /> -->
+					
+					<function call="false-paragraph-list" node="." element="li" attribute1="sorted"
+					number="3" value="^(i){1,3}[ \.ºª)-]+" attribute2="roman"/>
 			</condition>
 		</machine>
 	</check>

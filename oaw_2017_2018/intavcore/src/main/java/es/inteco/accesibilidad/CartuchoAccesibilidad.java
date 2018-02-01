@@ -56,6 +56,10 @@ public class CartuchoAccesibilidad extends Cartucho {
 		checkAccesibility.setIdRastreo((Long) datos.get("idFulfilledCrawling"));
 		checkAccesibility.setIdObservatory((Long) datos.get("idObservatory"));
 		checkAccesibility.setContent((String) datos.get("contenido"));
+
+		// TODO Propagar el charset
+		checkAccesibility.setCharset((String) datos.get("charset"));
+
 		boolean isLast = (Boolean) datos.get("isLast");
 
 		try {
