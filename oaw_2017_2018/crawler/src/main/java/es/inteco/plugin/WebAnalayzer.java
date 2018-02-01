@@ -71,6 +71,10 @@ public class WebAnalayzer {
         datos.put("cookie", cookie);
         datos.put("contenido", crawledLink.getSource());
         datos.put("isLast", isLast);
+        
+        datos.put("charset", crawledLink.getCharset());
+        
+        
         if (StringUtils.isNotEmpty(crawlerData.getAcronimo())) {
             datos.put("acronimo", crawlerData.getAcronimo());
         }

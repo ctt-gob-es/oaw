@@ -15,12 +15,24 @@
 ******************************************************************************/
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
-import es.inteco.common.IntavConstants;
-import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
-import es.inteco.intav.form.CheckedLinks;
-import es.inteco.intav.utils.EvaluatorUtils;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.MemoryCacheImageInputStream;
+
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -29,17 +41,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import es.inteco.common.IntavConstants;
+import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
+import es.inteco.intav.form.CheckedLinks;
+import es.inteco.intav.utils.EvaluatorUtils;
 
 public final class CheckUtils {
 
@@ -273,10 +280,18 @@ public final class CheckUtils {
     }
 
     private static String encodeUrl(String path) throws UnsupportedEncodingException {
-        path = path.replaceAll("[ \\+]", "%20");
+    	
+    	//TODO Remover tildes
+    	
+    	
+    	
+    	
+    	
+    	
+    	path = path.replaceAll("[ \\+]", "%20");
         String[] pathArray = path.split("[:\\./?&=#(%20)]");
         for (String aPathArray : pathArray) {
-            path = path.replaceAll(aPathArray, URLEncoder.encode(aPathArray, "UTF-8"));
+        	path = path.replaceAll(aPathArray, URLEncoder.encode(aPathArray, "UTF-8"));
         }
 
         return path;

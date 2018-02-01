@@ -449,7 +449,12 @@ public class CrawlerJob implements InterruptableJob {
 
 						final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
 						final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+						markableInputStream.reset();
+						
+						//TODO Recuerar el charset
+						final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
 						markableInputStream.close();
+						
 						final Document document = CrawlerDOMUtils.getDocument(textContent);
 
 						final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
@@ -459,6 +464,11 @@ public class CrawlerJob implements InterruptableJob {
 							// Si no está ya incluida en el rastreo
 							if (!md5Content.contains(textContentHash)) {
 								final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries, numRedirections);
+								
+								//TODO Propagar el charset
+								crawledLink.setCharset(charset);
+								
+								
 								crawlingDomains.add(crawledLink);
 								md5Content.add(textContentHash);
 								Logger.putLog(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
