@@ -654,7 +654,7 @@
 		</machine>
 	</check>
 
-	<check id="45" key="table" confidence="medium">
+	<check id="45" key="table" confidence="high">
 		<name>Tabla de maquetación con marcado estructural</name>
 		<error>check.45.error</error>
 		<rationale>check.45.rationale</rationale>
@@ -5531,7 +5531,7 @@
 		</machine>
 	</check>
 
-	<check id="431" key="form" confidence="medium">
+	<check id="431" key="form" confidence="high">
 		<name>Tablas de una única columna pueden estar simulando lista</name>
 		<error>check.431.error</error>
 		<rationale>check.431.rationale</rationale>
@@ -5636,7 +5636,7 @@
 		</machine>
 	</check>
 
-	<check id="436" key="html" confidence="medium">
+	<check id="436" key="html" confidence="high">
 		<name>Más de 10 elementos br en la página</name>
 		<error>check.436.error</error>
 		<rationale>check.436.rationale</rationale>
