@@ -88,57 +88,31 @@ public final class BasicServiceUtils {
 	public static BasicServiceForm getBasicServiceForm(final BasicServiceForm basicServiceForm, final HttpServletRequest request) {
 		Logger.putLog("getBasicServiceForm " + basicServiceForm.toString(), BasicServiceUtils.class, Logger.LOG_LEVEL_ERROR);
 		basicServiceForm.setUser(request.getParameter(Constants.PARAM_USER));
-		/*
-		 * try {
-		 * basicServiceForm.setDomain(URLDecoder.decode(request.getParameter(
-		 * Constants.PARAM_URL), "utf-8")); } catch
-		 * (UnsupportedEncodingException e) {
-		 * basicServiceForm.setDomain(request.getParameter(Constants.PARAM_URL))
-		 * ; }
-		 */
-		
-		
 
 		String urlParameter = request.getParameter(Constants.PARAM_URL);
-		
-		
 
-        
 		if (urlParameter != null) {
 
-//			try {
-//				basicServiceForm.setDomain(new String(urlParameter.getBytes("ISO-8859-1")));
-//			} catch (UnsupportedEncodingException e) {
-//
-//				try {
-//					basicServiceForm.setDomain(new String(urlParameter.getBytes("UTF-8")));
-//				} catch (UnsupportedEncodingException e1) {
-//					basicServiceForm.setDomain(urlParameter);
-//				}
-//			}
 			String url = "";
-			
-	        try {
-	            url = URLDecoder.decode(urlParameter, "ISO-8859-1");
-	        } catch (UnsupportedEncodingException e) {
-	            Logger.putLog("No se puede decodificar la url como ISO-8859-1", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
-	            try {
-	                url = URLDecoder.decode(urlParameter, "UTF-8");
-	            } catch (UnsupportedEncodingException e1) {
-	                url = "";
-	                Logger.putLog("No se puede decodificar la url como UTF-8", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
-	            }
-	        }
-	        
-	        basicServiceForm.setDomain(url);
+
+			try {
+				url = URLDecoder.decode(urlParameter, "ISO-8859-1");
+			} catch (UnsupportedEncodingException e) {
+				Logger.putLog("No se puede decodificar la url como ISO-8859-1", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
+				try {
+					url = URLDecoder.decode(urlParameter, "UTF-8");
+				} catch (UnsupportedEncodingException e1) {
+					url = "";
+					Logger.putLog("No se puede decodificar la url como UTF-8", CheckHistoricoAction.class, Logger.LOG_LEVEL_WARNING, e);
+				}
+			}
+
+			basicServiceForm.setDomain(url);
 
 			if (StringUtils.isNotEmpty(basicServiceForm.getDomain())) {
 				basicServiceForm.setDomain(es.inteco.utils.CrawlerUtils.encodeUrl(basicServiceForm.getDomain()));
 			}
 		}
-		
-		
-
 
 		basicServiceForm.setEmail(request.getParameter(Constants.PARAM_EMAIL));
 		basicServiceForm.setProfundidad(request.getParameter(Constants.PARAM_DEPTH));
