@@ -314,7 +314,10 @@ public final class SemillaDAO {
 					psDependencias.setLong(1, semillaForm.getId());
 
 					List<DependenciaForm> listDependencias = new ArrayList<>();
-					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+					ResultSet rsDependencias = null;
+
+					try {
+						rsDependencias = psDependencias.executeQuery();
 						while (rsDependencias.next()) {
 							DependenciaForm dependencia = new DependenciaForm();
 							dependencia.setId(rsDependencias.getLong("id_dependencia"));
@@ -326,6 +329,8 @@ public final class SemillaDAO {
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
+					} finally {
+						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
 
 					seedList.add(semillaForm);
@@ -576,7 +581,7 @@ public final class SemillaDAO {
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
-		}
+		} 
 	}
 
 	/**
@@ -645,7 +650,7 @@ public final class SemillaDAO {
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
 					// Multidependencia
-					
+
 					// Multidependencia
 
 					PreparedStatement psDependencias = c.prepareStatement(
@@ -666,9 +671,7 @@ public final class SemillaDAO {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					}
-					
-					
-					
+
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
@@ -1382,7 +1385,7 @@ public final class SemillaDAO {
 				int affectedRows = ps.executeUpdate();
 
 				if (affectedRows == 0) {
-					//ps.close();
+					// ps.close();
 					throw new SQLException("Creating user failed, no rows affected.");
 				}
 
@@ -1646,7 +1649,11 @@ public final class SemillaDAO {
 				.prepareStatement("SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
 		psDependencias.setLong(1, idSemilla);
 
-		try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+		ResultSet rsDependencias = null;
+		try {
+
+			rsDependencias = psDependencias.executeQuery();
+
 			while (rsDependencias.next()) {
 				DependenciaForm dependencia = new DependenciaForm();
 				dependencia.setId(rsDependencias.getLong("id_dependencia"));
@@ -1657,6 +1664,8 @@ public final class SemillaDAO {
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		} finally {
+			DAOUtils.closeQueries(psDependencias, rsDependencias);
 		}
 
 		return listDependencias;

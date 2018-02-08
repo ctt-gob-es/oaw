@@ -216,7 +216,7 @@ public class CrawlerJob implements InterruptableJob {
 				Logger.putLog("Error al ejecutar el rastreo con id " + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
 
 				try {
-					RastreoDAO.actualizarEstadoRastreo(conn, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_ERROR);
+					RastreoDAO.actualizarEstadoRastreo(DataBaseManager.getConnection(), crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_ERROR);
 				} catch (Exception e2) {
 					Logger.putLog("No se ha podido cambiar el estado del rastreo", CrawlerJob.class, Logger.LOG_LEVEL_ERROR);
 				}
@@ -290,6 +290,7 @@ public class CrawlerJob implements InterruptableJob {
 			// Cambiamos el estado del rastreo a 'Finalizado'
 			Logger.putLog("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			try {
+				
 				RastreoDAO.actualizarEstadoRastreo(c, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
 
 				final int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());

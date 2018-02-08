@@ -998,7 +998,9 @@ public final class ObservatorioDAO {
 					psDependencias.setString(1, resultadoSemillaForm.getId());
 
 					List<DependenciaForm> listDependencias = new ArrayList<>();
-					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+					ResultSet rsDependencias = null;
+					try {
+						rsDependencias = psDependencias.executeQuery();
 						while (rsDependencias.next()) {
 							DependenciaForm dependencia = new DependenciaForm();
 							dependencia.setId(rsDependencias.getLong("id_dependencia"));
@@ -1010,6 +1012,8 @@ public final class ObservatorioDAO {
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
+					} finally {
+						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
 
 					semillasFormList.add(resultadoSemillaForm);

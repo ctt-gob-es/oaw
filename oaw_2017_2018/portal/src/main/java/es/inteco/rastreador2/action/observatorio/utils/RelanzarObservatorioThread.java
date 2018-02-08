@@ -139,7 +139,7 @@ public class RelanzarObservatorioThread extends Thread {
 				try {
 					c.rollback();
 				} catch (SQLException e1) {
-					e1.printStackTrace();
+					Logger.putLog("Error al realizar rollback", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		}

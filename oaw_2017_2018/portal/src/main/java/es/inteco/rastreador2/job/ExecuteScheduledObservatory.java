@@ -47,117 +47,130 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 public class ExecuteScheduledObservatory implements StatefulJob {
 
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        final JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
-        final Long observatoryId = (Long) jobDataMap.get(Constants.OBSERVATORY_ID);
-        final Long cartridgeId = (Long) jobDataMap.get(Constants.CARTRIDGE_ID);
+	@Override
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		final JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+		final Long observatoryId = (Long) jobDataMap.get(Constants.OBSERVATORY_ID);
+		final Long cartridgeId = (Long) jobDataMap.get(Constants.CARTRIDGE_ID);
 
-        Logger.putLog("Lanzando la ejecución del observatorio con id " + observatoryId, ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
+		Logger.putLog("Lanzando la ejecución del observatorio con id " + observatoryId, ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
 
-        final PropertiesManager pmgr = new PropertiesManager();
+		final PropertiesManager pmgr = new PropertiesManager();
 
-        String url = "";
-        try (Connection c = DataBaseManager.getConnection()) {
+		String url = "";
+		try {
 
-            // Si se ha editado la categoría de semillas para añadir más, se añaden ahora.
-            createNewCrawlings(c, observatoryId);
+			Connection c = DataBaseManager.getConnection();
 
-            Long idFulfilledObservatory = RastreoDAO.addFulfilledObservatory(c, observatoryId, cartridgeId);
+			// Si se ha editado la categoría de semillas para añadir más, se
+			// añaden ahora.
+			createNewCrawlings(c, observatoryId);
 
-            try {
-                List<CuentaCliente> observatories = CuentaUsuarioDAO.getClientAccounts(c, observatoryId, es.inteco.common.Constants.OBSERVATORY_TYPE);
+			Long idFulfilledObservatory = RastreoDAO.addFulfilledObservatory(c, observatoryId, cartridgeId);
 
-                boolean isFirst = true;
-                int counter = 0;
-                ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.LAUNCHED_OBSERVATORY_STATUS);
-                for (CuentaCliente observatory : observatories) {
-                    try {
-                        Logger.putLog("Lanzando observatorio para la semilla número " + (++counter), ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
-                        Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, observatory.getDatosRastreo(), idFulfilledObservatory, (long) 1);
+			try {
+				List<CuentaCliente> observatories = CuentaUsuarioDAO.getClientAccounts(c, observatoryId, es.inteco.common.Constants.OBSERVATORY_TYPE);
 
-                        observatory.getDatosRastreo().setCartuchos(CartuchoDAO.getNombreCartucho(observatory.getDatosRastreo().getId_rastreo()));
-                        observatory.getDatosRastreo().setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_OBSERVATORIO, false));
-                        observatory.getDatosRastreo().setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_OBSERVATORIO, true));
-                        observatory.getDatosRastreo().setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
-                        observatory.getDatosRastreo().setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_RASTREABLE, false));
-                        observatory.getDatosRastreo().setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) observatory.getDatosRastreo().getId_rastreo()));
-                        if (CartuchoDAO.isCartuchoAccesibilidad(c, observatory.getDatosRastreo().getId_cartucho())) {
-                            String ficheroNorma = CrawlerUtils.getFicheroNorma(observatory.getDatosRastreo().getId_guideline());
-                            observatory.getDatosRastreo().setFicheroNorma(ficheroNorma);
-                        }
+				boolean isFirst = true;
+				int counter = 0;
+				ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.LAUNCHED_OBSERVATORY_STATUS);
+				for (CuentaCliente observatory : observatories) {
 
-                        CrawlerData crawlerData = CrawlerUtils.getCrawlerData(observatory.getDatosRastreo(),
-                                idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null);
-                        url = crawlerData.getUrls().get(0);
-                        RastreoDAO.actualizarFechaRastreo(c, crawlerData.getIdCrawling());
+					// Volvemos a generarla conexión por si tarda mucho el
+					// proceso de rastreo y se ha cerrado
+					c = DataBaseManager.getConnection();
 
+					try {
+						Logger.putLog("Lanzando observatorio para la semilla número " + (++counter), ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
+						Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, observatory.getDatosRastreo(), idFulfilledObservatory, (long) 1);
 
-                        if (isFirst) {
-                            if (CartuchoDAO.isCartuchoAccesibilidad(c, observatory.getDatosRastreo().getId_cartucho())) {
-                                String ficheroNorma = CrawlerUtils.getFicheroNorma(observatory.getDatosRastreo().getId_guideline());
-                                saveMethodology(c, idFulfilledObservatory, ficheroNorma);
-                            }
-                            isFirst = false;
-                        }
+						observatory.getDatosRastreo().setCartuchos(CartuchoDAO.getNombreCartucho(observatory.getDatosRastreo().getId_rastreo()));
+						observatory.getDatosRastreo()
+								.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_OBSERVATORIO, false));
+						observatory.getDatosRastreo()
+								.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_OBSERVATORIO, true));
+						observatory.getDatosRastreo()
+								.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
+						observatory.getDatosRastreo()
+								.setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList((long) observatory.getDatosRastreo().getId_rastreo(), Constants.ID_LISTA_RASTREABLE, false));
+						observatory.getDatosRastreo().setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) observatory.getDatosRastreo().getId_rastreo()));
+						if (CartuchoDAO.isCartuchoAccesibilidad(c, observatory.getDatosRastreo().getId_cartucho())) {
+							String ficheroNorma = CrawlerUtils.getFicheroNorma(observatory.getDatosRastreo().getId_guideline());
+							observatory.getDatosRastreo().setFicheroNorma(ficheroNorma);
+						}
 
-                        SchedulingUtils.start(crawlerData);
-                    } catch (Exception e) {
-                        Logger.putLog("Se ha producido una Excepcion. ", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_WARNING, e);
-                    } catch (OutOfMemoryError e) {
-                        Logger.putLog("Se ha producido un OutOfMemory. ", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_WARNING);
-                        administratorErrorMail(e, url);
-                    }
-                }
-                ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.FINISHED_OBSERVATORY_STATUS);
-                Logger.putLog("Finalizado el observatorio con id " + observatoryId, ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
-            } catch (SQLException e) {
-                ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.ERROR_OBSERVATORY_STATUS);
-            }
-        } catch (Exception e) {
-            Logger.putLog("Error ejecutar los rastreos programados del observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-    }
+						CrawlerData crawlerData = CrawlerUtils.getCrawlerData(observatory.getDatosRastreo(), idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"),
+								null);
+						url = crawlerData.getUrls().get(0);
+						RastreoDAO.actualizarFechaRastreo(c, crawlerData.getIdCrawling());
 
-    private void administratorErrorMail(Throwable exception, String url) throws SQLException {
-        PropertiesManager pmgr = new PropertiesManager();
-        List<String> adminMails = DAOUtils.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));
-        String alertSubject = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.subject");
-        String alertText = pmgr.getValue(CRAWLER_PROPERTIES, "warning.administrator.message") + exception.getMessage();
-        if (url != null && !url.isEmpty()) {
-            alertText += "\n" + pmgr.getValue(CRAWLER_PROPERTIES, "url.administrator.message") + url;
-        }
+						if (isFirst) {
+							if (CartuchoDAO.isCartuchoAccesibilidad(c, observatory.getDatosRastreo().getId_cartucho())) {
+								String ficheroNorma = CrawlerUtils.getFicheroNorma(observatory.getDatosRastreo().getId_guideline());
+								saveMethodology(c, idFulfilledObservatory, ficheroNorma);
+							}
+							isFirst = false;
+						}
 
-        MailService mailService = new MailService();
-        mailService.sendMail(adminMails, alertSubject, alertText);
-    }
+						DataBaseManager.closeConnection(c);
 
-    private void createNewCrawlings(final Connection conn, final long observatoryId) {
-        try {
-            final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(conn, observatoryId);
+						SchedulingUtils.start(crawlerData);
+					} catch (Exception e) {
+						Logger.putLog("Se ha producido una Excepcion. ", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_WARNING, e);
+					} catch (OutOfMemoryError e) {
+						Logger.putLog("Se ha producido un OutOfMemory. ", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_WARNING);
+						administratorErrorMail(e, url);
+					}
+				}
+				ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.FINISHED_OBSERVATORY_STATUS);
+				Logger.putLog("Finalizado el observatorio con id " + observatoryId, ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
+			} catch (SQLException e) {
+				ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.ERROR_OBSERVATORY_STATUS);
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error ejecutar los rastreos programados del observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
 
-            final List<SemillaForm> totalSeedsAdded = new ArrayList<>();
-            if (observatorioForm.getCategoria() != null) {
-                for (String categoria : observatorioForm.getCategoria()) {
-                    totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(conn, Long.parseLong(categoria), es.inteco.common.Constants.NO_PAGINACION, new SemillaForm()));
-                }
-                ObservatorioDAO.insertNewCrawlers(conn, observatoryId, totalSeedsAdded);
-            }
-        } catch (Exception e) {
-            Logger.putLog("Error añadir los rastreos nuevos al observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-    }
+	private void administratorErrorMail(Throwable exception, String url) throws SQLException {
+		PropertiesManager pmgr = new PropertiesManager();
+		List<String> adminMails = DAOUtils.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));
+		String alertSubject = pmgr.getValue(CRAWLER_PROPERTIES, "alert.from.subject");
+		String alertText = pmgr.getValue(CRAWLER_PROPERTIES, "warning.administrator.message") + exception.getMessage();
+		if (url != null && !url.isEmpty()) {
+			alertText += "\n" + pmgr.getValue(CRAWLER_PROPERTIES, "url.administrator.message") + url;
+		}
 
-    private void saveMethodology(final Connection c, Long idExecution, String methodologyFile) {
-        try {
-            if (!EvaluatorUtility.isInitialized()) {
-                EvaluatorUtility.initialize();
-            }
-            final String methodology = EvaluatorUtils.serializeGuidelineToXml(EvaluatorUtility.loadGuideline(methodologyFile));
-            ObservatorioDAO.saveMethodology(c, idExecution, methodology);
-        } catch (Exception e) {
-            Logger.putLog("Error al guardar la metodología en base de datos", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
-        }
-    }
+		MailService mailService = new MailService();
+		mailService.sendMail(adminMails, alertSubject, alertText);
+	}
+
+	private void createNewCrawlings(final Connection conn, final long observatoryId) {
+		try {
+			final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(conn, observatoryId);
+
+			final List<SemillaForm> totalSeedsAdded = new ArrayList<>();
+			if (observatorioForm.getCategoria() != null) {
+				for (String categoria : observatorioForm.getCategoria()) {
+					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(conn, Long.parseLong(categoria), es.inteco.common.Constants.NO_PAGINACION, new SemillaForm()));
+				}
+				ObservatorioDAO.insertNewCrawlers(conn, observatoryId, totalSeedsAdded);
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error añadir los rastreos nuevos al observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
+
+	private void saveMethodology(final Connection c, Long idExecution, String methodologyFile) {
+		try {
+			if (!EvaluatorUtility.isInitialized()) {
+				EvaluatorUtility.initialize();
+			}
+			final String methodology = EvaluatorUtils.serializeGuidelineToXml(EvaluatorUtility.loadGuideline(methodologyFile));
+			ObservatorioDAO.saveMethodology(c, idExecution, methodology);
+		} catch (Exception e) {
+			Logger.putLog("Error al guardar la metodología en base de datos", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
 
 }
