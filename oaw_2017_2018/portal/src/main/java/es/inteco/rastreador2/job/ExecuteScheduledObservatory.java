@@ -122,10 +122,17 @@ public class ExecuteScheduledObservatory implements StatefulJob {
 						administratorErrorMail(e, url);
 					}
 				}
+				
+				c = DataBaseManager.getConnection();
+				
 				ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.FINISHED_OBSERVATORY_STATUS);
 				Logger.putLog("Finalizado el observatorio con id " + observatoryId, ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_INFO);
+				
+				DataBaseManager.closeConnection(c);
 			} catch (SQLException e) {
+				c = DataBaseManager.getConnection();
 				ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory, Constants.ERROR_OBSERVATORY_STATUS);
+				DataBaseManager.closeConnection(c);
 			}
 		} catch (Exception e) {
 			Logger.putLog("Error ejecutar los rastreos programados del observatorio", ExecuteScheduledObservatory.class, Logger.LOG_LEVEL_ERROR, e);
