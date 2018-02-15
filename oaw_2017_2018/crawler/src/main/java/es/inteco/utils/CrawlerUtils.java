@@ -202,7 +202,9 @@ public final class CrawlerUtils {
 
 	public static String encodeUrl(String url) {
 
-		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").replaceAll(" ", "%20").replaceAll("Á", "%E1")
+		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").
+				replaceAll("Ã±", "ñ").replaceAll("Ã‘", "Ñ").
+				replaceAll(" ", "%20").replaceAll("Á", "%E1")
 				.replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9").replaceAll("í", "%ED").replaceAll("ó", "%F3")
 				.replaceAll("ú", "%FA").replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&").replaceAll("Âº", "º").replaceAll("º", "%BA").replaceAll("Âª", "ª")
 				.replaceAll("ª", "%AA");
