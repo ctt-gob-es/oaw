@@ -447,7 +447,8 @@ public final class AccesibilityDeclarationCheckUtils {
 			Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
 			Pattern.compile("\\bconformi(dad|tat)\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
 			Pattern.compile("\\bconformi(dad|tat)\\s+.?doble(-|\\s+)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bAA\\s+\\(?doble\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\baa\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE)};
+			Pattern.compile("\\bAA\\s+\\(?doble\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\baa\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+			Pattern.compile("\\bdoble(\\s|-|_|\\/)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE)};
 
 	private static final Pattern[] ALT_AAA = new Pattern[] { Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
 			Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bnivell?\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
@@ -455,5 +456,6 @@ public final class AccesibilityDeclarationCheckUtils {
 			Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
 			Pattern.compile("\\bconformi(dad|tat)\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
 			Pattern.compile("\\bconformi(dad|tat)\\s+.?triple(-|\\s+)aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bAAA\\s+\\(?triple\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\baaa\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE)};
+			Pattern.compile("\\bAAA\\s+\\(?triple\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\baaa\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
+			Pattern.compile("\\btriple(\\s|-|_|\\/)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE)};
 }
