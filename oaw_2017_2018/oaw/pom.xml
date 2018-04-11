@@ -92,7 +92,7 @@
 			</activation>
 			<properties>
 				<profile.name>desarrollo</profile.name>
-				<deploy.path>/home/alvaro/programas/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
+				<deploy.path>/home/alvaro/Development/Programs/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
 				<files.path>/tmp/oaw/files</files.path>
 			</properties>
 		</profile>
