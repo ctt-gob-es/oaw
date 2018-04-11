@@ -2,7 +2,7 @@
     
     <!DOCTYPE tiles-definitions PUBLIC
        "-//Apache Software Foundation//DTD Tiles Configuration 1.3//EN"
-        "file:///home/alvaro/programas/apache-tomcat-7.0.54/webapps/portal/WEB-INF/tld/tiles-config_1_3.dtd">
+        "file:///home/alvaro/Development/Programs/apache-tomcat-7.0.54/webapps/portal/WEB-INF/tld/tiles-config_1_3.dtd">
 
 <tiles-definitions>
 
