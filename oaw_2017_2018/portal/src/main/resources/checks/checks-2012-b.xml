@@ -5341,9 +5341,9 @@
 			<trigger element="html" />
 			<condition type="and">
 				<function call="title-not-contains" node="."
-					value="\b(mapa del sitio web|mapa web|mapa|gunearen mapa|webgunearen mapa|site map|plan du site|mapa del sitio|mapa del web|mapa do sitio|web mapa|plan de site web|map|map of the website|plan|mapa de la web|mapa de web$|contenido de la web|visualizar mapa del web|mapa del portal|web map|sitemap|mapa de la sede|mapa da web|mapa del lloc|carte web|Mapa Web: Toda la información a un clic|Mapa Web \(Tecla de acceso 3\)|Webaren mapa|Mapa do portal)\b" />
+					value="\b(mapa del sitio web|mapa web|mapa|gunearen mapa|webgunearen mapa|site map|plan du site|mapa del sitio|mapa del web|mapa do sitio|web mapa|plan de site web|map|map of the website|plan|mapa de la web|mapa de web$|contenido de la web|visualizar mapa del web|mapa del portal|web map|sitemap|mapa de la sede|mapa da web|mapa del lloc|carte web|Mapa Web: Toda la información a un clic|Mapa de navegación|Mapa Web \(Tecla de acceso 3\)|Webaren mapa|Mapa do portal)\b" />
 				<function call="has-not-section-link" node="."
-					value="^mapa del sitio web$|^mapa web$|^mapa$|^gunearen mapa$|^webgunearen mapa$|^site map$|^plan du site$|^mapa del sitio$|^mapa del web$|^mapa do sitio$|^web mapa$|^plan de site web$|^map$|^map of the website$|^plan$|^mapa de la web$|^mapa de web$|^contenido de la web$|^visualizar mapa del web$|^mapa del portal$|^web map$|^sitemap$|^mapa de la sede$|^mapa da web$|^mapa del lloc$|^carte web$|^Mapa Web: Toda la información a un clic$|^Mapa Web \(Tecla de acceso 3\)$|^Webaren mapa$|^Mapa do portal$" />
+					value="^mapa del sitio web$|^mapa web$|^mapa$|^gunearen mapa$|^webgunearen mapa$|^site map$|^plan du site$|^mapa del sitio$|^mapa del web$|^mapa do sitio$|^web mapa$|^plan de site web$|^map$|^map of the website$|^plan$|^mapa de la web$|^mapa de web$|^contenido de la web$|^visualizar mapa del web$|^mapa del portal$|^web map$|^sitemap$|^mapa de la sede$|^mapa da web$|^mapa del lloc$|^carte web$|^Mapa Web: Toda la información a un clic$|^Mapa de navegación$|^Mapa Web \(Tecla de acceso 3\)$|^Webaren mapa$|^Mapa do portal$" />
 				<function call="attribute-element-text-not-match" node="."
 					element="form" attribute1="role" value="search" />
 				<function call="attribute-element-text-not-match" node="."
