@@ -48,9 +48,9 @@ public class BasicServiceMailService {
 		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType) || Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
 			return MessageFormat.format(message, "Observatorio UNE 2004");
 		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
-			return MessageFormat.format(message, "Observatorio UNE 2012");
+			return MessageFormat.format(message, "Observatorio UNE 2012 (antigua)");
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
-			return MessageFormat.format(message, "Observatorio UNE 2012 Beta");
+			return MessageFormat.format(message, "Observatorio UNE 2012 (versión 2)");
 		} else if ("une".equals(reportType)) {
 			return MessageFormat.format(message, "UNE 139803");
 		} else {
@@ -77,15 +77,15 @@ public class BasicServiceMailService {
 		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType)) {
 			return "Observatorio UNE 2004";
 		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)) {
-			return "Observatorio UNE 2012";
+			return "Observatorio UNE 2012 (antigua)";
 		} else if (Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
 			return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
-			return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
+			return "Observatorio UNE 2012 (antigua sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)) { 
-			return "Observatorio UNE 2012 Beta";
+			return "Observatorio UNE 2012 (versión 2)";
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
-			return "Observatorio UNE 2012 Beta (sin comprobar enlaces rotos)";
+			return "Observatorio UNE 2012 (versión 2 sin comprobar enlaces rotos)";
 		} else {
 			return reportType;
 		}

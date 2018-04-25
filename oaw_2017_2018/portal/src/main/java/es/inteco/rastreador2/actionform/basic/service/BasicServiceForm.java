@@ -169,15 +169,15 @@ public class BasicServiceForm extends ValidatorForm {
 		if (Constants.REPORT_OBSERVATORY.equals(report) || Constants.REPORT_OBSERVATORY_FILE.equals(report)) {
 			return "Observatorio UNE 2004";
 		} else if (Constants.REPORT_OBSERVATORY_2.equals(report)) {
-			return "Observatorio UNE 2012";
+			return "Observatorio UNE 2012 (antigua)";
 		} else if (Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(report)) {
 			return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(report)) {
-			return "Observatorio UNE 2012 (sin comprobar enlaces rotos)";
+			return "Observatorio UNE 2012 (antigua sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(report)) {
-			return "Observatorio UNE 2012 Beta";
+			return "Observatorio UNE 2012 (versión 2)";
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(report)) {
-			return "Observatorio UNE 2012 Beta (sin comprobar enlaces rotos)";
+			return "Observatorio UNE 2012 (versión 2 sin comprobar enlaces rotos)";
 		} else {
 			return report;
 		}
