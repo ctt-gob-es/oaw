@@ -372,7 +372,7 @@ public class AnonymousResultExportPdfUNE2012b extends AnonymousResultExportPdf {
 
 		final String anexoMetodologiaParrafo3 = "A continuación se incluye un extracto pero puede consultarla completa en";
 
-		final String anexoMetodologiaParrafo3Link = "http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012";
+		final String anexoMetodologiaParrafo3Link = "http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012v2";
 
 		Paragraph p = new Paragraph(anexoMetodologiaParrafo3, ConstantsFont.PARAGRAPH);
 		p.setSpacingBefore(LINE_SPACE);
