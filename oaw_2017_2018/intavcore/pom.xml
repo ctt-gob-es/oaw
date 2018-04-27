@@ -28,7 +28,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
     </parent>
 
 	<properties>
-		<oaw.version>4.1.3</oaw.version>
+		<oaw.version>4.1.5</oaw.version>
 	</properties>
 
     <build>
