@@ -59,7 +59,7 @@
                 // Ej. http://oaw.redsara.es/oaw/
                 host = new URL(propertiesServices.getMessage("servicio.accesibilidad.url", null));
             } catch (Exception e) {
-                throw new Error("ERROR de configuración.", e);
+                throw new Error("ERROR de configuraci&oacuten.", e);
             }
 
             RUTA_PROXY = propertiesServices.getMessage("servicio.accesibilidad.proxy", null);
@@ -177,7 +177,7 @@
 
                 if (httpConnection.getResponseCode() != 200) {
                     httpConnection.disconnect();
-                    return "Error, no se ha podido procesar su solicitud (c&oacute;digo de error " + httpConnection.getResponseCode() + "). Por favor int&eacute;ntelo de nuevo pasados unos minutos y si el problema persiste informe sobre ello a la direcci&oacute;n de correo observ_accesibilidad@mpt.es.<br/>";
+                    return "Error, no se ha podido procesar su solicitud (c&oacute;digo de error " + httpConnection.getResponseCode() + "). Por favor int&eacute;ntelo de nuevo pasados unos minutos y si el problema persiste informe sobre ello a la direcci&oacute;n de correo observ_accesibilidad@correo.gob.es<br/>";
                 } else {
                     final String serverResponse = readServerResponse(httpConnection);
                     httpConnection.disconnect();
@@ -309,30 +309,41 @@
                 }
             } else if (isListaUrlsRequest()) {
                 if (urls.isEmpty()) {
-                  errores.add("Indique al menos una url para análisis de tipo 'Conjunto de URLs'");
+                  errores.add("Indique al menos una URL para an&aacutelisis de tipo 'Conjunto de URLs'");
                 } else {
                     for (String domain: urls.split("\r\n")) {
                         if (!domain.startsWith("http") && !domain.startsWith("https")) {
                             errores.add("La URL " + domain + " debe comenzar por http:// o https://");
                         }
                     }
+                    // Comprobar el número de URLs introducidas
+                    String[] domains = urls.split("\r\n");
+                    if("observatorio-3".equals(informe) && domains.length > 33){                    	
+                   		 errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a (versi&oacute;n 2) es de 33");
+                    } else if(("observatorio-2".equals(informe) || "observatorio-1".equals(informe)) && domains.length > 17){
+                    	errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a  es de 17");
+                    }
                 }
+                
                 if (isEvolutivoHistorico()) {
                     final String[] domains = urls.split("\r\n");
-                    if (domains.length!=17) {
-                        errores.add("El evolutivo para análsis de tipo 'Conjunto de URLs' requiere 17 páginas");
+                    if("observatorio-3".equals(informe) && domains.length > 33){
+                    	errores.add("El evolutivo para an&aacute;lisis de tipo 'Conjunto de URLs' para esta metodolog&iacute;a (versi&oacute;n 2) requiere 33 p&aacute;ginas");	
+                    }
+                    else if(("observatorio-2".equals(informe) || "observatorio-1".equals(informe)) && domains.length!=17) {
+                        errores.add("El evolutivo para an&aacute;lisis de tipo 'Conjunto de URLs' requiere 17 p&aacute;ginas");
                     } else {
                         try {
                             final String pattern = new URL(domains[0]).getHost();
                             for (String domain: domains) {
                                 final String host = new URL(domain).getHost();
                                 if ( !host.equalsIgnoreCase(pattern) ) {
-                                    errores.add("El evolutivo para análisis de tipo 'Conjunto de URLs' solo está permitido para páginas del mismo 'host' (exactamente mismo dominio) " + domain + " | " +pattern);
+                                    errores.add("El evolutivo para an&aacute;lisis de tipo 'Conjunto de URLs' solo est&aacute; permitido para p&aacute;ginas del mismo 'host' (exactamente mismo dominio) " + domain + " | " +pattern);
                                     break;
                                 }
                             }
                         } catch (MalformedURLException murle) {
-                            errores.add("Error al comprobar el dominio de un análisis de tipo 'Conjunto de URLs'");
+                            errores.add("Error al comprobar el dominio de un an&aacute;lisis de tipo 'Conjunto de URLs'");
                         }
                     }
                 }
@@ -390,7 +401,7 @@
                   fieldset.appendChild(createRadioElement(historicoResult.historico[i].id, historicoResult.historico[i].date, i == 2));
                 }
               } else {
-                fieldset.innerHTML += "<p>No existen an&aacute;lisis existentes para la url indicada. Se guardar&aacute;n los resultados para incluirlos como referencia en posteriores an&aacute;lisis.<\/p>";
+                fieldset.innerHTML += "<p>No existen an&aacute;lisis existentes para la URL indicada. Se guardar&aacute;n los resultados para incluirlos como referencia en posteriores an&aacute;lisis.<\/p>";
               }
             }
         </script>

@@ -462,6 +462,11 @@ fieldset p {
           } else if ($("#radio-2").prop("checked")) {
             $("#url").val("");
             $("#content").val("");
+            var domains = $("#urls").val();
+            var res = domains.replace(/&/g, "%26");
+            $("#urls").val(res);
+            
+            
           } else if ($("#radio-3").prop("checked")) {
             $("#url").val("");
             $("#urls").val("");
