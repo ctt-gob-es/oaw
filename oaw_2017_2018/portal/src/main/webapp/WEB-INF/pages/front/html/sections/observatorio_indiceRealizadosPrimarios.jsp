@@ -163,7 +163,7 @@ Email: observ.accesibilidad@correo.gob.es
                                     	<c:set target="${paramsGraphic}" property="id" value="${fulfilledObservatory.id}" />
                                     	<c:set target="${paramsGraphic}" property="id_observatorio" value="${id_observatorio}" />
                                     	<c:set target="${paramsGraphic}" property="graphic" value="initial" />
-                                    	<c:set target="${paramsGraphic}" property="Otype" value="5" />
+                                    	<c:set target="${paramsGraphic}" property="Otype" value="${id_observatorio}" />
 
                                         <html:link forward="getObservatoryGraphic" name="paramsGraphic">
                                             <span class="glyphicon glyphicon-stats" aria-hidden="true" data-toggle="tooltip" title="Acceder a las gr&aacute;ficas agregadas de esta iteraci&oacute;n"/>

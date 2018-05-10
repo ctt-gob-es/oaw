@@ -140,7 +140,7 @@
 
                 if (httpConnection.getResponseCode() != 200) {
                     httpConnection.disconnect();
-                    return "Error, no se ha podido procesar su solicitud (c&oacute;digo de error " + httpConnection.getResponseCode() + "). Por favor int&eacute;ntelo de nuevo pasados unos minutos y si el problema persiste informe sobre ello a la direcci&oacute;n de correo observ_accesibilidad@mpt.es.<br/>";
+                    return "Error, no se ha podido procesar su solicitud (c&oacute;digo de error " + httpConnection.getResponseCode() + "). Por favor int&eacute;ntelo de nuevo pasados unos minutos y si el problema persiste informe sobre ello a la direcci&oacute;n de correo observ_accesibilidad@correo.gob.es.<br/>";
                 } else {
                     final String serverResponse = readServerResponse(httpConnection);
                     httpConnection.disconnect();
@@ -277,10 +277,21 @@
                             errores.add("La URL " + domain + " debe comenzar por http:// o https://");
                         }
                     }
+                    
+                    String[] domains = urls.split("\r\n");
+                    if("observatorio-3".equals(informe) && domains.length > 33){                    	
+                    	errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a (versi&oacute;n 2) es de 33");
+                    } else if(("observatorio-2".equals(informe) || "observatorio-1".equals(informe)) && domains.length > 17){
+                    	errores.add("El n&uacute;mero m&aacute;ximo de URLs a analizar para esta metodolog&iacute;a  es de 17");
+                    }
+                    
                 }
                 if (isEvolutivoHistorico()) {
                     final String[] domains = urls.split("\r\n");
-                    if (domains.length!=17) {
+                    if("observatorio-3".equals(informe) && domains.length > 33){
+                    	errores.add("El evolutivo para an&aacute;lisis de tipo 'Conjunto de URLs' para esta metodolog&iacute;a (versi&oacute;n 2) requiere 33 p&aacute;ginas");	
+                    }
+                    else if(("observatorio-2".equals(informe) || "observatorio-1".equals(informe)) && domains.length!=17) {
                         errores.add("El evolutivo para análsis de tipo 'Conjunto de URLs' requiere 17 páginas");
                     } else {
                         try {
