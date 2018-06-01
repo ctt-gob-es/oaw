@@ -271,7 +271,10 @@
             } else if (isListaUrlsRequest()) {
                 if (urls.isEmpty()) {
                   errores.add("Indique al menos una url para análisis de tipo 'Conjunto de URLs'");
-                } else {
+                } /* else if(urls.length()>8000){
+                	errores.add("El número máximo de caracteres para el 'Conjunto de URLs' es 8000. Acorte las URLs o introduzca menos URLs");
+                } */
+                else {
                     for (String domain: urls.split("\r\n")) {
                         if (!domain.startsWith("http") && !domain.startsWith("https")) {
                             errores.add("La URL " + domain + " debe comenzar por http:// o https://");
