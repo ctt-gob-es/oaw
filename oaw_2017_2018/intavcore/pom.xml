@@ -15,7 +15,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>intav-core</artifactId>
-    <version>4.1.5</version>
+    <version>4.1.6</version>
     <packaging>jar</packaging>
 
     <name>intav-core</name>
@@ -23,12 +23,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>4.1.5</version>
+        <version>4.1.6</version>
         <relativePath>../oaw/pom.xml</relativePath>
     </parent>
 
 	<properties>
-		<oaw.version>4.1.5</oaw.version>
+		<oaw.version>4.1.6</oaw.version>
 	</properties>
 
     <build>

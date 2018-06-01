@@ -76,9 +76,9 @@ public class TestCrawl {
 	@Test
 	public void test() throws Exception {
 		final CrawlerData crawlerData = new CrawlerData();
-		crawlerData.setUrls(Collections.singletonList("http://www.minhafp.gob.es"));
+		crawlerData.setUrls(Collections.singletonList("http://administracion.gob.es/pag_Home/index.html"));
 		crawlerData.setProfundidad(4);
-		crawlerData.setTopN(4);
+		crawlerData.setTopN(8);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
@@ -87,7 +87,7 @@ public class TestCrawl {
 		for (CrawledLink cl : crawlingDomains) {
 			System.out.println(cl.getUrl());
 		}
-		Assert.assertEquals(17, crawlingDomains.size());
+		Assert.assertEquals(33, crawlingDomains.size());
 	}
 
 	private void makeCrawl(CrawlerData crawlerData) throws Exception {

@@ -65,6 +65,10 @@ public class BasicServiceAction extends Action {
         final ActionErrors errors = basicServiceForm.validate(mapping, request);
         errors.add(BasicServiceUtils.validateReport(basicServiceForm));
         errors.add(BasicServiceUtils.validateUrlOrContent(basicServiceForm));
+        //TODO Error de desbordamiento del tamaño de las URLs en base de datos
+        errors.add(BasicServiceUtils.validateUrlLenght(basicServiceForm));
+        
+        
         if (basicServiceForm.isRegisterAnalysis()) {
             if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
                 if (!"4".equals(basicServiceForm.getProfundidad()) && !"4".equals(basicServiceForm.getAmplitud())) {
@@ -86,7 +90,7 @@ public class BasicServiceAction extends Action {
         for (Iterator<ActionMessage> iterator = errors.get(); iterator.hasNext(); ) {
             final ActionMessage message = iterator.next();
             Logger.putLog(message.getKey(), BasicServiceAction.class, Logger.LOG_LEVEL_ERROR);
-            text.append("\n - ").append(MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, message.getKey()), message.getValues()));
+            text.append("<br/> - ").append(MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, message.getKey()), message.getValues()));
         }
 
         basicServiceForm.setId(BasicServiceUtils.saveRequestData(basicServiceForm, Constants.BASIC_SERVICE_STATUS_MISSING_PARAMS));
