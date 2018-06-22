@@ -2721,6 +2721,22 @@
 						position="start" />
 					<function call="text-not-equals" node="." value="Reglamento (CE)"
 						position="start" />
+					<function call="text-not-equals" node="." value="Proyecto de Ley"
+						position="start" />
+					<function call="text-not-equals" node="." value="Anteproyecto de Ley"
+						position="start" />
+					<function call="text-not-equals" node="." value="Proyecto de Real Decreto"
+						position="start" />						
+					<function call="text-not-equals" node="." value="Anteproyecto de Real Decreto"
+						position="start" />
+					<function call="text-not-equals" node="." value="Proyecto de RD"
+						position="start" />						
+					<function call="text-not-equals" node="." value="Anteproyecto de RD"
+						position="start" />
+					<function call="text-not-equals" node="." value="Proyecto de Orden"
+						position="start" />
+					<function call="text-not-equals" node="." value="Circular"
+						position="start" />																								
 				</condition>
 			</condition>
 		</machine>
