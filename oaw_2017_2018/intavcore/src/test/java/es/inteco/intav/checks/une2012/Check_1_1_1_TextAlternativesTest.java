@@ -484,6 +484,17 @@ public final class Check_1_1_1_TextAlternativesTest extends EvaluateCheck {
 		Assert.assertEquals(0, getNumProblems(checkAccessibility, 468));
 
 	}
+	
+	@Test
+	public void evaluateDescribedBy() throws Exception{
+		checkAccessibility.setContent(
+				"<html><body><p id=\"foo\">Imagen alt<img alt=\"Lorem ipsum alt\" src=\"http://tawmonitorurl.local/w3c_home.png\"/></p><img aria-describedby=\"foo\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
+		Assert.assertEquals(0, getNumProblems(checkAccessibility, 475));
+		checkAccessibility.setContent(
+				"<html><body><p id=\"foo\">Imagen alt</p><img aria-describedby=\"bar\" src=\"http://tawmonitorurl.local/w3c_home.png\" /></body></html>");
+		Assert.assertEquals(1, getNumProblems(checkAccessibility, 475));
+		
+	}
 
 	@Test
 	public void evaluateLocal() {
