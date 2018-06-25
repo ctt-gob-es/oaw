@@ -15,19 +15,19 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>portal</artifactId>
-	<version>4.1.6</version>
+	<version>4.1.7</version>
 	<packaging>war</packaging>
 
 	<name>oaw-portal</name>
 
 	<properties>
-		<oaw.version>4.1.6</oaw.version>
+		<oaw.version>4.1.7</oaw.version>
 	</properties>
 
 	<parent>
 		<groupId>es.minhap.oaw</groupId>
 		<artifactId>oaw</artifactId>
-		<version>4.1.6</version>
+		<version>4.1.7</version>
 		<relativePath>../oaw/pom.xml</relativePath>
 	</parent>
 
@@ -50,6 +50,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
+					<include>version.properties</include>
 					<include>tiles-defs.xml</include>
 				</includes>
 				<filtering>true</filtering>
