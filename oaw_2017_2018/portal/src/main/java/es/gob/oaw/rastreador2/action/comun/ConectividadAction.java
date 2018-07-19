@@ -15,7 +15,9 @@ package es.gob.oaw.rastreador2.action.comun;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -53,6 +55,7 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.utils.CrawlerUtils;
 
 /**
  * ConectividadAction. {@link Action} Para comprobaciones de conectividad.
@@ -222,7 +225,28 @@ public class ConectividadAction extends Action {
 
 			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
+			// a la conexión
+			String proxyHttpHost = System.getProperty("http.proxyHost");
+			String proxyHttpPort = System.getProperty("http.proxyPort");
+
+			HttpURLConnection connection = null;
+			// TODO Aplicar el proxy
+			if (proxyHttpHost != null && proxyHttpPort != null) {
+				try {
+					Proxy proxy = new Proxy(Proxy.Type.HTTP,
+							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+							Logger.LOG_LEVEL_DEBUG);
+					connection = (HttpURLConnection) url.openConnection(proxy);
+				} catch (NumberFormatException e) {
+					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+							Logger.LOG_LEVEL_ERROR);
+				}
+
+			} else {
+				connection = (HttpURLConnection) url.openConnection();
+			}
 
 			if (connection instanceof HttpsURLConnection) {
 				((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
