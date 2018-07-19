@@ -5526,7 +5526,7 @@
 		<machine>
 			<trigger element="html" />
 			<function call="accessibility-declaration-not-conformance-level" node="."
-				value="accessibility|accesibilidad|accesibilitat|accessibilitat|accesibilidade|accessibilité|eskuragarritasuna|erabilerraztasunaren|irisgarritasuna|erabilerraztasuna|Erabilerraztasun" />
+				value="check.446.regex.pattern" />
 		</machine>
 	</check>
 
