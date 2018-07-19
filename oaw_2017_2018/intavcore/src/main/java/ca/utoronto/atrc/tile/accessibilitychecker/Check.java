@@ -4000,7 +4000,8 @@ public class Check {
 
 	/**
 	 * Comprueba que la página de accesibilidad contiene la declaración del nivel de
-	 * conformidad alcanzado, basándose en la búsqueda de patrones
+	 * conformidad alcanzado, basándose en la búsqueda de patrones. Actualizado para
+	 * recuperar los patrones de fichero de propiedades.
 	 *
 	 * @param checkCode
 	 * @param nodeNode
@@ -4010,8 +4011,12 @@ public class Check {
 	private boolean functionAccessibilityDeclarationNoConformanceLevel(CheckCode checkCode, Node nodeNode,
 			Element elementGiven) {
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links,
-				checkCode.getFunctionValue());
+
+		PropertiesManager pm = new PropertiesManager();
+
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
 
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 
