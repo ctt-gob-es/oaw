@@ -73,7 +73,7 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
 			// Nombre
 			if (request.getParameter("nombre") != null && !StringUtils.isEmpty(request.getParameter("nombre").toString())) {
-				semillaForm.setNombre(request.getParameter("nombre").toString());
+				semillaForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(request.getParameter("nombre").toString()));
 			}
 
 			// URL

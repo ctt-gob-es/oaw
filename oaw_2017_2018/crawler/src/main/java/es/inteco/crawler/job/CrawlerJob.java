@@ -413,6 +413,7 @@ public class CrawlerJob implements InterruptableJob {
 	 *             Signals that an I/O exception has occurred.
 	 */
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
+
 		final PropertiesManager pmgr = new PropertiesManager();
 
 		final int maxNumRetries = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
@@ -449,7 +450,10 @@ public class CrawlerJob implements InterruptableJob {
 						domain = connection.getURL().getHost();
 
 						final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-						final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+						
+						//TODO Sólo se pasa al renderizador para recuperar el contenido
+						
+						final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 						markableInputStream.reset();
 						
 						//TODO Recuerar el charset
@@ -1054,7 +1058,11 @@ public class CrawlerJob implements InterruptableJob {
 				connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
 				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-				final String remoteContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+				
+				
+				//TODO Sólo aqui es cuando se debería llamar al renderizador
+				
+				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				markableInputStream.close();
 				if (!CrawlerUtils.isRss(remoteContent)) {
 					final Document document = CrawlerDOMUtils.getDocument(remoteContent);
