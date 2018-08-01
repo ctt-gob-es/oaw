@@ -52,10 +52,12 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.common.Constants;
+import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.crawler.ignored.links.IgnoredLink;
 import es.inteco.crawler.ignored.links.Utils;
 import es.inteco.plugin.WebAnalayzer;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.plugin.dao.ExtraInfo;
 import es.inteco.plugin.dao.RastreoDAO;
 import es.inteco.utils.CrawlerDOMUtils;
 import es.inteco.utils.CrawlerUtils;
@@ -678,43 +680,99 @@ public class CrawlerJob implements InterruptableJob {
 		Logger.putLog("[A] Iniciando los análisis del rastreo id: " + crawlerData.getIdCrawling() + " ("
 				+ crawlerData.getUrls().get(0) + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
-		for (CrawledLink crawledLink : analyzeDomains) {
+		try (Connection connection = DataBaseManager.getConnection()) {
 
-			// TODO Logs de inicio y fin de análisis
-			// TODO Puntos para guardar datos de fecha, resumen de estado del observatorio
+			// TODO Recupera la información que falta
 
-			Date initDate = new Date();
+			ExtraInfo extra = RastreoDAO.getExtraInfo(DataBaseManager.getConnection(),
+					crawlerData.getIdFulfilledCrawling());
 
-			Logger.putLog("[I] Iniciando análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size() + " ("
-					+ crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+			// TODO Meter en base de datos la información del rastreo
+			ObservatoryStatus estado = EstadoObservatorioDAO.findEstadoObservatorio(connection,
+					(int) crawlerData.getIdObservatory(), extra.getIdEjecucionObservatorio());
 
-			if (!interrupt && (crawlerData.getCartuchos() != null && crawlerData.getCartuchos().length > 0)) {
-				final boolean isLast = (cont >= analyzeDomains.size() - 1);
+			estado.setIdObservatorio((int) crawlerData.getIdObservatory());
 
-				webAnalyzer.runCartuchos(crawledLink, df.format(initDate), crawlerData, cookie, isLast);
-			} else {
-				// Si se pide interrupción, se abandonan los análisis
-				break;
+			estado.setIdEjecucionObservatorio(extra.getIdEjecucionObservatorio());// TODO Mal
+			estado.setNombre(extra.getNombreLista()); // TODO
+			estado.setUrl(crawlerData.getUrls().get(0));
+			estado.setUltimaUrl(crawlerData.getUrls().get(0));
+			estado.setActualUrl(crawlerData.getUrls().get(0));
+			estado.setTotalUrl(crawlingDomains.size());
+			estado.setFechaUltimaUrl(null);
+			estado.setTiempoMedio(0);
+
+			// Registramos en base de datos el estado
+			Long id = EstadoObservatorioDAO.updateEstado(connection, estado);
+			// estado.setId(id);
+			DataBaseManager.closeConnection(connection);
+
+			for (CrawledLink crawledLink : analyzeDomains) {
+
+				// TODO Logs de inicio y fin de análisis
+				// TODO Puntos para guardar datos de fecha, resumen de estado del observatorio
+
+				Date initDate = new Date();
+
+				Logger.putLog("[I] Iniciando análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size()
+						+ " (" + crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+
+				estado.setActualUrl(crawledLink.getUrl());
+				// TODO Actualizamos el estado
+				try (Connection connection2 = DataBaseManager.getConnection()) {
+					EstadoObservatorioDAO.updateEstado(connection2, estado);
+					DataBaseManager.closeConnection(connection2);
+				} catch (Exception e) {
+					Logger.putLog("No se ha podido registrar el estado el análisis actual", CrawlerJob.class,
+							Logger.LOG_LEVEL_ERROR, e);
+				}
+
+				if (!interrupt && (crawlerData.getCartuchos() != null && crawlerData.getCartuchos().length > 0)) {
+					final boolean isLast = (cont >= analyzeDomains.size() - 1);
+
+					webAnalyzer.runCartuchos(crawledLink, df.format(initDate), crawlerData, cookie, isLast);
+				} else {
+					// Si se pide interrupción, se abandonan los análisis
+					break;
+				}
+
+				Date endDate = new Date();
+
+				Logger.putLog("[F] Finalizado análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size()
+						+ " (" + crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+				Logger.putLog("Tiempo empleado:  " + (endDate.getTime() - initDate.getTime()) / 1000
+						+ " segundos. Tiempo acumulado: " + (endDate.getTime() - initFullDate.getTime()) / 1000
+						+ " segundos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+
+				cont++;
+
+				// TODO Actualizamos el estado
+				estado.setUltimaUrl(crawledLink.getUrl());
+				estado.setFechaUltimaUrl(endDate);
+				estado.setTiempoMedio(((endDate.getTime() - initFullDate.getTime()) / cont) / 1000);
+				try (Connection connection2 = DataBaseManager.getConnection()) {
+					EstadoObservatorioDAO.updateEstado(connection2, estado);
+					DataBaseManager.closeConnection(connection2);
+				} catch (Exception e) {
+					Logger.putLog("No se ha podido registrar el estado el análisis actual", CrawlerJob.class,
+							Logger.LOG_LEVEL_ERROR, e);
+				}
+
 			}
 
-			Date endDate = new Date();
+			Date endFullDate = new Date();
 
-			Logger.putLog("[F] Finalizado análisis del enlace número " + (cont + 1) + "/" +analyzeDomains.size() + " ("
-					+ crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-			Logger.putLog("Tiempo empleado:  " + (endDate.getTime() - initDate.getTime()) / 1000
-					+ " segundos. Tiempo acumulado: " + (endDate.getTime() - initFullDate.getTime()) / 1000
-					+ " segundos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+			Logger.putLog(
+					"[A] Finalizado los análisis del rastreo id: " + crawlerData.getIdCrawling() + " ("
+							+ crawlerData.getUrls().get(0) + ")" + " tiempo empleado:  "
+							+ (endFullDate.getTime() - initFullDate.getTime()) / 1000 + " segundos",
+					CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
-			cont++;
+		} catch (Exception e) {
+
+			Logger.putLog("No se ha podido registrar el estado el análisis actual", CrawlerJob.class,
+					Logger.LOG_LEVEL_ERROR, e);
 		}
-
-		Date endFullDate = new Date();
-
-		Logger.putLog(
-				"[A] Finalizado los análisis del rastreo id: " + crawlerData.getIdCrawling() + " ("
-						+ crawlerData.getUrls().get(0) + ")" + " tiempo empleado:  "
-						+ (endFullDate.getTime() - initFullDate.getTime()) / 1000 + " segundos",
-				CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
 	}
 
