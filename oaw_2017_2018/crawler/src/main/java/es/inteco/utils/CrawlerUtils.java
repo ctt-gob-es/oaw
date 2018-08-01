@@ -369,13 +369,16 @@ public final class CrawlerUtils {
 
 		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
 		// a la conexión
+
+		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
 		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
 		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
 
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
-		if (proxyHttpHost != null && proxyHttpPort != null && !"BASIC_SERVICE_URL".equals(refererUrl)) {
+		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
+				&& !"BASIC_SERVICE_URL".equals(refererUrl)) {
 			try {
 				Proxy proxy = new Proxy(Proxy.Type.HTTP,
 						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));

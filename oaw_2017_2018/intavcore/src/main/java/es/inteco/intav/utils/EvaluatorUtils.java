@@ -1151,13 +1151,14 @@ public final class EvaluatorUtils {
 		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
 		// a la conexión
 		final PropertiesManager pmgr = new PropertiesManager();
+		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
 		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
 		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
 
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
-		if (proxyHttpHost != null && proxyHttpPort != null) {
+		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
 			try {
 				Proxy proxy = new Proxy(Proxy.Type.HTTP,
 						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
@@ -1178,7 +1179,7 @@ public final class EvaluatorUtils {
 		if (connection instanceof HttpsURLConnection) {
 			((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
 		}
-		
+
 		connection.setConnectTimeout(
 				Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
 		connection
