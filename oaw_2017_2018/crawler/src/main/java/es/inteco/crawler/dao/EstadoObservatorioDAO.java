@@ -12,6 +12,7 @@ import es.inteco.crawler.job.ObservatoryStatus;
 import es.inteco.crawler.job.ObservatorySummary;
 import es.inteco.crawler.job.ObservatorySummaryTimes;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class EstadoObservatorioDAO.
  */
@@ -41,7 +42,7 @@ public class EstadoObservatorioDAO {
 			final int idEjecucionObservatorio) throws SQLException {
 
 		try (PreparedStatement ps = connection.prepareStatement(
-				"SELECT id, id_observatorio, id_ejecucion_observatorio, nombre, url, total_url, ultima_url, fecha_ultima_url, actual_url, tiempo_medio FROM observatorio_estado WHERE id_observatorio = ? AND id_ejecucion_observatorio = ?")) {
+				"SELECT id, id_observatorio, id_ejecucion_observatorio, nombre, url, total_url, total_url_analizadas, ultima_url, fecha_ultima_url, actual_url, tiempo_medio, tiempo_acumulado FROM observatorio_estado WHERE id_observatorio = ? AND id_ejecucion_observatorio = ?")) {
 
 			ps.setInt(1, idObservatorio);
 			ps.setInt(2, idEjecucionObservatorio);
@@ -55,10 +56,21 @@ public class EstadoObservatorioDAO {
 					estado.setNombre(rs.getString("nombre"));
 					estado.setUrl(rs.getString("url"));
 					estado.setTotalUrl(rs.getInt("total_url"));
+					estado.setTotalUrlAnalizadas(rs.getInt("total_url_analizadas"));
 					estado.setUltimaUrl(rs.getString("ultima_url"));
 					estado.setFechaUltimaUrl(rs.getTimestamp("fecha_ultima_url"));
 					estado.setActualUrl(rs.getString("actual_url"));
-					estado.setTiempoMedio(rs.getLong("tiempo_medio"));
+					estado.setTiempoMedio(rs.getInt("tiempo_medio"));
+					estado.setTiempoAcumulado(rs.getInt("tiempo_acumulado"));
+
+					// Tiempo estimado
+					estado.setTiempoEstimado(
+							(estado.getTotalUrl() - estado.getTotalUrlAnalizadas()) * estado.getTiempoMedio());
+
+					// Porcentaje completado
+					estado.setPorcentajeCompletado(
+							((float) estado.getTotalUrlAnalizadas() / (float) estado.getTotalUrl()) * 100);
+
 					return estado;
 				}
 			}
@@ -83,56 +95,63 @@ public class EstadoObservatorioDAO {
 	 * @throws SQLException
 	 *             the SQL exception
 	 */
-	public static Long updateEstado(final Connection connection, ObservatoryStatus estado) throws SQLException {
+	public static Integer updateEstado(final Connection connection, ObservatoryStatus estado) throws SQLException {
 		if (estado.getId() != null) {
 			// TODO
 
 			try (PreparedStatement ps = connection.prepareStatement(
-					"UPDATE observatorio_estado SET ultima_url = ?, actual_url = ?, fecha_ultima_url = ?, tiempo_medio = ? WHERE id = ?")) {
+					"UPDATE observatorio_estado SET nombre = ? , url =?, ultima_url = ?, actual_url = ?, fecha_ultima_url = ?, tiempo_medio = ?,  total_url_analizadas= ? , tiempo_acumulado = ? WHERE id = ?")) {
 
-				ps.setString(1, estado.getUltimaUrl());
-				ps.setString(2, estado.getActualUrl());
+				ps.setString(1, estado.getNombre());
+				ps.setString(2, estado.getUrl());
+
+				ps.setString(3, estado.getUltimaUrl());
+				ps.setString(4, estado.getActualUrl());
 				if (estado.getFechaUltimaUrl() != null) {
-					ps.setTimestamp(3, new Timestamp(estado.getFechaUltimaUrl().getTime()));
+					ps.setTimestamp(5, new Timestamp(estado.getFechaUltimaUrl().getTime()));
 				} else {
-					ps.setDate(3, null);
+					ps.setDate(5, null);
 				}
-				ps.setFloat(4, estado.getTiempoMedio());
-				ps.setInt(5, estado.getId());
+				ps.setFloat(6, estado.getTiempoMedio());
+				ps.setInt(7, estado.getTotalUrlAnalizadas());
+				ps.setFloat(8, estado.getTiempoAcumulado());
+				ps.setInt(9, estado.getId());
 				ps.executeUpdate();
 
 			} catch (SQLException e) {
-				Logger.putLog("No se ha podido registrar el estado el análisis actual", EstadoObservatorioDAO.class,
+				Logger.putLog("No se ha podido registrar el estado del análisis actual", EstadoObservatorioDAO.class,
 						Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 
-			return (long) estado.getId();
+			return estado.getId();
 
 		} else {
 
 			try (PreparedStatement ps = connection.prepareStatement(
-					"INSERT INTO observatorio_estado (id_observatorio, id_ejecucion_observatorio, nombre, url, total_url, ultima_url, fecha_ultima_url, actual_url, tiempo_medio) VALUES (?,?,?,?,?,?,?,?,?)",
+					"INSERT INTO observatorio_estado (id_observatorio, id_ejecucion_observatorio, nombre, url, total_url, total_url_analizadas ,ultima_url, fecha_ultima_url, actual_url, tiempo_medio, tiempo_acumulado) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS)) {
 				ps.setInt(1, estado.getIdObservatorio());
 				ps.setInt(2, estado.getIdEjecucionObservatorio());
 				ps.setString(3, estado.getNombre());
 				ps.setString(4, estado.getUrl());
 				ps.setInt(5, estado.getTotalUrl());
-				ps.setString(6, estado.getUltimaUrl());
-				ps.setDate(7, null);
-				ps.setString(8, estado.getActualUrl());
-				ps.setFloat(9, estado.getTiempoMedio());
+				ps.setInt(6, estado.getTotalUrlAnalizadas());
+				ps.setString(7, estado.getUltimaUrl());
+				ps.setDate(8, null);
+				ps.setString(9, estado.getActualUrl());
+				ps.setFloat(10, estado.getTiempoMedio());
+				ps.setFloat(11, estado.getTiempoAcumulado());
 
 				ps.executeUpdate();
 
 				try (ResultSet rs = ps.getGeneratedKeys()) {
 					if (rs.next()) {
-						return rs.getLong(1);
+						return rs.getInt(1);
 					}
 				}
 			} catch (SQLException e) {
-				Logger.putLog("No se ha podido registrar el estado el análisis actual", EstadoObservatorioDAO.class,
+				Logger.putLog("No se ha podido registrar el estado del análisis actual", EstadoObservatorioDAO.class,
 						Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
@@ -141,6 +160,47 @@ public class EstadoObservatorioDAO {
 
 	}
 
+	/**
+	 * Delete estado.
+	 *
+	 * @param connection
+	 *            the connection
+	 * @param idObservatorio
+	 *            the id observatorio
+	 * @param idEjecucionObservatorio
+	 *            the id ejecucion observatorio
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public static void deleteEstado(final Connection connection, final int idObservatorio,
+			final int idEjecucionObservatorio) throws SQLException {
+
+		try (PreparedStatement ps = connection.prepareStatement(
+				"DELETE FROM observatorio_estado WHERE 	id_observatorio = ? AND id_ejecucion_observatorio = ?")) {
+			ps.setInt(1, idObservatorio);
+			ps.setInt(2, idEjecucionObservatorio);
+			ps.executeUpdate();
+
+		} catch (SQLException e) {
+			Logger.putLog("No se ha podido borrado el estado del análisis actual", EstadoObservatorioDAO.class,
+					Logger.LOG_LEVEL_ERROR, e);
+		}
+
+	}
+
+	/**
+	 * Gets the observatory summary.
+	 *
+	 * @param c
+	 *            the c
+	 * @param idObservatorio
+	 *            the id observatorio
+	 * @param idEjecucionObservatorio
+	 *            the id ejecucion observatorio
+	 * @return the observatory summary
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
 	public static ObservatorySummary getObservatorySummary(final Connection c, final int idObservatorio,
 			final int idEjecucionObservatorio) throws SQLException {
 
@@ -169,7 +229,27 @@ public class EstadoObservatorioDAO {
 					// int STATUS_STOPPED = 3;
 					// int STATUS_FINALIZED = 4;
 					// int STATUS_ERROR = 5;
-					summary.setEstado("En ejecución");
+
+					switch (rs.getInt("ESTADO_OBS")) {
+					case 1:
+						summary.setEstado("No lanzado");
+						break;
+					case 2:
+						summary.setEstado("Lanzado");
+						break;
+
+					case 3:
+						summary.setEstado("Parado");
+						break;
+
+					case 4:
+						summary.setEstado("Finalizado");
+						break;
+
+					case 5:
+						summary.setEstado("Error");
+						break;
+					}
 
 					// TODO Total semillas
 					// SELECT count(*) FROM rastreo r WHERE r.id_observatorio = 6 AND r.activo = 1
@@ -210,7 +290,7 @@ public class EstadoObservatorioDAO {
 			}
 
 		} catch (SQLException e) {
-			Logger.putLog("No se ha podido registrar el estado el análisis actual", EstadoObservatorioDAO.class,
+			Logger.putLog("No se ha podido registrar el estado del análisis actual", EstadoObservatorioDAO.class,
 					Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
