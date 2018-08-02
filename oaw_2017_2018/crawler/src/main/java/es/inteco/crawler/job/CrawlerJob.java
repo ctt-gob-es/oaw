@@ -682,28 +682,38 @@ public class CrawlerJob implements InterruptableJob {
 
 		try (Connection connection = DataBaseManager.getConnection()) {
 
-			// TODO Recupera la información que falta
+			// TODO Si viene del sevicio de diganóstico el ID del rastreo es negativo
 
-			ExtraInfo extra = RastreoDAO.getExtraInfo(DataBaseManager.getConnection(),
-					crawlerData.getIdFulfilledCrawling());
+			ObservatoryStatus estado = null;
 
-			// TODO Meter en base de datos la información del rastreo
-			ObservatoryStatus estado = EstadoObservatorioDAO.findEstadoObservatorio(connection,
-					(int) crawlerData.getIdObservatory(), extra.getIdEjecucionObservatorio());
+			if (crawlerData.getIdCrawling() > 0) {
+				// TODO Recupera la información que falta
 
-			estado.setIdObservatorio((int) crawlerData.getIdObservatory());
+				ExtraInfo extra = RastreoDAO.getExtraInfo(DataBaseManager.getConnection(),
+						crawlerData.getIdFulfilledCrawling());
 
-			estado.setIdEjecucionObservatorio(extra.getIdEjecucionObservatorio());// TODO Mal
-			estado.setNombre(extra.getNombreLista()); // TODO
-			estado.setUrl(crawlerData.getUrls().get(0));
-			estado.setUltimaUrl(crawlerData.getUrls().get(0));
-			estado.setActualUrl(crawlerData.getUrls().get(0));
-			estado.setTotalUrl(crawlingDomains.size());
-			estado.setFechaUltimaUrl(null);
-			estado.setTiempoMedio(0);
+				// TODO Meter en base de datos la información del rastreo
+				estado = EstadoObservatorioDAO.findEstadoObservatorio(connection, (int) crawlerData.getIdObservatory(),
+						extra.getIdEjecucionObservatorio());
 
-			// Registramos en base de datos el estado
-			Long id = EstadoObservatorioDAO.updateEstado(connection, estado);
+				estado.setIdObservatorio((int) crawlerData.getIdObservatory());
+
+				estado.setIdEjecucionObservatorio(extra.getIdEjecucionObservatorio());// TODO Mal
+				estado.setNombre(extra.getNombreLista()); // TODO
+				estado.setUrl(crawlerData.getUrls().get(0));
+				estado.setUltimaUrl(crawlerData.getUrls().get(0));
+				estado.setActualUrl(crawlerData.getUrls().get(0));
+				estado.setTotalUrl(crawlingDomains.size());
+				estado.setFechaUltimaUrl(null);
+				estado.setTiempoMedio(0);
+				estado.setTiempoAcumulado(0);
+				estado.setTotalUrlAnalizadas(0);
+				estado.setTiempoEstimado(0);
+				// Registramos en base de datos el estado
+				estado.setId(EstadoObservatorioDAO.updateEstado(connection, estado));
+
+			}
+
 			// estado.setId(id);
 			DataBaseManager.closeConnection(connection);
 
@@ -717,10 +727,15 @@ public class CrawlerJob implements InterruptableJob {
 				Logger.putLog("[I] Iniciando análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size()
 						+ " (" + crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
-				estado.setActualUrl(crawledLink.getUrl());
 				// TODO Actualizamos el estado
 				try (Connection connection2 = DataBaseManager.getConnection()) {
-					EstadoObservatorioDAO.updateEstado(connection2, estado);
+
+					// TODO Si viene del sevicio de diganóstico el ID del rastreo es negativo
+					if (crawlerData.getIdCrawling() > 0) {
+						estado.setActualUrl(crawledLink.getUrl());
+						EstadoObservatorioDAO.updateEstado(connection2, estado);
+
+					}
 					DataBaseManager.closeConnection(connection2);
 				} catch (Exception e) {
 					Logger.putLog("No se ha podido registrar el estado el análisis actual", CrawlerJob.class,
@@ -747,11 +762,16 @@ public class CrawlerJob implements InterruptableJob {
 				cont++;
 
 				// TODO Actualizamos el estado
-				estado.setUltimaUrl(crawledLink.getUrl());
-				estado.setFechaUltimaUrl(endDate);
-				estado.setTiempoMedio(((endDate.getTime() - initFullDate.getTime()) / cont) / 1000);
 				try (Connection connection2 = DataBaseManager.getConnection()) {
-					EstadoObservatorioDAO.updateEstado(connection2, estado);
+					// TODO Si viene del sevicio de diganóstico el ID del rastreo es negativo
+					if (crawlerData.getIdCrawling() > 0) {
+						estado.setUltimaUrl(crawledLink.getUrl());
+						estado.setFechaUltimaUrl(endDate);
+						estado.setTiempoMedio(((endDate.getTime() - initFullDate.getTime()) / cont) / 1000);
+						estado.setTiempoAcumulado((endDate.getTime() - initFullDate.getTime()) / 1000);
+						estado.setTotalUrlAnalizadas(cont);
+						EstadoObservatorioDAO.updateEstado(connection2, estado);
+					}
 					DataBaseManager.closeConnection(connection2);
 				} catch (Exception e) {
 					Logger.putLog("No se ha podido registrar el estado el análisis actual", CrawlerJob.class,

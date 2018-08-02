@@ -54,24 +54,6 @@ public class EstadoObservatorioAction extends Action {
 
 			ObservatorySummary estado = EstadoObservatorioDAO.getObservatorySummary(c, idObservatory, idEjecucionObservatorio);
 			
-			
-			//TODO Recuerar datos
-//			estado.setEstado("En ejecución");
-//
-//			estado.setTotalSemillas(379);
-//			estado.setSemillasAnalizadas(128);
-//
-//			estado.setPorcentajeCompletado(
-//					((float) estado.getSemillasAnalizadas() / (float) estado.getTotalSemillas()) * 100);
-//			estado.setTiempoMedio(17);
-//			estado.setTiempoTotal(1897);
-//			estado.setTiempoEstimado(
-//					(estado.getTotalSemillas() - estado.getSemillasAnalizadas()) * estado.getTiempoMedio());
-//			estado.setTiempoMinimo(
-//					new ObservatorySummaryTimes(11, "http://www.defensa.gob.es", "Ministerio de Defensa"));
-//			estado.setTiempoMaximo(
-//					new ObservatorySummaryTimes(11, "http://www.mineco.gob.es", "Ministerio de Economía"));
-
 			//Estado del último análisis hecho/análisis en curso
 			ObservatoryStatus estadoObservatorio = EstadoObservatorioDAO.findEstadoObservatorio(c, idObservatory,
 					idEjecucionObservatorio);
