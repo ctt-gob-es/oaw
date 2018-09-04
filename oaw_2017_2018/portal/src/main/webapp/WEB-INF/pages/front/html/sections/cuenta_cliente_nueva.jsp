@@ -64,7 +64,7 @@ Email: observ.accesibilidad@correo.gob.es
                             <p class="sr-only"><bean:message key="ubicacion.usuario" /></p>
                             <ol class="breadcrumb">
                               <li><html:link forward="usersMenu"><span class="glyphicon glyphicon-home" aria-hidden="true"></span><bean:message key="migas.usuarios" /></html:link></li>
-                              <li class="active"><bean:message key=""migas.nueva.cuenta.cliente" /></li>
+                              <li class="active"><bean:message key="migas.nueva.cuenta.cliente" /></li>
                             </ol>
                         </div>
 
