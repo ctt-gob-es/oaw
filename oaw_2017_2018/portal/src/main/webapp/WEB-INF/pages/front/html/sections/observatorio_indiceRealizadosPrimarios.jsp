@@ -145,13 +145,13 @@ Email: observ.accesibilidad@correo.gob.es
 											<bean:message
 												key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
 
-											<html:link forward="estadoObservatorio" name="paramsRelanzar">
+							<%-- 				<html:link forward="estadoObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-info-sign"
 													aria-hidden="true" data-toggle="tooltip"
 													title="Relanzar esta iteraci&oacute;n del observatorio" />
 												<span class="sr-only">Estado esta iteraci&oacute;n
 													del observatorio</span>
-											</html:link>
+											</html:link> --%>
 
 											<html:link forward="relanzarObservatorio"
 												name="paramsRelanzar">
