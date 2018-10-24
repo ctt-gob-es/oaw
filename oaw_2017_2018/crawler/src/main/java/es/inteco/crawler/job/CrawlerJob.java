@@ -677,8 +677,10 @@ public class CrawlerJob implements InterruptableJob {
 
 		Date initFullDate = new Date();
 
+		String urlRastreo = (crawlerData.getUrls()!=null && !crawlerData.getUrls().isEmpty()) ? crawlerData.getUrls().get(0): "";
+		
 		Logger.putLog("[A] Iniciando los análisis del rastreo id: " + crawlerData.getIdCrawling() + " ("
-				+ crawlerData.getUrls().get(0) + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+				+ urlRastreo + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
 		try (Connection connection = DataBaseManager.getConnection()) {
 
@@ -784,7 +786,7 @@ public class CrawlerJob implements InterruptableJob {
 
 			Logger.putLog(
 					"[A] Finalizado los análisis del rastreo id: " + crawlerData.getIdCrawling() + " ("
-							+ crawlerData.getUrls().get(0) + ")" + " tiempo empleado:  "
+							+ urlRastreo + ")" + " tiempo empleado:  "
 							+ (endFullDate.getTime() - initFullDate.getTime()) / 1000 + " segundos",
 					CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 
