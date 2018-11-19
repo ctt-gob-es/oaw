@@ -41,6 +41,41 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+
+import org.apache.xerces.util.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import es.gob.oaw.language.Diccionario;
 import es.gob.oaw.language.ExtractTextHandler;
 import es.gob.oaw.language.LanguageChecker;
@@ -56,24 +91,6 @@ import es.inteco.flesch.FleschAnalyzer;
 import es.inteco.flesch.FleschUtils;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
-import org.apache.xerces.util.DOMUtil;
-import org.w3c.dom.*;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.util.*;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Check {
 	private int checkOkCode;
@@ -4058,6 +4075,44 @@ public class Check {
 	}
 
 	private Document getAccesibilityDocument(final Element elementRoot, final String href) throws Exception {
+
+		try {
+
+			final URI u = new URI(href);
+
+			if (u.isAbsolute()) {
+				
+				final Document document;
+				if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
+						.get(href) == null) {
+					Logger.putLog("Accediendo a la declaración de accesibilidad en " + href, Check.class,
+							Logger.LOG_LEVEL_INFO);
+					document = CheckUtils.getRemoteDocument(href, href);
+					((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
+							.put(href, document);
+				} else {
+					document = ((HashMap<String, Document>) elementRoot
+							.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href);
+				}
+				return document;
+				
+			} else {
+				
+				return getRelativeDocument(elementRoot, href);
+				
+				
+			}
+		} catch (Exception e) {
+
+			return getRelativeDocument(elementRoot, href);
+			
+		}
+
+		
+	}
+
+	private Document getRelativeDocument(final Element elementRoot, final String href)
+			throws MalformedURLException, IOException, SAXException {
 		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot))
 				: new URL((String) elementRoot.getUserData("url"));
 		final String remoteUrlStr = new URL(documentUrl, href).toString();
