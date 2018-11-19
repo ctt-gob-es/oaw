@@ -80,7 +80,7 @@ public final class GraphicsUtils {
 			final Font robotoFont = Font.createFont(Font.TRUETYPE_FONT, new File(pmgr.getValue("pdf.properties", "path.pdf.font.monospaced")));
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(robotoFont);
 			fontFamily = "Roboto";
-		} catch (FontFormatException | IOException e) {
+		} catch (Exception e) {
 			Logger.putLog("No se ha podido cargar la fuente Roboto ubicada en " + pmgr.getValue("pdf.properties", "path.pdf.font.monospaced"), GraphicsUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		TITLE_FONT = new Font(fontFamily, Font.BOLD, 22);

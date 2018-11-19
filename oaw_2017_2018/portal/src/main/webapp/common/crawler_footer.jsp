@@ -17,6 +17,6 @@ Email: observ.accesibilidad@correo.gob.es
 <!-- Pie -->
 	<div id="pie">
 		<div id="creditos">
-			<bean:message key="copyright" /> &nbsp; Versi&#243;n: <b>4.2.1</b> 
+			<bean:message key="copyright" /> &nbsp; Versi&#243;n: <b>4.2.2</b> 
 		</div>
 	</div>
