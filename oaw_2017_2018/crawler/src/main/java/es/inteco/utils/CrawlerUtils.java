@@ -421,7 +421,35 @@ public final class CrawlerUtils {
 	private static HttpURLConnection generateConnection(String url, String refererUrl)
 			throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+		//final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+
+		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
+		// a la conexión
+
+		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
+		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
+		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+
+		HttpURLConnection connection = null;
+		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// método también es usado por al JSP de conexión
+		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
+				&& !"BASIC_SERVICE_URL".equals(refererUrl)) {
+			try {
+				Proxy proxy = new Proxy(Proxy.Type.HTTP,
+						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+						Logger.LOG_LEVEL_DEBUG);
+				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
+			} catch (NumberFormatException e) {
+				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+						Logger.LOG_LEVEL_ERROR);
+			}
+
+		} else {
+			connection = (HttpURLConnection) new URL(url).openConnection();
+		}
+		
 		if (connection instanceof HttpsURLConnection) {
 			final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
 			httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
