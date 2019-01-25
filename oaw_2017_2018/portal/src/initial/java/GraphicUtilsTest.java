@@ -1,8 +1,10 @@
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.struts.util.MessageResources;
@@ -11,7 +13,9 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.junit.Before;
 import org.junit.Test;
 
+import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.utils.ChartForm;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 
@@ -85,14 +89,34 @@ public class GraphicUtilsTest {
 		dataSet.addValue(7.73, "", "22/08/16");
 		dataSet.addValue(6.30, "", "17/10/16");
 		dataSet.addValue(6.30, "", "27/10/17");
-		final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, true, false, false, true, true, false, 580, 458, color);
+		final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, true, false, false, true, true, true, 580, 458, color);
 		// final ChartForm observatoryGraphicsForm = new ChartForm(title,
 		// columnTitle, rowTitle, dataSet, false, false, true, false, true,
 		// true, true, x, y, colors.toString());
 		observatoryGraphicsForm.setFixedColorBars(true);
 		observatoryGraphicsForm.setFixedLegend(true);
 		// observatoryGraphicsForm.setShowColumsLabels(true);
-		GraphicsUtils.createStandardBarChart(observatoryGraphicsForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_average_score.jpg", "", messageResources, false);
+		GraphicsUtils.createStandardBarChart(observatoryGraphicsForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_average_score.jpg", "", messageResources, true);
+	}
+	
+	@Test	
+	public void testEvolutionGraphic() throws Exception {
+
+
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		
+		dataSet.addValue(7.80, "18/09/15", "1.1.1");
+		dataSet.addValue(7.43, "18/09/16", "1.1.1");
+		dataSet.addValue(7.43, "18/09/17", "1.1.1");
+		dataSet.addValue(7.73, "18/09/15", "1.1.2");
+		dataSet.addValue(6.30, "18/09/16", "1.1.2");
+		dataSet.addValue(6.30, "18/09/17", "1.1.2");
+
+		final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, true, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+		chartForm.setFixedColorBars(false);
+		chartForm.setShowColumsLabels(false);
+
+		GraphicsUtils.createStandardBarChart(chartForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_score.jpg", "", messageResources, true);
 	}
 
 	@Test

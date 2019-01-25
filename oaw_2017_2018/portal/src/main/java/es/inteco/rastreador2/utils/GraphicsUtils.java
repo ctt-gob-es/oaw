@@ -301,6 +301,7 @@ public final class GraphicsUtils {
 					observatoryGraphicsForm.getDataSet(), PlotOrientation.VERTICAL, observatoryGraphicsForm.isPrintLegend(), true, false);
 		}
 		chart.getTitle().setFont(TITLE_FONT);
+		
 
 		formatLegend(chart);
 
@@ -310,6 +311,9 @@ public final class GraphicsUtils {
 
 		// Elimina la transparencia de las gráficas
 		plot.setForegroundAlpha(1.0f);
+		
+		
+		
 
 		defineBarColor(plot, observatoryGraphicsForm, messageResources);
 
@@ -327,6 +331,7 @@ public final class GraphicsUtils {
 		} else {
 			createDomainAxis(plot, CategoryLabelPositions.UP_45, observatoryGraphicsForm);
 		}
+		
 
 		putValuesOnBars(chart, observatoryGraphicsForm);
 
@@ -357,6 +362,8 @@ public final class GraphicsUtils {
 		}
 		valueAxis.setTickLabelFont(TICK_LABEL_FONT);
 		valueAxis.setLowerBound(0);
+		
+		
 	}
 
 	private static void createNumberAxisWithoutRange(CategoryDataset dataSet, CategoryPlot plot, boolean percentage) {
