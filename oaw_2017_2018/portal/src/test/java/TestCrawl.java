@@ -76,7 +76,7 @@ public class TestCrawl {
 	@Test
 	public void test() throws Exception {
 		final CrawlerData crawlerData = new CrawlerData();
-		crawlerData.setUrls(Collections.singletonList("http://www.mecd.gob.es/educacion-mecd/"));
+		crawlerData.setUrls(Collections.singletonList("http://www.juntadeandalucia.es/institucional/"));
 		crawlerData.setProfundidad(4);
 		crawlerData.setTopN(8);
 		crawlerData.setPseudoaleatorio(true);

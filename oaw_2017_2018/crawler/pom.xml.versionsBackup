@@ -23,11 +23,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
         <relativePath>../oaw/pom.xml</relativePath>
-        <version>4.3.0-SNAPSHOT-1</version>
+        <version>4.2.2</version>
     </parent>
     
     <properties>
-		<oaw.version>4.3.0-SNAPSHOT-1</oaw.version>
+		<oaw.version>4.2.2</oaw.version>
 	</properties>
     
 
