@@ -54,6 +54,8 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.common.Constants;
+import es.inteco.crawler.dao.ProxyDAO;
+import es.inteco.crawler.dao.ProxyForm;
 import es.inteco.crawler.ignored.links.IgnoredLink;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
@@ -168,8 +170,7 @@ public final class CrawlerUtils {
 	/**
 	 * Obtiene el host de una dirección url
 	 *
-	 * @param domain
-	 *            cadena que representa una url
+	 * @param domain cadena que representa una url
 	 * @return el host de la url o vacío si no la cadena no representa una url
 	 *         válida
 	 */
@@ -370,9 +371,27 @@ public final class CrawlerUtils {
 		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
 		// a la conexión
 
-		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
-		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
-		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
+//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
+//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+
+		// TODO Configuración de base de datos
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
@@ -421,14 +440,31 @@ public final class CrawlerUtils {
 	private static HttpURLConnection generateConnection(String url, String refererUrl)
 			throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		//final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+		// final HttpURLConnection connection = (HttpURLConnection) new
+		// URL(url).openConnection();
 
 		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
 		// a la conexión
 
-		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
-		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
-		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
+//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
+//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
@@ -449,7 +485,7 @@ public final class CrawlerUtils {
 		} else {
 			connection = (HttpURLConnection) new URL(url).openConnection();
 		}
-		
+
 		if (connection instanceof HttpsURLConnection) {
 			final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
 			httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
@@ -551,8 +587,7 @@ public final class CrawlerUtils {
 	/**
 	 * Comprueba si la conexión se ha realizado a la página de OpenDNS
 	 *
-	 * @param connection
-	 *            la conexión que se quiere comprobar
+	 * @param connection la conexión que se quiere comprobar
 	 * @return true si la conexión se ha realizado a la página de OpenDNS o false en
 	 *         caso contrario.
 	 */
@@ -564,8 +599,7 @@ public final class CrawlerUtils {
 	/**
 	 * Comprueba si un contenido es un RSS
 	 *
-	 * @param content
-	 *            una cadena con un contenido textual
+	 * @param content una cadena con un contenido textual
 	 * @return true si corresponde a un RSS o false en caso contrario
 	 */
 	public static boolean isRss(final String content) {
@@ -576,8 +610,7 @@ public final class CrawlerUtils {
 	 * Comprueba si un enlace es de tipo http: o usa otro protocolo (mailto:,
 	 * javascript:,...)
 	 * 
-	 * @param link
-	 *            enlace a comprobar
+	 * @param link enlace a comprobar
 	 * @return true si el enlace es de tipo http o false en caso contrario.
 	 */
 	public static boolean isHTTPLink(final Element link) {

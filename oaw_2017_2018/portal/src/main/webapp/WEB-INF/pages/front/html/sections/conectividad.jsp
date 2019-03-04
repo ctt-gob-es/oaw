@@ -129,9 +129,46 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		}
 	}
 
+	function modifyProxy() {
+
+		var proxyUrl = $('#proxyUrl').val();
+		var proxyPort = $('#proxyPort').val();
+		var proxyStatus = $('#proxyStatus').is(':checked');
+
+		if (proxyUrl == "") {
+			$('#proxy-url-error-message').removeClass('hidden');
+			return false;
+		} else if (proxyPort == "" || !validPort(proxyPort)) {
+			$('#proxy-port-error-message').removeClass('hidden');
+			return false;
+		} else {
+
+			$
+					.ajax(
+							{
+								url : '/oaw/secure/conectividad.do?action=modifyproxy&proxyUrl='
+										+ decodeURI($('#proxyUrl').val())
+										+ "&proxyPort="
+										+ proxyPort
+										+ "&proxyStatus=" + proxyStatus,
+								method : 'POST'
+							}).success(function(data) {
+						location.reload();
+					});
+
+		}
+
+	}
+
 	function validateEmail(email) {
 		var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(email);
+	}
+
+	function validPort(port) {
+		var re = /^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/;
+		return re.test(port);
+
 	}
 </script>
 
@@ -148,10 +185,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li>
-						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-						Otras opciones
-					</li>
+				<li><span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+					Otras opciones</li>
 				<li class="active"></span> <bean:message key="migas.conectividad" /></li>
 
 			</ol>
@@ -280,6 +315,91 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									id="checkurlresult-error-detalle"></span>
 							</p>
 						</div>
+
+
+					</fieldset>
+				</div>
+
+			</div>
+
+
+			<div>
+
+				<div id="proxyform" class="formulario">
+
+					<fieldset>
+						<legend>
+							<bean:message key="conectividad.proxy.title" />
+						</legend>
+
+						<div id="proxy-url-error-message"
+							class="alert alert-danger hidden">Debe introducir una URL
+							v&#225;lida</div>
+
+
+
+						<div id="proxy-port-error-message"
+							class="alert alert-danger hidden">Debe introducir un puerto
+							v&#225;lido</div>
+
+
+						<p>Par&#225;metros de configuraci&#243;n de motor de
+							Javascript.</p>
+
+
+						<div class="formItem">
+							<label for="url" class="labelCorto"><strong
+								class="labelVisu"><acronym
+									title="<bean:message key="campo.obligatorio" />"> * </acronym>
+									<bean:message key="conectividad.proxy.activo" />: </strong></label>
+
+
+							<logic:equal name="proxyconfig" property="status" value="1">
+								<input id="proxyStatus" type="checkbox" class="textoCorto"
+									name="proxyStatus" required="required" checked="checked"
+									style="width: auto !important;" />
+							</logic:equal>
+							<logic:equal name="proxyconfig" property="status" value="0">
+								<input id="proxyStatus" type="checkbox" class="textoCorto"
+									style="width: auto !important;" name="proxyStatus"
+									required="required" />
+							</logic:equal>
+
+
+
+
+						</div>
+						<div class="formItem">
+							<label for="url" class="labelCorto"><strong
+								class="labelVisu"><acronym
+									title="<bean:message key="campo.obligatorio" />"> * </acronym>
+									<bean:message key="conectividad.proxy.url" />: </strong></label> <input
+								id="proxyUrl" type="text" class="textoCorto" name="proxyUrl"
+								required="required"
+								value="<bean:write name="proxyconfig" property="url" />" />
+							(p.e.: localhost, 127.0.0.1)
+
+						</div>
+						<div class="formItem">
+
+							<label for="url" class="labelCorto"><strong
+								class="labelVisu"><acronym
+									title="<bean:message key="campo.obligatorio" />"> * </acronym>
+									<bean:message key="conectividad.proxy.puerto" />: </strong></label> <input
+								id="proxyPort" type="text" class="textoCorto" name="proxyPort"
+								required="required"
+								value="<bean:write name="proxyconfig" property="port" />" />
+
+
+
+
+						</div>
+						<span id="modifyProxy" onclick="modifyProxy()"
+							class="btn btn-default btn-sm">Actualizar</span> <span
+							id="checkingurl" class="btn btn-default btn-sm hidden"> <span
+							class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+						</span>
+
 
 
 					</fieldset>

@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
+import java.sql.Connection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +75,7 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.intav.dao.ProxyDAO;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.AnalysisForm;
 import es.inteco.intav.form.AspectScoreForm;
@@ -86,8 +88,11 @@ import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.form.PautaForm;
 import es.inteco.intav.form.PriorityForm;
 import es.inteco.intav.form.ProblemForm;
+import es.inteco.intav.form.ProxyForm;
 import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.persistence.Analysis;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.utils.CrawlerUtils;
 
 public final class EvaluatorUtils {
 
@@ -1151,9 +1156,25 @@ public final class EvaluatorUtils {
 		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
 		// a la conexión
 		final PropertiesManager pmgr = new PropertiesManager();
-		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
-		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
-		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
+//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
+//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
@@ -1302,8 +1323,7 @@ public final class EvaluatorUtils {
 	/**
 	 * Obtiene el nodo HTML del documento.
 	 *
-	 * @param nodeDocument
-	 *            un documento DOM.
+	 * @param nodeDocument un documento DOM.
 	 * @return el nodo correspondiente al elemento html o null si no existe.
 	 */
 	public static Node getHtmlElement(final Document nodeDocument) {
@@ -1473,8 +1493,7 @@ public final class EvaluatorUtils {
 	/**
 	 * Devuelve todos los elementos que son encabezados ya sean h1, h2... o WAI
 	 * 
-	 * @param document
-	 *            Documento a evaluar
+	 * @param document Documento a evaluar
 	 * @return Elementos
 	 */
 	public static List<Element> getHeadings(Document document) {
