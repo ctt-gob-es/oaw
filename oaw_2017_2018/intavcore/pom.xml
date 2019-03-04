@@ -107,7 +107,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
         <dependency>
             <groupId>net.sourceforge.cssparser</groupId>
             <artifactId>cssparser</artifactId>
-            <version>0.9.14</version>
+            <!-- <version>0.9.14</version> -->
+            <version>0.9.26</version>
         </dependency>
 
         <dependency>
