@@ -92,7 +92,6 @@ import es.inteco.intav.form.ProxyForm;
 import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.persistence.Analysis;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.utils.CrawlerUtils;
 
 public final class EvaluatorUtils {
 

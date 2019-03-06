@@ -57,7 +57,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.action.observatorio.JsonSemillasObservatorioAction;
 import es.inteco.rastreador2.actionform.semillas.ProxyForm;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.utils.CrawlerUtils;
@@ -272,12 +271,27 @@ public class ConectividadAction extends Action {
 
 			// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
 			// a la conexión
-			String proxyHttpHost = System.getProperty("http.proxyHost");
-			String proxyHttpPort = System.getProperty("http.proxyPort");
+			String proxyActive = "";
+			String proxyHttpHost = "";
+			String proxyHttpPort = "";
+
+			try (Connection c = DataBaseManager.getConnection()) {
+				ProxyForm proxy = ProxyDAO.getProxy(c);
+
+				proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+				proxyHttpHost = proxy.getUrl();
+				proxyHttpPort = proxy.getPort();
+
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
 
 			HttpURLConnection connection = null;
-			// TODO Aplicar el proxy
-			if (proxyHttpHost != null && proxyHttpPort != null) {
+			// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+			// método también es usado por al JSP de conexión
+			if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
+
 				try {
 					Proxy proxy = new Proxy(Proxy.Type.HTTP,
 							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
