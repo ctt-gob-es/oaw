@@ -4,6 +4,5 @@ FROM node:9.5.0-alpine
 RUN  npm install request --save
 RUN  npm install regex --save
 
-
 #Copiamos el prerrender
 COPY index.js /opt/proxy/index.js

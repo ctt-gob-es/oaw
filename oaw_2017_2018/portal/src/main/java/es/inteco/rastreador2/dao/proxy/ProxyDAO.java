@@ -7,7 +7,6 @@ import java.sql.SQLException;
 
 import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.actionform.semillas.ProxyForm;
-import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 
 /**
  * The Class ProxyDAO.

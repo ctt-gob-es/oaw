@@ -61,7 +61,6 @@ import es.inteco.rastreador2.actionform.semillas.ProxyForm;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.utils.CrawlerUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * ConectividadAction. {@link Action} Para comprobaciones de conectividad.
  *
@@ -135,7 +134,7 @@ public class ConectividadAction extends Action {
 
 				try (Connection c = DataBaseManager.getConnection()) {
 					ProxyForm proxy = new ProxyForm();
-					proxy.setStatus("true".equals(proxyStatus)?1:0);
+					proxy.setStatus("true".equals(proxyStatus) ? 1 : 0);
 					proxy.setUrl(proxyUrl);
 					proxy.setPort(proxyPort);
 
@@ -156,9 +155,9 @@ public class ConectividadAction extends Action {
 	/**
 	 * Change proxy status.
 	 *
-	 * @param request the request
+	 * @param request  the request
 	 * @param response the response
-	 * @param email the email
+	 * @param email    the email
 	 * @return the action forward
 	 */
 	private ActionForward changeProxyStatus(HttpServletRequest request, HttpServletResponse response, String email) {
