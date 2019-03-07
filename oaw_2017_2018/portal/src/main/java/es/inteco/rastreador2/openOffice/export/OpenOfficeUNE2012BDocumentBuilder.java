@@ -146,7 +146,25 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 
 			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
 			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
+			
+			
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", "image/jpg");
+			
+			numSection++;
+			
+			//TODO Evolutivo por segmentos
+			final Map<Date, Map<String, BigDecimal>> resultsBySegment = new HashMap<>();
+			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+				resultsBySegment.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012BUtils.segmentMidsPuntuationGraphicData(messageResources, entry.getValue()));
+			}
+			
+			
+			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreBySegmentChart(messageResources, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", pageObservatoryMap, categories);
+			replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsBySegment, categories);
+			
+			
+			//TODO FIN
+			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", "image/jpg");
 		}
 		return odt;
 	}
@@ -944,6 +962,39 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 		}
 		return numImg;
 	}
+	
+	
+	private int replaceSectionEvolutionScoreBySegment(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
+			final Map<Date, Map<String, BigDecimal>> resultsByAspect, final List<CategoriaForm> categories) throws Exception {
+		if (resultsByAspect != null && !resultsByAspect.isEmpty()) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+			
+			int n = 25;
+			
+			for(CategoriaForm category: categories) {
+
+				Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateSegmentEvolutionPuntuationDataSet(category.getName(),
+				resultsByAspect, df);
+				replaceImg(odt, graphicPath + category.getName() + ".jpg","image/jpeg"); 
+				numImg++;
+				replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "" +n + ".t1", resultData);
+				n++;
+			}
+
+
+		} else {
+			PropertiesManager pmgr = new PropertiesManager();
+
+			for (int i = 25; i < 30; i++) {
+				replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.graphic.noResults"), "image/jpeg");
+				numImg++;
+			}
+		}
+		return numImg;
+	}
+	
+	
 
 	/**
 	 * Replace section cat 5.

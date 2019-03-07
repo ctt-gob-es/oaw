@@ -1,0 +1,6 @@
+ renderer_1:
+  privileged: true
+  build: ./renderer
+  restart: always
+  shm_size: '1gb'
+  command: node /opt/prerender/server.js

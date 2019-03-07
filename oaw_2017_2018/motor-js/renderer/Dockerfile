@@ -17,10 +17,7 @@ RUN npm install he --save
 RUN npm install valid-url --save
 
 #Copiamos el prerrender
-COPY prerender.tar.gz /opt/
-
-#Descomprimimos
-RUN tar -xf /opt/prerender.tar.gz -C /opt/
+COPY prerender /opt/prerender
 
 #Dependencias necesarias
 RUN ls -l /opt/prerender && cd /opt/prerender && npm install --save
