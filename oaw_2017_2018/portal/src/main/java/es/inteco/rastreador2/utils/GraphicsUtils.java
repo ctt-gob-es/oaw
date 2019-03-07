@@ -15,36 +15,15 @@
 ******************************************************************************/
 package es.inteco.rastreador2.utils;
 
-import es.inteco.common.Constants;
-import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.form.ObservatoryEvaluationForm;
-import es.inteco.intav.form.ObservatorySiteEvaluationForm;
-import org.apache.commons.lang.StringUtils;
-import org.apache.struts.util.MessageResources;
-import org.jfree.chart.*;
-import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.axis.CategoryLabelPositions;
-import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
-import org.jfree.chart.labels.CategoryItemLabelGenerator;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.labels.PieSectionLabelGenerator;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.chart.renderer.category.BarRenderer3D;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
-import org.jfree.chart.title.LegendTitle;
-import org.jfree.data.Range;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
-import org.jfree.ui.TextAnchor;
-import org.jfree.util.Rotation;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.Paint;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -57,7 +36,48 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts.util.MessageResources;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartUtilities;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.LegendItem;
+import org.jfree.chart.LegendItemCollection;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.labels.CategoryItemLabelGenerator;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.PieSectionLabelGenerator;
+import org.jfree.chart.plot.CategoryMarker;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PieLabelLinkStyle;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.chart.plot.Plot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.BarRenderer3D;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.data.Range;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.PieDataset;
+import org.jfree.ui.Layer;
+import org.jfree.ui.LengthAdjustmentType;
+import org.jfree.ui.RectangleAnchor;
+import org.jfree.ui.TextAnchor;
+import org.jfree.util.Rotation;
+
+import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatorySiteEvaluationForm;
 
 public final class GraphicsUtils {
 
@@ -311,9 +331,7 @@ public final class GraphicsUtils {
 
 		// Elimina la transparencia de las gráficas
 		plot.setForegroundAlpha(1.0f);
-		
-		
-		
+			
 
 		defineBarColor(plot, observatoryGraphicsForm, messageResources);
 
@@ -333,8 +351,8 @@ public final class GraphicsUtils {
 		}
 		
 
-		putValuesOnBars(chart, observatoryGraphicsForm);
-
+		
+		
 		saveChartToFile(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
 	}
 
