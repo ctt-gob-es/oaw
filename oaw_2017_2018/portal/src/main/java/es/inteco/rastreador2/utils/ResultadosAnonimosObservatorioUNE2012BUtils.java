@@ -2655,6 +2655,8 @@ public final class ResultadosAnonimosObservatorioUNE2012BUtils {
 	 * @param verifications      list of verifications to include on the chart
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
+	
+	//TODO Mejorar la compresión de estos gráficos
 	public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources,
 			final String filePath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
 			final List<String> verifications) throws IOException {
@@ -2674,7 +2676,8 @@ public final class ResultadosAnonimosObservatorioUNE2012BUtils {
 
 		final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, false, 1465, 654,
 				pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
-		chartForm.setFixedColorBars(true);
+		//TODO Colores variables??
+		chartForm.setFixedColorBars(false);
 		chartForm.setShowColumsLabels(false);
 
 		GraphicsUtils.createStandardBarChart(chartForm, filePath, "", messageResources, true);

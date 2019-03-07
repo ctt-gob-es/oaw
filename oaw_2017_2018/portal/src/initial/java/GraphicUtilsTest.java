@@ -1,10 +1,8 @@
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.struts.util.MessageResources;
@@ -13,9 +11,7 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.junit.Before;
 import org.junit.Test;
 
-import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.utils.ChartForm;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 
