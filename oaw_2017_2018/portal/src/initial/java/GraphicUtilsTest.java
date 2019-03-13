@@ -330,5 +330,7 @@ public class GraphicUtilsTest {
 		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, 580, 458, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
 		GraphicsUtils.createStackedBarChart(chartForm, "", "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/modality_verification_level_ii_segment_iv.jpg");
 	}
+	
+	
 
 }
