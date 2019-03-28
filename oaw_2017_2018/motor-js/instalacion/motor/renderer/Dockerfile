@@ -1,1 +1,0 @@
-FROM oawjs_renderer
