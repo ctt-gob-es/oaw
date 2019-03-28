@@ -2174,18 +2174,18 @@
 		<machine>
 			<trigger element="*" />
 			<condition type="or">
-				<condition type="and">
-					<condition type="and">
-						<function call="attribute-exists" node="." value="onkeypress" />
-						<function call="characters-greater-than" node="@onkeypress" value="0" />
-						<function call="is-not-only-blanks" node="@onkeypress" />
-					</condition>
-					<condition type="or">
-						<function call="attribute-missing" node="." value="onclick" />
-						<function call="characters-less-than" node="@onclick" value="1" />
-						<function call="is-only-blanks" node="@onclick" />
-					</condition>
-				</condition>
+<!-- 				<condition type="and"> -->
+<!-- 					<condition type="and"> -->
+<!-- 						<function call="attribute-exists" node="." value="onkeypress" /> -->
+<!-- 						<function call="characters-greater-than" node="@onkeypress" value="0" /> -->
+<!-- 						<function call="is-not-only-blanks" node="@onkeypress" /> -->
+<!-- 					</condition> -->
+<!-- 					<condition type="or"> -->
+<!-- 						<function call="attribute-missing" node="." value="onclick" /> -->
+<!-- 						<function call="characters-less-than" node="@onclick" value="1" /> -->
+<!-- 						<function call="is-only-blanks" node="@onclick" /> -->
+<!-- 					</condition> -->
+<!-- 				</condition> -->
 				<condition type="and">
 					<condition type="and">
 						<function call="attribute-exists" node="." value="onmousedown" />
