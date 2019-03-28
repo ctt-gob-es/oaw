@@ -122,6 +122,8 @@ public final class CheckUtils {
     }
 
     public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr) throws IOException, SAXException {
+    	
+    	//TODO Este remote debería pasar por el proxy
         try {
             final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
             connection.setRequestProperty("referer", documentUrlStr);

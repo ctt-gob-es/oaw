@@ -165,7 +165,7 @@ public class ResultadosObservatorioAction extends Action {
                     //Borramos la cache
                     CacheUtils.removeFromCache(Constants.OBSERVATORY_KEY_CACHE + request.getParameter(Constants.ID_EX_OBS));
                     //Lanzamos el rastreo y recuperamos el id de ejecución
-                    lanzarRastreo(c, String.valueOf(idCrawling));
+                    lanzarRastreo(c, String.valueOf(idCrawling), request.getParameter(Constants.ID_EX_OBS));
                     Long idNewExecution = Long.valueOf(RastreoDAO.getExecutedCrawling(c, idCrawling, Long.valueOf(request.getParameter(Constants.ID_SEMILLA))).getId());
                     //Borramos el rastreo ejecutado antigüo
                     RastreoUtils.borrarArchivosAsociados(c, String.valueOf(idOldExecution));
@@ -202,7 +202,7 @@ public class ResultadosObservatorioAction extends Action {
         return forward;
     }
 
-    private void lanzarRastreo(final Connection c, final String idCrawling) throws Exception {
+    private void lanzarRastreo(final Connection c, final String idCrawling, final String idExObs) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, idCrawling);
         dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
@@ -223,7 +223,7 @@ public class ResultadosObservatorioAction extends Action {
 
         final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
 
-        final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, null, Long.valueOf(userData.getId()));
+        final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, Long.parseLong(idExObs), Long.valueOf(userData.getId()));
 
         final CrawlerJob crawlerJob = new CrawlerJob();
         crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));

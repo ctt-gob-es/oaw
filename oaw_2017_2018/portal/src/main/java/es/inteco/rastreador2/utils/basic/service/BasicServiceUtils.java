@@ -282,7 +282,9 @@ public final class BasicServiceUtils {
 				// cortamos el title e insertamos '...'
 				title = title.substring(0,
 						Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.max.length")) - 3);
-				title = title.substring(0, title.lastIndexOf(' '));
+				if(title.lastIndexOf(' ')>0) {
+					title = title.substring(0, title.lastIndexOf(' '));
+				}
 				result = title + "...";
 			}
 		} else {

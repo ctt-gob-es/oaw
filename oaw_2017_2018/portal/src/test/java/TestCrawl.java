@@ -76,12 +76,13 @@ public class TestCrawl {
 	@Test
 	public void test() throws Exception {
 		final CrawlerData crawlerData = new CrawlerData();
-		crawlerData.setUrls(Collections.singletonList("http://administracion.gob.es/pag_Home/index.html"));
+		crawlerData.setUrls(Collections.singletonList("http://www.juntadeandalucia.es/institucional/"));
 		crawlerData.setProfundidad(4);
 		crawlerData.setTopN(8);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
+		crawlerData.setInDirectory(true);
 		makeCrawl(crawlerData);
 
 		for (CrawledLink cl : crawlingDomains) {

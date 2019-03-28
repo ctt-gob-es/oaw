@@ -1,33 +1,26 @@
-<!--
-Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
-This program is licensed and may be used, modified and redistributed under the terms
-of the European Public License (EUPL), either version 1.2 or (at your option) any later 
-version as soon as they are approved by the European Commission.
-Unless required by applicable law or agreed to in writing, software distributed under the 
-License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
-ANY KIND, either express or implied. See the License for the specific language governing 
-permissions and more details.
-You should have received a copy of the EUPL1.2 license along with this program; if not, 
-you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
--->
+<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified and redistributed under the terms of 
+	the European Public License (EUPL), either version 1.2 or (at your option) any later version as soon as they are approved by the European Commission. Unless required 
+	by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+	either express or implied. See the License for the specific language governing permissions and more details. You should have received a copy of the EUPL1.2 license 
+	along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>portal</artifactId>
-	<version>4.1.8</version>
+	<version>4.3.1</version>
 	<packaging>war</packaging>
 
 	<name>oaw-portal</name>
 
 	<properties>
-		<oaw.version>4.1.8</oaw.version>
+		<oaw.version>4.3.1</oaw.version>
 	</properties>
 
 	<parent>
 		<groupId>es.minhap.oaw</groupId>
 		<artifactId>oaw</artifactId>
-		<version>4.1.8</version>
+		<version>4.3.1</version>
 		<relativePath>../oaw/pom.xml</relativePath>
 	</parent>
 
@@ -54,9 +47,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<include>tiles-defs.xml</include>
 				</includes>
 				<filtering>true</filtering>
-				<!-- Como intentamos copiar el fichero a una ruta padre del directorio 
-					classes (raiz de resources) hay que usar ruta absoluta (usando la variable 
-					${basedir}) -->
+				<!-- Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources) hay que usar ruta absoluta (usando la variable ${basedir}) -->
 				<targetPath>${basedir}/target/oaw/WEB-INF</targetPath>
 			</resource>
 			<resource>
@@ -71,21 +62,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<includes>
 					<include>context.xml</include>
 				</includes>
-				<!-- Como intentamos copiar el fichero a una ruta padre del directorio 
-					classes (raiz de resources) hay que usar ruta absoluta (usando la variable 
-					${basedir}) -->
+				<!-- Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources) hay que usar ruta absoluta (usando la variable ${basedir}) -->
 				<targetPath>${basedir}/target/oaw/META-INF</targetPath>
 			</resource>
 		</resources>
-<!-- 
-		<plugins>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<packagingExcludes>META-INF/context.xml</packagingExcludes>
-				</configuration>
-			</plugin>
-		</plugins> -->
+		<!-- <plugins> <plugin> <artifactId>maven-war-plugin</artifactId> <configuration> <packagingExcludes>META-INF/context.xml</packagingExcludes> </configuration> 
+			</plugin> </plugins> -->
 
 	</build>
 
@@ -160,8 +142,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		</dependency>
 
 		<!-- STRUTS -->
-		<!-- Es obligatorio añadir la dependencia a la versión 1.2.8 porque usa 
-			API que está eliminada en versiones posteriores -->
+		<!-- Es obligatorio añadir la dependencia a la versión 1.2.8 porque usa API que está eliminada en versiones posteriores -->
 		<dependency>
 			<groupId>struts</groupId>
 			<artifactId>struts</artifactId>
@@ -204,6 +185,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/javax.transaction/jta -->
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
 
 
 	</dependencies>

@@ -180,6 +180,7 @@ public interface CheckFunctionConstants {
     int FUNCTION_TITLE_NOT_CONTAINS = 156;
     int FUNCTION_TABLE_COMPLEX = 157;
     
+    
     //Nuevos códigos de funciones une-2012-b
     int FUNCTION_ARIA_LABELLEDBY_REFERENCED = 158;
     int FUNCTION_ATTRIBUTE_LENGHT = 159;
@@ -191,6 +192,10 @@ public interface CheckFunctionConstants {
     int FUNCTION_ELEMENT_COUNT_ATTRIBUTE_VALUE = 172;
     int FUNCTION_ACCESSIBILITY_CONTACT_FORM = 173;
     int FUNCTION_ARIA_DESCRIBEDBY_REFERENCED = 174;
+    
+    int FUNCTION_TEXT_MATCH_PROPERTIES = 175;
+    int FUNCTION_TEXT_NOT_MATCH_PROPERTIES = 176;
+    int FUNCTION_TEXT_NOT_EQUALS_PROPERTIES = 177;
 
     // check codes
     int CHECK_STATUS_OK = 1;

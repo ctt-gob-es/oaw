@@ -85,14 +85,34 @@ public class GraphicUtilsTest {
 		dataSet.addValue(7.73, "", "22/08/16");
 		dataSet.addValue(6.30, "", "17/10/16");
 		dataSet.addValue(6.30, "", "27/10/17");
-		final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, true, false, false, true, true, false, 580, 458, color);
+		final ChartForm observatoryGraphicsForm = new ChartForm("", "", "", dataSet, true, true, false, false, true, true, true, 580, 458, color);
 		// final ChartForm observatoryGraphicsForm = new ChartForm(title,
 		// columnTitle, rowTitle, dataSet, false, false, true, false, true,
 		// true, true, x, y, colors.toString());
 		observatoryGraphicsForm.setFixedColorBars(true);
 		observatoryGraphicsForm.setFixedLegend(true);
 		// observatoryGraphicsForm.setShowColumsLabels(true);
-		GraphicsUtils.createStandardBarChart(observatoryGraphicsForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_average_score.jpg", "", messageResources, false);
+		GraphicsUtils.createStandardBarChart(observatoryGraphicsForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_average_score.jpg", "", messageResources, true);
+	}
+	
+	@Test	
+	public void testEvolutionGraphic() throws Exception {
+
+
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		
+		dataSet.addValue(7.80, "18/09/15", "1.1.1");
+		dataSet.addValue(7.43, "18/09/16", "1.1.1");
+		dataSet.addValue(7.43, "18/09/17", "1.1.1");
+		dataSet.addValue(7.73, "18/09/15", "1.1.2");
+		dataSet.addValue(6.30, "18/09/16", "1.1.2");
+		dataSet.addValue(6.30, "18/09/17", "1.1.2");
+
+		final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, true, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
+		chartForm.setFixedColorBars(false);
+		chartForm.setShowColumsLabels(false);
+
+		GraphicsUtils.createStandardBarChart(chartForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_score.jpg", "", messageResources, true);
 	}
 
 	@Test
@@ -310,5 +330,7 @@ public class GraphicUtilsTest {
 		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, 580, 458, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
 		GraphicsUtils.createStackedBarChart(chartForm, "", "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/modality_verification_level_ii_segment_iv.jpg");
 	}
+	
+	
 
 }

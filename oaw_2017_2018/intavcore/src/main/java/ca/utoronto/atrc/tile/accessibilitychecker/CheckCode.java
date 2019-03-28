@@ -182,7 +182,8 @@ public class CheckCode {
 
 			String stringNodeAttribute = elementCode.getAttribute("node").trim();
 			if (stringNodeAttribute.length() == 0) {
-				Logger.putLog("Warning: empty 'node' attribute in function.", CheckCode.class, Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: empty 'node' attribute in function.", CheckCode.class,
+						Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
 			stringNodeRelation = stringNodeAttribute;
@@ -196,7 +197,8 @@ public class CheckCode {
 
 			String stringCall = elementCode.getAttribute("call").toLowerCase();
 			if (stringCall.length() == 0) {
-				Logger.putLog("Warning: empty 'call' attribute in function.", CheckCode.class, Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: empty 'call' attribute in function.", CheckCode.class,
+						Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
 
@@ -496,18 +498,7 @@ public class CheckCode {
 				functionId = CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS;
 			} else if ("previous-sibling-no-header".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD;
-			}
-			/*----------------------------------------------------------------------------*/
-			/*----------------------------------------------------------------------------*/
-			/*----------------------------------------------------------------------------*/
-			/*----------------------------------------------------------------------------*/
-			/*--------------------- NUEVAS FUNCIONES PARA UNE 2012 -B --------------------*/
-			/*----------------------------------------------------------------------------*/
-			/*----------------------------------------------------------------------------*/
-			/*----------------------------------------------------------------------------*/
-			/*----------------------------------------------------------------------------*/
-
-			else if ("aria-labelledby-ids-missing".equals(stringCall)) {
+			} else if ("aria-labelledby-ids-missing".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED;
 			} else if ("attribute-length".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTE_LENGHT;
@@ -537,10 +528,16 @@ public class CheckCode {
 				functionId = CheckFunctionConstants.FUNCTION_ARIA_DESCRIBEDBY_REFERENCED;
 			}
 
-			/****************************************************************************/
-			/****************************************************************************/
-			/****************************************************************************/
-			/****************************************************************************/
+			else if ("text-match-properties".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_TEXT_MATCH_PROPERTIES;
+			}
+			else if ("text-not-match-properties".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_TEXT_NOT_MATCH_PROPERTIES;
+			}
+			else if("text-not-equals-properties".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_TEXT_NOT_EQUALS_PROPERTIES;
+			}
+			
 
 			else {
 				Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
@@ -556,7 +553,8 @@ public class CheckCode {
 			} else if ("or".equalsIgnoreCase(stringType)) {
 				conditionType = CheckFunctionConstants.CONDITION_OR;
 			} else {
-				Logger.putLog("Warning: invalid condition type: " + stringType, CheckCode.class, Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: invalid condition type: " + stringType, CheckCode.class,
+						Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
 
