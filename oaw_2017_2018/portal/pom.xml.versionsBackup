@@ -1,0 +1,211 @@
+<!--
+Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+This program is licensed and may be used, modified and redistributed under the terms
+of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+version as soon as they are approved by the European Commission.
+Unless required by applicable law or agreed to in writing, software distributed under the 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied. See the License for the specific language governing 
+permissions and more details.
+You should have received a copy of the EUPL1.2 license along with this program; if not, 
+you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>portal</artifactId>
+	<version>4.2.2</version>
+	<packaging>war</packaging>
+
+	<name>oaw-portal</name>
+
+	<properties>
+		<oaw.version>4.2.2</oaw.version>
+	</properties>
+
+	<parent>
+		<groupId>es.minhap.oaw</groupId>
+		<artifactId>oaw</artifactId>
+		<version>4.2.2</version>
+		<relativePath>../oaw/pom.xml</relativePath>
+	</parent>
+
+	<build>
+		<finalName>oaw</finalName>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>tiles-defs.xml</exclude>
+				</excludes>
+				<includes>
+					<include>*</include>
+					<include>checks/*</include>
+					<include>guidelines/*</include>
+					<include>languages/**</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>version.properties</include>
+					<include>tiles-defs.xml</include>
+				</includes>
+				<filtering>true</filtering>
+				<!-- Como intentamos copiar el fichero a una ruta padre del directorio 
+					classes (raiz de resources) hay que usar ruta absoluta (usando la variable 
+					${basedir}) -->
+				<targetPath>${basedir}/target/oaw/WEB-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>profiles/${profile.name}</directory>
+				<includes>
+					<include>*.properties</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>profiles/${profile.name}</directory>
+				<includes>
+					<include>context.xml</include>
+				</includes>
+				<!-- Como intentamos copiar el fichero a una ruta padre del directorio 
+					classes (raiz de resources) hay que usar ruta absoluta (usando la variable 
+					${basedir}) -->
+				<targetPath>${basedir}/target/oaw/META-INF</targetPath>
+			</resource>
+		</resources>
+<!-- 
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>META-INF/context.xml</packagingExcludes>
+				</configuration>
+			</plugin>
+		</plugins> -->
+
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>es.minhap.oaw</groupId>
+			<artifactId>intav-core</artifactId>
+			<version>${oaw.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>es.minhap.oaw</groupId>
+			<artifactId>crawler</artifactId>
+			<version>${oaw.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.17</version>
+		</dependency>
+		<dependency>
+			<groupId>com.lowagie</groupId>
+			<artifactId>itext</artifactId>
+			<version>2.1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.odftoolkit</groupId>
+			<artifactId>odfdom-java</artifactId>
+			<version>0.8.6</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.31</version>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate</artifactId>
+			<version>3.2.6.ga</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.4.0.GA</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- STRUTS -->
+		<!-- Es obligatorio añadir la dependencia a la versión 1.2.8 porque usa 
+			API que está eliminada en versiones posteriores -->
+		<dependency>
+			<groupId>struts</groupId>
+			<artifactId>struts</artifactId>
+			<version>1.2.8</version>
+		</dependency>
+
+		<!-- SERVLET API -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.jmock</groupId>
+			<artifactId>jmock</artifactId>
+			<version>2.6.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-catalina</artifactId>
+			<version>7.0.27</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Gson: Java to Json conversion -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+
+	</dependencies>
+
+</project>

@@ -15,9 +15,12 @@ package es.gob.oaw.rastreador2.action.comun;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -53,6 +56,10 @@ import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.semillas.ProxyForm;
+import es.inteco.rastreador2.dao.proxy.ProxyDAO;
+import es.inteco.utils.CrawlerUtils;
 
 /**
  * ConectividadAction. {@link Action} Para comprobaciones de conectividad.
@@ -80,11 +87,20 @@ public class ConectividadAction extends Action {
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
-		  // Marcamos el menú
-        request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
-        request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_CONECTIVIDAD);
+		// Marcamos el menú
+		request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
+		request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_CONECTIVIDAD);
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+			request.setAttribute("proxyconfig", proxy);
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", ConectividadAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 
 		String action = request.getParameter(Constants.ACTION);
 		if (action != null) {
@@ -109,7 +125,27 @@ public class ConectividadAction extends Action {
 					return checkSIM(request, response, email);
 				}
 
+			} else if ("modifyproxy".equals(action)) {
+				String proxyUrl = request.getParameter("proxyUrl");
+				String proxyStatus = request.getParameter("proxyStatus");
+				String proxyPort = request.getParameter("proxyPort");
+
+				// TODO Save proxy config
+
+				try (Connection c = DataBaseManager.getConnection()) {
+					ProxyForm proxy = new ProxyForm();
+					proxy.setStatus("true".equals(proxyStatus) ? 1 : 0);
+					proxy.setUrl(proxyUrl);
+					proxy.setPort(proxyPort);
+
+					ProxyDAO.update(c, proxy);
+					DataBaseManager.closeConnection(c);
+				} catch (Exception e) {
+					Logger.putLog("Error: ", ConectividadAction.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+
 			}
+
 		}
 
 		return mapping.findForward(Constants.EXITO);
@@ -117,14 +153,25 @@ public class ConectividadAction extends Action {
 	}
 
 	/**
+	 * Change proxy status.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @param email    the email
+	 * @return the action forward
+	 */
+	private ActionForward changeProxyStatus(HttpServletRequest request, HttpServletResponse response, String email) {
+
+		return null;
+
+	}
+
+	/**
 	 * Realiza una llamada a la URL del WSDL de SIM.
 	 *
-	 * @param request
-	 *            Request
-	 * @param response
-	 *            the response
-	 * @param email
-	 *            the email
+	 * @param request  Request
+	 * @param response the response
+	 * @param email    the email
 	 * @return the action forward
 	 */
 	private ActionForward checkSIM(HttpServletRequest request, HttpServletResponse response, String email) {
@@ -154,13 +201,15 @@ public class ConectividadAction extends Action {
 			url = pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url");
 
 			final EnvioMensajesService service = new EnvioMensajesService(new URL(url));
-			final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service.getEnvioMensajesServicePort();
+			final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service
+					.getEnvioMensajesServicePort();
 
 			final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
 			final ResponseStatusType respuestaStatus = respuesta.getStatus();
 			if (!"1000".equals(respuestaStatus.getStatusCode())) {
 				simConnection = false;
-				simError = respuestaStatus.getStatusCode() + " -  " + respuestaStatus.getStatusText() + " - " + respuestaStatus.getDetails();
+				simError = respuestaStatus.getStatusCode() + " -  " + respuestaStatus.getStatusText() + " - "
+						+ respuestaStatus.getDetails();
 
 			} else {
 				simConnection = true;
@@ -204,12 +253,9 @@ public class ConectividadAction extends Action {
 	/**
 	 * Comprueba la conexión a una URL.
 	 *
-	 * @param urlAdress
-	 *            the url adress
-	 * @param request
-	 *            Request
-	 * @param response
-	 *            the response
+	 * @param urlAdress the url adress
+	 * @param request   Request
+	 * @param response  the response
 	 * @return the action forward
 	 */
 	private ActionForward checkUrl(String urlAdress, HttpServletRequest request, HttpServletResponse response) {
@@ -222,7 +268,43 @@ public class ConectividadAction extends Action {
 
 			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
+			// a la conexión
+			String proxyActive = "";
+			String proxyHttpHost = "";
+			String proxyHttpPort = "";
+
+			try (Connection c = DataBaseManager.getConnection()) {
+				ProxyForm proxy = ProxyDAO.getProxy(c);
+
+				proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+				proxyHttpHost = proxy.getUrl();
+				proxyHttpPort = proxy.getPort();
+
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+
+			HttpURLConnection connection = null;
+			// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+			// método también es usado por al JSP de conexión
+			if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
+
+				try {
+					Proxy proxy = new Proxy(Proxy.Type.HTTP,
+							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+							Logger.LOG_LEVEL_DEBUG);
+					connection = (HttpURLConnection) url.openConnection(proxy);
+				} catch (NumberFormatException e) {
+					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+							Logger.LOG_LEVEL_ERROR);
+				}
+
+			} else {
+				connection = (HttpURLConnection) url.openConnection();
+			}
 
 			if (connection instanceof HttpsURLConnection) {
 				((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
@@ -230,17 +312,23 @@ public class ConectividadAction extends Action {
 
 			connection.setInstanceFollowRedirects(false);
 
-			connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
-			connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
-			connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
-			connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+			connection.setConnectTimeout(
+					Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+			connection.setReadTimeout(
+					Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+			connection.addRequestProperty("Accept-Language",
+					pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+			connection.addRequestProperty("User-Agent",
+					pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
 
 			int responseCode = connection.getResponseCode();
 
 			if (HttpURLConnection.HTTP_OK == responseCode) {
 				urlConnection = true;
 
-			} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+			} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP
+					|| responseCode == HttpURLConnection.HTTP_MOVED_PERM
+					|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
 
 				String newUrl = connection.getHeaderField("Location");
 
@@ -316,17 +404,17 @@ public class ConectividadAction extends Action {
 	/**
 	 * Crea los mensajes a enviar por SIM.
 	 *
-	 * @param email
-	 *            Dirección de correo electrónico
-	 * @param urlWsdlSim
-	 *            URL del WSDL de SIM para incorporarlo en el mensaje de correo
+	 * @param email      Dirección de correo electrónico
+	 * @param urlWsdlSim URL del WSDL de SIM para incorporarlo en el mensaje de
+	 *                   correo
 	 * @return Mensajes generados.
 	 */
 	private Mensajes createMensajes(String email, String urlWsdlSim) {
 		final Mensajes mensajes = factory.createMensajes();
 		final MensajeEmail mensajeEmail = factory.createMensajeEmail();
 		mensajeEmail.setAsunto("Test de conectividad SIM");
-		mensajeEmail.setCuerpo("Mensaje de prueba de conectividad. \nEste mensaje se ha enviado a través de SIM en: " + urlWsdlSim);
+		mensajeEmail.setCuerpo(
+				"Mensaje de prueba de conectividad. \nEste mensaje se ha enviado a través de SIM en: " + urlWsdlSim);
 
 		final DestinatariosMail destinatariosMail = factory.createDestinatariosMail();
 		final DestinatarioMail destinatarioMail = factory.createDestinatarioMail();
@@ -367,8 +455,7 @@ public class ConectividadAction extends Action {
 		/**
 		 * Sets the url.
 		 *
-		 * @param url
-		 *            the new url
+		 * @param url the new url
 		 */
 		public void setUrl(String url) {
 			this.url = url;
@@ -386,8 +473,7 @@ public class ConectividadAction extends Action {
 		/**
 		 * Sets the connection.
 		 *
-		 * @param connection
-		 *            the new connection
+		 * @param connection the new connection
 		 */
 		public void setConnection(boolean connection) {
 			this.connection = connection;
@@ -405,8 +491,7 @@ public class ConectividadAction extends Action {
 		/**
 		 * Sets the error.
 		 *
-		 * @param error
-		 *            the new error
+		 * @param error the new error
 		 */
 		public void setError(String error) {
 			this.error = error;

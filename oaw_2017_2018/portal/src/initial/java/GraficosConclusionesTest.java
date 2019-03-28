@@ -50,17 +50,17 @@ public class GraficosConclusionesTest {
 	@Test
 	public void gennerarGraficos() {
 		try {
-			stringDate = df.format(new Date()) + "/" + OBSERVATORIO_AGE;
-			graficoEvolucionIteracion("age-anterior", 102, 35, 237);
-			graficoEvolucionIteracion("age-primera", 142, 38, 164);
+			// stringDate = df.format(new Date()) + "/" + OBSERVATORIO_AGE;
+			// graficoEvolucionIteracion("age-anterior", 102, 35, 237);
+			// graficoEvolucionIteracion("age-primera", 142, 38, 164);
 
-			stringDate = df.format(new Date()) + "/" + OBSERVATORIO_CCAA;
-			graficoEvolucionIteracion("ccaa-anterior", 37, 16, 97);
-			graficoEvolucionIteracion("ccaa-primera", 56, 24, 70);
+			// stringDate = df.format(new Date()) + "/" + OBSERVATORIO_CCAA;
+			// graficoEvolucionIteracion("ccaa-anterior", 23, 13, 115);
+			// graficoEvolucionIteracion("ccaa-primera", 56, 24, 70);
 
 			stringDate = df.format(new Date()) + "/" + OBSERVATORIO_EELL;
-			graficoEvolucionIteracion("eell-anterior", 83, 36, 77);
-			graficoEvolucionIteracion("eell-primera", 40, 20, 136);
+			graficoEvolucionIteracion("eell-anterior", 23, 20, 154);
+			// graficoEvolucionIteracion("eell-primera", 40, 20, 136);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -82,7 +82,8 @@ public class GraficosConclusionesTest {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private void graficoEvolucionIteracion(String iteracion, int mejoran, int empeoran, int mantienen) throws Exception {
+	private void graficoEvolucionIteracion(String iteracion, int mejoran, int empeoran, int mantienen)
+			throws Exception {
 
 		final String sectionLabel = "N\u00BA Portales: ";
 		final int total = empeoran + mantienen + mejoran;
@@ -93,8 +94,10 @@ public class GraficosConclusionesTest {
 		dataSet.setValue("Mejoran", Integer.valueOf(mejoran));
 
 		final PropertiesManager pmgr = new PropertiesManager();
-		GraphicsUtils.createPieChart(dataSet, "", sectionLabel, total, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/evol_" + iteracion + ".jpg", "",
-				pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
+		GraphicsUtils.createPieChart(dataSet, "", sectionLabel, total,
+				"/home/alvaro/Documents/minhafp/2018_2019/CCAA/oaw-graficas-" + stringDate + "/evol_" + iteracion
+						+ ".jpg",
+				"", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
 	}
 
 }

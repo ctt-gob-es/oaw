@@ -32,6 +32,7 @@ import org.w3c.dom.NodeList;
 import ca.utoronto.atrc.tile.accessibilitychecker.CheckUtils;
 import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 
@@ -62,32 +63,43 @@ public final class AccesibilityDeclarationCheckUtils {
 		for (int i = 0; i < links.getLength(); i++) {
 			final Element link = (Element) links.item(i);
 			final String href = link.getAttribute("href").toLowerCase();
-			if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("mailto")
-					&& !link.getAttribute("href").toLowerCase().startsWith("tel") && !link.getAttribute("href").toLowerCase().endsWith(".pdf")
-					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")) {
+			if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript")
+					&& !link.getAttribute("href").toLowerCase().startsWith("mailto")
+					&& !link.getAttribute("href").toLowerCase().startsWith("tel")
+					&& !link.getAttribute("href").toLowerCase().endsWith(".pdf")
+					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")
+//					&& !link.getAttribute("href").toLowerCase().endsWith(".epub")
+					) {
 
 				// Comprueba que no sean PDF lo que devuelve el link
 				try {
 
-					if (StringUtils.isNotEmpty(link.getTextContent()) && StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp) && includedLinks.add(href) && !checkIsPDFContent(link)) {
+					if (StringUtils.isNotEmpty(link.getTextContent())
+							&& StringUtils.textMatchs(link.getTextContent().trim(), sectionRegExp)
+							&& includedLinks.add(href) && !checkIsPDFContent(link)) {
 
 						linksFound.add(link);
 					}
 
-					if (link.hasAttribute("title") && StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp) && includedLinks.add(href) && !checkIsPDFContent(link)) {
+					if (link.hasAttribute("title")
+							&& StringUtils.textMatchs(link.getAttribute("title").trim(), sectionRegExp)
+							&& includedLinks.add(href) && !checkIsPDFContent(link)) {
 						linksFound.add(link);
 					}
 
 					final NodeList imgs = link.getElementsByTagName("img");
 					for (int j = 0; j < imgs.getLength(); j++) {
 						final Element img = (Element) imgs.item(j);
-						if (img.hasAttribute("alt") && StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp) && includedLinks.add(href)) {
+						if (img.hasAttribute("alt")
+								&& StringUtils.textMatchs(img.getAttribute("alt").trim(), sectionRegExp)
+								&& includedLinks.add(href)) {
 							linksFound.add(link);
 						}
 					}
 
 				} catch (IOException e) {
-					Logger.putLog("Error comprobar la URL", AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+					Logger.putLog("Error comprobar la URL", AccesibilityDeclarationCheckUtils.class,
+							Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		}
@@ -108,9 +120,12 @@ public final class AccesibilityDeclarationCheckUtils {
 		boolean esPDF = false;
 		Element elementRoot = link.getOwnerDocument().getDocumentElement();
 		try {
-			final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
+			final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null
+					? new URL(CheckUtils.getBaseUrl(elementRoot))
+					: new URL((String) elementRoot.getUserData("url"));
 
-			HttpURLConnection u = EvaluatorUtils.getConnection(new URL(documentUrl, link.getAttribute("href")).toString(), "GET", true);
+			HttpURLConnection u = EvaluatorUtils
+					.getConnection(new URL(documentUrl, link.getAttribute("href")).toString(), "GET", true);
 			String type = u.getHeaderField("Content-Type");
 
 			if (!StringUtils.isEmpty(type) && type.contains("application/pdf")) {
@@ -144,7 +159,8 @@ public final class AccesibilityDeclarationCheckUtils {
 	 */
 	public static boolean hasContact(final Document document, final String contactRegExp, final String emailRegExp) {
 		// Texto de correo electrónico en el texto normal
-		final Pattern patternEmail = Pattern.compile(emailRegExp, Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+		final Pattern patternEmail = Pattern.compile(emailRegExp,
+				Pattern.MULTILINE | Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 		final Matcher matcher = patternEmail.matcher(getDocumentText(document));
 		if (matcher.find()) {
 			// Hemos encontrado una dirección de correo electrónico en la página
@@ -171,9 +187,8 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * Complemento del método {@link #hasContact(Document, String, String)}
 	 * introducido en la revisión de la metodoloǵia UNE-2012.
 	 * 
-	 * Se separa del método anteriormente mencionado para generar un check
-	 * adicional y permitir la convivencia de la UNE-2012 original y la
-	 * revisión.
+	 * Se separa del método anteriormente mencionado para generar un check adicional
+	 * y permitir la convivencia de la UNE-2012 original y la revisión.
 	 * 
 	 * Se evalua si existen formularios de contacto en la propia página.
 	 *
@@ -253,7 +268,8 @@ public final class AccesibilityDeclarationCheckUtils {
 
 						Node input = formInputs.item(i);
 						// Solo evaluamos los input submit
-						if (input.hasAttributes() && ((Element) input).getAttribute("type") != null && "submit".equals(((Element) input).getAttribute("type"))) {
+						if (input.hasAttributes() && ((Element) input).getAttribute("type") != null
+								&& "submit".equals(((Element) input).getAttribute("type"))) {
 							for (String contactText : contactTexts) {
 								if (((Element) input).getAttribute("value").contains(contactText)) {
 									return true;
@@ -296,11 +312,12 @@ public final class AccesibilityDeclarationCheckUtils {
 	 *            revisión
 	 * @param dateRegExp
 	 *            expresión regular que identifica un formato de fecha
-	 * @return true si se ha detectado la fecha de la última revisión, false en
-	 *         caso contrario
+	 * @return true si se ha detectado la fecha de la última revisión, false en caso
+	 *         contrario
 	 */
 	public static boolean hasRevisionDate(final Document document, final String dateRegExp) {
-		final Pattern pattern = Pattern.compile(dateRegExp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+		final Pattern pattern = Pattern.compile(dateRegExp,
+				Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
 		final Matcher matcher = pattern.matcher(getDocumentText(document));
 
 		return matcher.find();
@@ -308,24 +325,22 @@ public final class AccesibilityDeclarationCheckUtils {
 
 	/**
 	 * Comprueba si un documento HTML tiene declaración de conformidad de
-	 * accesibilidad aplicando una serie de patrones sobre los enlaces e
-	 * imagenes
+	 * accesibilidad aplicando una serie de patrones sobre los enlaces e imagenes
 	 *
 	 * @param document
-	 *            documento HTML sobre el que buscar la declaración de
-	 *            conformidad de accesibilidad
-	 * @return true si se ha detectado una declaración de conformidad, false en
-	 *         caso contrario
+	 *            documento HTML sobre el que buscar la declaración de conformidad
+	 *            de accesibilidad
+	 * @return true si se ha detectado una declaración de conformidad, false en caso
+	 *         contrario
 	 */
 	public static boolean hasConformanceLevel(final Document document) {
 		/*
-		 * “Nivel .* A”, “Nivel .* AA”, “Nivel .* AAA” (.* por si se incluye
-		 * algún texto adicional como “Nivel de Accesibilidad AA”, “Nivel de
-		 * Conformidad AA”, etc.).--> Un texto con los patrones “doble A”,
-		 * “triple AAA”, “prioridad X” (con x = 1, 2 o 3). Iconos de conformidad
-		 * del W3C identificándolos buscando patrones similares a los anteriores
-		 * en su texto alternativo o, en caso de ser enlaces, reconociendo las
-		 * URLs de las páginas de conformidad del W3C.
+		 * “Nivel .* A”, “Nivel .* AA”, “Nivel .* AAA” (.* por si se incluye algún texto
+		 * adicional como “Nivel de Accesibilidad AA”, “Nivel de Conformidad AA”,
+		 * etc.).--> Un texto con los patrones “doble A”, “triple AAA”, “prioridad X”
+		 * (con x = 1, 2 o 3). Iconos de conformidad del W3C identificándolos buscando
+		 * patrones similares a los anteriores en su texto alternativo o, en caso de ser
+		 * enlaces, reconociendo las URLs de las páginas de conformidad del W3C.
 		 */
 		final NodeList enlaces = document.getElementsByTagName("a");
 		for (int i = 0; i < enlaces.getLength(); i++) {
@@ -349,7 +364,8 @@ public final class AccesibilityDeclarationCheckUtils {
 				final String src = tag.getAttribute("src");
 				if (src.contains(SRC1AAA) || src.contains(TAW1AAA) || src.contains(TAW2AAA) || src.contains(SRC2AAA)) {
 					return true;
-				} else if (src.contains(SRC1AA) || src.contains(TAW1AA) || src.contains(TAW2AA) || src.contains(SRC2AA)) {
+				} else if (src.contains(SRC1AA) || src.contains(TAW1AA) || src.contains(TAW2AA)
+						|| src.contains(SRC2AA)) {
 					return true;
 				} else if (src.contains(SRC1A) || src.contains(TAW1A) || src.contains(TAW2A) || src.contains(SRC2A)) {
 					return true;
@@ -372,25 +388,63 @@ public final class AccesibilityDeclarationCheckUtils {
 	/**
 	 * Comprueba si un texto se ajusta a los patrones habituales (nivel A, nivel
 	 * doble A...) de definición del nivel de conformidad de accesibilidad.
+	 * 
+	 * Se cargarán los patrones del fichero de propiedades correspondiente.
 	 *
 	 * @param text
 	 *            el texto a comprobar.
 	 * @return true si se ha detectado un patrón o false en caso contrario.
 	 */
 	private static boolean isLevelConformancePattern(final String text) {
-		for (Pattern pattern : ALT_A) {
-			if (pattern.matcher(text).find()) {
-				return true;
+
+		PropertiesManager pmgr = new PropertiesManager();
+
+		String[] altA = pmgr.getValue("check.patterns.properties", "pattern.accesibility.alt.a").split(",");
+		String[] altAA = pmgr.getValue("check.patterns.properties", "pattern.accesibility.alt.aa").split(",");
+		String[] altAAA = pmgr.getValue("check.patterns.properties", "pattern.accesibility.alt.aaa").split(",");
+
+		// Nivel A
+		for (String stringPattern : altA) {
+
+			try {
+				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
+				if (pattern.matcher(text).find()) {
+					return true;
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class,
+						Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-		for (Pattern pattern : ALT_AA) {
-			if (pattern.matcher(text).find()) {
-				return true;
+
+		// Nivel AA
+		for (String stringPattern : altAA) {
+
+			try {
+				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
+				if (pattern.matcher(text).find()) {
+					return true;
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class,
+						Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-		for (Pattern pattern : ALT_AAA) {
-			if (pattern.matcher(text).find()) {
-				return true;
+
+		// Nivel AAA
+		for (String stringPattern : altAAA) {
+
+			try {
+				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+
+				if (pattern.matcher(text).find()) {
+					return true;
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class,
+						Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
 		return false;
@@ -404,7 +458,8 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * @return una cadena que contiene el texto del documento.
 	 */
 	private static String getDocumentText(final Document document) {
-		final List<Node> nodeList = EvaluatorUtils.generateNodeList(EvaluatorUtils.getHtmlElement(document), new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
+		final List<Node> nodeList = EvaluatorUtils.generateNodeList(EvaluatorUtils.getHtmlElement(document),
+				new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
 		final StringBuilder documentText = new StringBuilder();
 		for (Node node : nodeList) {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -439,27 +494,4 @@ public final class AccesibilityDeclarationCheckUtils {
 	private static final String SRC2AA = "wcag2AA";
 	private static final String SRC2AAA = "wcag2AAA";
 
-	private static final Pattern[] ALT_A = new Pattern[] { Pattern.compile("\\blevel\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bnivell?\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bwcag\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\baccesibilidad\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bprioridad\\s+1\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bconformi(dad|tat)\\s+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bA\\s+\\(?simple\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\ba\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE) };
-
-	private static final Pattern[] ALT_AA = new Pattern[] { Pattern.compile("\\blevel\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\blevel\\s+double(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bnivell?\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bnivell?\\s+doble(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bwcag\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\baccesibilidad\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bprioridad\\s+2\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bconformi(dad|tat)\\s+aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bconformi(dad|tat)\\s+.?doble(-|\\s+)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bAA\\s+\\(?doble\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\baa\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bdoble(\\s|-|_|\\/)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE) };
-
-	private static final Pattern[] ALT_AAA = new Pattern[] { Pattern.compile("\\blevel\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\blevel\\s+triple(\\s+|-)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bnivell?\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bnivell?\\s+triple(\\s|-)+a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bwcag\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\baccesibilidad\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\bprioridad\\s+3\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bconformi(dad|tat)\\s+aaa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bconformi(dad|tat)\\s+.?triple(-|\\s+)aa\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\bAAA\\s+\\(?triple\\s+A\\)?\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE), Pattern.compile("\\baaa\\s+maila\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE),
-			Pattern.compile("\\btriple(\\s|-|_|\\/)a\\b", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE) };
 }

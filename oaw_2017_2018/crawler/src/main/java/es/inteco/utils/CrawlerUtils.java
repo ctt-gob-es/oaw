@@ -15,26 +15,18 @@
 ******************************************************************************/
 package es.inteco.utils;
 
-import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
-import es.inteco.crawler.common.Constants;
-import es.inteco.crawler.ignored.links.IgnoredLink;
-import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.plugin.dao.RastreoDAO;
-import org.mozilla.universalchardet.UniversalDetector;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import static es.inteco.utils.CrawlerDOMUtils.getAttribute;
+import static es.inteco.utils.CrawlerDOMUtils.hasAttribute;
 
-import javax.net.ssl.*;
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.sql.Connection;
@@ -45,8 +37,28 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static es.inteco.utils.CrawlerDOMUtils.getAttribute;
-import static es.inteco.utils.CrawlerDOMUtils.hasAttribute;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.servlet.http.HttpServletRequest;
+
+import org.mozilla.universalchardet.UniversalDetector;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import es.inteco.common.logging.Logger;
+import es.inteco.common.properties.PropertiesManager;
+import es.inteco.common.utils.StringUtils;
+import es.inteco.crawler.common.Constants;
+import es.inteco.crawler.dao.ProxyDAO;
+import es.inteco.crawler.dao.ProxyForm;
+import es.inteco.crawler.ignored.links.IgnoredLink;
+import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.plugin.dao.RastreoDAO;
 
 public final class CrawlerUtils {
 
@@ -71,7 +83,8 @@ public final class CrawlerUtils {
 	public static boolean isSwitchLanguageLink(Element link, List<IgnoredLink> ignoredLinks) {
 		if (ignoredLinks != null && hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))) {
 			for (IgnoredLink ignoredLink : ignoredLinks) {
-				if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink) || (link.getNodeName().equalsIgnoreCase("area") && matchsAlt(link, ignoredLink))) {
+				if (matchsText(link, ignoredLink) || matchsImage(link, ignoredLink)
+						|| (link.getNodeName().equalsIgnoreCase("area") && matchsAlt(link, ignoredLink))) {
 					return true;
 				}
 			}
@@ -80,7 +93,8 @@ public final class CrawlerUtils {
 	}
 
 	private static boolean matchsText(Element link, IgnoredLink ignoredLink) {
-		return matchs(removeInlineTags(link.getTextContent()).trim(), ignoredLink.getText()) || (hasAttribute(link, "title") && matchs(getAttribute(link, "title").trim(), ignoredLink.getTitle()));
+		return matchs(removeInlineTags(link.getTextContent()).trim(), ignoredLink.getText())
+				|| (hasAttribute(link, "title") && matchs(getAttribute(link, "title").trim(), ignoredLink.getTitle()));
 	}
 
 	private static boolean matchsAlt(Element link, IgnoredLink ignoredLink) {
@@ -92,7 +106,9 @@ public final class CrawlerUtils {
 		List<String> inlineTags = Arrays.asList(pmgr.getValue("crawler.core.properties", "inline.tags").split(";"));
 
 		for (String tag : inlineTags) {
-			content = Pattern.compile(String.format("</?%s +[^>]*>|</?%s>", tag, tag), Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(content).replaceAll(" ");
+			content = Pattern
+					.compile(String.format("</?%s +[^>]*>|</?%s>", tag, tag), Pattern.CASE_INSENSITIVE | Pattern.DOTALL)
+					.matcher(content).replaceAll(" ");
 		}
 
 		return content;
@@ -103,7 +119,9 @@ public final class CrawlerUtils {
 
 		if (images.size() == 1) {
 			for (Element image : images) {
-				if (matchs(image.getAttribute("alt"), ignoredLink.getText()) || (StringUtils.isEmpty(image.getAttribute("alt").trim()) && matchs(image.getAttribute("title"), ignoredLink.getText()))) {
+				if (matchs(image.getAttribute("alt"), ignoredLink.getText())
+						|| (StringUtils.isEmpty(image.getAttribute("alt").trim())
+								&& matchs(image.getAttribute("title"), ignoredLink.getText()))) {
 					return true;
 				}
 			}
@@ -132,7 +150,8 @@ public final class CrawlerUtils {
 			final String[] seeds = seedsList.split(";");
 			final List<String> domains = new ArrayList<>(seeds.length);
 			for (int i = 0; i < seeds.length; i++) {
-				if (type == Constants.ID_LISTA_SEMILLA && !seeds[i].startsWith("http://") && !seeds[i].startsWith("https://")) {
+				if (type == Constants.ID_LISTA_SEMILLA && !seeds[i].startsWith("http://")
+						&& !seeds[i].startsWith("https://")) {
 					seeds[i] = "http://" + seeds[i];
 				}
 				if (getOnlyDomain) {
@@ -151,8 +170,7 @@ public final class CrawlerUtils {
 	/**
 	 * Obtiene el host de una dirección url
 	 *
-	 * @param domain
-	 *            cadena que representa una url
+	 * @param domain cadena que representa una url
 	 * @return el host de la url o vacío si no la cadena no representa una url
 	 *         válida
 	 */
@@ -174,16 +192,20 @@ public final class CrawlerUtils {
 			messageDigest.update(string.getBytes());
 			return new BigInteger(1, messageDigest.digest()).toString(16);
 		} catch (Exception e) {
-			Logger.putLog("Error al obtener la codificación MD5 de una cadena de texto", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Error al obtener la codificación MD5 de una cadena de texto", CrawlerUtils.class,
+					Logger.LOG_LEVEL_ERROR);
 			return null;
 		}
 	}
 
 	public static boolean hasToBeFilteredUri(HttpServletRequest request) {
 		PropertiesManager pmgr = new PropertiesManager();
-		List<String> notFilteredUris = Arrays.asList(pmgr.getValue("crawler.properties", "not.filtered.uris").split(";"));
+		List<String> notFilteredUris = Arrays
+				.asList(pmgr.getValue("crawler.properties", "not.filtered.uris").split(";"));
 
-		if (request.getParameter("key") != null && request.getParameter("key").equals(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"))
+		if (request.getParameter("key") != null
+				&& request.getParameter("key")
+						.equals(pmgr.getValue("crawler.core.properties", "not.filtered.uris.security.key"))
 				&& containsUriFragment(notFilteredUris, request.getRequestURI())) {
 			return false;
 		} else {
@@ -202,11 +224,12 @@ public final class CrawlerUtils {
 
 	public static String encodeUrl(String url) {
 
-		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").
-				replaceAll("Ã±", "ñ").replaceAll("Ã‘", "Ñ").
-				replaceAll(" ", "%20").replaceAll("Á", "%E1")
-				.replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9").replaceAll("í", "%ED").replaceAll("ó", "%F3")
-				.replaceAll("ú", "%FA").replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&").replaceAll("Âº", "º").replaceAll("º", "%BA").replaceAll("Âª", "ª")
+		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó")
+				.replaceAll("Ãº", "ú").replaceAll("Ã±", "ñ").replaceAll("Ã‘", "Ñ").replaceAll(" ", "%20")
+				.replaceAll("Á", "%E1").replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3")
+				.replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9").replaceAll("í", "%ED")
+				.replaceAll("ó", "%F3").replaceAll("ú", "%FA").replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1")
+				.replaceAll("&amp;", "&").replaceAll("Âº", "º").replaceAll("º", "%BA").replaceAll("Âª", "ª")
 				.replaceAll("ª", "%AA");
 
 		return replaceAll;
@@ -264,7 +287,8 @@ public final class CrawlerUtils {
 
 			return detector.getDetectedCharset();
 		} catch (Exception e) {
-			Logger.putLog("Error al detectar la codificación con Universal Detector", CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
+			Logger.putLog("Error al detectar la codificación con Universal Detector", CrawlerUtils.class,
+					Logger.LOG_LEVEL_INFO);
 			return null;
 		}
 	}
@@ -279,8 +303,10 @@ public final class CrawlerUtils {
 		}
 	}
 
-	public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
-		String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
+	public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream)
+			throws IOException {
+		String textContent = StringUtils.getContentAsString(markableInputStream,
+				getCharset(connection, markableInputStream));
 
 		textContent = removeHtmlComments(textContent);
 
@@ -299,7 +325,8 @@ public final class CrawlerUtils {
 		return stream;
 	}
 
-	public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws IOException {
+	public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects)
+			throws IOException {
 		final HttpURLConnection connection = generateConnection(url, refererUrl);
 
 		// Omitimos la redirección y si detectamos una, actualizamos el
@@ -313,21 +340,79 @@ public final class CrawlerUtils {
 			connection.disconnect();
 
 			if (status != HttpURLConnection.HTTP_OK && followRedirects) {
-				if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
+				if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
+						|| status == HttpURLConnection.HTTP_SEE_OTHER) {
 					// Obtenemos la redirección
 					String newUrl = connection.getHeaderField("Location");
 					connection.disconnect();
 					return getConnection(encodeUrl(newUrl), refererUrl, false);
 				}
 			}
-		} 
+		}
 
 		return generateConnection(url, refererUrl);
 	}
 
-	private static HttpURLConnection generateConnection(String url, String refererUrl) throws IOException, MalformedURLException {
+	/**
+	 * Generar una conexión que pasa por el renderizador de páginas HTML
+	 * 
+	 * @param url
+	 * @param refererUrl
+	 * @return
+	 * @throws IOException
+	 * @throws MalformedURLException
+	 */
+	public static HttpURLConnection generateRendererConnection(String url, String refererUrl)
+			throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+		// final HttpURLConnection connection = (HttpURLConnection) new
+		// URL(url).openConnection();
+
+		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
+		// a la conexión
+
+//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
+//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
+//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+
+		// TODO Configuración de base de datos
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		HttpURLConnection connection = null;
+		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// método también es usado por al JSP de conexión
+		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
+				&& !"BASIC_SERVICE_URL".equals(refererUrl)) {
+			try {
+				Proxy proxy = new Proxy(Proxy.Type.HTTP,
+						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+						Logger.LOG_LEVEL_DEBUG);
+				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
+			} catch (NumberFormatException e) {
+				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+						Logger.LOG_LEVEL_ERROR);
+			}
+
+		} else {
+			connection = (HttpURLConnection) new URL(url).openConnection();
+		}
+
 		if (connection instanceof HttpsURLConnection) {
 			final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
 			httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
@@ -342,8 +427,83 @@ public final class CrawlerUtils {
 		connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
 		connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
 		connection.addRequestProperty("Accept", pmgr.getValue("crawler.core.properties", "method.accept.header"));
-		connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
-		connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+		connection.addRequestProperty("Accept-Language",
+				pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+		connection.addRequestProperty("User-Agent",
+				pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+		if (refererUrl != null) {
+			connection.addRequestProperty("Referer", refererUrl);
+		}
+		return connection;
+	}
+
+	private static HttpURLConnection generateConnection(String url, String refererUrl)
+			throws IOException, MalformedURLException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		// final HttpURLConnection connection = (HttpURLConnection) new
+		// URL(url).openConnection();
+
+		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
+		// a la conexión
+
+//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
+//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
+//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		HttpURLConnection connection = null;
+		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// método también es usado por al JSP de conexión
+		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
+				&& !"BASIC_SERVICE_URL".equals(refererUrl)) {
+			try {
+				Proxy proxy = new Proxy(Proxy.Type.HTTP,
+						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+						Logger.LOG_LEVEL_DEBUG);
+				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
+			} catch (NumberFormatException e) {
+				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+						Logger.LOG_LEVEL_ERROR);
+			}
+
+		} else {
+			connection = (HttpURLConnection) new URL(url).openConnection();
+		}
+
+		if (connection instanceof HttpsURLConnection) {
+			final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
+			httpsConnection.setSSLSocketFactory(getNaiveSSLSocketFactory());
+			httpsConnection.setHostnameVerifier(new HostnameVerifier() {
+				@Override
+				public boolean verify(String s, SSLSession sslSession) {
+					return true;
+				}
+			});
+		}
+		connection.setInstanceFollowRedirects(false);
+		connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+		connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+		connection.addRequestProperty("Accept", pmgr.getValue("crawler.core.properties", "method.accept.header"));
+		connection.addRequestProperty("Accept-Language",
+				pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+		connection.addRequestProperty("User-Agent",
+				pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
 		if (refererUrl != null) {
 			connection.addRequestProperty("Referer", refererUrl);
 		}
@@ -385,13 +545,15 @@ public final class CrawlerUtils {
 		return null;
 	}
 
-	public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
+	public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo)
+			throws IOException {
 		final URL metaRedirection = new URL(url, redirectTo);
 		final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
-		if(!StringUtils.isEmpty(cookie)) {
+		if (!StringUtils.isEmpty(cookie)) {
 			connection.setRequestProperty("Cookie", cookie);
 		}
-		Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), CrawlerUtils.class, Logger.LOG_LEVEL_INFO);
+		Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), CrawlerUtils.class,
+				Logger.LOG_LEVEL_INFO);
 		return connection;
 	}
 
@@ -425,20 +587,19 @@ public final class CrawlerUtils {
 	/**
 	 * Comprueba si la conexión se ha realizado a la página de OpenDNS
 	 *
-	 * @param connection
-	 *            la conexión que se quiere comprobar
-	 * @return true si la conexión se ha realizado a la página de OpenDNS o
-	 *         false en caso contrario.
+	 * @param connection la conexión que se quiere comprobar
+	 * @return true si la conexión se ha realizado a la página de OpenDNS o false en
+	 *         caso contrario.
 	 */
 	public static boolean isOpenDNSResponse(final HttpURLConnection connection) {
-		return connection.getHeaderField("Server") != null && connection.getHeaderField("Server").toLowerCase().contains("opendns");
+		return connection.getHeaderField("Server") != null
+				&& connection.getHeaderField("Server").toLowerCase().contains("opendns");
 	}
 
 	/**
 	 * Comprueba si un contenido es un RSS
 	 *
-	 * @param content
-	 *            una cadena con un contenido textual
+	 * @param content una cadena con un contenido textual
 	 * @return true si corresponde a un RSS o false en caso contrario
 	 */
 	public static boolean isRss(final String content) {
@@ -449,12 +610,13 @@ public final class CrawlerUtils {
 	 * Comprueba si un enlace es de tipo http: o usa otro protocolo (mailto:,
 	 * javascript:,...)
 	 * 
-	 * @param link
-	 *            enlace a comprobar
+	 * @param link enlace a comprobar
 	 * @return true si el enlace es de tipo http o false en caso contrario.
 	 */
 	public static boolean isHTTPLink(final Element link) {
-		return link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript:") && !link.getAttribute("href").toLowerCase().startsWith("mailto:")
-				&& !link.getAttribute("href").toLowerCase().startsWith("javascript") && !link.getAttribute("href").toLowerCase().startsWith("tel:");
+		return link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("javascript:")
+				&& !link.getAttribute("href").toLowerCase().startsWith("mailto:")
+				&& !link.getAttribute("href").toLowerCase().startsWith("javascript")
+				&& !link.getAttribute("href").toLowerCase().startsWith("tel:");
 	}
 }
