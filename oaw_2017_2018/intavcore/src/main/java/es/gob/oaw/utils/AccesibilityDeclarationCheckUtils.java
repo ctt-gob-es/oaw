@@ -67,7 +67,9 @@ public final class AccesibilityDeclarationCheckUtils {
 					&& !link.getAttribute("href").toLowerCase().startsWith("mailto")
 					&& !link.getAttribute("href").toLowerCase().startsWith("tel")
 					&& !link.getAttribute("href").toLowerCase().endsWith(".pdf")
-					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")) {
+					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")
+//					&& !link.getAttribute("href").toLowerCase().endsWith(".epub")
+					) {
 
 				// Comprueba que no sean PDF lo que devuelve el link
 				try {
