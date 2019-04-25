@@ -13,10 +13,17 @@
 package es.gob.oaw.basicservice;
 
 import es.gob.oaw.MailService;
+import es.gob.oaw.rastreador2.action.comun.ConectividadAction;
 import es.inteco.common.Constants;
+import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
+import es.inteco.rastreador2.actionform.semillas.ProxyForm;
+import es.inteco.rastreador2.dao.proxy.ProxyDAO;
+import es.inteco.utils.CrawlerUtils;
 
+import java.sql.Connection;
 import java.text.MessageFormat;
 import java.util.Collections;
 
@@ -34,8 +41,10 @@ public class BasicServiceMailService {
 		mailService = new MailService();
 	}
 
-	public void sendBasicServiceReport(final BasicServiceForm basicServiceForm, final String attachUrl, final String attachName) {
-		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), getMailSubject(basicServiceForm.getReport()), getMailBody(basicServiceForm), attachUrl, attachName);
+	public void sendBasicServiceReport(final BasicServiceForm basicServiceForm, final String attachUrl,
+			final String attachName) {
+		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()),
+				getMailSubject(basicServiceForm.getReport()), getMailBody(basicServiceForm), attachUrl, attachName);
 	}
 
 	public void sendBasicServiceErrorMessage(final BasicServiceForm basicServiceForm, final String message) {
@@ -45,11 +54,14 @@ public class BasicServiceMailService {
 
 	private String getMailSubject(final String reportType) {
 		final String message = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.subject");
-		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType) || Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
+		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType)
+				|| Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
 			return MessageFormat.format(message, "Observatorio UNE 2004");
-		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
+		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)
+				|| Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
 			return MessageFormat.format(message, "Observatorio UNE 2012 (antigua)");
-		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
+		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)
+				|| Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
 			return MessageFormat.format(message, "Observatorio UNE 2012 (versión 2)");
 		} else if ("une".equals(reportType)) {
 			return MessageFormat.format(message, "UNE 139803");
@@ -61,13 +73,32 @@ public class BasicServiceMailService {
 	private String getMailBody(final BasicServiceForm basicServiceForm) {
 		final String text;
 		if (basicServiceForm.isContentAnalysis()) {
-			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"), basicServiceForm.getUser(),
-					reportToString(basicServiceForm.getReport()));
+			text = MessageFormat.format(
+					pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"),
+					basicServiceForm.getUser(), reportToString(basicServiceForm.getReport()));
 		} else {
-			final String inDirectory = basicServiceForm.isInDirectory() ? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
+			final String inDirectory = basicServiceForm.isInDirectory()
+					? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
 					: pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
-			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"), basicServiceForm.getUser(), basicServiceForm.getDomain(),
-					basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()));
+
+			String proxyActive = "No";
+
+			try (Connection c = DataBaseManager.getConnection()) {
+				ProxyForm proxy = ProxyDAO.getProxy(c);
+
+				proxyActive = proxy.getStatus() > 0 ? "Sí" : "No";
+
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+
+			text = MessageFormat.format(
+					pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"),
+					basicServiceForm.getUser(), basicServiceForm.getDomain(), basicServiceForm.getProfundidad(),
+					basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()),
+					proxyActive);
+
 		}
 
 		return text;
@@ -82,7 +113,7 @@ public class BasicServiceMailService {
 			return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
 			return "Observatorio UNE 2012 (antigua sin comprobar enlaces rotos)";
-		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)) { 
+		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)) {
 			return "Observatorio UNE 2012 (versión 2)";
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
 			return "Observatorio UNE 2012 (versión 2 sin comprobar enlaces rotos)";
