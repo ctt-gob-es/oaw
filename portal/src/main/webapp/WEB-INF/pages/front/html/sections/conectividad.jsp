@@ -94,7 +94,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					.ajax(
 							{
 								url : '/oaw/secure/conectividad.do?action=checkurl&url='
-										+ decodeURI($('#urlcheck').val()),
+										+ decodeURIComponent($('#urlcheck').val()),
 								method : 'POST'
 							}).success(
 							function(data) {
