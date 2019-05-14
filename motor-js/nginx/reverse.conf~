@@ -9,7 +9,7 @@ server {
     server_name proxy;
 
     location / {
-			#proxy_hide_header Content-Type;		
+			proxy_hide_header Content-Type;		
     	set $prerender 1;
 
 			if ($arg_url ~* '\.css') {
@@ -44,7 +44,7 @@ server {
     ssl_certificate_key /etc/nginx/ssl/server.key;
 
     location / {
-			#proxy_hide_header Content-Type;
+			proxy_hide_header Content-Type;
     	set $prerender 1;
 		
 			if ($request_uri ~* '.\css') {
