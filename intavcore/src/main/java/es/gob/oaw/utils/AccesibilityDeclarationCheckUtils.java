@@ -68,7 +68,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					&& !link.getAttribute("href").toLowerCase().startsWith("tel")
 					&& !link.getAttribute("href").toLowerCase().endsWith(".pdf")
 					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")
-//					&& !link.getAttribute("href").toLowerCase().endsWith(".epub")
+					&& !link.getAttribute("href").toLowerCase().endsWith(".epub")
 					) {
 
 				// Comprueba que no sean PDF lo que devuelve el link
@@ -102,6 +102,10 @@ public final class AccesibilityDeclarationCheckUtils {
 							Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
+		}
+		
+		for(int i =0; i< linksFound.size();i++) {
+			Logger.putLog("URL de accesibilidad candidata: ("+i+") " + linksFound.get(i).getAttribute("href"), AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 
 		return linksFound;

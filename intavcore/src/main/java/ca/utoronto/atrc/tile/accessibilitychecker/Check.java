@@ -4086,7 +4086,7 @@ public class Check {
 				if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
 						.get(href) == null) {
 					Logger.putLog("Accediendo a la declaración de accesibilidad en " + href, Check.class,
-							Logger.LOG_LEVEL_INFO);
+							Logger.LOG_LEVEL_ERROR);
 					document = CheckUtils.getRemoteDocument(href, href);
 					((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
 							.put(href, document);
@@ -4103,6 +4103,9 @@ public class Check {
 				
 			}
 		} catch (Exception e) {
+			
+			Logger.putLog("Error al acceder a la declaración de accesibilidad en " + href, Check.class,
+					Logger.LOG_LEVEL_ERROR, e);
 
 			return getRelativeDocument(elementRoot, href);
 			

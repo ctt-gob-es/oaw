@@ -397,7 +397,13 @@ public final class CrawlerUtils {
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
-				&& !"BASIC_SERVICE_URL".equals(refererUrl)) {
+				&& !"BASIC_SERVICE_URL".equals(refererUrl) && url != null && !url.isEmpty()
+				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
+				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
+				&& !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml")
+				&& !url.endsWith(".xls") && !url.endsWith(".wsdl")
+
+		) {
 			try {
 				Proxy proxy = new Proxy(Proxy.Type.HTTP,
 						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
