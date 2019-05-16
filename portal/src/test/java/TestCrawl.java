@@ -17,13 +17,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Pattern;
+import java.util.logging.Level;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 
 import es.gob.oaw.MailService;
 import es.inteco.common.logging.Logger;
@@ -49,6 +55,30 @@ public class TestCrawl {
 	private final List<String> md5Content = new ArrayList<String>();
 	private final List<String> rejectedDomains = new ArrayList<String>();
 	private final MailService mailService = new MailService();
+	
+	@BeforeClass
+	public static void setUpClass() throws Exception {
+		// Create initial context
+		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
+		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
+		final InitialContext ic = new InitialContext();
+
+		ic.createSubcontext("java:");
+		ic.createSubcontext("java:/comp");
+		ic.createSubcontext("java:/comp/env");
+		ic.createSubcontext("java:/comp/env/jdbc");
+
+		// Construct DataSource
+		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
+		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/oaw_js");
+		mysqlDataSource.setUser("root");
+		mysqlDataSource.setPassword("root");
+
+		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
+		
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
+
+	}
 
 	private static boolean isOuterDomain(String domain, String url) {
 		try {
@@ -72,23 +102,55 @@ public class TestCrawl {
 
 		return linkDirectory.contains(urlRootDirectory);
 	}
-
+	
 	@Test
-	public void test() throws Exception {
+	public void crawlPrincipales() throws Exception {
+		System.out.println("Principales AGE");
+		
+		System.out.println("Principales CAA");
+				
+		this.test("http://www.gobiernodeceuta.es/", false);
+		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
+		this.test("http://www.comunidad.madrid", false);
+		this.test("https://www.gva.es", false);
+		this.test("https://dogc.gencat.cat/ca/", false);
+		this.test("http://www.euskadi.eus/hasiera/", false);
+		this.test("http://www.aragon.es", false);
+		this.test("http://www.gobiernodecanarias.org/principal/",true);
+		this.test("http://www.cantabria.es",false);
+		this.test("http://www.castillalamancha.es/", false);
+		this.test("https://www.larioja.org/es", false);
+		this.test("http://www.caib.es/govern", false);
+		this.test("https://www.asturias.es/", false);
+		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
+		this.test("http://www.jcyl.es", false);
+		this.test("http://www.juntaex.es/web/", false);
+		this.test("http://www.carm.es", false);
+		this.test("https://www.xunta.gal/portada", false);
+		this.test("http://www.navarra.es/home_es", false);
+		
+		
+	}
+
+	
+	public void test(String url, boolean enDirectorio) throws Exception {
+		System.out.println(url);
+		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
-		crawlerData.setUrls(Collections.singletonList("http://www.juntadeandalucia.es/institucional/"));
+		crawlerData.setUrls(Collections.singletonList(url));
 		crawlerData.setProfundidad(4);
 		crawlerData.setTopN(8);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
-		crawlerData.setInDirectory(true);
+		crawlerData.setInDirectory(enDirectorio);
 		makeCrawl(crawlerData);
 
 		for (CrawledLink cl : crawlingDomains) {
 			System.out.println(cl.getUrl());
 		}
-		Assert.assertEquals(33, crawlingDomains.size());
+		System.out.println("-------------------------------------------------------------------------------------------\n\n");
+		//Assert.assertEquals(33, crawlingDomains.size());
 	}
 
 	private void makeCrawl(CrawlerData crawlerData) throws Exception {

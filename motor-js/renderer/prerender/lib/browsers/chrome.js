@@ -50,7 +50,7 @@ chrome.connect = function() {
 			if (!connected) {
 				reject();
 			}
-		}, 20 * 1000);
+		}, 50 * 1000);
 
 		let connect = () => {
 			CDP.Version().then((info) => {
@@ -460,6 +460,11 @@ chrome.loadUrlThenWaitForPageLoadEvent = function(tab, url) {
 
 chrome.checkIfPageIsDoneLoading = function(tab) {
 	return new Promise((resolve, reject) => {
+
+		if (!(tab.prerender.domContentEventFired || tab.prerender.receivedRedirect)) {
+			return resolve(false);
+		}
+
 		tab.Runtime.evaluate({
 			expression: 'window.prerenderReady'
 		}).then((result) => {
@@ -524,7 +529,7 @@ chrome.parseHtmlFromPage = function(tab) {
 			util.log('parse html timed out', tab.prerender.url);
 			tab.prerender.statusCode = 504;
 			reject();
-		}, 5000);
+		}, 50000);
 
 		tab.Runtime.evaluate({
 			expression: "document.firstElementChild.outerHTML"
@@ -607,7 +612,7 @@ chrome.captureScreenshot = function(tab, format, fullpage) {
 };
 
 
-chrome.printToPDF = function(tab) {
+chrome.printToPDF = function(tab, options) {
 	return new Promise((resolve, reject) => {
 
 		var parseTimeout = setTimeout(() => {
@@ -616,9 +621,7 @@ chrome.printToPDF = function(tab) {
 			reject();
 		}, 5000);
 
-		tab.Page.printToPDF({
-			printBackground: true
-		}).then((response) => {
+		tab.Page.printToPDF(options).then((response) => {
 			tab.prerender.content = new Buffer(response.data, 'base64');
 			clearTimeout(parseTimeout);
 			resolve();
