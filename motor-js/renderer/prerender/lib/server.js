@@ -31,9 +31,12 @@ server.init = function(options) {
 	this.options.waitAfterLastRequest = this.options.waitAfterLastRequest || WAIT_AFTER_LAST_REQUEST;
 	this.options.pageDoneCheckInterval = this.options.pageDoneCheckInterval || PAGE_DONE_CHECK_INTERVAL;
 	this.options.pageLoadTimeout = this.options.pageLoadTimeout || PAGE_LOAD_TIMEOUT;
-	this.options.followRedirect = this.options.followRedirects || FOLLOW_REDIRECTS;
+	this.options.followRedirects = this.options.followRedirects || FOLLOW_REDIRECTS;
 	this.options.logRequests = this.options.logRequests || LOG_REQUESTS;
 	this.options.enableServiceWorker = this.options.enableServiceWorker || ENABLE_SERVICE_WORKER;
+	this.options.pdfOptions = this.options.pdfOptions || {
+		printBackground: true
+	};
 
 	this.browser = require('./browsers/chrome');
 
@@ -245,7 +248,7 @@ server.onRequest = function(req, res) {
 
 		} else if (req.prerender.renderType == 'pdf') {
 
-			return this.browser.printToPDF(req.prerender.tab);
+			return this.browser.printToPDF(req.prerender.tab, this.options.pdfOptions);
 
 		} else if (req.prerender.renderType == 'har') {
 

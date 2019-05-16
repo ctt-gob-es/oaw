@@ -2,10 +2,14 @@
 var prerender = require('./lib');
 
 var server = prerender({ 
-	//followRedirects: true,
+	followRedirects: true,
 	chromeLocation: '/usr/bin/chromium-browser', 
-	//pageDoneCheckInterval: 5000
-	waitAfterLastRequest: 500
+	pageDoneCheckInterval: 1000,
+	waitAfterLastRequest: 1000,
+	pageLoadTimeout: 30000,
+	//chromeFlags: [ '--no-sandbox', '--headless', '--disable-gpu', '--allow-running-insecure-content' ],
+	workers: 4,
+	enableServiceWorker: true
 });
 
 server.use(prerender.sendPrerenderHeader());
