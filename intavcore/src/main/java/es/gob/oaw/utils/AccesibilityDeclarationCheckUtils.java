@@ -49,11 +49,9 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * Filtra una lista de enlaces que pueden ser a la página de declaración de
 	 * accesibilidad.
 	 *
-	 * @param links
-	 *            lista de nodos que representan enlaces.
-	 * @param sectionRegExp
-	 *            patrones que pueden indicar que el destino es la página de
-	 *            accesibilidad.
+	 * @param links         lista de nodos que representan enlaces.
+	 * @param sectionRegExp patrones que pueden indicar que el destino es la página
+	 *                      de accesibilidad.
 	 * @return una lista de enlaces que pueden ser a la página de declaración de
 	 *         accesibilidad.
 	 */
@@ -68,8 +66,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					&& !link.getAttribute("href").toLowerCase().startsWith("tel")
 					&& !link.getAttribute("href").toLowerCase().endsWith(".pdf")
 					&& !link.getAttribute("href").toLowerCase().endsWith(".doc")
-					&& !link.getAttribute("href").toLowerCase().endsWith(".epub")
-					) {
+					&& !link.getAttribute("href").toLowerCase().endsWith(".epub")) {
 
 				// Comprueba que no sean PDF lo que devuelve el link
 				try {
@@ -98,14 +95,15 @@ public final class AccesibilityDeclarationCheckUtils {
 					}
 
 				} catch (IOException e) {
-					Logger.putLog("Error comprobar la URL: " + link.getAttribute("href"), AccesibilityDeclarationCheckUtils.class,
-							Logger.LOG_LEVEL_ERROR, e);
+					Logger.putLog("Error comprobar la URL: " + link.getAttribute("href"),
+							AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
 		}
-		
-		for(int i =0; i< linksFound.size();i++) {
-			Logger.putLog("URL de accesibilidad candidata: ("+i+") " + linksFound.get(i).getAttribute("href"), AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR);
+
+		for (int i = 0; i < linksFound.size(); i++) {
+			Logger.putLog("URL de accesibilidad candidata: (" + i + ") " + linksFound.get(i).getAttribute("href"),
+					AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_DEBUG);
 		}
 
 		return linksFound;
@@ -150,14 +148,12 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * declaración de accesibilidad aplicando una serie de patrones sobre los
 	 * enlaces y texto.
 	 *
-	 * @param document
-	 *            documento HTML en formato DOM a analizar
-	 * @param contactRegExp
-	 *            expresión regular para detectar enlaces a sección de contacto
-	 *            (contactar,contacte,...)
-	 * @param emailRegExp
-	 *            expresión regular para detectar si se incluye una dirección de
-	 *            correo directamente en el contenido (contacto@portal.es)
+	 * @param document      documento HTML en formato DOM a analizar
+	 * @param contactRegExp expresión regular para detectar enlaces a sección de
+	 *                      contacto (contactar,contacte,...)
+	 * @param emailRegExp   expresión regular para detectar si se incluye una
+	 *                      dirección de correo directamente en el contenido
+	 *                      (contacto@portal.es)
 	 * @return true si se ha detectado una forma de contacto, false en caso
 	 *         contrario
 	 */
@@ -196,12 +192,10 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * 
 	 * Se evalua si existen formularios de contacto en la propia página.
 	 *
-	 * @param document
-	 *            documento HTML en formato DOM a analizar
-	 * @param contactRegExp
-	 *            expresión regular para detectar enlaces a sección de contacto
-	 *            (contactar,contacte,...) correo directamente en el contenido
-	 *            (contacto@portal.es)
+	 * @param document      documento HTML en formato DOM a analizar
+	 * @param contactRegExp expresión regular para detectar enlaces a sección de
+	 *                      contacto (contactar,contacte,...) correo directamente en
+	 *                      el contenido (contacto@portal.es)
 	 * @return true si se ha detectado una forma de contacto, false en caso
 	 *         contrario
 	 */
@@ -311,11 +305,9 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * página de declaración de accesibilidad aplicando una serie de patrones de
 	 * fecha sobre el texto.
 	 *
-	 * @param document
-	 *            documento DOM HTML sobre el que buscar la fecha de la última
-	 *            revisión
-	 * @param dateRegExp
-	 *            expresión regular que identifica un formato de fecha
+	 * @param document   documento DOM HTML sobre el que buscar la fecha de la
+	 *                   última revisión
+	 * @param dateRegExp expresión regular que identifica un formato de fecha
 	 * @return true si se ha detectado la fecha de la última revisión, false en caso
 	 *         contrario
 	 */
@@ -331,9 +323,8 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * Comprueba si un documento HTML tiene declaración de conformidad de
 	 * accesibilidad aplicando una serie de patrones sobre los enlaces e imagenes
 	 *
-	 * @param document
-	 *            documento HTML sobre el que buscar la declaración de conformidad
-	 *            de accesibilidad
+	 * @param document documento HTML sobre el que buscar la declaración de
+	 *                 conformidad de accesibilidad
 	 * @return true si se ha detectado una declaración de conformidad, false en caso
 	 *         contrario
 	 */
@@ -395,8 +386,7 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * 
 	 * Se cargarán los patrones del fichero de propiedades correspondiente.
 	 *
-	 * @param text
-	 *            el texto a comprobar.
+	 * @param text el texto a comprobar.
 	 * @return true si se ha detectado un patrón o false en caso contrario.
 	 */
 	private static boolean isLevelConformancePattern(final String text) {
@@ -457,8 +447,7 @@ public final class AccesibilityDeclarationCheckUtils {
 	/**
 	 * Obtiene el texto de un documento DOM.
 	 *
-	 * @param document
-	 *            documento.
+	 * @param document documento.
 	 * @return una cadena que contiene el texto del documento.
 	 */
 	private static String getDocumentText(final Document document) {

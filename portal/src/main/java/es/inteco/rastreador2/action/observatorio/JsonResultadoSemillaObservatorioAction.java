@@ -48,21 +48,17 @@ import es.inteco.rastreador2.utils.Pagination;
 public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
 	/**
-	 * Devuelve un JSON con los resultados de un observatorio
+	 * Return an  JSON with the results
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
-	public ActionForward resultados(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward resultados(final ActionMapping mapping, final ActionForm form,
+			final HttpServletRequest request, HttpServletResponse response) throws Exception {
 		SemillaForm semillaForm = new SemillaForm();
 		// SemillaForm semillaForm = (SemillaForm) form;
 
@@ -72,21 +68,24 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 			final PropertiesManager pmgr = new PropertiesManager();
 
 			// Nombre
-			if (request.getParameter("nombre") != null && !StringUtils.isEmpty(request.getParameter("nombre").toString())) {
-				semillaForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(request.getParameter("nombre").toString()));
+			if (request.getParameter("nombre") != null
+					&& !StringUtils.isEmpty(request.getParameter("nombre").toString())) {
+				semillaForm.setNombre(
+						es.inteco.common.utils.StringUtils.corregirEncoding(request.getParameter("nombre").toString()));
 			}
 
 			// URL
-			if (request.getParameter("listaUrlsString") != null && !StringUtils.isEmpty(request.getParameter("listaUrlsString").toString())) {
+			if (request.getParameter("listaUrlsString") != null
+					&& !StringUtils.isEmpty(request.getParameter("listaUrlsString").toString())) {
 				semillaForm.setListaUrlsString(request.getParameter("listaUrlsString").toString());
 			}
 
-			final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
+			final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm,
+					idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 
-
-			final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE,
-					pagina - 1);
+			final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c,
+					semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE, pagina - 1);
 
 			// Calculamos la puntuación media de cada semilla y la guardamos en
 			// sesion
@@ -94,17 +93,21 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
 			String jsonResultados = new Gson().toJson(seedsResults2);
 
-			List<PageForm> paginas = Pagination.createPagination(request, numResultA, pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"), pagina, Constants.PAG_PARAM);
+			List<PageForm> paginas = Pagination.createPagination(request, numResultA,
+					pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"), pagina,
+					Constants.PAG_PARAM);
 
 			String jsonPagination = new Gson().toJson(paginas);
 
 			PrintWriter pw = response.getWriter();
-			pw.write("{\"resultados\": " + jsonResultados.toString() + ",\"paginador\": {\"total\":" + numResultA + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"resultados\": " + jsonResultados.toString() + ",\"paginador\": {\"total\":" + numResultA
+					+ "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
 
 		} catch (Exception e) {
-			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente",
+					ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw new Exception(e);
 		}
 

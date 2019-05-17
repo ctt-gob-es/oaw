@@ -150,6 +150,8 @@ public class TestCrawl {
 			System.out.println(cl.getUrl());
 		}
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
+		
+		crawlingDomains.clear();
 		//Assert.assertEquals(33, crawlingDomains.size());
 	}
 

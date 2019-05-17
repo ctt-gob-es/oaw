@@ -440,193 +440,12 @@ public class CrawlerJob implements InterruptableJob {
 		return dominios.toString();
 	}
 
-//	/**
-//	 * Inicia el rastreo de URL.
-//	 *
-//	 * @param crawlerData the crawler data
-//	 * @throws IOException Signals that an I/O exception has occurred.
-//	 */
-//	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-//
-//		final PropertiesManager pmgr = new PropertiesManager();
-//
-//		final int maxNumRetries = Integer
-//				.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
-//		final int maxNumRedirections = Integer
-//				.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
-//		final long timeRetry = Long.parseLong(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "time.retry"));
-//
-//		List<IgnoredLink> ignoredLinks = null;
-//
-//		String cookie = null;
-//
-//		final int chosenDepth = crawlerData.getProfundidad();
-//		for (String url : crawlerData.getUrls()) {
-//			String domain = null;
-//
-//			if (url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
-//					&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
-//					&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc")
-//					&& !url.endsWith(".epub") 
-//					&& !url.endsWith(".xml")
-//					&& !url.endsWith(".xls")
-//					&& !url.endsWith(".wsdl")) {
-//
-//				try {
-//
-//					HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
-//					// Para la conexión inicial aumentamos los tiempos de espera
-//					connection.setConnectTimeout(connection.getConnectTimeout() * 2);
-//					connection.setReadTimeout(connection.getReadTimeout() * 2);
-//					int numRetries = 0;
-//					int numRedirections = 0;
-//					int responseCode = Integer.MAX_VALUE;
-//
-//					while ((numRetries < maxNumRetries) && (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE)
-//							&& (numRedirections < maxNumRedirections)) {
-//						url = connection.getURL().toString();
-//						connection.connect();
-//						responseCode = connection.getResponseCode();
-//						if (numRedirections == 0) {
-//							cookie = CrawlerUtils.getCookie(connection);
-//						}
-//						if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url)
-//								&& !CrawlerUtils.isOpenDNSResponse(connection)) {
-//							// Si hay redirecciones, puede que el dominio cambie
-//							domain = connection.getURL().getHost();
-//
-//							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-//
-//							// TODO Sólo se pasa al renderizador para recuperar el contenido
-//
-//							final String textContent = CrawlerUtils.getTextContent(
-//									CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
-//							markableInputStream.reset();
-//
-//							// TODO Recuerar el charset
-//							final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
-//							markableInputStream.close();
-//
-//							final Document document = CrawlerDOMUtils.getDocument(textContent);
-//
-//							final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
-//							if (StringUtils.isEmpty(metaRedirect)) {
-//								final String textContentHash = CrawlerUtils.getHash(textContent);
-//
-//								// Si no está ya incluida en el rastreo
-//								if (!md5Content.contains(textContentHash)) {
-//									final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries,
-//											numRedirections);
-//
-//									// TODO Propagar el charset
-//									crawledLink.setCharset(charset);
-//
-//									crawlingDomains.add(crawledLink);
-//									md5Content.add(textContentHash);
-//									Logger.putLog(String.format("Introducida la URL número %d: %s",
-//											crawlingDomains.size(), url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//									if (crawlerData.getProfundidad() > 1 || crawlerData.getTopN() != 1) {
-//										// Si se trata de un observatorio, o la
-//										// petición viene del servicio básico
-//										if (crawlerData.getIdObservatory() != 0 || crawlerData.getIdCrawling() < 0) {
-//											// Cogemos lista de idiomas para no
-//											// coger enlaces de cambio de idioma
-//											ignoredLinks = Utils.getIgnoredLinks();
-//										}
-//										crawlerData.setCheckFormPage(true);
-//										crawlerData.setCheckTablePage(true);
-//										makeCrawl(domain, url, url, cookie, crawlerData, ignoredLinks);
-//									}
-//								} else {
-//									Logger.putLog(String.format(
-//											"La url %s ha sido rechazada por estar incluida en el rastreo", url),
-//											CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//									rejectedDomains.add(url);
-//								}
-//							} else {
-//								numRedirections++;
-//								connection = CrawlerUtils.followRedirection(cookie, new URL(url), metaRedirect);
-//								responseCode = Integer.MAX_VALUE;
-//							}
-//						} else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE
-//								&& responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
-//							numRedirections++;
-//							connection = CrawlerUtils.followRedirection(cookie, new URL(url),
-//									connection.getHeaderField("location"));
-//						} else {
-//							if (CrawlerUtils.isOpenDNSResponse(connection)) {
-//								Logger.putLog("La URL solicitada ha provocado la respuesta del OpenDNS",
-//										CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//								if ((numRetries < maxNumRetries - 1)
-//										&& (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST)) {
-//									Thread.sleep(timeRetry);
-//								}
-//								numRetries++;
-//							} else if (contains(crawlingDomains, url)) {
-//								Logger.putLog(String
-//										.format("La url %s ha sido rechazada por estar incluida en el rastreo", url),
-//										CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//								rejectedDomains.add(url);
-//							} else {
-//								Logger.putLog(String.format(
-//										"No se ha podido acceder a la raiz del rastreo configurado %s ya que ha respondido con el código %d",
-//										url, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//								if (numRetries < maxNumRetries - 1) {
-//									Thread.sleep(timeRetry);
-//								}
-//								numRetries++;
-//							}
-//						}
-//					}
-//
-//					connection.disconnect();
-//
-//					Collections.reverse(auxDomains);
-//					for (String auxDomain : auxDomains) {
-//						try {
-//							if ((!interrupt) && (crawlingDomains.size() <= (chosenDepth * crawlerData.getTopN()))) {
-//								if (!contains(crawlingDomains, auxDomain) && !rejectedDomains.contains(auxDomain)) {
-//									isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks,
-//											false, false);
-//								}
-//							} else {
-//								break;
-//							}
-//						} catch (Exception e) {
-//							Logger.putLog(String.format("Error al intentar introducir la url auxiliar %s: %s",
-//									auxDomain, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//						}
-//					}
-//
-//					Logger.putLog(String.format("Terminado el rastreo para %s, se han recogido %d enlaces: ", url,
-//							crawlingDomains.size()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//					for (CrawledLink crawledLink : crawlingDomains) {
-//						Logger.putLog(crawledLink.getUrl(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//					}
-//
-//				} catch (Exception e) {
-//					Logger.putLog(String.format("Error al rastrear el dominio %s: %s", url, e.getMessage()),
-//							CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
-//				}
-//			} else {
-//				Logger.putLog(String.format("La url %s ha sido rechazada por tener un formato no admitido", url),
-//						CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-//				rejectedDomains.add(url);
-//			}
-//
-//			// Avisa si se han rastreado menos páginas de las debidas y no es un
-//			// crawling de 'test'
-//			if (!crawlerData.isTest() && incompleteCrawl(crawlerData, chosenDepth)) {
-//				warnIncompleteCrawl(crawlerData);
-//			}
-//
-//			// Llamamos al analizador
-//			// if (!crawlerData.isTest()) {
-//			analyze(crawlingDomains, crawlerData, cookie);
-//			// }
-//
-//		}
-//	}
+	/**
+	 * Inicia el rastreo de URL.
+	 *
+	 * @param crawlerData the crawler data
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
 
@@ -688,7 +507,12 @@ public class CrawlerJob implements InterruptableJob {
 							final Document document = CrawlerDOMUtils.getDocument(textContent);
 
 							final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
-							if (StringUtils.isEmpty(metaRedirect)) {
+
+							if (checkIfContentIsNotHTML(textContent)) {
+								Logger.putLog(String.format("La url %s ha sido rechazada por ser un RSS", url),
+										CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+								rejectedDomains.add(url);
+							} else if (StringUtils.isEmpty(metaRedirect)) {
 								final String textContentHash = CrawlerUtils.getHash(textContent);
 
 								// Si no está ya incluida en el rastreo
@@ -801,6 +625,19 @@ public class CrawlerJob implements InterruptableJob {
 		// if (!crawlerData.isTest()) {
 		analyze(crawlingDomains, crawlerData, cookie);
 		// }
+	}
+
+	/**
+	 * Check if content is not an HTML
+	 * 
+	 * This is mandatory if this page is passed by JS renderer that sometimes
+	 * returns XML or other content no HTML as HTML header
+	 * 
+	 * @param textContent
+	 * @return
+	 */
+	private boolean checkIfContentIsNotHTML(final String textContent) {
+		return textContent.contains("</rss>");
 	}
 
 	/**

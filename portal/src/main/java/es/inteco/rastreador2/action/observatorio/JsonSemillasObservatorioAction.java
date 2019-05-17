@@ -79,7 +79,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaSearchForm searchForm = (SemillaSearchForm) form;
 
-			if (searchForm == null) {
+			if (searchForm != null) {
 				searchForm = new SemillaSearchForm();
 				searchForm.setNombre(request.getParameter("nombre"));
 
@@ -548,10 +548,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * Comprueba duplicados
-	 * 
-	 * @param urls
-	 * @return
+	 * Comprueba duplicados.
+	 *
+	 * @param urls the urls
+	 * @return the sets the
 	 */
 	private Set<String> findDuplicates(List<String> urls) {
 		final Set<String> setDuplicados = new HashSet<>();

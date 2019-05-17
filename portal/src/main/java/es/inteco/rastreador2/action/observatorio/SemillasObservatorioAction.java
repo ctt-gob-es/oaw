@@ -43,6 +43,7 @@ import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
 
+// TODO: Auto-generated Javadoc
 /**
  * Clase InformesDispatchAction. Action de Informes
  *
@@ -50,6 +51,14 @@ import es.inteco.rastreador2.utils.Pagination;
  */
 public class SemillasObservatorioAction extends Action {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.
+	 * ActionMapping, org.apache.struts.action.ActionForm,
+	 * javax.servlet.http.HttpServletRequest,
+	 * javax.servlet.http.HttpServletResponse)
+	 */
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		// Marcamos el menú
@@ -83,6 +92,15 @@ public class SemillasObservatorioAction extends Action {
 		return null;
 	}
 
+	/**
+	 * Load seeds.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward loadSeeds(ActionMapping mapping, ActionForm form, HttpServletRequest request)
 			throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -107,6 +125,15 @@ public class SemillasObservatorioAction extends Action {
 		return null;
 	}
 
+	/**
+	 * Adds the seed.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward addSeed(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final SemillaForm semillaForm = (SemillaForm) form;
@@ -128,8 +155,7 @@ public class SemillasObservatorioAction extends Action {
 					} else {
 						SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA_OBSERVATORIO, semillaForm.getNombre(),
 								semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(),
-								semillaForm.getAcronimo(),  null, semillaForm.isActiva(),
-								semillaForm.isInDirectory());
+								semillaForm.getAcronimo(), null, semillaForm.isActiva(), semillaForm.isInDirectory());
 						ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.creada",
 								"volver.listado.semillas.observatorio");
 						return mapping.findForward(Constants.EXITO2);
@@ -148,6 +174,15 @@ public class SemillasObservatorioAction extends Action {
 		return null;
 	}
 
+	/**
+	 * Edits the seed.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward editSeed(ActionMapping mapping, ActionForm form, HttpServletRequest request)
 			throws Exception {
 		if (isCancelled(request)) {
@@ -196,6 +231,14 @@ public class SemillasObservatorioAction extends Action {
 
 	}
 
+	/**
+	 * Confirm delete seed.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward confirmDeleteSeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final String idSemilla = request.getParameter(Constants.SEMILLA);
@@ -210,6 +253,14 @@ public class SemillasObservatorioAction extends Action {
 		return mapping.findForward(Constants.CONFIRMACION);
 	}
 
+	/**
+	 * Delete seed.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward deleteSeed(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		final ActionErrors errors = new ActionErrors();
 		final String idSemilla = request.getParameter(Constants.SEMILLA);
@@ -231,6 +282,13 @@ public class SemillasObservatorioAction extends Action {
 		return forward;
 	}
 
+	/**
+	 * Seed detail.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 */
 	private ActionForward seedDetail(final ActionMapping mapping, final HttpServletRequest request) {
 		final String idSemilla = request.getParameter(Constants.SEMILLA);
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -248,6 +306,5 @@ public class SemillasObservatorioAction extends Action {
 		}
 		return mapping.findForward(Constants.SEED_DETAIL);
 	}
-
 
 }
