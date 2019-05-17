@@ -93,11 +93,24 @@ import es.inteco.intav.form.SpecificProblemForm;
 import es.inteco.intav.persistence.Analysis;
 import es.inteco.plugin.dao.DataBaseManager;
 
+/**
+ * The Class EvaluatorUtils.
+ */
 public final class EvaluatorUtils {
 
+	/**
+	 * Instantiates a new evaluator utils.
+	 */
 	private EvaluatorUtils() {
 	}
 
+	/**
+	 * Generate evaluation form.
+	 *
+	 * @param evaluation the evaluation
+	 * @param language   the language
+	 * @return the evaluation form
+	 */
 	public static EvaluationForm generateEvaluationForm(final Evaluation evaluation, final String language) {
 		final EvaluationForm evaluationForm = new EvaluationForm();
 		final Guideline guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
@@ -135,6 +148,11 @@ public final class EvaluatorUtils {
 		return evaluationForm;
 	}
 
+	/**
+	 * Count problems.
+	 *
+	 * @param priorityForm the priority form
+	 */
 	public static void countProblems(PriorityForm priorityForm) {
 		PropertiesManager pmgr = new PropertiesManager();
 		for (GuidelineForm guidelineForm : priorityForm.getGuidelines()) {
@@ -161,6 +179,13 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the guidelines from group.
+	 *
+	 * @param group      the group
+	 * @param evaluation the evaluation
+	 * @return the guidelines from group
+	 */
 	// Devuelve la lista de guidelines que tienen algún problema asociado.
 	private static List<GuidelineForm> getGuidelinesFromGroup(GuidelineGroup group, Evaluation evaluation) {
 		List<GuidelineForm> guidelines = new ArrayList<>();
@@ -178,6 +203,13 @@ public final class EvaluatorUtils {
 		return guidelines;
 	}
 
+	/**
+	 * Gets the pautas from group.
+	 *
+	 * @param group      the group
+	 * @param evaluation the evaluation
+	 * @return the pautas from group
+	 */
 	// Devuelve la lista de pautas que tienen algún problema asociado.
 	private static List<PautaForm> getPautasFromGroup(GuidelineGroup group, Evaluation evaluation) {
 		List<PautaForm> pautas = new ArrayList<>();
@@ -202,6 +234,12 @@ public final class EvaluatorUtils {
 		return pautas;
 	}
 
+	/**
+	 * Gets the problems from guideline.
+	 *
+	 * @param vProblems the v problems
+	 * @return the problems from guideline
+	 */
 	// Devuelve los tipos de problemas asociados a una pauta concreta
 	public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems) {
 		final List<ProblemForm> problems = new ArrayList<>();
@@ -279,6 +317,12 @@ public final class EvaluatorUtils {
 	}
 
 	// Adds information to the document that is used to display the
+	/**
+	 * Gets the code.
+	 *
+	 * @param problem the problem
+	 * @return the code
+	 */
 	// accessibility problem.
 	public static List<String> getCode(final Problem problem) {
 		List<String> code = new ArrayList<>();
@@ -355,10 +399,24 @@ public final class EvaluatorUtils {
 		return code;
 	}
 
+	/**
+	 * Gets the html.
+	 *
+	 * @param elementGiven           the element given
+	 * @param includeElementChildren the include element children
+	 * @param noSangrado             the no sangrado
+	 * @return the html
+	 */
 	private static List<String> getHtml(Element elementGiven, boolean includeElementChildren, boolean noSangrado) {
 		return getHtmlText(elementGiven, includeElementChildren, noSangrado);
 	}
 
+	/**
+	 * Gets the html headers.
+	 *
+	 * @param elementGiven the element given
+	 * @return the html headers
+	 */
 	private static List<String> getHtmlHeaders(Element elementGiven) {
 		List<String> codigo = new ArrayList<>();
 		List<Node> headersList = getNodeHeaders(elementGiven);
@@ -372,6 +430,12 @@ public final class EvaluatorUtils {
 		return codigo;
 	}
 
+	/**
+	 * Gets the node headers.
+	 *
+	 * @param elementGiven the element given
+	 * @return the node headers
+	 */
 	private static List<Node> getNodeHeaders(Element elementGiven) {
 		try {
 			List<Node> nodeHeaders = new ArrayList<>();
@@ -399,6 +463,13 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Serialize xml element.
+	 *
+	 * @param element         the element
+	 * @param includeChildren the include children
+	 * @return the string
+	 */
 	public static String serializeXmlElement(Element element, boolean includeChildren) {
 		DOMImplementationLS domImplementationLS = (DOMImplementationLS) element.getOwnerDocument().getImplementation();
 		LSSerializer lsSerializer = domImplementationLS.createLSSerializer();
@@ -423,6 +494,14 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Generate node list.
+	 *
+	 * @param node           the node
+	 * @param nodeList       the node list
+	 * @param maxNumElements the max num elements
+	 * @return the list
+	 */
 	// Genera recursivamente una lista de nodos del documento
 	public static List<Node> generateNodeList(Node node, List<Node> nodeList, int maxNumElements) {
 		if ((node != null) && (nodeList.size() <= maxNumElements)) {
@@ -439,6 +518,12 @@ public final class EvaluatorUtils {
 		return nodeList;
 	}
 
+	/**
+	 * Serialize only element.
+	 *
+	 * @param element the element
+	 * @return the string
+	 */
 	private static String serializeOnlyElement(final Element element) {
 		final StringBuilder serialization = new StringBuilder("<");
 		serialization.append(element.getNodeName());
@@ -452,6 +537,12 @@ public final class EvaluatorUtils {
 		return serialization.toString();
 	}
 
+	/**
+	 * Serialize xml element.
+	 *
+	 * @param node the node
+	 * @return the string
+	 */
 	public static String serializeXmlElement(final Node node) {
 		if (node != null) {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -464,6 +555,14 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the html text.
+	 *
+	 * @param elementGiven     the element given
+	 * @param bIncludeChildren the b include children
+	 * @param noSangrado       the no sangrado
+	 * @return the html text
+	 */
 	private static List<String> getHtmlText(Element elementGiven, boolean bIncludeChildren, boolean noSangrado) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int sourceMaxNumChar = Integer
@@ -531,6 +630,13 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Evaluate.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @param language           the language
+	 * @return the evaluation
+	 */
 	public static Evaluation evaluate(CheckAccessibility checkAccessibility, String language) {
 		Logger.putLog("Iniciando evaluación de accesibilidad de la url: " + checkAccessibility.getUrl(),
 				EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
@@ -540,6 +646,13 @@ public final class EvaluatorUtils {
 		return evaluator.evaluate(checkAccessibility, language);
 	}
 
+	/**
+	 * Evaluate content.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @param language           the language
+	 * @return the evaluation
+	 */
 	public static Evaluation evaluateContent(CheckAccessibility checkAccessibility, String language) {
 		Evaluator evaluator = EvaluatorUtility.getEvaluator();
 		long inicio = System.currentTimeMillis();
@@ -564,6 +677,12 @@ public final class EvaluatorUtils {
 		return evaluation;
 	}
 
+	/**
+	 * Gets the form list.
+	 *
+	 * @param listAnalysis the list analysis
+	 * @return the form list
+	 */
 	public static List<AnalysisForm> getFormList(List<Analysis> listAnalysis) {
 		List<AnalysisForm> formList = new ArrayList<>();
 		PropertiesManager pmgr = new PropertiesManager();
@@ -584,6 +703,12 @@ public final class EvaluatorUtils {
 		return formList;
 	}
 
+	/**
+	 * Gets the doc list.
+	 *
+	 * @return the doc list
+	 * @throws ParserConfigurationException the parser configuration exception
+	 */
 	// Crea un objeto de tipo Documento
 	public static Document getDocList() throws ParserConfigurationException {
 		DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
@@ -591,6 +716,12 @@ public final class EvaluatorUtils {
 		return docBuilder.newDocument();
 	}
 
+	/**
+	 * Gets the frames url.
+	 *
+	 * @param content the content
+	 * @return the frames url
+	 */
 	public static List<String> getFramesUrl(String content) {
 		List<String> frames = new ArrayList<>();
 
@@ -611,6 +742,13 @@ public final class EvaluatorUtils {
 
 	}
 
+	/**
+	 * Gets the frames url.
+	 *
+	 * @param url the url
+	 * @return the frames url
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static List<String> getFramesUrl(URL url) throws IOException {
 		HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", false);
 		connection.connect();
@@ -623,6 +761,12 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the message.
+	 *
+	 * @param string the string
+	 * @return the message
+	 */
 	private static String getMessage(String string) {
 		String regexp = IntavConstants.REGEXP_MESSAGE_FILTER_INCLUDE;
 
@@ -636,6 +780,12 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the code.
+	 *
+	 * @param string the string
+	 * @return the code
+	 */
 	private static String getCode(String string) {
 		String regexp = IntavConstants.REGEXP_MESSAGE_FILTER_EXCLUDE;
 
@@ -649,6 +799,12 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the previous node.
+	 *
+	 * @param elementGiven the element given
+	 * @return the previous node
+	 */
 	public static Node getPreviousNode(Element elementGiven) {
 		Node nodePrevious = elementGiven.getPreviousSibling();
 		boolean found = false;
@@ -670,6 +826,13 @@ public final class EvaluatorUtils {
 		return nodePrevious;
 	}
 
+	/**
+	 * Gets the previous element.
+	 *
+	 * @param elementGiven         the element given
+	 * @param filterInlineElements the filter inline elements
+	 * @return the previous element
+	 */
 	public static Element getPreviousElement(Element elementGiven, boolean filterInlineElements) {
 		List<String> inlineTags = new ArrayList<>();
 		if (filterInlineElements) {
@@ -695,6 +858,13 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the next element.
+	 *
+	 * @param elementGiven         the element given
+	 * @param filterInlineElements the filter inline elements
+	 * @return the next element
+	 */
 	public static Element getNextElement(Element elementGiven, boolean filterInlineElements) {
 		List<String> inlineTags = new ArrayList<>();
 		if (filterInlineElements) {
@@ -720,6 +890,11 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Initialize aspects.
+	 *
+	 * @return the map
+	 */
 	private static Map<String, List<Integer>> initializeAspects() {
 		final Map<String, List<Integer>> aspectMap = new HashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -753,10 +928,10 @@ public final class EvaluatorUtils {
 	 * asociará cada aspecto (asociado a un grupo) con una lista de puntuaciones de
 	 * cada check que forma el grupo.
 	 *
-	 * @param evaluation
-	 * @param methodology
-	 * @param isDebugMode
-	 * @return
+	 * @param evaluation  the evaluation
+	 * @param methodology the methodology
+	 * @param isDebugMode the is debug mode
+	 * @return the observatory evaluation form
 	 */
 	public static ObservatoryEvaluationForm generateObservatoryEvaluationForm(Evaluation evaluation, String methodology,
 			boolean isDebugMode) {
@@ -859,6 +1034,12 @@ public final class EvaluatorUtils {
 		return evaluationForm;
 	}
 
+	/**
+	 * Sort vector problems.
+	 *
+	 * @param vProblems the v problems
+	 * @return the list
+	 */
 	private static List<Problem> sortVectorProblems(List<Problem> vProblems) {
 		Collections.sort(vProblems, new Comparator<Problem>() {
 			public int compare(Problem p1, Problem p2) {
@@ -894,11 +1075,12 @@ public final class EvaluatorUtils {
 	 * buena práctica ni una mala práctica.</dd>
 	 * </dl>
 	 *
-	 * @param observatorySubgroupForm
-	 * @param subgroup
-	 * @param hasProblem
-	 * @param hasWarning
-	 * @param executedSubgroup
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param subgroup                the subgroup
+	 * @param aspects                 the aspects
+	 * @param hasProblem              the has problem
+	 * @param hasWarning              the has warning
+	 * @param executedSubgroup        the executed subgroup
 	 */
 	private static void addSubgroupScore(ObservatorySubgroupForm observatorySubgroupForm, GuidelineGroup subgroup,
 			Map<String, List<Integer>> aspects, boolean hasProblem, boolean hasWarning, boolean executedSubgroup) {
@@ -940,6 +1122,13 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Adds the aspect score.
+	 *
+	 * @param aspects    the aspects
+	 * @param aspectName the aspect name
+	 * @param value      the value
+	 */
 	private static void addAspectScore(Map<String, List<Integer>> aspects, String aspectName, int value) {
 		if (aspects.get(aspectName) != null) {
 			aspects.get(aspectName).add(value);
@@ -952,8 +1141,8 @@ public final class EvaluatorUtils {
 	/**
 	 * Se calcula la media de puntuación de los aspectos.
 	 *
-	 * @param aspects
-	 * @return
+	 * @param aspects the aspects
+	 * @return the aspect score
 	 */
 	private static List<AspectScoreForm> getAspectScore(final Map<String, List<Integer>> aspects) {
 		final List<AspectScoreForm> aspectScore = new ArrayList<>();
@@ -983,8 +1172,8 @@ public final class EvaluatorUtils {
 	 * <code>Uno Verde</code> y se divide entre el número de verificaciones que se
 	 * han tenido en cuenta.
 	 *
-	 * @param evaluationForm
-	 * @return
+	 * @param evaluationForm the evaluation form
+	 * @return the evaluation score
 	 */
 	private static BigDecimal getEvaluationScore(ObservatoryEvaluationForm evaluationForm) {
 		int score = 0;
@@ -1012,6 +1201,12 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the partial score.
+	 *
+	 * @param observatoryLevelForm the observatory level form
+	 * @return the partial score
+	 */
 	private static BigDecimal getPartialScore(ObservatoryLevelForm observatoryLevelForm) {
 		int score = 0;
 		int numChecks = 0;
@@ -1036,6 +1231,12 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the partial score.
+	 *
+	 * @param observatorySuitabilityForm the observatory suitability form
+	 * @return the partial score
+	 */
 	private static BigDecimal getPartialScore(ObservatorySuitabilityForm observatorySuitabilityForm) {
 		int score = 0;
 		int numChecks = 0;
@@ -1065,6 +1266,13 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Calculate score.
+	 *
+	 * @param score     the score
+	 * @param numChecks the num checks
+	 * @return the big decimal
+	 */
 	private static BigDecimal calculateScore(final int score, final int numChecks) {
 		if (numChecks != 0) {
 			return new BigDecimal(score).divide(new BigDecimal(numChecks), 2, BigDecimal.ROUND_HALF_UP)
@@ -1073,6 +1281,12 @@ public final class EvaluatorUtils {
 		return BigDecimal.ZERO;
 	}
 
+	/**
+	 * Gets the entity name.
+	 *
+	 * @param evaList the eva list
+	 * @return the entity name
+	 */
 	public static String getEntityName(List<EvaluationForm> evaList) {
 		if (evaList.get(0).getEntity().contains("-")) {
 			return evaList.get(0).getEntity().substring(0, evaList.get(0).getEntity().indexOf("-"));
@@ -1081,6 +1295,15 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the connection.
+	 *
+	 * @param url             the url
+	 * @param method          the method
+	 * @param followRedirects the follow redirects
+	 * @return the connection
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects)
 			throws IOException {
 		final HttpURLConnection connection = generateConnection(url, method);
@@ -1106,18 +1329,59 @@ public final class EvaluatorUtils {
 	}
 
 	/**
-	 * Genera una conexión
-	 * 
-	 * @param url
-	 * @param method
-	 * @return
-	 * @throws IOException
-	 * @throws MalformedURLException
-	 * @throws ProtocolException
+	 * Genera una conexión.
+	 *
+	 * @param url    the url
+	 * @param method the method
+	 * @return the http URL connection
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException the malformed URL exception
+	 * @throws ProtocolException     the protocol exception
 	 */
 	private static HttpURLConnection generateConnection(final String url, final String method)
 			throws IOException, MalformedURLException, ProtocolException {
-		final HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		HttpURLConnection connection = null;
+		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// método también es usado por al JSP de conexión
+		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null && url != null
+				&& !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
+				&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
+				&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub")
+				&& !url.endsWith(".xml") && !url.endsWith(".xls") && !url.endsWith(".wsdl")
+
+		) {
+			try {
+				Proxy proxy = new Proxy(Proxy.Type.HTTP,
+						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
+						Logger.LOG_LEVEL_DEBUG);
+				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
+			} catch (NumberFormatException e) {
+				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
+						Logger.LOG_LEVEL_ERROR);
+			}
+
+		} else {
+			connection = (HttpURLConnection) new URL(url).openConnection();
+		}
+
 		connection.setInstanceFollowRedirects(false);
 		connection.setRequestMethod(method);
 		if (connection instanceof HttpsURLConnection) {
@@ -1138,14 +1402,14 @@ public final class EvaluatorUtils {
 
 	// TODO
 	/**
-	 * Genera una conexión que pasa por el renderizador HTML
-	 * 
-	 * @param url
-	 * @param method
-	 * @return
-	 * @throws IOException
-	 * @throws MalformedURLException
-	 * @throws ProtocolException
+	 * Genera una conexión que pasa por el renderizador HTML.
+	 *
+	 * @param url    the url
+	 * @param method the method
+	 * @return the http URL connection
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException the malformed URL exception
+	 * @throws ProtocolException     the protocol exception
 	 */
 	public static HttpURLConnection generateRendererConnection(final String url, final String method)
 			throws IOException, MalformedURLException, ProtocolException {
@@ -1212,6 +1476,12 @@ public final class EvaluatorUtils {
 		return connection;
 	}
 
+	/**
+	 * Encode url.
+	 *
+	 * @param url the url
+	 * @return the string
+	 */
 	public static String encodeUrl(String url) {
 
 		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó")
@@ -1225,6 +1495,11 @@ public final class EvaluatorUtils {
 
 	}
 
+	/**
+	 * Gets the naive SSL socket factory.
+	 *
+	 * @return the naive SSL socket factory
+	 */
 	private static SSLSocketFactory getNaiveSSLSocketFactory() {
 		// Create a trust manager that does not validate certificate chains
 		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -1252,6 +1527,14 @@ public final class EvaluatorUtils {
 		return null;
 	}
 
+	/**
+	 * Gets the response charset.
+	 *
+	 * @param connection          the connection
+	 * @param markableInputStream the markable input stream
+	 * @return the response charset
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String getResponseCharset(final HttpURLConnection connection, final InputStream markableInputStream)
 			throws IOException {
 		String charset = IntavConstants.DEFAULT_ENCODING;
@@ -1293,6 +1576,12 @@ public final class EvaluatorUtils {
 		return charset;
 	}
 
+	/**
+	 * Checks if is valid charset.
+	 *
+	 * @param charset the charset
+	 * @return true, if is valid charset
+	 */
 	private static boolean isValidCharset(final String charset) {
 		try {
 			byte[] test = new byte[10];
@@ -1303,6 +1592,12 @@ public final class EvaluatorUtils {
 		}
 	}
 
+	/**
+	 * Gets the link text.
+	 *
+	 * @param link the link
+	 * @return the link text
+	 */
 	public static String getLinkText(final Element link) {
 		final StringBuilder linkText = new StringBuilder();
 		if (StringUtils.isNotEmpty(link.getTextContent())) {
@@ -1336,6 +1631,12 @@ public final class EvaluatorUtils {
 		return null;
 	}
 
+	/**
+	 * Serialize guideline to xml.
+	 *
+	 * @param guideline the guideline
+	 * @return the string
+	 */
 	public static String serializeGuidelineToXml(final Guideline guideline) {
 		final StringWriter sw = new StringWriter();
 		try {
@@ -1413,6 +1714,13 @@ public final class EvaluatorUtils {
 		return sw.toString();
 	}
 
+	/**
+	 * Gets the elements by tag name.
+	 *
+	 * @param document the document
+	 * @param tag      the tag
+	 * @return the elements by tag name
+	 */
 	public static List<Element> getElementsByTagName(Document document, String tag) {
 		final List<Element> elements = new ArrayList<>();
 
@@ -1427,6 +1735,13 @@ public final class EvaluatorUtils {
 		return elements;
 	}
 
+	/**
+	 * Gets the elements by tag name.
+	 *
+	 * @param element the element
+	 * @param tag     the tag
+	 * @return the elements by tag name
+	 */
 	public static List<Element> getElementsByTagName(Element element, String tag) {
 		final List<Element> elements = new ArrayList<>();
 
@@ -1441,12 +1756,24 @@ public final class EvaluatorUtils {
 		return elements;
 	}
 
+	/**
+	 * Checks if is html validation needed.
+	 *
+	 * @param checkSelected the check selected
+	 * @return true, if is html validation needed
+	 */
 	// Es necesaria la validación html
 	public static boolean isHtmlValidationNeeded(final List<Integer> checkSelected) {
 		return checkSelected.contains(232) || checkSelected.contains(152) || checkSelected.contains(438)
 				|| checkSelected.contains(439) || checkSelected.contains(440) || checkSelected.contains(441);
 	}
 
+	/**
+	 * Checks if is html validation check.
+	 *
+	 * @param check the check
+	 * @return true, if is html validation check
+	 */
 	// Es necesaria la validación html
 	public static boolean isHtmlValidationCheck(final int check) {
 		// Códigos de checks que requieren la validación HTML son: 232, 152,
@@ -1454,16 +1781,35 @@ public final class EvaluatorUtils {
 		return check == 232 || check == 152 || (check >= 438 && check <= 441);
 	}
 
+	/**
+	 * Checks if is css validation needed.
+	 *
+	 * @param checkSelected the check selected
+	 * @return true, if is css validation needed
+	 */
 	// Es necesaria la validación css
 	public static boolean isCssValidationNeeded(final List<Integer> checkSelected) {
 		return checkSelected.contains(78) || checkSelected.contains(119);
 	}
 
+	/**
+	 * Checks if is css validation check.
+	 *
+	 * @param check the check
+	 * @return true, if is css validation check
+	 */
 	// Es necesaria la validación css
 	public static boolean isCssValidationCheck(final int check) {
 		return check == 78 || check == 119;
 	}
 
+	/**
+	 * Gets the first element.
+	 *
+	 * @param elementGiven         the element given
+	 * @param filterInlineElements the filter inline elements
+	 * @return the first element
+	 */
 	public static Element getFirstElement(Element elementGiven, boolean filterInlineElements) {
 		List<String> inlineTags = new ArrayList<>();
 		if (filterInlineElements) {
@@ -1514,6 +1860,12 @@ public final class EvaluatorUtils {
 		return elements;
 	}
 
+	/**
+	 * Roman to decimal.
+	 *
+	 * @param romanNumber the roman number
+	 * @return the int
+	 */
 	public static int romanToDecimal(java.lang.String romanNumber) {
 		int decimal = 0;
 		int lastNumber = 0;
@@ -1565,6 +1917,14 @@ public final class EvaluatorUtils {
 		return decimal;
 	}
 
+	/**
+	 * Process decimal.
+	 *
+	 * @param decimal     the decimal
+	 * @param lastNumber  the last number
+	 * @param lastDecimal the last decimal
+	 * @return the int
+	 */
 	private static int processDecimal(int decimal, int lastNumber, int lastDecimal) {
 		if (lastNumber > decimal) {
 			return lastDecimal - decimal;

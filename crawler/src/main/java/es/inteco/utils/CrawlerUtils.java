@@ -365,17 +365,6 @@ public final class CrawlerUtils {
 	public static HttpURLConnection generateRendererConnection(String url, String refererUrl)
 			throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		// final HttpURLConnection connection = (HttpURLConnection) new
-		// URL(url).openConnection();
-
-		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
-		// a la conexión
-
-//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
-//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
-//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
-
-		// TODO Configuración de base de datos
 
 		String proxyActive = "";
 		String proxyHttpHost = "";
@@ -446,15 +435,6 @@ public final class CrawlerUtils {
 	private static HttpURLConnection generateConnection(String url, String refererUrl)
 			throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		// final HttpURLConnection connection = (HttpURLConnection) new
-		// URL(url).openConnection();
-
-		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
-		// a la conexión
-
-//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
-//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
-//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
 
 		String proxyActive = "";
 		String proxyHttpHost = "";
@@ -476,7 +456,13 @@ public final class CrawlerUtils {
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
-				&& !"BASIC_SERVICE_URL".equals(refererUrl)) {
+				&& !"BASIC_SERVICE_URL".equals(refererUrl) && url != null && !url.isEmpty()
+				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
+				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
+				&& !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml")
+				&& !url.endsWith(".xls") && !url.endsWith(".wsdl")
+
+		) {
 			try {
 				Proxy proxy = new Proxy(Proxy.Type.HTTP,
 						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
