@@ -13,7 +13,7 @@ RUN apk add --no-cache \
 COPY prerender/ /opt/prerender/
 
 # Dependencias necesarias
-RUN ls -la /opt/prerender && cd /opt/prerender && npm install --save
+RUN cd /opt/prerender && npm install --save
 
 #Permisos
 RUN chmod -R 777 /opt/prerender/
