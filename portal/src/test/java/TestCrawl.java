@@ -76,7 +76,7 @@ public class TestCrawl {
 
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 		
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 
 	}
 
@@ -109,25 +109,25 @@ public class TestCrawl {
 		
 		System.out.println("Principales CAA");
 				
-		this.test("http://www.gobiernodeceuta.es/", false);
-		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
-		this.test("http://www.comunidad.madrid", false);
-		this.test("https://www.gva.es", false);
-		this.test("https://dogc.gencat.cat/ca/", false);
-		this.test("http://www.euskadi.eus/hasiera/", false);
-		this.test("http://www.aragon.es", false);
-		this.test("http://www.gobiernodecanarias.org/principal/",true);
-		this.test("http://www.cantabria.es",false);
-		this.test("http://www.castillalamancha.es/", false);
-		this.test("https://www.larioja.org/es", false);
+		//this.test("http://www.gobiernodeceuta.es/", false);
+//		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
+//		this.test("http://www.comunidad.madrid", false);
+//		this.test("https://www.gva.es", false);
+//		this.test("https://dogc.gencat.cat/ca/", false);
+//		this.test("http://www.euskadi.eus/hasiera/", false);
+//		this.test("http://www.aragon.es", false);
+//		this.test("http://www.gobiernodecanarias.org/principal/",true);
+//		this.test("http://www.cantabria.es",false);
+//		this.test("http://www.castillalamancha.es/", false);
+//		this.test("https://www.larioja.org/es", false);
 		this.test("http://www.caib.es/govern", false);
-		this.test("https://www.asturias.es/", false);
-		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
-		this.test("http://www.jcyl.es", false);
-		this.test("http://www.juntaex.es/web/", false);
-		this.test("http://www.carm.es", false);
-		this.test("https://www.xunta.gal/portada", false);
-		this.test("http://www.navarra.es/home_es", false);
+//		this.test("https://www.asturias.es/", false);
+//		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
+//		this.test("http://www.jcyl.es", false);
+//		this.test("http://www.juntaex.es/web/", false);
+//		this.test("http://www.carm.es", false);
+//		this.test("https://www.xunta.gal/portada", false);
+//		this.test("http://www.navarra.es/home_es", false);
 		
 		
 	}

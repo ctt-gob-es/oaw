@@ -313,9 +313,9 @@ public class ConectividadAction extends Action {
 			connection.setInstanceFollowRedirects(false);
 
 			connection.setConnectTimeout(
-					Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+					Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
 			connection.setReadTimeout(
-					Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+					Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
 			connection.addRequestProperty("Accept-Language",
 					pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
 			connection.addRequestProperty("User-Agent",
