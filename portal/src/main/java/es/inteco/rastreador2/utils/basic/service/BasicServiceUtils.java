@@ -195,9 +195,9 @@ public final class BasicServiceUtils {
 		final PropertiesManager pmgr = new PropertiesManager();
 
 		String maxSize = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.url.size.max");
-		
-		if (!StringUtils.isEmpty(basicServiceForm.getDomain()) && basicServiceForm.getDomain().length() > Integer
-				.parseInt(maxSize)) {
+
+		if (!StringUtils.isEmpty(basicServiceForm.getDomain())
+				&& basicServiceForm.getDomain().length() > (maxSize != null ? Integer.parseInt(maxSize) : 12000)) {
 			errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.url.size"));
 		}
 
@@ -282,7 +282,7 @@ public final class BasicServiceUtils {
 				// cortamos el title e insertamos '...'
 				title = title.substring(0,
 						Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "basic.service.title.max.length")) - 3);
-				if(title.lastIndexOf(' ')>0) {
+				if (title.lastIndexOf(' ') > 0) {
 					title = title.substring(0, title.lastIndexOf(' '));
 				}
 				result = title + "...";
