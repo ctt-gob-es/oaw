@@ -50,6 +50,7 @@ import org.mozilla.universalchardet.UniversalDetector;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
@@ -57,6 +58,7 @@ import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.dao.ProxyDAO;
 import es.inteco.crawler.dao.ProxyForm;
 import es.inteco.crawler.ignored.links.IgnoredLink;
+import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 
@@ -385,19 +387,13 @@ public final class CrawlerUtils {
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
-		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
-				&& !"BASIC_SERVICE_URL".equals(refererUrl) && url != null && !url.isEmpty()
-				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
-				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
-				&& !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml")
-				&& !url.endsWith(".xls") && !url.endsWith(".wsdl")
-
-		) {
+		if (applyProxy(url, refererUrl, proxyActive, proxyHttpHost, proxyHttpPort)) {
 			try {
 				Proxy proxy = new Proxy(Proxy.Type.HTTP,
 						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-						Logger.LOG_LEVEL_DEBUG);
+				Logger.putLog(
+						"Conectando con la URL: " + url + " - Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort,
+						CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
 				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
 			} catch (NumberFormatException e) {
 				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
@@ -405,6 +401,7 @@ public final class CrawlerUtils {
 			}
 
 		} else {
+			Logger.putLog("Conectando con la URL: " + url, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
 			connection = (HttpURLConnection) new URL(url).openConnection();
 		}
 
@@ -432,51 +429,34 @@ public final class CrawlerUtils {
 		return connection;
 	}
 
+	private static boolean applyProxy(String url, String refererUrl, String proxyActive, String proxyHttpHost,
+			String proxyHttpPort) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
+				&& !"BASIC_SERVICE_URL".equals(refererUrl) && url != null && !url.isEmpty()
+				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
+				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
+				&& !url.toLowerCase().endsWith(".doc") && !url.toLowerCase().endsWith(".epub")
+				&& !url.toLowerCase().endsWith(".xml") && !url.toLowerCase().endsWith(".xls")
+				&& !url.toLowerCase().endsWith(".wsdl") && !url.toLowerCase().endsWith(".css")
+				&& !url.toLowerCase().endsWith(".png") && !url.toLowerCase().endsWith(".jpeg")
+				&& !url.toLowerCase().endsWith(".jpg") && !url.toLowerCase().endsWith(".bmp")
+				&& !url.toLowerCase().endsWith(".gif") && !url.toLowerCase().endsWith(".svg")
+				&& !url.toLowerCase().endsWith(".webm")
+				&& !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator"))
+				&& !url.toLowerCase().contains(".css") && !url.toLowerCase().contains(".scss")
+				&& !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml")
+				&& !url.toLowerCase().contains(".wsdl");
+	}
+
 	private static HttpURLConnection generateConnection(String url, String refererUrl)
 			throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
 
-		String proxyActive = "";
-		String proxyHttpHost = "";
-		String proxyHttpPort = "";
-
-		try (Connection c = DataBaseManager.getConnection()) {
-			ProxyForm proxy = ProxyDAO.getProxy(c);
-
-			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
-			proxyHttpHost = proxy.getUrl();
-			proxyHttpPort = proxy.getPort();
-
-			DataBaseManager.closeConnection(c);
-		} catch (Exception e) {
-			Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
-		}
-
 		HttpURLConnection connection = null;
-		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
-		// método también es usado por al JSP de conexión
-		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
-				&& !"BASIC_SERVICE_URL".equals(refererUrl) && url != null && !url.isEmpty()
-				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
-				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
-				&& !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml")
-				&& !url.endsWith(".xls") && !url.endsWith(".wsdl")
 
-		) {
-			try {
-				Proxy proxy = new Proxy(Proxy.Type.HTTP,
-						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-						Logger.LOG_LEVEL_DEBUG);
-				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
-			} catch (NumberFormatException e) {
-				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-						Logger.LOG_LEVEL_ERROR);
-			}
-
-		} else {
-			connection = (HttpURLConnection) new URL(url).openConnection();
-		}
+		Logger.putLog("Conectando con la URL: " + url, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+		connection = (HttpURLConnection) new URL(url).openConnection();
 
 		if (connection instanceof HttpsURLConnection) {
 			final HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;

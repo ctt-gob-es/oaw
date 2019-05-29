@@ -136,6 +136,7 @@ public class CrawlerJob implements InterruptableJob {
 			if (!url.endsWith("#") && crawledLink.getUrl().equals(url + "/")) {
 				return true;
 			}
+			
 
 			// http://google.es
 			// http://www.google.es

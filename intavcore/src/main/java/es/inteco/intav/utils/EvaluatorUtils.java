@@ -1328,6 +1328,22 @@ public final class EvaluatorUtils {
 		return generateConnection(url, method);
 	}
 
+	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost,
+			String proxyHttpPort) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
+				&& url != null && !url.isEmpty()
+				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
+				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
+				&& !url.toLowerCase().endsWith(".doc") && !url.toLowerCase().endsWith(".epub") && !url.toLowerCase().endsWith(".xml")
+				&& !url.toLowerCase().endsWith(".xls") && !url.toLowerCase().endsWith(".wsdl") && !url.toLowerCase().endsWith(".css") && !url.toLowerCase().endsWith(".png")
+				&& !url.toLowerCase().endsWith(".jpeg") && !url.toLowerCase().endsWith(".jpg") && !url.toLowerCase().endsWith(".bmp") && !url.toLowerCase().endsWith(".gif")
+				&& !url.toLowerCase().endsWith(".svg") && !url.toLowerCase().endsWith(".webm") && !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator")) 
+				&& !url.toLowerCase().contains(".css") && !url.toLowerCase().contains(".scss")
+				&& !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml")
+				&& !url.toLowerCase().contains(".wsdl");
+	}
+
 	/**
 	 * Genera una conexión.
 	 *
@@ -1360,18 +1376,14 @@ public final class EvaluatorUtils {
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
-		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null && url != null
-				&& !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
-				&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
-				&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub")
-				&& !url.endsWith(".xml") && !url.endsWith(".xls") && !url.endsWith(".wsdl")
-
-		) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		if (applyProxy(url, proxyActive, proxyHttpHost, proxyHttpPort)) {
 			try {
 				Proxy proxy = new Proxy(Proxy.Type.HTTP,
 						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
-						Logger.LOG_LEVEL_DEBUG);
+				Logger.putLog(
+						"Conectando con la URL: " + url + " - Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort,
+						EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
 				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
 			} catch (NumberFormatException e) {
 				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
@@ -1379,82 +1391,7 @@ public final class EvaluatorUtils {
 			}
 
 		} else {
-			connection = (HttpURLConnection) new URL(url).openConnection();
-		}
-
-		connection.setInstanceFollowRedirects(false);
-		connection.setRequestMethod(method);
-		if (connection instanceof HttpsURLConnection) {
-			((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
-		}
-		final PropertiesManager pmgr = new PropertiesManager();
-		connection.setConnectTimeout(
-				Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
-		connection
-				.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
-		connection.addRequestProperty("Accept", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.header"));
-		connection.addRequestProperty("Accept-Language",
-				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.language.header"));
-		connection.addRequestProperty("User-Agent",
-				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
-		return connection;
-	}
-
-	// TODO
-	/**
-	 * Genera una conexión que pasa por el renderizador HTML.
-	 *
-	 * @param url    the url
-	 * @param method the method
-	 * @return the http URL connection
-	 * @throws IOException           Signals that an I/O exception has occurred.
-	 * @throws MalformedURLException the malformed URL exception
-	 * @throws ProtocolException     the protocol exception
-	 */
-	public static HttpURLConnection generateRendererConnection(final String url, final String method)
-			throws IOException, MalformedURLException, ProtocolException {
-		// final HttpURLConnection connection = (HttpURLConnection) new
-		// URL(url).openConnection();
-
-		// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
-		// a la conexión
-		final PropertiesManager pmgr = new PropertiesManager();
-//		String proxyActive = pmgr.getValue("crawler.core.properties", "renderer.proxy.active");
-//		String proxyHttpHost = pmgr.getValue("crawler.core.properties", "renderer.proxy.host");
-//		String proxyHttpPort = pmgr.getValue("crawler.core.properties", "renderer.proxy.port");
-
-		String proxyActive = "";
-		String proxyHttpHost = "";
-		String proxyHttpPort = "";
-
-		try (Connection c = DataBaseManager.getConnection()) {
-			ProxyForm proxy = ProxyDAO.getProxy(c);
-
-			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
-			proxyHttpHost = proxy.getUrl();
-			proxyHttpPort = proxy.getPort();
-
-			DataBaseManager.closeConnection(c);
-		} catch (Exception e) {
-			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
-		}
-
-		HttpURLConnection connection = null;
-		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
-		// método también es usado por al JSP de conexión
-		if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
-			try {
-				Proxy proxy = new Proxy(Proxy.Type.HTTP,
-						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-				Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
-						Logger.LOG_LEVEL_DEBUG);
-				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
-			} catch (NumberFormatException e) {
-				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
-						Logger.LOG_LEVEL_ERROR);
-			}
-
-		} else {
+			Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
 			connection = (HttpURLConnection) new URL(url).openConnection();
 		}
 
