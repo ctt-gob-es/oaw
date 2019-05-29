@@ -103,7 +103,7 @@ public final class AccesibilityDeclarationCheckUtils {
 
 		for (int i = 0; i < linksFound.size(); i++) {
 			Logger.putLog("URL de accesibilidad candidata: (" + i + ") " + linksFound.get(i).getAttribute("href"),
-					AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_DEBUG);
+					AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 
 		return linksFound;

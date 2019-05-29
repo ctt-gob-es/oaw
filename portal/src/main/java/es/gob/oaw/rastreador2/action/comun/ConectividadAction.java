@@ -295,7 +295,7 @@ public class ConectividadAction extends Action {
 					Proxy proxy = new Proxy(Proxy.Type.HTTP,
 							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
 					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-							Logger.LOG_LEVEL_DEBUG);
+							Logger.LOG_LEVEL_ERROR);
 					connection = (HttpURLConnection) url.openConnection(proxy);
 				} catch (NumberFormatException e) {
 					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
