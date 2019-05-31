@@ -1,0 +1,22 @@
+FROM debian:buster
+
+#Instalar Node
+RUN apt-get update && apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs chromium
+  
+#Instalar Chromium  
+#Copiamos el prerrender
+COPY prerender/ /opt/prerender/
+
+# Dependencias necesarias
+RUN cd /opt/prerender && npm install --save
+
+#Permisos
+RUN chmod -R 777 /opt/prerender/
+
+RUN dpkg -L chromium
+
+#Usuario node para ejecutar el renderer
+#RUN addgroup -S node && adduser -S -G node node
+#USER node
