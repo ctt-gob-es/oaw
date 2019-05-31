@@ -144,6 +144,14 @@ public final class CrawlerUtils {
 
 	public static URL getAbsoluteUrl(Document document, String rootUrl, String urlLink) throws MalformedURLException {
 		String base = CrawlerDOMUtils.getBaseUrl(document);
+
+		//
+		try {
+			URL baseValid = new URL(base);
+		} catch (MalformedURLException e) {
+			base = "";
+		}
+
 		return StringUtils.isEmpty(base) ? new URL(new URL(rootUrl), urlLink) : new URL(new URL(base), urlLink);
 	}
 
@@ -480,6 +488,7 @@ public final class CrawlerUtils {
 			connection.addRequestProperty("Referer", refererUrl);
 		}
 		return connection;
+//		return generateRendererConnection(url, refererUrl);
 	}
 
 	private static SSLSocketFactory getNaiveSSLSocketFactory() {

@@ -120,7 +120,7 @@ public class TestCrawl {
 //		this.test("http://www.cantabria.es",false);
 //		this.test("http://www.castillalamancha.es/", false);
 //		this.test("https://www.larioja.org/es", false);
-		this.test("http://www.caib.es/govern", false);
+		//this.test("http://www.caib.es/govern", false);
 //		this.test("https://www.asturias.es/", false);
 //		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
 //		this.test("http://www.jcyl.es", false);
@@ -128,6 +128,8 @@ public class TestCrawl {
 //		this.test("http://www.carm.es", false);
 //		this.test("https://www.xunta.gal/portada", false);
 //		this.test("http://www.navarra.es/home_es", false);
+			this.test("https://www.depo.gal/", false);
+		
 		
 		
 	}

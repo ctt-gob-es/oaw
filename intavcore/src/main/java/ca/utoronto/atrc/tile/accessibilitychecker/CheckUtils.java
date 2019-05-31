@@ -139,6 +139,7 @@ public final class CheckUtils {
                 return null;
             }
         } catch (RuntimeException t) {
+        	Logger.putLog("Error conectarse a la url: "+  remoteUrlStr +" - " + t.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_ERROR);
             return null;
         }
     }

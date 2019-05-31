@@ -95,7 +95,7 @@ public final class AccesibilityDeclarationCheckUtils {
 					}
 
 				} catch (IOException e) {
-					Logger.putLog("Error comprobar la URL: " + link.getAttribute("href"),
+					Logger.putLog("Error al comprobar la URL: " + link.getAttribute("href"),
 							AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
