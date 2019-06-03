@@ -611,6 +611,8 @@ public class CrawlerJob implements InterruptableJob {
 					Logger.putLog(String.format("Error al rastrear el dominio %s: %s", url, e.getMessage()),
 							CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
 				}
+			} else {
+				Logger.putLog("Rechazada la url " + url, CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			}
 		}
 

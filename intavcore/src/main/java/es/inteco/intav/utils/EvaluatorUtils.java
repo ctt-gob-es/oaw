@@ -1327,6 +1327,23 @@ public final class EvaluatorUtils {
 
 		return generateConnection(url, method);
 	}
+	
+	
+	/**
+	 * Gets the connection.
+	 *
+	 * @param url             the url
+	 * @param method          the method
+	 * @param followRedirects the follow redirects
+	 * @return the connection
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static HttpURLConnection getRendererConnection(final String url, final String method, final boolean followRedirects)
+			throws IOException {
+	
+
+		return generateRendererConnection(url, method);
+	}
 
 	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost,
 			String proxyHttpPort) {
@@ -1355,6 +1372,62 @@ public final class EvaluatorUtils {
 	 * @throws ProtocolException     the protocol exception
 	 */
 	private static HttpURLConnection generateConnection(final String url, final String method)
+			throws IOException, MalformedURLException, ProtocolException {
+
+		String proxyActive = "";
+		String proxyHttpHost = "";
+		String proxyHttpPort = "";
+
+		try (Connection c = DataBaseManager.getConnection()) {
+			ProxyForm proxy = ProxyDAO.getProxy(c);
+
+			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+			proxyHttpHost = proxy.getUrl();
+			proxyHttpPort = proxy.getPort();
+
+			DataBaseManager.closeConnection(c);
+		} catch (Exception e) {
+			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		HttpURLConnection connection = null;
+		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// método también es usado por al JSP de conexión
+		final PropertiesManager pmgr = new PropertiesManager();
+
+			Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
+			connection = (HttpURLConnection) new URL(url).openConnection();
+		
+
+		connection.setInstanceFollowRedirects(false);
+		connection.setRequestMethod(method);
+		if (connection instanceof HttpsURLConnection) {
+			((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
+		}
+
+		connection.setConnectTimeout(
+				Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+		connection
+				.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+		connection.addRequestProperty("Accept", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.header"));
+		connection.addRequestProperty("Accept-Language",
+				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.language.header"));
+		connection.addRequestProperty("User-Agent",
+				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
+		return connection;
+	}
+	
+	/**
+	 * Genera una conexión.
+	 *
+	 * @param url    the url
+	 * @param method the method
+	 * @return the http URL connection
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException the malformed URL exception
+	 * @throws ProtocolException     the protocol exception
+	 */
+	private static HttpURLConnection generateRendererConnection(final String url, final String method)
 			throws IOException, MalformedURLException, ProtocolException {
 
 		String proxyActive = "";
