@@ -470,7 +470,7 @@ public final class EvaluatorUtility {
 
     public static Document loadHtmlFile(final CheckAccessibility checkAccessibility, boolean htmlValidationNeeded, boolean cssValidationNeeded, String language, boolean fromCrawler) {
         try {
-            final HttpURLConnection connection = EvaluatorUtils.getConnection(checkAccessibility.getUrl(), "GET", true);
+            final HttpURLConnection connection = EvaluatorUtils.getRendererConnection(checkAccessibility.getUrl(), "GET", true);
 
             try {
                 final long inicio = System.currentTimeMillis();

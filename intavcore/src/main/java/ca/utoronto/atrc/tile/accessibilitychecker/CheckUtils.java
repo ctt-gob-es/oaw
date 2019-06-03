@@ -143,6 +143,30 @@ public final class CheckUtils {
             return null;
         }
     }
+    
+    
+  public static Document getRemoteDocumentRenderer(final String documentUrlStr, final String remoteUrlStr) throws IOException, SAXException {
+    	
+    	//TODO Este remote debería pasar por el proxy
+        try {
+            final HttpURLConnection connection = EvaluatorUtils.getRendererConnection(remoteUrlStr, "GET", true);
+            connection.setRequestProperty("referer", documentUrlStr);
+            connection.connect();
+            final int responseCode = connection.getResponseCode();
+            String type = connection.getHeaderField("Content-Type");
+            
+            if (responseCode == HttpURLConnection.HTTP_OK  && !type.contains("application/pdf")) {
+                final DOMParser parser = new CheckerParser(true);
+                parser.parse(new InputSource(connection.getInputStream()));
+                return parser.getDocument();
+            } else {
+                return null;
+            }
+        } catch (RuntimeException t) {
+        	Logger.putLog("Error conectarse a la url: "+  remoteUrlStr +" - " + t.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_ERROR);
+            return null;
+        }
+    }
 
     public static String getElementText(Node checkedNode, boolean backward, final List<String> inlineTags) {
         String text = "";

@@ -67,7 +67,7 @@ server.on('connect', function(req, socket, head) {
     socket.pipe(srvSocket).on('error', err => {
       const msg = 'Error al conectarse a la url';
       console.error(msg, err);
-      res.status(500).send(msg);
+      //res.status(500).send(msg);
     });;
   });
   
