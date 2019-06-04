@@ -907,7 +907,12 @@ public class CrawlerJob implements InterruptableJob {
 				int responseCode = connection.getResponseCode();
 				if (responseCode == HttpURLConnection.HTTP_OK) {
 					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-					final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+					//final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
+					
+					final String textContent = CrawlerUtils.getTextContent(
+							CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
+					
+					
 					markableInputStream.close();
 					final String textContentHash = CrawlerUtils.getHash(textContent);
 
