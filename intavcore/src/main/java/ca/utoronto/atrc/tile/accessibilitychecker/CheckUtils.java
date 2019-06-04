@@ -136,7 +136,15 @@ public final class CheckUtils {
                 parser.parse(new InputSource(connection.getInputStream()));
                 return parser.getDocument();
             } else {
-                return null;
+            	if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM
+						|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+					// Obtenemos la redirección
+					String newUrl = connection.getHeaderField("Location");
+					connection.disconnect();
+					return getRemoteDocument(encodeUrl(newUrl), encodeUrl(newUrl));
+				} else {
+					return null;
+				}
             }
         } catch (RuntimeException t) {
         	Logger.putLog("Error conectarse a la url: "+  remoteUrlStr +" - " + t.getMessage(), CheckUtils.class, Logger.LOG_LEVEL_ERROR);
