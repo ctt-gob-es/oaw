@@ -4027,6 +4027,7 @@ public class Check {
 
 		boolean found = false;
 		if (accessibilityLinks.isEmpty()) {
+			Logger.putLog("No hay enlaces: ", Check.class, Logger.LOG_LEVEL_ERROR);
 			// Si no hay enlaces es porque estamos en la página de accesibilidad
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
 			// esta)

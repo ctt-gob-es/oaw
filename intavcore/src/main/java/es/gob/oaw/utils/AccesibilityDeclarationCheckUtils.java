@@ -13,11 +13,13 @@
 package es.gob.oaw.utils;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -97,8 +99,8 @@ public final class AccesibilityDeclarationCheckUtils {
 				} catch (IOException e) {
 					Logger.putLog("Error al comprobar la URL: " + link.getAttribute("href"),
 							AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
-					
-					//TODO La añadirmos igualmente
+
+					// TODO La añadirmos igualmente
 					linksFound.add(link);
 				}
 			}
@@ -377,8 +379,8 @@ public final class AccesibilityDeclarationCheckUtils {
 			}
 		}
 
-		final String text = getDocumentText(document);
-
+		final String text = getDocumentText(document); 
+	
 		return isLevelConformancePattern(text);
 
 	}
@@ -393,6 +395,8 @@ public final class AccesibilityDeclarationCheckUtils {
 	 * @return true si se ha detectado un patrón o false en caso contrario.
 	 */
 	private static boolean isLevelConformancePattern(final String text) {
+		
+		
 
 		PropertiesManager pmgr = new PropertiesManager();
 
@@ -407,6 +411,7 @@ public final class AccesibilityDeclarationCheckUtils {
 				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
 				if (pattern.matcher(text).find()) {
+									
 					return true;
 				}
 			} catch (Exception e) {
@@ -422,6 +427,7 @@ public final class AccesibilityDeclarationCheckUtils {
 				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
 				if (pattern.matcher(text).find()) {
+
 					return true;
 				}
 			} catch (Exception e) {
@@ -432,6 +438,7 @@ public final class AccesibilityDeclarationCheckUtils {
 
 		// Nivel AAA
 		for (String stringPattern : altAAA) {
+			
 
 			try {
 				Pattern pattern = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
@@ -444,6 +451,8 @@ public final class AccesibilityDeclarationCheckUtils {
 						Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
+
+
 		return false;
 	}
 
@@ -463,6 +472,7 @@ public final class AccesibilityDeclarationCheckUtils {
 				documentText.append(" ");
 			}
 		}
+
 		return documentText.toString();
 	}
 
