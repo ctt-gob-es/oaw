@@ -41,6 +41,41 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import java.awt.Dimension;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+
+import org.apache.xerces.util.DOMUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 import es.gob.oaw.language.Diccionario;
 import es.gob.oaw.language.ExtractTextHandler;
 import es.gob.oaw.language.LanguageChecker;
@@ -56,24 +91,6 @@ import es.inteco.flesch.FleschAnalyzer;
 import es.inteco.flesch.FleschUtils;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
-import org.apache.xerces.util.DOMUtil;
-import org.w3c.dom.*;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.util.*;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Check {
 	private int checkOkCode;
@@ -1100,8 +1117,7 @@ public class Check {
 	 * Eliminamos las variantes idiomáticas para quedarnos únicamente con el idioma
 	 * base (ej. en-us pasa a en)
 	 *
-	 * @param lang
-	 *            la cadena que representa el idioma completo con las variantes
+	 * @param lang la cadena que representa el idioma completo con las variantes
 	 * @return una cadena que representa el idioma base
 	 */
 	private String extractLanguageCode(final String lang) {
@@ -1340,8 +1356,7 @@ public class Check {
 	 * Comprueba si un nodo tiene atributos alt, title, aria-label o
 	 * aria-describedby correctos.
 	 * 
-	 * @param item
-	 *            Nodo.
+	 * @param item Nodo.
 	 * @return true si alguno de los atributos mencionados tiene valor, false en
 	 *         caso contrario.
 	 */
@@ -4059,14 +4074,50 @@ public class Check {
 	}
 
 	private Document getAccesibilityDocument(final Element elementRoot, final String href) throws Exception {
+
+		try {
+
+			final URI u = new URI(href);
+
+			if (u.isAbsolute()) {
+
+				final Document document;
+				if (((HashMap<String, Document>) elementRoot
+						.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href) == null) {
+					Logger.putLog("Accediendo a la declaraciÃ³n de accesibilidad en " + href, Check.class,
+							Logger.LOG_LEVEL_INFO);
+					document = CheckUtils.getRemoteDocument(href, href);
+					((HashMap<String, Document>) elementRoot
+							.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(href, document);
+				} else {
+					document = ((HashMap<String, Document>) elementRoot
+							.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href);
+				}
+				return document;
+
+			} else {
+
+				return getRelativeDocument(elementRoot, href);
+
+			}
+		} catch (Exception e) {
+
+			return getRelativeDocument(elementRoot, href);
+
+		}
+
+	}
+
+	private Document getRelativeDocument(final Element elementRoot, final String href)
+			throws MalformedURLException, IOException, SAXException {
 		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot))
 				: new URL((String) elementRoot.getUserData("url"));
 		final String remoteUrlStr = new URL(documentUrl, href).toString();
 		final Document document;
 		if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
 				.get(remoteUrlStr) == null) {
-			Logger.putLog("Accediendo al conteindo de la declaración de accesibilidad en " + remoteUrlStr, Check.class,
-					Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class,
+					Logger.LOG_LEVEL_INFO);
 			document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
 			((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
 					.put(remoteUrlStr, document);
@@ -4540,12 +4591,9 @@ public class Check {
 	/**
 	 * Comprobación de la existencia de encabezados marcados WAI-ARIA
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir si no hay encabezados. false en caso de
 	 *         encontrar algún encabezado WAI-ARIA
 	 */
@@ -4574,12 +4622,9 @@ public class Check {
 	/**
 	 * Comprueba si existe encabezado marcado WAI-ARIA de primer nivel
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir si existe encabezado de primer nivel. false
 	 *         en caso de encontrar encabezado de nivel 1 WAI-ARIA
 	 */
@@ -4611,12 +4656,9 @@ public class Check {
 	 * Comprueba si un elemento con el atributo "aria-labelledby" hace referencia a
 	 * un elemento existente en el documento.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir no se encuentra el elelemento con el id del
 	 *         atributo aria-labelledby. false en caso de encontrar el elemento con
 	 *         el id.
@@ -4649,12 +4691,9 @@ public class Check {
 	 * Comprueba si un elemento con el atributo "aria-describedby" hace referencia a
 	 * un elemento existente en el documento.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir no se encuentra el elelemento con el id del
 	 *         atributo aria-labelledby. false en caso de encontrar el elemento con
 	 *         el id.
@@ -4686,12 +4725,9 @@ public class Check {
 	/**
 	 * Comprueba si elemento dado tiene una longitud mayor de 150.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir si la longitud es superior a 150. false en
 	 *         caso contrario.
 	 */
@@ -4712,12 +4748,9 @@ public class Check {
 	 * Comprueba si el contenido del elemento al que hace referencia el elemento
 	 * "aria-labelledby" tiene una longiutud superior a 150 caracteres.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir si la longitud es superior a 150. false en
 	 *         caso contrario.
 	 */
@@ -4752,12 +4785,9 @@ public class Check {
 	 * Comprueba que existe contenido a continación de un encabezado WAI-ARIA y que
 	 * no lo sigue otro encabezado del mismo nive sin contenido de por medio.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir, si el siguiente elemento es otro encabezado
 	 *         WAI. false en caso contrario.
 	 */
@@ -4783,12 +4813,9 @@ public class Check {
 	/**
 	 * Comprueba que los encabezados WAI-ARIA que no se saltan niveles.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir, si no se sigue la secuencia. false en caso
 	 *         contrario.
 	 */
@@ -4849,12 +4876,9 @@ public class Check {
 	 * Cuenta el número de elementos existentes con un atributo determinado y
 	 * comprueba si se supera el máximo indicado.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir, si se supera el número elementos. false en
 	 *         caso contrario
 	 */
@@ -4904,12 +4928,9 @@ public class Check {
 	 * la comprobación de forma de contacto para ver si la página de accesibilidad
 	 * lo tiene ella misma incluido.
 	 * 
-	 * @param checkCode
-	 *            Información del check
-	 * @param nodeNode
-	 *            Nodo
-	 * @param elementGiven
-	 *            Elemento
+	 * @param checkCode    Información del check
+	 * @param nodeNode     Nodo
+	 * @param elementGiven Elemento
 	 * @return true si falla, es decir, si no se consigue detectar el formulario.
 	 *         False en caso contrario.
 	 */
