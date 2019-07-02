@@ -14,7 +14,7 @@
 	<name>oaw-portal</name>
 
 	<properties>
-		<oaw.version>4.3.6</oaw.version>
+		<oaw.version>4.3.8</oaw.version>
 	</properties>
 
 	<parent>

@@ -7,7 +7,6 @@ var server = prerender({
 	pageDoneCheckInterval: 1000,
 	waitAfterLastRequest: 1000,
 	pageLoadTimeout: 30000,
-	//chromeFlags: [ '--no-sandbox', '--headless', '--disable-gpu', '--allow-running-insecure-content' ],
 	workers: 4,
 	enableServiceWorker: true
 });

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +28,6 @@ import javax.naming.InitialContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -67,7 +65,7 @@ public class TestCrawl {
 	private final List<String> auxDomains = new ArrayList<String>();
 	private final List<String> md5Content = new ArrayList<String>();
 	private final List<String> rejectedDomains = new ArrayList<String>();
-	private final MailService mailService = new MailService();
+	
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -89,7 +87,7 @@ public class TestCrawl {
 
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
 
 	}
 
@@ -120,91 +118,19 @@ public class TestCrawl {
 
 	@Test
 	public void crawlPrincipales() throws Exception {
+		
 
-		// this.test("http://www.gobiernodeceuta.es/", false);
-//		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
-//		this.test("http://www.comunidad.madrid", false);
-//		this.test("https://www.gva.es", false);
-//		this.test("https://dogc.gencat.cat/ca/", false);
-//		this.test("http://www.euskadi.eus/hasiera/", false);
-//		this.test("http://www.aragon.es", false);
-//		this.test("http://www.gobiernodecanarias.org/principal/",true);
-//		this.test("http://www.cantabria.es",false);
-//		this.test("http://www.castillalamancha.es/", false);
-//		this.test("https://www.larioja.org/es", false);
-		// this.test("http://www.caib.es/govern", false);
-//		this.test("https://www.asturias.es/", false);
-//		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
-//		this.test("http://www.jcyl.es", false);
-//		this.test("http://www.juntaex.es/web/", false);
-//		this.test("http://www.carm.es", false);
-//		this.test("https://www.xunta.gal/portada", false);
-//		this.test("http://www.navarra.es/home_es", false);
-//		this.test("http://www.aragon.es/Temas/Empleo",false);
-//		this.test("http://www.navarra.es/home_es/Temas/Empleo+y+Economia/Empleo/default.htm",false);
-//		this.test("http://www.larioja.org/tributos/",false);
-//		this.test("https://www.comunidad.madrid/servicios/educacion",false);
-//		this.test("http://www.euskadi.eus/gobierno-vasco/departamento-educacion/",false);
-//		this.test("https://sede.gobex.es/",false);
-//		this.test("http://www.navarra.es/home_es/Gobierno+de+Navarra/Organigrama/Los+departamentos/Economia+y+Hacienda/Organigrama/Estructura+Organica/Hacienda/",false);
-//		this.test("http://www.melillatributos.com/",false);
-//		this.test("http://atv.gva.es/",false);
-//		this.test("http://www.aragon.es/DepartamentosOrganismosPublicos/OOAA/ServicioAragonesSalud",true);
-//		this.test("http://www.areasaludmelilla.es/asm/index.php",false);
-//		this.test("https://www.comunidad.madrid/servicios/salud",true);
-//		this.test("http://emprego.xunta.es/cmspro/contido/indice.html",false);
-//		this.test("http://www.larioja.org/oficina-electronica/",true);
-		// this.test("http://www.mecd.gob.es/educacion-mecd/ba/ceuta-melilla/ceuta/portada.html",false);
-		// this.test("http://www.larioja.org/empleo-formacion/",true);
-//		this.test("http://www.ceuta.es/ceuta/por-servicios/sanidad-y-consumo",true);
-//		this.test("https://www.caib.es/seucaib",true);
-		// this.test("http://www.juntadeandalucia.es/agenciatributariadeandalucia/",true);
-		// this.test("http://www.gobiernodecanarias.org/tributos/portal/jsf/publico/inicio.jsp",true);
-		// this.test("http://www.labora.gva.es/",false);
-		// this.test("http://www.larioja.org/educacion/es",true);
-//		this.test("https://empleopublico.castillalamancha.es/",false);
-//		this.test("https://sede.gva.es/",false);
-//		this.test("http://www.aedl-melilla.es/",false);
-//		this.test("https://sedeelectronica.navarra.gob.es/",false);
-//		this.test("https://sede.melilla.es/",false);
-//		this.test("http://www.gobiernodeceuta.es/index.php/el-gobierno/la-asamblea",true);
-//		this.test("http://www.parlamento-larioja.org/",false);
-//		this.test("http://www.parlamentodegalicia.es/sitios/web/default.aspx",true);
-//		this.test("https://www.castillalamancha.es/",false);
-//		this.test("http://www.caib.es/govern/index.do?lang=ca",false);
-//		this.test("http://www.cantabria.es/",false);
-//		this.test("http://www.gobiernodeceuta.es/",false);
-//		this.test("https://www.gva.es/va/inicio/presentacion",true);
-		// this.test("http://www.pap.hacienda.gob.es/",false);
+		
+		this.test("https://sede.mscbs.gob.es/", true);
+		this.test("https://www.sededgsfp.gob.es/", true);
+		this.test("http://sede.puertoaviles.gob.es/", true);
+		
+		
+		
 
-//		this.test("http://www.larioja.org/bor/",false);
-//		this.test("https://www.larioja.org/es",false);
-//		this.test("http://www.bocm.es/",false);
-
-		//this.test("https://www.agenciatributaria.es/", false);
-//		this.test("http://www.boe.es", false);
-//		this.test("http://www.mapa.gob.es", false);
-//		this.test("http://www.exteriores.gob.es", false);
-//		this.test("http://www.ciencia.gob.es", false);
-//		this.test("http://www.culturaydeporte.gob.es/", false);
-//		this.test("http://www.defensa.gob.es", false);
-//		this.test("http://www.mineco.gob.es", false);
-//		this.test("http://www.educacionyfp.gob.es/", false);
-//		this.test("https://www.fomento.gob.es", false);
-//		this.test("http://www.hacienda.gob.es", false);
-//		this.test("https://www.mincotur.gob.es", false);
-//		this.test("https://www.mjusticia.gob.es", false);
-//		this.test("http://www.mptfp.gob.es/portal/index.html", false);
-//		this.test("http://www.mscbs.gob.es/", false);
-//		this.test("http://www.mitramiss.gob.es", false);
-//		this.test("https://www.mpr.gob.es", false);
-//		this.test("http://www.interior.gob.es", false);
-//		this.test("https://www.miteco.gob.es", false);
-//		this.test("https://www.lamoncloa.gob.es", false);
-//		this.test("http://administracion.gob.es", false);
-//		this.test("http://www.seg-social.es", false);
-		this.test("http://www.larioja.org/bor/", true);
-
+		
+		
+		
 	}
 
 	public void test(String url, boolean enDirectorio) throws Exception {
@@ -213,8 +139,8 @@ public class TestCrawl {
 				"-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(4);
-		crawlerData.setTopN(8);
+		crawlerData.setProfundidad(1);
+		crawlerData.setTopN(1);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);
@@ -229,6 +155,7 @@ public class TestCrawl {
 
 		crawlingDomains.clear();
 		// Assert.assertEquals(33, crawlingDomains.size());
+
 	}
 
 	/**
@@ -242,11 +169,9 @@ public class TestCrawl {
 
 		final PropertiesManager pmgr = new PropertiesManager();
 
-		final int maxNumRetries = Integer
-				.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.retries"));
-		final int maxNumRedirections = Integer
-				.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "max.number.redirections"));
-		final long timeRetry = Long.parseLong(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "time.retry"));
+		final int maxNumRetries = 3;
+		final int maxNumRedirections = 15;
+		final long timeRetry = 20000;
 
 		List<IgnoredLink> ignoredLinks = null;
 
@@ -254,6 +179,7 @@ public class TestCrawl {
 
 		final int chosenDepth = crawlerData.getProfundidad();
 		for (String url : crawlerData.getUrls()) {
+
 			String domain = null;
 			if (url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
 					&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
