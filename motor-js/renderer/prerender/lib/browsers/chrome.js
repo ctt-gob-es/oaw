@@ -21,7 +21,7 @@ chrome.spawn = function(options) {
 			return reject();
 		}
 
-		this.chromeChild = spawn(location, this.options.chromeFlags || ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--hide-scrollbars']);
+		this.chromeChild = spawn(location, this.options.chromeFlags || ['--headless', '--disable-gpu', '--remote-debugging-port=9222', '--hide-scrollbars','--run-all-compositor-stages-before-draw']);
 
 		resolve();
 	});

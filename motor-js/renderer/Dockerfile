@@ -4,10 +4,23 @@ FROM alpine:3.9
 RUN apk add --no-cache nodejs-current nodejs-npm
   
 #Instalar Chromium  
-RUN apk add --no-cache \
-    udev \
-    ttf-freefont \
-    chromium
+# RUN apk add --no-cache \
+#     udev \
+#     ttf-freefont \
+#     chromium
+
+# Installs latest Chromium package.
+RUN echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
+    && echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
+    && apk add --no-cache \
+    chromium@edge \
+    harfbuzz@edge \
+    nss@edge \
+    freetype@edge \
+    ttf-freefont@edge \
+    && rm -rf /var/cache/* \
+    && mkdir /var/cache/apk
+
 
 #Copiamos el prerrender
 COPY prerender/ /opt/prerender/
@@ -16,7 +29,7 @@ COPY prerender/ /opt/prerender/
 RUN cd /opt/prerender && npm install --save
 
 #Permisos
-RUN chmod -R 777 /opt/prerender/
+RUN chmod -R 777 /opt/prerender/  
 
 #Usuario node para ejecutar el renderer
 RUN addgroup -S node && adduser -S -G node node
