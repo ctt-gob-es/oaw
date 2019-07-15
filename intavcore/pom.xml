@@ -23,7 +23,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
     <parent>
         <groupId>es.minhap.oaw</groupId>
         <artifactId>oaw</artifactId>
-        <version>4.3.6</version>
+        <version>4.3.8</version>
         <relativePath>../oaw/pom.xml</relativePath>
     </parent>
 
