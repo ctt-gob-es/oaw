@@ -2878,7 +2878,11 @@ public final class ResultadosAnonimosObservatorioUNE2012BUtils {
 		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y,
 				pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 
+		//GraphicsUtils.createGroupedStackerBarChart(chartForm, noDataMess, filePath, map, domainAxis);
 		GraphicsUtils.createGroupedStackerBarChart(chartForm, noDataMess, filePath, map, domainAxis);
+		
+
+		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 	}
 
 	/**

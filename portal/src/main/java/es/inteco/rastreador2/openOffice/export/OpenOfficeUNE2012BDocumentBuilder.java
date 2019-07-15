@@ -50,29 +50,29 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 
 	/** The Constant LEVEL_I_VERIFICATIONS. */
 	public static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION);
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION);
 
 	/** The Constant LEVEL_II_VERIFICATIONS. */
 	public static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION,
-			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION,
+			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION);
 
 	/**
 	 * Instantiates a new open office UNE 2012b document builder.
@@ -160,10 +160,10 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 
 			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByVerificationChartSplit(
 					messageResources,
-					new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplitI.jpg",
-							graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplitII.jpg" },
+					new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg",
+							graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
 					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
-			
+
 			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByVerificationChart(
 					messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
 					pageObservatoryMap, LEVEL_II_VERIFICATIONS);
@@ -171,8 +171,8 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 			replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath,
 					pageObservatoryMap);
 
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplitI.jpg", "image/jpg");
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplitII.jpg", "image/jpg");
+			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "image/jpg");
+			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "image/jpg");
 
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", "image/jpg");
 
@@ -185,15 +185,19 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 			numSection++;
 
 			// TODO Evolutivo por segmentos
-			final Map<Date, Map<String, BigDecimal>> resultsBySegment = new HashMap<>();
-			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-				resultsBySegment.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012BUtils
-						.segmentMidsPuntuationGraphicData(messageResources, entry.getValue()));
-			}
-
-			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionBySegmentSuitabilityChart(observatoryId,
-					executionId, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", pageObservatoryMap,
-					categories);
+//			final Map<Date, Map<String, BigDecimal>> resultsBySegment = new HashMap<>();
+//			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+//				resultsBySegment.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012BUtils
+//						.segmentMidsPuntuationGraphicData(messageResources, entry.getValue()));
+//			}
+//
+//			for (CategoriaForm categoria : categories) {
+//				int i = 1;
+//				ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionBySegmentSuitabilityChart(observatoryId,
+//						executionId, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada" + i + ".jpg",
+//						pageObservatoryMap, categories);
+//				i++;
+//			}
 
 //			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreBySegmentChart(messageResources, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", pageObservatoryMap, categories);
 //			replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsBySegment, categories);
@@ -868,64 +872,64 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 
 			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012BUtils
 					.calculateVerificationEvolutionPuntuationDataSet(
-							Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, pageObservatoryMap);
+							Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.1") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "5.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.2") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.2") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "6.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_113_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.3") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.3") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "7.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_114_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.4") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.4") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "8.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_115_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.5") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.5") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "9.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_116_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.6") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.6") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "10.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_117_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.1.7") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.7") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "11.t1", resultData);
@@ -933,64 +937,64 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 			// Reorganización de los datos
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.1") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.8") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "12.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.2") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.9") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "13.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_213_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.3") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.10") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "14.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_214_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.4") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.11") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "15.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_215_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.5") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.12") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "16.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_216_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.6") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.13") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "17.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_217_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.1.7") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.14") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "18.t1", resultData);
@@ -998,55 +1002,55 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 			// TABLA 2
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_121_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.2.1") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "19.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.2.2") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "20.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "1.2.3") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.3") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "21.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_221_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.1") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.4") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "22.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.2") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.5") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "23.t1", resultData);
 
 			resultData = ResultadosAnonimosObservatorioUNE2012BUtils.calculateVerificationEvolutionPuntuationDataSet(
-					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION, pageObservatoryMap);
+					Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt,
 					graphicPath + messageResources.getMessage(
-							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.2.3") + ".jpg",
+							"observatory.graphic.evolution.verification.mid.puntuation.name", "2.6") + ".jpg",
 					"image/jpeg");
 			numImg++;
 			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "24.t1", resultData);

@@ -121,10 +121,17 @@ public class TestCrawl {
 		
 
 		
-		this.test("https://sede.mscbs.gob.es/", true);
-		this.test("https://www.sededgsfp.gob.es/", true);
-		this.test("http://sede.puertoaviles.gob.es/", true);
+		this.test("https://web.larioja.org/bor-portada/", true);
+	
 		
+		
+		
+		
+
+
+		
+		
+
 		
 		
 
@@ -139,8 +146,8 @@ public class TestCrawl {
 				"-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(1);
-		crawlerData.setTopN(1);
+		crawlerData.setProfundidad(4);
+		crawlerData.setTopN(8);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);

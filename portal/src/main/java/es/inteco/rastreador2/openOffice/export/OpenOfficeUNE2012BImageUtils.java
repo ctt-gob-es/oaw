@@ -119,6 +119,13 @@ public final class OpenOfficeUNE2012BImageUtils {
 			put("EvolucionPuntuacionMediaAspectoCombinada.jpg", "10000000000005B90000028ECF7F32AC6D685F69.jpg");
 
 			put("evolution_suitability_level.jpg", "10000000000004F10000028E04563FF36EE2EA51.jpg");
+			
+			put("EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "10000000000005B90000028EB58986E099184EA5.jpg");
+			put("EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "10000000000005B90000028EB58986E099184EA5.jpg");
+			
+			put("EvolucionPuntuacionMediaSegmentoCombinada1.jpg", "10000000000005B90000028E434DF2C27E62A76E.jpg");
+			
+			
 		}
 	});
 
@@ -231,6 +238,11 @@ public final class OpenOfficeUNE2012BImageUtils {
 			put("EvolucionPuntuacionMediaVerificacionV2.2.1.jpg", "1000000000000235000001C6CF53EC6D.jpg");
 			put("EvolucionPuntuacionMediaVerificacionV2.2.2.jpg", "1000000000000235000001C6847F2867.jpg");
 			put("EvolucionPuntuacionMediaVerificacionV2.2.3.jpg", "1000000000000235000001C6DEDC7771.jpg");
+			
+			put("EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "10000000000005B90000028E80E5C63A95D4F23D.jpg");
+			put("EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "10000000000005B90000028E822847E25AF15E96.jpg");
+			
+			
 		}
 	});
 
@@ -313,6 +325,11 @@ public final class OpenOfficeUNE2012BImageUtils {
 			put("EvolucionPuntuacionMediaVerificacionV2.2.1.jpg", "1000000000000235000001C6AEED98BC.png");
 			put("EvolucionPuntuacionMediaVerificacionV2.2.2.jpg", "1000000000000235000001C6138E2F7A.png");
 			put("EvolucionPuntuacionMediaVerificacionV2.2.3.jpg", "1000000000000235000001C6F6FA94DD.png");
+			
+			put("EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "10000000000005B90000028E32632B934BF09217.jpg");
+			put("EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "10000000000005B90000028E4BE8C76AD51F016D.jpg");
+			
+			
 		}
 	});
 

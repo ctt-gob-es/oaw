@@ -112,7 +112,7 @@ public class GraphicUtilsTest {
 		chartForm.setFixedColorBars(false);
 		chartForm.setShowColumsLabels(false);
 
-		GraphicsUtils.createStandardBarChart(chartForm, "/home/alvaro/Desktop/oaw-graficas-" + stringDate + "/nevolution_score.jpg", "", messageResources, true);
+		GraphicsUtils.createStandardBarChart(chartForm, "/home/alvaro/Downloads/oaw-graficas-" + stringDate + "/nevolution_score.jpg", "", messageResources, true);
 	}
 
 	@Test
