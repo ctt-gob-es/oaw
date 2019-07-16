@@ -513,6 +513,7 @@ public final class GraphicsUtils {
 			createDomainAxis(plot, CategoryLabelPositions.UP_45, observatoryGraphicsForm);
 		}
 		
+		putValuesOnBars(chart, observatoryGraphicsForm);
 
 		saveChartToFile(filePath, chart, observatoryGraphicsForm.getX(), observatoryGraphicsForm.getY());
 	}
