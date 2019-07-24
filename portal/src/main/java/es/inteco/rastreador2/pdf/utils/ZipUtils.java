@@ -15,22 +15,25 @@
 ******************************************************************************/
 package es.inteco.rastreador2.pdf.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.IntecoFileFilter;
 import es.inteco.utils.FileUtils;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public final class ZipUtils {
 
@@ -70,6 +73,7 @@ public final class ZipUtils {
         }
 
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
+        	zos.setLevel(Deflater.BEST_COMPRESSION);
             generateZipEntries(directoryPath, "", zos, excludeZipFiles);
             zos.flush();
             zos.finish();
@@ -80,6 +84,7 @@ public final class ZipUtils {
 
     public static void generateZipFile(final String directoryPath, final OutputStream outputStream, boolean excludeZipFiles) {
         try (ZipOutputStream zos = new ZipOutputStream(outputStream)) {
+        	zos.setLevel(Deflater.BEST_COMPRESSION);
             generateZipEntries(directoryPath, "", zos, excludeZipFiles);
             zos.flush();
             zos.finish();
