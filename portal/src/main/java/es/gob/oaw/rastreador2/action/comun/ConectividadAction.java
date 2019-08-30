@@ -52,7 +52,6 @@ import es.gob.oaw.sim.Peticion;
 import es.gob.oaw.sim.ResponseStatusType;
 import es.gob.oaw.sim.Respuesta;
 import es.inteco.common.Constants;
-import es.inteco.common.IntavConstants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.utils.EvaluatorUtils;
@@ -61,6 +60,7 @@ import es.inteco.rastreador2.actionform.semillas.ProxyForm;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.utils.CrawlerUtils;
 
+// TODO: Auto-generated Javadoc
 /**
  * ConectividadAction. {@link Action} Para comprobaciones de conectividad.
  *
@@ -77,6 +77,16 @@ public class ConectividadAction extends Action {
 	/** The factory. */
 	private final ObjectFactory factory = new ObjectFactory();
 
+	/**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -268,43 +278,9 @@ public class ConectividadAction extends Action {
 
 			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
 
-			// TODO Configuración de proxy: si hay un proxy definido en el sistema, se añade
-			// a la conexión
-			String proxyActive = "";
-			String proxyHttpHost = "";
-			String proxyHttpPort = "";
-
-			try (Connection c = DataBaseManager.getConnection()) {
-				ProxyForm proxy = ProxyDAO.getProxy(c);
-
-				proxyActive = proxy.getStatus() > 0 ? "true" : "false";
-				proxyHttpHost = proxy.getUrl();
-				proxyHttpPort = proxy.getPort();
-
-				DataBaseManager.closeConnection(c);
-			} catch (Exception e) {
-				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
-			}
-
 			HttpURLConnection connection = null;
-			// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
-			// método también es usado por al JSP de conexión
-			if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
 
-				try {
-					Proxy proxy = new Proxy(Proxy.Type.HTTP,
-							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-							Logger.LOG_LEVEL_ERROR);
-					connection = (HttpURLConnection) url.openConnection(proxy);
-				} catch (NumberFormatException e) {
-					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-							Logger.LOG_LEVEL_ERROR);
-				}
-
-			} else {
-				connection = (HttpURLConnection) url.openConnection();
-			}
+			connection = (HttpURLConnection) url.openConnection();
 
 			if (connection instanceof HttpsURLConnection) {
 				((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
@@ -312,10 +288,8 @@ public class ConectividadAction extends Action {
 
 			connection.setInstanceFollowRedirects(false);
 
-			connection.setConnectTimeout(
-					Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-			connection.setReadTimeout(
-					Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+			connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+			connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
 			connection.addRequestProperty("Accept-Language",
 					pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
 			connection.addRequestProperty("User-Agent",
@@ -346,15 +320,99 @@ public class ConectividadAction extends Action {
 			urlError = "Error de conexión" + e1.getMessage() != null ? e1.getMessage() : "";
 		}
 
+		boolean urlConnectionProxy = false;
+
+		String urlErrorProxy = "";
+
+		try {
+
+			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
+
+			String proxyActive = "";
+			String proxyHttpHost = "";
+			String proxyHttpPort = "";
+
+			try (Connection c = DataBaseManager.getConnection()) {
+				ProxyForm proxy = ProxyDAO.getProxy(c);
+
+				proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+				proxyHttpHost = proxy.getUrl();
+				proxyHttpPort = proxy.getPort();
+
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+
+			HttpURLConnection connection = null;
+
+			if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
+				try {
+					Proxy proxy = new Proxy(Proxy.Type.HTTP,
+							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+							Logger.LOG_LEVEL_ERROR);
+					connection = (HttpURLConnection) url.openConnection(proxy);
+				} catch (NumberFormatException e) {
+					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
+							Logger.LOG_LEVEL_ERROR);
+				}
+
+				if (connection instanceof HttpsURLConnection) {
+					((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
+				}
+
+				connection.setInstanceFollowRedirects(false);
+
+				connection.setConnectTimeout(
+						Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+				connection
+						.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+				connection.addRequestProperty("Accept-Language",
+						pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+				connection.addRequestProperty("User-Agent",
+						pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+
+				int responseCode = connection.getResponseCode();
+
+				if (HttpURLConnection.HTTP_OK == responseCode) {
+					urlConnectionProxy = true;
+
+				} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP
+						|| responseCode == HttpURLConnection.HTTP_MOVED_PERM
+						|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+
+					String newUrl = connection.getHeaderField("Location");
+
+					this.checkUrl(newUrl, request, response);
+
+				} else {
+					urlErrorProxy = "Error al conectar a la URL código: " + responseCode;
+				}
+
+			} else {
+
+				urlConnectionProxy = false;
+				urlErrorProxy = "El proxy no está activo";
+			}
+
+		} catch (MalformedURLException e) {
+			urlErrorProxy = "URL mal formada";
+		} catch (IOException e1) {
+			urlErrorProxy = "Error de conexión" + e1.getMessage() != null ? e1.getMessage() : "";
+		}
+
 		response.setContentType("text/json");
 
-		Check checkSim = new Check();
+		CheckConectivity checkConectivity = new CheckConectivity();
 
-		checkSim.setUrl(urlAdress);
-		checkSim.setConnection(urlConnection);
-		checkSim.setError(urlError);
+		checkConectivity.setUrl(urlAdress);
+		checkConectivity.setConnection(urlConnection);
+		checkConectivity.setError(urlError);
+		checkConectivity.setConnectionProxy(urlConnectionProxy);
+		checkConectivity.setErrorProxy(urlErrorProxy);
 
-		String jsonCheck = new Gson().toJson(checkSim);
+		String jsonCheck = new Gson().toJson(checkConectivity);
 
 		response.setContentType("text/json; charset=UTF-8");
 
@@ -495,6 +553,67 @@ public class ConectividadAction extends Action {
 		 */
 		public void setError(String error) {
 			this.error = error;
+		}
+
+	}
+
+	/**
+	 * The Class CheckConectivity.
+	 */
+	public class CheckConectivity {
+		/** The url. */
+		private String url;
+
+		/** The connection. */
+		private boolean connection;
+
+		/** The connectionproxy. */
+		private boolean connectionProxy;
+
+		/** The error. */
+		private String error;
+
+		/** The errorproxy. */
+		private String errorProxy;
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public boolean isConnection() {
+			return connection;
+		}
+
+		public void setConnection(boolean connection) {
+			this.connection = connection;
+		}
+
+		public boolean isConnectionProxy() {
+			return connectionProxy;
+		}
+
+		public void setConnectionProxy(boolean connectionProxy) {
+			this.connectionProxy = connectionProxy;
+		}
+
+		public String getError() {
+			return error;
+		}
+
+		public void setError(String error) {
+			this.error = error;
+		}
+
+		public String getErrorProxy() {
+			return errorProxy;
+		}
+
+		public void setErrorProxy(String errorProxy) {
+			this.errorProxy = errorProxy;
 		}
 
 	}

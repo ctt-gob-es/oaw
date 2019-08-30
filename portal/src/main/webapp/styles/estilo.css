@@ -1133,57 +1133,86 @@ ul.tabbernav li.tabberactive a:hover {
 }
 
 .glyphicon-refresh-animate {
-    -animation: spin 1s infinite linear;
-    -ms-animation: spin 1s infinite linear;
-    -webkit-animation: spinw 1s infinite linear;
-    -moz-animation: spinm 1s infinite linear;
+	-animation: spin 1s infinite linear;
+	-ms-animation: spin 1s infinite linear;
+	-webkit-animation: spinw 1s infinite linear;
+	-moz-animation: spinm 1s infinite linear;
 }
 
-@keyframes spin {
-    from { transform: scale(1) rotate(0deg);}
-    to { transform: scale(1) rotate(360deg);}
-}
-  
-@-webkit-keyframes spinw {
-    from { -webkit-transform: rotate(0deg);}
-    to { -webkit-transform: rotate(360deg);}
+@keyframes spin {from { transform:scale(1)rotate(0deg);
+	
 }
 
-@-moz-keyframes spinm {
-    from { -moz-transform: rotate(0deg);}
-    to { -moz-transform: rotate(360deg);}
+to {
+	transform: scale(1) rotate(360deg);
 }
 
+}
+@-webkit-keyframes spinw {from { -webkit-transform:rotate(0deg);
+	
+}
 
+to {
+	-webkit-transform: rotate(360deg);
+}
 
+}
+@-moz-keyframes spinm {from { -moz-transform:rotate(0deg);
+	
+}
 
-.jdialog-btn-save{
+to {
+	-moz-transform: rotate(360deg);
+}
+
+}
+.jdialog-btn-save {
 	color: #fff !important;
-    background-color: #337ab7 !important;
-    border-color: #337ab7 !important;
-    padding: 10px 16px !important;
-    font-size: 16px !important;
-    line-height: 1.3333333 !important;
-    border-radius: 6px !important;
+	background-color: #337ab7 !important;
+	border-color: #337ab7 !important;
+	padding: 10px 16px !important;
+	font-size: 16px !important;
+	line-height: 1.3333333 !important;
+	border-radius: 6px !important;
 }
-.jdialog-btn-cancel{
+
+.jdialog-btn-cancel {
 	color: #e21430 !important;
-    background-color: #fff !important;
-    border-color: #ccc !important;
-    padding: 10px 16px !important;
-    font-size: 16px !important;
-    line-height: 1.3333333 !important;
-    border-radius: 6px !important;
+	background-color: #fff !important;
+	border-color: #ccc !important;
+	padding: 10px 16px !important;
+	font-size: 16px !important;
+	line-height: 1.3333333 !important;
+	border-radius: 6px !important;
 }
 
-.ui-dialog-titlebar  {
+.ui-dialog-titlebar {
 	background: #e1120d !important;;
-    background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%) !important;;
-    background: -webkit-linear-gradient(top, #e1120d 0%, #ff8e8e 100%) !important;;
-    background: linear-gradient(to bottom, #e1120d 0%, #ff8e8e 100%) !important;;
-    color: #FFF !important;
+	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%)
+		!important;;
+	background: -webkit-linear-gradient(top, #e1120d 0%, #ff8e8e 100%)
+		!important;;
+	background: linear-gradient(to bottom, #e1120d 0%, #ff8e8e 100%)
+		!important;;
+	color: #FFF !important;
 }
 
-#dialogoEliminarContent p{
+#dialogoEliminarContent p {
 	padding: 10px;
+}
+
+#checkurlresult {
+	margin-left: 50px;
+	margin-top: 20px;
+	background: white;
+	float: left;
+	padding: 10px;
+	border-radius: 4px;
+}
+
+#checkurlresult li {
+	width: 100%;
+	float: left;
+	margin: 5px 10px;
+	padding: 1px;
 }
