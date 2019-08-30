@@ -86,19 +86,22 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		} else {
 
 			$("#urlcheck").attr('disabled', 'disabled');
-
 			$('#urlcheck-error-message').addClass('hidden');
 			$('#checkurl').addClass('hidden');
 			$('#checkingurl').removeClass('hidden');
+			$('#checkurlresult').hide();
+
 			$
 					.ajax(
 							{
 								url : '/oaw/secure/conectividad.do?action=checkurl&url='
-										+ decodeURIComponent($('#urlcheck').val()),
+										+ decodeURIComponent($('#urlcheck')
+												.val()),
 								method : 'POST'
 							}).success(
 							function(data) {
 
+								$('#checkurlresult').show();
 								$("#urlcheck").removeAttr('disabled');
 								$('#urlcheck').val("");
 
@@ -122,10 +125,29 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											data.error);
 								}
 
+								if (data.connectionProxy) {
+									$('#checkurlresult-ok-proxy').removeClass(
+											'hidden');
+									$('#checkurlresult-ko-proxy').addClass(
+											'hidden');
+									$('#checkurlresult-error-proxy').addClass(
+											'hidden');
+								} else {
+									$('#checkurlresult-ok-proxy').addClass(
+											'hidden');
+									$('#checkurlresult-ko-proxy').removeClass(
+											'hidden');
+									$('#checkurlresult-error-proxy')
+											.removeClass('hidden');
+									$('#checkurlresult-error-detalle-proxy')
+											.text(data.errorProxy);
+								}
+
 								$('#checkurlresult').removeClass('hidden');
 								$('#checkingurl').addClass('hidden');
 								$('#checkurl').removeClass('hidden');
 							});
+
 		}
 	}
 
@@ -275,6 +297,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							introducir una URL v&#225;lida</div>
 
 						<p>Comprobar la conectividad con la URL indicada.</p>
+						
+						<p>Se comprobar&#225; tanto desde la máquina de OAW como desde
+							la máquina del motor de Javascript</p>
 
 
 						<div class="formItem">
@@ -291,30 +316,68 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</div>
 
 						<div id="checkurlresult" class="hidden">
-							<p>
-								<span class="bold">URL:</span> &nbsp; <span
+
+
+
+
+							<ul>
+
+
+								<li><span class="bold">URL:</span> &nbsp; <span
 									id="checkurlresult-url"></span> &nbsp;<a
 									id="checkurlresult-url-link" href="" alt="URL comprobada"
 									title="Ir al URL comprobada" target="_blank"><span
-									class="glyphicon glyphicon-new-window" aria-hidden="true">
-								</span></a>
-							</p>
-							<p id="checkurlresult-ok" class="hidden">
-								<span class="bold">Estado:</span>&nbsp;<img src="../img/up.png"
-									alt="Imagen flecha verde hacia arriba"
-									title="Comporbación del servicio correcta" />
-							</p>
+										class="glyphicon glyphicon-new-window" aria-hidden="true">
+									</span></a></li>
 
-							<p id="checkurlresult-ko" class="hidden">
-								<span class="bold">Estado:</span>&nbsp; <img
-									src="../img/down.png" alt="Imagen flecha roja hacia abajo"
-									title="Comporbación del servicio incorrecta" />
-							</p>
-							<p id="checkurlresult-error" class="hidden">
-								<span class="bold">Error:</span>&nbsp; <span
-									id="checkurlresult-error-detalle"></span>
-							</p>
+
+								<li>
+									<p id="checkurlresult-ok" class="hidden">
+										<span class="bold">Conectividad OAW:</span>&nbsp;<img
+											src="../img/up.png" alt="Imagen flecha verde hacia arriba"
+											title="Comporbación del servicio correcta" />
+									</p>
+									<p id="checkurlresult-ko" class="hidden">
+										<span class="bold">Conectividad OAW::</span>&nbsp; <img
+											src="../img/down.png" alt="Imagen flecha roja hacia abajo"
+											title="Comporbación del servicio incorrecta" /> <span
+											id="checkurlresult-error" class="hidden">&nbsp;<span
+											class="bold">Error:</span>&nbsp; <span
+											id="checkurlresult-error-detalle"></span></span>
+									</p>
+
+								</li>
+
+
+
+								<li>
+
+									<p id="checkurlresult-ok-proxy" class="hidden">
+										<span class="bold">Conectividad Motor Javascript:</span>&nbsp;<img
+											src="../img/up.png" alt="Imagen flecha verde hacia arriba"
+											title="Comporbación del servicio correcta" />
+									</p>
+
+									<p id="checkurlresult-ko-proxy" class="hidden">
+										<span class="bold">Conectividad Motor Javascript:</span>&nbsp;
+										<img src="../img/down.png"
+											alt="Imagen flecha roja hacia abajo"
+											title="Comporbación del servicio incorrecta" /><span
+											id="checkurlresult-error-proxy" class="hidden">&nbsp;<span
+											class="bold">Error:</span>&nbsp; <span
+											id="checkurlresult-error-detalle-proxy"></span></span>
+									</p>
+
+
+
+								</li>
+
+
+							</ul>
 						</div>
+
+
+
 
 
 					</fieldset>

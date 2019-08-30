@@ -4,10 +4,10 @@ var prerender = require('./lib');
 var server = prerender({ 
 	followRedirects: true,
 	chromeLocation: '/usr/bin/chromium-browser', 
-	pageDoneCheckInterval: 1000,
-	waitAfterLastRequest: 1000,
+	pageDoneCheckInterval: 30000,
+	waitAfterLastRequest: 30000,
 	pageLoadTimeout: 30000,
-	workers: 4,
+	workers: 10,
 	enableServiceWorker: true
 });
 
