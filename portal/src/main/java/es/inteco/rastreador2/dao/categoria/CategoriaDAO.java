@@ -17,7 +17,7 @@ public class CategoriaDAO {
 	/**
 	 * Gets the category by ID.
 	 *
-	 * @param c the c
+	 * @param c          the c
 	 * @param categoryId the category id
 	 * @return the category by ID
 	 * @throws Exception the exception
@@ -36,6 +36,43 @@ public class CategoriaDAO {
 
 				if (rs.next()) {
 					category.setId(categoryId);
+					category.setName(rs.getString("c.nombre"));
+
+				}
+			}
+
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+
+		return category;
+
+	}
+
+	/**
+	 * Gets the category by name.
+	 *
+	 * @param c            the c
+	 * @param categoryName the category name
+	 * @return the category by name
+	 * @throws Exception the exception
+	 */
+	public static CategoriaForm getCategoryByName(Connection c, String categoryName) throws Exception {
+
+		CategoriaForm category = null;
+
+		String query = "SELECT c.id_categoria, c.nombre FROM categorias_lista c WHERE c.nombre = ?";
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+
+			ps.setString(1, categoryName);
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				if (rs.next()) {
+					category = new CategoriaForm();
+					category.setId(rs.getString("c.id_categoria"));
 					category.setName(rs.getString("c.nombre"));
 
 				}

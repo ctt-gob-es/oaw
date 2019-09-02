@@ -39,6 +39,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 <!--  JQ GRID   -->
 <script>
+
+
+
+	$(function() {
+	   $("#importFile").change(function (){
+	     var fileName = $(this).val();
+
+	     $(this).closest('form').submit();
+	    		 
+	    		 
+	    	 //$('<form method="post" action="/oaw/secure/ViewSemillasObservatorio.do?action=loadSeedsFile" enctype="multipart/form-data"><input type="file" name="fileSeeds" value='+ $(this).val()+'</form>').appendTo('body').submit();
+	    		 
+	    		 
+	    	 
+	     
+	     
+	   });
+	});
+
+
+	function selectXMLFile(){
+		
+		 document.getElementById('importFile').click();
+	}
+
+
 	var dialog;
 
 	var windowWidth = $(window).width() * 0.8;
@@ -250,10 +276,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
 							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
 								key="boton.buscar" />
-						</span>
-						
-						<span onclick="limpiar()" class="btn btn-default btn-lg"> <span
-							 aria-hidden="true"></span> <bean:message
+						</span> <span onclick="limpiar()" class="btn btn-default btn-lg">
+							<span aria-hidden="true"></span> <bean:message
 								key="boton.limpiar" />
 						</span>
 					</div>
@@ -264,6 +288,46 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message
 						key="nueva.semilla.webs.informacion" /> </em>:
 				<bean:message key="nueva.semilla.webs.info" />
+			</p>
+
+			<!-- Importar todas las semillas -->
+			<p class="pull-right">
+				<a href="#" class="btn btn-default btn-lg "
+					onclick="selectXMLFile()"> <span
+					class="glyphicon glyphicon-cloud-upload" aria-hidden="true"
+					data-toggle="tooltip" title=""
+					data-original-title="Importar un fichero XML de semillas"></span> <bean:message
+						key="cargar.semilla.observatorio.importar.todo" />
+
+
+				</a>
+			</p>
+
+
+			<form method="post" style="display: none"
+				action="/oaw/secure/ViewSemillasObservatorio.do?action=loadSeedsFile"
+				enctype="multipart/form-data">
+				<input type="hidden" name="action" value="loadSeedsFile" />
+				<div class="formItem">
+					<label for="fileSeeds" class="control-label"><strong
+						class="labelVisu"><bean:message
+								key="categoria.semillas.fichero" />: </strong></label> <input type="file"
+						id="importFile" name="fileSeeds" style="display: none">
+				</div>
+			</form>
+
+
+			<!-- Exportar todas las semillas -->
+			<p class="pull-right">
+				<a
+					href="/oaw/secure/ViewSemillasObservatorio.do?action=exportAllSeeds">
+					<span class="btn btn-default btn-lg"> <span
+						class="glyphicon glyphicon-cloud-download" aria-hidden="true"
+						data-toggle="tooltip" title=""
+						data-original-title="Exportar todas las semillas a un fichero XML"></span>
+						<bean:message key="cargar.semilla.observatorio.exportar.todo" />
+				</span>
+				</a>
 			</p>
 
 			<!-- Nueva semilla -->
@@ -291,4 +355,5 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		</p>
 	</div>
 	<!-- fin cajaformularios -->
+
 </div>

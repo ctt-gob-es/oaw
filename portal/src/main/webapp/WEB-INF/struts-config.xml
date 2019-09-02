@@ -261,6 +261,11 @@
 
 		<!-- Página de comprobación de conectividad -->
 		<forward name="conectividadMenu" path="/secure/conectividad.do" />
+		
+		
+		<forward name="exportAllSeeds" path="/secure/ViewSemillasObservatorio.do?action=exportAllSeeds" />
+		
+		<forward name="loadSeedsFile" path="/secure/ViewSemillasObservatorio.do?action=loadSeedsFile" />
 
 
 	</global-forwards>
@@ -371,6 +376,7 @@
 		<action path="/secure/ViewSemillasObservatorio" type="es.inteco.rastreador2.action.observatorio.SemillasObservatorioAction" name="SemillaSearchForm"
 			scope="request" validate="false">
 			<forward name="exito" path=".cargarSemillasObservatorio" />
+			<forward name="volver" path=".cargarSemillasObservatorio" />
 		</action>
 
 		<!-- Devuelve las semillas en JSON -->

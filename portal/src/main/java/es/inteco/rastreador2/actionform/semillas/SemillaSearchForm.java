@@ -16,47 +16,120 @@
 package es.inteco.rastreador2.actionform.semillas;
 
 
+import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
+/**
+ * The Class SemillaSearchForm.
+ */
 public class SemillaSearchForm extends ValidatorForm {
 
-    /**
-     *
-     */
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
+    
+    /** The id. */
     private long id;
+    
+    /** The nombre. */
     private String nombre;
+    
+    /** The categoria. */
     private String categoria;
+    
+    /** The url. */
     private String url;
+    
+    /** The file seeds. */
+    private FormFile fileSeeds;
+    
+    
 
-    public String getUrl() {
+    /**
+     * Gets the file seeds.
+     *
+     * @return the file seeds
+     */
+    public FormFile getFileSeeds() {
+		return fileSeeds;
+	}
+
+	/**
+	 * Sets the file seeds.
+	 *
+	 * @param fileSeeds the new file seeds
+	 */
+	public void setFileSeeds(FormFile fileSeeds) {
+		this.fileSeeds = fileSeeds;
+	}
+
+	/**
+	 * Gets the url.
+	 *
+	 * @return the url
+	 */
+	public String getUrl() {
         return url;
     }
 
+    /**
+     * Sets the url.
+     *
+     * @param url the new url
+     */
     public void setUrl(String url) {
         this.url = url;
     }
 
+    /**
+     * Gets the id.
+     *
+     * @return the id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Sets the id.
+     *
+     * @param id the new id
+     */
     public void setId(long id) {
         this.id = id;
     }
 
+    /**
+     * Gets the nombre.
+     *
+     * @return the nombre
+     */
     public String getNombre() {
         return nombre;
     }
 
+    /**
+     * Sets the nombre.
+     *
+     * @param nombre the new nombre
+     */
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+    /**
+     * Gets the categoria.
+     *
+     * @return the categoria
+     */
     public String getCategoria() {
         return categoria;
     }
 
+    /**
+     * Sets the categoria.
+     *
+     * @param categoria the new categoria
+     */
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
