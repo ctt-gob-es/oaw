@@ -88,6 +88,7 @@ public interface Constants {
 
 	// XML semillas
 	String XML_LISTA = "lista";
+	String XML_ID = "id";
 	String XML_SEMILLA = "semilla";
 	String XML_NOMBRE = "nombre";
 	String XML_URLS = "urls";
@@ -96,6 +97,7 @@ public interface Constants {
 	String XML_ACRONIMO = "acronimo";
 	String XML_ACTIVA = "activa";
 	String XML_IN_DIRECTORY = "en_directorio";
+	String XML_SEGMENTO = "segmento";
 
 	String ERROR = "error";
 	String ERROR1 = "error1";
@@ -317,6 +319,8 @@ public interface Constants {
 	String ACCION_CONFIRMACION_BORRAR_EX_SEED = "confirmacionExSeed";
 	String ACCION_MOSTRAR_LISTA_RESULTADOS = "listaResultados";
 	String ACCION_SEED_DETAIL = "seedDetailAction";
+	String ACCION_EXPORT_ALL = "exportAllSeeds";
+	String ACCION_IMPORT_ALL = "loadSeedsFile";
 	String ACCION_SEPARATE_SEED = "separateSeed";
 	String ACTION_GET_EVALUATION = "getEvaluation";
 	String ACTION_GET_DETAIL = "getDetail";

@@ -56,15 +56,11 @@ public final class SemillaDAO {
 	/**
 	 * Exist seed.
 	 *
-	 * @param c
-	 *            the c
-	 * @param nombreSemilla
-	 *            the nombre semilla
-	 * @param type
-	 *            the type
+	 * @param c             the c
+	 * @param nombreSemilla the nombre semilla
+	 * @param type          the type
 	 * @return true, if successful
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static boolean existSeed(Connection c, String nombreSemilla, int type) throws SQLException {
 		final String query;
@@ -91,56 +87,41 @@ public final class SemillaDAO {
 	/**
 	 * Insert list.
 	 *
-	 * @param c
-	 *            the c
-	 * @param tipoLista
-	 *            the tipo lista
-	 * @param nombreSemilla
-	 *            the nombre semilla
-	 * @param listaUrls
-	 *            the lista urls
-	 * @param categoria
-	 *            the categoria
-	 * @param acronimo
-	 *            the acronimo
-	 * @param dependencia
-	 *            the dependencia
+	 * @param c             the c
+	 * @param tipoLista     the tipo lista
+	 * @param nombreSemilla the nombre semilla
+	 * @param listaUrls     the lista urls
+	 * @param categoria     the categoria
+	 * @param acronimo      the acronimo
+	 * @param dependencia   the dependencia
 	 * @return the long
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
-	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String acronimo, String dependencia) throws Exception {
+	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls,
+			String categoria, String acronimo, String dependencia) throws Exception {
 		return insertList(c, tipoLista, nombreSemilla, listaUrls, categoria, acronimo, dependencia, true, false);
 	}
 
 	/**
 	 * Insert list.
 	 *
-	 * @param c
-	 *            the c
-	 * @param tipoLista
-	 *            the tipo lista
-	 * @param nombreSemilla
-	 *            the nombre semilla
-	 * @param listaUrls
-	 *            the lista urls
-	 * @param categoria
-	 *            the categoria
-	 * @param acronimo
-	 *            the acronimo
-	 * @param dependencia
-	 *            the dependencia
-	 * @param activa
-	 *            the activa
-	 * @param inDirectory
-	 *            the in directory
+	 * @param c             the c
+	 * @param tipoLista     the tipo lista
+	 * @param nombreSemilla the nombre semilla
+	 * @param listaUrls     the lista urls
+	 * @param categoria     the categoria
+	 * @param acronimo      the acronimo
+	 * @param dependencia   the dependencia
+	 * @param activa        the activa
+	 * @param inDirectory   the in directory
 	 * @return the long
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String acronimo, String dependencia, boolean activa, boolean inDirectory)
+	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls,
+			String categoria, String acronimo, String dependencia, boolean activa, boolean inDirectory)
 			throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?)",
+		try (PreparedStatement ps = c.prepareStatement(
+				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setLong(1, tipoLista);
 			ps.setString(2, nombreSemilla);
@@ -180,13 +161,10 @@ public final class SemillaDAO {
 	/**
 	 * Gets the seeds.
 	 *
-	 * @param c
-	 *            the c
-	 * @param type
-	 *            the type
+	 * @param c    the c
+	 * @param type the type
 	 * @return the seeds
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<SemillaForm> getSeeds(Connection c, int type) throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
@@ -225,17 +203,14 @@ public final class SemillaDAO {
 	/**
 	 * Gets the observatory seeds.
 	 *
-	 * @param c
-	 *            the c
-	 * @param pagina
-	 *            the pagina
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param pagina     the pagina
+	 * @param searchForm the search form
 	 * @return the observatory seeds
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	public static List<SemillaForm> getObservatorySeeds(Connection c, int pagina, SemillaSearchForm searchForm) throws SQLException {
+	public static List<SemillaForm> getObservatorySeeds(Connection c, int pagina, SemillaSearchForm searchForm)
+			throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
@@ -347,13 +322,10 @@ public final class SemillaDAO {
 	/**
 	 * Count observatory seeds.
 	 *
-	 * @param c
-	 *            the c
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param searchForm the search form
 	 * @return the int
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws SQLException {
 		int count = 1;
@@ -402,24 +374,22 @@ public final class SemillaDAO {
 	/**
 	 * Gets the seeds choose.
 	 *
-	 * @param c
-	 *            the c
-	 * @param pagina
-	 *            the pagina
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param pagina     the pagina
+	 * @param searchForm the search form
 	 * @return the seeds choose
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	public static List<SemillaForm> getSeedsChoose(Connection c, int pagina, SemillaSearchForm searchForm) throws SQLException {
+	public static List<SemillaForm> getSeedsChoose(Connection c, int pagina, SemillaSearchForm searchForm)
+			throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
 
 		int count = 1;
-		String query = "SELECT l.*, COUNT(r.id_rastreo) AS rastreos_asociados FROM lista l " + "LEFT JOIN rastreo r ON (l.id_lista = r.semillas) " + "WHERE id_tipo_lista = ? AND id_lista NOT IN ("
+		String query = "SELECT l.*, COUNT(r.id_rastreo) AS rastreos_asociados FROM lista l "
+				+ "LEFT JOIN rastreo r ON (l.id_lista = r.semillas) " + "WHERE id_tipo_lista = ? AND id_lista NOT IN ("
 				+ "SELECT DISTINCT(dominio) FROM cuenta_cliente) ";
 
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -462,15 +432,11 @@ public final class SemillaDAO {
 	/**
 	 * Count seeds choose.
 	 *
-	 * @param c
-	 *            the c
-	 * @param type
-	 *            the type
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param type       the type
+	 * @param searchForm the search form
 	 * @return the int
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static int countSeedsChoose(Connection c, int type, SemillaSearchForm searchForm) throws SQLException {
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
@@ -483,16 +449,15 @@ public final class SemillaDAO {
 	/**
 	 * Count seeds by tipo lista.
 	 *
-	 * @param c
-	 *            the c
-	 * @param type
-	 *            the type
+	 * @param c    the c
+	 * @param type the type
 	 * @return the int
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	private static int countSeedsByTipoLista(final Connection c, final int type) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" + "SELECT DISTINCT(dominio) FROM cuenta_cliente)")) {
+		try (PreparedStatement ps = c
+				.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN ("
+						+ "SELECT DISTINCT(dominio) FROM cuenta_cliente)")) {
 			ps.setLong(1, type);
 
 			try (ResultSet rs = ps.executeQuery()) {
@@ -510,19 +475,17 @@ public final class SemillaDAO {
 	/**
 	 * Count seeds choose filtered by name.
 	 *
-	 * @param c
-	 *            the c
-	 * @param type
-	 *            the type
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param type       the type
+	 * @param searchForm the search form
 	 * @return the int
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	private static int countSeedsChooseFilteredByName(Connection c, int type, SemillaSearchForm searchForm) throws SQLException {
+	private static int countSeedsChooseFilteredByName(Connection c, int type, SemillaSearchForm searchForm)
+			throws SQLException {
 		try (PreparedStatement ps = c
-				.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN (" + "SELECT DISTINCT(dominio) FROM cuenta_cliente)  AND nombre like ?")) {
+				.prepareStatement("SELECT COUNT(*) FROM lista WHERE id_tipo_lista = ? AND id_lista NOT IN ("
+						+ "SELECT DISTINCT(dominio) FROM cuenta_cliente)  AND nombre like ?")) {
 			ps.setLong(1, type);
 			ps.setString(2, "%" + searchForm.getNombre() + "%");
 
@@ -542,8 +505,7 @@ public final class SemillaDAO {
 	/**
 	 * Convert string to list.
 	 *
-	 * @param lista
-	 *            the lista
+	 * @param lista the lista
 	 * @return the list
 	 */
 	private static List<String> convertStringToList(final String lista) {
@@ -558,12 +520,9 @@ public final class SemillaDAO {
 	/**
 	 * Delete seed.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idSemilla
-	 *            the id semilla
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c         the c
+	 * @param idSemilla the id semilla
+	 * @throws SQLException the SQL exception
 	 */
 	public static void deleteSeed(Connection c, long idSemilla) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM lista WHERE lista.id_lista = ?")) {
@@ -573,7 +532,8 @@ public final class SemillaDAO {
 			// Borrar las relacions (no se pueden crear FK a lista por MyISAM no
 			// lo permite
 			// https://dev.mysql.com/doc/refman/5.7/en/myisam-storage-engine.html
-			PreparedStatement deleteSemillaDependencia = c.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
+			PreparedStatement deleteSemillaDependencia = c
+					.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
 
 			deleteSemillaDependencia.setLong(1, idSemilla);
 			deleteSemillaDependencia.executeUpdate();
@@ -581,22 +541,19 @@ public final class SemillaDAO {
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
-		} 
+		}
 	}
 
 	/**
 	 * Delete observatory seed.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idSemilla
-	 *            the id semilla
-	 * @param observatoryFormList
-	 *            the observatory form list
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c                   the c
+	 * @param idSemilla           the id semilla
+	 * @param observatoryFormList the observatory form list
+	 * @throws SQLException the SQL exception
 	 */
-	public static void deleteObservatorySeed(Connection c, long idSemilla, List<ObservatorioForm> observatoryFormList) throws SQLException {
+	public static void deleteObservatorySeed(Connection c, long idSemilla, List<ObservatorioForm> observatoryFormList)
+			throws SQLException {
 		try {
 			c.setAutoCommit(false);
 
@@ -625,18 +582,16 @@ public final class SemillaDAO {
 	/**
 	 * Gets the seed by id.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idSemilla
-	 *            the id semilla
+	 * @param c         the c
+	 * @param idSemilla the id semilla
 	 * @return the seed by id
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static SemillaForm getSeedById(Connection c, long idSemilla) throws SQLException {
 		final SemillaForm semillaForm = new SemillaForm();
 
-		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM lista l LEFT OUTER JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) WHERE l.id_lista = ?")) {
+		try (PreparedStatement ps = c.prepareStatement(
+				"SELECT * FROM lista l LEFT OUTER JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) WHERE l.id_lista = ?")) {
 			ps.setLong(1, idSemilla);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
@@ -688,15 +643,11 @@ public final class SemillaDAO {
 	/**
 	 * Gets the id list.
 	 *
-	 * @param c
-	 *            the c
-	 * @param nombreLista
-	 *            the nombre lista
-	 * @param idCategoria
-	 *            the id categoria
+	 * @param c           the c
+	 * @param nombreLista the nombre lista
+	 * @param idCategoria the id categoria
 	 * @return the id list
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static long getIdList(Connection c, String nombreLista, Long idCategoria) throws SQLException {
 		if (idCategoria != null) {
@@ -709,16 +660,14 @@ public final class SemillaDAO {
 	/**
 	 * Gets the id list by nombre.
 	 *
-	 * @param c
-	 *            the c
-	 * @param nombreLista
-	 *            the nombre lista
+	 * @param c           the c
+	 * @param nombreLista the nombre lista
 	 * @return the id list by nombre
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	private static long getIdListByNombre(Connection c, String nombreLista) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("SELECT id_lista FROM lista WHERE nombre = ? ORDER BY id_lista DESC LIMIT 1")) {
+		try (PreparedStatement ps = c
+				.prepareStatement("SELECT id_lista FROM lista WHERE nombre = ? ORDER BY id_lista DESC LIMIT 1")) {
 			ps.setString(1, nombreLista);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
@@ -735,18 +684,16 @@ public final class SemillaDAO {
 	/**
 	 * Gets the id list by nombre and categoria.
 	 *
-	 * @param c
-	 *            the c
-	 * @param nombreLista
-	 *            the nombre lista
-	 * @param idCategoria
-	 *            the id categoria
+	 * @param c           the c
+	 * @param nombreLista the nombre lista
+	 * @param idCategoria the id categoria
 	 * @return the id list by nombre and categoria
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	private static long getIdListByNombreAndCategoria(Connection c, String nombreLista, Long idCategoria) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("SELECT id_lista FROM lista WHERE nombre = ? AND id_categoria = ? ORDER BY id_lista DESC LIMIT 1")) {
+	private static long getIdListByNombreAndCategoria(Connection c, String nombreLista, Long idCategoria)
+			throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement(
+				"SELECT id_lista FROM lista WHERE nombre = ? AND id_categoria = ? ORDER BY id_lista DESC LIMIT 1")) {
 			ps.setString(1, nombreLista);
 			ps.setLong(2, idCategoria);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -764,20 +711,19 @@ public final class SemillaDAO {
 	/**
 	 * Edits the seed.
 	 *
-	 * @param c
-	 *            the c
-	 * @param semillaForm
-	 *            the semilla form
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c           the c
+	 * @param semillaForm the semilla form
+	 * @throws SQLException the SQL exception
 	 */
 	public static void editSeed(Connection c, SemillaForm semillaForm) throws SQLException {
 		// Multidependencia
-		try (PreparedStatement ps = c.prepareStatement("UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory = ? WHERE id_lista = ? ")) {
+		try (PreparedStatement ps = c.prepareStatement(
+				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory = ? WHERE id_lista = ? ")) {
 
 			ps.setString(1, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 			ps.setString(2, semillaForm.getNombre());
-			if (semillaForm.getCategoria().getId() != null && !StringUtils.isEmpty(semillaForm.getCategoria().getId())) {
+			if (semillaForm.getCategoria().getId() != null
+					&& !StringUtils.isEmpty(semillaForm.getCategoria().getId())) {
 				ps.setString(3, semillaForm.getCategoria().getId());
 			} else {
 				ps.setString(3, null);
@@ -796,23 +742,27 @@ public final class SemillaDAO {
 
 			// Soporte para múltiples dependencias
 			// Borramos las dependencias que pudiera tener antes asociadas
-			PreparedStatement psBorradoSemillaDependencia = c.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
+			PreparedStatement psBorradoSemillaDependencia = c
+					.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
 			psBorradoSemillaDependencia.setLong(1, semillaForm.getId());
 			psBorradoSemillaDependencia.executeUpdate();
 			// Inserción de las nuevas
 
 			if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
-				StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+				StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+						"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
 
 				for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
-					slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",").append(semillaForm.getDependencias().get(i).getId()).append(")");
+					slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+							.append(semillaForm.getDependencias().get(i).getId()).append(")");
 
 					if (i < semillaForm.getDependencias().size() - 1) {
 						slqInsertSemillaDependencia.append(",");
 					}
 				}
 
-				PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+				PreparedStatement psInsertarSemillaDependencia = c
+						.prepareStatement(slqInsertSemillaDependencia.toString());
 
 				psInsertarSemillaDependencia.executeUpdate();
 			}
@@ -826,12 +776,9 @@ public final class SemillaDAO {
 	/**
 	 * Removes the list by id.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idList
-	 *            the id list
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c      the c
+	 * @param idList the id list
+	 * @throws SQLException the SQL exception
 	 */
 	private static void removeListById(Connection c, long idList) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM lista WHERE id_lista = ?")) {
@@ -846,16 +793,11 @@ public final class SemillaDAO {
 	/**
 	 * Edits the list.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idLista
-	 *            the id lista
-	 * @param lista
-	 *            the lista
-	 * @param nameList
-	 *            the name list
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c        the c
+	 * @param idLista  the id lista
+	 * @param lista    the lista
+	 * @param nameList the name list
+	 * @throws SQLException the SQL exception
 	 */
 	private static void editList(Connection c, long idLista, String lista, String nameList) throws SQLException {
 		final String query;
@@ -884,20 +826,19 @@ public final class SemillaDAO {
 	/**
 	 * Removes the lists.
 	 *
-	 * @param c
-	 *            the c
-	 * @param updateListDataForm
-	 *            the update list data form
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c                  the c
+	 * @param updateListDataForm the update list data form
+	 * @throws SQLException the SQL exception
 	 */
 	public static void removeLists(Connection c, UpdateListDataForm updateListDataForm) throws SQLException {
-		if ((updateListDataForm.getListaRastreable() == null || updateListDataForm.getListaRastreable().isEmpty()) && updateListDataForm.getIdRastreableAntiguo() != 0) {
+		if ((updateListDataForm.getListaRastreable() == null || updateListDataForm.getListaRastreable().isEmpty())
+				&& updateListDataForm.getIdRastreableAntiguo() != 0) {
 			// Si hemos eliminado la lista rastreable, se borra de bbdd
 			SemillaDAO.removeListById(c, updateListDataForm.getIdRastreableAntiguo());
 		}
 
-		if ((updateListDataForm.getListaNoRastreable() == null || updateListDataForm.getListaNoRastreable().isEmpty()) && updateListDataForm.getIdNoRastreableAntiguo() != 0) {
+		if ((updateListDataForm.getListaNoRastreable() == null || updateListDataForm.getListaNoRastreable().isEmpty())
+				&& updateListDataForm.getIdNoRastreableAntiguo() != 0) {
 			// Si hemos eliminado la lista no rastreable, se borra de bbdd
 			SemillaDAO.removeListById(c, updateListDataForm.getIdNoRastreableAntiguo());
 		}
@@ -906,24 +847,25 @@ public final class SemillaDAO {
 	/**
 	 * Update lists.
 	 *
-	 * @param c
-	 *            the c
-	 * @param updateListDataForm
-	 *            the update list data form
+	 * @param c                  the c
+	 * @param updateListDataForm the update list data form
 	 * @return the update list data form
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
-	public static UpdateListDataForm updateLists(final Connection c, final UpdateListDataForm updateListDataForm) throws Exception {
+	public static UpdateListDataForm updateLists(final Connection c, final UpdateListDataForm updateListDataForm)
+			throws Exception {
 		// Si no habia lista rastreable y ahora se incluye, se crea
 		if (updateListDataForm.getListaRastreable() != null && !updateListDataForm.getListaRastreable().isEmpty()) {
 			if (updateListDataForm.getIdListaRastreable() == 0) {
 				// Guardamos la lista Rastreable
-				insertList(c, Constants.ID_LISTA_RASTREABLE, updateListDataForm.getNombre() + "-Rastreable", updateListDataForm.getListaRastreable(), null, null, null);
-				final long idCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-Rastreable", null);
+				insertList(c, Constants.ID_LISTA_RASTREABLE, updateListDataForm.getNombre() + "-Rastreable",
+						updateListDataForm.getListaRastreable(), null, null, null);
+				final long idCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-Rastreable",
+						null);
 				updateListDataForm.setIdListaRastreable(idCrawlableList);
 			} else {
-				editList(c, updateListDataForm.getIdListaRastreable(), updateListDataForm.getListaRastreable(), updateListDataForm.getNombre() + "-Rastreable");
+				editList(c, updateListDataForm.getIdListaRastreable(), updateListDataForm.getListaRastreable(),
+						updateListDataForm.getNombre() + "-Rastreable");
 			}
 		} else {
 			if (updateListDataForm.getIdListaRastreable() != 0) {
@@ -936,11 +878,14 @@ public final class SemillaDAO {
 		if (updateListDataForm.getListaNoRastreable() != null && !updateListDataForm.getListaNoRastreable().isEmpty()) {
 			if (updateListDataForm.getIdListaNoRastreable() == 0) {
 				// Guardamos la lista no Rastreable
-				insertList(c, Constants.ID_LISTA_NO_RASTREABLE, updateListDataForm.getNombre() + "-NoRastreable", updateListDataForm.getListaNoRastreable(), null, null, null);
-				Long idNoCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-NoRastreable", null);
+				insertList(c, Constants.ID_LISTA_NO_RASTREABLE, updateListDataForm.getNombre() + "-NoRastreable",
+						updateListDataForm.getListaNoRastreable(), null, null, null);
+				Long idNoCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-NoRastreable",
+						null);
 				updateListDataForm.setIdListaNoRastreable(idNoCrawlableList);
 			} else {
-				editList(c, updateListDataForm.getIdListaNoRastreable(), updateListDataForm.getListaNoRastreable(), updateListDataForm.getNombre() + "-NoRastreable");
+				editList(c, updateListDataForm.getIdListaNoRastreable(), updateListDataForm.getListaNoRastreable(),
+						updateListDataForm.getNombre() + "-NoRastreable");
 			}
 		} else {
 			if (updateListDataForm.getIdListaNoRastreable() != 0) {
@@ -955,18 +900,15 @@ public final class SemillaDAO {
 	/**
 	 * Delete observatory seed.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idSeed
-	 *            the id seed
-	 * @param idObservatory
-	 *            the id observatory
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c             the c
+	 * @param idSeed        the id seed
+	 * @param idObservatory the id observatory
+	 * @throws SQLException the SQL exception
 	 */
 	public static void deleteObservatorySeed(Connection c, long idSeed, long idObservatory) throws SQLException {
 		// Se recupera el id del rastreo asociado a la semilla
-		try (PreparedStatement ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ? AND semillas = ? ")) {
+		try (PreparedStatement ps = c
+				.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE id_observatorio = ? AND semillas = ? ")) {
 			ps.setLong(2, idSeed);
 			ps.setLong(1, idObservatory);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -983,13 +925,10 @@ public final class SemillaDAO {
 	/**
 	 * Gets the seed categories.
 	 *
-	 * @param c
-	 *            the c
-	 * @param page
-	 *            the page
+	 * @param c    the c
+	 * @param page the page
 	 * @return the seed categories
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<CategoriaForm> getSeedCategories(Connection c, int page) throws SQLException {
 		final List<CategoriaForm> categories = new ArrayList<>();
@@ -1027,13 +966,10 @@ public final class SemillaDAO {
 	/**
 	 * Gets the seed category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idCategory
-	 *            the id category
+	 * @param c          the c
+	 * @param idCategory the id category
 	 * @return the seed category
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static CategoriaForm getSeedCategory(Connection c, long idCategory) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM categorias_lista WHERE id_categoria = ?")) {
@@ -1057,19 +993,15 @@ public final class SemillaDAO {
 	/**
 	 * Gets the seeds by category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idCategory
-	 *            the id category
-	 * @param page
-	 *            the page
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param idCategory the id category
+	 * @param page       the page
+	 * @param searchForm the search form
 	 * @return the seeds by category
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	public static List<SemillaForm> getSeedsByCategory(Connection c, long idCategory, int page, SemillaForm searchForm) throws SQLException {
+	public static List<SemillaForm> getSeedsByCategory(Connection c, long idCategory, int page, SemillaForm searchForm)
+			throws SQLException {
 		final List<SemillaForm> results = new ArrayList<>();
 		String query = "SELECT * FROM lista l WHERE id_categoria = ? ";
 
@@ -1144,17 +1076,14 @@ public final class SemillaDAO {
 	/**
 	 * Count seeds by category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idCategory
-	 *            the id category
-	 * @param searchForm
-	 *            the search form
+	 * @param c          the c
+	 * @param idCategory the id category
+	 * @param searchForm the search form
 	 * @return the integer
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
-	public static Integer countSeedsByCategory(Connection c, long idCategory, SemillaForm searchForm) throws SQLException {
+	public static Integer countSeedsByCategory(Connection c, long idCategory, SemillaForm searchForm)
+			throws SQLException {
 		int count = 1;
 		String query = "SELECT COUNT(*) AS numSeeds FROM lista WHERE id_categoria = ? ";
 
@@ -1184,14 +1113,13 @@ public final class SemillaDAO {
 	/**
 	 * Count seed categories.
 	 *
-	 * @param c
-	 *            the c
+	 * @param c the c
 	 * @return the integer
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
 	public static Integer countSeedCategories(Connection c) throws Exception {
-		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) as numCategories FROM categorias_lista"); ResultSet rs = ps.executeQuery()) {
+		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) as numCategories FROM categorias_lista");
+				ResultSet rs = ps.executeQuery()) {
 			if (rs.next()) {
 				return rs.getInt("numCategories");
 			}
@@ -1205,12 +1133,9 @@ public final class SemillaDAO {
 	/**
 	 * Delete seed category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idCategory
-	 *            the id category
-	 * @throws Exception
-	 *             the exception
+	 * @param c          the c
+	 * @param idCategory the id category
+	 * @throws Exception the exception
 	 */
 	public static void deleteSeedCategory(Connection c, Long idCategory) throws Exception {
 		PreparedStatement ps = null;
@@ -1250,16 +1175,14 @@ public final class SemillaDAO {
 	/**
 	 * Gets the category observatory ids.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idCategory
-	 *            the id category
+	 * @param c          the c
+	 * @param idCategory the id category
 	 * @return the category observatory ids
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<Long> getCategoryObservatoryIds(Connection c, Long idCategory) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("SELECT id_observatorio FROM observatorio_categoria WHERE id_categoria = ?")) {
+		try (PreparedStatement ps = c
+				.prepareStatement("SELECT id_observatorio FROM observatorio_categoria WHERE id_categoria = ?")) {
 			ps.setLong(1, idCategory);
 			try (ResultSet rs = ps.executeQuery()) {
 				final List<Long> observatoriesIdsList = new ArrayList<>();
@@ -1278,12 +1201,9 @@ public final class SemillaDAO {
 	/**
 	 * Delete category seed.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idSemilla
-	 *            the id semilla
-	 * @throws Exception
-	 *             the exception
+	 * @param c         the c
+	 * @param idSemilla the id semilla
+	 * @throws Exception the exception
 	 */
 	public static void deleteCategorySeed(Connection c, String idSemilla) throws Exception {
 		try {
@@ -1298,16 +1218,14 @@ public final class SemillaDAO {
 	/**
 	 * Creates the seed category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param categoriaForm
-	 *            the categoria form
+	 * @param c             the c
+	 * @param categoriaForm the categoria form
 	 * @return the long
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static long createSeedCategory(final Connection c, final CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO categorias_lista (nombre, orden) VALUES (?,?)",
+				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
 			ps.executeUpdate();
@@ -1326,15 +1244,13 @@ public final class SemillaDAO {
 	/**
 	 * Update seed category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param categoriaForm
-	 *            the categoria form
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c             the c
+	 * @param categoriaForm the categoria form
+	 * @throws SQLException the SQL exception
 	 */
 	public static void updateSeedCategory(Connection c, CategoriaForm categoriaForm) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=? WHERE id_categoria = ?")) {
+		try (PreparedStatement ps = c
+				.prepareStatement("UPDATE categorias_lista SET nombre = ?, orden=? WHERE id_categoria = ?")) {
 			ps.setString(1, categoriaForm.getName());
 			ps.setInt(2, categoriaForm.getOrden());
 			ps.setString(3, categoriaForm.getId());
@@ -1348,22 +1264,21 @@ public final class SemillaDAO {
 	/**
 	 * Save seeds category.
 	 *
-	 * @param c
-	 *            the c
-	 * @param semillas
-	 *            the semillas
-	 * @param idCategory
-	 *            the id category
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c          the c
+	 * @param semillas   the semillas
+	 * @param idCategory the id category
+	 * @throws SQLException the SQL exception
 	 */
-	public static void saveSeedsCategory(Connection c, List<SemillaForm> semillas, String idCategory) throws SQLException {
+	public static void saveSeedsCategory(Connection c, List<SemillaForm> semillas, String idCategory)
+			throws SQLException {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
 
 			// Multidependencia
-			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = c.prepareStatement(
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
 
 			for (SemillaForm semillaForm : semillas) {
 				ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -1376,7 +1291,8 @@ public final class SemillaDAO {
 					ps.setString(5, null);
 				}
 				// Multidependencia
-				if (StringUtils.isNotEmpty(semillaForm.getActivaStr()) && semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 					ps.setBoolean(6, false);
 				} else {
 					ps.setBoolean(6, true);
@@ -1397,7 +1313,8 @@ public final class SemillaDAO {
 					// Inserción de las nuevas
 
 					if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
-						StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+						StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+								"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
 
 						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
 
@@ -1433,14 +1350,16 @@ public final class SemillaDAO {
 
 							}
 
-							slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",").append(currentDependencia.getId()).append(")");
+							slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+									.append(currentDependencia.getId()).append(")");
 
 							if (i < semillaForm.getDependencias().size() - 1) {
 								slqInsertSemillaDependencia.append(",");
 							}
 						}
 
-						PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+						PreparedStatement psInsertarSemillaDependencia = c
+								.prepareStatement(slqInsertSemillaDependencia.toString());
 
 						psInsertarSemillaDependencia.executeUpdate();
 					}
@@ -1466,12 +1385,9 @@ public final class SemillaDAO {
 	/**
 	 * Save seed multidependencia.
 	 *
-	 * @param c
-	 *            the c
-	 * @param semillaForm
-	 *            the semilla form
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c           the c
+	 * @param semillaForm the semilla form
+	 * @throws SQLException the SQL exception
 	 */
 	public static void saveSeedMultidependencia(Connection c, SemillaForm semillaForm) throws SQLException {
 		PreparedStatement ps = null;
@@ -1480,7 +1396,9 @@ public final class SemillaDAO {
 
 			// Multidependencia
 
-			ps = c.prepareStatement("INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+			ps = c.prepareStatement(
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			ps.setString(2, semillaForm.getNombre());
@@ -1517,20 +1435,23 @@ public final class SemillaDAO {
 				// Inserción de las nuevas
 
 				if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
-					StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+					StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+							"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
 
 					for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
 
 						DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
 
-						slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",").append(currentDependencia.getId()).append(")");
+						slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+								.append(currentDependencia.getId()).append(")");
 
 						if (i < semillaForm.getDependencias().size() - 1) {
 							slqInsertSemillaDependencia.append(",");
 						}
 					}
 
-					PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
+					PreparedStatement psInsertarSemillaDependencia = c
+							.prepareStatement(slqInsertSemillaDependencia.toString());
 
 					psInsertarSemillaDependencia.executeUpdate();
 				}
@@ -1552,12 +1473,9 @@ public final class SemillaDAO {
 	/**
 	 * Update category seeds.
 	 *
-	 * @param c
-	 *            the c
-	 * @param semillas
-	 *            the semillas
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c        the c
+	 * @param semillas the semillas
+	 * @throws SQLException the SQL exception
 	 */
 	public static void updateCategorySeeds(Connection c, List<SemillaForm> semillas) throws SQLException {
 		if (!semillas.isEmpty()) {
@@ -1587,13 +1505,10 @@ public final class SemillaDAO {
 	/**
 	 * Devuelve el listado de {@link DependenciaForm} paginado.
 	 *
-	 * @param c
-	 *            {@link Connection}
-	 * @param page
-	 *            Página a devolver.
+	 * @param c    {@link Connection}
+	 * @param page Página a devolver.
 	 * @return Listado de dependencias.
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<DependenciaForm> getSeedDependencias(Connection c, int page) throws SQLException {
 		final List<DependenciaForm> dependencias = new ArrayList<>();
@@ -1633,20 +1548,17 @@ public final class SemillaDAO {
 	/**
 	 * Devuelve las dependencias de una semilla.
 	 *
-	 * @param c
-	 *            {@link Connection}
-	 * @param idSemilla
-	 *            ID de la semilla
-	 * @return Listado de dependencias asociadas a la semilla identificada por
-	 *         el ID dado.
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c         {@link Connection}
+	 * @param idSemilla ID de la semilla
+	 * @return Listado de dependencias asociadas a la semilla identificada por el ID
+	 *         dado.
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<DependenciaForm> getSeedDependenciasById(Connection c, Long idSemilla) throws SQLException {
 
 		List<DependenciaForm> listDependencias = new ArrayList<>();
-		PreparedStatement psDependencias = c
-				.prepareStatement("SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
+		PreparedStatement psDependencias = c.prepareStatement(
+				"SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
 		psDependencias.setLong(1, idSemilla);
 
 		ResultSet rsDependencias = null;
@@ -1669,6 +1581,218 @@ public final class SemillaDAO {
 		}
 
 		return listDependencias;
+	}
+
+	public static List<SemillaForm> getAllObservatorySeeds(Connection c) throws SQLException {
+		final List<SemillaForm> seedList = new ArrayList<>();
+		int count = 1;
+		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? order by l.id_categoria, l.nombre";
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final SemillaForm semillaForm = new SemillaForm();
+					semillaForm.setId(rs.getLong("l.id_lista"));
+					semillaForm.setNombre(rs.getString("l.nombre"));
+					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+
+					// Rellenamos campos adicionales para el nuevo grid de
+					// búsqueda
+					// Multidependencia
+					semillaForm.setAcronimo(rs.getString("l.acronimo"));
+
+					final CategoriaForm categoriaForm = new CategoriaForm();
+					categoriaForm.setId(rs.getString("id_categoria"));
+					categoriaForm.setName(rs.getString("cl.nombre"));
+					categoriaForm.setOrden(rs.getInt("cl.orden"));
+					semillaForm.setCategoria(categoriaForm);
+					if (rs.getLong("l.activa") == 0) {
+						semillaForm.setActiva(false);
+					} else {
+						semillaForm.setActiva(true);
+					}
+
+					if (rs.getLong("l.in_directory") == 0) {
+						semillaForm.setInDirectory(false);
+					} else {
+						semillaForm.setInDirectory(true);
+					}
+
+					// Cargar las dependencias de la semilla
+
+					PreparedStatement psDependencias = c.prepareStatement(
+							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
+					psDependencias.setLong(1, semillaForm.getId());
+
+					List<DependenciaForm> listDependencias = new ArrayList<>();
+					ResultSet rsDependencias = null;
+
+					try {
+						rsDependencias = psDependencias.executeQuery();
+						while (rsDependencias.next()) {
+							DependenciaForm dependencia = new DependenciaForm();
+							dependencia.setId(rsDependencias.getLong("id_dependencia"));
+							dependencia.setName(rsDependencias.getString("nombre"));
+							listDependencias.add(dependencia);
+						}
+
+						semillaForm.setDependencias(listDependencias);
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					} finally {
+						DAOUtils.closeQueries(psDependencias, rsDependencias);
+					}
+
+					seedList.add(semillaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+
+		return seedList;
+	}
+
+	public static void saveOrUpdateSeed(Connection c, List<SemillaForm> semillas) throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			c.setAutoCommit(false);
+
+			for (SemillaForm semillaForm : semillas) {
+
+//				if(semillaForm.getId()!=null) {
+//					
+//				} else {
+//					
+//				}
+				ps = c.prepareStatement(
+						"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ?",
+						Statement.RETURN_GENERATED_KEYS);
+
+//				ps = c.prepareStatement("UPDATE lista SET id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ? where id_lista = ?", Statement.RETURN_GENERATED_KEYS);
+
+				ps.setLong(1, semillaForm.getId());
+				ps.setInt(2, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+				ps.setString(3, semillaForm.getNombre());
+				ps.setString(4, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+				ps.setString(5, semillaForm.getCategoria().getId());
+				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+					ps.setString(6, semillaForm.getAcronimo());
+				} else {
+					ps.setString(6, null);
+				}
+				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(7, false);
+				} else {
+					ps.setBoolean(7, true);
+				}
+
+				ps.setInt(8, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+				ps.setString(9, semillaForm.getNombre());
+				ps.setString(10, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+				ps.setString(11, semillaForm.getCategoria().getId());
+				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+					ps.setString(12, semillaForm.getAcronimo());
+				} else {
+					ps.setString(12, null);
+				}
+				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(13, false);
+				} else {
+					ps.setBoolean(13, true);
+				}
+
+				// Duplicate
+
+				int affectedRows = ps.executeUpdate();
+
+				if (affectedRows == 0) {
+					// ps.close();
+					throw new SQLException("Creating user failed, no rows affected.");
+				}
+
+				ResultSet generatedKeys = ps.getGeneratedKeys();
+
+				// Multidependencia
+				if (generatedKeys.next()) {
+					semillaForm.setId(generatedKeys.getLong(1));
+
+					// Inserción de las nuevas
+
+					if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+						StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+								"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+
+						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+
+							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
+
+							// Si viene informado el nombre de la
+							// depenedencia
+							// es
+							// para que se cree nueva. Si el nombre ya existe,
+							// se devuelve el id de la dependencia existente
+
+							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
+
+								PreparedStatement psCreateDependencia = c.prepareStatement(
+										"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?",
+										Statement.RETURN_GENERATED_KEYS);
+								psCreateDependencia.setString(1, currentDependencia.getName());
+								psCreateDependencia.setString(2, currentDependencia.getName());
+
+								int affectedRowsD = psCreateDependencia.executeUpdate();
+
+								if (affectedRowsD == 0) {
+									throw new SQLException("Creating user failed, no rows affected.");
+								}
+
+								ResultSet generatedKeysD = psCreateDependencia.getGeneratedKeys();
+
+								if (generatedKeysD.next()) {
+									currentDependencia.setId(generatedKeysD.getLong(1));
+								} else {
+									throw new SQLException("Creating dependencias failed, no ID obtained.");
+								}
+
+							}
+
+							slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+									.append(currentDependencia.getId()).append(")");
+
+							if (i < semillaForm.getDependencias().size() - 1) {
+								slqInsertSemillaDependencia.append(",");
+							}
+						}
+
+						PreparedStatement psInsertarSemillaDependencia = c
+								.prepareStatement(slqInsertSemillaDependencia.toString());
+
+						psInsertarSemillaDependencia.executeUpdate();
+					}
+
+				} else {
+					throw new SQLException("Creating dependencias failed, no ID obtained.");
+				}
+
+			}
+
+			// ps.executeBatch();
+
+			c.commit();
+		} catch (SQLException e) {
+			c.rollback();
+			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
+		}
 	}
 
 }
