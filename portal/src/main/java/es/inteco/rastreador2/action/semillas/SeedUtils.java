@@ -50,7 +50,7 @@ public final class SeedUtils {
 	/**
 	 * Gets the valid urls.
 	 *
-	 * @param seed the seed
+	 * @param seed     the seed
 	 * @param validate the validate
 	 * @return the valid urls
 	 */
@@ -102,7 +102,7 @@ public final class SeedUtils {
 	/**
 	 * Gets the seeds from file.
 	 *
-	 * @param inputStream the input stream
+	 * @param inputStream     the input stream
 	 * @param includeCategory the include category
 	 * @return the seeds from file
 	 * @throws Exception the exception
@@ -116,10 +116,10 @@ public final class SeedUtils {
 			digester.push(new ArrayList<SemillaForm>());
 
 			digester.addObjectCreate(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, SemillaForm.class);
-			
+
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ID,
 					"setIdStr", 0);
-			
+
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_NOMBRE,
 					"setNombre", 0);
 			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACTIVA,
@@ -167,8 +167,8 @@ public final class SeedUtils {
 	 * 
 	 * Generates an XML and add to response.
 	 *
-	 * @param response the response
-	 * @param seeds    the seeds
+	 * @param response        the response
+	 * @param seeds           the seeds
 	 * @param includeCategory the include category
 	 * @throws Exception the exception
 	 */
@@ -223,11 +223,13 @@ public final class SeedUtils {
 			hd.endElement("", "", Constants.XML_URL);
 
 			// ACRONIMO
+			hd.startElement("", "", Constants.XML_ACRONIMO, null);
 			if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-				hd.startElement("", "", Constants.XML_ACRONIMO, null);
+
 				hd.characters(semillaForm.getAcronimo().toCharArray(), 0, semillaForm.getAcronimo().length());
-				hd.endElement("", "", Constants.XML_ACRONIMO);
+
 			}
+			hd.endElement("", "", Constants.XML_ACRONIMO);
 
 			// Multidependencia
 
