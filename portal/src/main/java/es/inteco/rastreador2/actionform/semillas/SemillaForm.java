@@ -34,44 +34,44 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The id. */
 	private Long id;
-	
+
 	/** The nombre. */
 	private String nombre;
-	
+
 	/** The nombre antiguo. */
 	private String nombre_antiguo;
-	
+
 	/** The lista urls. */
 	private List<String> listaUrls;
-	
+
 	/** The lista urls string. */
 	private String listaUrlsString;
-	
+
 	/** The acronimo. */
 	// private String dependencia;
 	private String acronimo;
-	
+
 	/** The asociada. */
 	private boolean asociada;
-	
+
 	/** The activa. */
 	private boolean activa;
-	
+
 	/** The activa str. */
 	private String activaStr;
-	
+
 	/** The rastreo asociado. */
 	private long rastreoAsociado;
-	
+
 	/** The categoria. */
 	private CategoriaForm categoria;
-	
+
 	/** The in directory. */
 	private boolean inDirectory;
-	
+
 	/** The in directory str. */
 	private String inDirectoryStr;
 
@@ -168,12 +168,11 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		}
 
 		this.setListaUrlsString(url.replace("\n", ";"));
-		
+
 		List<String> tmp = Arrays.asList(this.listaUrlsString.split(";"));
-		for(int i=0;i<tmp.size();i++) {
-			this.listaUrls.add(tmp.get(i).trim());	
+		for (int i = 0; i < tmp.size(); i++) {
+			this.listaUrls.add(tmp.get(i).trim());
 		}
-		
 
 	}
 
@@ -436,6 +435,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 		if (!StringUtils.isEmpty(nombre)) {
 			String[] nombres = nombre.split("\r\n");
+
+			// Try split without \r
+			if (nombres.length == 1) {
+				nombres = nombre.split("\n");
+			}
+
 			for (String currentNombre : nombres) {
 				DependenciaForm dependencia = new DependenciaForm();
 				dependencia.setName(currentNombre.trim());
@@ -444,20 +449,24 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		}
 
 	}
-	
-	
+
 	/**
 	 * Sets the category name.
 	 *
 	 * @param categoryName the new category name
 	 */
-	public void setCategoryName(String categoryName) {	
+	public void setCategoryName(String categoryName) {
 		this.categoria = new CategoriaForm();
 		categoria.setName(categoryName);
 	}
 
 	public void setIdStr(String strId) {
-		this.setId(Long.parseLong(strId));
+		if(strId!=null && !StringUtils.isEmpty(strId)) {
+			this.setId(Long.parseLong(strId));	
+		} else {
+			this.setId(null);
+		}
+		
 	}
 
 	/**
@@ -467,9 +476,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls=" + listaUrls + ", listaUrlsString=" + listaUrlsString
-				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada + ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado="
-				+ rastreoAsociado + ", categoria=" + categoria + ", inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr + ", dependencias=" + dependencias + "]";
+		return "SemillaForm [id=" + id + ", nombre=" + nombre + ", nombre_antiguo=" + nombre_antiguo + ", listaUrls="
+				+ listaUrls + ", listaUrlsString=" + listaUrlsString
+				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada
+				+ ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado=" + rastreoAsociado
+				+ ", categoria=" + categoria + ", inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
+				+ ", dependencias=" + dependencias + "]";
 	}
 
 }

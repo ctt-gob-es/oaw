@@ -50,7 +50,6 @@ import es.inteco.rastreador2.utils.ActionUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
 
-// TODO: Auto-generated Javadoc
 /**
  * Clase InformesDispatchAction. Action de Informes
  *
@@ -344,6 +343,15 @@ public class SemillasObservatorioAction extends Action {
 		}
 	}
 
+	/**
+	 * Load seeds file.
+	 *
+	 * @param mapping the mapping
+	 * @param form the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward loadSeedsFile(ActionMapping mapping, ActionForm form, HttpServletRequest request)
 			throws Exception {
 		if (!isCancelled(request)) {
@@ -360,10 +368,8 @@ public class SemillasObservatorioAction extends Action {
 										.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
 
 					try (Connection c = DataBaseManager.getConnection()) {
-						// final Long idSeedCategory = SemillaDAO.createSeedCategory(c, categoriaForm);
 
 						String mensaje = "";
-
 						String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
 
 						if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
@@ -372,13 +378,10 @@ public class SemillasObservatorioAction extends Action {
 										.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
 
 								if (seeds != null && !seeds.isEmpty()) {
-									// TODO Process seeds
 
 									for (SemillaForm seed : seeds) {
 
-										// TODO Fill categroy and dependencies
-
-										// Categories
+										// Categories retrive from database
 										if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils
 												.isEmpty(seed.getCategoria().getName())) {
 
@@ -396,28 +399,6 @@ public class SemillasObservatorioAction extends Action {
 
 										}
 
-										// Dependencies
-
-//
-//										if (seed.getId() != null) {
-//
-//											SemillaForm databaseSeed = SemillaDAO.getSeedById(c, seed.getId());
-//
-//											if (databaseSeed != null && databaseSeed.getId() != null) {
-//
-//												// TODO Review category an dependencies
-//
-//												SemillaDAO.saveOrUpdateSeed(c, seed);
-//
-//											} else {
-//												// TODO Review category an dependencies
-//												SemillaDAO.saveOrUpdateSeed(c, seed);
-//											}
-//
-//										} else {
-//											// TODO Review category an dependencies
-//											SemillaDAO.saveOrUpdateSeed(c, seed);
-//										}
 									}
 
 									SemillaDAO.saveOrUpdateSeed(c, seeds);

@@ -42,10 +42,35 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
+
 /**
  * The Class SemillaDAO.
  */
 public final class SemillaDAO {
+
+	/** The Constant ID_LISTA. */
+	private static final String ID_LISTA = "id_lista";
+	
+	/** The Constant ORDEN. */
+	private static final String ORDEN = "orden";
+	
+	/** The Constant NOMBRE_CAT. */
+	private static final String NOMBRE_CAT = "nombreCat";
+	
+	/** The Constant ID_CATEGORIA. */
+	private static final String ID_CATEGORIA = "id_categoria";
+	
+	/** The Constant LISTA. */
+	private static final String LISTA = "lista";
+	
+	/** The Constant NOMBRE. */
+	private static final String NOMBRE = "nombre";
+	
+	/** The Constant L_ID_LISTA. */
+	private static final String L_ID_LISTA = "l.id_lista";
+	
+	/** The Constant SQL_EXCEPTION. */
+	private static final String SQL_EXCEPTION = "SQL Exception: ";
 
 	/**
 	 * Instantiates a new semilla DAO.
@@ -79,7 +104,7 @@ public final class SemillaDAO {
 				return rs.next();
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -151,7 +176,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
@@ -174,16 +199,16 @@ public final class SemillaDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final SemillaForm semillaForm = new SemillaForm();
-					semillaForm.setId(rs.getLong("l.id_lista"));
-					semillaForm.setNombre(rs.getString("nombre"));
-					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+					semillaForm.setId(rs.getLong(L_ID_LISTA));
+					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 					if (type == Constants.ID_LISTA_SEMILLA_OBSERVATORIO) {
 						final CategoriaForm categoriaForm = new CategoriaForm();
-						categoriaForm.setId(rs.getString("id_categoria"));
-						categoriaForm.setName(rs.getString("nombreCat"));
-						categoriaForm.setOrden(rs.getInt("orden"));
+						categoriaForm.setId(rs.getString(ID_CATEGORIA));
+						categoriaForm.setName(rs.getString(NOMBRE_CAT));
+						categoriaForm.setOrden(rs.getInt(ORDEN));
 						semillaForm.setCategoria(categoriaForm);
-						if (rs.getLong("id_lista") == 0) {
+						if (rs.getLong(ID_LISTA) == 0) {
 							semillaForm.setAsociada(false);
 						} else {
 							semillaForm.setAsociada(true);
@@ -193,7 +218,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
@@ -256,9 +281,9 @@ public final class SemillaDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final SemillaForm semillaForm = new SemillaForm();
-					semillaForm.setId(rs.getLong("l.id_lista"));
+					semillaForm.setId(rs.getLong(L_ID_LISTA));
 					semillaForm.setNombre(rs.getString("l.nombre"));
-					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 
 					// Rellenamos campos adicionales para el nuevo grid de
 					// búsqueda
@@ -266,7 +291,7 @@ public final class SemillaDAO {
 					semillaForm.setAcronimo(rs.getString("l.acronimo"));
 
 					final CategoriaForm categoriaForm = new CategoriaForm();
-					categoriaForm.setId(rs.getString("id_categoria"));
+					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
@@ -296,13 +321,13 @@ public final class SemillaDAO {
 						while (rsDependencias.next()) {
 							DependenciaForm dependencia = new DependenciaForm();
 							dependencia.setId(rsDependencias.getLong("id_dependencia"));
-							dependencia.setName(rsDependencias.getString("nombre"));
+							dependencia.setName(rsDependencias.getString(NOMBRE));
 							listDependencias.add(dependencia);
 						}
 
 						semillaForm.setDependencias(listDependencias);
 					} catch (SQLException e) {
-						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
@@ -312,7 +337,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
@@ -366,7 +391,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -410,9 +435,9 @@ public final class SemillaDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					SemillaForm semillaForm = new SemillaForm();
-					semillaForm.setId(rs.getLong("id_lista"));
-					semillaForm.setNombre(rs.getString("nombre"));
-					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+					semillaForm.setId(rs.getLong(ID_LISTA));
+					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 					if (rs.getInt("rastreos_asociados") > 0) {
 						semillaForm.setAsociada(true);
 					} else {
@@ -422,7 +447,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
@@ -466,7 +491,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return 0;
@@ -495,7 +520,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
@@ -539,7 +564,7 @@ public final class SemillaDAO {
 			deleteSemillaDependencia.executeUpdate();
 
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -574,7 +599,7 @@ public final class SemillaDAO {
 		} catch (SQLException e) {
 			c.rollback();
 			c.setAutoCommit(true);
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -595,12 +620,12 @@ public final class SemillaDAO {
 			ps.setLong(1, idSemilla);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					semillaForm.setId(rs.getLong("id_lista"));
-					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
-					semillaForm.setListaUrlsString(rs.getString("lista"));
-					semillaForm.setNombre(rs.getString("nombre"));
+					semillaForm.setId(rs.getLong(ID_LISTA));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
+					semillaForm.setListaUrlsString(rs.getString(LISTA));
+					semillaForm.setNombre(rs.getString(NOMBRE));
 					CategoriaForm categoriaForm = new CategoriaForm();
-					categoriaForm.setId(rs.getString("id_categoria"));
+					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
@@ -617,13 +642,13 @@ public final class SemillaDAO {
 						while (rsDependencias.next()) {
 							DependenciaForm dependencia = new DependenciaForm();
 							dependencia.setId(rsDependencias.getLong("id_dependencia"));
-							dependencia.setName(rsDependencias.getString("nombre"));
+							dependencia.setName(rsDependencias.getString(NOMBRE));
 							listDependencias.add(dependencia);
 						}
 
 						semillaForm.setDependencias(listDependencias);
 					} catch (SQLException e) {
-						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					}
 
@@ -633,7 +658,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
@@ -671,11 +696,11 @@ public final class SemillaDAO {
 			ps.setString(1, nombreLista);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					return rs.getLong("id_lista");
+					return rs.getLong(ID_LISTA);
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return 0;
@@ -698,11 +723,11 @@ public final class SemillaDAO {
 			ps.setLong(2, idCategoria);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					return rs.getLong("id_lista");
+					return rs.getLong(ID_LISTA);
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return 0;
@@ -768,7 +793,7 @@ public final class SemillaDAO {
 			}
 
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -785,7 +810,7 @@ public final class SemillaDAO {
 			ps.setLong(1, idList);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -818,7 +843,7 @@ public final class SemillaDAO {
 
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -917,7 +942,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -950,14 +975,14 @@ public final class SemillaDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					CategoriaForm categoriaForm = new CategoriaForm();
-					categoriaForm.setId(rs.getString("id_categoria"));
-					categoriaForm.setName(rs.getString("nombre"));
-					categoriaForm.setOrden(rs.getInt("orden"));
+					categoriaForm.setId(rs.getString(ID_CATEGORIA));
+					categoriaForm.setName(rs.getString(NOMBRE));
+					categoriaForm.setOrden(rs.getInt(ORDEN));
 					categories.add(categoriaForm);
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return categories;
@@ -977,14 +1002,14 @@ public final class SemillaDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					final CategoriaForm categoriaForm = new CategoriaForm();
-					categoriaForm.setId(rs.getString("id_categoria"));
-					categoriaForm.setName(rs.getString("nombre"));
-					categoriaForm.setOrden(rs.getInt("orden"));
+					categoriaForm.setId(rs.getString(ID_CATEGORIA));
+					categoriaForm.setName(rs.getString(NOMBRE));
+					categoriaForm.setOrden(rs.getInt(ORDEN));
 					return categoriaForm;
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return null;
@@ -1034,10 +1059,10 @@ public final class SemillaDAO {
 
 				while (rs.next()) {
 					SemillaForm semillaForm = new SemillaForm();
-					semillaForm.setId(rs.getLong("id_lista"));
-					semillaForm.setNombre(rs.getString("nombre"));
-					semillaForm.setListaUrlsString(rs.getString("lista"));
-					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+					semillaForm.setId(rs.getLong(ID_LISTA));
+					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setListaUrlsString(rs.getString(LISTA));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					// Multidependencia
 
@@ -1050,13 +1075,13 @@ public final class SemillaDAO {
 						while (rsDependencias.next()) {
 							DependenciaForm dependencia = new DependenciaForm();
 							dependencia.setId(rsDependencias.getLong("id_dependencia"));
-							dependencia.setName(rsDependencias.getString("nombre"));
+							dependencia.setName(rsDependencias.getString(NOMBRE));
 							listDependencias.add(dependencia);
 						}
 
 						semillaForm.setDependencias(listDependencias);
 					} catch (SQLException e) {
-						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					}
 
@@ -1067,7 +1092,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return results;
@@ -1105,7 +1130,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1124,7 +1149,7 @@ public final class SemillaDAO {
 				return rs.getInt("numCategories");
 			}
 		} catch (Exception e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return 0;
@@ -1193,7 +1218,7 @@ public final class SemillaDAO {
 				return observatoriesIdsList;
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1210,7 +1235,7 @@ public final class SemillaDAO {
 			final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
 			deleteObservatorySeed(c, Long.parseLong(idSemilla), observatoryFormList);
 		} catch (Exception e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1235,7 +1260,7 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return 0;
@@ -1256,7 +1281,7 @@ public final class SemillaDAO {
 			ps.setString(3, categoriaForm.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 	}
@@ -1277,7 +1302,7 @@ public final class SemillaDAO {
 
 			// Multidependencia
 			ps = c.prepareStatement(
-					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?)",
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			for (SemillaForm semillaForm : semillas) {
@@ -1290,12 +1315,19 @@ public final class SemillaDAO {
 				} else {
 					ps.setString(5, null);
 				}
-				// Multidependencia
+
 				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
 						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 					ps.setBoolean(6, false);
 				} else {
 					ps.setBoolean(6, true);
+				}
+
+				if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+						&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(7, false);
+				} else {
+					ps.setBoolean(7, true);
 				}
 
 				int affectedRows = ps.executeUpdate();
@@ -1307,6 +1339,7 @@ public final class SemillaDAO {
 
 				ResultSet generatedKeys = ps.getGeneratedKeys();
 
+				// Multidependencia
 				if (generatedKeys.next()) {
 					semillaForm.setId(generatedKeys.getLong(1));
 
@@ -1375,7 +1408,7 @@ public final class SemillaDAO {
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(ps, null);
@@ -1463,7 +1496,7 @@ public final class SemillaDAO {
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(ps, null);
@@ -1496,7 +1529,7 @@ public final class SemillaDAO {
 			} catch (SQLException e) {
 				c.rollback();
 				c.setAutoCommit(true);
-				Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			}
 		}
@@ -1534,12 +1567,12 @@ public final class SemillaDAO {
 				while (rs.next()) {
 					DependenciaForm dependenciaForm = new DependenciaForm();
 					dependenciaForm.setId(rs.getLong("id_dependencia"));
-					dependenciaForm.setName(rs.getString("nombre"));
+					dependenciaForm.setName(rs.getString(NOMBRE));
 					dependencias.add(dependenciaForm);
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return dependencias;
@@ -1569,12 +1602,12 @@ public final class SemillaDAO {
 			while (rsDependencias.next()) {
 				DependenciaForm dependencia = new DependenciaForm();
 				dependencia.setId(rsDependencias.getLong("id_dependencia"));
-				dependencia.setName(rsDependencias.getString("nombre"));
+				dependencia.setName(rsDependencias.getString(NOMBRE));
 				listDependencias.add(dependencia);
 			}
 
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(psDependencias, rsDependencias);
@@ -1583,6 +1616,13 @@ public final class SemillaDAO {
 		return listDependencias;
 	}
 
+	/**
+	 * Gets the all observatory seeds.
+	 *
+	 * @param c the c
+	 * @return the all observatory seeds
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<SemillaForm> getAllObservatorySeeds(Connection c) throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		int count = 1;
@@ -1594,9 +1634,9 @@ public final class SemillaDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final SemillaForm semillaForm = new SemillaForm();
-					semillaForm.setId(rs.getLong("l.id_lista"));
+					semillaForm.setId(rs.getLong(L_ID_LISTA));
 					semillaForm.setNombre(rs.getString("l.nombre"));
-					semillaForm.setListaUrls(convertStringToList(rs.getString("lista")));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
 
 					// Rellenamos campos adicionales para el nuevo grid de
 					// búsqueda
@@ -1604,7 +1644,7 @@ public final class SemillaDAO {
 					semillaForm.setAcronimo(rs.getString("l.acronimo"));
 
 					final CategoriaForm categoriaForm = new CategoriaForm();
-					categoriaForm.setId(rs.getString("id_categoria"));
+					categoriaForm.setId(rs.getString(ID_CATEGORIA));
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
@@ -1620,6 +1660,8 @@ public final class SemillaDAO {
 						semillaForm.setInDirectory(true);
 					}
 
+					semillaForm.setListaUrlsString(rs.getString(LISTA));
+
 					// Cargar las dependencias de la semilla
 
 					PreparedStatement psDependencias = c.prepareStatement(
@@ -1634,13 +1676,13 @@ public final class SemillaDAO {
 						while (rsDependencias.next()) {
 							DependenciaForm dependencia = new DependenciaForm();
 							dependencia.setId(rsDependencias.getLong("id_dependencia"));
-							dependencia.setName(rsDependencias.getString("nombre"));
+							dependencia.setName(rsDependencias.getString(NOMBRE));
 							listDependencias.add(dependencia);
 						}
 
 						semillaForm.setDependencias(listDependencias);
 					} catch (SQLException e) {
-						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
@@ -1650,13 +1692,20 @@ public final class SemillaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
 		return seedList;
 	}
 
+	/**
+	 * Save or update seed.
+	 *
+	 * @param c        the c
+	 * @param semillas the semillas
+	 * @throws SQLException the SQL exception
+	 */
 	public static void saveOrUpdateSeed(Connection c, List<SemillaForm> semillas) throws SQLException {
 		PreparedStatement ps = null;
 		try {
@@ -1664,51 +1713,92 @@ public final class SemillaDAO {
 
 			for (SemillaForm semillaForm : semillas) {
 
-//				if(semillaForm.getId()!=null) {
-//					
-//				} else {
-//					
-//				}
-				ps = c.prepareStatement(
-						"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, acronimo, activa) VALUES (?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ?",
-						Statement.RETURN_GENERATED_KEYS);
+				if (semillaForm.getId() != null) {
 
-//				ps = c.prepareStatement("UPDATE lista SET id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ? where id_lista = ?", Statement.RETURN_GENERATED_KEYS);
+					ps = c.prepareStatement(
+							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory= ?",
+							Statement.RETURN_GENERATED_KEYS);
 
-				ps.setLong(1, semillaForm.getId());
-				ps.setInt(2, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-				ps.setString(3, semillaForm.getNombre());
-				ps.setString(4, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
-				ps.setString(5, semillaForm.getCategoria().getId());
-				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-					ps.setString(6, semillaForm.getAcronimo());
-				} else {
-					ps.setString(6, null);
-				}
-				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
-						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-					ps.setBoolean(7, false);
-				} else {
-					ps.setBoolean(7, true);
-				}
+					ps.setLong(1, semillaForm.getId());
+					ps.setInt(2, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+					ps.setString(3, semillaForm.getNombre());
+					ps.setString(4, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+					ps.setString(5, semillaForm.getCategoria().getId());
+					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+						ps.setString(6, semillaForm.getAcronimo());
+					} else {
+						ps.setString(6, null);
+					}
 
-				ps.setInt(8, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-				ps.setString(9, semillaForm.getNombre());
-				ps.setString(10, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
-				ps.setString(11, semillaForm.getCategoria().getId());
-				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-					ps.setString(12, semillaForm.getAcronimo());
-				} else {
-					ps.setString(12, null);
-				}
-				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
-						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-					ps.setBoolean(13, false);
-				} else {
-					ps.setBoolean(13, true);
-				}
+					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(7, false);
+					} else {
+						ps.setBoolean(7, true);
+					}
 
-				// Duplicate
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(8, false);
+					} else {
+						ps.setBoolean(8, true);
+					}
+
+					/*******************/
+
+					ps.setInt(9, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+					ps.setString(10, semillaForm.getNombre());
+					ps.setString(11, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+					ps.setString(12, semillaForm.getCategoria().getId());
+					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+						ps.setString(13, semillaForm.getAcronimo());
+					} else {
+						ps.setString(13, null);
+					}
+					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(14, false);
+					} else {
+						ps.setBoolean(14, true);
+					}
+
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(15, false);
+					} else {
+						ps.setBoolean(15, true);
+					}
+
+				} else {
+
+					ps = c.prepareStatement(
+							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)",
+							Statement.RETURN_GENERATED_KEYS);
+
+					ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+					ps.setString(2, semillaForm.getNombre());
+					ps.setString(3, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+					ps.setString(4, semillaForm.getCategoria().getId());
+					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+						ps.setString(5, semillaForm.getAcronimo());
+					} else {
+						ps.setString(5, null);
+					}
+					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(6, false);
+					} else {
+						ps.setBoolean(6, true);
+					}
+
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(7, false);
+					} else {
+						ps.setBoolean(7, true);
+					}
+
+				}
 
 				int affectedRows = ps.executeUpdate();
 
@@ -1722,6 +1812,20 @@ public final class SemillaDAO {
 				// Multidependencia
 				if (generatedKeys.next()) {
 					semillaForm.setId(generatedKeys.getLong(1));
+
+					// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
+					// lo permite
+					try {
+						PreparedStatement deleteSemillaDependencia = c
+								.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
+
+						deleteSemillaDependencia.setLong(1, semillaForm.getId());
+						deleteSemillaDependencia.executeUpdate();
+
+					} catch (SQLException e) {
+						Logger.putLog("Error al eliminar las dependencias previas", SemillaDAO.class,
+								Logger.LOG_LEVEL_ERROR, e);
+					}
 
 					// Inserción de las nuevas
 
@@ -1788,7 +1892,7 @@ public final class SemillaDAO {
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
-			Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(ps, null);
