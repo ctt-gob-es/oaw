@@ -35,6 +35,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	type="text/javascript"></script>
 
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 
 <!--  JQ GRID   -->
@@ -230,6 +232,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</h2>
 
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
+			<jsp:include page="/common/crawler_messages.jsp" />
+
 
 			<html:form action="/secure/ViewSemillasObservatorio.do" method="get"
 				styleClass="formulario form-horizontal">
@@ -237,7 +241,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					value="<%=Constants.LOAD%>" />
 				<fieldset>
 					<legend>Buscador</legend>
-					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
 						<label for="nombre" class="control-label"><strong
 							class="labelVisu"><bean:message
@@ -305,9 +308,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 			<form method="post" style="display: none"
-				action="/oaw/secure/ViewSemillasObservatorio.do?action=loadSeedsFile"
+				action="/oaw/secure/ImportacionMasiva.do?action=confirm"
 				enctype="multipart/form-data">
-				<input type="hidden" name="action" value="loadSeedsFile" />
 				<div class="formItem">
 					<label for="fileSeeds" class="control-label"><strong
 						class="labelVisu"><bean:message
@@ -319,8 +321,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<!-- Exportar todas las semillas -->
 			<p class="pull-right">
-				<a
-					href="/oaw/secure/ViewSemillasObservatorio.do?action=exportAllSeeds">
+				<a href="/oaw/secure/ImportacionMasiva.do?action=exportAllSeeds">
 					<span class="btn btn-default btn-lg"> <span
 						class="glyphicon glyphicon-cloud-download" aria-hidden="true"
 						data-toggle="tooltip" title=""

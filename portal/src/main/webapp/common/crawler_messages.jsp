@@ -14,7 +14,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <html:xhtml/>
 
 <logic:messagesPresent message="false">
-	<div class="alert alert-danger">
+	<div class="alert alert-danger alert-dismissible">
 		<ul>
 			<html:messages id="error" message="false">
 				<li><bean:write name="error"/></li>
@@ -24,7 +24,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 </logic:messagesPresent>
 
 <logic:messagesPresent message="true">
-	<div class="alert alert-info">
+	<div class="alert alert-info alert-dismissible">
 		<ul>
 			<html:messages id="error" message="true">
 				<li><bean:write name="error"/></li>

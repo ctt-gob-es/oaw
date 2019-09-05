@@ -768,5 +768,10 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionRelanzar.jsp" />
 	</definition>
 
+	<!-- Confirmación de carga masiva -->
+	<definition name=".confirmarImportacion" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportar.jsp" />
+	</definition>
 
 </tiles-definitions>    

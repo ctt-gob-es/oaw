@@ -15,8 +15,6 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.observatorio;
 
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
 import java.sql.Connection;
 import java.util.List;
 
@@ -34,16 +32,10 @@ import com.google.gson.Gson;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.common.properties.PropertiesManager;
-import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
-import es.inteco.rastreador2.action.semillas.SeedCategoriesAction;
-import es.inteco.rastreador2.action.semillas.SeedUtils;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
-import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
-import es.inteco.rastreador2.dao.categoria.CategoriaDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.ActionUtils;
@@ -100,11 +92,12 @@ public class SemillasObservatorioAction extends Action {
 					return confirmDeleteSeed(mapping, request);
 				} else if (action.equals(Constants.ACCION_SEED_DETAIL)) {
 					return seedDetail(mapping, request);
-				} else if (action.equals(Constants.ACCION_EXPORT_ALL)) {
-					return getAllSeedsFile(request, response);
-				} else if (action.equals(Constants.ACCION_IMPORT_ALL)) {
-					return loadSeedsFile(mapping, form, request);
 				}
+//				else if (action.equals(Constants.ACCION_EXPORT_ALL)) {
+//					return getAllSeedsFile(request, response);
+//				} else if (action.equals(Constants.ACCION_IMPORT_ALL)) {
+//					return loadSeedsFile(mapping, form, request);
+//				}
 			}
 		} else {
 			return mapping.findForward(Constants.NO_PERMISSION);
@@ -325,118 +318,6 @@ public class SemillasObservatorioAction extends Action {
 			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return mapping.findForward(Constants.SEED_DETAIL);
-	}
-
-	/**
-	 * Gets the all seeds file.
-	 *
-	 * @param request  the request
-	 * @param response the response
-	 * @return the all seeds file
-	 * @throws Exception the exception
-	 */
-	private ActionForward getAllSeedsFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		try (Connection c = DataBaseManager.getConnection()) {
-			final List<SemillaForm> seeds = SemillaDAO.getAllObservatorySeeds(c);
-			SeedUtils.writeFileToResponse(response, seeds, true);
-			return null;
-		}
-	}
-
-	/**
-	 * Load seeds file.
-	 *
-	 * @param mapping the mapping
-	 * @param form the form
-	 * @param request the request
-	 * @return the action forward
-	 * @throws Exception the exception
-	 */
-	private ActionForward loadSeedsFile(ActionMapping mapping, ActionForm form, HttpServletRequest request)
-			throws Exception {
-		if (!isCancelled(request)) {
-			final PropertiesManager pmgr = new PropertiesManager();
-			SemillaSearchForm semillaSearchForm = (SemillaSearchForm) form;
-
-			request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
-			ActionErrors errors = semillaSearchForm.validate(mapping, request);
-			if (errors.isEmpty()) {
-				if (semillaSearchForm.getFileSeeds() == null
-						|| StringUtils.isEmpty(semillaSearchForm.getFileSeeds().getFileName())
-						|| (semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")
-								&& semillaSearchForm.getFileSeeds().getFileSize() <= Integer
-										.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
-
-					try (Connection c = DataBaseManager.getConnection()) {
-
-						String mensaje = "";
-						String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
-
-						if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
-							try {
-								List<SemillaForm> seeds = SeedUtils
-										.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
-
-								if (seeds != null && !seeds.isEmpty()) {
-
-									for (SemillaForm seed : seeds) {
-
-										// Categories retrive from database
-										if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils
-												.isEmpty(seed.getCategoria().getName())) {
-
-											CategoriaForm category = CategoriaDAO.getCategoryByName(c,
-													seed.getCategoria().getName());
-
-											if (category != null) {
-												seed.setCategoria(category);
-											} else {
-												seed.getCategoria().setOrden(1);
-												Long idCategoria = SemillaDAO.createSeedCategory(c,
-														seed.getCategoria());
-												seed.getCategoria().setId(idCategoria.toString());
-											}
-
-										}
-
-									}
-
-									SemillaDAO.saveOrUpdateSeed(c, seeds);
-
-								}
-
-							} catch (Exception e) {
-								Logger.putLog("Error en la creación de semillas asociadas al observatorio",
-										SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
-
-								mensaje = getResources(request).getMessage(getLocale(request),
-										"mensaje.exito.categoria.semilla.creada.error.fichero.semillas",
-										semillaSearchForm.getNombre());
-							}
-						}
-
-						request.setAttribute("mensajeExito", mensaje);
-						request.setAttribute("accionVolver", volver);
-						return loadSeeds(mapping, form, request);
-					}
-				} else if (!semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")) {
-					errors.add("xmlFile", new ActionMessage("no.xml.file"));
-					saveErrors(request, errors);
-					return loadSeeds(mapping, form, request);
-				} else if (semillaSearchForm.getFileSeeds().getFileSize() > Integer
-						.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
-					errors.add("xmlFile", new ActionMessage("xml.size.error"));
-					saveErrors(request, errors);
-					return loadSeeds(mapping, form, request);
-				}
-			} else {
-				saveErrors(request, errors);
-				return loadSeeds(mapping, form, request);
-			}
-		} else {
-			return loadSeeds(mapping, form, request);
-		}
-		return null;
 	}
 
 }
