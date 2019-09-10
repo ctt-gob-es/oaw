@@ -17,6 +17,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,8 +132,11 @@ public class ImportacionMasivaAction extends Action {
 						if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
 							try {
 
-								List<SeedComparision> listComparision = new ArrayList<>();
+								List<SemillaForm> inalterableSeeds = new ArrayList<>();
+								List<SeedComparision> updatedSeeds = new ArrayList<>();
 								List<SemillaForm> newSeed = new ArrayList<>();
+
+								List<SemillaForm> updateAndNewSeeds = new ArrayList<>();
 
 								List<SemillaForm> seeds = SeedUtils
 										.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
@@ -166,28 +170,37 @@ public class ImportacionMasivaAction extends Action {
 											SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
 
 											if (seedOld != null) {
-												listComparision.add(compareSeedFileds(seedOld, seed));
+												SeedComparision seedComparision = generateComparisionSeed(seedOld,
+														seed);
+												if (!seedComparision.isSame()) {
+													updatedSeeds.add(seedComparision);
+													updateAndNewSeeds.add(seed);
+												} else {
+													inalterableSeeds.add(seed);
+												}
+
 											} else {
 												newSeed.add(seed);
+												updateAndNewSeeds.add(seed);
 											}
 
 										} else {
 											newSeed.add(seed);
+											updateAndNewSeeds.add(seed);
 										}
 
 									}
 
-									// SemillaDAO.saveOrUpdateSeed(c, seeds);
-
-									request.setAttribute("seedComparisionList", listComparision);
+									request.setAttribute("inalterableSeeds", inalterableSeeds);
+									request.setAttribute("updatedSeeds", updatedSeeds);
 									request.setAttribute("newSeedList", newSeed);
-									// request.setAttribute("formSeeds", semillaSearchForm.getFileSeeds());
-									// request.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
 
 									// Store list in session
 
 									HttpSession session = request.getSession();
-									session.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
+									// session.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
+
+									session.setAttribute(Constants.OBSERVATORY_SEED_LIST, updateAndNewSeeds);
 
 								} else {
 									errors.add("xmlFile", new ActionMessage("xml.seed.not.valid"));
@@ -268,109 +281,13 @@ public class ImportacionMasivaAction extends Action {
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("xml.import.success"));
 			saveMessages(session, messages);
 			return mapping.findForward("observatorySeed");
-			
+
 		} catch (Exception e) {
 			errors.add("xmlFile", new ActionMessage("no.xml.file"));
 			saveErrors(request, errors);
 			return mapping.findForward("observatorySeed");
 		}
 
-	}
-
-	/**
-	 * Load seeds file.
-	 *
-	 * @param mapping the mapping
-	 * @param form    the form
-	 * @param request the request
-	 * @return the action forward
-	 * @throws Exception the exception
-	 */
-	private ActionForward loadSeedsFile(ActionMapping mapping, ActionForm form, HttpServletRequest request)
-			throws Exception {
-		if (!isCancelled(request)) {
-			final PropertiesManager pmgr = new PropertiesManager();
-			SemillaSearchForm semillaSearchForm = (SemillaSearchForm) form;
-
-			request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
-			ActionErrors errors = semillaSearchForm.validate(mapping, request);
-			if (errors.isEmpty()) {
-				if (semillaSearchForm.getFileSeeds() == null
-						|| StringUtils.isEmpty(semillaSearchForm.getFileSeeds().getFileName())
-						|| (semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")
-								&& semillaSearchForm.getFileSeeds().getFileSize() <= Integer
-										.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
-
-					try (Connection c = DataBaseManager.getConnection()) {
-
-						String mensaje = "";
-						String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
-
-						if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
-							try {
-								List<SemillaForm> seeds = SeedUtils
-										.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
-
-								if (seeds != null && !seeds.isEmpty()) {
-
-									for (SemillaForm seed : seeds) {
-
-										// Categories retrive from database
-										if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils
-												.isEmpty(seed.getCategoria().getName())) {
-
-											CategoriaForm category = CategoriaDAO.getCategoryByName(c,
-													seed.getCategoria().getName());
-
-											if (category != null) {
-												seed.setCategoria(category);
-											} else {
-												seed.getCategoria().setOrden(1);
-												Long idCategoria = SemillaDAO.createSeedCategory(c,
-														seed.getCategoria());
-												seed.getCategoria().setId(idCategoria.toString());
-											}
-
-										}
-
-									}
-
-									// SemillaDAO.saveOrUpdateSeed(c, seeds);
-
-								}
-
-							} catch (Exception e) {
-								Logger.putLog("Error en la creación de semillas asociadas al observatorio",
-										SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
-
-								mensaje = getResources(request).getMessage(getLocale(request),
-										"mensaje.exito.categoria.semilla.creada.error.fichero.semillas",
-										semillaSearchForm.getNombre());
-							}
-						}
-
-						request.setAttribute("mensajeExito", mensaje);
-						request.setAttribute("accionVolver", volver);
-						return mapping.findForward(Constants.VOLVER);
-					}
-				} else if (!semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")) {
-					errors.add("xmlFile", new ActionMessage("no.xml.file"));
-					saveErrors(request, errors);
-					return mapping.findForward(Constants.VOLVER);
-				} else if (semillaSearchForm.getFileSeeds().getFileSize() > Integer
-						.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
-					errors.add("xmlFile", new ActionMessage("xml.size.error"));
-					saveErrors(request, errors);
-					return mapping.findForward(Constants.VOLVER);
-				}
-			} else {
-				saveErrors(request, errors);
-				return mapping.findForward(Constants.VOLVER);
-			}
-		} else {
-			return mapping.findForward(Constants.VOLVER);
-		}
-		return null;
 	}
 
 	/**
@@ -383,7 +300,7 @@ public class ImportacionMasivaAction extends Action {
 	 * @throws IllegalArgumentException  the illegal argument exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */
-	public SeedComparision compareSeedFileds(SemillaForm seed1, SemillaForm seed2)
+	public SeedComparision generateComparisionSeed(SemillaForm seed1, SemillaForm seed2)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		SeedComparision seedComparision = new SeedComparision();
@@ -395,7 +312,7 @@ public class ImportacionMasivaAction extends Action {
 		seedComparision.setUrlsNuevo(seed2.getListaUrls());
 
 		seedComparision.setAcronimo(seed1.getAcronimo());
-		seedComparision.setAcronimo(seed2.getAcronimo());
+		seedComparision.setAcronimoNuevo(seed2.getAcronimo());
 
 		seedComparision.setActiva(seed1.isActiva());
 		seedComparision.setActivaNuevo(seed2.isActiva());
@@ -711,25 +628,179 @@ public class ImportacionMasivaAction extends Action {
 			this.dependenciasNuevo = dependenciasNuevo;
 		}
 
-//		public boolean isSameNombre() {
-//			if (this.nombre != null && this.nombreNuevo != null) {
-//				return nombre.equalsIgnoreCase(nombreNuevo);
-//			} else if ((this.nombre != null && this.nombreNuevo == null)
-//					|| (this.nombre == null && this.nombreNuevo != null)) {
-//				return false;
-//			}
-//			return false;
-//		}
-//
-//		public boolean isSameAcronimo() {
-//			if (this.acronimo != null && this.acronimo != null) {
-//				return acronimo.equalsIgnoreCase(acronimoNuevo);
-//			} else if ((this.acronimo != null && this.acronimoNuevo == null)
-//					|| (this.acronimo == null && this.acronimoNuevo != null)) {
-//				return false;
-//			}
-//			return false;
-//		}
+		/** The same nombre. */
+		private boolean sameNombre;
+
+		/** The same acronimo. */
+		private boolean sameAcronimo;
+
+		/** The same categoria. */
+		private boolean sameCategoria;
+
+		/** The same activa. */
+		private boolean sameActiva;
+
+		/** The same in directory. */
+		private boolean sameInDirectory;
+
+		/** The same dependencias. */
+		private boolean sameDependencias;
+
+		/** The same lista UR ls. */
+		private boolean sameListaURLs;
+
+		/**
+		 * Sets the same lista UR ls.
+		 *
+		 * @param sameListaURLs the new same lista UR ls
+		 */
+		public void setSameListaURLs(boolean sameListaURLs) {
+			this.sameListaURLs = sameListaURLs;
+		}
+
+		/**
+		 * Sets the same nombre.
+		 *
+		 * @param sameNombre the new same nombre
+		 */
+		public void setSameNombre(boolean sameNombre) {
+			this.sameNombre = sameNombre;
+		}
+
+		/**
+		 * Sets the same acronimo.
+		 *
+		 * @param sameAcronimo the new same acronimo
+		 */
+		public void setSameAcronimo(boolean sameAcronimo) {
+			this.sameAcronimo = sameAcronimo;
+		}
+
+		/**
+		 * Sets the same categoria.
+		 *
+		 * @param sameCategoria the new same categoria
+		 */
+		public void setSameCategoria(boolean sameCategoria) {
+			this.sameCategoria = sameCategoria;
+		}
+
+		/**
+		 * Sets the same activa.
+		 *
+		 * @param sameActiva the new same activa
+		 */
+		public void setSameActiva(boolean sameActiva) {
+			this.sameActiva = sameActiva;
+		}
+
+		/**
+		 * Sets the same in directory.
+		 *
+		 * @param sameInDirectory the new same in directory
+		 */
+		public void setSameInDirectory(boolean sameInDirectory) {
+			this.sameInDirectory = sameInDirectory;
+		}
+
+		/**
+		 * Sets the same dependencias.
+		 *
+		 * @param sameDependencias the new same dependencias
+		 */
+		public void setSameDependencias(boolean sameDependencias) {
+			this.sameDependencias = sameDependencias;
+		}
+
+		/**
+		 * Checks if is same nombre.
+		 *
+		 * @return true, if is same nombre
+		 */
+		public boolean isSameNombre() {
+
+			if (org.apache.commons.lang3.StringUtils.isEmpty(nombre)
+					&& org.apache.commons.lang3.StringUtils.isEmpty(nombreNuevo)) {
+				return true;
+			}
+
+			return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(nombre, nombreNuevo);
+		}
+
+		/**
+		 * Checks if is same acronimo.
+		 *
+		 * @return true, if is same acronimo
+		 */
+		public boolean isSameAcronimo() {
+
+			if (org.apache.commons.lang3.StringUtils.isEmpty(acronimo)
+					&& org.apache.commons.lang3.StringUtils.isEmpty(acronimoNuevo)) {
+				return true;
+			}
+			return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(acronimo, acronimoNuevo);
+		}
+
+		/**
+		 * Checks if is same categoria.
+		 *
+		 * @return true, if is same categoria
+		 */
+		public boolean isSameCategoria() {
+			if (this.categoria != null && this.categoriaNuevo != null) {
+				if (org.apache.commons.lang3.StringUtils.isEmpty(categoria.getName())
+						&& org.apache.commons.lang3.StringUtils.isEmpty(categoriaNuevo.getName())) {
+					return true;
+				}
+				return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(categoria.getName(),
+						categoriaNuevo.getName());
+			} else if (this.categoria == null && this.categoriaNuevo == null) {
+				return true;
+			}
+
+			return false;
+		}
+
+		/**
+		 * Checks if is same activa.
+		 *
+		 * @return true, if is same activa
+		 */
+		public boolean isSameActiva() {
+			return activa == activaNuevo;
+		}
+
+		/**
+		 * Checks if is same in directory.
+		 *
+		 * @return true, if is same in directory
+		 */
+		public boolean isSameInDirectory() {
+			return inDirectory == inDirectoryNuevo;
+		}
+
+		/**
+		 * Checks if is same dependencias.
+		 *
+		 * @return true, if is same dependencias
+		 */
+		public boolean isSameDependencias() {
+			return new HashSet<>(dependencias).equals(new HashSet<>(dependenciasNuevo));
+		}
+
+		/**
+		 * Checks if is same lista UR ls.
+		 *
+		 * @return true, if is same lista UR ls
+		 */
+		public boolean isSameListaURLs() {
+			return new HashSet<>(urls).equals(new HashSet<>(urlsNuevo));
+		}
+
+		public boolean isSame() {
+			return this.isSameAcronimo() && this.isSameActiva() && this.isSameCategoria() && this.isSameDependencias()
+					&& this.isSameInDirectory() && this.isSameListaURLs() && this.isSameNombre();
+		}
 
 	}
 

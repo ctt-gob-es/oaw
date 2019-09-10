@@ -43,20 +43,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<div class="detail">
 				<p>
-					<strong class="labelVisu"><bean:message
-							key="importar.semillas.info" /></strong>
+					<bean:message key="importar.semillas.info" />
 				</p>
 
+				<logic:notEmpty name="updatedSeeds">
 
 
+					<h3>
+						<bean:message key="cargar.semilla.actualizables.title" />
+					</h3>
 
 
-				<logic:notEmpty name="seedComparisionList">
-
-					<bean:size id="beansize" name="seedComparisionList" />
-
-
-
+					<bean:size id="beansize" name="updatedSeeds" />
 
 					<bean:message key="cargar.semilla.observatorio.total">
 						<jsp:attribute name="arg0">
@@ -64,105 +62,121 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                         </jsp:attribute>
 					</bean:message>
 
+					<logic:iterate name="updatedSeeds" id="semilla">
+
+						<table class="table table-stripped table-bordered table-hover">
+							<caption>
+								<bean:message key="lista.semillas.observatorio" />
+							</caption>
+							<tr>
+								<th></th>
+								<th><bean:message key="cargar.semilla.observatorio.nombre" /></th>
+								<th><bean:message
+										key="cargar.semilla.observatorio.acronimo" /></th>
+								<th><bean:message
+										key="cargar.semilla.observatorio.categoria" /></th>
+								<th><bean:message
+										key="cargar.semilla.observatorio.dependencia" /></th>
+								<th><bean:message key="cargar.semilla.observatorio.urls" /></th>
+								<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
+								<th><bean:message
+										key="cargar.semilla.observatorio.directorio" /></th>
+
+							</tr>
+
+							<tr>
+								<td>Valor actual</td>
+								<td><bean:write name="semilla" property="nombre" /></td>
+								<td><bean:write name="semilla" property="acronimo" /></td>
+								<td><bean:write name="semilla" property="categoria.name" /></td>
+
+								<td><logic:iterate name="semilla" property="dependencias"
+										id="dependencia">
+										<bean:write name="dependencia" property="name" />
+									</logic:iterate></td>
+
+								<td><logic:iterate name="semilla" property="urls" id="url">
+										<bean:write name="url" />
+									</logic:iterate></td>
+
+								<td><logic:equal name="semilla" property="activa"
+										value="true">
+										<bean:message key="si" />
+									</logic:equal> <logic:equal name="semilla" property="activa" value="false">
+										<bean:message key="no" />
+									</logic:equal></td>
+
+								<td><logic:equal name="semilla" property="inDirectory"
+										value="true">
+										<bean:message key="si" />
+									</logic:equal> <logic:equal name="semilla" property="inDirectory"
+										value="false">
+										<bean:message key="no" />
+									</logic:equal></td>
+							</tr>
+							<tr>
+								<td>Valor nuevo</td>
+
+								<td
+									class="<c:if test="${semilla.sameNombre!=true}">warning-import</c:if>"><bean:write
+										name="semilla" property="nombreNuevo" /></td>
+
+								<td
+									class="<c:if test="${semilla.sameAcronimo!=true}">warning-import</c:if>"><bean:write
+										name="semilla" property="acronimoNuevo" /></td>
+
+								<td
+									class="<c:if test="${semilla.sameCategoria!=true}">warning-import</c:if>"><bean:write
+										name="semilla" property="categoriaNuevo.name" /></td>
+
+								<td
+									class="<c:if test="${semilla.sameDependencias!=true}">warning-import</c:if>">
+									<logic:iterate name="semilla" property="dependenciasNuevo"
+										id="dependencia">
+										<bean:write name="dependencia" property="name" />
+									</logic:iterate>
+								</td>
+
+								<td
+									class="<c:if test="${semilla.sameListaURLs!=true}">warning-import</c:if>">
+
+									<logic:iterate name="semilla" property="urlsNuevo" id="url">
+										<bean:write name="url" />
+									</logic:iterate>
+								</td>
+
+								<td
+									class='<c:if test="${semilla.sameActiva!=true}">warning-import</c:if>'><logic:equal
+										name="semilla" property="activaNuevo" value="true">
+										<bean:message key="si" />
+									</logic:equal> <logic:equal name="semilla" property="activaNuevo"
+										value="false">
+										<bean:message key="no" />
+									</logic:equal></td>
 
 
-					<div class="pag">
-						<logic:iterate name="seedComparisionList" id="semilla">
-							<table class="table table-stripped table-bordered table-hover">
-								<caption>
-									<bean:message key="lista.semillas.observatorio" />
-								</caption>
-								<tr>
-									<th></th>
-									<th><bean:message key="cargar.semilla.observatorio.nombre" /></th>
-									<th><bean:message
-											key="cargar.semilla.observatorio.acronimo" /></th>
-									<th><bean:message
-											key="cargar.semilla.observatorio.categoria" /></th>
-									<th><bean:message
-											key="cargar.semilla.observatorio.dependencia" /></th>
-									<th><bean:message key="cargar.semilla.observatorio.urls" /></th>
-									<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
-									<th><bean:message
-											key="cargar.semilla.observatorio.directorio" /></th>
-
-								</tr>
-
-								<tr>
-									<td>Valor actual</td>
-									<td><bean:write name="semilla" property="nombre" /></td>
-									<td><bean:write name="semilla" property="acronimo" /></td>
-									<td><bean:write name="semilla" property="categoria.name" /></td>
-
-									<td><logic:iterate name="semilla" property="dependencias"
-											id="dependencia">
-											<bean:write name="dependencia" property="name" />
-										</logic:iterate></td>
-
-									<td><logic:iterate name="semilla" property="urls" id="url">
-											<bean:write name="url" />
-										</logic:iterate></td>
-
-									<td><logic:equal name="semilla" property="activa"
-											value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="activa" value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-
-									<td><logic:equal name="semilla" property="inDirectory"
-											value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="inDirectory"
-											value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-								</tr>
-								<tr>
-									<td>Valor nuevo</td>
-									<td><bean:write name="semilla" property="nombreNuevo" /></td>
-									<td><bean:write name="semilla" property="acronimoNuevo" /></td>
-									<td><bean:write name="semilla"
-											property="categoriaNuevo.name" /></td>
-
-									<td><logic:iterate name="semilla"
-											property="dependenciasNuevo" id="dependencia">
-											<bean:write name="dependencia" property="name" />
-										</logic:iterate></td>
-
-									<td><logic:iterate name="semilla" property="urlsNuevo"
-											id="url">
-											<bean:write name="url" />
-										</logic:iterate></td>
-
-									<td><logic:equal name="semilla" property="activaNuevo"
-											value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="activaNuevo"
-											value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-									<td><logic:equal name="semilla"
-											property="inDirectoryNuevo" value="true">
-											<bean:message key="si" />
-										</logic:equal> <logic:equal name="semilla" property="inDirectory"
-											value="false">
-											<bean:message key="no" />
-										</logic:equal></td>
-								</tr>
-
-
-
-
-
-							</table>
-						</logic:iterate>
-					</div>
+								<td
+									class='<c:if test="${semilla.sameInDirectory!=true}">warning-import</c:if>'><logic:equal
+										name="semilla" property="inDirectoryNuevo" value="true">
+										<bean:message key="si" />
+									</logic:equal> <logic:equal name="semilla" property="inDirectory"
+										value="false">
+										<bean:message key="no" />
+									</logic:equal></td>
+							</tr>
+						</table>
+					</logic:iterate>
 				</logic:notEmpty>
 
 
 
 				<logic:notEmpty name="newSeedList">
+
+
+
+					<h3>
+						<bean:message key="cargar.semilla.nuevas.title" />
+					</h3>
 
 					<bean:size id="newSeedListSize" name="newSeedList" />
 
@@ -177,11 +191,89 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 
-					<div class="pag">
-						<table class="table table-stripped table-bordered table-hover">
-							<caption>
-								<bean:message key="lista.semillas.observatorio" />
-							</caption>
+
+					<table class="table table-stripped table-bordered table-hover">
+						<caption>
+							<bean:message key="lista.semillas.observatorio" />
+						</caption>
+						<tr>
+							<th><bean:message key="cargar.semilla.observatorio.nombre" /></th>
+							<th><bean:message key="cargar.semilla.observatorio.acronimo" /></th>
+							<th><bean:message
+									key="cargar.semilla.observatorio.categoria" /></th>
+							<th><bean:message
+									key="cargar.semilla.observatorio.dependencia" /></th>
+							<th><bean:message key="cargar.semilla.observatorio.urls" /></th>
+							<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
+							<th><bean:message
+									key="cargar.semilla.observatorio.directorio" /></th>
+
+						</tr>
+						<logic:iterate name="newSeedList" id="semilla">
+
+							<tr>
+								<td><bean:write name="semilla" property="nombre" /></td>
+								<td><bean:write name="semilla" property="acronimo" /></td>
+								<td><bean:write name="semilla" property="categoria.name" /></td>
+
+								<td><logic:iterate name="semilla" property="dependencias"
+										id="dependencia">
+										<bean:write name="dependencia" property="name" />
+									</logic:iterate></td>
+
+								<td><logic:iterate name="semilla" property="listaUrls"
+										id="url">
+										<bean:write name="url" />
+									</logic:iterate></td>
+
+
+								<td><logic:equal name="semilla" property="inDirectory"
+										value="true">
+										<bean:message key="si" />
+									</logic:equal> <logic:equal name="semilla" property="inDirectory"
+										value="false">
+										<bean:message key="no" />
+									</logic:equal></td>
+
+
+								<td><logic:equal name="semilla" property="activa"
+										value="true">
+										<bean:message key="si" />
+									</logic:equal> <logic:equal name="semilla" property="activa" value="false">
+										<bean:message key="no" />
+									</logic:equal></td>
+							</tr>
+						</logic:iterate>
+					</table>
+				</logic:notEmpty>
+
+
+
+				<logic:notEmpty name="inalterableSeeds">
+
+					<h3>
+						<bean:message key="cargar.semilla.inalterables.title" />
+					</h3>
+
+					<bean:size id="inalterableSeedsSize" name="inalterableSeeds" />
+
+
+
+
+					<bean:message key="cargar.semilla.observatorio.total.sincambios">
+						<jsp:attribute name="arg0">
+                            <bean:write name="inalterableSeedsSize" />
+                        </jsp:attribute>
+					</bean:message>
+
+
+					<table class="table table-stripped table-bordered table-hover"
+						style="width: 100%; overflow-wrap: break-word;">
+						<caption>
+							<bean:message key="lista.semillas.observatorio" />
+						</caption>
+						
+						<thead>
 							<tr>
 								<th><bean:message key="cargar.semilla.observatorio.nombre" /></th>
 								<th><bean:message
@@ -190,13 +282,15 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										key="cargar.semilla.observatorio.categoria" /></th>
 								<th><bean:message
 										key="cargar.semilla.observatorio.dependencia" /></th>
-								<th><bean:message key="cargar.semilla.observatorio.urls" /></th>
+								<th style="max-width:20%"><bean:message key="cargar.semilla.observatorio.urls" /></th>
 								<th><bean:message key="cargar.semilla.observatorio.activa" /></th>
 								<th><bean:message
 										key="cargar.semilla.observatorio.directorio" /></th>
 
 							</tr>
-							<logic:iterate name="newSeedList" id="semilla">
+						</thead>
+						<tbody>
+							<logic:iterate name="inalterableSeeds" id="semilla">
 
 								<tr>
 									<td><bean:write name="semilla" property="nombre" /></td>
@@ -208,9 +302,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											<bean:write name="dependencia" property="name" />
 										</logic:iterate></td>
 
-									<td><logic:iterate name="semilla" property="listaUrls"
+									<td style="max-width:20%; text-align: left !important;"><logic:iterate name="semilla" property="listaUrls"
 											id="url">
 											<bean:write name="url" />
+											<br />
 										</logic:iterate></td>
 
 
@@ -231,18 +326,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 										</logic:equal></td>
 								</tr>
 							</logic:iterate>
-						</table>
-					</div>
+						</tbody>
+					</table>
 				</logic:notEmpty>
 
 
-
-
-
-
 				<p>
-					<strong class="labelVisu"><bean:message
-							key="importar.semillas.info2" /></strong>
+					<bean:message key="importar.semillas.info2" />
 				</p>
 
 				<div class="formButton">

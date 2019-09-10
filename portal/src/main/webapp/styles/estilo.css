@@ -100,10 +100,15 @@ h2 {
 }
 
 h3 {
-	color: #000000;
-	margin-left: 0.2%;
-	margin-top: 4%;
-	font-size: 100%;
+	/* 	color: #000000; */
+	/* 	margin-left: 0.2%; */
+	/* 	margin-top: 4%; */
+	/* 	font-size: 100%; */
+	font-weight: normal;
+	color: #e1120d;
+	margin-left: 0%;
+	margin-top: 0%;
+	font-size: 130%;
 }
 
 h4 {
@@ -1139,7 +1144,8 @@ ul.tabbernav li.tabberactive a:hover {
 	-moz-animation: spinm 1s infinite linear;
 }
 
-@keyframes spin {from { transform:scale(1)rotate(0deg);
+@
+keyframes spin {from { transform:scale(1)rotate(0deg);
 	
 }
 
@@ -1148,7 +1154,8 @@ to {
 }
 
 }
-@-webkit-keyframes spinw {from { -webkit-transform:rotate(0deg);
+@
+-webkit-keyframes spinw {from { -webkit-transform:rotate(0deg);
 	
 }
 
@@ -1157,7 +1164,8 @@ to {
 }
 
 }
-@-moz-keyframes spinm {from { -moz-transform:rotate(0deg);
+@
+-moz-keyframes spinm {from { -moz-transform:rotate(0deg);
 	
 }
 
@@ -1215,4 +1223,8 @@ to {
 	float: left;
 	margin: 5px 10px;
 	padding: 1px;
+}
+
+.warning-import {
+	background-color: #ffc107 !important;
 }

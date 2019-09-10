@@ -351,6 +351,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	 * @param activaStr the new activa str
 	 */
 	public void setActivaStr(String activaStr) {
+		if (StringUtils.isNotEmpty(activaStr) && activaStr.equalsIgnoreCase(Boolean.TRUE.toString())) {
+			this.setActiva(true);
+		} else {
+			this.setActiva(false);
+		}
+
 		this.activaStr = activaStr;
 	}
 
@@ -387,6 +393,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	 * @param inDirectoryStr the new in directory str
 	 */
 	public void setInDirectoryStr(String inDirectoryStr) {
+		if (StringUtils.isNotEmpty(inDirectoryStr) && inDirectoryStr.equalsIgnoreCase(Boolean.TRUE.toString())) {
+			this.setInDirectory(true);
+		} else {
+			this.setInDirectory(false);
+		}
+
 		this.inDirectoryStr = inDirectoryStr;
 	}
 
@@ -461,12 +473,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	}
 
 	public void setIdStr(String strId) {
-		if(strId!=null && !StringUtils.isEmpty(strId)) {
-			this.setId(Long.parseLong(strId));	
+		if (strId != null && !StringUtils.isEmpty(strId)) {
+			this.setId(Long.parseLong(strId));
 		} else {
 			this.setId(null);
 		}
-		
+
 	}
 
 	/**
