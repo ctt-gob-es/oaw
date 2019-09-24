@@ -446,14 +446,14 @@
 
 
 		<forward name="exportAllSeeds"
-			path="/secure/ImportacionMasivaAction.do?action=exportAllSeeds" />
+			path="/secure/SeedMassImport.do?action=exportAllSeeds" />
 
 		<forward name="loadSeedsFile"
-			path="/secure/ImportacionMasiva.do?action=loadSeedsFile" />
+			path="/secure/SeedMassImport.do?action=loadSeedsFile" />
 
 
 		<forward name="saveAllSeedsFile"
-			path="/secure/ImportacionMasiva.do?action=loadSeedsFile" />
+			path="/secure/SeedMassImport.do?action=loadSeedsFile" />
 
 
 
@@ -1251,7 +1251,7 @@
 
 		<!-- Importar -->
 		<action path="/secure/ImportacionMasiva"
-			type="es.inteco.rastreador2.action.observatorio.ImportacionMasivaAction"
+			type="es.inteco.rastreador2.action.observatorio.SeedMassImportAction"
 			name="SemillaSearchForm">
 			<forward name="volver" path=".indexAdmin" />
 			<forward name="exito" path=".Exito" />

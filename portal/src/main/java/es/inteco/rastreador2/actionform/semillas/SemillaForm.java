@@ -26,7 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.ValidatorForm;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SemillaForm.
  */
@@ -77,6 +76,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
+	
+	private AmbitoForm ambito;
+	
+	private ComplejidadForm complejidad;
+	
+	private List<EtiquetaForm> etiquetas;
 
 	/**
 	 * Instantiates a new semilla form.
@@ -472,6 +477,11 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		categoria.setName(categoryName);
 	}
 
+	/**
+	 * Sets the id str.
+	 *
+	 * @param strId the new id str
+	 */
 	public void setIdStr(String strId) {
 		if (strId != null && !StringUtils.isEmpty(strId)) {
 			this.setId(Long.parseLong(strId));
