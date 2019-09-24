@@ -47,11 +47,13 @@ import es.inteco.rastreador2.dao.categoria.CategoriaDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 
-// TODO: Auto-generated Javadoc
 /**
- * RelanzarObservatorioAction. Action para relanzar un observatorio incompleto.
+ * The Class SeedMassImportAction.
+ * 
+ * Action to perfomr export and import seed
+ *
  */
-public class ImportacionMasivaAction extends Action {
+public class SeedMassImportAction extends Action {
 
 	/**
 	 * Execute.
@@ -797,6 +799,11 @@ public class ImportacionMasivaAction extends Action {
 			return new HashSet<>(urls).equals(new HashSet<>(urlsNuevo));
 		}
 
+		/**
+		 * Checks if is same.
+		 *
+		 * @return true, if is same
+		 */
 		public boolean isSame() {
 			return this.isSameAcronimo() && this.isSameActiva() && this.isSameCategoria() && this.isSameDependencias()
 					&& this.isSameInDirectory() && this.isSameListaURLs() && this.isSameNombre();
