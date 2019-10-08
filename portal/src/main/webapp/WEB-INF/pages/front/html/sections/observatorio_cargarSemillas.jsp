@@ -124,6 +124,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			url : '/oaw/secure/JsonSemillasObservatorio.do?action=save',
 			data : $('#nuevaSemillaMultidependencia').serialize(),
 			method : 'POST',
+			cache: false,
 			traditional : true,
 		}).success(
 				function(response) {
@@ -308,7 +309,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 			<form method="post" style="display: none"
-				action="/oaw/secure/ImportacionMasiva.do?action=confirm"
+				action="/oaw/secure/SeedMassImport.do?action=confirm"
 				enctype="multipart/form-data">
 				<div class="formItem">
 					<label for="fileSeeds" class="control-label"><strong
@@ -321,7 +322,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 			<!-- Exportar todas las semillas -->
 			<p class="pull-right">
-				<a href="/oaw/secure/ImportacionMasiva.do?action=exportAllSeeds">
+				<a href="/oaw/secure/SeedMassImport.do?action=exportAllSeeds">
 					<span class="btn btn-default btn-lg"> <span
 						class="glyphicon glyphicon-cloud-download" aria-hidden="true"
 						data-toggle="tooltip" title=""

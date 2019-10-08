@@ -171,7 +171,7 @@ public class SeedMassImportAction extends Action {
 
 											SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
 
-											if (seedOld != null) {
+											if (seedOld != null && seedOld.getId() != null) {
 												SeedComparision seedComparision = generateComparisionSeed(seedOld,
 														seed);
 												if (!seedComparision.isSame()) {
@@ -182,6 +182,7 @@ public class SeedMassImportAction extends Action {
 												}
 
 											} else {
+												seed.setId(null);
 												newSeed.add(seed);
 												updateAndNewSeeds.add(seed);
 											}
@@ -319,8 +320,8 @@ public class SeedMassImportAction extends Action {
 		seedComparision.setActiva(seed1.isActiva());
 		seedComparision.setActivaNuevo(seed2.isActiva());
 
-		seedComparision.setCategoria(seed1.getCategoria());
-		seedComparision.setCategoriaNuevo(seed2.getCategoria());
+		seedComparision.setCategoria(seed1.getCategoria() != null ? seed1.getCategoria() : new CategoriaForm());
+		seedComparision.setCategoriaNuevo(seed2.getCategoria() != null ? seed2.getCategoria() : new CategoriaForm());
 
 		seedComparision.setInDirectory(seed1.isInDirectory());
 		seedComparision.setInDirectoryNuevo(seed2.isInDirectory());
