@@ -1250,7 +1250,7 @@
 		</action>
 
 		<!-- Importar -->
-		<action path="/secure/ImportacionMasiva"
+		<action path="/secure/SeedMassImport"
 			type="es.inteco.rastreador2.action.observatorio.SeedMassImportAction"
 			name="SemillaSearchForm">
 			<forward name="volver" path=".indexAdmin" />
