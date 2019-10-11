@@ -60,7 +60,6 @@ import es.inteco.rastreador2.actionform.semillas.ProxyForm;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.utils.CrawlerUtils;
 
-// TODO: Auto-generated Javadoc
 /**
  * ConectividadAction. {@link Action} Para comprobaciones de conectividad.
  *
@@ -576,42 +575,92 @@ public class ConectividadAction extends Action {
 		/** The errorproxy. */
 		private String errorProxy;
 
+		/**
+		 * Gets the url.
+		 *
+		 * @return the url
+		 */
 		public String getUrl() {
 			return url;
 		}
 
+		/**
+		 * Sets the url.
+		 *
+		 * @param url the new url
+		 */
 		public void setUrl(String url) {
 			this.url = url;
 		}
 
+		/**
+		 * Checks if is connection.
+		 *
+		 * @return true, if is connection
+		 */
 		public boolean isConnection() {
 			return connection;
 		}
 
+		/**
+		 * Sets the connection.
+		 *
+		 * @param connection the new connection
+		 */
 		public void setConnection(boolean connection) {
 			this.connection = connection;
 		}
 
+		/**
+		 * Checks if is connection proxy.
+		 *
+		 * @return true, if is connection proxy
+		 */
 		public boolean isConnectionProxy() {
 			return connectionProxy;
 		}
 
+		/**
+		 * Sets the connection proxy.
+		 *
+		 * @param connectionProxy the new connection proxy
+		 */
 		public void setConnectionProxy(boolean connectionProxy) {
 			this.connectionProxy = connectionProxy;
 		}
 
+		/**
+		 * Gets the error.
+		 *
+		 * @return the error
+		 */
 		public String getError() {
 			return error;
 		}
 
+		/**
+		 * Sets the error.
+		 *
+		 * @param error the new error
+		 */
 		public void setError(String error) {
 			this.error = error;
 		}
 
+		/**
+		 * Gets the error proxy.
+		 *
+		 * @return the error proxy
+		 */
 		public String getErrorProxy() {
 			return errorProxy;
 		}
 
+		/**
+		 * Sets the error proxy.
+		 *
+		 * @param errorProxy the new error proxy
+		 */
 		public void setErrorProxy(String errorProxy) {
 			this.errorProxy = errorProxy;
 		}

@@ -81,7 +81,7 @@ public final class IntavUtils {
             for (Long idAnalysis : listAnalysis) {
                 Evaluation evaluation = evaluator.getAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList(), true);
                 String methodology = ObservatorioDAO.getMethodology(c, idExObs);
-                ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
+                ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false,false);
                 scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
 
                 String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);

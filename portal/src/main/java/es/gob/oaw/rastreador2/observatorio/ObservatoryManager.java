@@ -61,7 +61,7 @@ public class ObservatoryManager {
             for (Long id : evaluationIds) {
                 try {
                     final Evaluation evaluation = evaluator.getAnalisisDB(c, id, EvaluatorUtils.getDocList(), false);
-                    final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true);
+                    final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, true,false);
                     evaluationList.add(evaluationForm);
                 } catch (ParserConfigurationException e) {
                     Logger.putLog("Exception: ", ObservatoryManager.class, Logger.LOG_LEVEL_ERROR, e);

@@ -90,7 +90,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 					ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + contadorPagina));
 			for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(groupIndex).getSuitabilityGroups()) {
 				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-					table.addCell(createTablaResumenResultadosPorNivelCeldaValorModalidad(subgroupForm.getValue()));
+					table.addCell(createTablaResumenResultadosPorNivelCeldaValorModalidad(subgroupForm.getValue(), messageResources));
 				}
 			}
 			contadorPagina++;
@@ -151,7 +151,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		return table;
 	}
 
-	private PdfPCell createTablaResumenResultadosPorNivelCeldaValorModalidad(final int value) {
+	private PdfPCell createTablaResumenResultadosPorNivelCeldaValorModalidad(final int value, MessageResources messageResources) {
 		final String valor;
 		final String modalidad;
 		final Font fuente;
@@ -171,7 +171,8 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			backgroundColor = Constants.COLOR_RESULTADO_0_FALLA;
 			break;
 		case Constants.OBS_VALUE_GREEN_ZERO:
-			valor = "0";
+			//TODO CERO PASA FROM PROPERTIES
+			valor = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa");
 			modalidad = "P";
 			fuente = ConstantsFont.labelHeaderCellFont;
 			backgroundColor = Constants.COLOR_RESULTADO_0_PASA;

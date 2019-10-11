@@ -141,7 +141,7 @@ public final class Check_1_1_2_HeadersTest {
 		final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
 		Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), SAME_LEVEL_HEADERS_NO_CONTENT_ID));
-		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
 		TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_1_2, TestUtils.OBS_VALUE_RED_ZERO);
 	}
 

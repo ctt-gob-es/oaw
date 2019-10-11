@@ -12,7 +12,6 @@ import es.inteco.crawler.job.ObservatoryStatus;
 import es.inteco.crawler.job.ObservatorySummary;
 import es.inteco.crawler.job.ObservatorySummaryTimes;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class EstadoObservatorioDAO.
  */

@@ -17,7 +17,6 @@ import java.io.Serializable;
 
 import org.apache.struts.validator.ValidatorForm;
 
-// TODO: Auto-generated Javadoc
 /**
  * DependenciaForm. Clase para el manejo de dependencias.
  * 

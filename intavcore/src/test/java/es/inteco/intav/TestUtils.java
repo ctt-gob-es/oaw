@@ -116,12 +116,12 @@ public final class TestUtils {
 
     public static void checkVerificacion(CheckAccessibility checkAccessibility, String idSubgroup, int expectedValue) throws Exception {
         Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
-        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
         checkVerificacion(oef, idSubgroup, expectedValue);
     }
 
     public static void checkVerificacion(final Evaluation evaluation, final String idSubgroup, int expectedValue) {
-        final ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+        final ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
         checkVerificacion(oef,idSubgroup,expectedValue);
     }
 

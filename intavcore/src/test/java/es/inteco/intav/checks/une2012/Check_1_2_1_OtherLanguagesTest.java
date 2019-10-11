@@ -52,7 +52,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 		final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
 		Assert.assertEquals(0, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE_ELEMENT));
-		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
 		TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_GREEN_ONE);
 	}
 
@@ -62,7 +62,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 		final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
 		Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE_ELEMENT));
-		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
 		TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
 	}
 
@@ -72,7 +72,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 		final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
 		Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), VALID_LANGUAGE_ELEMENT));
-		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
 		TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
 	}
 
@@ -128,7 +128,7 @@ public final class Check_1_2_1_OtherLanguagesTest {
 		final Evaluation evaluation = EvaluatorUtils.evaluateContent(checkAccessibility, "es");
 
 		Assert.assertEquals(1, TestUtils.getNumProblems(evaluation.getProblems(), OTHER_LANGUAGES));
-		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true);
+		ObservatoryEvaluationForm oef = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, "", true,false);
 		TestUtils.checkVerificacion(oef, MINHAP_OBSERVATORY_2_0_SUBGROUP_1_2_1, TestUtils.OBS_VALUE_RED_ZERO);
 	}
 
