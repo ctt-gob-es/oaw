@@ -44,28 +44,56 @@ import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2004Builder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012Builder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012bBuilder;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNEEN2019Builder;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.utils.FileUtils;
 
+/**
+ * The Class AnonymousResultExportPdfAction.
+ */
 public class AnonymousResultExportPdfAction extends Action {
 
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
-		if (request.getSession().getAttribute(Constants.ROLE) == null || CrawlerUtils.hasAccess(request, "export.anonymous.observatory")) {
+	/**
+	 * Execute.
+	 *
+	 * @param mapping the mapping
+	 * @param form the form
+	 * @param request the request
+	 * @param response the response
+	 * @return the action forward
+	 */
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) {
+		if (request.getSession().getAttribute(Constants.ROLE) == null
+				|| CrawlerUtils.hasAccess(request, "export.anonymous.observatory")) {
 			return listPdf(mapping, request, response);
 		} else {
 			return mapping.findForward(Constants.NO_PERMISSION);
 		}
 	}
 
+	/**
+	 * List pdf.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @param response the response
+	 * @return the action forward
+	 */
 	private ActionForward listPdf(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) {
 		PropertiesManager pmgr = new PropertiesManager();
 
-		long idExecution = request.getParameter(Constants.ID) != null ? Long.parseLong(request.getParameter(Constants.ID)) : 0;
-		long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null ? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)) : 0;
+		long idExecution = request.getParameter(Constants.ID) != null
+				? Long.parseLong(request.getParameter(Constants.ID))
+				: 0;
+		long idObservatory = request.getParameter(Constants.ID_OBSERVATORIO) != null
+				? Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO))
+				: 0;
 
-		String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecution + File.separator + "anonymous" + File.separator;
+		String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory
+				+ File.separator + idExecution + File.separator + "anonymous" + File.separator;
 
 		String filePath = null;
 
@@ -83,10 +111,13 @@ public class AnonymousResultExportPdfAction extends Action {
 				if (request.getParameter(Constants.EXPORT_PDF_REGENERATE) != null || !checkFile.exists()) {
 					checkFile.createNewFile();
 					final boolean includeEvolution = includeEvolution(c, idObservatory, idExecution);
-					final AnonymousResultPdfBuilder pdfBuilder = getPdfBuilder(checkFile, observatoryForm.getTipo(), version);
-					pdfBuilder.generateGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID), idExecution, request.getParameter(Constants.ID_OBSERVATORIO), graphicPath);
+					final AnonymousResultPdfBuilder pdfBuilder = getPdfBuilder(checkFile, observatoryForm.getTipo(),
+							version);
+					pdfBuilder.generateGraphics(CrawlerUtils.getResources(request), request.getParameter(Constants.ID),
+							idExecution, request.getParameter(Constants.ID_OBSERVATORIO), graphicPath);
 					List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecution);
-					pdfBuilder.buildDocument(CrawlerUtils.getResources(request), null, graphicPath, Long.toString(idObservatory), Long.toString(idExecution), categories, includeEvolution);
+					pdfBuilder.buildDocument(CrawlerUtils.getResources(request), null, graphicPath,
+							Long.toString(idObservatory), Long.toString(idExecution), categories, includeEvolution);
 					FileUtils.deleteDir(new File(graphicPath));
 				}
 			} else {
@@ -109,25 +140,58 @@ public class AnonymousResultExportPdfAction extends Action {
 		return null;
 	}
 
-	private AnonymousResultPdfBuilder getPdfBuilder(final File file, final long tipo, final String version) throws Exception {
+	/**
+	 * Gets the pdf builder.
+	 *
+	 * @param file the file
+	 * @param tipo the tipo
+	 * @param version the version
+	 * @return the pdf builder
+	 * @throws Exception the exception
+	 */
+	private AnonymousResultPdfBuilder getPdfBuilder(final File file, final long tipo, final String version)
+			throws Exception {
 		if (Constants.NORMATIVA_UNE_2012.equalsIgnoreCase(version)) {
 			return new AnonymousResultPdfUNE2012Builder(file, tipo);
 		} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(version)) {
 			return new AnonymousResultPdfUNE2012bBuilder(file, tipo);
+
+		} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(version)) {
+			return new AnonymousResultPdfUNEEN2019Builder(file, tipo);
 		} else {
 			return new AnonymousResultPdfUNE2004Builder(file, tipo);
 		}
 	}
 
+	/**
+	 * Checks for results.
+	 *
+	 * @param idExecution the id execution
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	private boolean hasResults(long idExecution) throws Exception {
-		return ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null).size() != 0;
+		return ResultadosAnonimosObservatorioIntavUtils
+				.getGlobalResultData(String.valueOf(idExecution), Constants.COMPLEXITY_SEGMENT_NONE, null).size() != 0;
 	}
 
+	/**
+	 * Include evolution.
+	 *
+	 * @param c the c
+	 * @param idObservatory the id observatory
+	 * @param idExecution the id execution
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	private boolean includeEvolution(final Connection c, long idObservatory, long idExecution) throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, idObservatory, idExecution);
-		return ObservatorioDAO.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION, observatoryRealizadoForm.getFecha()).size() >= Integer
-				.parseInt(pmgr.getValue("pdf.properties", "pdf.anonymous.results.pdf.min.obser"));
+		final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c,
+				idObservatory, idExecution);
+		return ObservatorioDAO
+				.getFulfilledObservatories(c, idObservatory, Constants.NO_PAGINACION,
+						observatoryRealizadoForm.getFecha())
+				.size() >= Integer.parseInt(pmgr.getValue("pdf.properties", "pdf.anonymous.results.pdf.min.obser"));
 	}
 
 }

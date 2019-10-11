@@ -45,7 +45,8 @@ import java.util.Locale;
 public class AnalysisFromCrawlerAction extends Action {
 
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		if (CrawlerUtils.hasAccess(request, "show.crawler.results")) {
 			if (request.getParameter(Constants.ACTION) != null) {
@@ -87,22 +88,32 @@ public class AnalysisFromCrawlerAction extends Action {
 
 				// Fichero de mensajes si es la nueva metodología
 				String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
-				if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
+				if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+				} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
+				} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 				}
+				
+				request.setAttribute("aplicacion", aplicacion);
 
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
 					long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 					String methodology = ObservatorioDAO.getMethodology(c, idExObs);
-					ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false);
-					evaluationForm.setSource(BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), true));
+					ObservatoryEvaluationForm evaluationForm = EvaluatorUtils
+							.generateObservatoryEvaluationForm(evaluation, methodology, false, Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true: false);
+					evaluationForm
+							.setSource(BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), true));
 					setDescription(evaluationForm, messageResources, locale);
-					request.setAttribute(Constants.FAILED_CHECKS,
-							IntavUtils.getFailedChecks(request, evaluationForm, EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0)), messageResources));
+					request.setAttribute(Constants.FAILED_CHECKS, IntavUtils.getFailedChecks(request, evaluationForm,
+							EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0)), messageResources));
 					request.setAttribute(Constants.EVALUATION_FORM, evaluationForm);
 				} else {
-					EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation, EvaluatorUtility.getLanguage(request));
-					evaluationForm.setSource(BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), true));
+					EvaluationForm evaluationForm = EvaluatorUtils.generateEvaluationForm(evaluation,
+							EvaluatorUtility.getLanguage(request));
+					evaluationForm
+							.setSource(BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), true));
 					setDescription(evaluationForm, messageResources, locale);
 					request.setAttribute(Constants.EVALUATION_FORM, evaluationForm);
 					CacheUtils.putInCache(evaluationForm, request.getSession().getId());
@@ -134,8 +145,10 @@ public class AnalysisFromCrawlerAction extends Action {
 			for (GuidelineForm guideline : priority.getGuidelines()) {
 				guideline.setDescription(messageResources.getMessage(locale, guideline.getDescription()));
 				if (guideline.getDescription().indexOf('.') != -1) {
-					guideline.setGuidelineId(guideline.getDescription().substring(0, guideline.getDescription().indexOf('.')));
-					guideline.setDescription(guideline.getDescription().substring(guideline.getDescription().indexOf('.')));
+					guideline.setGuidelineId(
+							guideline.getDescription().substring(0, guideline.getDescription().indexOf('.')));
+					guideline.setDescription(
+							guideline.getDescription().substring(guideline.getDescription().indexOf('.')));
 				}
 				for (PautaForm pauta : guideline.getPautas()) {
 					pauta.setName(messageResources.getMessage(locale, pauta.getName()));
@@ -148,14 +161,18 @@ public class AnalysisFromCrawlerAction extends Action {
 		}
 	}
 
-	private void setDescription(ObservatoryEvaluationForm evaluationForm, MessageResources messageResources, Locale locale) {
+	private void setDescription(ObservatoryEvaluationForm evaluationForm, MessageResources messageResources,
+			Locale locale) {
 		for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
 			for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
 				for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-					observatorySubgroupForm.setDescription(messageResources.getMessage(locale, observatorySubgroupForm.getDescription()));
+					observatorySubgroupForm.setDescription(
+							messageResources.getMessage(locale, observatorySubgroupForm.getDescription()));
 					if (observatorySubgroupForm.getDescription().indexOf(' ') != -1) {
-						observatorySubgroupForm.setGuidelineId(observatorySubgroupForm.getDescription().substring(0, observatorySubgroupForm.getDescription().indexOf(' ')));
-						observatorySubgroupForm.setDescription(observatorySubgroupForm.getDescription().substring(observatorySubgroupForm.getDescription().indexOf(' ')));
+						observatorySubgroupForm.setGuidelineId(observatorySubgroupForm.getDescription().substring(0,
+								observatorySubgroupForm.getDescription().indexOf(' ')));
+						observatorySubgroupForm.setDescription(observatorySubgroupForm.getDescription()
+								.substring(observatorySubgroupForm.getDescription().indexOf(' ')));
 					}
 				}
 			}
@@ -198,7 +215,8 @@ public class AnalysisFromCrawlerAction extends Action {
 						if (problem.getCheck().equals(idCheck)) {
 							pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 							request.setAttribute(Constants.PROBLEMA, problem);
-							request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, problem.getSpecificProblems().size(), pagina));
+							request.setAttribute(Constants.LIST_PAGE_LINKS,
+									Pagination.createPagination(request, problem.getSpecificProblems().size(), pagina));
 							break;
 						}
 					}
@@ -231,13 +249,15 @@ public class AnalysisFromCrawlerAction extends Action {
 		return mapping.findForward(Constants.CHECK_RESULTS);
 	}
 
-	private ActionForward getHtmlSource(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	private ActionForward getHtmlSource(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
 		if (request.getParameter(Constants.CODE) != null) {
 			final long id = Long.parseLong(request.getParameter(Constants.CODE));
 			try (Connection conn = DataBaseManager.getConnection()) {
 				final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
-				CrawlerUtils.returnText(response, new String(analysis.getSource().getBytes(CrawlerUtils.getCharset(analysis.getSource()))), true);
+				CrawlerUtils.returnText(response,
+						new String(analysis.getSource().getBytes(CrawlerUtils.getCharset(analysis.getSource()))), true);
 			} catch (Exception e) {
 				Logger.putLog("Excepcion: ", AnalysisFromCrawlerAction.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;

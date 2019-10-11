@@ -15,6 +15,21 @@
 ******************************************************************************/
 package es.inteco.rastreador2.intav.action;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.sql.Connection;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -26,23 +41,26 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
-import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
-import org.apache.struts.action.*;
-import org.apache.struts.util.PropertyMessageResources;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.sql.Connection;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-
+/**
+ * The Class ResultsAction.
+ */
 public class ResultsAction extends Action {
 
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	/**
+	 * Execute.
+	 *
+	 * @param mapping the mapping
+	 * @param form the form
+	 * @param request the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		if (CrawlerUtils.hasAccess(request, "show.crawler.results")) {
 			return results(mapping, request);
@@ -51,6 +69,13 @@ public class ResultsAction extends Action {
 		}
 	}
 
+	/**
+	 * Results.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 */
 	@SuppressWarnings("deprecation")
 	private ActionForward results(ActionMapping mapping, HttpServletRequest request) {
 		Connection c = null;
@@ -81,16 +106,23 @@ public class ResultsAction extends Action {
 				int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 				int numResult = AnalisisDatos.countAnalysisByTracking(idExecution);
 
-				List<AnalysisForm> analysisList = EvaluatorUtils.getFormList(AnalisisDatos.getAnalysisByTracking(idExecution, (pagina - 1), request));
+				List<AnalysisForm> analysisList = EvaluatorUtils
+						.getFormList(AnalisisDatos.getAnalysisByTracking(idExecution, (pagina - 1), request));
 
 				for (AnalysisForm analyse : analysisList) {
-					if ((analyse.getUrl() != null) && (analyse.getUrl().length() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string")))) {
+					if ((analyse.getUrl() != null) && (analyse.getUrl().length() > Integer
+							.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string")))) {
 						analyse.setUrlTitle(analyse.getUrl());
-						analyse.setUrl(analyse.getUrl().substring(0, Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string"))) + "...");
+						analyse.setUrl(analyse.getUrl().substring(0,
+								Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string")))
+								+ "...");
 					}
-					if (analyse.getEntity() != null && analyse.getEntity().length() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string"))) {
+					if (analyse.getEntity() != null && analyse.getEntity().length() > Integer
+							.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string"))) {
 						analyse.setEntityTitle(analyse.getEntity());
-						analyse.setEntity(analyse.getEntity().substring(0, Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string"))) + "...");
+						analyse.setEntity(analyse.getEntity().substring(0,
+								Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "break.characters.table.string")))
+								+ "...");
 					}
 				}
 
@@ -100,7 +132,8 @@ public class ResultsAction extends Action {
 					saveErrors(request, errors);
 				}
 				request.setAttribute(Constants.LIST_ANALYSIS, analysisList);
-				request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
+				request.setAttribute(Constants.LIST_PAGE_LINKS,
+						Pagination.createPagination(request, numResult, pagina));
 
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
 					request.setAttribute(Constants.OBSERVATORY, request.getParameter(Constants.OBSERVATORY));
@@ -112,6 +145,9 @@ public class ResultsAction extends Action {
 					if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 
 						request.setAttribute("aplicacion", Constants.NORMATIVA_UNE_2012_B);
+					} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+
+						request.setAttribute("aplicacion", Constants.NORMATIVA_UNE_EN2019);
 					}
 
 				}

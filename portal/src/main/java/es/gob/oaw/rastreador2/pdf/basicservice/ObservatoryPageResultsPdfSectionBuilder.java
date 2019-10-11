@@ -195,7 +195,8 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 						modality = messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad.pasa");
 						fuente = ConstantsFont.descriptionFont;
 					} else if (observatorySubgroupFormValue == Constants.OBS_VALUE_GREEN_ZERO) {
-						value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero");
+						//value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero");
+						value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa");
 						modality = messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad.pasa");
 						fuente = ConstantsFont.WARNING_FONT;
 					} else if (observatorySubgroupFormValue == Constants.OBS_VALUE_RED_ZERO) {

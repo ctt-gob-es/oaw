@@ -30,7 +30,7 @@ public class VerificationPage {
     private String verification;
 
     @Column(name = "value")
-    private Integer value;
+    private Float value;
 
     @Column(name = "modality", nullable = false)
     private String modality;
@@ -55,11 +55,11 @@ public class VerificationPage {
         this.verification = verification;
     }
 
-    public Integer getValue() {
+    public Float getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(Float value) {
         this.value = value;
     }
 

@@ -586,7 +586,8 @@
 				path=".graficasObservatorioEvolucionUNE2012" />
 			<forward name="getEvolutionGraphicsUNE2012b"
 				path=".graficasObservatorioEvolucionUNE2012b" />
-
+			<forward name="getEvolutionGraphicsUNEEN2019"
+				path=".graficasObservatorioEvolucionUNEEN2019" />
 			<forward name="categoryList"
 				path=".indiceGraficasCatObservatorio" />
 		</action>
@@ -1267,6 +1268,15 @@
 	<!-- Message Resources Definitions -->
 	<message-resources parameter="ApplicationResources"
 		null="false" />
+		
+	<message-resources
+		parameter="ApplicationResources-2012-b" null="false"
+		key="resources2012b" />
+
+	<message-resources
+		parameter="ApplicationResources-UNEEN2019" null="false"
+		key="resources2019" />
+
 
 	<!-- Tiles -->
 	<plug-in className="org.apache.struts.tiles.TilesPlugin">

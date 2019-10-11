@@ -1467,7 +1467,7 @@ public final class ResultadosAnonimosObservatorioUNE2012BUtils {
 								EvaluatorUtils.getDocList());
 						final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
 						final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils
-								.generateObservatoryEvaluationForm(evaluation, methodology, false);
+								.generateObservatoryEvaluationForm(evaluation, methodology, false,false);
 						evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
 						final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c,
 								evaluationForm.getCrawlerExecutionId());

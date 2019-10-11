@@ -31,6 +31,7 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
 import es.inteco.rastreador2.pdf.template.ExportPageEventsObservatoryMP;
 import es.inteco.rastreador2.pdf.utils.IndexUtils;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
@@ -59,13 +60,32 @@ public class BasicServicePdfReport {
 
 		// Fichero de textos en fucnión de builder para aplicar los nuevos
 		// textos al nuevo builder
-		this((pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) ? MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B)
-				: MessageResources.getMessageResources("ApplicationResources"), pdfBuilder);
+
+		this(extracted(pdfBuilder), pdfBuilder);
 
 	}
 
-	public BasicServicePdfReport(final MessageResources messageResources, final AnonymousResultExportPdf pdfBuilder) {
+	private static MessageResources extracted(final AnonymousResultExportPdf pdfBuilder) {
+		MessageResources messageResources = null;
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+			messageResources = messageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+		}
+
 		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
+			messageResources = messageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
+		}
+
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
+			messageResources = MessageResources.getMessageResources("ApplicationResources");
+		}
+		return messageResources;
+	}
+
+	public BasicServicePdfReport(final MessageResources messageResources, final AnonymousResultExportPdf pdfBuilder) {
+
+		if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+			this.messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+		} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 			this.messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
 		} else {
 
@@ -75,17 +95,22 @@ public class BasicServicePdfReport {
 		this.pdfBuilder.setBasicService(true);
 	}
 
-	public void exportToPdf(final List<ObservatoryEvaluationForm> currentEvaluationPageList, final Map<Date, List<ObservatoryEvaluationForm>> historicoEvaluationPageList, final String generalExpPath)
+	public void exportToPdf(final List<ObservatoryEvaluationForm> currentEvaluationPageList,
+			final Map<Date, List<ObservatoryEvaluationForm>> historicoEvaluationPageList, final String generalExpPath)
 			throws Exception {
 		final File file = new File(generalExpPath);
 		if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
 			if (!file.getParentFile().setReadable(true, false) || !file.getParentFile().setWritable(true, false)) {
-				Logger.putLog(String.format("No se ha podido asignar permisos a los directorios de exportación a PDF %s", file.getParentFile().getAbsolutePath()), BasicServicePdfReport.class,
-						Logger.LOG_LEVEL_ERROR);
+				Logger.putLog(
+						String.format("No se ha podido asignar permisos a los directorios de exportación a PDF %s",
+								file.getParentFile().getAbsolutePath()),
+						BasicServicePdfReport.class, Logger.LOG_LEVEL_ERROR);
 			}
-			Logger.putLog("No se ha podido crear los directorios para exportar a PDF", BasicServicePdfReport.class, Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("No se ha podido crear los directorios para exportar a PDF", BasicServicePdfReport.class,
+					Logger.LOG_LEVEL_ERROR);
 		}
-		Logger.putLog("Exportando a PDF BasicServicePdfReport.exportToPdf", BasicServicePdfReport.class, Logger.LOG_LEVEL_DEBUG);
+		Logger.putLog("Exportando a PDF BasicServicePdfReport.exportToPdf", BasicServicePdfReport.class,
+				Logger.LOG_LEVEL_DEBUG);
 
 		// TODO: Add document metadata (author, creator, subject, title...)
 		final Document document = new Document(PageSize.A4, 50, 50, 110, 72);
@@ -99,7 +124,8 @@ public class BasicServicePdfReport {
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 
 				final String crawlingDate = CrawlerUtils.formatDate(pdfBuilder.getBasicServiceForm().getDate());
-				final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { pdfBuilder.getBasicServiceForm().getName(), crawlingDate });
+				final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot",
+						new String[] { pdfBuilder.getBasicServiceForm().getName(), crawlingDate });
 				writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate));
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 
@@ -108,56 +134,76 @@ public class BasicServicePdfReport {
 				document.open();
 
 				PDFUtils.addCoverPage(document,
-						messageResources.getMessage("pdf.accessibility.title", new String[] { pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle() }),
-						pdfBuilder.getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL ? pdfBuilder.getBasicServiceForm().getDomain() : "", "Informe emitido bajo demanda.");
+						messageResources.getMessage("pdf.accessibility.title",
+								new String[] { pdfBuilder.getBasicServiceForm().getName().toUpperCase(),
+										pdfBuilder.getTitle() }),
+						pdfBuilder.getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL
+								? pdfBuilder.getBasicServiceForm().getDomain()
+								: "",
+						"Informe emitido bajo demanda.");
 
-				pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+				pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager,
+						ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				pdfTocManager.addChapterCount();
 
-				pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0);
+				pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager,
+						ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0);
 				pdfTocManager.addChapterCount();
 
 				// Resumen de las puntuaciones del Observatorio
 
-				final List<ObservatoryEvaluationForm> previousEvaluation = getPreviousEvaluation(historicoEvaluationPageList);
-				final BasicServiceObservatoryScorePdfSectionBuilder observatoryScoreSectionBuilder = new BasicServiceObservatoryScorePdfSectionBuilder(currentEvaluationPageList, previousEvaluation);
-				observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, file);
+				final List<ObservatoryEvaluationForm> previousEvaluation = getPreviousEvaluation(
+						historicoEvaluationPageList);
+				final BasicServiceObservatoryScorePdfSectionBuilder observatoryScoreSectionBuilder = new BasicServiceObservatoryScorePdfSectionBuilder(
+						currentEvaluationPageList, previousEvaluation);
+				observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources, document,
+						pdfTocManager, file);
 
 				// Resumen de las puntuaciones del Observatorio
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 						currentEvaluationPageList);
-				observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
+				observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document,
+						pdfTocManager);
 
 				// Evolución resultados servicio diagnóstico
-				final Map<Date, List<ObservatoryEvaluationForm>> evolutionObservatoryEvaluation = new TreeMap<>(historicoEvaluationPageList);
-				evolutionObservatoryEvaluation.put(pdfBuilder.getBasicServiceForm().getDate(), currentEvaluationPageList);
+				final Map<Date, List<ObservatoryEvaluationForm>> evolutionObservatoryEvaluation = new TreeMap<>(
+						historicoEvaluationPageList);
+				evolutionObservatoryEvaluation.put(pdfBuilder.getBasicServiceForm().getDate(),
+						currentEvaluationPageList);
 				final BasicServiceObservatoryEvolutionResultsPdfSectionBuilder observatoryEvolutionResultsSectionBuilder = new BasicServiceObservatoryEvolutionResultsPdfSectionBuilder(
 						evolutionObservatoryEvaluation);
-				observatoryEvolutionResultsSectionBuilder.addEvolutionResults(pdfBuilder, messageResources, document, pdfTocManager, file);
+				observatoryEvolutionResultsSectionBuilder.addEvolutionResults(pdfBuilder, messageResources, document,
+						pdfTocManager, file);
 
 				// Desdoblamiento para la nueva versión de la metodología
 				// UNE-2012 ya que cambian los niveles
-				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
+				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(
+						currentEvaluationPageList);
 
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 
-					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, true);
+					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager,
+							true);
 
 				} else {
-					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);
+					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager,
+							false);
 				}
 
-				pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());
+				pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager,
+						ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0, pdfBuilder.isBasicService());
 
 				// Ponemos la variable a true para que no se escriba el footer
 				// en el índice
-				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT);
+				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"),
+						pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", BasicServicePdfReport.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			} catch (Exception e) {
-				Logger.putLog("Excepción genérica al generar el pdf", BasicServicePdfReport.class, Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Excepción genérica al generar el pdf", BasicServicePdfReport.class,
+						Logger.LOG_LEVEL_ERROR, e);
 				throw e;
 			} finally {
 				if (document.isOpen()) {
@@ -167,7 +213,8 @@ public class BasicServicePdfReport {
 		}
 	}
 
-	private List<ObservatoryEvaluationForm> getPreviousEvaluation(final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationPageList) {
+	private List<ObservatoryEvaluationForm> getPreviousEvaluation(
+			final Map<Date, List<ObservatoryEvaluationForm>> previousEvaluationPageList) {
 		final Iterator<List<ObservatoryEvaluationForm>> iterator = previousEvaluationPageList.values().iterator();
 		List<ObservatoryEvaluationForm> previousEvaluation = null;
 		while (iterator.hasNext()) {
@@ -185,44 +232,56 @@ public class BasicServicePdfReport {
 	}
 
 	/**
-	 * Crea una celda PdfPCell para una tabla del informa PDF con la evolución
-	 * del nivel de accesibilidad.
+	 * Crea una celda PdfPCell para una tabla del informa PDF con la evolución del
+	 * nivel de accesibilidad.
 	 *
 	 * @param messageResources
-	 * @param currentLevel
-	 *            String nivel de accesibilidad actual.
-	 * @param previousLevel
-	 *            String nivel de accesibilidad de la iteración anterior.
+	 * @param currentLevel     String nivel de accesibilidad actual.
+	 * @param previousLevel    String nivel de accesibilidad de la iteración
+	 *                         anterior.
 	 * @return una celda PdfPCell con una imagen que indica la evolución y una
 	 *         cadena con la misma información complementando la imagen.
 	 */
-	private PdfPCell createEvolutionLevelCell(final MessageResources messageResources, final String currentLevel, final String previousLevel) {
+	private PdfPCell createEvolutionLevelCell(final MessageResources messageResources, final String currentLevel,
+			final String previousLevel) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (currentLevel.equalsIgnoreCase(previousLevel)) {
-			return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene"), "se mantiene", Color.WHITE, ConstantsFont.noteCellFont,
-					Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+			return PDFUtils.createTableCell(
+					PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.same"), "Se mantiene"),
+					"se mantiene", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 		} else {
 			// Si los valores entre iteraciones han variado
 			if (messageResources.getMessage("resultados.anonimos.num.portales.nv").equalsIgnoreCase(previousLevel)
-					|| messageResources.getMessage("resultados.anonimos.num.portales.parcial").equalsIgnoreCase(previousLevel)) {
+					|| messageResources.getMessage("resultados.anonimos.num.portales.parcial")
+							.equalsIgnoreCase(previousLevel)) {
 				// Si el valor actual es distinto al anterior y el anterior era
 				// "No válido" (o "Parcial") entonces ha mejorado
-				return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE, ConstantsFont.noteCellFont,
-						Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
-			} else if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equalsIgnoreCase(previousLevel)) {
+				return PDFUtils.createTableCell(
+						PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"),
+								"Mejora"),
+						"mejora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+			} else if (messageResources.getMessage("resultados.anonimos.num.portales.aa")
+					.equalsIgnoreCase(previousLevel)) {
 				// Si el valor actual es distinto al anterior y el anterior era
 				// "Prioridad 1 y 2" entonces ha empeorado
-				return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE, ConstantsFont.noteCellFont,
-						Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+				return PDFUtils.createTableCell(
+						PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"),
+								"Empeora"),
+						"empeora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 			} else {
 				// Si estamos en este punto el valor anterior era "Prioridad 1"
 				// y el actual es distinto
 				if (messageResources.getMessage("resultados.anonimos.num.portales.aa").equalsIgnoreCase(currentLevel)) {
-					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"), "Mejora"), "mejora", Color.WHITE,
-							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+					return PDFUtils.createTableCell(
+							PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.increase"),
+									"Mejora"),
+							"mejora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 				} else {
-					return PDFUtils.createTableCell(PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"), "Empeora"), "empeora", Color.WHITE,
-							ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
+					return PDFUtils.createTableCell(
+							PDFUtils.createImage(pmgr.getValue(Constants.PDF_PROPERTIES, "path.evolution.decrease"),
+									"Empeora"),
+							"empeora", Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_LEFT, DEFAULT_PADDING,
+							-1);
 				}
 			}
 		}

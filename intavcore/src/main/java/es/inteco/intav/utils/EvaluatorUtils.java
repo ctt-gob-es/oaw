@@ -895,14 +895,14 @@ public final class EvaluatorUtils {
 	 *
 	 * @return the map
 	 */
-	private static Map<String, List<Integer>> initializeAspects() {
-		final Map<String, List<Integer>> aspectMap = new HashMap<>();
+	private static Map<String, List<Float>> initializeAspects() {
+		final Map<String, List<Float>> aspectMap = new HashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final List<String> aspects = Arrays
 				.asList(pmgr.getValue("intav.properties", "observatory.key.aspects").split(","));
 
 		for (String key : aspects) {
-			aspectMap.put(key, new ArrayList<Integer>());
+			aspectMap.put(key, new ArrayList<Float>());
 		}
 
 		return aspectMap;
@@ -934,7 +934,7 @@ public final class EvaluatorUtils {
 	 * @return the observatory evaluation form
 	 */
 	public static ObservatoryEvaluationForm generateObservatoryEvaluationForm(Evaluation evaluation, String methodology,
-			boolean isDebugMode) {
+			boolean isDebugMode, boolean pointWarning) {
 		Guideline guideline;
 		if (StringUtils.isEmpty(methodology)) {
 			guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
@@ -953,7 +953,7 @@ public final class EvaluatorUtils {
 		// cartucho y otros datos más adelante
 		evaluationForm.setIdAnalysis(evaluation.getIdAnalisis());
 
-		final Map<String, List<Integer>> aspects = initializeAspects();
+		final Map<String, List<Float>> aspects = initializeAspects();
 
 		for (int i = 0; i < guideline.getGroups().size(); i++) {
 			final GuidelineGroup levelGroup = guideline.getGroups().get(i);
@@ -1014,20 +1014,20 @@ public final class EvaluatorUtils {
 					}
 
 					addSubgroupScore(observatorySubgroupForm, subgroup, aspects, hasProblem, hasWarning,
-							executedSubgroup);
+							executedSubgroup, pointWarning);
 
 					observatorySuitabilityForm.getSubgroups().add(observatorySubgroupForm);
 				}
 
-				observatorySuitabilityForm.setScore(getPartialScore(observatorySuitabilityForm));
+				observatorySuitabilityForm.setScore(getPartialScore(observatorySuitabilityForm, pointWarning));
 				observatoryLevelForm.getSuitabilityGroups().add(observatorySuitabilityForm);
 			}
 
-			observatoryLevelForm.setScore(getPartialScore(observatoryLevelForm));
+			observatoryLevelForm.setScore(getPartialScore(observatoryLevelForm, pointWarning));
 			evaluationForm.getGroups().add(observatoryLevelForm);
 		}
 
-		evaluationForm.setScore(getEvaluationScore(evaluationForm));
+		evaluationForm.setScore(getEvaluationScore(evaluationForm, pointWarning));
 
 		evaluationForm.setAspects(getAspectScore(aspects));
 
@@ -1083,27 +1083,32 @@ public final class EvaluatorUtils {
 	 * @param executedSubgroup        the executed subgroup
 	 */
 	private static void addSubgroupScore(ObservatorySubgroupForm observatorySubgroupForm, GuidelineGroup subgroup,
-			Map<String, List<Integer>> aspects, boolean hasProblem, boolean hasWarning, boolean executedSubgroup) {
+			Map<String, List<Float>> aspects, boolean hasProblem, boolean hasWarning, boolean executedSubgroup,
+			boolean pointWarning) {
 		if (hasProblem) {
 			// Si existe algún problema, le damos una mala nota
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_RED_ZERO);
-			addAspectScore(aspects, subgroup.getAspect(), 0);
+			addAspectScore(aspects, subgroup.getAspect(), 0f);
 		} else if (hasWarning) {
 			// Si no existe problema, pero existe advertencia, le damos un aviso
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_GREEN_ZERO);
-			addAspectScore(aspects, subgroup.getAspect(), 0);
+			if (!pointWarning) {
+				addAspectScore(aspects, subgroup.getAspect(), 0f);
+			} else {
+				addAspectScore(aspects, subgroup.getAspect(), 0.5f);
+			}
 		} else if (executedSubgroup && !subgroup.getType().equalsIgnoreCase(IntavConstants.BAD_PRACTICE)) {
 			// Si no existen problemas, se han utilizado los elementos y no es
 			// una mala práctica utilizarlos,
 			// le damos una buena nota
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_GREEN_ONE);
-			addAspectScore(aspects, subgroup.getAspect(), 1);
+			addAspectScore(aspects, subgroup.getAspect(), 1f);
 		} else if (executedSubgroup && subgroup.getType().equalsIgnoreCase(IntavConstants.BAD_PRACTICE)) {
 			// Si no existen problemas, se han utilizado los elementos y usarlos
 			// constituye una mala práctica,
 			// le damos un cero verde
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_GREEN_ZERO);
-			addAspectScore(aspects, subgroup.getAspect(), 0);
+			addAspectScore(aspects, subgroup.getAspect(), 0f);
 		} else if (!executedSubgroup && !subgroup.getType().equalsIgnoreCase(IntavConstants.BAD_PRACTICE)
 				&& !subgroup.getType().equalsIgnoreCase(IntavConstants.GOOD_PRACTICE)) {
 			// Si no se ha utilizado, y utilizarlo no es una mala práctica ni
@@ -1113,12 +1118,12 @@ public final class EvaluatorUtils {
 			// Si no se ha utilizado, pero es una mala práctica utilizarlo, le
 			// damos una buena nota
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_GREEN_ONE);
-			addAspectScore(aspects, subgroup.getAspect(), 1);
+			addAspectScore(aspects, subgroup.getAspect(), 1f);
 		} else if (!executedSubgroup && subgroup.getType().equalsIgnoreCase(IntavConstants.GOOD_PRACTICE)) {
 			// Si no se ha utilizado, pero utilizarlo es una buena práctica, le
 			// damos una mala nota
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_RED_ZERO);
-			addAspectScore(aspects, subgroup.getAspect(), 0);
+			addAspectScore(aspects, subgroup.getAspect(), 0f);
 		}
 	}
 
@@ -1129,11 +1134,11 @@ public final class EvaluatorUtils {
 	 * @param aspectName the aspect name
 	 * @param value      the value
 	 */
-	private static void addAspectScore(Map<String, List<Integer>> aspects, String aspectName, int value) {
+	private static void addAspectScore(Map<String, List<Float>> aspects, String aspectName, Float value) {
 		if (aspects.get(aspectName) != null) {
 			aspects.get(aspectName).add(value);
 		} else {
-			aspects.put(aspectName, new ArrayList<Integer>());
+			aspects.put(aspectName, new ArrayList<Float>());
 			aspects.get(aspectName).add(value);
 		}
 	}
@@ -1144,19 +1149,19 @@ public final class EvaluatorUtils {
 	 * @param aspects the aspects
 	 * @return the aspect score
 	 */
-	private static List<AspectScoreForm> getAspectScore(final Map<String, List<Integer>> aspects) {
+	private static List<AspectScoreForm> getAspectScore(final Map<String, List<Float>> aspects) {
 		final List<AspectScoreForm> aspectScore = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
-		for (Map.Entry<String, List<Integer>> entry : aspects.entrySet()) {
+		for (Map.Entry<String, List<Float>> entry : aspects.entrySet()) {
 			final AspectScoreForm aspectScoreForm = new AspectScoreForm();
 			aspectScoreForm.setName(entry.getKey());
 			aspectScoreForm.setId(Long.valueOf(pmgr.getValue("intav.properties", entry.getKey())));
-			final List<Integer> scores = entry.getValue();
+			final List<Float> scores = entry.getValue();
 			if (scores.isEmpty()) {
 				aspectScoreForm.setScore(new BigDecimal(IntavConstants.OBS_VALUE_ASPECT_NOT_SCORE));
 			} else {
-				int totalScore = 0;
-				for (Integer score : scores) {
+				Float totalScore = 0f;
+				for (Float score : scores) {
 					totalScore += score;
 				}
 				aspectScoreForm.setScore(calculateScore(totalScore, scores.size()));
@@ -1175,8 +1180,8 @@ public final class EvaluatorUtils {
 	 * @param evaluationForm the evaluation form
 	 * @return the evaluation score
 	 */
-	private static BigDecimal getEvaluationScore(ObservatoryEvaluationForm evaluationForm) {
-		int score = 0;
+	private static BigDecimal getEvaluationScore(ObservatoryEvaluationForm evaluationForm, boolean pointWarning) {
+		Float score = 0f;
 		int numChecks = 0;
 		for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
 			for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
@@ -1184,8 +1189,12 @@ public final class EvaluatorUtils {
 					if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ONE) {
 						score++;
 						numChecks++;
-					} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO)
-							|| (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+					} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+						numChecks++;
+					} else if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO) {
+						if (pointWarning) {
+							score += 0.5f;
+						}
 						numChecks++;
 					}
 				}
@@ -1207,16 +1216,20 @@ public final class EvaluatorUtils {
 	 * @param observatoryLevelForm the observatory level form
 	 * @return the partial score
 	 */
-	private static BigDecimal getPartialScore(ObservatoryLevelForm observatoryLevelForm) {
-		int score = 0;
+	private static BigDecimal getPartialScore(ObservatoryLevelForm observatoryLevelForm, boolean pointWarning) {
+		Float score = 0f;
 		int numChecks = 0;
 		for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
 				if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ONE) {
 					score++;
 					numChecks++;
-				} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO)
-						|| (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+				} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+					numChecks++;
+				} else if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO) {
+					if (pointWarning) {
+						score += 0.5f;
+					}
 					numChecks++;
 				}
 			}
@@ -1237,15 +1250,19 @@ public final class EvaluatorUtils {
 	 * @param observatorySuitabilityForm the observatory suitability form
 	 * @return the partial score
 	 */
-	private static BigDecimal getPartialScore(ObservatorySuitabilityForm observatorySuitabilityForm) {
-		int score = 0;
+	private static BigDecimal getPartialScore(ObservatorySuitabilityForm observatorySuitabilityForm, boolean pointWarning) {
+		Float score = 0f;
 		int numChecks = 0;
 		for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
 			if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ONE) {
 				score++;
 				numChecks++;
-			} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO)
-					|| (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+			}else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+				numChecks++;
+			} else if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO) {
+				if (pointWarning) {
+					score += 0.5f;
+				}
 				numChecks++;
 			}
 		}
@@ -1273,7 +1290,7 @@ public final class EvaluatorUtils {
 	 * @param numChecks the num checks
 	 * @return the big decimal
 	 */
-	private static BigDecimal calculateScore(final int score, final int numChecks) {
+	private static BigDecimal calculateScore(final Float score, final int numChecks) {
 		if (numChecks != 0) {
 			return new BigDecimal(score).divide(new BigDecimal(numChecks), 2, BigDecimal.ROUND_HALF_UP)
 					.multiply(BigDecimal.TEN).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -1327,8 +1344,7 @@ public final class EvaluatorUtils {
 
 		return generateConnection(url, method);
 	}
-	
-	
+
 	/**
 	 * Gets the connection.
 	 *
@@ -1338,24 +1354,25 @@ public final class EvaluatorUtils {
 	 * @return the connection
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static HttpURLConnection getRendererConnection(final String url, final String method, final boolean followRedirects)
-			throws IOException {
-	
+	public static HttpURLConnection getRendererConnection(final String url, final String method,
+			final boolean followRedirects) throws IOException {
 
 		return generateRendererConnection(url, method);
 	}
 
-	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost,
-			String proxyHttpPort) {
+	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost, String proxyHttpPort) {
 		final PropertiesManager pmgr = new PropertiesManager();
-		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
-				&& url != null && !url.isEmpty()
-				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
-				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
-				&& !url.toLowerCase().endsWith(".doc") && !url.toLowerCase().endsWith(".epub") && !url.toLowerCase().endsWith(".xml")
-				&& !url.toLowerCase().endsWith(".xls") && !url.toLowerCase().endsWith(".wsdl") && !url.toLowerCase().endsWith(".css") && !url.toLowerCase().endsWith(".png")
-				&& !url.toLowerCase().endsWith(".jpeg") && !url.toLowerCase().endsWith(".jpg") && !url.toLowerCase().endsWith(".bmp") && !url.toLowerCase().endsWith(".gif")
-				&& !url.toLowerCase().endsWith(".svg") && !url.toLowerCase().endsWith(".webm") && !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator")) 
+		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null && url != null
+				&& !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
+				&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
+				&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc")
+				&& !url.toLowerCase().endsWith(".epub") && !url.toLowerCase().endsWith(".xml")
+				&& !url.toLowerCase().endsWith(".xls") && !url.toLowerCase().endsWith(".wsdl")
+				&& !url.toLowerCase().endsWith(".css") && !url.toLowerCase().endsWith(".png")
+				&& !url.toLowerCase().endsWith(".jpeg") && !url.toLowerCase().endsWith(".jpg")
+				&& !url.toLowerCase().endsWith(".bmp") && !url.toLowerCase().endsWith(".gif")
+				&& !url.toLowerCase().endsWith(".svg") && !url.toLowerCase().endsWith(".webm")
+				&& !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator"))
 				&& !url.toLowerCase().contains(".css") && !url.toLowerCase().contains(".scss")
 				&& !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml")
 				&& !url.toLowerCase().contains(".wsdl");
@@ -1395,9 +1412,8 @@ public final class EvaluatorUtils {
 		// método también es usado por al JSP de conexión
 		final PropertiesManager pmgr = new PropertiesManager();
 
-			Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
-			connection = (HttpURLConnection) new URL(url).openConnection();
-		
+		Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
+		connection = (HttpURLConnection) new URL(url).openConnection();
 
 		connection.setInstanceFollowRedirects(false);
 		connection.setRequestMethod(method);
@@ -1416,7 +1432,7 @@ public final class EvaluatorUtils {
 				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
 		return connection;
 	}
-	
+
 	/**
 	 * Genera una conexión.
 	 *

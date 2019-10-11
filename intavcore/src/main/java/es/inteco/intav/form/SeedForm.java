@@ -17,7 +17,6 @@ package es.inteco.intav.form;
 
 import java.io.Serializable;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class SeedForm.
  */

@@ -50,21 +50,50 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class CheckCode.
+ */
 public class CheckCode {
 
+	/** The type. */
 	private int type;
+
+	/** The condition type. */
 	private int conditionType;
+
+	/** The function id. */
 	private int functionId;
+
+	/** The string node relation. */
 	private String stringNodeRelation;
+
+	/** The string language. */
 	private String stringLanguage;
+
+	/** The string function value. */
 	private String stringFunctionValue;
+
+	/** The string function element. */
 	private String stringFunctionElement;
+
+	/** The string function number. */
 	private String stringFunctionNumber;
+
+	/** The string function attribute 1. */
 	private String stringFunctionAttribute1;
+
+	/** The string function attribute 2. */
 	private String stringFunctionAttribute2;
+
+	/** The string function position. */
 	private String stringFunctionPosition;
+
+	/** The vector code. */
 	private List<CheckCode> vectorCode;
 
+	/**
+	 * Instantiates a new check code.
+	 */
 	public CheckCode() {
 		type = CheckFunctionConstants.CODE_TYPE_NOTSET;
 		conditionType = CheckFunctionConstants.CONDITION_NOTSET;
@@ -80,102 +109,228 @@ public class CheckCode {
 		stringFunctionPosition = "";
 	}
 
+	/**
+	 * Gets the type.
+	 *
+	 * @return the type
+	 */
 	public int getType() {
 		return type;
 	}
 
+	/**
+	 * Gets the condition type.
+	 *
+	 * @return the condition type
+	 */
 	public int getConditionType() {
 		return conditionType;
 	}
 
+	/**
+	 * Gets the function id.
+	 *
+	 * @return the function id
+	 */
 	public int getFunctionId() {
 		return functionId;
 	}
 
+	/**
+	 * Gets the function value.
+	 *
+	 * @return the function value
+	 */
 	public String getFunctionValue() {
 		return stringFunctionValue;
 	}
 
+	/**
+	 * Gets the function element.
+	 *
+	 * @return the function element
+	 */
 	public String getFunctionElement() {
 		return stringFunctionElement;
 	}
 
+	/**
+	 * Gets the function number.
+	 *
+	 * @return the function number
+	 */
 	public String getFunctionNumber() {
 		return stringFunctionNumber;
 	}
 
+	/**
+	 * Gets the function attribute 1.
+	 *
+	 * @return the function attribute 1
+	 */
 	public String getFunctionAttribute1() {
 		return stringFunctionAttribute1;
 	}
 
+	/**
+	 * Gets the function attribute 2.
+	 *
+	 * @return the function attribute 2
+	 */
 	public String getFunctionAttribute2() {
 		return stringFunctionAttribute2;
 	}
 
+	/**
+	 * Gets the function position.
+	 *
+	 * @return the function position
+	 */
 	public String getFunctionPosition() {
 		return stringFunctionPosition;
 	}
 
+	/**
+	 * Gets the vector code.
+	 *
+	 * @return the vector code
+	 */
 	public List<CheckCode> getVectorCode() {
 		return vectorCode;
 	}
 
+	/**
+	 * Gets the node relation.
+	 *
+	 * @return the node relation
+	 */
 	public String getNodeRelation() {
 		return stringNodeRelation;
 	}
 
+	/**
+	 * Gets the language.
+	 *
+	 * @return the language
+	 */
 	public String getLanguage() {
 		return stringLanguage;
 	}
 
+	/**
+	 * Sets the type.
+	 *
+	 * @param type the new type
+	 */
 	public void setType(int type) {
 		this.type = type;
 	}
 
+	/**
+	 * Sets the condition type.
+	 *
+	 * @param conditionType the new condition type
+	 */
 	public void setConditionType(int conditionType) {
 		this.conditionType = conditionType;
 	}
 
+	/**
+	 * Sets the function id.
+	 *
+	 * @param functionId the new function id
+	 */
 	public void setFunctionId(int functionId) {
 		this.functionId = functionId;
 	}
 
+	/**
+	 * Sets the function value.
+	 *
+	 * @param stringFunctionValue the new function value
+	 */
 	public void setFunctionValue(String stringFunctionValue) {
 		this.stringFunctionValue = stringFunctionValue;
 	}
 
+	/**
+	 * Sets the function element.
+	 *
+	 * @param stringFunctionElement the new function element
+	 */
 	public void setFunctionElement(String stringFunctionElement) {
 		this.stringFunctionElement = stringFunctionElement;
 	}
 
+	/**
+	 * Sets the function number.
+	 *
+	 * @param stringFunctionNumber the new function number
+	 */
 	public void setFunctionNumber(String stringFunctionNumber) {
 		this.stringFunctionNumber = stringFunctionNumber;
 	}
 
+	/**
+	 * Sets the function attribute 1.
+	 *
+	 * @param stringFunctionAttribute1 the new function attribute 1
+	 */
 	public void setFunctionAttribute1(String stringFunctionAttribute1) {
 		this.stringFunctionAttribute1 = stringFunctionAttribute1;
 	}
 
+	/**
+	 * Sets the function attribute 2.
+	 *
+	 * @param stringFunctionAttribute2 the new function attribute 2
+	 */
 	public void setFunctionAttribute2(String stringFunctionAttribute2) {
 		this.stringFunctionAttribute2 = stringFunctionAttribute2;
 	}
 
+	/**
+	 * Sets the function position.
+	 *
+	 * @param stringFunctionPosition the new function position
+	 */
 	public void setFunctionPosition(String stringFunctionPosition) {
 		this.stringFunctionPosition = stringFunctionPosition;
 	}
 
+	/**
+	 * Sets the vector code.
+	 *
+	 * @param vectorCode the new vector code
+	 */
 	public void setVectorCode(List<CheckCode> vectorCode) {
 		this.vectorCode = vectorCode;
 	}
 
+	/**
+	 * Sets the node relation.
+	 *
+	 * @param stringNodeRelation the new node relation
+	 */
 	public void setNodeRelation(String stringNodeRelation) {
 		this.stringNodeRelation = stringNodeRelation;
 	}
 
+	/**
+	 * Sets the language.
+	 *
+	 * @param stringLanguage the new language
+	 */
 	public void setLanguage(String stringLanguage) {
 		this.stringLanguage = stringLanguage;
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param elementCode the element code
+	 * @return true, if successful
+	 */
 	public boolean create(Element elementCode) {
 		if ("function".equalsIgnoreCase(elementCode.getNodeName())) {
 			type = CheckFunctionConstants.CODE_TYPE_FUNCTION;
@@ -508,36 +663,35 @@ public class CheckCode {
 				functionId = CheckFunctionConstants.FUNCTION_HEADERS_WAI_MISSING;
 			} else if ("headers-wai-level-1-missing".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_HEADERS_WAI_LEVEL_1_MISSING;
-			}
-
-			else if ("following-wai-headers-without-content".equals(stringCall)) {
+			} else if ("following-wai-headers-without-content".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_FOLLOWING_WAI_HEADERS_WITHOUT_CONTENT;
-			}
-
-			else if ("skip-wai-headers-level".equals(stringCall)) {
+			} else if ("skip-wai-headers-level".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_SKIP_WAI_HEADERS_LEVEL;
-			}
-
-			else if ("element-count-attribute-value".equals(stringCall)) {
+			} else if ("element-count-attribute-value".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_ATTRIBUTE_VALUE;
-			}
-
-			else if ("accessibility-contact-form".equals(stringCall)) {
+			} else if ("accessibility-contact-form".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_ACCESSIBILITY_CONTACT_FORM;
 			} else if ("aria-describedby-ids-missing".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_ARIA_DESCRIBEDBY_REFERENCED;
-			}
-
-			else if ("text-match-properties".equals(stringCall)) {
+			} else if ("text-match-properties".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_TEXT_MATCH_PROPERTIES;
-			}
-			else if ("text-not-match-properties".equals(stringCall)) {
+			} else if ("text-not-match-properties".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_TEXT_NOT_MATCH_PROPERTIES;
-			}
-			else if("text-not-equals-properties".equals(stringCall)) {
+			} else if ("text-not-equals-properties".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_TEXT_NOT_EQUALS_PROPERTIES;
+			} else if ("attributes-are-equals".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_ATTRIBUTTES_EQUALS;
+			} else if ("label-match-arial-value".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_LABEL_MATCH_ARIAL_VALUE;
+			} else if ("force-spacing-css".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_FORCE_SPACING_CSS;
+			} else if ("has-responsive-tags".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_HAS_RESPONSIVE_TAGS;
+			} else if ("force-trnasform".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_FORCE_TRANSFORM;
+			} else if ("autocomplete-valid".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_AUTOCOMPLETE_VALID;
 			}
-			
 
 			else {
 				Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);

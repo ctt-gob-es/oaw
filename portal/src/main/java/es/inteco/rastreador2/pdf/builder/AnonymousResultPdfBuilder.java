@@ -565,7 +565,7 @@ public abstract class AnonymousResultPdfBuilder {
             if (value == Constants.OBS_VALUE_NOT_SCORE) {
                 table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor.noPuntua"), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
             } else if (value == Constants.OBS_VALUE_RED_ZERO || value == Constants.OBS_VALUE_GREEN_ZERO) {
-                table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor.cero"), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
+                table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa"), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
             } else {
                 table.addCell(PDFUtils.createTableCell(CrawlerUtils.getResources(request).getMessage("resultados.observatorio.vista.primaria.valor.uno"), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_CENTER, 0));
             }

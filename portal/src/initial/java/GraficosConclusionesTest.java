@@ -22,12 +22,10 @@ import java.awt.Shape;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,15 +55,12 @@ import org.junit.Test;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
-import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.utils.ChartForm;
-import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils;
 import es.inteco.rastreador2.utils.GraphicsUtils.CategoryRenderer;
 import es.inteco.rastreador2.utils.GraphicsUtils.GraphicFormatType;
 import es.inteco.rastreador2.utils.GraphicsUtils.LabelGenerator;
 
-// TODO: Auto-generated Javadoc
 /**
  * Clase para generar gráficos adicionales para los informes agregados usando la
  * librería de java usada para el resto de gráficos y mantener el aspecto del
@@ -129,8 +124,8 @@ public class GraficosConclusionesTest {
 
 	/**
 	 * Generar evol segmentos.
-	 * 
-	 * @throws IOException
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	@Test
 	public void generarEvolSegmentos() throws IOException {
@@ -478,6 +473,11 @@ public class GraficosConclusionesTest {
 		valueAxis.setLowerBound(0);
 	}
 
+	/**
+	 * Generate evolution average score by verification chart.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	// TODO Mejorar la compresión de estos gráficos
 	@Test
 	public void generateEvolutionAverageScoreByVerificationChart() throws IOException {

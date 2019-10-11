@@ -313,17 +313,17 @@ public final class DatabaseExportUtils {
             }
             for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
                 for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-                    Integer value = null;
+                    Float value = null;
                     String modality = null;
 
                     if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
-                        value = 1;
+                        value = 1f;
                         modality = "Pasa";
                     } else if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ZERO) {
-                        value = 0;
+                        value = Float.parseFloat(messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa"));
                         modality = "Pasa";
                     } else if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-                        value = 0;
+                        value = 0f;
                         modality = "Falla";
                     } else if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_NOT_SCORE) {
                         modality = "Pasa";

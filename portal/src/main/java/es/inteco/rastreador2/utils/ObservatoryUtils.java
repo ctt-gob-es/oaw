@@ -38,25 +38,39 @@ import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm;
-import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
-import es.inteco.rastreador2.actionform.rastreo.RastreoEjecutadoForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
-import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
 
+/**
+ * The Class ObservatoryUtils.
+ */
 public final class ObservatoryUtils {
 
+	/**
+	 * Instantiates a new observatory utils.
+	 */
 	private ObservatoryUtils() {
 	}
 
+	/**
+	 * Adds the seed to observatory.
+	 *
+	 * @param request      the request
+	 * @param mapping      the mapping
+	 * @param id_seed      the id seed
+	 * @param fromAddSeeds the from add seeds
+	 * @param addSeeds     the add seeds
+	 * @param otherSeeds   the other seeds
+	 * @return the action forward
+	 */
 	// Se vincula una semilla al observatorio
-	public static ActionForward addSeedToObservatory(HttpServletRequest request, ActionMapping mapping, String id_seed, boolean fromAddSeeds, List<SemillaForm> addSeeds,
-			List<SemillaForm> otherSeeds) {
+	public static ActionForward addSeedToObservatory(HttpServletRequest request, ActionMapping mapping, String id_seed,
+			boolean fromAddSeeds, List<SemillaForm> addSeeds, List<SemillaForm> otherSeeds) {
 		for (SemillaForm semillaForm : otherSeeds) {
 			if (semillaForm.getId() == Long.parseLong(id_seed)) {
 				otherSeeds.remove(semillaForm);
@@ -68,9 +82,20 @@ public final class ObservatoryUtils {
 		return returnLists(request, mapping, addSeeds, otherSeeds, fromAddSeeds);
 	}
 
+	/**
+	 * Separe seed to observatory.
+	 *
+	 * @param request      the request
+	 * @param mapping      the mapping
+	 * @param id_seed      the id seed
+	 * @param fromAddSeeds the from add seeds
+	 * @param addSeeds     the add seeds
+	 * @param otherSeeds   the other seeds
+	 * @return the action forward
+	 */
 	// Se desvincula una semilla al observatorio
-	public static ActionForward separeSeedToObservatory(HttpServletRequest request, ActionMapping mapping, String id_seed, boolean fromAddSeeds, List<SemillaForm> addSeeds,
-			List<SemillaForm> otherSeeds) {
+	public static ActionForward separeSeedToObservatory(HttpServletRequest request, ActionMapping mapping,
+			String id_seed, boolean fromAddSeeds, List<SemillaForm> addSeeds, List<SemillaForm> otherSeeds) {
 		for (SemillaForm semillaForm : addSeeds) {
 			if (semillaForm.getId() == Long.parseLong(id_seed)) {
 				addSeeds.remove(semillaForm);
@@ -85,8 +110,19 @@ public final class ObservatoryUtils {
 	// Redirecciona a nuevoObservatorio o añadirSemillas (dependiendo de dónde
 	// venga) con los nuevos
 	// parámetros de paginación (número de página de listado de semillas, lista
+	/**
+	 * Return lists.
+	 *
+	 * @param request      the request
+	 * @param mapping      the mapping
+	 * @param addSeeds     the add seeds
+	 * @param otherSeeds   the other seeds
+	 * @param fromAddSeeds the from add seeds
+	 * @return the action forward
+	 */
 	// de enlaces... )
-	public static ActionForward returnLists(HttpServletRequest request, ActionMapping mapping, List<SemillaForm> addSeeds, List<SemillaForm> otherSeeds, boolean fromAddSeeds) {
+	public static ActionForward returnLists(HttpServletRequest request, ActionMapping mapping,
+			List<SemillaForm> addSeeds, List<SemillaForm> otherSeeds, boolean fromAddSeeds) {
 		int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 		int paginaNA = Pagination.getPage(request, Constants.PAG_PARAM2);
 
@@ -101,7 +137,8 @@ public final class ObservatoryUtils {
 			int resultFrom = pagSizeNU * (pagina - 1);
 			request.getSession().setAttribute(Constants.OBS_PAGINATION_RESULT_FROM, resultFrom);
 			request.getSession().setAttribute(Constants.OBS_PAGINATION, pagSizeNU);
-			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, addSeeds.size(), String.valueOf(pagSizeNU), pagina, Constants.PAG_PARAM));
+			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, addSeeds.size(),
+					String.valueOf(pagSizeNU), pagina, Constants.PAG_PARAM));
 			return mapping.findForward(Constants.VOLVER);
 		} else {
 			int resultFrom = pagSize * (pagina - 1);
@@ -111,13 +148,20 @@ public final class ObservatoryUtils {
 			request.getSession().setAttribute(Constants.OBS_PAGINATION_RESULTNA_FROM, resultFromNA);
 			request.getSession().setAttribute(Constants.OBS_PAGINATION, pagSize);
 
-			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, addSeeds.size(), String.valueOf(pagSize), pagina, Constants.PAG_PARAM));
-			request.setAttribute(Constants.LIST_PAGE_LINKS2, Pagination.createPagination(request, otherSeeds.size(), String.valueOf(pagSize), paginaNA, Constants.PAG_PARAM2));
+			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, addSeeds.size(),
+					String.valueOf(pagSize), pagina, Constants.PAG_PARAM));
+			request.setAttribute(Constants.LIST_PAGE_LINKS2, Pagination.createPagination(request, otherSeeds.size(),
+					String.valueOf(pagSize), paginaNA, Constants.PAG_PARAM2));
 
 			return mapping.findForward(Constants.CARGAR_SEMILLAS_OBSERVATORIO);
 		}
 	}
 
+	/**
+	 * Removes the session attributes.
+	 *
+	 * @param request the request
+	 */
 	// Se borran los atributos de session
 	public static void removeSessionAttributes(HttpServletRequest request) {
 		request.getSession().removeAttribute(Constants.NUEVO_OBSERVATORIO_FORM);
@@ -126,13 +170,28 @@ public final class ObservatoryUtils {
 		request.getSession().removeAttribute(Constants.OTHER_OBSERVATORY_SEED_LIST);
 	}
 
+	/**
+	 * Put session attributes.
+	 *
+	 * @param request                   the request
+	 * @param modificarObservatorioForm the modificar observatorio form
+	 */
 	// Se incluyen los atributos en la session
-	public static void putSessionAttributes(HttpServletRequest request, ModificarObservatorioForm modificarObservatorioForm) {
+	public static void putSessionAttributes(HttpServletRequest request,
+			ModificarObservatorioForm modificarObservatorioForm) {
 		request.getSession().setAttribute(Constants.MODIFICAR_OBSERVATORIO_FORM, modificarObservatorioForm);
-		request.getSession().setAttribute(Constants.OTHER_OBSERVATORY_SEED_LIST, modificarObservatorioForm.getSemillasNoAnadidas());
-		request.getSession().setAttribute(Constants.ADD_OBSERVATORY_SEED_LIST, modificarObservatorioForm.getSemillasAnadidas());
+		request.getSession().setAttribute(Constants.OTHER_OBSERVATORY_SEED_LIST,
+				modificarObservatorioForm.getSemillasNoAnadidas());
+		request.getSession().setAttribute(Constants.ADD_OBSERVATORY_SEED_LIST,
+				modificarObservatorioForm.getSemillasAnadidas());
 	}
 
+	/**
+	 * Put session attributes.
+	 *
+	 * @param request               the request
+	 * @param nuevoObservatorioForm the nuevo observatorio form
+	 */
 	// Se incluyen los atributos en la session
 	public static void putSessionAttributes(HttpServletRequest request, NuevoObservatorioForm nuevoObservatorioForm) {
 		request.getSession().setAttribute(Constants.NUEVO_OBSERVATORIO_FORM, nuevoObservatorioForm);
@@ -140,6 +199,12 @@ public final class ObservatoryUtils {
 		request.getSession().setAttribute(Constants.ADD_OBSERVATORY_SEED_LIST, new ArrayList<SemillaForm>());
 	}
 
+	/**
+	 * Page suitability level.
+	 *
+	 * @param observatoryEvaluationForm the observatory evaluation form
+	 * @return the string
+	 */
 	// Calcula el nivel de adecuacion de la pagina de un portal
 	public static String pageSuitabilityLevel(ObservatoryEvaluationForm observatoryEvaluationForm) {
 		PropertiesManager pmgr = new PropertiesManager();
@@ -150,7 +215,9 @@ public final class ObservatoryUtils {
 
 			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationForm.getIdAnalysis());
 
-			if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
+			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+			} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
@@ -171,7 +238,8 @@ public final class ObservatoryUtils {
 				int numZeroRed = 0;
 				if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
 					if (observatoryLevel.getName().equals(Constants.OBS_N1) || isA) {
-						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm
+								.getSubgroups()) {
 							if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
 								numZeroRed = numZeroRed + 1;
 							}
@@ -182,7 +250,8 @@ public final class ObservatoryUtils {
 					}
 				} else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
 					if (observatoryLevel.getName().equals(Constants.OBS_N1) || isAA) {
-						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm
+								.getSubgroups()) {
 							if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
 								numZeroRed = numZeroRed + 1;
 							}
@@ -203,6 +272,13 @@ public final class ObservatoryUtils {
 		}
 	}
 
+	/**
+	 * Gets the validation level.
+	 *
+	 * @param messageResources the message resources
+	 * @param level            the level
+	 * @return the validation level
+	 */
 	public static String getValidationLevel(final MessageResources messageResources, final String level) {
 		if (Constants.OBS_AA.equals(level)) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.aa");
@@ -215,12 +291,24 @@ public final class ObservatoryUtils {
 		}
 	}
 
-	public static List<ResultadoSemillaForm> setAvgScore(final Connection c, final List<ResultadoSemillaForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
-		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE,
-				null);
-		final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults, idFulfilledObservatory);
+	/**
+	 * Sets the avg score.
+	 *
+	 * @param c                      the c
+	 * @param seedsResults           the seeds results
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	public static List<ResultadoSemillaForm> setAvgScore(final Connection c,
+			final List<ResultadoSemillaForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils
+				.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
+		final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings(c, seedsResults,
+				idFulfilledObservatory);
 		for (ResultadoSemillaForm seedResult : seedsResults) {
-			final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
+			final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings
+					.get(Long.valueOf(seedResult.getIdCrawling()));
 			if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
 				int numPages = 0;
 				BigDecimal avgScore = BigDecimal.ZERO;
@@ -238,20 +326,35 @@ public final class ObservatoryUtils {
 					}
 				}
 				if (numPages != 0) {
-					seedResult.setScore(avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
-					seedResult.setNivel(IntavUtils.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
+					seedResult.setScore(
+							avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+					seedResult.setNivel(IntavUtils
+							.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas)
+							.getLevel());
 				}
 			}
 		}
 		return seedsResults;
 	}
 
-	public static List<ResultadoSemillaFullForm> setAvgScore2(final Connection c, final List<ResultadoSemillaFullForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
-		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE,
-				null);
-		final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings2(c, seedsResults, idFulfilledObservatory);
+	/**
+	 * Sets the avg score 2.
+	 *
+	 * @param c                      the c
+	 * @param seedsResults           the seeds results
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	public static List<ResultadoSemillaFullForm> setAvgScore2(final Connection c,
+			final List<ResultadoSemillaFullForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils
+				.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
+		final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings2(c,
+				seedsResults, idFulfilledObservatory);
 		for (ResultadoSemillaFullForm seedResult : seedsResults) {
-			final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings.get(Long.valueOf(seedResult.getIdCrawling()));
+			final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings
+					.get(Long.valueOf(seedResult.getIdCrawling()));
 			if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
 				int numPages = 0;
 				BigDecimal avgScore = BigDecimal.ZERO;
@@ -267,8 +370,11 @@ public final class ObservatoryUtils {
 					}
 				}
 				if (numPages != 0) {
-					seedResult.setScore(avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
-					seedResult.setNivel(IntavUtils.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
+					seedResult.setScore(
+							avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+					seedResult.setNivel(IntavUtils
+							.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas)
+							.getLevel());
 				}
 			}
 		}
