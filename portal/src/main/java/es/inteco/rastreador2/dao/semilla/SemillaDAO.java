@@ -307,6 +307,13 @@ public final class SemillaDAO {
 						semillaForm.setInDirectory(true);
 					}
 
+					if (rs.getLong("l.eliminar") == 0) {
+						semillaForm.setEliminar(false);
+					} else {
+						semillaForm.setEliminar(true);
+					}
+
+					
 					// Cargar las dependencias de la semilla
 
 					PreparedStatement psDependencias = c.prepareStatement(
@@ -655,6 +662,7 @@ public final class SemillaDAO {
 					semillaForm.setAcronimo(rs.getString("acronimo"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
+					semillaForm.setEliminar(rs.getBoolean("eliminar"));
 				}
 			}
 		} catch (SQLException e) {
@@ -743,7 +751,7 @@ public final class SemillaDAO {
 	public static void editSeed(Connection c, SemillaForm semillaForm) throws SQLException {
 		// Multidependencia
 		try (PreparedStatement ps = c.prepareStatement(
-				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory = ? WHERE id_lista = ? ")) {
+				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory = ?, eliminar = ? WHERE id_lista = ? ")) {
 
 			ps.setString(1, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 			ps.setString(2, semillaForm.getNombre());
@@ -762,7 +770,8 @@ public final class SemillaDAO {
 
 			ps.setBoolean(5, semillaForm.isActiva());
 			ps.setBoolean(6, semillaForm.isInDirectory());
-			ps.setLong(7, semillaForm.getId());
+			ps.setBoolean(7, semillaForm.isEliminar());
+			ps.setLong(8, semillaForm.getId());
 			ps.executeUpdate();
 
 			// Soporte para múltiples dependencias
@@ -1088,6 +1097,7 @@ public final class SemillaDAO {
 					// semillaForm.setDependencia(rs.getString("dependencia"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
+					semillaForm.setEliminar(rs.getBoolean("eliminar"));
 					results.add(semillaForm);
 				}
 			}
@@ -1302,7 +1312,7 @@ public final class SemillaDAO {
 
 			// Multidependencia
 			ps = c.prepareStatement(
-					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)",
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			for (SemillaForm semillaForm : semillas) {
@@ -1330,6 +1340,13 @@ public final class SemillaDAO {
 					ps.setBoolean(7, true);
 				}
 
+				if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+						&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(8, false);
+				} else {
+					ps.setBoolean(8, true);
+				}
+				
 				int affectedRows = ps.executeUpdate();
 
 				if (affectedRows == 0) {
@@ -1430,7 +1447,7 @@ public final class SemillaDAO {
 			// Multidependencia
 
 			ps = c.prepareStatement(
-					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)",
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -1453,6 +1470,8 @@ public final class SemillaDAO {
 			ps.setBoolean(6, semillaForm.isActiva());
 
 			ps.setBoolean(7, semillaForm.isInDirectory());
+			
+			ps.setBoolean(8, semillaForm.isEliminar());
 
 			int affectedRows = ps.executeUpdate();
 
@@ -1659,6 +1678,12 @@ public final class SemillaDAO {
 					} else {
 						semillaForm.setInDirectory(true);
 					}
+					
+					if (rs.getLong("l.eliminar") == 0) {
+						semillaForm.setEliminar(false);
+					} else {
+						semillaForm.setEliminar(true);
+					}
 
 					semillaForm.setListaUrlsString(rs.getString(LISTA));
 
@@ -1716,7 +1741,7 @@ public final class SemillaDAO {
 				if (semillaForm.getId() != null) {
 
 					ps = c.prepareStatement(
-							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory= ?",
+							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory= ?, eliminar=?",
 							Statement.RETURN_GENERATED_KEYS);
 
 					ps.setLong(1, semillaForm.getId());
@@ -1744,35 +1769,49 @@ public final class SemillaDAO {
 						ps.setBoolean(8, true);
 					}
 
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(9, false);
+					} else {
+						ps.setBoolean(9, true);
+					}
+					
 					/*******************/
 
-					ps.setInt(9, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-					ps.setString(10, semillaForm.getNombre());
-					ps.setString(11, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
-					ps.setString(12, semillaForm.getCategoria().getId());
+					ps.setInt(10, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+					ps.setString(11, semillaForm.getNombre());
+					ps.setString(12, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+					ps.setString(13, semillaForm.getCategoria().getId());
 					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-						ps.setString(13, semillaForm.getAcronimo());
+						ps.setString(14, semillaForm.getAcronimo());
 					} else {
-						ps.setString(13, null);
+						ps.setString(14, null);
 					}
 					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
 							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(14, false);
-					} else {
-						ps.setBoolean(14, true);
-					}
-
-					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
-							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(15, false);
 					} else {
 						ps.setBoolean(15, true);
 					}
 
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(16, false);
+					} else {
+						ps.setBoolean(16, true);
+					}
+					
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(17, false);
+					} else {
+						ps.setBoolean(17, true);
+					}
+
 				} else {
 
 					ps = c.prepareStatement(
-							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory) VALUES (?,?,?,?,?,?,?)",
+							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?)",
 							Statement.RETURN_GENERATED_KEYS);
 
 					ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -1796,6 +1835,13 @@ public final class SemillaDAO {
 						ps.setBoolean(7, false);
 					} else {
 						ps.setBoolean(7, true);
+					}
+					
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(8, false);
+					} else {
+						ps.setBoolean(8, true);
 					}
 
 				}

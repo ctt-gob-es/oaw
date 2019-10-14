@@ -73,6 +73,12 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 	/** The in directory str. */
 	private String inDirectoryStr;
+	
+	/** The eliminar. */
+	private boolean eliminar;
+
+	/** The eliminar str. */
+	private String eliminarStr;
 
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
@@ -88,6 +94,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	 */
 	public SemillaForm() {
 		this.activa = true;
+		this.eliminar = false; 
 	}
 
 	/**
@@ -406,6 +413,50 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 		this.inDirectoryStr = inDirectoryStr;
 	}
+	
+	/**
+	 * Checks if is eliminar.
+	 *
+	 * @return true, if is eliminar
+	 */
+	public boolean isEliminar() {
+		return eliminar;
+	}
+
+	/**
+	 * Sets the eliminar.
+	 *
+	 * @param eliminar the new eliminar
+	 */
+	public void setEliminar(boolean eliminar) {
+		this.eliminar = eliminar;
+	}
+
+	/**
+	 * Gets the eliminar str.
+	 *
+	 * @return the eliminar str
+	 */
+	public String getEliminarStr() {
+		return eliminarStr;
+	}
+
+	/**
+	 * Sets the eliminar str.
+	 *
+	 * @param eliminarStr the new eliminar str
+	 */
+	public void setEliminarStr(String eliminarStr) {
+		if (StringUtils.isNotEmpty(eliminarStr) && eliminarStr.equalsIgnoreCase(Boolean.TRUE.toString())) {
+			this.setEliminar(true);
+		} else {
+			this.setEliminar(false);
+		}
+
+		this.eliminarStr = eliminarStr;
+	}
+
+	
 
 	/**
 	 * Gets the dependencias.
@@ -503,7 +554,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada
 				+ ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado=" + rastreoAsociado
 				+ ", categoria=" + categoria + ", inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
-				+ ", dependencias=" + dependencias + "]";
+				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr +", dependencias=" + dependencias + "]";
 	}
 
 }
