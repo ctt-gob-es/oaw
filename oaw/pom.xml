@@ -93,6 +93,18 @@
 	</build>
 
 	<profiles>
+			<profile>
+			<id>desarrollo-windows</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<profile.name>desarrollo</profile.name>
+				<deploy.path>C:/Userssergio.costales/Downloads/apache-tomcat-7.0.54/webapps/oaw</deploy.path>
+				<files.path>/tmp/oaw/files</files.path>
+			</properties>
+		</profile>
+		
 		<profile>
 			<id>desarrollo</id>
 			<activation>
