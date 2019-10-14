@@ -36,6 +36,7 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfAccesibilidad;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
@@ -119,8 +120,19 @@ public class PdfGeneratorThread extends Thread {
 								// Desdoblamiento nueva metodologia Nuevo fichero con los textos para las
 								// exportaciones
 
-								// Añadada UNE-EN2019
-								if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+								// Añadada UNE-EN2019 y accesibilidad
+
+								if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
+
+									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfAccesibilidad(),
+											idRastreoRealizado, evaluationIds, previousEvaluationIds,
+											PropertyMessageResources.getMessageResources(
+													Constants.MESSAGE_RESOURCES_ACCESIBILIDAD),
+											pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
+											observatoryType);
+								}
+
+								else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
 
 									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNEEN2019(),
 											idRastreoRealizado, evaluationIds, previousEvaluationIds,

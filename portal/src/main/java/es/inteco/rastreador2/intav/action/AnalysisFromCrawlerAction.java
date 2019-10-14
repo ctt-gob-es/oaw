@@ -88,21 +88,22 @@ public class AnalysisFromCrawlerAction extends Action {
 
 				// Fichero de mensajes si es la nueva metodología
 				String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, id);
-				if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
+					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
+				} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
 					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 				} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
-				} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
-					messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
-				}
-				
+				} 
+
 				request.setAttribute("aplicacion", aplicacion);
 
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
 					long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
 					String methodology = ObservatorioDAO.getMethodology(c, idExObs);
-					ObservatoryEvaluationForm evaluationForm = EvaluatorUtils
-							.generateObservatoryEvaluationForm(evaluation, methodology, false, Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true: false);
+					ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(
+							evaluation, methodology, false,
+							Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false);
 					evaluationForm
 							.setSource(BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), true));
 					setDescription(evaluationForm, messageResources, locale);
