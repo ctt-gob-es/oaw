@@ -58,7 +58,7 @@ function irDependenciaFormatter(cellvalue, options, rowObject) {
 			+ rowObject.listaUrls[0]
 			+ "><span class='glyphicon glyphicon-new-window'></span><span class='sr-only'>Ir a la p&aacute;gina web de esta semilla</span></a>";
 }
-
+/*
 function eliminarDependenciaFormater(cellvalue, options, rowObject) {
 
 	return "<span style='cursor:pointer' onclick='eliminarSemilla("
@@ -143,7 +143,7 @@ function eliminarSemilla(rowId) {
 			});
 
 	dialogoEliminar.dialog("open");
-}
+}*/
 
 // Edicion de las urls en linea formatea el texto para colocar una por línea
 
@@ -421,11 +421,15 @@ function reloadGrid(path) {
 														datatype : 'html'
 													},
 													{
-														name : 'eliminarSemilla',
-														formatter : eliminarDependenciaFormater,
+														name : "eliminar",
 														align : "center",
 														width : 10,
-														editable : false
+														template : "booleanCheckboxFa",
+														edittype : "checkbox",
+														editoptions : {
+															value : "true:false"
+														},
+														sortable : false
 													}
 
 											],
