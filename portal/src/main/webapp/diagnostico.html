@@ -31,7 +31,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<img class="pull-left" src="/oaw/images/logo.jpg"
 				alt="Observatorio de Accesibilidad Web" /> <img
 				src="/oaw/images/logo-mptfp.png"
-				alt="MINHAFP - Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n P&uacute;blica" width="265px"/>
+				alt="MINHAFP - Ministerio de Pol&iacute;tica Territorial y Funci&oacute;n P&uacute;blica"
+				width="265px" />
 		</h1>
 	</div>
 	<!-- fin cabecera -->
@@ -220,7 +221,7 @@ fieldset p {
 										<option value="5">5</option>
 										<option value="6">6</option>
 										<option value="7">7</option>
-										<option value="8">8</option> 
+										<option value="8">8</option>
 									</select>
 								</p>
 
@@ -249,11 +250,12 @@ fieldset p {
 							<p>
 								<label for="urls"><span class="bold">Listado de
 										p&aacute;ginas a analizar:</span><br /></label>
-								<textarea id="urls" class="form-control" name="urls" rows="10" 
+								<textarea id="urls" class="form-control" name="urls" rows="10"
 									cols="50"></textarea>
 								<span style="display: block; padding-left: 5px">Introduce
 									una URL por l&iacute;nea. Solo se analizar&aacute;n un
-									m&aacute;ximo de <span id="maxUrl">17</span> p&aacute;ginas</span>
+									m&aacute;ximo de <span id="maxUrl">17</span> p&aacute;ginas
+								</span>
 							</p>
 						</div>
 					</fieldset>
@@ -263,8 +265,9 @@ fieldset p {
 						<div>
 							<p>
 								<label for="content"><span class="bold">C&oacute;digo
-										fuente a analizar (tama&ntilde;o m&aacute;ximo del fichero 4MB):</span><br /></label> <input id="content"
-									class="form-control" name="content" type="file" />
+										fuente a analizar (tama&ntilde;o m&aacute;ximo del fichero
+										4MB):</span><br /></label> <input id="content" class="form-control"
+									name="content" type="file" />
 							</p>
 						</div>
 					</fieldset>
@@ -297,20 +300,32 @@ fieldset p {
 
 							<!-- Nueva metodología -->
 
-  							<li><input id="informe-obs-3" type="radio" name="informe"
+
+
+							<li><input id="informe-obs-3" type="radio" name="informe"
 								value="observatorio-3" checked> <label
-									for="informe-obs-3">Observatorio UNE 2012 (versi&oacute;n 2)</label> <span
-									class="help-block"> Informe conforme a la <a
+									for="informe-obs-3">Observatorio UNE-EN301549:2019 (beta)</label> <span class="help-block"> Informe
+										conforme a la <a
+										href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012v2">metodolog&iacute;a
+											del Observatorio de Accesibilidad, basada en la UNE-EN301549:2019</a>.
+								</span></li>
+
+
+							<li><input id="informe-obs-3" type="radio" name="informe"
+								value="observatorio-3" checked> <label
+									for="informe-obs-3">Observatorio UNE 2012
+										(versi&oacute;n 2)</label> <span class="help-block"> Informe
+										conforme a la <a
 										href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012v2">metodolog&iacute;a
 											del Observatorio de Accesibilidad, basada en la UNE
 											139803:2012</a>.
-								</span></li> 
+								</span></li>
 
 
 							<li><input id="informe-obs-2" type="radio" name="informe"
-								value="observatorio-2"> <label
-									for="informe-obs-2">Observatorio UNE 2012 (antigua)</label> <span
-									class="help-block"> Informe conforme a la <a
+								value="observatorio-2"> <label for="informe-obs-2">Observatorio
+										UNE 2012 (antigua)</label> <span class="help-block"> Informe
+										conforme a la <a
 										href="http://administracionelectronica.gob.es/PAe/accesibilidad/metodologiaUNE2012">metodolog&iacute;a
 											del Observatorio de Accesibilidad, basada en la UNE
 											139803:2012</a>.
@@ -341,8 +356,9 @@ fieldset p {
 					<p id="pCenter">
 						<input id="usuario" name="usuario" type="hidden"
 							value="diagnostico" /> <input name="submit" type="submit"
-							value="Solicitar informe" class="btn btn-primary btn-lg" />
-							<a href="/oaw/secure/CargarObservatorio.do" class="btn btn-default btn-lg">Volver</a>
+							value="Solicitar informe" class="btn btn-primary btn-lg" /> <a
+							href="/oaw/secure/CargarObservatorio.do"
+							class="btn btn-default btn-lg">Volver</a>
 					</p>
 				</form>
 				<script type="text/javascript">
@@ -359,11 +375,13 @@ fieldset p {
 	<div id="pie">
 		<div id="creditos">
 			Copyright &#169; 2019 - <span class="negrita">Ministerio de
-				Pol&iacute;tica Territorial y Funci&oacute;n P&uacute;blica</span>  &nbsp; Versi&#243;n: <b>4.4.0</b> 
+				Pol&iacute;tica Territorial y Funci&oacute;n P&uacute;blica</span> &nbsp;
+			Versi&#243;n: <b>4.4.0</b>
 		</div>
 	</div>
 	<script type="application/javascript">
 	<!--
+		
 	
 
 		$("#informe-obs-3").click(function () {
@@ -480,6 +498,7 @@ fieldset p {
     
 	
 	
+	
 	</script>
 	<!-- Bootstrap core JavaScript -->
 	<!-- Placed at the end of the document so the pages load faster -->
@@ -487,7 +506,9 @@ fieldset p {
 	<script src="/oaw/bootstrap/js/bootstrap.min.js"></script>
 	<script type="application/javascript">
 		
+		
 		$(function () { $('[data-toggle="tooltip"]').tooltip() })
+	
 	
 	</script>
 </body>

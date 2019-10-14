@@ -215,7 +215,9 @@ public final class ObservatoryUtils {
 
 			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationForm.getIdAnalysis());
 
-			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+			if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+			} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));

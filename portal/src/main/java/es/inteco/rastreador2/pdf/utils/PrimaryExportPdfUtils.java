@@ -71,6 +71,7 @@ import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfAccesibilidad;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2004;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
@@ -122,6 +123,8 @@ public final class PrimaryExportPdfUtils {
 				builder = new AnonymousResultExportPdfUNE2012b();
 			} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 				builder = new AnonymousResultExportPdfUNEEN2019();
+			} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+				builder = new AnonymousResultExportPdfAccesibilidad();
 			}
 		} catch (Exception e) {
 			Logger.putLog("Error al preparar el builder de PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR,
