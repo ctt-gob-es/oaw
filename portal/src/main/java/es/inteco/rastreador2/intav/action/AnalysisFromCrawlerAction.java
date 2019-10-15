@@ -42,8 +42,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.util.Locale;
 
+/**
+ * The Class AnalysisFromCrawlerAction.
+ */
 public class AnalysisFromCrawlerAction extends Action {
 
+	/**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	@Override
 	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -66,6 +79,13 @@ public class AnalysisFromCrawlerAction extends Action {
 		return null;
 	}
 
+	/**
+	 * Gets the result data.
+	 *
+	 * @param request the request
+	 * @return the result data
+	 * @throws Exception the exception
+	 */
 	private void getResultData(final HttpServletRequest request) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			// Inicializamos el evaluador
@@ -126,6 +146,13 @@ public class AnalysisFromCrawlerAction extends Action {
 		}
 	}
 
+	/**
+	 * Results to show.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 */
 	private ActionForward resultsToShow(ActionMapping mapping, HttpServletRequest request) {
 		try {
 			request.setAttribute(Constants.CODE, request.getParameter(Constants.CODE));
@@ -141,6 +168,13 @@ public class AnalysisFromCrawlerAction extends Action {
 		}
 	}
 
+	/**
+	 * Sets the description.
+	 *
+	 * @param evaluationForm   the evaluation form
+	 * @param messageResources the message resources
+	 * @param locale           the locale
+	 */
 	private void setDescription(EvaluationForm evaluationForm, MessageResources messageResources, Locale locale) {
 		for (PriorityForm priority : evaluationForm.getPriorities()) {
 			for (GuidelineForm guideline : priority.getGuidelines()) {
@@ -162,6 +196,13 @@ public class AnalysisFromCrawlerAction extends Action {
 		}
 	}
 
+	/**
+	 * Sets the description.
+	 *
+	 * @param evaluationForm   the evaluation form
+	 * @param messageResources the message resources
+	 * @param locale           the locale
+	 */
 	private void setDescription(ObservatoryEvaluationForm evaluationForm, MessageResources messageResources,
 			Locale locale) {
 		for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
@@ -180,6 +221,14 @@ public class AnalysisFromCrawlerAction extends Action {
 		}
 	}
 
+	/**
+	 * Gets the detail.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the detail
+	 * @throws Exception the exception
+	 */
 	private ActionForward getDetail(ActionMapping mapping, HttpServletRequest request) throws Exception {
 
 		String idCheck = request.getParameter(Constants.ID_CHECK);
@@ -228,6 +277,14 @@ public class AnalysisFromCrawlerAction extends Action {
 		return mapping.findForward(Constants.CHECK_RESULTS_DETAIL);
 	}
 
+	/**
+	 * Gets the evaluation call.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the evaluation call
+	 * @throws Exception the exception
+	 */
 	private ActionForward getEvaluationCall(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		if (request.getParameter(Constants.CODE) != null && request.getParameter(Constants.ID_RASTREO) != null) {
 			return resultsToShow(mapping, request);
@@ -238,6 +295,14 @@ public class AnalysisFromCrawlerAction extends Action {
 		}
 	}
 
+	/**
+	 * Recover evaluation.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward recoverEvaluation(ActionMapping mapping, HttpServletRequest request) throws Exception {
 		request.setAttribute(Constants.CODE, request.getParameter(Constants.CODE));
 
@@ -250,6 +315,15 @@ public class AnalysisFromCrawlerAction extends Action {
 		return mapping.findForward(Constants.CHECK_RESULTS);
 	}
 
+	/**
+	 * Gets the html source.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @return the html source
+	 * @throws Exception the exception
+	 */
 	private ActionForward getHtmlSource(ActionMapping mapping, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		if (request.getParameter(Constants.CODE) != null) {
