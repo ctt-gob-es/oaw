@@ -25,6 +25,8 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.text.DateFormat;
@@ -97,7 +99,6 @@ import es.inteco.plugin.dao.DataBaseManager;
  * The Class EvaluatorUtils.
  */
 public final class EvaluatorUtils {
-
 	/**
 	 * Instantiates a new evaluator utils.
 	 */
@@ -119,7 +120,6 @@ public final class EvaluatorUtils {
 			evaluationForm.setUrl(evaluation.getFilename());
 			evaluationForm.setGuideline(guideline.getName());
 			evaluationForm.setSource(evaluation.getSource());
-
 			evaluationForm.setPriorities(new ArrayList<PriorityForm>());
 			for (int i = 0; i < guideline.getGroups().size(); i++) {
 				final GuidelineGroup group = guideline.getGroups().get(i);
@@ -135,16 +135,13 @@ public final class EvaluatorUtils {
 						}
 					}
 				}
-
 				if (hasContent) {
 					evaluationForm.getPriorities().add(priorityForm);
 				}
-
 				// Contamos los problemas
 				countProblems(priorityForm);
 			}
 		}
-
 		return evaluationForm;
 	}
 
@@ -158,18 +155,15 @@ public final class EvaluatorUtils {
 		for (GuidelineForm guidelineForm : priorityForm.getGuidelines()) {
 			for (PautaForm pautaForm : guidelineForm.getPautas()) {
 				for (ProblemForm problemForm : pautaForm.getProblems()) {
-					if (problemForm.getType()
-							.equals(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "confidence.level.high"))) {
+					if (problemForm.getType().equals(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "confidence.level.high"))) {
 						// priorityForm.setNumProblems(priorityForm.getNumProblems()
 						// + problemForm.getSpecificProblems().size());
 						priorityForm.setNumProblems(priorityForm.getNumProblems() + 1);
-					} else if (problemForm.getType()
-							.equals(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "confidence.level.medium"))) {
+					} else if (problemForm.getType().equals(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "confidence.level.medium"))) {
 						// priorityForm.setNumWarnings(priorityForm.getNumWarnings()
 						// + problemForm.getSpecificProblems().size());
 						priorityForm.setNumWarnings(priorityForm.getNumWarnings() + 1);
-					} else if (problemForm.getType()
-							.equals(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
+					} else if (problemForm.getType().equals(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "confidence.level.cannottell"))) {
 						// priorityForm.setNumInfos(priorityForm.getNumInfos() +
 						// problemForm.getSpecificProblems().size());
 						priorityForm.setNumInfos(priorityForm.getNumInfos() + 1);
@@ -199,7 +193,6 @@ public final class EvaluatorUtils {
 			// Añadimos la pauta a la lista
 			guidelines.add(guidelineForm);
 		}
-
 		return guidelines;
 	}
 
@@ -217,20 +210,15 @@ public final class EvaluatorUtils {
 		for (int i = 0; i < group.getGroupsVector().size(); i++) {
 			GuidelineGroup subgroup = group.getGroupsVector().get(i);
 			List<Problem> vProblems = evaluation.getHashCheckProblem().get(subgroup.getName());
-
 			if (vProblems != null) {
 				PautaForm pautaForm = new PautaForm();
 				pautaForm.setName(subgroup.getName());
-
 				vProblems = sortVectorProblems(vProblems);
-
 				pautaForm.setProblems(getProblemsFromGuideline(vProblems));
-
 				// Añadimos la pauta a la lista
 				pautas.add(pautaForm);
 			}
 		}
-
 		return pautas;
 	}
 
@@ -243,18 +231,15 @@ public final class EvaluatorUtils {
 	// Devuelve los tipos de problemas asociados a una pauta concreta
 	public static List<ProblemForm> getProblemsFromGuideline(List<Problem> vProblems) {
 		final List<ProblemForm> problems = new ArrayList<>();
-
 		int lastProblem = 0;
 		// now iterate for every problem in the check
 		for (int j = 0; j < vProblems.size(); j++) {
 			Problem problem = vProblems.get(j);
-
 			ProblemForm problemForm;
 			if (lastProblem != problem.getCheck().getId()) {
 				// Si el tipo de problema es nuevo, creamos un nuevo ProblemForm
 				// para guardar el tipo de problema
 				problemForm = new ProblemForm();
-
 				// Copyrights del W3C
 				if (EvaluatorUtils.isHtmlValidationCheck(problem.getCheck().getId())) {
 					problemForm.setNote("w3c.html.copyright");
@@ -262,36 +247,27 @@ public final class EvaluatorUtils {
 				if (EvaluatorUtils.isCssValidationCheck(problem.getCheck().getId())) {
 					problemForm.setNote("w3c.css.copyright");
 				}
-
 				problemForm.setType(problem.getCheck().getConfidenceString());
 				problemForm.setCheck(String.valueOf(problem.getCheck().getId()));
 				problemForm.setRationale(problem.getCheck().getRationaleString());
 				problemForm.setError(problem.getCheck().getErrorString());
-				if (!((Element) problem.getNode()).getAttribute(IntavConstants.GETTING_FROM_BD)
-						.equals(IntavConstants.TRUE)
+				if (!((Element) problem.getNode()).getAttribute(IntavConstants.GETTING_FROM_BD).equals(IntavConstants.TRUE)
 						&& (problem.getCheck().getId() == 289 || problem.getCheck().getId() == 110)) {
-					if (problem.getNode().getOwnerDocument().getDocumentElement().getUserData("doctype")
-							.equals("true")) {
-						problemForm.setRationale(problem.getCheck().getRationaleString() + "-"
-								+ problem.getNode().getOwnerDocument().getDocumentElement().getUserData("doctypeType"));
+					if (problem.getNode().getOwnerDocument().getDocumentElement().getUserData("doctype").equals("true")) {
+						problemForm.setRationale(problem.getCheck().getRationaleString() + "-" + problem.getNode().getOwnerDocument().getDocumentElement().getUserData("doctypeType"));
 					} else {
 						problemForm.setRationale(problem.getCheck().getRationaleString());
 					}
 				}
-
 				problemForm.setSpecificProblems(new ArrayList<SpecificProblemForm>());
-
 				problems.add(problemForm);
-
 				lastProblem = problem.getCheck().getId();
 			} else {
 				problemForm = problems.get(problems.size() - 1);
 			}
-
 			SpecificProblemForm specificProblem = new SpecificProblemForm();
 			specificProblem.setLine(problem.getLineNumber() != -1 ? problem.getLineNumberString() : "");
 			specificProblem.setColumn(problem.getColumnNumber() != -1 ? problem.getColumnNumberString() : "");
-
 			if (problem.isSummary()) {
 				specificProblem.setNote(getCode(problem));
 			} else {
@@ -306,13 +282,10 @@ public final class EvaluatorUtils {
 					specificProblem.setCode(code);
 				}
 			}
-
-			if ((specificProblem.getCode() != null && !specificProblem.getCode().isEmpty())
-					|| (specificProblem.getNote() != null && !specificProblem.getNote().isEmpty())) {
+			if ((specificProblem.getCode() != null && !specificProblem.getCode().isEmpty()) || (specificProblem.getNote() != null && !specificProblem.getNote().isEmpty())) {
 				problemForm.getSpecificProblems().add(specificProblem);
 			}
 		}
-
 		return problems;
 	}
 
@@ -326,11 +299,9 @@ public final class EvaluatorUtils {
 	// accessibility problem.
 	public static List<String> getCode(final Problem problem) {
 		List<String> code = new ArrayList<>();
-
 		final Check check = problem.getCheck();
 		final Element elementProblem = (Element) problem.getNode();
 		final String checkKeyElement = check.getKeyElement();
-
 		if ("a".equals(checkKeyElement)) {
 			code = getHtml(elementProblem, true, false);
 		} else if ("img".equals(checkKeyElement)) {
@@ -395,7 +366,6 @@ public final class EvaluatorUtils {
 				return getHtml(elementProblem, true, false);
 			}
 		}
-
 		return code;
 	}
 
@@ -420,13 +390,11 @@ public final class EvaluatorUtils {
 	private static List<String> getHtmlHeaders(Element elementGiven) {
 		List<String> codigo = new ArrayList<>();
 		List<Node> headersList = getNodeHeaders(elementGiven);
-
 		for (Node node : headersList) {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				codigo.addAll(getHtmlText((Element) node, true, true));
 			}
 		}
-
 		return codigo;
 	}
 
@@ -440,18 +408,13 @@ public final class EvaluatorUtils {
 		try {
 			List<Node> nodeHeaders = new ArrayList<>();
 			if (elementGiven != null) {
-				if (("h1".equalsIgnoreCase(elementGiven.getNodeName()))
-						|| ("h2".equalsIgnoreCase(elementGiven.getNodeName()))
-						|| ("h3".equalsIgnoreCase(elementGiven.getNodeName()))
-						|| ("h4".equalsIgnoreCase(elementGiven.getNodeName()))
-						|| ("h5".equalsIgnoreCase(elementGiven.getNodeName()))
-						|| ("h6".equalsIgnoreCase(elementGiven.getNodeName()))) {
+				if (("h1".equalsIgnoreCase(elementGiven.getNodeName())) || ("h2".equalsIgnoreCase(elementGiven.getNodeName())) || ("h3".equalsIgnoreCase(elementGiven.getNodeName()))
+						|| ("h4".equalsIgnoreCase(elementGiven.getNodeName())) || ("h5".equalsIgnoreCase(elementGiven.getNodeName())) || ("h6".equalsIgnoreCase(elementGiven.getNodeName()))) {
 					nodeHeaders.add(elementGiven);
 				}
 				NodeList nodeList = elementGiven.getChildNodes();
 				for (int i = 0; i < nodeList.getLength(); i++) {
-					if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE
-							&& nodeList.item(i).getChildNodes() != null) {
+					if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE && nodeList.item(i).getChildNodes() != null) {
 						nodeHeaders.addAll(getNodeHeaders((Element) nodeList.item(i)));
 					}
 				}
@@ -479,8 +442,7 @@ public final class EvaluatorUtils {
 		}
 		try {
 			PropertiesManager pmgr = new PropertiesManager();
-			int maxNumElements = Integer
-					.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "max.num.descendants.to.serialize"));
+			int maxNumElements = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "max.num.descendants.to.serialize"));
 			int numDescendants = generateNodeList(element, new ArrayList<Node>(), maxNumElements).size();
 			if (includeChildren && numDescendants <= maxNumElements) {
 				return lsSerializer.writeToString(element);
@@ -488,8 +450,7 @@ public final class EvaluatorUtils {
 				return serializeOnlyElement(element);
 			}
 		} catch (Exception e) {
-			Logger.putLog("Error al serializar el elemento " + element.getNodeName(), EvaluatorUtils.class,
-					Logger.LOG_LEVEL_INFO);
+			Logger.putLog("Error al serializar el elemento " + element.getNodeName(), EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
 			return element.getNodeName();
 		}
 	}
@@ -505,8 +466,7 @@ public final class EvaluatorUtils {
 	// Genera recursivamente una lista de nodos del documento
 	public static List<Node> generateNodeList(Node node, List<Node> nodeList, int maxNumElements) {
 		if ((node != null) && (nodeList.size() <= maxNumElements)) {
-			if ((node.getNodeType() == Node.ELEMENT_NODE) || (node.getNodeType() == Node.DOCUMENT_NODE)
-					|| (node.getNodeType() == Node.DOCUMENT_TYPE_NODE)) {
+			if ((node.getNodeType() == Node.ELEMENT_NODE) || (node.getNodeType() == Node.DOCUMENT_NODE) || (node.getNodeType() == Node.DOCUMENT_TYPE_NODE)) {
 				for (int x = 0; x < node.getChildNodes().getLength(); x++) {
 					generateNodeList(node.getChildNodes().item(x), nodeList, maxNumElements);
 				}
@@ -529,11 +489,9 @@ public final class EvaluatorUtils {
 		serialization.append(element.getNodeName());
 		final NamedNodeMap attributes = element.getAttributes();
 		for (int i = 0; i < attributes.getLength(); i++) {
-			serialization.append(" ").append(attributes.item(i).getNodeName()).append("=\"")
-					.append(attributes.item(i).getNodeValue()).append("\"");
+			serialization.append(" ").append(attributes.item(i).getNodeName()).append("=\"").append(attributes.item(i).getNodeValue()).append("\"");
 		}
 		serialization.append(">");
-
 		return serialization.toString();
 	}
 
@@ -565,27 +523,22 @@ public final class EvaluatorUtils {
 	 */
 	private static List<String> getHtmlText(Element elementGiven, boolean bIncludeChildren, boolean noSangrado) {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final int sourceMaxNumChar = Integer
-				.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "source.max.num.characters"));
+		final int sourceMaxNumChar = Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "source.max.num.characters"));
 		try {
 			if (elementGiven != null) {
 				final List<String> codigo = new ArrayList<>();
 				final String codigoString;
-
 				if (elementGiven.getAttribute(IntavConstants.GETTING_FROM_BD).equals(IntavConstants.TRUE)) {
 					codigoString = elementGiven.getTextContent();
 				} else {
 					codigoString = serializeXmlElement(elementGiven, bIncludeChildren);
 				}
-
 				if (codigoString != null) {
 					if (!noSangrado) {
 						final String regexp = "(.*?\\\n)|(<.*?>)|([^<>]*)";
 						final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 						final Matcher matcher = pattern.matcher(codigoString.replaceAll("\\s{2,}", ""));
-
 						int numChar = 0;
-
 						while (matcher.find()) {
 							String cadena = "";
 							if (matcher.group(1) != null) {
@@ -595,7 +548,6 @@ public final class EvaluatorUtils {
 							} else if (matcher.group(3) != null) {
 								cadena = matcher.group(3).trim();
 							}
-
 							if (cadena.length() != 0) {
 								if (numChar + cadena.length() <= sourceMaxNumChar) {
 									codigo.add(HTMLEntities.htmlAngleBrackets(cadena));
@@ -604,8 +556,7 @@ public final class EvaluatorUtils {
 									int numChars = sourceMaxNumChar - numChar;
 									try {
 										if (numChars > 0) {
-											codigo.add(
-													HTMLEntities.htmlAngleBrackets(cadena.substring(0, numChars - 1)));
+											codigo.add(HTMLEntities.htmlAngleBrackets(cadena.substring(0, numChars - 1)));
 										}
 									} catch (Exception e) {
 										// TODO: ver si hay que hacer algo
@@ -619,7 +570,6 @@ public final class EvaluatorUtils {
 						codigo.add(HTMLEntities.htmlAngleBrackets(codigoString.trim().replaceAll("\\s{2,}", "")));
 					}
 				}
-
 				return codigo;
 			} else {
 				return null;
@@ -638,11 +588,8 @@ public final class EvaluatorUtils {
 	 * @return the evaluation
 	 */
 	public static Evaluation evaluate(CheckAccessibility checkAccessibility, String language) {
-		Logger.putLog("Iniciando evaluación de accesibilidad de la url: " + checkAccessibility.getUrl(),
-				EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
-
+		Logger.putLog("Iniciando evaluación de accesibilidad de la url: " + checkAccessibility.getUrl(), EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
 		Evaluator evaluator = EvaluatorUtility.getEvaluator();
-
 		return evaluator.evaluate(checkAccessibility, language);
 	}
 
@@ -669,11 +616,9 @@ public final class EvaluatorUtils {
 				AnalisisDatos.endAnalysisSuccess(evaluation);
 			}
 		} catch (Exception e) {
-			Logger.putLog("Se va a guardar el registro de error de la página " + checkAccessibility.getUrl(),
-					EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Se va a guardar el registro de error de la página " + checkAccessibility.getUrl(), EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			AnalisisDatos.setAnalysisError(checkAccessibility);
 		}
-
 		return evaluation;
 	}
 
@@ -686,7 +631,6 @@ public final class EvaluatorUtils {
 	public static List<AnalysisForm> getFormList(List<Analysis> listAnalysis) {
 		List<AnalysisForm> formList = new ArrayList<>();
 		PropertiesManager pmgr = new PropertiesManager();
-
 		try {
 			DateFormat df = new SimpleDateFormat(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "complet.date.format"));
 			for (Analysis analysis : listAnalysis) {
@@ -695,11 +639,9 @@ public final class EvaluatorUtils {
 				analysisForm.setDate(df.format(analysis.getDate()));
 				formList.add(analysisForm);
 			}
-
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return formList;
 	}
 
@@ -724,12 +666,9 @@ public final class EvaluatorUtils {
 	 */
 	public static List<String> getFramesUrl(String content) {
 		List<String> frames = new ArrayList<>();
-
 		PropertiesManager pmgr = new PropertiesManager();
 		String regexp = pmgr.getValue("intav.properties", "frame.reg.exp.matcher");
-
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		Matcher matcher = pattern.matcher(content);
 		while (matcher.find()) {
 			String frame = matcher.group(1).replaceAll("\n", "");
@@ -737,9 +676,7 @@ public final class EvaluatorUtils {
 				frames.add(frame);
 			}
 		}
-
 		return frames;
-
 	}
 
 	/**
@@ -753,7 +690,6 @@ public final class EvaluatorUtils {
 		HttpURLConnection connection = EvaluatorUtils.getConnection(url.toString(), "GET", false);
 		connection.connect();
 		int responseCode = connection.getResponseCode();
-
 		if (responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
 			return getFramesUrl(StringUtils.getContentAsString(connection.getInputStream()));
 		} else {
@@ -769,9 +705,7 @@ public final class EvaluatorUtils {
 	 */
 	private static String getMessage(String string) {
 		String regexp = IntavConstants.REGEXP_MESSAGE_FILTER_INCLUDE;
-
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.find()) {
 			return matcher.group(1);
@@ -788,9 +722,7 @@ public final class EvaluatorUtils {
 	 */
 	private static String getCode(String string) {
 		String regexp = IntavConstants.REGEXP_MESSAGE_FILTER_EXCLUDE;
-
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		Matcher matcher = pattern.matcher(string);
 		if (matcher.find()) {
 			return string.replace(matcher.group(1), "");
@@ -810,8 +742,7 @@ public final class EvaluatorUtils {
 		boolean found = false;
 		while (nodePrevious != null && !found) {
 			if (nodePrevious.getNodeType() == Node.TEXT_NODE) {
-				if (StringUtils.isOnlyBlanks(nodePrevious.getTextContent())
-						|| nodePrevious.getTextContent().trim().replaceAll("&nbsp;", "").length() <= 1) {
+				if (StringUtils.isOnlyBlanks(nodePrevious.getTextContent()) || nodePrevious.getTextContent().trim().replaceAll("&nbsp;", "").length() <= 1) {
 					nodePrevious = nodePrevious.getPreviousSibling();
 				} else {
 					found = true;
@@ -822,7 +753,6 @@ public final class EvaluatorUtils {
 				nodePrevious = nodePrevious.getPreviousSibling();
 			}
 		}
-
 		return nodePrevious;
 	}
 
@@ -839,18 +769,15 @@ public final class EvaluatorUtils {
 			PropertiesManager pmgr = new PropertiesManager();
 			inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
 		}
-
 		Node nodePrevious = elementGiven.getPreviousSibling();
 		boolean found = false;
 		while (nodePrevious != null && !found) {
-			if (nodePrevious.getNodeType() == Node.ELEMENT_NODE
-					&& (!filterInlineElements || !inlineTags.contains(nodePrevious.getNodeName().toUpperCase()))) {
+			if (nodePrevious.getNodeType() == Node.ELEMENT_NODE && (!filterInlineElements || !inlineTags.contains(nodePrevious.getNodeName().toUpperCase()))) {
 				found = true;
 			} else {
 				nodePrevious = nodePrevious.getPreviousSibling();
 			}
 		}
-
 		if (nodePrevious != null) {
 			return (Element) nodePrevious;
 		} else {
@@ -871,18 +798,15 @@ public final class EvaluatorUtils {
 			PropertiesManager pmgr = new PropertiesManager();
 			inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
 		}
-
 		Node nodeNext = elementGiven.getNextSibling();
 		boolean found = false;
 		while (nodeNext != null && !found) {
-			if (nodeNext.getNodeType() == Node.ELEMENT_NODE
-					&& (!filterInlineElements || !inlineTags.contains(nodeNext.getNodeName().toUpperCase()))) {
+			if (nodeNext.getNodeType() == Node.ELEMENT_NODE && (!filterInlineElements || !inlineTags.contains(nodeNext.getNodeName().toUpperCase()))) {
 				found = true;
 			} else {
 				nodeNext = nodeNext.getNextSibling();
 			}
 		}
-
 		if (nodeNext != null) {
 			return (Element) nodeNext;
 		} else {
@@ -898,43 +822,29 @@ public final class EvaluatorUtils {
 	private static Map<String, List<Integer>> initializeAspects() {
 		final Map<String, List<Integer>> aspectMap = new HashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
-		final List<String> aspects = Arrays
-				.asList(pmgr.getValue("intav.properties", "observatory.key.aspects").split(","));
-
+		final List<String> aspects = Arrays.asList(pmgr.getValue("intav.properties", "observatory.key.aspects").split(","));
 		for (String key : aspects) {
 			aspectMap.put(key, new ArrayList<Integer>());
 		}
-
 		return aspectMap;
 	}
 
 	/**
-	 * Método para crear el objeto de evaluación del observatorio. Su funcionamiento
-	 * se basa en comparar los checks que han provocado errores en el objeto
-	 * <code>evaluation</code> con los grupos de checks en el objeto
-	 * <code>guideline</code>. Un check que haya provocado un error hará que el
-	 * grupo entero se marque como erróneo (variable <code>hasProblem</code>), salvo
-	 * que ese check se encuentre en la lista de checks que solo deben marcar
-	 * advertencias, en cuyo caso solo provocará una advertencia en el grupo
-	 * (variable <code>hasWarning</code>).
+	 * Método para crear el objeto de evaluación del observatorio. Su funcionamiento se basa en comparar los checks que han provocado errores en el objeto <code>evaluation</code> con los grupos de
+	 * checks en el objeto <code>guideline</code>. Un check que haya provocado un error hará que el grupo entero se marque como erróneo (variable <code>hasProblem</code>), salvo que ese check se
+	 * encuentre en la lista de checks que solo deben marcar advertencias, en cuyo caso solo provocará una advertencia en el grupo (variable <code>hasWarning</code>).
 	 * <p/>
-	 * También está el caso especial de algunos checks, cuya ejecución no provocará
-	 * que se marque la bandera de grupo ejecutado. Esto es importante por ejemplo
-	 * para las verificaciones de las listas en la se analizan los elementos HTML
-	 * <code>&lt;P&gt;</code>, pero estos no implican por si mismos que haya listas
-	 * en el documento.
+	 * También está el caso especial de algunos checks, cuya ejecución no provocará que se marque la bandera de grupo ejecutado. Esto es importante por ejemplo para las verificaciones de las listas en
+	 * la se analizan los elementos HTML <code>&lt;P&gt;</code>, pero estos no implican por si mismos que haya listas en el documento.
 	 * <p/>
-	 * Se calcula también la puntuación por aspectos, a través de un mapa que
-	 * asociará cada aspecto (asociado a un grupo) con una lista de puntuaciones de
-	 * cada check que forma el grupo.
+	 * Se calcula también la puntuación por aspectos, a través de un mapa que asociará cada aspecto (asociado a un grupo) con una lista de puntuaciones de cada check que forma el grupo.
 	 *
 	 * @param evaluation  the evaluation
 	 * @param methodology the methodology
 	 * @param isDebugMode the is debug mode
 	 * @return the observatory evaluation form
 	 */
-	public static ObservatoryEvaluationForm generateObservatoryEvaluationForm(Evaluation evaluation, String methodology,
-			boolean isDebugMode) {
+	public static ObservatoryEvaluationForm generateObservatoryEvaluationForm(Evaluation evaluation, String methodology, boolean isDebugMode) {
 		Guideline guideline;
 		if (StringUtils.isEmpty(methodology)) {
 			guideline = EvaluatorUtility.loadGuideline(evaluation.getGuidelines().get(0));
@@ -943,7 +853,6 @@ public final class EvaluatorUtils {
 			guideline = guideline.initialize(methodology);
 		}
 		final ObservatoryEvaluationForm evaluationForm = new ObservatoryEvaluationForm();
-
 		evaluationForm.setEntity(evaluation.getEntidad());
 		evaluationForm.setUrl(evaluation.getFilename());
 		evaluationForm.setCrawlerExecutionId(evaluation.getRastreo());
@@ -952,9 +861,7 @@ public final class EvaluatorUtils {
 		// Guardamos el id de análisis para tener acceso a información del
 		// cartucho y otros datos más adelante
 		evaluationForm.setIdAnalysis(evaluation.getIdAnalisis());
-
 		final Map<String, List<Integer>> aspects = initializeAspects();
-
 		for (int i = 0; i < guideline.getGroups().size(); i++) {
 			final GuidelineGroup levelGroup = guideline.getGroups().get(i);
 			final ObservatoryLevelForm observatoryLevelForm = new ObservatoryLevelForm();
@@ -985,52 +892,37 @@ public final class EvaluatorUtils {
 									hasProblem = true;
 									observatorySubgroupForm.getFailChecks().add(check);
 								}
-
 								if (subgroup.getRelatedChecks().containsKey(check)) {
-									observatorySubgroupForm.getIgnoreRelatedChecks()
-											.add(subgroup.getRelatedChecks().get(check));
+									observatorySubgroupForm.getIgnoreRelatedChecks().add(subgroup.getRelatedChecks().get(check));
 								}
 							}
 						}
 					}
-
 					if (evaluationForm.getCrawlerExecutionId() < 0 || isDebugMode) {
 						List<Problem> vProblems = evaluation.getHashCheckProblem().get(subgroup.getName());
 						if (vProblems != null) {
 							vProblems = sortVectorProblems(vProblems);
 							List<ProblemForm> problemsForm = getProblemsFromGuideline(vProblems);
 							for (ProblemForm problemForm : problemsForm) {
-								if ((observatorySubgroupForm.getFailChecks()
-										.contains(Integer.parseInt(problemForm.getCheck()))
-										|| observatorySubgroupForm.getOnlyWarningChecks()
-												.contains(Integer.parseInt(problemForm.getCheck())))
-										&& !observatorySubgroupForm.getIgnoreRelatedChecks()
-												.contains(Integer.parseInt(problemForm.getCheck()))) {
+								if ((observatorySubgroupForm.getFailChecks().contains(Integer.parseInt(problemForm.getCheck()))
+										|| observatorySubgroupForm.getOnlyWarningChecks().contains(Integer.parseInt(problemForm.getCheck())))
+										&& !observatorySubgroupForm.getIgnoreRelatedChecks().contains(Integer.parseInt(problemForm.getCheck()))) {
 									observatorySubgroupForm.getProblems().add(problemForm);
 								}
-
 							}
 						}
 					}
-
-					addSubgroupScore(observatorySubgroupForm, subgroup, aspects, hasProblem, hasWarning,
-							executedSubgroup);
-
+					addSubgroupScore(observatorySubgroupForm, subgroup, aspects, hasProblem, hasWarning, executedSubgroup);
 					observatorySuitabilityForm.getSubgroups().add(observatorySubgroupForm);
 				}
-
 				observatorySuitabilityForm.setScore(getPartialScore(observatorySuitabilityForm));
 				observatoryLevelForm.getSuitabilityGroups().add(observatorySuitabilityForm);
 			}
-
 			observatoryLevelForm.setScore(getPartialScore(observatoryLevelForm));
 			evaluationForm.getGroups().add(observatoryLevelForm);
 		}
-
 		evaluationForm.setScore(getEvaluationScore(evaluationForm));
-
 		evaluationForm.setAspects(getAspectScore(aspects));
-
 		return evaluationForm;
 	}
 
@@ -1050,29 +942,22 @@ public final class EvaluatorUtils {
 	}
 
 	/**
-	 * Método que asigna al grupo de verificaciones, las puntuaciones definidas para
-	 * el observatorio. Estas puntuaciones son:
+	 * Método que asigna al grupo de verificaciones, las puntuaciones definidas para el observatorio. Estas puntuaciones son:
 	 * <dl>
 	 * <dt>Cero rojo:
 	 * <dt>
-	 * <dd>Se asigna si se ha detectado algún problema en el grupo, o si este grupo
-	 * no se ha ejecutado pero utilizarlo constituye una buena práctica (P.E.
-	 * enlaces de accesibilidad tienen que fallar si no hay enlaces en la
-	 * página)</dd>
+	 * <dd>Se asigna si se ha detectado algún problema en el grupo, o si este grupo no se ha ejecutado pero utilizarlo constituye una buena práctica (P.E. enlaces de accesibilidad tienen que fallar si
+	 * no hay enlaces en la página)</dd>
 	 * <dt>Cero verde:
 	 * <dt>
-	 * <dd>Se asigna si se ha producido una advertencia y ningún problema, o si se
-	 * ha analizado el grupo sin errores, pero utilizar los elementos del grupo
-	 * constituye una mala práctica</dd>
+	 * <dd>Se asigna si se ha producido una advertencia y ningún problema, o si se ha analizado el grupo sin errores, pero utilizar los elementos del grupo constituye una mala práctica</dd>
 	 * <dt>Uno verde:
 	 * <dt>
-	 * <dd>Se asigna si el grupo se ha analizado y no se ha encontrado ningún error,
-	 * o si el grupo no ha sido analizado por no encontrarse sus elementos, y no
-	 * utilizarlo constituye una buena práctica.</dd>
+	 * <dd>Se asigna si el grupo se ha analizado y no se ha encontrado ningún error, o si el grupo no ha sido analizado por no encontrarse sus elementos, y no utilizarlo constituye una buena
+	 * práctica.</dd>
 	 * <dt>No puntúa:
 	 * <dt>
-	 * <dd>Se asigna si el grupo no se ha analizado, y utilizarlo no supone ni una
-	 * buena práctica ni una mala práctica.</dd>
+	 * <dd>Se asigna si el grupo no se ha analizado, y utilizarlo no supone ni una buena práctica ni una mala práctica.</dd>
 	 * </dl>
 	 *
 	 * @param observatorySubgroupForm the observatory subgroup form
@@ -1082,8 +967,8 @@ public final class EvaluatorUtils {
 	 * @param hasWarning              the has warning
 	 * @param executedSubgroup        the executed subgroup
 	 */
-	private static void addSubgroupScore(ObservatorySubgroupForm observatorySubgroupForm, GuidelineGroup subgroup,
-			Map<String, List<Integer>> aspects, boolean hasProblem, boolean hasWarning, boolean executedSubgroup) {
+	private static void addSubgroupScore(ObservatorySubgroupForm observatorySubgroupForm, GuidelineGroup subgroup, Map<String, List<Integer>> aspects, boolean hasProblem, boolean hasWarning,
+			boolean executedSubgroup) {
 		if (hasProblem) {
 			// Si existe algún problema, le damos una mala nota
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_RED_ZERO);
@@ -1104,8 +989,7 @@ public final class EvaluatorUtils {
 			// le damos un cero verde
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_GREEN_ZERO);
 			addAspectScore(aspects, subgroup.getAspect(), 0);
-		} else if (!executedSubgroup && !subgroup.getType().equalsIgnoreCase(IntavConstants.BAD_PRACTICE)
-				&& !subgroup.getType().equalsIgnoreCase(IntavConstants.GOOD_PRACTICE)) {
+		} else if (!executedSubgroup && !subgroup.getType().equalsIgnoreCase(IntavConstants.BAD_PRACTICE) && !subgroup.getType().equalsIgnoreCase(IntavConstants.GOOD_PRACTICE)) {
 			// Si no se ha utilizado, y utilizarlo no es una mala práctica ni
 			// buena práctica, no puntúa
 			observatorySubgroupForm.setValue(IntavConstants.OBS_VALUE_NOT_SCORE);
@@ -1163,14 +1047,11 @@ public final class EvaluatorUtils {
 			}
 			aspectScore.add(aspectScoreForm);
 		}
-
 		return aspectScore;
 	}
 
 	/**
-	 * Calcula la puntuación total de la evaluación. Se suma un punto por cada
-	 * <code>Uno Verde</code> y se divide entre el número de verificaciones que se
-	 * han tenido en cuenta.
+	 * Calcula la puntuación total de la evaluación. Se suma un punto por cada <code>Uno Verde</code> y se divide entre el número de verificaciones que se han tenido en cuenta.
 	 *
 	 * @param evaluationForm the evaluation form
 	 * @return the evaluation score
@@ -1184,19 +1065,16 @@ public final class EvaluatorUtils {
 					if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ONE) {
 						score++;
 						numChecks++;
-					} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO)
-							|| (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+					} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO) || (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
 						numChecks++;
 					}
 				}
 			}
 		}
-
 		try {
 			return calculateScore(score, numChecks);
 		} catch (Exception e) {
-			Logger.putLog("Error al calcular la puntuación del observatorio", EvaluatorUtils.class,
-					Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al calcular la puntuación del observatorio", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			return BigDecimal.ZERO;
 		}
 	}
@@ -1215,18 +1093,15 @@ public final class EvaluatorUtils {
 				if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ONE) {
 					score++;
 					numChecks++;
-				} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO)
-						|| (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+				} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO) || (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
 					numChecks++;
 				}
 			}
 		}
-
 		try {
 			return calculateScore(score, numChecks);
 		} catch (Exception e) {
-			Logger.putLog("Error al calcular la puntuación del observatorio", EvaluatorUtils.class,
-					Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al calcular la puntuación del observatorio", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			return BigDecimal.ZERO;
 		}
 	}
@@ -1244,12 +1119,10 @@ public final class EvaluatorUtils {
 			if (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ONE) {
 				score++;
 				numChecks++;
-			} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO)
-					|| (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
+			} else if ((observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_GREEN_ZERO) || (observatorySubgroupForm.getValue() == IntavConstants.OBS_VALUE_RED_ZERO)) {
 				numChecks++;
 			}
 		}
-
 		try {
 			if (numChecks == 0) {
 				return BigDecimal.ZERO;
@@ -1260,8 +1133,7 @@ public final class EvaluatorUtils {
 			Logger.putLog("No se ha podido calcular la puntuación", EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
 			return BigDecimal.ZERO;
 		} catch (Exception e) {
-			Logger.putLog("Error al calcular la puntuación del observatorio", EvaluatorUtils.class,
-					Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al calcular la puntuación del observatorio", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			return BigDecimal.ZERO;
 		}
 	}
@@ -1275,8 +1147,7 @@ public final class EvaluatorUtils {
 	 */
 	private static BigDecimal calculateScore(final int score, final int numChecks) {
 		if (numChecks != 0) {
-			return new BigDecimal(score).divide(new BigDecimal(numChecks), 2, BigDecimal.ROUND_HALF_UP)
-					.multiply(BigDecimal.TEN).setScale(2, BigDecimal.ROUND_HALF_UP);
+			return new BigDecimal(score).divide(new BigDecimal(numChecks), 2, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.TEN).setScale(2, BigDecimal.ROUND_HALF_UP);
 		}
 		return BigDecimal.ZERO;
 	}
@@ -1304,31 +1175,32 @@ public final class EvaluatorUtils {
 	 * @return the connection
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects)
-			throws IOException {
+	public static HttpURLConnection getConnection(final String url, final String method, final boolean followRedirects) throws IOException {
 		final HttpURLConnection connection = generateConnection(url, method);
-
 		// Omitimos la redirección y si detectamos una, actualizamos el
 		// conector
-
 		int status = connection.getResponseCode();
-
 		connection.disconnect();
-
 		if (status != HttpURLConnection.HTTP_OK && followRedirects) {
-			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM
-					|| status == HttpURLConnection.HTTP_SEE_OTHER) {
-
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM || status == HttpURLConnection.HTTP_SEE_OTHER) {
 				String newUrl = connection.getHeaderField("Location");
-
-				return getConnection(encodeUrl(newUrl), method, false);
+				
+				try {
+					return getConnection(encodeUrl(newUrl), method, false);
+				} catch (MalformedURLException e) {
+					try {
+						URI uri = new URI(url);
+						return getConnection(encodeUrl(new URL(uri.getScheme(), uri.getHost(), newUrl).toString()), method, false);
+					} catch (URISyntaxException e1) {
+						return null;
+					}
+				}
+				// return getConnection(encodeUrl(newUrl), method, false);
 			}
 		}
-
 		return generateConnection(url, method);
 	}
-	
-	
+
 	/**
 	 * Gets the connection.
 	 *
@@ -1338,27 +1210,28 @@ public final class EvaluatorUtils {
 	 * @return the connection
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static HttpURLConnection getRendererConnection(final String url, final String method, final boolean followRedirects)
-			throws IOException {
-	
-
+	public static HttpURLConnection getRendererConnection(final String url, final String method, final boolean followRedirects) throws IOException {
 		return generateRendererConnection(url, method);
 	}
 
-	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost,
-			String proxyHttpPort) {
+	/**
+	 * Apply proxy.
+	 *
+	 * @param url           the url
+	 * @param proxyActive   the proxy active
+	 * @param proxyHttpHost the proxy http host
+	 * @param proxyHttpPort the proxy http port
+	 * @return true, if successful
+	 */
+	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost, String proxyHttpPort) {
 		final PropertiesManager pmgr = new PropertiesManager();
-		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null
-				&& url != null && !url.isEmpty()
-				&& !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto")
-				&& !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf")
-				&& !url.toLowerCase().endsWith(".doc") && !url.toLowerCase().endsWith(".epub") && !url.toLowerCase().endsWith(".xml")
-				&& !url.toLowerCase().endsWith(".xls") && !url.toLowerCase().endsWith(".wsdl") && !url.toLowerCase().endsWith(".css") && !url.toLowerCase().endsWith(".png")
-				&& !url.toLowerCase().endsWith(".jpeg") && !url.toLowerCase().endsWith(".jpg") && !url.toLowerCase().endsWith(".bmp") && !url.toLowerCase().endsWith(".gif")
-				&& !url.toLowerCase().endsWith(".svg") && !url.toLowerCase().endsWith(".webm") && !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator")) 
-				&& !url.toLowerCase().contains(".css") && !url.toLowerCase().contains(".scss")
-				&& !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml")
-				&& !url.toLowerCase().contains(".wsdl");
+		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null && url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
+				&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel") && !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc")
+				&& !url.toLowerCase().endsWith(".epub") && !url.toLowerCase().endsWith(".xml") && !url.toLowerCase().endsWith(".xls") && !url.toLowerCase().endsWith(".wsdl")
+				&& !url.toLowerCase().endsWith(".css") && !url.toLowerCase().endsWith(".png") && !url.toLowerCase().endsWith(".jpeg") && !url.toLowerCase().endsWith(".jpg")
+				&& !url.toLowerCase().endsWith(".bmp") && !url.toLowerCase().endsWith(".gif") && !url.toLowerCase().endsWith(".svg") && !url.toLowerCase().endsWith(".webm")
+				&& !url.equalsIgnoreCase(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "url.w3c.validator")) && !url.toLowerCase().contains(".css") && !url.toLowerCase().contains(".scss")
+				&& !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml") && !url.toLowerCase().contains(".wsdl");
 	}
 
 	/**
@@ -1371,52 +1244,38 @@ public final class EvaluatorUtils {
 	 * @throws MalformedURLException the malformed URL exception
 	 * @throws ProtocolException     the protocol exception
 	 */
-	private static HttpURLConnection generateConnection(final String url, final String method)
-			throws IOException, MalformedURLException, ProtocolException {
-
+	private static HttpURLConnection generateConnection(final String url, final String method) throws IOException, MalformedURLException, ProtocolException {
 		String proxyActive = "";
 		String proxyHttpHost = "";
 		String proxyHttpPort = "";
-
 		try (Connection c = DataBaseManager.getConnection()) {
 			ProxyForm proxy = ProxyDAO.getProxy(c);
-
 			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
 			proxyHttpHost = proxy.getUrl();
 			proxyHttpPort = proxy.getPort();
-
 			DataBaseManager.closeConnection(c);
 		} catch (Exception e) {
 			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		final PropertiesManager pmgr = new PropertiesManager();
-
-			Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
-			connection = (HttpURLConnection) new URL(url).openConnection();
-		
-
+		Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
+		connection = (HttpURLConnection) new URL(url).openConnection();
 		connection.setInstanceFollowRedirects(false);
 		connection.setRequestMethod(method);
 		if (connection instanceof HttpsURLConnection) {
 			((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
 		}
-
-		connection.setConnectTimeout(
-				Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
-		connection
-				.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+		connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+		connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
 		connection.addRequestProperty("Accept", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.header"));
-		connection.addRequestProperty("Accept-Language",
-				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.language.header"));
-		connection.addRequestProperty("User-Agent",
-				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
+		connection.addRequestProperty("Accept-Language", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.language.header"));
+		connection.addRequestProperty("User-Agent", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
 		return connection;
 	}
-	
+
 	/**
 	 * Genera una conexión.
 	 *
@@ -1427,62 +1286,45 @@ public final class EvaluatorUtils {
 	 * @throws MalformedURLException the malformed URL exception
 	 * @throws ProtocolException     the protocol exception
 	 */
-	private static HttpURLConnection generateRendererConnection(final String url, final String method)
-			throws IOException, MalformedURLException, ProtocolException {
-
+	private static HttpURLConnection generateRendererConnection(final String url, final String method) throws IOException, MalformedURLException, ProtocolException {
 		String proxyActive = "";
 		String proxyHttpHost = "";
 		String proxyHttpPort = "";
-
 		try (Connection c = DataBaseManager.getConnection()) {
 			ProxyForm proxy = ProxyDAO.getProxy(c);
-
 			proxyActive = proxy.getStatus() > 0 ? "true" : "false";
 			proxyHttpHost = proxy.getUrl();
 			proxyHttpPort = proxy.getPort();
-
 			DataBaseManager.closeConnection(c);
 		} catch (Exception e) {
 			Logger.putLog("Error: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		HttpURLConnection connection = null;
 		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (applyProxy(url, proxyActive, proxyHttpHost, proxyHttpPort)) {
 			try {
-				Proxy proxy = new Proxy(Proxy.Type.HTTP,
-						new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-				Logger.putLog(
-						"Conectando con la URL: " + url + " - Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort,
-						EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
+				Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+				Logger.putLog("Conectando con la URL: " + url + " - Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
 				connection = (HttpURLConnection) new URL(url).openConnection(proxy);
 			} catch (NumberFormatException e) {
-				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class,
-						Logger.LOG_LEVEL_ERROR);
+				Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
 			}
-
 		} else {
 			Logger.putLog("Conectando con la URL: " + url, EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR);
 			connection = (HttpURLConnection) new URL(url).openConnection();
 		}
-
 		connection.setInstanceFollowRedirects(false);
 		connection.setRequestMethod(method);
 		if (connection instanceof HttpsURLConnection) {
 			((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
 		}
-
-		connection.setConnectTimeout(
-				Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
-		connection
-				.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+		connection.setConnectTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
+		connection.setReadTimeout(Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "validator.timeout")));
 		connection.addRequestProperty("Accept", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.header"));
-		connection.addRequestProperty("Accept-Language",
-				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.language.header"));
-		connection.addRequestProperty("User-Agent",
-				pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
+		connection.addRequestProperty("Accept-Language", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.accept.language.header"));
+		connection.addRequestProperty("User-Agent", pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "method.user.agent.header"));
 		return connection;
 	}
 
@@ -1493,16 +1335,11 @@ public final class EvaluatorUtils {
 	 * @return the string
 	 */
 	public static String encodeUrl(String url) {
-
-		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó")
-				.replaceAll("Ãº", "ú").replaceAll(" ", "%20").replaceAll("Á", "%E1").replaceAll("É", "%C9")
-				.replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1")
-				.replaceAll("é", "%E9").replaceAll("í", "%ED").replaceAll("ó", "%F3").replaceAll("ú", "%FA")
-				.replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&").replaceAll("Âº", "º")
-				.replaceAll("º", "%BA").replaceAll("Âª", "ª").replaceAll("ª", "%AA");
-
+		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").replaceAll(" ", "%20").replaceAll("Á", "%E1")
+				.replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9").replaceAll("í", "%ED").replaceAll("ó", "%F3")
+				.replaceAll("ú", "%FA").replaceAll("Ñ", "%D1").replaceAll("ñ", "%F1").replaceAll("&amp;", "&").replaceAll("Âº", "º").replaceAll("º", "%BA").replaceAll("Âª", "ª")
+				.replaceAll("ª", "%AA");
 		return replaceAll;
-
 	}
 
 	/**
@@ -1523,7 +1360,6 @@ public final class EvaluatorUtils {
 			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
 			}
 		} };
-
 		// Install the all-trusting trust manager
 		try {
 			// Modificamos el protocolo SSL para solucionar la conexión con
@@ -1545,11 +1381,9 @@ public final class EvaluatorUtils {
 	 * @return the response charset
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static String getResponseCharset(final HttpURLConnection connection, final InputStream markableInputStream)
-			throws IOException {
+	public static String getResponseCharset(final HttpURLConnection connection, final InputStream markableInputStream) throws IOException {
 		String charset = IntavConstants.DEFAULT_ENCODING;
 		boolean found = false;
-
 		// Buscamos primero en las cabeceras de la respuesta
 		try {
 			final String header = connection.getHeaderField("Content-type");
@@ -1562,27 +1396,22 @@ public final class EvaluatorUtils {
 		} catch (Exception e) {
 			// found = false;
 		}
-
 		// Si no lo hemos encontrado en las cabeceras, intentaremos buscarlo en
 		// la etiqueta <meta> correspondiente
 		if (!found) {
 			final String regexp = "<meta.*charset=(.*?)\"";
 			final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 			final Matcher matcher = pattern.matcher(StringUtils.getContentAsString(markableInputStream));
 			if (matcher.find()) {
 				charset = matcher.group(1);
 				found = true;
 			}
-
 			// Reseteamos el InputStream para poder leerlo de nuevo más tarde
 			markableInputStream.reset();
 		}
-
 		if (found && !isValidCharset(charset)) {
 			charset = IntavConstants.DEFAULT_ENCODING;
 		}
-
 		return charset;
 	}
 
@@ -1613,7 +1442,6 @@ public final class EvaluatorUtils {
 		if (StringUtils.isNotEmpty(link.getTextContent())) {
 			linkText.append(link.getTextContent().trim());
 		}
-
 		final NodeList imgs = link.getElementsByTagName("img");
 		for (int i = 0; i < imgs.getLength(); i++) {
 			final Element img = (Element) imgs.item(i);
@@ -1658,39 +1486,32 @@ public final class EvaluatorUtils {
 			hd.startElement("", "", "type", null);
 			hd.characters(guideline.getType().toCharArray(), 0, guideline.getType().length());
 			hd.endElement("", "", "type");
-
 			for (int i = 0; i < guideline.getGroups().size(); i++) {
 				GuidelineGroup levelGroup = guideline.getGroups().get(i);
 				hd.startElement("", "", "group", null);
 				hd.startElement("", "", "name", null);
 				hd.characters(levelGroup.getName().toCharArray(), 0, levelGroup.getName().length());
 				hd.endElement("", "", "name");
-
 				for (int j = 0; j < levelGroup.getGroupsVector().size(); j++) {
 					GuidelineGroup suitabilityGroup = levelGroup.getGroupsVector().get(j);
 					hd.startElement("", "", "suitability", null);
 					hd.startElement("", "", "name", null);
 					hd.characters(suitabilityGroup.getName().toCharArray(), 0, suitabilityGroup.getName().length());
 					hd.endElement("", "", "name");
-
 					for (int k = 0; k < suitabilityGroup.getGroupsVector().size(); k++) {
 						GuidelineGroup subgroup = suitabilityGroup.getGroupsVector().get(k);
 						AttributesImpl subgroupAttributes = new AttributesImpl();
 						subgroupAttributes.addAttribute("", "", "aspect", "", subgroup.getAspect());
-
 						if (StringUtils.isNotEmpty(subgroup.getType())) {
 							subgroupAttributes.addAttribute("", "", "type", "", subgroup.getType());
 						}
-
 						hd.startElement("", "", "subgroup", subgroupAttributes);
 						hd.startElement("", "", "name", null);
 						hd.characters(subgroup.getName().toCharArray(), 0, subgroup.getName().length());
 						hd.endElement("", "", "name");
-
 						hd.startElement("", "", "checks", null);
 						for (int l = 0; l < subgroup.getChecksVector().size(); l++) {
 							Integer check = subgroup.getChecksVector().get(l);
-
 							AttributesImpl checkAttributes = new AttributesImpl();
 							checkAttributes.addAttribute("", "", "id", "", check.toString());
 							if (subgroup.getNoExecutedMarkChecks().contains(check)) {
@@ -1700,10 +1521,8 @@ public final class EvaluatorUtils {
 								checkAttributes.addAttribute("", "", "onlyWarning", "", "true");
 							}
 							if (subgroup.getRelatedChecks().containsKey(check)) {
-								checkAttributes.addAttribute("", "", "relatedWith", "",
-										subgroup.getRelatedChecks().get(check).toString());
+								checkAttributes.addAttribute("", "", "relatedWith", "", subgroup.getRelatedChecks().get(check).toString());
 							}
-
 							hd.startElement("", "", "check", checkAttributes);
 							hd.endElement("", "", "check");
 						}
@@ -1714,13 +1533,11 @@ public final class EvaluatorUtils {
 				}
 				hd.endElement("", "", "group");
 			}
-
 			hd.endElement("", "", "guideline");
 			hd.endDocument();
 		} catch (Exception e) {
 			Logger.putLog("Error al serializar la metodología", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return sw.toString();
 	}
 
@@ -1733,7 +1550,6 @@ public final class EvaluatorUtils {
 	 */
 	public static List<Element> getElementsByTagName(Document document, String tag) {
 		final List<Element> elements = new ArrayList<>();
-
 		NodeList allElements = document.getElementsByTagName("*");
 		for (int i = 0; i < allElements.getLength(); i++) {
 			Element tagElement = (Element) allElements.item(i);
@@ -1741,7 +1557,6 @@ public final class EvaluatorUtils {
 				elements.add(tagElement);
 			}
 		}
-
 		return elements;
 	}
 
@@ -1754,7 +1569,6 @@ public final class EvaluatorUtils {
 	 */
 	public static List<Element> getElementsByTagName(Element element, String tag) {
 		final List<Element> elements = new ArrayList<>();
-
 		NodeList allElements = element.getElementsByTagName("*");
 		for (int i = 0; i < allElements.getLength(); i++) {
 			Element tagElement = (Element) allElements.item(i);
@@ -1762,7 +1576,6 @@ public final class EvaluatorUtils {
 				elements.add(tagElement);
 			}
 		}
-
 		return elements;
 	}
 
@@ -1774,8 +1587,7 @@ public final class EvaluatorUtils {
 	 */
 	// Es necesaria la validación html
 	public static boolean isHtmlValidationNeeded(final List<Integer> checkSelected) {
-		return checkSelected.contains(232) || checkSelected.contains(152) || checkSelected.contains(438)
-				|| checkSelected.contains(439) || checkSelected.contains(440) || checkSelected.contains(441);
+		return checkSelected.contains(232) || checkSelected.contains(152) || checkSelected.contains(438) || checkSelected.contains(439) || checkSelected.contains(440) || checkSelected.contains(441);
 	}
 
 	/**
@@ -1826,18 +1638,15 @@ public final class EvaluatorUtils {
 			PropertiesManager pmgr = new PropertiesManager();
 			inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
 		}
-
 		Node nodeNext = elementGiven.getFirstChild();
 		boolean found = false;
 		while (nodeNext != null && !found) {
-			if (nodeNext.getNodeType() == Node.ELEMENT_NODE
-					&& (!filterInlineElements || !inlineTags.contains(nodeNext.getNodeName().toUpperCase()))) {
+			if (nodeNext.getNodeType() == Node.ELEMENT_NODE && (!filterInlineElements || !inlineTags.contains(nodeNext.getNodeName().toUpperCase()))) {
 				found = true;
 			} else {
 				nodeNext = nodeNext.getFirstChild();
 			}
 		}
-
 		if (nodeNext != null) {
 			return (Element) nodeNext;
 		} else {
@@ -1853,20 +1662,15 @@ public final class EvaluatorUtils {
 	 */
 	public static List<Element> getHeadings(Document document) {
 		final List<Element> elements = new ArrayList<>();
-
 		NodeList allElements = document.getElementsByTagName("*");
 		for (int i = 0; i < allElements.getLength(); i++) {
 			Element tagElement = (Element) allElements.item(i);
-			if (tagElement.getNodeName().equalsIgnoreCase("h1") || tagElement.getNodeName().equalsIgnoreCase("h2")
-					|| tagElement.getNodeName().equalsIgnoreCase("h3")
-					|| tagElement.getNodeName().equalsIgnoreCase("h4")
-					|| tagElement.getNodeName().equalsIgnoreCase("h5")
-					|| tagElement.getNodeName().equalsIgnoreCase("h6")
+			if (tagElement.getNodeName().equalsIgnoreCase("h1") || tagElement.getNodeName().equalsIgnoreCase("h2") || tagElement.getNodeName().equalsIgnoreCase("h3")
+					|| tagElement.getNodeName().equalsIgnoreCase("h4") || tagElement.getNodeName().equalsIgnoreCase("h5") || tagElement.getNodeName().equalsIgnoreCase("h6")
 					|| "heading".equals(tagElement.getAttribute("role"))) {
 				elements.add(tagElement);
 			}
 		}
-
 		return elements;
 	}
 
@@ -1881,43 +1685,35 @@ public final class EvaluatorUtils {
 		int lastNumber = 0;
 		String romanNumeral = romanNumber.toUpperCase();
 		/*
-		 * operation to be performed on upper cases even if user enters roman values in
-		 * lower case chars
+		 * operation to be performed on upper cases even if user enters roman values in lower case chars
 		 */
 		for (int x = romanNumeral.length() - 1; x >= 0; x--) {
 			char convertToDecimal = romanNumeral.charAt(x);
-
 			switch (convertToDecimal) {
 			case 'M':
 				decimal = processDecimal(1000, lastNumber, decimal);
 				lastNumber = 1000;
 				break;
-
 			case 'D':
 				decimal = processDecimal(500, lastNumber, decimal);
 				lastNumber = 500;
 				break;
-
 			case 'C':
 				decimal = processDecimal(100, lastNumber, decimal);
 				lastNumber = 100;
 				break;
-
 			case 'L':
 				decimal = processDecimal(50, lastNumber, decimal);
 				lastNumber = 50;
 				break;
-
 			case 'X':
 				decimal = processDecimal(10, lastNumber, decimal);
 				lastNumber = 10;
 				break;
-
 			case 'V':
 				decimal = processDecimal(5, lastNumber, decimal);
 				lastNumber = 5;
 				break;
-
 			case 'I':
 				decimal = processDecimal(1, lastNumber, decimal);
 				lastNumber = 1;
@@ -1942,5 +1738,4 @@ public final class EvaluatorUtils {
 			return lastDecimal + decimal;
 		}
 	}
-
 }
