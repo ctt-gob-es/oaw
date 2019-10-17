@@ -38,7 +38,6 @@ Adaptive Technology Resource Centre, University of Toronto
 130 St. George St., Toronto, Ontario, Canada
 Telephone: (416) 978-4360
 */
-
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import java.awt.Dimension;
@@ -92,24 +91,59 @@ import es.inteco.flesch.FleschUtils;
 import es.inteco.intav.form.CheckedLinks;
 import es.inteco.intav.utils.EvaluatorUtils;
 
+/**
+ * The Class Check.
+ */
 public class Check {
+	
+	/** The check ok code. */
 	private int checkOkCode;
+	
+	/** The id. */
 	private int id;
+	
+	/** The related with. */
 	private int relatedWith;
+	
+	/** The status. */
 	private String status;
+	
+	/** The note. */
 	private String note;
+	
+	/** The confidence. */
 	private int confidence;
+	
+	/** The first occurance only. */
 	private boolean firstOccuranceOnly;
+	
+	/** The name map. */
 	private Map<String, Node> nameMap;
+	
+	/** The error hashtable. */
 	private Map<String, Node> errorHashtable;
+	
+	/** The rationale hashtable. */
 	private Map<String, Node> rationaleHashtable;
+	
+	/** The key element. */
 	private String keyElement;
+	
+	/** The trigger element. */
 	private String triggerElement;
+	
+	/** The language appropriate. */
 	private String languageAppropriate;
+	
+	/** The prerequisites. */
 	private List<Integer> prerequisites;
-
+	
+	/** The vector code. */
 	private List<CheckCode> vectorCode;
 
+	/**
+	 * Instantiates a new check.
+	 */
 	public Check() {
 		checkOkCode = CheckFunctionConstants.CHECK_STATUS_UNINITIALIZED;
 		id = -1;
@@ -126,37 +160,76 @@ public class Check {
 		rationaleHashtable = new Hashtable<>();
 	}
 
+	/**
+	 * Gets the check ok code.
+	 *
+	 * @return the check ok code
+	 */
 	public int getCheckOkCode() {
 		return checkOkCode;
 	}
 
+	/**
+	 * Gets the related with.
+	 *
+	 * @return the related with
+	 */
 	public int getRelatedWith() {
 		return relatedWith;
 	}
 
+	/**
+	 * Sets the related with.
+	 *
+	 * @param relatedWith the new related with
+	 */
 	public void setRelatedWith(int relatedWith) {
 		this.relatedWith = relatedWith;
 	}
 
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Gets the status.
+	 *
+	 * @return the status
+	 */
 	public String getStatus() {
 		return status;
 	}
 
+	/**
+	 * Gets the note.
+	 *
+	 * @return the note
+	 */
 	public String getNote() {
 		return note;
 	}
 
+	/**
+	 * Gets the confidence.
+	 *
+	 * @return the confidence
+	 */
 	public int getConfidence() {
 		return confidence;
 	}
 
+	/**
+	 * Gets the confidence string.
+	 *
+	 * @return the confidence string
+	 */
 	public String getConfidenceString() {
-		if ((confidence == CheckFunctionConstants.CONFIDENCE_NOT_SET)
-				|| (confidence == CheckFunctionConstants.CONFIDENCE_LOW)) {
+		if ((confidence == CheckFunctionConstants.CONFIDENCE_NOT_SET) || (confidence == CheckFunctionConstants.CONFIDENCE_LOW)) {
 			return IntavConstants.LOW;
 		} else if (confidence == CheckFunctionConstants.CONFIDENCE_MEDIUM) {
 			return IntavConstants.MEDIUM;
@@ -167,10 +240,20 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Gets the error.
+	 *
+	 * @return the error
+	 */
 	public Node getError() {
 		return errorHashtable.get(IntavConstants.ENGLISH_ABB);
 	}
 
+	/**
+	 * Gets the error string.
+	 *
+	 * @return the error string
+	 */
 	public String getErrorString() {
 		Node nodeError = getError();
 		if (nodeError == null) {
@@ -179,10 +262,21 @@ public class Check {
 		return EvaluatorUtility.getElementText(nodeError);
 	}
 
+	/**
+	 * Gets the rationale.
+	 *
+	 * @return the rationale
+	 */
 	public Node getRationale() {
 		return rationaleHashtable.get(IntavConstants.ENGLISH_ABB);
 	}
 
+	/**
+	 * Sets the rationale text.
+	 *
+	 * @param text     the text
+	 * @param language the language
+	 */
 	public void setRationaleText(String text, String language) {
 		Node nodeRationale = rationaleHashtable.get(language);
 		if (nodeRationale != null) {
@@ -193,13 +287,17 @@ public class Check {
 				nodeChild = nodeChild.getNextSibling();
 				nodeRationale.removeChild(nodeTemp);
 			}
-
 			// create a new text node to hold the new text
 			Node newTextNode = nodeRationale.getOwnerDocument().createTextNode(text);
 			nodeRationale.appendChild(newTextNode);
 		}
 	}
 
+	/**
+	 * Gets the rationale string.
+	 *
+	 * @return the rationale string
+	 */
 	public String getRationaleString() {
 		Node nodeDescription = getRationale();
 		if (nodeDescription == null) {
@@ -208,22 +306,48 @@ public class Check {
 		return EvaluatorUtility.getElementText(nodeDescription);
 	}
 
+	/**
+	 * Gets the trigger element.
+	 *
+	 * @return the trigger element
+	 */
 	public String getTriggerElement() {
 		return triggerElement;
 	}
 
+	/**
+	 * Gets the key element.
+	 *
+	 * @return the key element
+	 */
 	public String getKeyElement() {
 		return keyElement;
 	}
 
+	/**
+	 * Gets the prerequisites.
+	 *
+	 * @return the prerequisites
+	 */
 	public List<Integer> getPrerequisites() {
 		return prerequisites;
 	}
 
+	/**
+	 * Checks if is first occurance only.
+	 *
+	 * @return true, if is first occurance only
+	 */
 	public boolean isFirstOccuranceOnly() {
 		return firstOccuranceOnly;
 	}
 
+	/**
+	 * Checks if is prerequisite.
+	 *
+	 * @param idGiven the id given
+	 * @return true, if is prerequisite
+	 */
 	// return true if the given check ID is a prerequisite for this check
 	public boolean isPrerequisite(int idGiven) {
 		for (Integer prerequisite : prerequisites) {
@@ -234,6 +358,12 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Prerequisites OK.
+	 *
+	 * @param vectorChecksRun the vector checks run
+	 * @return true, if successful
+	 */
 	// return true if required prerequisites for this check have been run
 	public boolean prerequisitesOK(List<Integer> vectorChecksRun) {
 		for (Integer prerequisite : prerequisites) {
@@ -251,10 +381,14 @@ public class Check {
 		return true;
 	}
 
+	/**
+	 * Creates the vector functions.
+	 *
+	 * @return the list
+	 */
 	// Crea una lista de funciones basadas en el lenguage requerido
 	private List<CheckCode> createVectorFunctions() {
 		List<CheckCode> vectorFunctions = new ArrayList<>();
-
 		for (CheckCode checkCode : vectorCode) {
 			if (checkCode.getType() == CheckFunctionConstants.CODE_TYPE_LANGUAGE) {
 				if (checkCode.getLanguage().equals(languageAppropriate)) {
@@ -267,16 +401,21 @@ public class Check {
 				vectorFunctions.add(checkCode);
 			}
 		}
-
 		return vectorFunctions;
 	}
 
 	// Devuelve verdadero si el elemento no tiene problemas de accesibilidad
+	/**
+	 * Do evaluation.
+	 *
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 * @throws AccessibilityError the accessibility error
+	 */
 	// Lanza una excepción si hay un problema de accesibilidad
 	public boolean doEvaluation(Element elementGiven) throws AccessibilityError {
 		// Crea una lista de funciones basadas en el lenguage requerido
 		List<CheckCode> vectorFunctions = createVectorFunctions();
-
 		// Ejecuta las funciones
 		try {
 			for (CheckCode checkCode : vectorFunctions) {
@@ -293,16 +432,21 @@ public class Check {
 			Logger.putLog("Warning: Exception caught in Check.doEvaluation", Check.class, Logger.LOG_LEVEL_WARNING, e);
 			return false;
 		}
-
 		throw new AccessibilityError(AccessibilityError.FAIL, elementGiven);
 	}
 
+	/**
+	 * Evaluate function.
+	 *
+	 * @param checkCode    the check code
+	 * @param elementGiven the element given
+	 * @return the int
+	 */
 	// Evalúa un nodo en concreto
 	private int evaluateFunction(CheckCode checkCode, Element elementGiven) {
 		// get the node referenced by the 'node' parameter
 		Node nodeNode = null;
 		String stringNodeAttribute = checkCode.getNodeRelation();
-
 		if (".".equals(stringNodeAttribute)) {
 			nodeNode = elementGiven;
 		} else if (stringNodeAttribute.charAt(0) == '@') {
@@ -384,15 +528,20 @@ public class Check {
 			Logger.putLog("unknown node: " + stringNodeAttribute, Check.class, Logger.LOG_LEVEL_INFO);
 			return CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
 		}
-
-		return processCode(checkCode, nodeNode, elementGiven) ? CheckFunctionConstants.CODE_RESULT_PROBLEM
-				: CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
+		return processCode(checkCode, nodeNode, elementGiven) ? CheckFunctionConstants.CODE_RESULT_PROBLEM : CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
 	}
 
 	// Evalua una condición 'and' entre varios elementos
 	// Por ejemplo, para comprobar el atributo 'alt' de una imagen, comprueba
 	// que su altura sea mayor que 'x' Y
 	// su anchura sea mayor que 'y' Y que el atributo 'alt' tenga más de 'z'
+	/**
+	 * Evaluate condition and.
+	 *
+	 * @param checkCode    the check code
+	 * @param elementGiven the element given
+	 * @return the int
+	 */
 	// caracteres
 	private int evaluateConditionAnd(CheckCode checkCode, Element elementGiven) {
 		List<CheckCode> vectorCodeFunctions = checkCode.getVectorCode();
@@ -409,6 +558,13 @@ public class Check {
 		return foundProblem ? CheckFunctionConstants.CODE_RESULT_PROBLEM : CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
 	}
 
+	/**
+	 * Evaluate condition or.
+	 *
+	 * @param checkCode    the check code
+	 * @param elementGiven the element given
+	 * @return the int
+	 */
 	// Evalua una condición 'or' entre varios elementos
 	private int evaluateConditionOr(CheckCode checkCode, Element elementGiven) {
 		List<CheckCode> vectorCodeFunctions = checkCode.getVectorCode();
@@ -420,6 +576,13 @@ public class Check {
 		return CheckFunctionConstants.CODE_RESULT_NOPROBLEM;
 	}
 
+	/**
+	 * Evaluate condition.
+	 *
+	 * @param checkCode    the check code
+	 * @param elementGiven the element given
+	 * @return the int
+	 */
 	// Evalua una condición entre varios nodos
 	private int evaluateCondition(CheckCode checkCode, Element elementGiven) {
 		// all the functions within the 'and' must detect a problem to return a
@@ -429,13 +592,19 @@ public class Check {
 		} else if (checkCode.getConditionType() == CheckFunctionConstants.CONDITION_OR) {
 			return evaluateConditionOr(checkCode, elementGiven);
 		} else {
-			Logger.putLog("Warning: check " + id + " has invalid condition type: " + checkCode.getType(), Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid condition type: " + checkCode.getType(), Check.class, Logger.LOG_LEVEL_WARNING);
 			return CheckFunctionConstants.CODE_RESULT_IGNORE;
 		}
 	}
 
 	// Método recursivo para evaluar funciones y condiciones
+	/**
+	 * Evaluate code.
+	 *
+	 * @param checkCode    the check code
+	 * @param elementGiven the element given
+	 * @return the int
+	 */
 	// Devuelve un código con el resultado de la evaluación
 	private int evaluateCode(CheckCode checkCode, Element elementGiven) {
 		// Hemos llegado a un nodo y hay que evaluarlo
@@ -455,531 +624,380 @@ public class Check {
 			}
 			return CheckFunctionConstants.CODE_RESULT_IGNORE;
 		} else {
-			Logger.putLog("Warning: Invalid checkCode type: " + checkCode.getType(), Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: Invalid checkCode type: " + checkCode.getType(), Check.class, Logger.LOG_LEVEL_WARNING);
 			return CheckFunctionConstants.CODE_RESULT_IGNORE;
 		}
 	}
 
+	/**
+	 * Process code.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Devuelve verdadero si hay un problema de accesibilidad
 	private boolean processCode(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		switch (checkCode.getFunctionId()) {
-
 		case CheckFunctionConstants.FUNCTION_TEXT_EQUALS:
 			return functionTextEquals(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_NOTEQUALS:
 			return functionTextNotEquals(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_EXISTS:
 			return functionAttributeExists(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_MISSING:
 			return functionAttributeMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTES_SAME:
 			return functionAttributesSame(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTES_NOT_SAME:
 			return functionAttributesNotSame(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_GREATER:
 			return functionElementCountGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_INTERNAL_ELEMENT_COUNT_GREATER:
-			return functionInternalElementCountGreaterThan(checkCode, nodeNode, elementGiven,
-					CheckFunctionConstants.COMPARE_GREATER_THAN);
-
+			return functionInternalElementCountGreaterThan(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_GREATER_THAN);
 		case CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_LESS:
 			return functionElementCountLessThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_EQUALS:
 			return functionElementCountEquals(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_NOTEQUALS:
 			return functionElementCountNotEquals(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_NULL:
 			return functionAttributeNull(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CHARS_GREATER:
 			return functionCharactersGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CHARS_LESS:
 			return functionCharactersLessThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LINK_CHARS_GREATER:
 			return functionLinkCharactersGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_ALL_LABELS:
 			return functionNotAllLabels(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NUMBER_ANY:
 			return functionNumberAny(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NUMBER_LESS_THAN:
 			return functionNumberLessThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NUMBER_GREATER_THAN:
 			return functionNumberGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CONTAINER:
 			return functionContainer(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOTCONTAINER:
 			return functionContainerNot(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_METADATA_MISSING:
 			return functionMetadataMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_LINK_EQUIVS_MISSING:
 			return functionTextLinkEquivMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LABEL_NOT_ASSOCIATED:
 			return functionLabelNotAssociated(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LABEL_INCORRECTLY_ASSOCIATED:
 			return functionLabelIncorrectlyAssociated(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LABEL_NO_TEXT:
 			return functionLabelNoText(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_DLINK_MISSING:
 			return functionDLinkMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NEXT_HEADING_BAD:
 			return functionNextHeadingWrong(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_PREV_HEADING_BAD:
 			return functionPreviousHeadingWrong(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_DUPLICATE_FOLLOWING_HEADERS:
 			return functionDuplicateFollowingHeaders(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_INCORRECT_HEADING_STRUCTURE:
 			return functionIncorrectHeaderStructure(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NO_CORRECT_DOCUMENT_STRUCTURE:
 			return functionNoCorrectDocumentStructure(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HEADERS_MISSING:
 			return functionHeadersMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HEADERS_EXIST:
 			return functionHeadersExist(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOSCRIPT_MISSING:
 			return functionNoscriptMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOFRAME_MISSING:
 			return functionNoframeMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IFRAME_HAS_NOT_ALTERNATIVE:
 			return functionIFrameHasNotAlternative(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IFRAME_HAS_ALTERNATIVE:
 			return functionIFrameHasAlternative(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOEMBED_MISSING:
 			return functionNoembedMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ROW_COUNT:
 			return CheckTables.functionRowCount(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_COL_COUNT:
 			return CheckTables.functionColumnCount(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENT_PREVIOUS:
 			return functionElementPrevious(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TARGETS_SAME:
 			return functionTargetsSame(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HTML_CONTENT_NOT:
 			return functionHtmlContentNot(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_LANGUAGE:
 			return functionHasLanguage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_VALID_LANGUAGE:
 			return functionNotValidLanguage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_MULTIRADIO_NOFIELDSET:
 			return functionMultiRadioNoFieldset(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_MULTICHECKBOX_NOFIELDSET:
 			return functionMultiCheckboxNoFieldset(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LUMINOSITY_CONTRAST_RATIO:
 			return functionLuminosityContrastRatio(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ERT_COLOR_ALGORITHM:
 			return functionColorContrastWaiErt(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_DOCTYPE_ATTRIBUTE_NOT_EQUAL:
 			return functionDoctypeAttributeNotEqual(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_VALIDATE:
 			return !functionValidate(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_VALIDATE_CSS:
 			return !functionValidateCss(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TABLE_TYPE:
 			return CheckTables.functionTableType(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_MISSING_ID_HEADERS:
 			return CheckTables.functionMissingIdHeaders(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_MISSING_SCOPE:
 			return functionMissingScope(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_INVALID_SCOPE:
 			return functionInvalidScope(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_NOT_ELEMENT_CHILDS:
 			return !hasElementChilds(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CAPTION_SUMMARY_SAME:
 			return functionCaptionSummarySame(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IS_ONLY_BLANKS:
 			return functionIsOnlyBlanks(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IS_EMPTY_ELEMENT:
 			return functionIsEmptyElement(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IS_NOT_ONLY_BLANKS:
 			return !functionIsOnlyBlanks(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_IS_ONLY_BLANKS:
 			return functionNotIsOnlyBlanks(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_VALID_URL:
 			return functionNotValidUrl(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_EXTERNAL_URL:
 			return functionNotExternalUrl(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_OBJECT_HAS_NOT_ALTERNATIVE:
 			return functionObjectHasNotAlternative(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_APPLET_HAS_NOT_ALTERNATIVE:
 			return functionAppletHasNotAlternative(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_APPLET_HAS_ALTERNATIVE:
 			return functionAppletHasAlternative(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_GRAMMAR_LANG:
 			return functionLangGrammar(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TABLE_HEADING_COMPLEX:
 			return CheckTables.functionTableHeadingComplex(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TABLE_COMPLEX:
 			return CheckTables.functionTableComplex(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_ALL_ID_HEADERS:
 			return !CheckTables.functionMissingIdHeaders(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CONTAINS:
 			return functionContains(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CONTAINS_NOT:
 			return functionContainsNot(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ALL_ELEMENTS_NOT_LIKE_THIS:
 			return functionAllElementsNotLikeThis(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_DEFINITION_LIST_CONSTRUCTION:
 			return functionDefinitionListConstruction(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CHECK_COLORS:
 			return functionCheckColors(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_VALID_DOCTYPE:
 			return !functionCheckValidDoctype(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_ELEMENT_INTO:
 			return functionHasElementInto(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_SAME_FOLLOWING_LIST:
 			return functionSameFollowingList(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_SAME_FOLLOWING_LIST_NOT:
 			return functionSameFollowingListNot(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_CONTAIN_GENERAL_QUOTE:
 			return functionTextContainGeneralQuote(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_SAME_ELEMENT_NOT:
 			return functionSameElementNot(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_SAME_ELEMENT:
 			return functionSameElement(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_NBSP_ENTITIES:
 			return functionHasNbspEntities(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LINK_SAME_PAGE:
 			return functionLinkSamePage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_MATCH:
 			return functionTextMatch(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_NOT_MATCH:
 			return functionTextNotMatch(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_ELEMENT_TEXT_MATCH:
 			return functionAttributeElementTextMatch(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_ELEMENT_TEXT_NOT_MATCH:
 			return !functionAttributeElementTextMatch(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NUM_MORE_CONTROLS:
 			return functionNumMoreControls(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IS_ODD:
 			return functionIsOdd(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IS_EVEN:
 			return functionIsEven(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_USER_DATA_MATCHS:
 			return functionUserDataMatchs(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_USER_DATA_MATCHS:
 			return functionNotUserDataMatchs(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_CHILDREN_HAVE_ATTRIBUTE:
 			return functionNotChildrenHaveAttribute(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_CLEAR_LANGUAGE:
 			return functionNotClearLanguage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_NOT_ENOUGH_TEXT:
 			return functionHasNotEnoughText(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_NOT_SECTION_LINK:
 			return functionHasNotSectionLink(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_CORRECT_HEADING:
 			return !CheckTables.functionCorrectHeading(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_FALSE_PARAGRAPH_LIST:
 			return functionFalseParagraphList(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_FALSE_BR_LIST:
 			return functionFalseBrList(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_FALSE_HEADER_WITH_ONLY_CELL:
 			return CheckTables.functionHeaderWithOnlyCell(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_INCORRECT_TABINDEX:
 			return functionHasIncorrectTabindex(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LANGUAGE_NOT_EQUALS:
 			return functionLanguageNotEquals(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_EMPTY_ELEMENTS:
 			return functionEmptyElements(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENTS_EXCESSIVE_USAGE:
 			return functionElementsUsage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTES_EXCESSIVE_USAGE:
 			return functionAttributesExcessiveUsage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TABINDEX_EXCESSIVE_USAGE:
 			return functionTabIndexExcessiveUsage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENT_PERCENTAGE:
 			return functionElementPercentage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CORRECT_LINKS:
 			return functionCorrectLinks(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_GREATER:
 			return functionChildElementCharactersGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CHILD_ELEMENT_CHARS_LESSER:
 			return !functionChildElementCharactersGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LAYOUT_TABLE:
 			return functionLayoutTable(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_LAYOUT_TABLE:
 			return !functionLayoutTable(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_LAYOUT_TABLE_NUMBER:
 			return functionLayoutTableNumber(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONTACT:
 			return functionAccessibilityDeclarationNoContact(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_REVISION_DATE:
 			return functionAccessibilityDeclarationNoRevisionDate(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_DECLARATION_NO_CONFORMANCE_LEVEL:
 			return functionAccessibilityDeclarationNoConformanceLevel(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_COMPLEX_STRUCTURE:
 			return functionHasComplexStructure(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TOO_MANY_BROKEN_LINKS:
 			return functionTooManyBrokenLinks(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_EXIST_ATTRIBUTE_VALUE:
 			return functionExistAttributeValue(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_EXIST_ATTRIBUTE_VALUE:
 			return functionNotExistAttributeValue(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_EMPTY_SECTION:
 			return functionEmptySection(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_COUNT_ATTRIBUTE_VALUE_GREATER_THAN:
 			return functionCountAttributeValueGreaterThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IS_ANIMATED_GIF:
 			return functionIsAnimatedGif(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_FOLLOWING_HEADERS_WITHOUT_CONTENT:
 			return functionFollowingHeadersWithoutContent(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_IMG_DIMENSIONS_LESS_THAN:
 			return functionImgDimensionsLessThan(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_REDUNDANT_IMG_ALT:
 			return functionRedundantImgAlt(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HAS_VALIDATION_ERRORS:
 			return functionHasValidationErrors(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_GUESS_LANGUAGE:
 			return functionGuessLanguage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_GROUPED_SELECTION_BUTTONS:
 			return functionGroupedRadioButtons(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_NOT_FIRST_CHILD:
 			return functionNotFirstChild(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_REQUIRED_CONTROLS:
 			return functionRequiredControls(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_FALSE_BR_IMAGE_LIST:
 			return functionFalseBrImageList(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_OTHER_LANGUAGE:
 			return functionOtherLanguage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_CURRENT_LANGUAGE:
 			return functionCurrentLanguage(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TABLE_HEADING_BLANK:
 			return CheckTables.functionTableHeadingBlank(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TITLE_NOT_CONTAINS:
 			return functionTitleNotContains(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ARIA_LABELLEDBY_REFERENCED:
 			return functionAriaLabelledbyReferences(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ARIA_DESCRIBEDBY_REFERENCED:
 			return functionAriaDescribedbyReferences(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LENGHT:
 			return attributeLength(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ATTRIBUTE_LABELEDBY_LENGHT:
 			return attributeLengthLabeledBy(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HEADERS_WAI_MISSING:
 			return functionWAIHeadersMissing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_HEADERS_WAI_LEVEL_1_MISSING:
 			return functionWAIHeadersLevel1Missing(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_FOLLOWING_WAI_HEADERS_WITHOUT_CONTENT:
 			return functionFollowingWAIHeadersWithoutContent(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_SKIP_WAI_HEADERS_LEVEL:
 			return skipWaiHeadersLevel(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ELEMENT_COUNT_ATTRIBUTE_VALUE:
 			return functionElementCountAttributeValue(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_ACCESSIBILITY_CONTACT_FORM:
 			return functionAccessibilityContactForm(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_MATCH_PROPERTIES:
 			return functionTextMatchProperties(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_NOT_MATCH_PROPERTIES:
 			return !functionTextMatchProperties(checkCode, nodeNode, elementGiven);
-
 		case CheckFunctionConstants.FUNCTION_TEXT_NOT_EQUALS_PROPERTIES:
 			return !functionTextEqualsProperties(checkCode, nodeNode, elementGiven);
-
 		default:
-			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
 		}
-
 		return false;
 	}
 
 	/**
-	 * 
-	 * 
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * Function title not contains.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
-	public static boolean functionTitleNotContains(final CheckCode checkCode, final Node nodeNode,
-			final Element elementGiven) {
-
+	public static boolean functionTitleNotContains(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
 		String key = checkCode.getFunctionValue();
 		// TODO Modificada para recuperar la expresión de un fichero
-
 		PropertiesManager pm = new PropertiesManager();
-
 		String regexp = pm.getValue("check.patterns.properties", key);
-
 		final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-
 		final NodeList titles = elementGiven.getOwnerDocument().getDocumentElement().getElementsByTagName("title");
-
 		for (int i = 0; i < titles.getLength(); i++) {
 			final Element title = (Element) titles.item(i);
 			if (pattern.matcher(title.getTextContent()).find()) {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
-	private boolean functionLinkCharactersGreaterThan(final CheckCode checkCode, final Node nodeNode,
-			final Element elementGiven) {
+	/**
+	 * Function link characters greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionLinkCharactersGreaterThan(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
 		// Se usa la función getLabelText porque está preparada para extraer las
 		// alternativas de las imágenes
 		final String linkLabelText = EvaluatorUtility.getLabelText(elementGiven);
 		final int maxChars = Integer.parseInt(checkCode.getFunctionValue());
-
 		return linkLabelText.length() > maxChars;
 	}
 
 	/**
-	 * Actualziada para que recupera la expresión regurlar de fichero de propiedades
-	 * 
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * Actualziada para que recupera la expresión regurlar de fichero de propiedades.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	private boolean functionRequiredControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList inputs = elementGiven.getElementsByTagName("input");
@@ -993,19 +1011,13 @@ public class Check {
 				}
 			}
 		}
-
 		final int minInputs = Integer.parseInt(checkCode.getFunctionNumber());
 		if (filteredControls > minInputs) {
 			final String formText = EvaluatorUtility.getLabelText(elementGiven);
-
 			// TODO Recupera la expresión regular de un fichero de propiedades
-
 			PropertiesManager pm = new PropertiesManager();
-
 			String regexp = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
-
 			Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-
 			final Matcher matcher = pattern.matcher(formText);
 			boolean foundRequiredText = matcher.find();
 			if (!foundRequiredText && elementGiven.getParentNode() != null) {
@@ -1017,6 +1029,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function not first child.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotFirstChild(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final Node firstChild = elementGiven.getFirstChild();
 		if (firstChild == null) {
@@ -1029,10 +1049,8 @@ public class Check {
 			if (currentNode.getNodeType() == Node.ELEMENT_NODE) {
 				final List allowedTags = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
 				if (allowedTags.contains(currentNode.getNodeName().toLowerCase())) {
-					boolean isFirstChild = CheckUtils.isElementTagName(
-							CheckUtils.getFirstChildElement((Element) currentNode), checkCode.getFunctionValue());
-					boolean isNextSibling = CheckUtils.isElementTagName(
-							CheckUtils.getFirstSiblingElement((Element) currentNode), checkCode.getFunctionValue());
+					boolean isFirstChild = CheckUtils.isElementTagName(CheckUtils.getFirstChildElement((Element) currentNode), checkCode.getFunctionValue());
+					boolean isNextSibling = CheckUtils.isElementTagName(CheckUtils.getFirstSiblingElement((Element) currentNode), checkCode.getFunctionValue());
 					return !isFirstChild && !isNextSibling;
 				} else {
 					return !CheckUtils.isElementTagName(currentNode, checkCode.getFunctionValue());
@@ -1042,6 +1060,14 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function grouped radio buttons.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionGroupedRadioButtons(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final Map<String, List<Node>> radioGroups = new HashMap<>();
 		final NodeList listInputs = elementGiven.getElementsByTagName("input");
@@ -1074,6 +1100,13 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Gets the ancestor.
+	 *
+	 * @param node     the node
+	 * @param stopTags the stop tags
+	 * @return the ancestor
+	 */
 	private Node getAncestor(Node node, List<String> stopTags) {
 		final Node parent = node.getParentNode();
 		if (parent == null) {
@@ -1085,14 +1118,21 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function guess language.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionGuessLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final Document document = elementGiven.getOwnerDocument();
 		final String languageCode = extractLanguageCode(getLanguage(elementGiven, false));
 		if (!languageCode.isEmpty()) {
 			final ExtractTextHandler extractTextHandler = new ExtractTextHandler(languageCode);
 			try {
-				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document),
-						new SAXResult(extractTextHandler));
+				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
 				final String extractedText = extractTextHandler.getExtractedText();
 				// Caracteres mínimos para comprobar el idioma (menos caracteres
 				// da resultados poco fiables)
@@ -1104,8 +1144,7 @@ public class Check {
 				// fallo
 				return !languageChecker.isExpectedLanguage(extractedText);
 			} catch (TransformerException e) {
-				Logger.putLog("Error al intentar extraer el texto en functionGuessLanguage", Check.class,
-						Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error al intentar extraer el texto en functionGuessLanguage", Check.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 			return false;
 		} else {
@@ -1114,8 +1153,7 @@ public class Check {
 	}
 
 	/**
-	 * Eliminamos las variantes idiomáticas para quedarnos únicamente con el idioma
-	 * base (ej. en-us pasa a en)
+	 * Eliminamos las variantes idiomáticas para quedarnos únicamente con el idioma base (ej. en-us pasa a en)
 	 *
 	 * @param lang la cadena que representa el idioma completo con las variantes
 	 * @return una cadena que representa el idioma base
@@ -1130,24 +1168,27 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function other language.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionOtherLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String expectedLanguage = extractLanguageCode(getLanguage(elementGiven, false));
 		final Document document = elementGiven.getOwnerDocument();
 		if (expectedLanguage != null && !expectedLanguage.isEmpty()) {
 			int maxNumber;
 			try {
-				maxNumber = checkCode.getFunctionNumber().isEmpty() ? 4
-						: Integer.parseInt(checkCode.getFunctionNumber());
+				maxNumber = checkCode.getFunctionNumber().isEmpty() ? 4 : Integer.parseInt(checkCode.getFunctionNumber());
 			} catch (NumberFormatException nfe) {
 				maxNumber = 4;
 			}
-
-			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false,
-					new String[] { "abbr", "acronym" });
+			final ExtractTextHandler extractTextHandler = new ExtractTextHandler("en", false, new String[] { "abbr", "acronym" });
 			try {
-
-				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document),
-						new SAXResult(extractTextHandler));
+				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new SAXResult(extractTextHandler));
 				final String extractedText = extractTextHandler.getExtractedText();
 				final String[] words = extractedText.toLowerCase().split("\\s+");
 				final List<String> enWords = new ArrayList<>();
@@ -1159,8 +1200,7 @@ public class Check {
 				document.setUserData("en_words", enWords, null);
 				return enWords.size() > maxNumber;
 			} catch (TransformerException e) {
-				Logger.putLog("Error al intentar extraer el texto en functionOtherLanguage", Check.class,
-						Logger.LOG_LEVEL_ERROR, e);
+				Logger.putLog("Error al intentar extraer el texto en functionOtherLanguage", Check.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 			return false;
 		} else {
@@ -1168,13 +1208,20 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function current language.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCurrentLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String expectedLanguage = checkCode.getFunctionValue();
 		Element startElement = elementGiven;
 		// Si el enlace tiene un único hijo asignamos ese hijo como punto de
 		// comienzo
-		if (elementGiven.getChildNodes().getLength() == 1
-				&& elementGiven.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
+		if (elementGiven.getChildNodes().getLength() == 1 && elementGiven.getFirstChild().getNodeType() == Node.ELEMENT_NODE) {
 			startElement = (Element) elementGiven.getFirstChild();
 		}
 		String language = getLanguage(startElement, false);
@@ -1196,15 +1243,21 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function has validation errors.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasValidationErrors(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-		final List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementRoot
-				.getUserData("validationErrors");
+		final List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementRoot.getUserData("validationErrors");
 		// Si indicamos un número en el parámetro number indica el número de
 		// errores permitidos, si no se indica se considera 0 (no se permite
 		// ningún error)
-		final int maxErrors = checkCode.getFunctionNumber().isEmpty() ? 0
-				: Integer.parseInt(checkCode.getFunctionNumber());
+		final int maxErrors = checkCode.getFunctionNumber().isEmpty() ? 0 : Integer.parseInt(checkCode.getFunctionNumber());
 		final String messageId = checkCode.getFunctionValue();
 		if (messageId.isEmpty()) {
 			return vectorValidationErrors == null || vectorValidationErrors.size() <= maxErrors;
@@ -1222,6 +1275,14 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function redundant img alt.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionRedundantImgAlt(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList nodeList = elementGiven.getElementsByTagName("img");
 		final String linkText = StringUtils.normalizeWhiteSpaces(EvaluatorUtility.getElementText(elementGiven)).trim();
@@ -1236,12 +1297,19 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function img dimensions less than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionImgDimensionsLessThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode != null) {
 			// get the width and height of the image
 			final int width = extractImageDimension(((Element) nodeNode).getAttribute("width"));
 			final int height = extractImageDimension(((Element) nodeNode).getAttribute("height"));
-
 			final Dimension dimension;
 			// Si no existen ambas dimensiones cargar la imagen
 			if (width == -1 && height == -1) {
@@ -1250,7 +1318,6 @@ public class Check {
 			} else {
 				dimension = new Dimension(width, height);
 			}
-
 			if (dimension != null) {
 				final String imageWidth = checkCode.getFunctionAttribute1();
 				final String imageHeight = checkCode.getFunctionAttribute2();
@@ -1274,6 +1341,13 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Load image.
+	 *
+	 * @param elementRoot the element root
+	 * @param srcImg      the src img
+	 * @return the dimension
+	 */
 	private Dimension loadImage(final Element elementRoot, final String srcImg) {
 		try {
 			final String baseUrl = CheckUtils.getBaseUrl(elementRoot);
@@ -1295,6 +1369,12 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Extract image dimension.
+	 *
+	 * @param value the value
+	 * @return the int
+	 */
 	private int extractImageDimension(final String value) {
 		if (value != null && !value.isEmpty()) {
 			try {
@@ -1307,17 +1387,31 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function only one child.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionOnlyOneChild(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return elementGiven.getElementsByTagName(checkCode.getFunctionAttribute1()).getLength() == 1;
 	}
 
+	/**
+	 * Function more than one child element.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionMoreThanOneChildElement(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			int numFirstElement = ((Element) nodeList.item(i)).getElementsByTagName(checkCode.getFunctionAttribute1())
-					.getLength();
-			int numSecondElement = ((Element) nodeList.item(i)).getElementsByTagName(checkCode.getFunctionAttribute2())
-					.getLength();
+			int numFirstElement = ((Element) nodeList.item(i)).getElementsByTagName(checkCode.getFunctionAttribute1()).getLength();
+			int numSecondElement = ((Element) nodeList.item(i)).getElementsByTagName(checkCode.getFunctionAttribute2()).getLength();
 			if (numFirstElement + numSecondElement > 1) {
 				return true;
 			}
@@ -1325,20 +1419,23 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Count nodes with text.
+	 *
+	 * @param nodeList the node list
+	 * @return the int
+	 */
 	private int countNodesWithText(NodeList nodeList) {
 		int cellsWithText = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			final Node node = nodeList.item(i);
-			if ((node.getTextContent() != null) && (StringUtils.isNotEmpty(node.getTextContent())
-					&& (!StringUtils.isOnlyBlanks(node.getTextContent())
-							&& (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
+			if ((node.getTextContent() != null)
+					&& (StringUtils.isNotEmpty(node.getTextContent()) && (!StringUtils.isOnlyBlanks(node.getTextContent()) && (!StringUtils.isOnlyWhiteChars(node.getTextContent()))))) {
 				cellsWithText++;
 			} else if (((Element) node).getElementsByTagName("img") != null) {
 				NodeList imgList = ((Element) node).getElementsByTagName("img");
 				for (int j = 0; j < imgList.getLength(); j++) {
-
 					Node item = imgList.item(j);
-
 					if (cellWithText(item)) {
 						cellsWithText++;
 						break;
@@ -1353,37 +1450,36 @@ public class Check {
 	}
 
 	/**
-	 * Comprueba si un nodo tiene atributos alt, title, aria-label o
-	 * aria-describedby correctos.
+	 * Comprueba si un nodo tiene atributos alt, title, aria-label o aria-describedby correctos.
 	 * 
 	 * @param item Nodo.
-	 * @return true si alguno de los atributos mencionados tiene valor, false en
-	 *         caso contrario.
+	 * @return true si alguno de los atributos mencionados tiene valor, false en caso contrario.
 	 */
 	private boolean cellWithText(Node item) {
-
 		String alt = ((Element) item).getAttribute("alt");
 		String title = ((Element) item).getAttribute("title");
 		String ariaLabel = ((Element) item).getAttribute("aria-label");
 		String ariaDescribedby = ((Element) item).getAttribute("aria-describedby");
-		if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt)
-				&& !StringUtils.isOnlyWhiteChars(alt)) {
+		if (alt != null && StringUtils.isNotEmpty(alt) && !StringUtils.isOnlyBlanks(alt) && !StringUtils.isOnlyWhiteChars(alt)) {
 			return true;
-		} else if (title != null && StringUtils.isNotEmpty(title) && !StringUtils.isOnlyBlanks(title)
-				&& !StringUtils.isOnlyWhiteChars(title)) {
+		} else if (title != null && StringUtils.isNotEmpty(title) && !StringUtils.isOnlyBlanks(title) && !StringUtils.isOnlyWhiteChars(title)) {
 			return true;
-
-		} else if (ariaLabel != null && StringUtils.isNotEmpty(ariaLabel) && !StringUtils.isOnlyBlanks(ariaLabel)
-				&& !StringUtils.isOnlyWhiteChars(ariaLabel)) {
+		} else if (ariaLabel != null && StringUtils.isNotEmpty(ariaLabel) && !StringUtils.isOnlyBlanks(ariaLabel) && !StringUtils.isOnlyWhiteChars(ariaLabel)) {
 			return true;
-
-		} else if (ariaDescribedby != null && StringUtils.isNotEmpty(ariaDescribedby)
-				&& !StringUtils.isOnlyBlanks(ariaDescribedby) && !StringUtils.isOnlyWhiteChars(ariaDescribedby)) {
+		} else if (ariaDescribedby != null && StringUtils.isNotEmpty(ariaDescribedby) && !StringUtils.isOnlyBlanks(ariaDescribedby) && !StringUtils.isOnlyWhiteChars(ariaDescribedby)) {
 			return true;
 		}
 		return false;
 	}
 
+	/**
+	 * Function text cells percentage greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextCellsPercentageGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		BigDecimal totalCells = BigDecimal.ZERO;
 		BigDecimal cellsWithText = BigDecimal.ZERO;
@@ -1397,10 +1493,17 @@ public class Check {
 			totalCells = totalCells.add(new BigDecimal(nodeList.getLength()));
 			cellsWithText = cellsWithText.add(new BigDecimal(countNodesWithText(nodeList)));
 		}
-		return cellsWithText.divide(totalCells, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100))
-				.compareTo(new BigDecimal(checkCode.getFunctionNumber())) > 0;
+		return cellsWithText.divide(totalCells, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).compareTo(new BigDecimal(checkCode.getFunctionNumber())) > 0;
 	}
 
+	/**
+	 * Function layout table.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si una tabla es o no de maquetacion
 	protected boolean functionLayoutTable(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		checkCode.setFunctionElement("table");
@@ -1461,6 +1564,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function layout table number.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si hay mas de x tablas de maquetación en la página
 	protected boolean functionLayoutTableNumber(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getElementsByTagName("table");
@@ -1476,11 +1587,18 @@ public class Check {
 		return count > Integer.parseInt(numCode);
 	}
 
+	/**
+	 * Function has language.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento tiene código de lenguaje
 	private boolean functionHasLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		String stringLanguage = null;
-		if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1())
-				&& checkCode.getFunctionAttribute1().equals("noSevere")) {
+		if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1()) && checkCode.getFunctionAttribute1().equals("noSevere")) {
 			stringLanguage = getLanguage(elementGiven, false);
 		} else {
 			stringLanguage = getLanguage(elementGiven, true);
@@ -1488,66 +1606,73 @@ public class Check {
 		return stringLanguage == null || stringLanguage.length() == 0;
 	}
 
+	/**
+	 * Function language not equals.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionLanguageNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean result = !functionLanguageEquals(checkCode, nodeNode, elementGiven);
-
 		if (result && this.id == 22 && checkCode.getFunctionValue().equals("en")) {
 			String url = (String) elementGiven.getOwnerDocument().getDocumentElement().getUserData("url");
-			Logger.putLog("La página " + url
-					+ " no tiene idioma español ni inglés, así que no se analizará el lenguaje claro y sencillo",
-					Check.class, Logger.LOG_LEVEL_INFO);
+			Logger.putLog("La página " + url + " no tiene idioma español ni inglés, así que no se analizará el lenguaje claro y sencillo", Check.class, Logger.LOG_LEVEL_INFO);
 		}
-
 		return result;
 	}
 
+	/**
+	 * Function empty elements.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionEmptyElements(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodes = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
 		int maxNumber = Integer.parseInt(checkCode.getFunctionNumber());
-
 		int counter = 0;
 		for (int i = 0; i < nodes.getLength(); i++) {
 			if (functionIsOnlyBlanks(checkCode, nodes.item(i), elementGiven) || countCharacters(nodeNode, true) < 0) {
 				counter++;
 			}
 		}
-
 		return counter > maxNumber;
 	}
 
+	/**
+	 * Function elements usage.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementsUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final List<String> elementsList = Arrays.asList(checkCode.getFunctionElement().split(";"));
 		final int limit = Integer.parseInt(checkCode.getFunctionNumber());
 		final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : checkCode.getFunctionPosition();
-
 		int counter = 0;
 		for (String element : elementsList) {
 			counter += elementGiven.getElementsByTagName(element).getLength();
-
 			// Si viene informado attribute1, tenemos que excluir del
 			// total las etiqietas que estén dentro de estas exclusiones
 			if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1())) {
 				final List<String> elementsExclude = Arrays.asList(checkCode.getFunctionAttribute1().split(";"));
-
 				for (String exclude : elementsExclude) {
-
 					NodeList excludeNodes = elementGiven.getElementsByTagName(exclude);
-
 					for (int i = 0; i < excludeNodes.getLength(); i++) {
 						Node tmp = excludeNodes.item(i);
-
 						if (Node.ELEMENT_NODE == tmp.getNodeType()) {
-
 							counter -= ((Element) tmp).getElementsByTagName(element).getLength();
 						}
-
 					}
-
 				}
 			}
-
 		}
-
 		if ("greater".equalsIgnoreCase(compare)) {
 			// Si la comparación es mayor damos un error si el número de
 			// elementos es mayor que el valor indicado
@@ -1559,28 +1684,38 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function attributes excessive usage.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAttributesExcessiveUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		List<String> attributesList = Arrays.asList(checkCode.getFunctionElement().split(";"));
 		int maxNumber = Integer.parseInt(checkCode.getFunctionNumber());
-
 		String source = (String) elementGiven.getOwnerDocument().getDocumentElement().getUserData("source");
-
 		PropertiesManager pmgr = new PropertiesManager();
 		int counter = 0;
 		for (String attribute : attributesList) {
-			Pattern pattern = Pattern
-					.compile(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "attributes.reg.exp.matcher")
-							.replace("ATTRIBUTE", attribute), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+			Pattern pattern = Pattern.compile(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "attributes.reg.exp.matcher").replace("ATTRIBUTE", attribute), Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 			Matcher matcher = pattern.matcher(source);
-
 			while (matcher.find()) {
 				counter++;
 			}
 		}
-
 		return counter > maxNumber;
 	}
 
+	/**
+	 * Function tab index excessive usage.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTabIndexExcessiveUsage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int maxNumber = Integer.parseInt(checkCode.getFunctionNumber());
 		int counter = 0;
@@ -1596,38 +1731,66 @@ public class Check {
 							counter++;
 						}
 					} catch (NumberFormatException nfe) {
-
 					}
 				}
 			}
 		}
-
 		return counter > maxNumber;
 	}
 
+	/**
+	 * Function language equals.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el lenguaje del elemento es igual al que se le pasa
 	private boolean functionLanguageEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String stringLanguage;
-		if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1())
-				&& checkCode.getFunctionAttribute1().equals("noSevere")) {
+		if (!StringUtils.isEmpty(checkCode.getFunctionAttribute1()) && checkCode.getFunctionAttribute1().equals("noSevere")) {
 			stringLanguage = getLanguage(elementGiven, false);
 		} else {
 			stringLanguage = getLanguage(elementGiven, true);
 		}
-
 		return StringUtils.isNotEmpty(stringLanguage) && stringLanguage.startsWith(checkCode.getFunctionValue());
 	}
 
+	/**
+	 * Function object has not alternative.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento object tiene alternativa
 	private boolean functionObjectHasNotAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionObjectHasAlternative(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function applet has not alternative.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento applet tiene alternativa
 	private boolean functionAppletHasNotAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionAppletHasAlternative(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function object has alternative.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento object tiene alternativa
 	private boolean functionObjectHasAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getChildNodes();
@@ -1645,6 +1808,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function applet has alternative.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento applet tiene alternativa
 	private boolean functionAppletHasAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (!elementGiven.getAttribute("alt").isEmpty()) {
@@ -1666,11 +1837,27 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function I frame has not alternative.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento iframe tiene alternativa
 	private boolean functionIFrameHasNotAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionIFrameHasAlternative(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function I frame has alternative.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento iframe tiene alternativa
 	private boolean functionIFrameHasAlternative(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getChildNodes();
@@ -1688,6 +1875,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function not valid language.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el elemento tiene código de lenguaje válido
 	private boolean functionNotValidLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final List<String> languageList = getLanguageList(elementGiven);
@@ -1699,13 +1894,17 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Gets the language list.
+	 *
+	 * @param element the element
+	 * @return the language list
+	 */
 	private List<String> getLanguageList(Element element) {
 		final List<String> languages = new ArrayList<>();
-
 		// is doc HTML or XHTML? and which version?
 		final Element elementRoot = element.getOwnerDocument().getDocumentElement();
 		final String hasDoctype = (String) elementRoot.getUserData("doctype");
-
 		if (hasDoctype.equals(IntavConstants.FALSE)) {
 			// no doctype so assume it's HTML
 			if (element.hasAttribute("lang")) {
@@ -1727,37 +1926,39 @@ public class Check {
 				}
 			}
 		}
-
 		return languages;
 	}
 
 	// Devuelve el lenguaje de un elemento. Si está en modo severo, para xhtml
 	// devolverá el atributo xml:lang
+	/**
+	 * Gets the language.
+	 *
+	 * @param elementHtml the element html
+	 * @param severe      the severe
+	 * @return the language
+	 */
 	// Si está en modo no severo, siempre devolverá el atributo lang.
 	private String getLanguage(Element elementHtml, boolean severe) {
 		final Element elementRoot = elementHtml.getOwnerDocument().getDocumentElement();
 		// is doc HTML or XHTML? and which version?
 		final String hasDoctype = (String) elementRoot.getUserData("doctype");
-
 		if (hasDoctype.equals(IntavConstants.FALSE)) {
 			// no doctype so assume it's HTML
-			return elementHtml.hasAttribute("lang") ? elementHtml.getAttribute("lang")
-					: elementHtml.getAttribute("xml:lang");
+			return elementHtml.hasAttribute("lang") ? elementHtml.getAttribute("lang") : elementHtml.getAttribute("xml:lang");
 		} else { // has doctype (html/xhtml type and version in parser)
 			String doctypeType = (String) elementRoot.getUserData("doctypeType");
 			if (doctypeType != null && doctypeType.equals("html")) {
 				// Html solo tiene que tener "lang" pero dejamos tambien
 				// xml:lang como 'fallback'
-				return elementHtml.hasAttribute("lang") ? elementHtml.getAttribute("lang")
-						: elementHtml.getAttribute("xml:lang");
+				return elementHtml.hasAttribute("lang") ? elementHtml.getAttribute("lang") : elementHtml.getAttribute("xml:lang");
 			} else if ((doctypeType != null) && doctypeType.equals("xhtml")) {
 				String doctypeTypeVersion = (String) elementRoot.getUserData("doctypeVersion");
 				if (doctypeTypeVersion != null && doctypeTypeVersion.equals("1.0")) {
 					if (severe) {
 						// XHTML 1.0 en modo severo, debe de tener ambos
 						// atributos
-						if (StringUtils.isNotEmpty(elementHtml.getAttribute("lang"))
-								&& StringUtils.isNotEmpty(elementHtml.getAttribute("xml:lang"))) {
+						if (StringUtils.isNotEmpty(elementHtml.getAttribute("lang")) && StringUtils.isNotEmpty(elementHtml.getAttribute("xml:lang"))) {
 							return elementHtml.getAttribute("lang");
 						}
 					} else {
@@ -1775,32 +1976,44 @@ public class Check {
 				}
 			}
 		}
-
 		return null;
 	}
 
 	// Note: The actual check for missing noscript happens in the parser so that
 	// it can be
+	/**
+	 * Function noscript missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// done before the DOM structure is created.
 	private boolean functionNoscriptMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String stringNoscriptStatus = (String) elementGiven.getUserData("noscript");
 		if (stringNoscriptStatus == null) {
 			return true;
 		}
-
 		if (stringNoscriptStatus.equals(IntavConstants.TRUE)) {
 			return false;
 		}
-
 		return true;
 	}
 
 	// Note: The actual check for missing noscript happens in the parser so that
 	// it can be
+	/**
+	 * Function noframe missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// done before the DOM structure is created.
 	private boolean functionNoframeMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList noframes = elementGiven.getOwnerDocument().getElementsByTagName("noframes");
-
 		if (noframes != null && noframes.getLength() > 0) {
 			for (int i = 0; i < noframes.getLength(); i++) {
 				Element noframe = (Element) noframes.item(i);
@@ -1812,12 +2025,19 @@ public class Check {
 				}
 			}
 		}
-
 		return true;
 	}
 
 	// Note: Part of the checking for missing noembed happens in the parser so
 	// that it
+	/**
+	 * Function noembed missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// can be done before the DOM structure is created.
 	private boolean functionNoembedMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// is there a noembed following the embed?
@@ -1825,26 +2045,39 @@ public class Check {
 		if ((stringNoembedStatus != null) && (stringNoembedStatus.equals(IntavConstants.TRUE))) {
 			return false; // noembed follows the embed so no error
 		}
-
 		// is there a noembed within the embed?
 		NodeList listNoembeds = elementGiven.getElementsByTagName("noembed");
 		return listNoembeds.getLength() == 0;
 	}
 
+	/**
+	 * Function attribute null.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAttributeNull(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		String stringValue = nodeNode.getNodeValue();
 		return stringValue.length() == 0;
 	}
 
 	// Comprueba si hay dos o mas encabezados del mismo nivel con el mismo texto
+	/**
+	 * Function duplicate following headers.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// seguidos
 	private boolean functionDuplicateFollowingHeaders(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getOwnerDocument().getElementsByTagName(elementGiven.getNodeName());
-
 		for (int j = 0; j < nodeList.getLength(); j++) {
 			Element node1 = (Element) nodeList.item(j);
 			if (node1 != elementGiven) {
@@ -1854,8 +2087,7 @@ public class Check {
 					final Node previousElementGivenNode = getPreviousLevelNode(elementGiven, previousHeaderLevel);
 					final Node previousNode1Node = getPreviousLevelNode(node1, previousHeaderLevel);
 					// Miramos si es el mismo
-					if ((previousElementGivenNode != null) && (previousNode1Node != null)
-							&& (previousElementGivenNode == previousNode1Node)) {
+					if ((previousElementGivenNode != null) && (previousNode1Node != null) && (previousElementGivenNode == previousNode1Node)) {
 						return true;
 					}
 				} else {
@@ -1863,10 +2095,17 @@ public class Check {
 				}
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function following headers without content.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionFollowingHeadersWithoutContent(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// Si no hay contenido entre dos headers
 		if (elementGiven.getUserData("headerHasContents") == null) {
@@ -1883,6 +2122,13 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Gets the previous level sibling node.
+	 *
+	 * @param nodeGiven           the node given
+	 * @param previousHeaderLevel the previous header level
+	 * @return the previous level sibling node
+	 */
 	private Node getPreviousLevelSiblingNode(Node nodeGiven, String previousHeaderLevel) {
 		// Buscamos el header de nivel anterior en los hermanos
 		Node nodeSibling = nodeGiven.getPreviousSibling();
@@ -1896,6 +2142,13 @@ public class Check {
 		return null;
 	}
 
+	/**
+	 * Gets the previous level node.
+	 *
+	 * @param elementGiven        the element given
+	 * @param previousHeaderLevel the previous header level
+	 * @return the previous level node
+	 */
 	private Node getPreviousLevelNode(Element elementGiven, String previousHeaderLevel) {
 		// Comprobamos los hermanos del nodo dado
 		final Node node = getPreviousLevelSiblingNode(elementGiven, previousHeaderLevel);
@@ -1917,13 +2170,20 @@ public class Check {
 	}
 
 	// Note: I set the previous header level in the parser so that it can be
+	/**
+	 * Function next heading wrong.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// done before the DOM structure is created.
 	private boolean functionNextHeadingWrong(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		try {
 			String stringHeading = elementGiven.getNodeName().trim();
 			int thisHeading = Integer.parseInt(stringHeading.substring(1));
 			int nextHeading = (Integer) elementGiven.getUserData(IntavConstants.NEXT_LEVEL);
-
 			if (nextHeading == 0) { // no next heading
 				return false;
 			}
@@ -1937,18 +2197,33 @@ public class Check {
 	}
 
 	// Note: I set the previous header level in the parser so that it can be
+	/**
+	 * Function previous heading wrong.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// done before the DOM structure is created.
 	private boolean functionPreviousHeadingWrong(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		try {
 			final int previousHeading = (Integer) elementGiven.getUserData(IntavConstants.PREVIOUS_LEVEL);
 			// if no previous heading return false
-			return previousHeading != 0 && CheckUtils
-					.compareHeadingsLevel((Element) elementGiven.getUserData("prevheader"), elementGiven) > 1;
+			return previousHeading != 0 && CheckUtils.compareHeadingsLevel((Element) elementGiven.getUserData("prevheader"), elementGiven) > 1;
 		} catch (Exception e) {
 			return false;
 		}
 	}
 
+	/**
+	 * Function incorrect header structure.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba que la estructura de encabezados del documento sea correcta
 	private boolean functionIncorrectHeaderStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean headerNestingIncorrect = false;
@@ -1960,25 +2235,45 @@ public class Check {
 			if (headers != null && headers.getLength() > 0) {
 				for (int j = 0; j < headers.getLength() && !headerNestingIncorrect; j++) {
 					// Comprobamos si mantiene orden respecto al anterior
-					headerNestingIncorrect |= functionPreviousHeadingWrong(checkCode, nodeNode,
-							(Element) headers.item(j));
+					headerNestingIncorrect |= functionPreviousHeadingWrong(checkCode, nodeNode, (Element) headers.item(j));
 				}
 			}
 		}
-
 		return headerNestingIncorrect;
 	}
 
+	/**
+	 * Gets the previous level header node.
+	 *
+	 * @param header the header
+	 * @return the previous level header node
+	 */
 	private String getPreviousLevelHeaderNode(String header) {
 		int headerNum = Integer.parseInt(header.toLowerCase().replace("h", "")) - 1;
 		return "h" + headerNum;
 	}
 
+	/**
+	 * Function no correct document structure.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba que la estructura de encabezados del documento no sea correcta
 	private boolean functionNoCorrectDocumentStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return functionIncorrectHeaderStructure(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function headers missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el documento tiene o no encabezados
 	private boolean functionHeadersMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		for (int i = 1; i < 7; i++) {
@@ -1989,6 +2284,14 @@ public class Check {
 		return true;
 	}
 
+	/**
+	 * Function headers exist.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Comprueba si el documento tiene o no encabezados
 	private boolean functionHeadersExist(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		for (int i = 1; i < 7; i++) {
@@ -2002,46 +2305,51 @@ public class Check {
 
 	// Note: The actual check for missing d-link happens in the parser so that
 	// it can be
+	/**
+	 * Function D link missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// done before the DOM structure is created.
 	private boolean functionDLinkMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String stringDlinkStatus = (String) elementGiven.getUserData("dlink");
 		if (stringDlinkStatus == null) {
 			return true;
 		}
-
 		return !stringDlinkStatus.equals(IntavConstants.TRUE);
-
 	}
 
+	/**
+	 * Function label not associated.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if there is no label associated with the control.
 	private boolean functionLabelNotAssociated(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// check if the control has a title attribute
-		if (elementGiven.hasAttribute("title")
-				&& !StringUtils.normalizeWhiteSpaces(elementGiven.getAttribute("title")).trim().isEmpty()) {
+		if (elementGiven.hasAttribute("title") && !StringUtils.normalizeWhiteSpaces(elementGiven.getAttribute("title")).trim().isEmpty()) {
 			return false;
 		}
-
-		if (elementGiven.hasAttribute("aria-label")
-				&& !StringUtils.normalizeWhiteSpaces(elementGiven.getAttribute("aria-label")).trim().isEmpty()) {
+		if (elementGiven.hasAttribute("aria-label") && !StringUtils.normalizeWhiteSpaces(elementGiven.getAttribute("aria-label")).trim().isEmpty()) {
 			return false;
 		}
-
 		// Correción para tener en cuenta que puede haber varios ids en el
 		// atributo
 		if (elementGiven.hasAttribute("aria-labelledby")) {
-
 			String[] ids = elementGiven.getAttribute("aria-labelledby").split("\\s");
-
 			for (String id : ids) {
 				Element labelledBy = elementGiven.getOwnerDocument().getElementById(id);
-				if (labelledBy != null
-						&& !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
+				if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
 					return false;
 				}
 			}
-
 		}
-
 		// check if the input element is contained by a label element
 		Element elementParent = DOMUtil.getParent(elementGiven);
 		while (elementParent != null) {
@@ -2050,7 +2358,6 @@ public class Check {
 			}
 			elementParent = DOMUtil.getParent(elementParent);
 		}
-
 		// check if the control has an associated label using 'for' and 'id'
 		// attributes
 		// get the 'id' attribute of the control
@@ -2059,24 +2366,19 @@ public class Check {
 			// control has no 'id' attribute so can't have an associated label
 			return true;
 		}
-
 		final Document document = elementGiven.getOwnerDocument();
-
 		if (document != null) {
 			final NodeList listLabels = document.getElementsByTagName("label");
-
 			// look for a label that has a 'for' attribute value matching the
 			// control's id
 			int cont = 0;
 			for (int x = 0; x < listLabels.getLength(); x++) {
 				final Element element = (Element) listLabels.item(x);
-				if (element.getAttribute("for").equalsIgnoreCase(stringId)
-						&& !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
+				if (element.getAttribute("for").equalsIgnoreCase(stringId) && !StringUtils.normalizeWhiteSpaces(element.getTextContent()).trim().isEmpty()) {
 					// found an associated label
 					cont++;
 				}
 			}
-
 			// i es cero devolvemos true porque no hay label, si hay
 			// más de una está bien
 			return cont == 0;
@@ -2085,6 +2387,14 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function label no text.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if label associated with control has no text.
 	private boolean functionLabelNoText(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// check if the control has a title attribute
@@ -2095,7 +2405,6 @@ public class Check {
 				return false;
 			}
 		}
-
 		// check if the input element is contained by a label element
 		Element elementParent = DOMUtil.getParent(elementGiven);
 		while (elementParent != null) {
@@ -2108,7 +2417,6 @@ public class Check {
 			}
 			elementParent = DOMUtil.getParent(elementParent);
 		}
-
 		// check if the control has an associated label using 'for' and 'id'
 		// attributes
 		// get the 'id' attribute of the control
@@ -2117,11 +2425,9 @@ public class Check {
 			// control has no 'id' attribute so can't have an associated label
 			return true;
 		}
-
 		// get a list of label elements in the document
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		NodeList listLabels = elementRoot.getElementsByTagName("label");
-
 		// look for a label that has a 'for' attribute value matching the
 		// control's id
 		for (int x = 0; x < listLabels.getLength(); x++) {
@@ -2148,10 +2454,17 @@ public class Check {
 				break;
 			}
 		}
-
 		return true;
 	}
 
+	/**
+	 * Function text link equiv missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextLinkEquivMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// find the map that corresponds to this image
 		// first, get the name of the map
@@ -2159,7 +2472,6 @@ public class Check {
 		if (usemapName != null) {
 			usemapName = usemapName.substring(1, usemapName.length());
 		}
-
 		// get all the 'map' elements
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		NodeList listMaps = elementRoot.getElementsByTagName("map");
@@ -2167,10 +2479,8 @@ public class Check {
 			if (((Element) listMaps.item(x)).getAttribute("name").equalsIgnoreCase(usemapName)) {
 				// found the map, now get all the area elements
 				NodeList listAreas = ((Element) listMaps.item(x)).getElementsByTagName("area");
-
 				// get all the 'a' elements in the document
 				NodeList listAs = elementRoot.getElementsByTagName("a");
-
 				// are there 'a' elements for each 'area'?
 				for (int y = 0; y < listAreas.getLength(); y++) {
 					String hrefArea = ((Element) listAreas.item(y)).getAttribute("href");
@@ -2192,24 +2502,29 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function number any.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNumberAny(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		String string = "";
 		if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 			string = EvaluatorUtility.getElementText(nodeNode);
 		} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 			string = nodeNode.getNodeValue().trim();
 		}
-
 		// ignore anything after the semicolon
 		int indexSemicolon = string.indexOf(';');
 		if (indexSemicolon != -1) {
 			string = string.substring(0, indexSemicolon);
 		}
-
 		try {
 			Integer.parseInt(string);
 			return true;
@@ -2219,6 +2534,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function definition list construction.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionDefinitionListConstruction(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getChildNodes();
 		List<String> exceptions = Collections.emptyList();
@@ -2263,6 +2586,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function all elements not like this.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAllElementsNotLikeThis(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getChildNodes();
 		List<String> exceptions = Collections.emptyList();
@@ -2286,24 +2617,27 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function container.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionContainer(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		if (nodeNode.getNodeType() != Node.ELEMENT_NODE) {
-			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		String nameTargetParent = checkCode.getFunctionElement();
 		if (nameTargetParent.length() == 0) {
-			Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		// check for any parent
 		Element elementParent = DOMUtil.getParent((Element) nodeNode);
 		int value;
@@ -2316,7 +2650,6 @@ public class Check {
 		} else {
 			value = Integer.MAX_VALUE;
 		}
-
 		while (elementParent != null && value != 0) {
 			if (nameTargetParent.equalsIgnoreCase(elementParent.getNodeName())) {
 				return true;
@@ -2324,28 +2657,30 @@ public class Check {
 			elementParent = DOMUtil.getParent(elementParent);
 			value--;
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function contains.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionContains(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		if (nodeNode.getNodeType() != Node.ELEMENT_NODE) {
-			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		String nameTargetChild = checkCode.getFunctionElement();
 		if (nameTargetChild.length() == 0) {
-			Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		// check for any child
 		NodeList nodeList = elementGiven.getChildNodes();
 		if (nodeList != null && nodeList.getLength() > 0) {
@@ -2361,18 +2696,41 @@ public class Check {
 				}
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function contains not.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionContainsNot(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionContains(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function container not.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionContainerNot(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionContainer(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function check colors.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCheckColors(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NamedNodeMap attributes = elementGiven.getAttributes();
 		for (int i = 0; i < attributes.getLength(); i++) {
@@ -2380,72 +2738,82 @@ public class Check {
 				return true;
 			}
 		}
-
 		NodeList nodeList = elementGiven.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			if (nodeList.item(i).getNodeType() == Node.TEXT_NODE
-					&& hasColor(nodeList.item(i), checkCode.getFunctionValue())) {
+			if (nodeList.item(i).getNodeType() == Node.TEXT_NODE && hasColor(nodeList.item(i), checkCode.getFunctionValue())) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Checks for color.
+	 *
+	 * @param node  the node
+	 * @param color the color
+	 * @return true, if successful
+	 */
 	private boolean hasColor(Node node, String color) {
 		Pattern pattern = Pattern.compile(color, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(node.getTextContent());
 		return matcher.find();
 	}
 
+	/**
+	 * Function has element into.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasElementInto(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		if (nodeNode.getNodeType() != Node.ELEMENT_NODE) {
-			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		final String nameTargetChild1 = checkCode.getFunctionAttribute1();
 		final String nameTargetChild2 = checkCode.getFunctionAttribute2();
 		if (nameTargetChild1.length() == 0 || nameTargetChild2.length() == 0) {
-			Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'element' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		// check for any child
 		final NodeList nodeList = elementGiven.getChildNodes();
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					if (nodeList.item(i).getNodeName().equalsIgnoreCase(nameTargetChild1)) {
-						if (EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionValue(), null,
-								1) != 0) {
+						if (EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionValue(), null, 1) != 0) {
 							return true;
 						}
 					}
 				}
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function same following list.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionSameFollowingList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		if (nodeNode.getNodeType() != Node.ELEMENT_NODE) {
-			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'node' attribute.", Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		Node brother = elementGiven.getNextSibling();
 		while (brother != null && brother.getNodeType() != Node.ELEMENT_NODE) {
 			brother = brother.getNextSibling();
@@ -2455,21 +2823,34 @@ public class Check {
 			element = "dt";
 		}
 		if ((brother != null) && (brother.getNodeName().equalsIgnoreCase(elementGiven.getTagName()))) {
-			if ((EvaluatorUtility.countElements((Element) brother, "ol", null, 1) == 0)
-					&& (EvaluatorUtility.countElements((Element) brother, "ul", null, 1) == 0)
-					&& (EvaluatorUtility.countElements((Element) brother, "dl", null, 1) == 0)
-					&& (EvaluatorUtility.countElements((Element) brother, element, null, 1) == 1)) {
+			if ((EvaluatorUtility.countElements((Element) brother, "ol", null, 1) == 0) && (EvaluatorUtility.countElements((Element) brother, "ul", null, 1) == 0)
+					&& (EvaluatorUtility.countElements((Element) brother, "dl", null, 1) == 0) && (EvaluatorUtility.countElements((Element) brother, element, null, 1) == 1)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function same following list not.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionSameFollowingListNot(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionSameFollowingList(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function text contain general quote.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextContainGeneralQuote(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -2482,14 +2863,39 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function same element.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionSameElement(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return elementGiven.getNodeName().equalsIgnoreCase(checkCode.getFunctionElement());
 	}
 
+	/**
+	 * Function same element not.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionSameElementNot(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionSameElement(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function number compare.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @param compType     the comp type
+	 * @return true, if successful
+	 */
 	private boolean functionNumberCompare(CheckCode checkCode, Node nodeNode, Element elementGiven, int compType) {
 		// special case the image elements because width and height are set in
 		// parser
@@ -2530,14 +2936,12 @@ public class Check {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		String string = "";
 		if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 			string = EvaluatorUtility.getElementText(nodeNode);
 		} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 			string = nodeNode.getNodeValue().trim();
 		}
-
 		try {
 			int number1;
 			if ("@content".equalsIgnoreCase(checkCode.getNodeRelation())) {
@@ -2556,14 +2960,39 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function number less than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNumberLessThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return functionNumberCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_LESS_THAN);
 	}
 
+	/**
+	 * Function number greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNumberGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return functionNumberCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_GREATER_THAN);
 	}
 
+	/**
+	 * Function characters compare.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @param compType     the comp type
+	 * @return true, if successful
+	 */
 	private boolean functionCharactersCompare(CheckCode checkCode, Node nodeNode, Element elementGiven, int compType) {
 		if (nodeNode == null) {
 			return false;
@@ -2571,8 +3000,7 @@ public class Check {
 		try {
 			int number = Integer.parseInt(checkCode.getFunctionValue());
 			int numCharacters = 0;
-			if (StringUtils.isNotEmpty(checkCode.getFunctionAttribute1())
-					&& "true".equalsIgnoreCase(checkCode.getFunctionAttribute1())) {
+			if (StringUtils.isNotEmpty(checkCode.getFunctionAttribute1()) && "true".equalsIgnoreCase(checkCode.getFunctionAttribute1())) {
 				numCharacters = countCharacters(nodeNode, true);
 			} else {
 				numCharacters = countCharacters(nodeNode);
@@ -2588,15 +3016,37 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function characters greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCharactersGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		return functionCharactersCompare(checkCode, nodeNode, elementGiven,
-				CheckFunctionConstants.COMPARE_GREATER_THAN);
+		return functionCharactersCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_GREATER_THAN);
 	}
 
+	/**
+	 * Function characters less than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCharactersLessThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return functionCharactersCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_LESS_THAN);
 	}
 
+	/**
+	 * Count characters.
+	 *
+	 * @param node                  the node
+	 * @param getOnlyInlineTagsText the get only inline tags text
+	 * @return the int
+	 */
 	private int countCharacters(Node node, boolean getOnlyInlineTagsText) {
 		if (node.getNodeType() == Node.ELEMENT_NODE) {
 			return EvaluatorUtility.getElementText(node, getOnlyInlineTagsText).length();
@@ -2606,14 +3056,36 @@ public class Check {
 		return 0;
 	}
 
+	/**
+	 * Count characters.
+	 *
+	 * @param node the node
+	 * @return the int
+	 */
 	private int countCharacters(Node node) {
 		return countCharacters(node, false);
 	}
 
+	/**
+	 * Function not is only blanks.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotIsOnlyBlanks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionIsOnlyBlanks(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function is only blanks.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionIsOnlyBlanks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		String nodeText = "";
 		if (nodeNode != null) {
@@ -2622,13 +3094,20 @@ public class Check {
 			} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 				nodeText = nodeNode.getNodeValue();
 			}
-
 			return StringUtils.isOnlyBlanks(nodeText);
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * Function is empty element.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionIsEmptyElement(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList elements = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
 		for (int i = 0; i < elements.getLength(); i++) {
@@ -2645,26 +3124,46 @@ public class Check {
 				return true;
 			}
 		}
-
 		return checkCode.getFunctionValue().equalsIgnoreCase(IntavConstants.ALL);
 	}
 
+	/**
+	 * Function not valid url.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotValidUrl(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionValidUrl(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function valid url.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionValidUrl(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-
 		return CheckUtils.isValidUrl(elementRoot, nodeNode);
 	}
 
+	/**
+	 * Function too many broken links.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTooManyBrokenLinks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-
 		if (elementRoot.getUserData("domainLinks") == null && elementRoot.getUserData("externalLinks") == null) {
 			((CheckedLinks) elementRoot.getUserData("checkedLinks")).setCheckedLinks(new ArrayList<String>());
-
 			final List<Element> domainLinks = new LinkedList<>();
 			final List<Element> externalLinks = new LinkedList<>();
 			final String url = (String) elementRoot.getUserData("url");
@@ -2689,19 +3188,16 @@ public class Check {
 					}
 				}
 			}
-
 			elementRoot.setUserData("domainLinks", domainLinks, null);
 			elementRoot.setUserData("externalLinks", externalLinks, null);
 		}
-
 		final String scope = checkCode.getFunctionAttribute1();
 		final int maxNumBrokenLinks = Integer.parseInt(checkCode.getFunctionNumber());
 		int cont = 0;
 		try {
 			if (elementRoot.getUserData("domainLinks") != null && elementRoot.getUserData("externalLinks") != null) {
 				if (scope.isEmpty()) {
-					cont = ((List) elementRoot.getUserData("domainLinks")).size()
-							+ ((List) elementRoot.getUserData("externalLinks")).size();
+					cont = ((List) elementRoot.getUserData("domainLinks")).size() + ((List) elementRoot.getUserData("externalLinks")).size();
 				} else if ("domain".equals(scope)) {
 					cont = ((List) elementRoot.getUserData("domainLinks")).size();
 				} else if ("external".equals(scope)) {
@@ -2710,55 +3206,88 @@ public class Check {
 			}
 		} catch (Exception e) {
 		}
-
 		return cont > maxNumBrokenLinks;
 	}
 
+	/**
+	 * Function count attribute value greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCountAttributeValueGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getElementsByTagName(checkCode.getFunctionAttribute1());
 		int count = 0;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element) nodeList.item(i);
-			if (element.hasAttribute(checkCode.getFunctionAttribute2())
-					&& element.getAttributeNode(checkCode.getFunctionAttribute2()).toString()
-							.equalsIgnoreCase(checkCode.getFunctionValue())) {
+			if (element.hasAttribute(checkCode.getFunctionAttribute2()) && element.getAttributeNode(checkCode.getFunctionAttribute2()).toString().equalsIgnoreCase(checkCode.getFunctionValue())) {
 				count++;
 			}
 		}
 		return count > Integer.parseInt(checkCode.getFunctionNumber());
 	}
 
+	/**
+	 * Function not exist attribute value.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotExistAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionExistAttributeValue(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function exist attribute value.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionExistAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList nodeList = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
 		if (nodeList == null || nodeList.getLength() == 0) {
 			return false;
 		}
-
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			if (((Element) nodeList.item(i)).getAttribute(checkCode.getFunctionAttribute1()) != null
-					&& ((Element) nodeList.item(i)).getAttribute(checkCode.getFunctionAttribute1())
-							.equalsIgnoreCase(checkCode.getFunctionValue())) {
+					&& ((Element) nodeList.item(i)).getAttribute(checkCode.getFunctionAttribute1()).equalsIgnoreCase(checkCode.getFunctionValue())) {
 				return true;
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * Function not external url.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotExternalUrl(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionExternalUrl(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function external url.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionExternalUrl(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		try {
-			URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot))
-					: new URL((String) elementRoot.getUserData("url"));
+			URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
 			URL remoteUrl = new URL(documentUrl, nodeNode.getTextContent());
-
 			return !remoteUrl.getHost().equals(documentUrl.getHost());
 		} catch (Exception e) {
 			// Si es una excepción, no podemos decir que sea enlace externo
@@ -2766,14 +3295,19 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function link same page.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionLinkSamePage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		try {
-			if (elementGiven.getAttribute(checkCode.getFunctionValue()) != null
-					&& StringUtils.isNotEmpty(elementGiven.getAttribute(checkCode.getFunctionValue()))) {
-				URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null
-						? new URL(CheckUtils.getBaseUrl(elementRoot))
-						: new URL((String) elementRoot.getUserData("url"));
+			if (elementGiven.getAttribute(checkCode.getFunctionValue()) != null && StringUtils.isNotEmpty(elementGiven.getAttribute(checkCode.getFunctionValue()))) {
+				URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
 				URL remoteUrl = new URL(documentUrl, elementGiven.getAttribute(checkCode.getFunctionValue()));
 				if (documentUrl.toString().replaceAll("/$", "").equals(remoteUrl.toString().replaceAll("/$", ""))) {
 					return true;
@@ -2785,75 +3319,80 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function text not match.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextNotMatch(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionTextMatch(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function text match.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextMatch(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
 		String regexp = checkCode.getFunctionValue();
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		String texto = "";
 		if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 			texto = DOMUtil.getChildText(nodeNode).toLowerCase();
 		} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 			texto = nodeNode.getNodeValue().toLowerCase();
 		}
-
 		Matcher matcher = pattern.matcher(texto);
 		return matcher.find();
 	}
 
 	/**
-	 * Función que realiza la misma comprobación que functionTextMatch sólo que la
-	 * expresión regular la va a recuperar de un fichero de propiedades
-	 * 
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * Función que realiza la misma comprobación que functionTextMatch sólo que la expresión regular la va a recuperar de un fichero de propiedades.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	private boolean functionTextMatchProperties(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
 		String key = checkCode.getFunctionValue();
-
 		// TODO Recupera la expresión regular de un fichero de propiedades
-
 		PropertiesManager pm = new PropertiesManager();
-
 		String regexp = pm.getValue("check.patterns.properties", key);
-
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		String texto = "";
 		if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 			texto = DOMUtil.getChildText(nodeNode).toLowerCase();
 		} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 			texto = nodeNode.getNodeValue().toLowerCase();
 		}
-
 		Matcher matcher = pattern.matcher(texto);
 		return matcher.find();
 	}
 
 	/**
-	 * Actualizada la función para que recupere las expresiones regulares de
-	 * propiedades
-	 * 
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * Actualizada la función para que recupere las expresiones regulares de propiedades.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	private boolean functionAttributeElementTextMatch(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		String element = checkCode.getFunctionElement();
 		String attribute = checkCode.getFunctionAttribute1();
-
 		NodeList nodeList = elementGiven.getElementsByTagName(element);
 		StringBuilder attributeText = new StringBuilder();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -2863,27 +3402,31 @@ public class Check {
 				attributeText.append(node.getAttribute(attribute));
 			}
 		}
-
 		// TODO Recupera de fichero de propiedades
 		PropertiesManager pm = new PropertiesManager();
 		String regexp = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
 		return StringUtils.textMatchs(attributeText.toString(), regexp);
-
 		// return StringUtils.textMatchs(attributeText.toString(),
 		// checkCode.getFunctionValue());
 	}
 
-	private boolean functionInternalElementCountGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven,
-			int compType) {
+	/**
+	 * Function internal element count greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @param compType     the comp type
+	 * @return true, if successful
+	 */
+	private boolean functionInternalElementCountGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven, int compType) {
 		NodeList nodeList = elementGiven.getChildNodes();
 		boolean found = false;
 		int numBr = 0;
 		int i = 0;
-
 		while (nodeList.getLength() > numBr && !found) {
 			if (nodeList.item(i) != null) {
-				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE
-						&& nodeList.item(i).getNodeName().equalsIgnoreCase(checkCode.getFunctionValue())) {
+				if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE && nodeList.item(i).getNodeName().equalsIgnoreCase(checkCode.getFunctionValue())) {
 					numBr++;
 				} else {
 					found = true;
@@ -2891,14 +3434,12 @@ public class Check {
 				i++;
 			}
 		}
-
 		if (numBr != nodeList.getLength()) {
 			i = nodeList.getLength() - 1;
 			found = false;
 			while (i >= 0 && !found) {
 				if (nodeList.item(i) != null) {
-					if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE
-							&& nodeList.item(i).getNodeName().equalsIgnoreCase(checkCode.getFunctionValue())) {
+					if (nodeList.item(i).getNodeType() == Node.ELEMENT_NODE && nodeList.item(i).getNodeName().equalsIgnoreCase(checkCode.getFunctionValue())) {
 						numBr++;
 					} else {
 						found = true;
@@ -2907,24 +3448,28 @@ public class Check {
 				}
 			}
 		}
-
-		return (elementGiven.getElementsByTagName("br").getLength() - numBr) >= Integer
-				.parseInt(checkCode.getFunctionNumber());
+		return (elementGiven.getElementsByTagName("br").getLength() - numBr) >= Integer.parseInt(checkCode.getFunctionNumber());
 	}
 
-	private boolean functionElementCountCompare(CheckCode checkCode, Node nodeNode, Element elementGiven,
-			int compType) {
+	/**
+	 * Function element count compare.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @param compType     the comp type
+	 * @return true, if successful
+	 */
+	private boolean functionElementCountCompare(CheckCode checkCode, Node nodeNode, Element elementGiven, int compType) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		try {
 			int childLevel = -1;
 			if (checkCode.getFunctionAttribute1() != null && !checkCode.getFunctionAttribute1().equals("")) {
 				childLevel = Integer.parseInt(checkCode.getFunctionAttribute1());
 			}
-			int numElements = EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionValue(),
-					checkCode.getFunctionAttribute2(), childLevel);
+			int numElements = EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionValue(), checkCode.getFunctionAttribute2(), childLevel);
 			int numLimit = Integer.parseInt(checkCode.getFunctionNumber());
 			if (compType == CheckFunctionConstants.COMPARE_GREATER_THAN && numElements > numLimit) {
 				return true;
@@ -2939,85 +3484,155 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function element count greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementCountGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		return functionElementCountCompare(checkCode, nodeNode, elementGiven,
-				CheckFunctionConstants.COMPARE_GREATER_THAN);
+		return functionElementCountCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_GREATER_THAN);
 	}
 
+	/**
+	 * Function element count less than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementCountLessThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return functionElementCountCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_LESS_THAN);
 	}
 
+	/**
+	 * Function element count equals.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementCountEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return functionElementCountCompare(checkCode, nodeNode, elementGiven, CheckFunctionConstants.COMPARE_EQUAL);
 	}
 
+	/**
+	 * Function element count not equals.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementCountNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionElementCountEquals(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function attribute missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAttributeMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionAttributeExists(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function attribute exists.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAttributeExists(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return elementGiven.hasAttribute(checkCode.getFunctionValue());
 	}
 
+	/**
+	 * Function attributes same.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAttributesSame(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
 		String stringAtt1 = ((Element) nodeNode).getAttribute(checkCode.getFunctionAttribute1());
 		String stringAtt2 = ((Element) nodeNode).getAttribute(checkCode.getFunctionAttribute2());
-
 		if ((stringAtt1.length() == 0) || (stringAtt2.length() == 0)) {
 			return false;
 		}
-
 		return stringAtt1.equalsIgnoreCase(stringAtt2);
 	}
 
+	/**
+	 * Function attributes not same.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionAttributesNotSame(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
 		String stringAtt1 = ((Element) nodeNode).getAttribute(checkCode.getFunctionAttribute1());
 		String stringAtt2 = ((Element) nodeNode).getAttribute(checkCode.getFunctionAttribute2());
-
 		if ((stringAtt1.length() == 0) || (stringAtt2.length() == 0)) {
 			return true;
 		}
-
 		return !stringAtt1.equalsIgnoreCase(stringAtt2);
 	}
 
+	/**
+	 * Function text not equals.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextNotEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionTextEquals(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function text equals.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTextEquals(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		// get the 2 strings that are compared
 		// convert them both to lower case
 		String string1 = checkCode.getFunctionValue().toLowerCase();
-
 		// special case the string "nbsp" - convert to "&nbsp;"
 		if (string1.equals("nbsp")) {
 			string1 = "&nbsp;";
 		}
-
 		String string2 = "";
-
 		if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 			string2 = DOMUtil.getChildText(nodeNode).toLowerCase().trim();
 		} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 			string2 = nodeNode.getNodeValue().toLowerCase().trim();
 		}
-
 		// position of compare string
 		final String stringPosition = checkCode.getFunctionPosition();
 		if (stringPosition.isEmpty()) {
@@ -3029,51 +3644,39 @@ public class Check {
 		} else if ("start".equalsIgnoreCase(stringPosition)) {
 			return string2.startsWith(string1);
 		} else {
-			Logger.putLog("Warning: check " + id + " has invalid 'position' attribute: " + stringPosition, Check.class,
-					Logger.LOG_LEVEL_WARNING);
+			Logger.putLog("Warning: check " + id + " has invalid 'position' attribute: " + stringPosition, Check.class, Logger.LOG_LEVEL_WARNING);
 		}
 		return false;
 	}
 
 	/**
-	 * Comprueba que un texto no es igual a uno de los recuperados de un fichero de
-	 * properties
-	 * 
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * Comprueba que un texto no es igual a uno de los recuperados de un fichero de properties.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	private boolean functionTextEqualsProperties(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		// TODO Recupera la expresión regular de un fichero de propiedades
-
 		PropertiesManager pm = new PropertiesManager();
-
 		String[] strings = pm.getValue("check.patterns.properties", checkCode.getFunctionValue()).split("\\|");
-
 		boolean textEquals = false;
-
 		for (int i = 0; i < strings.length; i++) {
-
 			String string1 = strings[i].toLowerCase();
-
 			// special case the string "nbsp" - convert to "&nbsp;"
 			if (string1.equals("nbsp")) {
 				string1 = "&nbsp;";
 			}
-
 			String string2 = "";
-
 			if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 				string2 = DOMUtil.getChildText(nodeNode).toLowerCase().trim();
 			} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 				string2 = nodeNode.getNodeValue().toLowerCase().trim();
 			}
-
 			// position of compare string
 			final String stringPosition = checkCode.getFunctionPosition();
 			if (stringPosition.isEmpty()) {
@@ -3085,47 +3688,52 @@ public class Check {
 			} else if ("start".equalsIgnoreCase(stringPosition)) {
 				textEquals = string2.startsWith(string1);
 			} else {
-				Logger.putLog("Warning: check " + id + " has invalid 'position' attribute: " + stringPosition,
-						Check.class, Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: check " + id + " has invalid 'position' attribute: " + stringPosition, Check.class, Logger.LOG_LEVEL_WARNING);
 			}
-
 			// Si alguno lo es abortamos
 			if (textEquals) {
 				break;
 			}
 		}
-
 		return textEquals;
 	}
 
+	/**
+	 * Function element previous.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementPrevious(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		// Obtener el nodo previo
 		Node nodePrevious = EvaluatorUtils.getPreviousNode(elementGiven);
-
-		return nodePrevious != null && nodePrevious.getNodeType() == Node.ELEMENT_NODE
-				&& nodePrevious.getNodeName().equalsIgnoreCase(checkCode.getFunctionValue());
+		return nodePrevious != null && nodePrevious.getNodeType() == Node.ELEMENT_NODE && nodePrevious.getNodeName().equalsIgnoreCase(checkCode.getFunctionValue());
 	}
 
+	/**
+	 * Function targets same.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionTargetsSame(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		// Obtener el elemento previo
 		Element elementPrevious = EvaluatorUtils.getPreviousElement(elementGiven, false);
-
 		if (elementPrevious != null && elementPrevious.getNodeName().equalsIgnoreCase("a")) {
-			if (StringUtils.isNotEmpty(elementGiven.getAttribute("href"))
-					&& StringUtils.isNotEmpty(elementPrevious.getAttribute("href"))) {
+			if (StringUtils.isNotEmpty(elementGiven.getAttribute("href")) && StringUtils.isNotEmpty(elementPrevious.getAttribute("href"))) {
 				Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 				try {
-					URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null
-							? new URL(CheckUtils.getBaseUrl(elementRoot))
-							: new URL((String) elementRoot.getUserData("url"));
+					URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
 					URL currentUrl = new URL(documentUrl, elementGiven.getAttribute("href"));
 					URL prevUrl = new URL(documentUrl, elementPrevious.getAttribute("href"));
 					if (currentUrl.toString().equals(prevUrl.toString())) {
@@ -3140,31 +3748,52 @@ public class Check {
 				}
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function html content not.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHtmlContentNot(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return nodeNode != null && !functionHtmlContent(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function html content.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHtmlContent(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		if (nodeNode == null) {
 			return false;
 		}
-
 		String string = "";
 		if (nodeNode.getNodeType() == Node.ELEMENT_NODE) {
 			string = DOMUtil.getChildText(nodeNode).toLowerCase();
 		} else if (nodeNode.getNodeType() == Node.ATTRIBUTE_NODE) {
 			string = nodeNode.getNodeValue().toLowerCase();
 		}
-
 		return isHtmlContent(string);
 	}
 
 	// Check if the form has multiple radio buttons with the same 'name'
 	// attribute and is
+	/**
+	 * Function multi radio no fieldset.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// missing both fieldset and legend elements.
 	private boolean functionMultiRadioNoFieldset(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// check if the form has both fieldset and legend elements
@@ -3176,7 +3805,6 @@ public class Check {
 				return false; // form contains both fieldset and legend
 			}
 		}
-
 		// Form does not contain both fieldset and legend.
 		// Check for radio buttons (input element with type attribute value of
 		// 'radio')
@@ -3184,6 +3812,14 @@ public class Check {
 		return existsMultipleSelectionButtons(elementGiven, "radio");
 	}
 
+	/**
+	 * Function multi checkbox no fieldset.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionMultiCheckboxNoFieldset(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// check if the form has both fieldset and legend elements
 		NodeList listFieldsets = elementGiven.getElementsByTagName("fieldset");
@@ -3194,7 +3830,6 @@ public class Check {
 				return false; // form contains both fieldset and legend
 			}
 		}
-
 		// Form does not contain both fieldset and legend.
 		// Check for checkbox buttons (input element with type attribute value
 		// of 'checkbox')
@@ -3202,6 +3837,13 @@ public class Check {
 		return existsMultipleSelectionButtons(elementGiven, "checkbox");
 	}
 
+	/**
+	 * Exists multiple selection buttons.
+	 *
+	 * @param element the element
+	 * @param type    the type
+	 * @return true, if successful
+	 */
 	private boolean existsMultipleSelectionButtons(final Element element, final String type) {
 		if (type != null) {
 			final NodeList listInputs = element.getElementsByTagName("input");
@@ -3224,6 +3866,12 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Checks if is html content.
+	 *
+	 * @param string the string
+	 * @return true, if is html content
+	 */
 	public static boolean isHtmlContent(final String string) {
 		if (string.endsWith(".html")) {
 			return true;
@@ -3247,6 +3895,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function luminosity contrast ratio.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if there is an accessibility problem.
 	private boolean functionLuminosityContrastRatio(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// does the given element have the required attributes?
@@ -3256,7 +3912,6 @@ public class Check {
 		if (!elementGiven.hasAttribute(checkCode.getFunctionAttribute2())) {
 			return false; // attribute missing so no accessibility problem
 		}
-
 		// calculate the luminosity ratio between the 2 attribute values
 		String stringColor1 = elementGiven.getAttribute(checkCode.getFunctionAttribute1());
 		ColorValues colorValue1 = new ColorValues(stringColor1);
@@ -3268,38 +3923,36 @@ public class Check {
 		if (!colorValue2.getValid()) {
 			return false;
 		}
-
 		double linearR1 = colorValue1.getRed() / 255d;
 		double linearG1 = colorValue1.getGreen() / 255d;
 		double linearB1 = colorValue1.getBlue() / 255d;
-		double lum1 = ((Math.pow(linearR1, 2.2)) * 0.2126d) + ((Math.pow(linearG1, 2.2)) * 0.7152d)
-				+ ((Math.pow(linearB1, 2.2)) * 0.0722d) + .05d;
-
+		double lum1 = ((Math.pow(linearR1, 2.2)) * 0.2126d) + ((Math.pow(linearG1, 2.2)) * 0.7152d) + ((Math.pow(linearB1, 2.2)) * 0.0722d) + .05d;
 		double linearR2 = colorValue2.getRed() / 255d;
 		double linearG2 = colorValue2.getGreen() / 255d;
 		double linearB2 = colorValue2.getBlue() / 255d;
-		double lum2 = ((Math.pow(linearR2, 2.2)) * 0.2126d) + ((Math.pow(linearG2, 2.2)) * 0.7152d)
-				+ ((Math.pow(linearB2, 2.2)) * 0.0722d) + .05d;
-
+		double lum2 = ((Math.pow(linearR2, 2.2)) * 0.2126d) + ((Math.pow(linearG2, 2.2)) * 0.7152d) + ((Math.pow(linearB2, 2.2)) * 0.0722d) + .05d;
 		double ratio = Math.max(lum1, lum2) / Math.min(lum1, lum2);
-
 		// round the ratio to 2 decimal places
 		long factor = (long) Math.pow(10, 2);
-
 		// Shift the decimal the correct number of places
 		// to the right.
 		double val = ratio * factor;
-
 		// Round to the nearest integer.
 		long tmp = Math.round(val);
-
 		// Shift the decimal the correct number of places back to the left.
 		float ratio2 = (float) tmp / factor;
-
 		return ratio2 < 4.99;
 	}
 
 	// Checks if the colors pass the WAI ERT color contrast threshold.
+	/**
+	 * Function color contrast wai ert.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if there is an accessibility problem.
 	private boolean functionColorContrastWaiErt(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// does the given element have the required attributes?
@@ -3309,7 +3962,6 @@ public class Check {
 		if (!elementGiven.hasAttribute(checkCode.getFunctionAttribute2())) {
 			return false; // attribute missing so no accessibility problem
 		}
-
 		// calculate the brightness difference
 		String stringColor1 = elementGiven.getAttribute(checkCode.getFunctionAttribute1());
 		ColorValues colorValue1 = new ColorValues(stringColor1);
@@ -3321,24 +3973,17 @@ public class Check {
 		if (!colorValue2.getValid()) {
 			return false;
 		}
-
-		int brightness1 = ((colorValue1.getRed() * 299) + (colorValue1.getGreen() * 587)
-				+ (colorValue1.getBlue() * 114)) / 1000;
-
-		int brightness2 = ((colorValue2.getRed() * 299) + (colorValue2.getGreen() * 587)
-				+ (colorValue2.getBlue() * 114)) / 1000;
-
+		int brightness1 = ((colorValue1.getRed() * 299) + (colorValue1.getGreen() * 587) + (colorValue1.getBlue() * 114)) / 1000;
+		int brightness2 = ((colorValue2.getRed() * 299) + (colorValue2.getGreen() * 587) + (colorValue2.getBlue() * 114)) / 1000;
 		int difference = 0;
 		if (brightness1 > brightness2) {
 			difference = brightness1 - brightness2;
 		} else {
 			difference = brightness2 - brightness1;
 		}
-
 		if (difference < 125) {
 			return true;
 		}
-
 		// calculate the color difference
 		difference = 0;
 		// red
@@ -3347,36 +3992,39 @@ public class Check {
 		} else {
 			difference = colorValue2.getRed() - colorValue1.getRed();
 		}
-
 		// green
 		if (colorValue1.getGreen() > colorValue2.getGreen()) {
 			difference += colorValue1.getGreen() - colorValue2.getGreen();
 		} else {
 			difference += colorValue2.getGreen() - colorValue1.getGreen();
 		}
-
 		// blue
 		if (colorValue1.getBlue() > colorValue2.getBlue()) {
 			difference += colorValue1.getBlue() - colorValue2.getBlue();
 		} else {
 			difference += colorValue2.getBlue() - colorValue1.getBlue();
 		}
-
 		return difference <= 499;
 	}
 
 	// Checks if there is a doctype declaration and it is strict.
+	/**
+	 * Function doctype attribute not equal.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if there is an accessibility problem.
 	private boolean functionDoctypeAttributeNotEqual(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// does the document have a doctype?
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		String hasDoctype = (String) elementRoot.getUserData("doctype");
-
 		if (!hasDoctype.equals(IntavConstants.TRUE)) {
 			// no doctype, must have strict so this is an error
 			return true;
 		}
-
 		// is the doctype system ID strict?
 		String stringDoctype = (String) elementRoot.getUserData(checkCode.getFunctionElement());
 		String checkDoctype = checkCode.getFunctionValue();
@@ -3385,12 +4033,19 @@ public class Check {
 				return false;
 			}
 		}
-
 		// not strict, return error
 		return true;
 	}
 
 	// Checks if the document validates to its doctype declaration.
+	/**
+	 * Function validate.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if document does not validate.
 	private boolean functionValidate(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
@@ -3399,6 +4054,12 @@ public class Check {
 		return vectorValidationErrors == null || countDistinctValidationErrors(vectorValidationErrors) <= numErrors;
 	}
 
+	/**
+	 * Count distinct validation errors.
+	 *
+	 * @param vectorValidationErrors the vector validation errors
+	 * @return the int
+	 */
 	private int countDistinctValidationErrors(List<ValidationError> vectorValidationErrors) {
 		List<String> distinctErrors = new ArrayList<>();
 		for (ValidationError validationError : vectorValidationErrors) {
@@ -3406,11 +4067,18 @@ public class Check {
 				distinctErrors.add(validationError.getMessageId());
 			}
 		}
-
 		return distinctErrors.size();
 	}
 
 	// Comprueba si las hojas de estilo están validadas
+	/**
+	 * Function validate css.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if document does not validate.
 	private boolean functionValidateCss(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
@@ -3422,6 +4090,14 @@ public class Check {
 	// Checks if the given table has one row of headers and one column of
 	// headers
 	// but lacks SCOPE attributes.
+	/**
+	 * Function missing scope.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if the given table contains this error.
 	private boolean functionMissingScope(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// check if the table has more than one row/column of headers
@@ -3429,7 +4105,6 @@ public class Check {
 		boolean thCol = false;
 		boolean bUsesScope = false;
 		boolean bMissingScope = false;
-
 		NodeList listRows = elementGiven.getElementsByTagName("tr");
 		for (int x = 0; x < listRows.getLength(); x++) {
 			Element elementRow = (Element) listRows.item(x);
@@ -3439,14 +4114,12 @@ public class Check {
 			} else if (listTh.getLength() == 1) {
 				thCol = true;
 			}
-
 			// check if there are SCOPE attributes on all of the TH elements
 			for (int c = 0; c < listTh.getLength(); c++) {
 				final Element elementTh = (Element) listTh.item(c);
 				if (elementTh.hasAttribute("scope")) {
 					final String scope = elementTh.getAttribute("scope");
-					if ("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope)
-							|| "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope)) {
+					if ("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope) || "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope)) {
 						bUsesScope = true;
 						break;
 					} else {
@@ -3457,12 +4130,10 @@ public class Check {
 				}
 			}
 		}
-
 		if (countThRow == 1 && thCol) {
 			// has 1 row and 1 column of headers
 			return !(bUsesScope && !bMissingScope);
 		}
-
 		// does not contain 1 row of headers and 1 column of headers
 		return false; // no problem
 	}
@@ -3470,31 +4141,44 @@ public class Check {
 	// Checks if the given table has one row of headers and one column of
 	// headers
 	// but lacks SCOPE attributes.
+	/**
+	 * Function invalid scope.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if the given table contains this error.
 	private boolean functionInvalidScope(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// check if the table has more than one row/column of headers
 		if (elementGiven.hasAttribute("scope")) {
 			final String scope = elementGiven.getAttribute("scope");
-			return !("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope)
-					|| "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope));
+			return !("col".equalsIgnoreCase(scope) || "row".equalsIgnoreCase(scope) || "colgroup".equalsIgnoreCase(scope) || "rowgroup".equalsIgnoreCase(scope));
 		}
 		return false; // no problem
 	}
 
 	// Checks if the caption and summary text are the same.
+	/**
+	 * Function caption summary same.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	// Returns true if they are the same, false if different (or don't exist).
 	private boolean functionCaptionSummarySame(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// does table have a summary?
 		if (!elementGiven.hasAttribute("summary")) {
 			return false; // no summary
 		}
-
 		// does table have a caption?
 		NodeList listCaption = elementGiven.getElementsByTagName("caption");
 		if (listCaption.getLength() == 0) {
 			return false; // no caption
 		}
-
 		String stringSummary = elementGiven.getAttribute("summary").trim();
 		if (stringSummary.length() == 0) {
 			return false; // no problem if both are empty
@@ -3502,24 +4186,27 @@ public class Check {
 		// String stringCaption =
 		// DOMUtil.getChildText(listCaption.item(0)).trim();
 		String stringCaption = EvaluatorUtility.getElementText(listCaption.item(0), true);
-
 		return stringSummary.equalsIgnoreCase(stringCaption);
 	}
 
+	/**
+	 * Initialize.
+	 *
+	 * @param nodeXml  the node xml
+	 * @param idNumber the id number
+	 * @return true, if successful
+	 */
 	public boolean initialize(Element nodeXml, int idNumber) {
 		id = idNumber;
-
 		if (!setCheckText(nodeXml)) {
 			Logger.putLog("text bad, check: " + id, Check.class, Logger.LOG_LEVEL_WARNING);
 			return false;
 		}
-
 		status = nodeXml.getAttribute("status");
 		if (!nodeXml.hasAttribute("confidence")) {
 			Logger.putLog("Warning: Check does not have confidence: " + id, Check.class, Logger.LOG_LEVEL_WARNING);
 		} else {
 			String stringConfidence = nodeXml.getAttribute("confidence");
-
 			if ("medium".equalsIgnoreCase(stringConfidence)) {
 				confidence = CheckFunctionConstants.CONFIDENCE_MEDIUM;
 			} else if ("high".equalsIgnoreCase(stringConfidence)) {
@@ -3527,28 +4214,22 @@ public class Check {
 			} else if ("cannottell".equalsIgnoreCase(stringConfidence)) {
 				confidence = CheckFunctionConstants.CONFIDENCE_CANNOTTELL;
 			} else {
-				Logger.putLog("Warning: Check has invalid confidence: " + stringConfidence, Check.class,
-						Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: Check has invalid confidence: " + stringConfidence, Check.class, Logger.LOG_LEVEL_WARNING);
 			}
 		}
-
 		if (nodeXml.hasAttribute("note")) {
 			note = nodeXml.getAttribute("note");
 		}
-
 		if (!nodeXml.hasAttribute("key")) {
 			Logger.putLog("Warning: Check does not have key attribute: " + id, Check.class, Logger.LOG_LEVEL_WARNING);
 		} else {
 			keyElement = nodeXml.getAttribute("key");
-
 		}
-
 		if (nodeXml.hasAttribute("occurrence")) {
 			if (nodeXml.getAttribute("occurrence").equalsIgnoreCase("first")) {
 				firstOccuranceOnly = true;
 			}
 		}
-
 		NodeList childNodes = nodeXml.getChildNodes();
 		for (int x = 0; x < childNodes.getLength(); x++) {
 			// prerequisites
@@ -3559,8 +4240,7 @@ public class Check {
 						Integer newint = Integer.valueOf(stringPrereqId);
 						prerequisites.add(newint);
 					} catch (NumberFormatException nfe) {
-						Logger.putLog("Prerequisite ID is invalid: " + stringPrereqId, Check.class,
-								Logger.LOG_LEVEL_WARNING);
+						Logger.putLog("Prerequisite ID is invalid: " + stringPrereqId, Check.class, Logger.LOG_LEVEL_WARNING);
 					}
 				}
 			}
@@ -3573,6 +4253,12 @@ public class Check {
 		return true;
 	}
 
+	/**
+	 * Creates the code.
+	 *
+	 * @param elementCodeGiven the element code given
+	 * @return true, if successful
+	 */
 	private boolean createCode(Element elementCodeGiven) {
 		// trigger element
 		NodeList listTriggers = elementCodeGiven.getElementsByTagName("trigger");
@@ -3583,12 +4269,10 @@ public class Check {
 		Element elementTrigger = (Element) listTriggers.item(0);
 		String triggerElementTemp = elementTrigger.getAttribute("element");
 		if ((triggerElementTemp == null) || (triggerElementTemp.length() == 0)) {
-			Logger.putLog("Error: check'" + id + "' trigger has invalid element name.", Check.class,
-					Logger.LOG_LEVEL_INFO);
+			Logger.putLog("Error: check'" + id + "' trigger has invalid element name.", Check.class, Logger.LOG_LEVEL_INFO);
 			return false;
 		}
 		triggerElement = triggerElementTemp.toLowerCase();
-
 		Node nodeCode = elementCodeGiven.getFirstChild();
 		while (nodeCode != null) {
 			if (nodeCode.getNodeType() == Node.ELEMENT_NODE) {
@@ -3599,16 +4283,20 @@ public class Check {
 			}
 			nodeCode = nodeCode.getNextSibling();
 		}
-
 		return true;
 	}
 
+	/**
+	 * Sets the check text.
+	 *
+	 * @param nodeXml the node xml
+	 * @return true, if successful
+	 */
 	public boolean setCheckText(Node nodeXml) {
 		// these must be present on each check
 		String language = "en";
 		boolean foundCheckName = false;
 		boolean foundCheckError = false;
-
 		NodeList childNodes = nodeXml.getChildNodes();
 		for (int x = 0; x < childNodes.getLength(); x++) {
 			// name
@@ -3626,24 +4314,32 @@ public class Check {
 				rationaleHashtable.put(language, childNodes.item(x));
 			}
 		}
-
 		if (!foundCheckName) {
-			Logger.putLog("Error: check #" + id + " language: " + language + " has no 'name'!", Check.class,
-					Logger.LOG_LEVEL_INFO);
+			Logger.putLog("Error: check #" + id + " language: " + language + " has no 'name'!", Check.class, Logger.LOG_LEVEL_INFO);
 		}
-
 		if (!foundCheckError) {
-			Logger.putLog("Error: check #" + id + " language: " + language + " has no 'error'!", Check.class,
-					Logger.LOG_LEVEL_INFO);
+			Logger.putLog("Error: check #" + id + " language: " + language + " has no 'error'!", Check.class, Logger.LOG_LEVEL_INFO);
 		}
-
 		return foundCheckName && foundCheckError;
 	}
 
+	/**
+	 * Sets the appropriate data.
+	 *
+	 * @param languageCode the new appropriate data
+	 */
 	public void setAppropriateData(String languageCode) {
 		languageAppropriate = languageCode;
 	}
 
+	/**
+	 * Function lang grammar.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionLangGrammar(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		String documentGrammar = (String) elementRoot.getUserData("doctypeType");
@@ -3652,17 +4348,23 @@ public class Check {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function check valid doctype.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCheckValidDoctype(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		final String doctypeSource = (String) elementRoot.getUserData("doctypeSource");
 		if (doctypeSource != null) {
 			final PropertiesManager pmgr = new PropertiesManager();
-			final List<String> validDoctypes = Arrays
-					.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "valid.doctypes").split(";"));
+			final List<String> validDoctypes = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "valid.doctypes").split(";"));
 			for (String validDoctype : validDoctypes) {
 				if (validDoctype.equalsIgnoreCase(doctypeSource)) {
 					return true;
@@ -3679,6 +4381,14 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function has nbsp entities.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasNbspEntities(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int numRepetitions = Integer.parseInt(checkCode.getFunctionValue());
 		final NodeList nodeList = elementGiven.getChildNodes();
@@ -3694,13 +4404,19 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function metadata missing.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionMetadataMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList metadataNodes = elementGiven.getElementsByTagName("meta");
-
 		for (int i = 0; i < metadataNodes.getLength(); i++) {
 			if ((((Element) metadataNodes.item(i)).getAttribute("name").equalsIgnoreCase(checkCode.getFunctionValue())
-					|| ((Element) metadataNodes.item(i)).getAttribute("http-equiv")
-							.equalsIgnoreCase(checkCode.getFunctionValue()))
+					|| ((Element) metadataNodes.item(i)).getAttribute("http-equiv").equalsIgnoreCase(checkCode.getFunctionValue()))
 					&& StringUtils.isNotEmpty(((Element) metadataNodes.item(i)).getAttribute("content"))) {
 				return false;
 			}
@@ -3708,50 +4424,69 @@ public class Check {
 		return true;
 	}
 
+	/**
+	 * Function not all labels.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotAllLabels(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int numLabels = elementGiven.getElementsByTagName("label").getLength();
-		final int numControls = elementGiven.getElementsByTagName("select").getLength()
-				+ elementGiven.getElementsByTagName("textarea").getLength() + getNumDataInputs(elementGiven);
-
+		final int numControls = elementGiven.getElementsByTagName("select").getLength() + elementGiven.getElementsByTagName("textarea").getLength() + getNumDataInputs(elementGiven);
 		return numLabels < numControls;
 	}
 
+	/**
+	 * Gets the num data inputs.
+	 *
+	 * @param form the form
+	 * @return the num data inputs
+	 */
 	private int getNumDataInputs(Element form) {
 		final NodeList inputs = form.getElementsByTagName("input");
 		final List<String> dataInputs = Arrays.asList("checkbox", "file", "password", "radio", "text", "");
-
 		int cont = 0;
 		for (int i = 0; i < inputs.getLength(); i++) {
 			if (dataInputs.contains(((Element) inputs.item(i)).getAttribute("type"))) {
 				cont++;
 			}
 		}
-
 		return cont;
 	}
 
+	/**
+	 * Gets the num data inputs exclude check radio.
+	 *
+	 * @param form the form
+	 * @return the num data inputs exclude check radio
+	 */
 	private int getNumDataInputsExcludeCheckRadio(Element form) {
 		final NodeList inputs = form.getElementsByTagName("input");
 		final List<String> dataInputs = Arrays.asList("file", "password", "text", "");
-
 		int cont = 0;
 		for (int i = 0; i < inputs.getLength(); i++) {
 			if (dataInputs.contains(((Element) inputs.item(i)).getAttribute("type"))) {
 				cont++;
 			}
 		}
-
 		return cont;
 	}
 
+	/**
+	 * Function label incorrectly associated.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionLabelIncorrectlyAssociated(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String attributeFor = elementGiven.getAttribute("for");
-
 		final Document document = elementGiven.getOwnerDocument();
-
 		if (document != null) {
-			if (controlsNumIds(document.getElementsByTagName("input"), attributeFor)
-					+ controlsNumIds(document.getElementsByTagName("select"), attributeFor)
+			if (controlsNumIds(document.getElementsByTagName("input"), attributeFor) + controlsNumIds(document.getElementsByTagName("select"), attributeFor)
 					+ controlsNumIds(document.getElementsByTagName("textarea"), attributeFor) == 1) {
 				return false;
 			} else {
@@ -3762,6 +4497,13 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Controls num ids.
+	 *
+	 * @param controls     the controls
+	 * @param attributeFor the attribute for
+	 * @return the int
+	 */
 	private int controlsNumIds(NodeList controls, String attributeFor) {
 		int cont = 0;
 		for (int i = 0; i < controls.getLength(); i++) {
@@ -3772,29 +4514,56 @@ public class Check {
 		return cont;
 	}
 
+	/**
+	 * Function num more controls.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNumMoreControls(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		final int numControls = elementGiven.getElementsByTagName("select").getLength()
-				+ elementGiven.getElementsByTagName("textarea").getLength()
-				+ getNumDataInputsExcludeCheckRadio(elementGiven);
-
+		final int numControls = elementGiven.getElementsByTagName("select").getLength() + elementGiven.getElementsByTagName("textarea").getLength() + getNumDataInputsExcludeCheckRadio(elementGiven);
 		return numControls > Integer.parseInt(checkCode.getFunctionNumber());
 	}
 
+	/**
+	 * Function is even.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionIsEven(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionIsOdd(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function is odd.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionIsOdd(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		int numElements = EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionAttribute1(), "", -1);
 		int numElements2 = 0;
 		if (checkCode.getFunctionAttribute2() != null) {
-			numElements2 = EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionAttribute2(), "",
-					-1);
+			numElements2 = EvaluatorUtility.countElements((Element) nodeNode, checkCode.getFunctionAttribute2(), "", -1);
 		}
-
 		return ((numElements + numElements2) % 2) == 0;
 	}
 
+	/**
+	 * Checks for element childs.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean hasElementChilds(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList childNodes = elementGiven.getChildNodes();
 		if (childNodes != null) {
@@ -3807,39 +4576,67 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function not user data matchs.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotUserDataMatchs(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionUserDataMatchs(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function user data matchs.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionUserDataMatchs(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final String userDataValue = (String) elementGiven.getUserData(checkCode.getFunctionElement());
-
 		if (userDataValue != null) {
 			final String regexp = checkCode.getFunctionValue();
 			final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 			final Matcher matcher = pattern.matcher(userDataValue);
-
 			return matcher.find();
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * Function not children have attribute.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotChildrenHaveAttribute(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionChildrenHaveAttribute(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function children have attribute.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionChildrenHaveAttribute(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		final boolean severe = (checkCode.getFunctionAttribute2() == null)
-				|| (!checkCode.getFunctionAttribute2().equalsIgnoreCase("noSevere"));
+		final boolean severe = (checkCode.getFunctionAttribute2() == null) || (!checkCode.getFunctionAttribute2().equalsIgnoreCase("noSevere"));
 		final NodeList elements = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
 		if (elements != null && elements.getLength() > 0) {
 			for (int i = 0; i < elements.getLength(); i++) {
 				final Element element = (Element) elements.item(i);
 				if (severe && !element.hasAttribute(checkCode.getFunctionAttribute1())) {
 					return false;
-				} else if (element.getNodeName().equalsIgnoreCase(checkCode.getFunctionElement())
-						&& element.hasAttribute(checkCode.getFunctionAttribute1())) {
+				} else if (element.getNodeName().equalsIgnoreCase(checkCode.getFunctionElement()) && element.hasAttribute(checkCode.getFunctionAttribute1())) {
 					final String attributeText = element.getAttribute(checkCode.getFunctionAttribute1());
 					if (StringUtils.isEmpty(attributeText) || StringUtils.isOnlyBlanks(attributeText)) {
 						return false;
@@ -3852,92 +4649,108 @@ public class Check {
 		return true;
 	}
 
+	/**
+	 * Function not clear language.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionNotClearLanguage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		try {
 			final String source = (String) elementGiven.getOwnerDocument().getDocumentElement().getUserData("source");
 			final String fleschText = FleschUtils.getContentFromHtml(source);
-
 			final FleschAnalyzer fleschAnalyzer = FleschAdapter.getFleschAnalyzer(getLanguage(elementGiven, false));
-
-			final double fleschValue = fleschAnalyzer.calculateFleschValue(fleschAnalyzer.countSyllables(fleschText),
-					fleschAnalyzer.countWords(fleschText), fleschAnalyzer.countPhrases(fleschText));
+			final double fleschValue = fleschAnalyzer.calculateFleschValue(fleschAnalyzer.countSyllables(fleschText), fleschAnalyzer.countWords(fleschText), fleschAnalyzer.countPhrases(fleschText));
 			final int readabilityLevel = fleschAnalyzer.getReadabilityLevel(fleschValue);
-
 			if (readabilityLevel < Integer.parseInt(checkCode.getFunctionValue())) {
 				return true;
 			}
 		} catch (Exception e) {
 			Logger.putLog("Error al analizar la legibilidad del texto", Check.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function has not enough text.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasNotEnoughText(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		return !functionHasEnoughText(checkCode, nodeNode, elementGiven);
 	}
 
+	/**
+	 * Function has enough text.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasEnoughText(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final PropertiesManager pmgr = new PropertiesManager();
-
 		try {
 			final String source = (String) elementGiven.getOwnerDocument().getDocumentElement().getUserData("source");
 			final String fleschText = FleschUtils.getContentFromHtml(source);
-
-			if (fleschText.length() >= Integer
-					.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "minimun.document.chars.for.flesch"))) {
+			if (fleschText.length() >= Integer.parseInt(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "minimun.document.chars.for.flesch"))) {
 				return true;
 			}
 		} catch (Exception e) {
-			Logger.putLog("Error al comprobar si la longitud del texto es suficiente para realizar el análisis Flesch",
-					Check.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al comprobar si la longitud del texto es suficiente para realizar el análisis Flesch", Check.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function has not section link.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasNotSectionLink(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("A");
-
 		// TODO Se recupera la expresión regular del fichero de propiedades
 		PropertiesManager pm = new PropertiesManager();
 		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
-
 		return AccesibilityDeclarationCheckUtils.getSectionLink(links, regex).isEmpty();
 	}
 
-	private boolean functionAccessibilityDeclarationNoContact(CheckCode checkCode, Node nodeNode,
-			Element elementGiven) {
-
+	/**
+	 * Function accessibility declaration no contact.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionAccessibilityDeclarationNoContact(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		PropertiesManager pm = new PropertiesManager();
 		String key = checkCode.getFunctionValue();
 		String regexp = pm.getValue("check.patterns.properties", key);
-
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-
 		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regexp);
-
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
-			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(),
-					null);
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-
 		String key1 = checkCode.getFunctionAttribute1();
 		String key2 = checkCode.getFunctionAttribute2();
-
 		String regexp1 = pm.getValue("check.patterns.properties", key1);
 		String regexp2 = pm.getValue("check.patterns.properties", key2);
-
 		if (accessibilityLinks.isEmpty()) {
 			// Si no hay enlaces es porque estamos en la página de accesibilidad
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
 			// esta)
 			try {
-
 				// TODO Recuperar de fichero las expresiones regulares
-
 				return !AccesibilityDeclarationCheckUtils.hasContact(elementGiven.getOwnerDocument(), regexp1, regexp2);
 			} catch (Exception e) {
 				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
@@ -3947,8 +4760,7 @@ public class Check {
 			boolean hasContact = false;
 			for (Element accessibilityLink : accessibilityLinks) {
 				try {
-					final Document document = getAccesibilityDocument(elementRoot,
-							accessibilityLink.getAttribute("href"));
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 					if (document != null) {
 						hasContact |= AccesibilityDeclarationCheckUtils.hasContact(document, regexp1, regexp2);
 					}
@@ -3956,35 +4768,32 @@ public class Check {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
-
 			return !hasContact;
 		}
 	}
 
-	private boolean functionAccessibilityDeclarationNoRevisionDate(CheckCode checkCode, Node nodeNode,
-			Element elementGiven) {
-
+	/**
+	 * Function accessibility declaration no revision date.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionAccessibilityDeclarationNoRevisionDate(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// TODO Recuperar de fichero las expresiones regulares
 		PropertiesManager pm = new PropertiesManager();
 		String key = checkCode.getFunctionValue();
 		String regexp = pm.getValue("check.patterns.properties", key);
-
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
 		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regexp);
-
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
-			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(),
-					null);
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-
 		boolean found = false;
-
 		String key1 = checkCode.getFunctionAttribute1();
-
 		String regexp1 = pm.getValue("check.patterns.properties", key1);
-
 		if (accessibilityLinks.isEmpty()) {
 			// Si no hay enlaces es porque estamos en la página de accesibilidad
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
@@ -3999,8 +4808,7 @@ public class Check {
 			boolean hasDate = false;
 			for (Element accessibilityLink : accessibilityLinks) {
 				try {
-					final Document document = getAccesibilityDocument(elementRoot,
-							accessibilityLink.getAttribute("href"));
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 					if (document != null) {
 						hasDate |= AccesibilityDeclarationCheckUtils.hasRevisionDate(document, regexp1);
 					}
@@ -4008,38 +4816,28 @@ public class Check {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
-
 			return !hasDate;
 		}
 	}
 
 	/**
-	 * Comprueba que la página de accesibilidad contiene la declaración del nivel de
-	 * conformidad alcanzado, basándose en la búsqueda de patrones. Actualizado para
-	 * recuperar los patrones de fichero de propiedades.
+	 * Comprueba que la página de accesibilidad contiene la declaración del nivel de conformidad alcanzado, basándose en la búsqueda de patrones. Actualizado para recuperar los patrones de fichero de
+	 * propiedades.
 	 *
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
-	private boolean functionAccessibilityDeclarationNoConformanceLevel(CheckCode checkCode, Node nodeNode,
-			Element elementGiven) {
+	private boolean functionAccessibilityDeclarationNoConformanceLevel(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-
 		PropertiesManager pm = new PropertiesManager();
-
 		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
-
 		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
-
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
-			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(),
-					null);
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-
 		boolean found = false;
 		if (accessibilityLinks.isEmpty()) {
 			Logger.putLog("No hay enlaces: ", Check.class, Logger.LOG_LEVEL_ERROR);
@@ -4055,11 +4853,9 @@ public class Check {
 		} else {
 			boolean hasConformance = false;
 			for (Element accessibilityLink : accessibilityLinks) {
-				if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript")
-						&& !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
+				if (!accessibilityLink.getAttribute("href").toLowerCase().startsWith("javascript") && !accessibilityLink.getAttribute("href").toLowerCase().startsWith("mailto")) {
 					try {
-						final Document document = getAccesibilityDocument(elementRoot,
-								accessibilityLink.getAttribute("href"));
+						final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 						if (document != null) {
 							hasConformance |= AccesibilityDeclarationCheckUtils.hasConformanceLevel(document);
 						}
@@ -4068,78 +4864,80 @@ public class Check {
 					}
 				}
 			}
-
 			return !hasConformance;
 		}
 	}
 
+	/**
+	 * Gets the accesibility document.
+	 *
+	 * @param elementRoot the element root
+	 * @param href        the href
+	 * @return the accesibility document
+	 * @throws Exception the exception
+	 */
 	private Document getAccesibilityDocument(final Element elementRoot, final String href) throws Exception {
-
 		try {
-
 			final URI u = new URI(href);
-
 			if (u.isAbsolute()) {
-
 				final Document document;
-				if (((HashMap<String, Document>) elementRoot
-						.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href) == null) {
-					Logger.putLog("Accediendo a la declaraciÃ³n de accesibilidad en " + href, Check.class,
-							Logger.LOG_LEVEL_INFO);
-					document = CheckUtils.getRemoteDocument(href, href);
-					((HashMap<String, Document>) elementRoot
-							.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(href, document);
+				if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href) == null) {
+					Logger.putLog("Accediendo a la declaraciÃ³n de accesibilidad en " + href, Check.class, Logger.LOG_LEVEL_INFO);
+					document = CheckUtils.getRemoteDocument(href, href, 0);
+					((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(href, document);
 				} else {
-					document = ((HashMap<String, Document>) elementRoot
-							.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href);
+					document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href);
 				}
 				return document;
-
 			} else {
-
 				return getRelativeDocument(elementRoot, href);
-
 			}
 		} catch (Exception e) {
-
 			return getRelativeDocument(elementRoot, href);
-
 		}
-
 	}
 
-	private Document getRelativeDocument(final Element elementRoot, final String href)
-			throws MalformedURLException, IOException, SAXException {
-		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot))
-				: new URL((String) elementRoot.getUserData("url"));
+	/**
+	 * Gets the relative document.
+	 *
+	 * @param elementRoot the element root
+	 * @param href        the href
+	 * @return the relative document
+	 * @throws MalformedURLException the malformed URL exception
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 * @throws SAXException          the SAX exception
+	 */
+	private Document getRelativeDocument(final Element elementRoot, final String href) throws MalformedURLException, IOException, SAXException {
+		final URL documentUrl = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
 		final String remoteUrlStr = new URL(documentUrl, href).toString();
 		final Document document;
-		if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
-				.get(remoteUrlStr) == null) {
-			Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class,
-					Logger.LOG_LEVEL_INFO);
-			document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr);
-			((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT))
-					.put(remoteUrlStr, document);
+		if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr) == null) {
+			Logger.putLog("Accediendo a la declaración de accesibilidad en " + remoteUrlStr, Check.class, Logger.LOG_LEVEL_INFO);
+			document = CheckUtils.getRemoteDocument(documentUrl.toString(), remoteUrlStr, 0);
+			((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(remoteUrlStr, document);
 		} else {
-			document = ((HashMap<String, Document>) elementRoot
-					.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
+			document = ((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(remoteUrlStr);
 		}
 		return document;
 	}
 
+	/**
+	 * Function false paragraph list.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionFalseParagraphList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(),
-				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+		final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 		final int number = Integer.parseInt(checkCode.getFunctionNumber());
 		final String elementName = checkCode.getFunctionElement().isEmpty() ? "p" : checkCode.getFunctionElement();
-
 		String previousMatch = null;
 		boolean first = true;
 		Element checkedElement = elementGiven;
 		for (int i = 0; i < number; i++) {
-			if (checkedElement != null && checkedElement.getNodeName().equalsIgnoreCase(elementName)
-					&& !checkedElement.getParentNode().getNodeName().equalsIgnoreCase("ol")) {
+			if (checkedElement != null && checkedElement.getNodeName().equalsIgnoreCase(elementName) && !checkedElement.getParentNode().getNodeName().equalsIgnoreCase("ol")) {
 				final String text = EvaluatorUtility.getElementText(checkedElement);
 				final Matcher matcher = pattern.matcher(text);
 				if (!matcher.find()) {
@@ -4158,8 +4956,7 @@ public class Check {
 							}
 						} else if ("roman".equals(checkCode.getFunctionAttribute2())) {
 							match = matcher.group(0);
-							if (EvaluatorUtils.romanToDecimal(match)
-									- EvaluatorUtils.romanToDecimal(previousMatch) <= 0) {
+							if (EvaluatorUtils.romanToDecimal(match) - EvaluatorUtils.romanToDecimal(previousMatch) <= 0) {
 								return false;
 							}
 						} else {
@@ -4179,20 +4976,25 @@ public class Check {
 			}
 			checkedElement = EvaluatorUtils.getNextElement(checkedElement, false);
 		}
-
 		return true;
 	}
 
+	/**
+	 * Function has complex structure.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionHasComplexStructure(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList paragraphs = elementGiven.getElementsByTagName("p");
-
 		int cont = 0;
 		for (int i = 0; i < paragraphs.getLength(); i++) {
 			if (paragraphs.item(i).getTextContent().length() >= 80) {
 				cont++;
 			}
 		}
-
 		return cont >= Integer.parseInt(checkCode.getFunctionNumber());
 	}
 
@@ -4203,31 +5005,24 @@ public class Check {
 	 * *uno<br/>
 	 * *dos<br/>
 	 * *tres". Para ello, buscamos los elementos <br/>
-	 * hacia atrás y comprobamos que el texto que les sucede coincida con la
-	 * expresión regular para ver si tienen formato artificial de lista. En el caso
-	 * del último elemento, buscaremos el texto que precede al último elemento <br/>
-	 * analizado, ya que el primer elemento de la lista falsa no tiene por qué tener
-	 * un <br/>
+	 * hacia atrás y comprobamos que el texto que les sucede coincida con la expresión regular para ver si tienen formato artificial de lista. En el caso del último elemento, buscaremos el texto que
+	 * precede al último elemento <br/>
+	 * analizado, ya que el primer elemento de la lista falsa no tiene por qué tener un <br/>
 	 * previo.
 	 *
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
 	 */
 	private boolean functionFalseBrList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-		final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(),
-				Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
+		final Pattern pattern = Pattern.compile(checkCode.getFunctionValue(), Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 		final int number = Integer.parseInt(checkCode.getFunctionNumber());
-
 		final PropertiesManager pmgr = new PropertiesManager();
-		final List<String> inlineTags = Arrays
-				.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
-
+		final List<String> inlineTags = Arrays.asList(pmgr.getValue(IntavConstants.INTAV_PROPERTIES, "inline.tags.list").split(";"));
 		boolean first = true;
 		int order = 0;
 		int oldOrder = 0;
-
 		Element checkedElement = elementGiven;
 		for (int i = 0; i < number; i++) {
 			if (i < number - 1) {
@@ -4236,8 +5031,7 @@ public class Check {
 					if (!CheckUtils.isFalseBrNode(checkedElement, inlineTags, pattern, false)) {
 						return false;
 					} else if (checkCode.getFunctionAttribute1().equals("sorted")) {
-						order = getCurrentOrder(CheckUtils.getElementText(checkedElement, false, inlineTags),
-								checkCode.getFunctionValue());
+						order = getCurrentOrder(CheckUtils.getElementText(checkedElement, false, inlineTags), checkCode.getFunctionValue());
 						if (!first) {
 							if (order != oldOrder - 1) {
 								return false;
@@ -4257,8 +5051,7 @@ public class Check {
 				if (!CheckUtils.isFalseBrNode(checkedElement, inlineTags, pattern, true)) {
 					return false;
 				} else if (checkCode.getFunctionAttribute1().equals("sorted")) {
-					order = getCurrentOrder(CheckUtils.getElementText(checkedElement, true, inlineTags),
-							checkCode.getFunctionValue());
+					order = getCurrentOrder(CheckUtils.getElementText(checkedElement, true, inlineTags), checkCode.getFunctionValue());
 					if (!first) {
 						if (order != oldOrder - 1) {
 							return false;
@@ -4270,7 +5063,6 @@ public class Check {
 				}
 			}
 		}
-
 		return true;
 	}
 
@@ -4281,22 +5073,18 @@ public class Check {
 	 * <img /> uno<br/>
 	 * <img /> dos<br/>
 	 * <img /> tres". Para ello, buscamos los elementos <br/>
-	 * hacia atrás y comprobamos que el texto que les sucede coincida con la
-	 * expresión regular para ver si tienen formato artificial de lista. En el caso
-	 * del último elemento, buscaremos el texto que precede al último elemento <br/>
-	 * analizado, ya que el primer elemento de la lista falsa no tiene por qué tener
-	 * un <br/>
+	 * hacia atrás y comprobamos que el texto que les sucede coincida con la expresión regular para ver si tienen formato artificial de lista. En el caso del último elemento, buscaremos el texto que
+	 * precede al último elemento <br/>
+	 * analizado, ya que el primer elemento de la lista falsa no tiene por qué tener un <br/>
 	 * previo.
 	 *
-	 * @param checkCode
-	 * @param nodeNode
-	 * @param elementGiven
-	 * @return true si se detecta un uso incorrecto de br e imágenes (problema de
-	 *         accesibilidad), false en caso contrario
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true si se detecta un uso incorrecto de br e imágenes (problema de accesibilidad), false en caso contrario
 	 */
 	private boolean functionFalseBrImageList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int number = Integer.parseInt(checkCode.getFunctionNumber());
-
 		Element checkedElement = elementGiven;
 		int brs = 1;
 		if (checkedElement != null) {
@@ -4311,8 +5099,7 @@ public class Check {
 					if (checkedElement == null) {
 						checkedElement = (Element) elementGiven.getParentNode();
 						final Element firstChild = EvaluatorUtils.getFirstElement(checkedElement, false);
-						if ("img".equalsIgnoreCase(firstChild.getNodeName())
-								&& functionImgDimensionsLessThan(checkCode, firstChild, firstChild)) {
+						if ("img".equalsIgnoreCase(firstChild.getNodeName()) && functionImgDimensionsLessThan(checkCode, firstChild, firstChild)) {
 							brs++;
 						}
 						// Comprobamos si se ha alcanzado el número de brs
@@ -4329,22 +5116,33 @@ public class Check {
 		return brs == number;
 	}
 
+	/**
+	 * Check br image.
+	 *
+	 * @param checkCode      the check code
+	 * @param checkedElement the checked element
+	 * @return true, if successful
+	 */
 	private boolean checkBrImage(final CheckCode checkCode, final Element checkedElement) {
 		if (checkedElement != null) {
-			final Element nextElement = "br".equalsIgnoreCase(checkedElement.getNodeName())
-					? EvaluatorUtils.getNextElement(checkedElement, false)
+			final Element nextElement = "br".equalsIgnoreCase(checkedElement.getNodeName()) ? EvaluatorUtils.getNextElement(checkedElement, false)
 					: EvaluatorUtils.getFirstElement(checkedElement, false);
-			return nextElement != null && "img".equalsIgnoreCase(nextElement.getNodeName())
-					&& functionImgDimensionsLessThan(checkCode, nextElement, nextElement);
+			return nextElement != null && "img".equalsIgnoreCase(nextElement.getNodeName()) && functionImgDimensionsLessThan(checkCode, nextElement, nextElement);
 		} else {
 			return false;
 		}
 	}
 
+	/**
+	 * Gets the current order.
+	 *
+	 * @param text       the text
+	 * @param patternStr the pattern str
+	 * @return the current order
+	 */
 	private int getCurrentOrder(final String text, final String patternStr) {
 		final Pattern pattern = Pattern.compile(patternStr, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 		final Matcher matcher = pattern.matcher(text);
-
 		if (matcher.find()) {
 			return Integer.parseInt(matcher.group(1));
 		} else {
@@ -4352,10 +5150,16 @@ public class Check {
 		}
 	}
 
-	private boolean functionHasIncorrectTabindex(final CheckCode checkCode, final Node nodeNode,
-			final Element elementGiven) {
+	/**
+	 * Function has incorrect tabindex.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionHasIncorrectTabindex(final CheckCode checkCode, final Node nodeNode, final Element elementGiven) {
 		final List<Element> elementList = new ArrayList<>();
-
 		elementList.addAll(createElementList(elementGiven.getElementsByTagName("a")));
 		elementList.addAll(createElementList(elementGiven.getElementsByTagName("area")));
 		elementList.addAll(createElementList(elementGiven.getElementsByTagName("button")));
@@ -4363,7 +5167,6 @@ public class Check {
 		elementList.addAll(createElementList(elementGiven.getElementsByTagName("object")));
 		elementList.addAll(createElementList(elementGiven.getElementsByTagName("select")));
 		elementList.addAll(createElementList(elementGiven.getElementsByTagName("textarea")));
-
 		if (checkCode.getFunctionValue().equalsIgnoreCase(IntavConstants.NONE)) {
 			if (functionTabindexAtributte(elementList) == IntavConstants.TABINDEX_NONE) {
 				return true;
@@ -4377,12 +5180,17 @@ public class Check {
 				if (!areTabindexOrder(elementList)) {
 					return true;
 				}
-
 			}
 		}
 		return false;
 	}
 
+	/**
+	 * Are tabindex order.
+	 *
+	 * @param elementList the element list
+	 * @return true, if successful
+	 */
 	private boolean areTabindexOrder(List<Element> elementList) {
 		final List<Element> ordererList = orderElementsByPosition(elementList);
 		int previousTabindex = 0;
@@ -4395,16 +5203,27 @@ public class Check {
 		return true;
 	}
 
+	/**
+	 * Order elements by position.
+	 *
+	 * @param elementList the element list
+	 * @return the list
+	 */
 	private List<Element> orderElementsByPosition(List<Element> elementList) {
 		Collections.sort(elementList, new Comparator<Element>() {
 			public int compare(Element o1, Element o2) {
-				return ((Integer) o1.getUserData(IntavConstants.POSITION))
-						.compareTo(((Integer) o2.getUserData(IntavConstants.POSITION)));
+				return ((Integer) o1.getUserData(IntavConstants.POSITION)).compareTo(((Integer) o2.getUserData(IntavConstants.POSITION)));
 			}
 		});
 		return elementList;
 	}
 
+	/**
+	 * Creates the element list.
+	 *
+	 * @param nodeList the node list
+	 * @return the list
+	 */
 	private List<Element> createElementList(NodeList nodeList) {
 		final List<Element> elementList = new ArrayList<>();
 		if (nodeList != null) {
@@ -4415,11 +5234,16 @@ public class Check {
 		return elementList;
 	}
 
+	/**
+	 * Function tabindex atributte.
+	 *
+	 * @param nodeList the node list
+	 * @return the int
+	 */
 	// La lista tiene elementos con tabindex o no
 	private int functionTabindexAtributte(List<Element> nodeList) {
 		int countYes = 0;
 		int countNo = 0;
-
 		if (nodeList != null && !nodeList.isEmpty()) {
 			for (Element element : nodeList) {
 				if (element.hasAttribute("tabindex")) {
@@ -4437,9 +5261,16 @@ public class Check {
 		} else {
 			return IntavConstants.TABINDEX_NO_ELEMENTS;
 		}
-
 	}
 
+	/**
+	 * Function correct links.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionCorrectLinks(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList elementList = elementGiven.getElementsByTagName("a");
 		List<Node> elementHrefList = new ArrayList<>();
@@ -4448,18 +5279,15 @@ public class Check {
 				elementHrefList.add(elementList.item(i));
 			}
 		}
-
 		Map<String, List<DestinationPosition>> linksMap = new HashMap<>();
 		for (int i = 0; i < elementHrefList.size(); i++) {
 			List<DestinationPosition> destination = new ArrayList<>();
 			String linkText = EvaluatorUtils.getLinkText((Element) elementHrefList.get(i));
-			if (StringUtils.isNotEmpty(linkText)
-					&& !StringUtils.textMatchs(linkText, checkCode.getFunctionAttribute1())) {
+			if (StringUtils.isNotEmpty(linkText) && !StringUtils.textMatchs(linkText, checkCode.getFunctionAttribute1())) {
 				if (linksMap.get(linkText) != null) {
 					destination = linksMap.get(linkText);
 				}
-				DestinationPosition dp = new DestinationPosition(
-						elementHrefList.get(i).getAttributes().getNamedItem("href").getNodeValue(), i);
+				DestinationPosition dp = new DestinationPosition(elementHrefList.get(i).getAttributes().getNamedItem("href").getNodeValue(), i);
 				dp.setDestination(dp.getDestination().replaceAll("/$", "").replaceAll("^\\./", ""));
 				if (!destination.contains(dp)) {
 					destination.add(dp);
@@ -4467,36 +5295,38 @@ public class Check {
 				}
 			}
 		}
-
 		for (Map.Entry<String, List<DestinationPosition>> linksEntry : linksMap.entrySet()) {
 			for (DestinationPosition dp : linksEntry.getValue()) {
 				if (dp.getPosition() > 0) {
-					String previousDestination = elementHrefList.get(dp.getPosition() - 1).getAttributes()
-							.getNamedItem("href").getNodeValue();
+					String previousDestination = elementHrefList.get(dp.getPosition() - 1).getAttributes().getNamedItem("href").getNodeValue();
 					if (!previousDestination.equals(dp.getDestination())) {
 						return true;
 					}
 				}
 			}
 		}
-
 		return false;
 	}
 
+	/**
+	 * Function element percentage.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionElementPercentage(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		NodeList elementList = elementGiven.getElementsByTagName(checkCode.getFunctionAttribute1());
 		int attrEmptyNum = 0;
 		if (elementList != null && elementList.getLength() > 0) {
 			for (int i = 0; i < elementList.getLength(); i++) {
 				if (elementList.item(i).getAttributes().getNamedItem(checkCode.getFunctionAttribute2()) != null
-						&& StringUtils.isEmpty(elementList.item(i).getAttributes()
-								.getNamedItem(checkCode.getFunctionAttribute2()).getNodeValue().trim())) {
+						&& StringUtils.isEmpty(elementList.item(i).getAttributes().getNamedItem(checkCode.getFunctionAttribute2()).getNodeValue().trim())) {
 					attrEmptyNum++;
 				}
 			}
-			BigDecimal percentage = (new BigDecimal(attrEmptyNum))
-					.divide(new BigDecimal(elementList.getLength()), 2, BigDecimal.ROUND_HALF_UP)
-					.multiply(new BigDecimal(100));
+			BigDecimal percentage = (new BigDecimal(attrEmptyNum)).divide(new BigDecimal(elementList.getLength()), 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100));
 			if (percentage.compareTo(new BigDecimal(checkCode.getFunctionNumber())) >= 0) {
 				return true;
 			}
@@ -4504,16 +5334,21 @@ public class Check {
 		return false;
 	}
 
-	private boolean functionChildElementCharactersGreaterThan(CheckCode checkCode, Node nodeNode,
-			Element elementGiven) {
+	/**
+	 * Function child element characters greater than.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionChildElementCharactersGreaterThan(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList elementList = elementGiven.getElementsByTagName(checkCode.getFunctionElement());
 		final int charactersNumber = Integer.parseInt(checkCode.getFunctionValue());
-
 		if (elementList != null && elementList.getLength() > 0) {
 			for (int i = 0; i < elementList.getLength(); i++) {
 				String text = elementList.item(i).getTextContent();
-				text = Pattern.compile("[\\n\\r\\t ]{2,}", Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(text)
-						.replaceAll(" ");
+				text = Pattern.compile("[\\n\\r\\t ]{2,}", Pattern.CASE_INSENSITIVE | Pattern.DOTALL).matcher(text).replaceAll(" ");
 				if (text.length() > charactersNumber) {
 					return true;
 				}
@@ -4522,11 +5357,18 @@ public class Check {
 		return false;
 	}
 
+	/**
+	 * Function empty section.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionEmptySection(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		// Comprobamos si tiene contenido en los hermanos e hijos
 		Node nextSimbling = elementGiven.getNextSibling();
 		int isEmptyContent = CheckUtils.isEmptyDescendentContent(nextSimbling, elementGiven);
-
 		// Comprobamos si el contenido está en los hermanos del padre
 		if (isEmptyContent == IntavConstants.IS_EMPTY) {
 			Node parentNode = elementGiven.getParentNode();
@@ -4549,177 +5391,148 @@ public class Check {
 		}
 	}
 
+	/**
+	 * Function is animated gif.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	private boolean functionIsAnimatedGif(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
 		URL urlImage = null;
 		try {
-			URL url = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot))
-					: new URL((String) elementRoot.getUserData("url"));
+			URL url = CheckUtils.getBaseUrl(elementRoot) != null ? new URL(CheckUtils.getBaseUrl(elementRoot)) : new URL((String) elementRoot.getUserData("url"));
 			urlImage = new URL(url, elementGiven.getAttribute("src"));
-			if (elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL) != null
-					&& ((ArrayList<String>) elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL))
-							.contains(urlImage.toString())) {
+			if (elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL) != null && ((ArrayList<String>) elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL)).contains(urlImage.toString())) {
 				return false;
 			} else {
 				ImageReader reader = CheckUtils.getImageReader(elementGiven, urlImage);
-
 				if (reader != null && reader.getNumImages(true) > 1) {
 					return true;
 				}
 			}
 		} catch (Exception e) {
-			Logger.putLog("Error al verificar si es un gif animado: " + e.getMessage(), Check.class,
-					Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Error al verificar si es un gif animado: " + e.getMessage(), Check.class, Logger.LOG_LEVEL_ERROR);
 			if (elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL) == null) {
 				elementRoot.setUserData(IntavConstants.FAILED_GIFS_URL, new ArrayList<String>(), null);
 			}
-			((ArrayList<String>) elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL))
-					.add(elementGiven.getAttribute("src"));
+			((ArrayList<String>) elementRoot.getUserData(IntavConstants.FAILED_GIFS_URL)).add(elementGiven.getAttribute("src"));
 		}
-
 		return false;
 	}
 
-	/******************************************************************************/
+	/**
+	 * ***************************************************************************.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
 	/******************************************************************************/
 	/***************
 	 * NUEVAS FUNCIONES METODOLOGIA 2012 V2017
 	 **********************/
 	/******************************************************************************/
 	/******************************************************************************/
-
 	/**
 	 * Comprobación de la existencia de encabezados marcados WAI-ARIA
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si no hay encabezados. false en caso de
-	 *         encontrar algún encabezado WAI-ARIA
+	 * @return true si falla, es decir si no hay encabezados. false en caso de encontrar algún encabezado WAI-ARIA
 	 */
 	private boolean functionWAIHeadersMissing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
 		boolean fail = true;
-
 		// Todos los elementos del DOM
 		NodeList allElements = elementGiven.getElementsByTagName("*");
 		for (int i = 0; i < allElements.getLength(); i++) {
 			Element item = (Element) allElements.item(i);
 			if (item.hasAttributes()) {
 				for (int j = 0; j < item.getAttributes().getLength(); j++) {
-					if ("role".equals(item.getAttributes().item(j).getNodeName())
-							&& "heading".equals(item.getAttributes().item(j).getNodeValue())) {
+					if ("role".equals(item.getAttributes().item(j).getNodeName()) && "heading".equals(item.getAttributes().item(j).getNodeValue())) {
 						fail = false;
 						break;
 					}
 				}
 			}
 		}
-
 		return fail;
 	}
 
 	/**
-	 * Comprueba si existe encabezado marcado WAI-ARIA de primer nivel
-	 * 
+	 * Comprueba si existe encabezado marcado WAI-ARIA de primer nivel.
+	 *
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si existe encabezado de primer nivel. false
-	 *         en caso de encontrar encabezado de nivel 1 WAI-ARIA
+	 * @return true si falla, es decir si existe encabezado de primer nivel. false en caso de encontrar encabezado de nivel 1 WAI-ARIA
 	 */
 	private boolean functionWAIHeadersLevel1Missing(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
 		boolean fail = true;
-
 		// Todos los elementos del DOM
 		NodeList allElements = elementGiven.getElementsByTagName("*");
 		for (int i = 0; i < allElements.getLength(); i++) {
 			Element item = (Element) allElements.item(i);
 			if (item.hasAttributes()) {
-
 				Node roleAttribute = item.getAttributes().getNamedItem("role");
 				Node ariaLevelAttribute = item.getAttributes().getNamedItem("aria-level");
-
-				if (roleAttribute != null && "heading".equals(roleAttribute.getNodeValue())
-						&& ariaLevelAttribute != null && "1".equals(ariaLevelAttribute.getNodeValue())) {
+				if (roleAttribute != null && "heading".equals(roleAttribute.getNodeValue()) && ariaLevelAttribute != null && "1".equals(ariaLevelAttribute.getNodeValue())) {
 					fail = false;
 					break;
 				}
 			}
 		}
-
 		return fail;
 	}
 
 	/**
-	 * Comprueba si un elemento con el atributo "aria-labelledby" hace referencia a
-	 * un elemento existente en el documento.
+	 * Comprueba si un elemento con el atributo "aria-labelledby" hace referencia a un elemento existente en el documento.
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir no se encuentra el elelemento con el id del
-	 *         atributo aria-labelledby. false en caso de encontrar el elemento con
-	 *         el id.
+	 * @return true si falla, es decir no se encuentra el elelemento con el id del atributo aria-labelledby. false en caso de encontrar el elemento con el id.
 	 */
 	private boolean functionAriaLabelledbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
 		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
-
 		final Document document = elementGiven.getOwnerDocument();
-
 		String[] references = ariaLabelledby.split("\\s");
-
 		boolean fail = true;
-
 		for (int i = 0; i < references.length; i++) {
-
 			Element labelledBy = document.getElementById(references[i]);
 			if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
 				fail = false;
 				break;
 			}
-
 		}
-
 		return fail;
-
 	}
 
 	/**
-	 * Comprueba si un elemento con el atributo "aria-describedby" hace referencia a
-	 * un elemento existente en el documento.
+	 * Comprueba si un elemento con el atributo "aria-describedby" hace referencia a un elemento existente en el documento.
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir no se encuentra el elelemento con el id del
-	 *         atributo aria-labelledby. false en caso de encontrar el elemento con
-	 *         el id.
+	 * @return true si falla, es decir no se encuentra el elelemento con el id del atributo aria-labelledby. false en caso de encontrar el elemento con el id.
 	 */
 	private boolean functionAriaDescribedbyReferences(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
 		final String ariaLabelledby = elementGiven.getAttribute("aria-describedby");
-
 		final Document document = elementGiven.getOwnerDocument();
-
 		String[] references = ariaLabelledby.split("\\s");
-
 		boolean fail = true;
-
 		for (int i = 0; i < references.length; i++) {
-
 			Element labelledBy = document.getElementById(references[i]);
 			if (labelledBy != null && !StringUtils.normalizeWhiteSpaces(labelledBy.getTextContent()).trim().isEmpty()) {
 				fail = false;
 				break;
 			}
-
 		}
-
 		return fail;
-
 	}
 
 	/**
@@ -4728,86 +5541,61 @@ public class Check {
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si la longitud es superior a 150. false en
-	 *         caso contrario.
+	 * @return true si falla, es decir si la longitud es superior a 150. false en caso contrario.
 	 */
 	private boolean attributeLength(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = true;
-
 		if (nodeNode == null) {
 			return false;
 		}
-
 		String stringValue = nodeNode.getNodeValue();
 		fail = stringValue.length() > 150;
-
 		return fail;
 	}
 
 	/**
-	 * Comprueba si el contenido del elemento al que hace referencia el elemento
-	 * "aria-labelledby" tiene una longiutud superior a 150 caracteres.
+	 * Comprueba si el contenido del elemento al que hace referencia el elemento "aria-labelledby" tiene una longiutud superior a 150 caracteres.
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir si la longitud es superior a 150. false en
-	 *         caso contrario.
+	 * @return true si falla, es decir si la longitud es superior a 150. false en caso contrario.
 	 */
 	private boolean attributeLengthLabeledBy(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = false;
-
 		final String ariaLabelledby = elementGiven.getAttribute("aria-labelledby");
-
 		final Document document = elementGiven.getOwnerDocument();
-
 		String[] references = ariaLabelledby.split("\\s");
-
 		for (int i = 0; i < references.length; i++) {
 			Element elementById = document.getElementById(references[i]);
-
 			if (elementById != null) {
-
 				String textContent = getTextContent(elementById);
-
 				if (textContent != null && textContent.length() > 150) {
-
 					fail = true;
 					break;
 				}
 			}
 		}
-
 		return fail;
 	}
 
 	/**
-	 * Comprueba que existe contenido a continación de un encabezado WAI-ARIA y que
-	 * no lo sigue otro encabezado del mismo nive sin contenido de por medio.
+	 * Comprueba que existe contenido a continación de un encabezado WAI-ARIA y que no lo sigue otro encabezado del mismo nive sin contenido de por medio.
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si el siguiente elemento es otro encabezado
-	 *         WAI. false en caso contrario.
+	 * @return true si falla, es decir, si el siguiente elemento es otro encabezado WAI. false en caso contrario.
 	 */
-	private boolean functionFollowingWAIHeadersWithoutContent(CheckCode checkCode, Node nodeNode,
-			Element elementGiven) {
-
+	private boolean functionFollowingWAIHeadersWithoutContent(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		boolean fail = false;
-
 		Element nextSibling = EvaluatorUtils.getNextElement(elementGiven, false);
-
 		int ariaLevel = Integer.parseInt(elementGiven.getAttribute("aria-level"));
-
-		if (nextSibling != null && "heading".equals(nextSibling.getAttribute("role"))
-				&& nextSibling.getAttribute("aria-level") != null
+		if (nextSibling != null && "heading".equals(nextSibling.getAttribute("role")) && nextSibling.getAttribute("aria-level") != null
 				&& ariaLevel == Integer.parseInt(nextSibling.getAttribute("aria-level"))) {
 			fail = true;
 		}
-
 		return fail;
-
 	}
 
 	/**
@@ -4816,102 +5604,71 @@ public class Check {
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si no se sigue la secuencia. false en caso
-	 *         contrario.
+	 * @return true si falla, es decir, si no se sigue la secuencia. false en caso contrario.
 	 */
 	private boolean skipWaiHeadersLevel(CheckCode checkCode, Node nodeNode, Element elementGiven) {
-
 		boolean failPrevious = false;
-
 		boolean failNext = false;
-
 		// Comprobar que se sigue el orden
-
 		// Nivel de aria del anterior
 		int ariaLevel = Integer.parseInt(elementGiven.getAttribute("aria-level"));
-
 		// Comprobamos que el anterior es del nivel inferior
-
 		// Comprobamos que no existe uno igual o de otro nivel superior
 		Element current = elementGiven;
-
 		while ((current = EvaluatorUtils.getPreviousElement(current, false)) != null) {
-
 			// Si el encabezado anterior no es del mismo nivel o de una menos
 			// entonces falla (p.e: 2-->2 ok, 2-->4 ko)
 			if ("heading".equals(current.getAttribute("role"))) {
-				if (current.getAttribute("aria-level") != null
-						&& ariaLevel != Integer.parseInt(current.getAttribute("aria-level"))
+				if (current.getAttribute("aria-level") != null && ariaLevel != Integer.parseInt(current.getAttribute("aria-level"))
 						&& ariaLevel - 1 != Integer.parseInt(current.getAttribute("aria-level"))) {
 					failPrevious = true;
 				}
 				break;
 			}
-
 		}
-
 		// Comprobamos que el siguiente (si existe) es del nivel superior
-
 		current = elementGiven;
-
 		while ((current = EvaluatorUtils.getNextElement(current, false)) != null) {
-
 			// Si el encabezado siguiente no es del mismo nivel o de uno
 			// superior
 			// entonces falla (p.e: 2-->2 ok, 2-->4 ko)
 			if ("heading".equals(current.getAttribute("role"))) {
-				if (current.getAttribute("aria-level") != null
-						&& ariaLevel != Integer.parseInt(current.getAttribute("aria-level"))
+				if (current.getAttribute("aria-level") != null && ariaLevel != Integer.parseInt(current.getAttribute("aria-level"))
 						&& ariaLevel + 1 != Integer.parseInt(current.getAttribute("aria-level"))) {
 					failNext = true;
 				}
 				break; // Ya encontramos el siguiente encabezado y no seguimos
 			}
 		}
-
 		return (failPrevious || failNext);
 	}
 
 	/**
-	 * Cuenta el número de elementos existentes con un atributo determinado y
-	 * comprueba si se supera el máximo indicado.
+	 * Cuenta el número de elementos existentes con un atributo determinado y comprueba si se supera el máximo indicado.
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si se supera el número elementos. false en
-	 *         caso contrario
+	 * @return true si falla, es decir, si se supera el número elementos. false en caso contrario
 	 */
 	private boolean functionElementCountAttributeValue(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int limit = Integer.parseInt(checkCode.getFunctionNumber());
-
 		final String compare = checkCode.getFunctionPosition().isEmpty() ? "greater" : checkCode.getFunctionPosition();
-
 		int counter = 0;
-
 		// Todos los hijos
 		NodeList nodeList = elementGiven.getElementsByTagName("*");
-
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Element element = (Element) nodeList.item(i);
 			if (element.hasAttribute(checkCode.getFunctionAttribute1())) {
-
 				// Si está indicado el attribute2 se comprueba además que el
 				// atributo tiene el valor indicado en este campo
-
-				if (!StringUtils.isEmpty(checkCode.getFunctionAttribute2()) && checkCode.getFunctionAttribute2()
-						.equals(element.getAttribute(checkCode.getFunctionAttribute1()))) {
-
+				if (!StringUtils.isEmpty(checkCode.getFunctionAttribute2()) && checkCode.getFunctionAttribute2().equals(element.getAttribute(checkCode.getFunctionAttribute1()))) {
 					counter++;
-
 				} else {
-
 					counter++;
-
 				}
 			}
 		}
-
 		if ("greater".equalsIgnoreCase(compare)) {
 			// Si la comparación es mayor damos un error si el número de
 			// elementos es mayor que el valor indicado
@@ -4924,35 +5681,26 @@ public class Check {
 	}
 
 	/**
-	 * Comprueba si en un documento existe un formulario de contacto. Ampliación de
-	 * la comprobación de forma de contacto para ver si la página de accesibilidad
-	 * lo tiene ella misma incluido.
+	 * Comprueba si en un documento existe un formulario de contacto. Ampliación de la comprobación de forma de contacto para ver si la página de accesibilidad lo tiene ella misma incluido.
 	 * 
 	 * @param checkCode    Información del check
 	 * @param nodeNode     Nodo
 	 * @param elementGiven Elemento
-	 * @return true si falla, es decir, si no se consigue detectar el formulario.
-	 *         False en caso contrario.
+	 * @return true si falla, es decir, si no se consigue detectar el formulario. False en caso contrario.
 	 */
 	private boolean functionAccessibilityContactForm(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
-		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links,
-				checkCode.getFunctionValue());
-
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, checkCode.getFunctionValue());
 		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
-
 		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
-			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(),
-					null);
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
 		}
-
 		if (accessibilityLinks.isEmpty()) {
 			// Si no hay enlaces es porque estamos en la página de accesibilidad
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
 			// esta)
 			try {
-				return !AccesibilityDeclarationCheckUtils.hasContactExtended(elementGiven.getOwnerDocument(),
-						checkCode.getFunctionAttribute1());
+				return !AccesibilityDeclarationCheckUtils.hasContactExtended(elementGiven.getOwnerDocument(), checkCode.getFunctionAttribute1());
 			} catch (Exception e) {
 				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 			}
@@ -4961,26 +5709,23 @@ public class Check {
 			boolean hasContact = false;
 			for (Element accessibilityLink : accessibilityLinks) {
 				try {
-					final Document document = getAccesibilityDocument(elementRoot,
-							accessibilityLink.getAttribute("href"));
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 					if (document != null) {
-						hasContact |= AccesibilityDeclarationCheckUtils.hasContactExtended(document,
-								checkCode.getFunctionAttribute1());
+						hasContact |= AccesibilityDeclarationCheckUtils.hasContactExtended(document, checkCode.getFunctionAttribute1());
 					}
 				} catch (Exception e) {
 					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
 				}
 			}
-
 			return !hasContact;
 		}
 	}
 
 	/**
-	 * Devuelve el texto de un elemento y sus hijos
-	 * 
-	 * @param element
-	 * @return
+	 * Devuelve el texto de un elemento y sus hijos.
+	 *
+	 * @param element the element
+	 * @return the text content
 	 */
 	private String getTextContent(Element element) {
 		NodeList nl = element.getChildNodes();
@@ -4992,15 +5737,12 @@ public class Check {
 			// <strong>texto</strong> --> texto
 			case Node.ELEMENT_NODE:
 				Element nodeElement = (Element) node;
-
 				if (nodeElement.hasAttribute("alt")) {
 					content.append(nodeElement.getAttribute("alt"));
 				}
-
 				if (nodeElement.hasAttribute("title")) {
 					content.append(nodeElement.getAttribute("title"));
 				}
-
 				content.append(getTextContent(nodeElement));
 				break;
 			case Node.TEXT_NODE:
@@ -5011,6 +5753,11 @@ public class Check {
 		return content.toString().trim();
 	}
 
+	/**
+	 * Gets the vector code.
+	 *
+	 * @return the vector code
+	 */
 	public List<CheckCode> getVectorCode() {
 		return vectorCode;
 	}
