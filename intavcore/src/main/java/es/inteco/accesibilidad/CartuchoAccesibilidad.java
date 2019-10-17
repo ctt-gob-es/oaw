@@ -15,6 +15,12 @@
 ******************************************************************************/
 package es.inteco.accesibilidad;
 
+import java.sql.Connection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.CheckAccessibility;
 import es.inteco.common.IntavConstants;
@@ -28,12 +34,6 @@ import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.Cartucho;
 import es.inteco.plugin.dao.DataBaseManager;
-
-import java.sql.Connection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Implementación de un cartucho que analiza las urls, así como el contenido de
