@@ -12,8 +12,11 @@
 ******************************************************************************/
 package es.gob.oaw.basicservice;
 
+import java.sql.Connection;
+import java.text.MessageFormat;
+import java.util.Collections;
+
 import es.gob.oaw.MailService;
-import es.gob.oaw.rastreador2.action.comun.ConectividadAction;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -23,46 +26,83 @@ import es.inteco.rastreador2.actionform.semillas.ProxyForm;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.utils.CrawlerUtils;
 
-import java.sql.Connection;
-import java.text.MessageFormat;
-import java.util.Collections;
-
 /**
- * Clase para el envío de correos desde el servicio de diagnóstico. Utiliza a su
- * vez el servicio MailService
+ * Clase para el envío de correos desde el servicio de diagnóstico. Utiliza a su vez el servicio MailService
  */
 public class BasicServiceMailService {
-
+	/** The Constant OBSERVATORIO_UNE_2012_VERSIÓN_2_SIN_ENLACES_ROTOS. */
+	private static final String OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (versión 2 sin comprobar enlaces rotos)";
+	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS. */
+	private static final String OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (antigua sin comprobar enlaces rotos)";
+	/** The Constant OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS. */
+	private static final String OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS = "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
+	/** The Constant OBSERVATORIO_ACCESIBILIDAD. */
+	private static final String OBSERVATORIO_ACCESIBILIDAD = "Observatorio Accesibilidad (beta)";
+	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
+	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta sin comprobar enlaces rotos)";
+	/** The Constant OBSERVATORIO_UNE_EN2019. */
+	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019 (beta)";
+	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
+	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (beta sin comprobar enlaces rotos)";
+	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
+	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
+	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
+	private static final String OBSERVATORIO_UNE_2012_ANTIGUA = "Observatorio UNE 2012 (antigua)";
+	/** The Constant OBSERVATORIO_UNE_2004. */
+	private static final String OBSERVATORIO_UNE_2004 = "Observatorio UNE 2004";
+	/** The pmgr. */
 	private final PropertiesManager pmgr;
+	/** The mail service. */
 	private final MailService mailService;
 
+	/**
+	 * Instantiates a new basic service mail service.
+	 */
 	public BasicServiceMailService() {
 		pmgr = new PropertiesManager();
 		mailService = new MailService();
 	}
 
-	public void sendBasicServiceReport(final BasicServiceForm basicServiceForm, final String attachUrl,
-			final String attachName) {
-		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()),
-				getMailSubject(basicServiceForm.getReport()), getMailBody(basicServiceForm), attachUrl, attachName);
+	/**
+	 * Send basic service report.
+	 *
+	 * @param basicServiceForm the basic service form
+	 * @param attachUrl        the attach url
+	 * @param attachName       the attach name
+	 */
+	public void sendBasicServiceReport(final BasicServiceForm basicServiceForm, final String attachUrl, final String attachName) {
+		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), getMailSubject(basicServiceForm.getReport()), getMailBody(basicServiceForm), attachUrl, attachName);
 	}
 
+	/**
+	 * Send basic service error message.
+	 *
+	 * @param basicServiceForm the basic service form
+	 * @param message          the message
+	 */
 	public void sendBasicServiceErrorMessage(final BasicServiceForm basicServiceForm, final String message) {
 		final String subject = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.error.subject");
 		mailService.sendMail(Collections.singletonList(basicServiceForm.getEmail()), subject, message);
 	}
 
+	/**
+	 * Gets the mail subject.
+	 *
+	 * @param reportType the report type
+	 * @return the mail subject
+	 */
 	private String getMailSubject(final String reportType) {
 		final String message = pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.subject");
-		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType)
-				|| Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
-			return MessageFormat.format(message, "Observatorio UNE 2004");
-		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)
-				|| Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
-			return MessageFormat.format(message, "Observatorio UNE 2012 (antigua)");
-		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)
-				|| Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
-			return MessageFormat.format(message, "Observatorio UNE 2012 (versión 2)");
+		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType) || Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
+			return MessageFormat.format(message, OBSERVATORIO_UNE_2004);
+		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType) || Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
+			return MessageFormat.format(message, OBSERVATORIO_UNE_2012_ANTIGUA);
+		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType) || Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
+			return MessageFormat.format(message, OBSERVATORIO_UNE_2012_VERSION_2);
+		} else if (Constants.REPORT_OBSERVATORY_4.equals(reportType) || Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(reportType)) {
+			return MessageFormat.format(message, OBSERVATORIO_UNE_EN2019);
+		} else if (Constants.REPORT_OBSERVATORY_5.equals(reportType) || Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(reportType)) {
+			return MessageFormat.format(message, OBSERVATORIO_ACCESIBILIDAD);
 		} else if ("une".equals(reportType)) {
 			return MessageFormat.format(message, "UNE 139803");
 		} else {
@@ -70,56 +110,63 @@ public class BasicServiceMailService {
 		}
 	}
 
+	/**
+	 * Gets the mail body.
+	 *
+	 * @param basicServiceForm the basic service form
+	 * @return the mail body
+	 */
 	private String getMailBody(final BasicServiceForm basicServiceForm) {
 		final String text;
 		if (basicServiceForm.isContentAnalysis()) {
-			text = MessageFormat.format(
-					pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"),
-					basicServiceForm.getUser(), reportToString(basicServiceForm.getReport()));
+			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"), basicServiceForm.getUser(),
+					reportToString(basicServiceForm.getReport()));
 		} else {
-			final String inDirectory = basicServiceForm.isInDirectory()
-					? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
+			final String inDirectory = basicServiceForm.isInDirectory() ? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
 					: pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
-
 			String proxyActive = "No";
-
 			try (Connection c = DataBaseManager.getConnection()) {
 				ProxyForm proxy = ProxyDAO.getProxy(c);
-
 				proxyActive = proxy.getStatus() > 0 ? "Sí" : "No";
-
 				DataBaseManager.closeConnection(c);
 			} catch (Exception e) {
 				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
-
-			text = MessageFormat.format(
-					pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"),
-					basicServiceForm.getUser(), basicServiceForm.getDomain(), basicServiceForm.getProfundidad(),
-					basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()),
-					proxyActive);
-
+			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory"), basicServiceForm.getUser(), basicServiceForm.getDomain(),
+					basicServiceForm.getProfundidad(), basicServiceForm.getAmplitud(), inDirectory, reportToString(basicServiceForm.getReport()), proxyActive);
 		}
-
 		return text;
 	}
 
+	/**
+	 * Report to string.
+	 *
+	 * @param reportType the report type
+	 * @return the string
+	 */
 	private String reportToString(final String reportType) {
 		if (Constants.REPORT_OBSERVATORY.equals(reportType) || Constants.REPORT_OBSERVATORY_FILE.equals(reportType)) {
-			return "Observatorio UNE 2004";
-		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)) {
-			return "Observatorio UNE 2012 (antigua)";
+			return OBSERVATORIO_UNE_2004;
 		} else if (Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(reportType)) {
-			return "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
+			return OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS;
+		} else if (Constants.REPORT_OBSERVATORY_2.equals(reportType)) {
+			return OBSERVATORIO_UNE_2012_ANTIGUA;
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(reportType)) {
-			return "Observatorio UNE 2012 (antigua sin comprobar enlaces rotos)";
+			return OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS;
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(reportType)) {
-			return "Observatorio UNE 2012 (versión 2)";
+			return OBSERVATORIO_UNE_2012_VERSION_2;
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(reportType)) {
-			return "Observatorio UNE 2012 (versión 2 sin comprobar enlaces rotos)";
+			return OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS;
+		} else if (Constants.REPORT_OBSERVATORY_4.equals(reportType)) {
+			return OBSERVATORIO_UNE_EN2019;
+		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(reportType)) {
+			return OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS;
+		} else if (Constants.REPORT_OBSERVATORY_5.equals(reportType)) {
+			return OBSERVATORIO_ACCESIBILIDAD;
+		} else if (Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(reportType)) {
+			return OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS;
 		} else {
 			return reportType;
 		}
 	}
-
 }

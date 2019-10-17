@@ -41,12 +41,36 @@ Telephone: (416) 978-4360
 
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.html.HTMLDocument;
+
 import com.opensymphony.oscache.base.NeedsRefreshException;
 
 import es.gob.oaw.css.CSSProblem;
 import es.gob.oaw.css.utils.CSSUtils;
 import es.gob.oaw.css.utils.ImportedCSSExtractor;
-import es.inteco.common.*;
+import es.inteco.common.CheckAccessibility;
+import es.inteco.common.CheckFunctionConstants;
+import es.inteco.common.CssValidationError;
+import es.inteco.common.IntavConstants;
+import es.inteco.common.ValidationError;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.comun.Incidencia;
@@ -57,30 +81,26 @@ import es.inteco.intav.persistence.Analysis;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.html.HTMLDocument;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.sql.Connection;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
- *
+ * The Class Evaluator.
  */
 public class Evaluator {
 
+	/** The Constant ALL_HTML_VALIDATION_ERRORS. */
 	private static final String ALL_HTML_VALIDATION_ERRORS = "_ALL_ERRORS_";
 
+	/** The x path generator. */
 	private final XPathGenerator xPathGenerator = new XPathGenerator();
 
 	// evaluates the given file for accessibility problems
+	/**
+	 * Evaluate.
+	 *
+	 * @param checkAccesibility the check accesibility
+	 * @param language          the language
+	 * @return the evaluation
+	 */
 	// filename - URL of the page
 	public Evaluation evaluate(final CheckAccessibility checkAccesibility, final String language) {
 		try {
@@ -100,11 +120,26 @@ public class Evaluator {
 
 	// evaluates the given file for accessibility problems from the crawler
 	// application
+	/**
+	 * Evaluate content.
+	 *
+	 * @param checkAccesibility the check accesibility
+	 * @param language          the language
+	 * @return the evaluation
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	// filename - URL of the page
 	public Evaluation evaluateContent(final CheckAccessibility checkAccesibility, final String language) throws UnsupportedEncodingException {
 		return evaluateWorkFromContent(checkAccesibility, language);
 	}
 
+	/**
+	 * Evaluate work.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @param language           the language
+	 * @return the evaluation
+	 */
 	private Evaluation evaluateWork(final CheckAccessibility checkAccessibility, final String language) {
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 
@@ -139,6 +174,14 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Evaluate work from content.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @param language           the language
+	 * @return the evaluation
+	 * @throws UnsupportedEncodingException the unsupported encoding exception
+	 */
 	private Evaluation evaluateWorkFromContent(final CheckAccessibility checkAccessibility, final String language) throws UnsupportedEncodingException {
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 		final Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
@@ -200,6 +243,16 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Apply evaluation.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @param checksSelected     the checks selected
+	 * @param allChecks          the all checks
+	 * @param docHtml            the doc html
+	 * @param language           the language
+	 * @return the evaluation
+	 */
 	private Evaluation applyEvaluation(final CheckAccessibility checkAccessibility, final List<Integer> checksSelected, final AllChecks allChecks, final Document docHtml, final String language) {
 		// make sure there is at least one check in our vector
 		if (checksSelected.isEmpty()) {
@@ -225,6 +278,13 @@ public class Evaluator {
 		return null;
 	}
 
+	/**
+	 * Creates the check list.
+	 *
+	 * @param checkAccessibility the check accessibility
+	 * @param guideline          the guideline
+	 * @return the list
+	 */
 	private List<Integer> createCheckList(final CheckAccessibility checkAccessibility, final Guideline guideline) {
 		final List<Integer> checksSelected = new ArrayList<>();
 
@@ -256,6 +316,13 @@ public class Evaluator {
 
 	// create an index that links each element to its required checks
 
+	/**
+	 * Creates the element checks links.
+	 *
+	 * @param checksSelected the checks selected
+	 * @param allChecks      the all checks
+	 * @return the map
+	 */
 	private Map<String, List<Check>> createElementChecksLinks(final List<Integer> checksSelected, final AllChecks allChecks) {
 		final Map<String, List<Check>> elementsMap = new HashMap<>();
 		for (Integer integerSelectedCheck : checksSelected) {
@@ -303,6 +370,15 @@ public class Evaluator {
 		return elementsMap;
 	}
 
+	/**
+	 * Gets the evaluation.
+	 *
+	 * @param checkAccesibility the check accesibility
+	 * @param nodeHTML          the node HTML
+	 * @param docHtml           the doc html
+	 * @param elementsMap       the elements map
+	 * @return the evaluation
+	 */
 	private Evaluation getEvaluation(final CheckAccessibility checkAccesibility, final Node nodeHTML, final Document docHtml, final Map<String, List<Check>> elementsMap) {
 		final boolean isCrawling = checkAccesibility.getIdRastreo() != 0;
 
@@ -342,6 +418,15 @@ public class Evaluator {
 		return evaluation;
 	}
 
+	/**
+	 * Adds the incidence to list.
+	 *
+	 * @param node          the node
+	 * @param check         the check
+	 * @param evaluation    the evaluation
+	 * @param incidenceList the incidence list
+	 * @param isCrawling    the is crawling
+	 */
 	private void addIncidenceToList(final Node node, final Check check, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
 		final PropertiesManager properties = new PropertiesManager();
 		final SimpleDateFormat format = new SimpleDateFormat(properties.getValue("intav.properties", "complet.date.format.ymd"));
@@ -362,10 +447,25 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Adds the incidence.
+	 *
+	 * @param eval          the eval
+	 * @param prob          the prob
+	 * @param incidenceList the incidence list
+	 */
 	private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList) {
 		addIncidence(eval, prob, incidenceList, es.inteco.intav.negocio.SourceManager.getSourceInfo(prob));
 	}
 
+	/**
+	 * Adds the incidence.
+	 *
+	 * @param eval          the eval
+	 * @param prob          the prob
+	 * @param incidenceList the incidence list
+	 * @param text          the text
+	 */
 	private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList, final String text) {
 		final Incidencia incidencia = new Incidencia();
 
@@ -378,6 +478,15 @@ public class Evaluator {
 		incidenceList.add(incidencia);
 	}
 
+	/**
+	 * Perform evaluation.
+	 *
+	 * @param node          the node
+	 * @param vectorChecks  the vector checks
+	 * @param evaluation    the evaluation
+	 * @param incidenceList the incidence list
+	 * @param isCrawling    the is crawling
+	 */
 	// Realiza la evaluación de un conjunto de checks sobre un nodo
 	private void performEvaluation(final Node node, final List<Check> vectorChecks, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
 		// keep track of the checks that have run (needed for prerequisites)
@@ -391,6 +500,16 @@ public class Evaluator {
 		performEvaluationCSSChecks(node, vectorChecks, evaluation, incidenceList, vectorChecksRun);
 	}
 
+	/**
+	 * Perform evaluation HTML checks.
+	 *
+	 * @param node            the node
+	 * @param vectorChecks    the vector checks
+	 * @param evaluation      the evaluation
+	 * @param incidenceList   the incidence list
+	 * @param isCrawling      the is crawling
+	 * @param vectorChecksRun the vector checks run
+	 */
 	private void performEvaluationHTMLChecks(Node node, List<Check> vectorChecks, Evaluation evaluation, List<Incidencia> incidenceList, boolean isCrawling, List<Integer> vectorChecksRun) {
 		for (Check check : vectorChecks) {
 			// Comprobamos que el check está activo
@@ -458,6 +577,13 @@ public class Evaluator {
 		} // end for (Check check : vectorChecks)
 	}
 
+	/**
+	 * Adds the br incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 */
 	private void addBrIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
 		final NodeList nodeList = evaluation.getHtmlDoc().getElementsByTagName("br");
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -472,6 +598,13 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Adds the tab index incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 */
 	private void addTabIndexIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
 		final NodeList nodeList = evaluation.getHtmlDoc().getElementsByTagName("*");
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -495,6 +628,13 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Adds the header nesting incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 */
 	private void addHeaderNestingIncidences(Evaluation evaluation, Check check, List<Incidencia> incidenceList) {
 		for (int i = 1; i < 7; i++) {
 			// Obtenemos los encabezados
@@ -513,6 +653,15 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Perform evaluation CSS checks.
+	 *
+	 * @param node            the node
+	 * @param vectorChecks    the vector checks
+	 * @param evaluation      the evaluation
+	 * @param incidenceList   the incidence list
+	 * @param vectorChecksRun the vector checks run
+	 */
 	private void performEvaluationCSSChecks(Node node, List<Check> vectorChecks, Evaluation evaluation, List<Incidencia> incidenceList, List<Integer> vectorChecksRun) {
 		for (Check check : vectorChecks) {
 			if ("html".equalsIgnoreCase(node.getNodeName()) && "css".equalsIgnoreCase(check.getTriggerElement())) {
@@ -547,6 +696,14 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Adds the broken links incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 * @return the list
+	 */
 	private List<Incidencia> addBrokenLinksIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
 		final List<Element> brokenLinks;
 		final String scope = check.getVectorCode().get(0).getFunctionAttribute1();
@@ -576,6 +733,14 @@ public class Evaluator {
 		return incidenceList;
 	}
 
+	/**
+	 * Adds the language incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 * @return the list
+	 */
 	private List<Incidencia> addLanguageIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
 		final Problem problem = new Problem();
 		problem.setCheck(check);
@@ -603,6 +768,15 @@ public class Evaluator {
 		return incidenceList;
 	}
 
+	/**
+	 * Adds the validation incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 * @param id            the id
+	 * @return the list
+	 */
 	private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final String id) {
 		final List<Incidencia> validationProblems = new ArrayList<>();
 
@@ -635,6 +809,14 @@ public class Evaluator {
 		return validationProblems;
 	}
 
+	/**
+	 * Adds the css validation incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 * @return the list
+	 */
 	// Añade los problemas de validación de CSS
 	private List<Incidencia> addCssValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
 		final List<Incidencia> validationProblems = new ArrayList<>();
@@ -666,6 +848,14 @@ public class Evaluator {
 		return validationProblems;
 	}
 
+	/**
+	 * Adds the css incidences.
+	 *
+	 * @param evaluation    the evaluation
+	 * @param check         the check
+	 * @param incidenceList the incidence list
+	 * @param cssProblems   the css problems
+	 */
 	private void addCssIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final List<CSSProblem> cssProblems) {
 		if (cssProblems != null) {
 			for (CSSProblem cssProblem : cssProblems) {
@@ -681,6 +871,15 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Creates the summary problem.
+	 *
+	 * @param evaluation the evaluation
+	 * @param check      the check
+	 * @param element    the element
+	 * @param text       the text
+	 * @return the problem
+	 */
 	private Problem createSummaryProblem(final Evaluation evaluation, final Check check, final Element element, final String text) {
 		final Problem problem = new Problem(element);
 		problem.setSummary(true);
@@ -692,18 +891,38 @@ public class Evaluator {
 		return problem;
 	}
 
+	/**
+	 * Creates the problem text element.
+	 *
+	 * @param evaluation the evaluation
+	 * @param text       the text
+	 * @return the element
+	 */
 	private Element createProblemTextElement(final Evaluation evaluation, final String text) {
 		final Element problemTextNode = evaluation.getHtmlDoc().createElement("problem-text");
 		problemTextNode.setTextContent(text);
 		return problemTextNode;
 	}
 
+	/**
+	 * Adds the specific checks.
+	 *
+	 * @param checks      the checks
+	 * @param elementsMap the elements map
+	 * @param nameElement the name element
+	 */
 	// Añade los checks especificos de un elemento
 	private void addSpecificChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap, final String nameElement) {
 		final List<Check> specificChecks = elementsMap.get(nameElement);
 		addChecks(checks, specificChecks);
 	}
 
+	/**
+	 * Adds the general checks.
+	 *
+	 * @param checks      the checks
+	 * @param elementsMap the elements map
+	 */
 	// Añade los checks generales de todos los elementos
 	private void addGeneralChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap) {
 		// add the checks that apply to all elements
@@ -711,6 +930,12 @@ public class Evaluator {
 		addChecks(checks, allElementsChecks);
 	}
 
+	/**
+	 * Adds the css checks.
+	 *
+	 * @param checks      the checks
+	 * @param elementsMap the elements map
+	 */
 	// Añade los checks específicos de CSS
 	private void addCssChecks(final List<Check> checks, final Map<String, List<Check>> elementsMap) {
 		// add the checks that apply to css
@@ -718,6 +943,12 @@ public class Evaluator {
 		addChecks(checks, cssChecks);
 	}
 
+	/**
+	 * Adds the checks.
+	 *
+	 * @param checks    the checks
+	 * @param newChecks the new checks
+	 */
 	private void addChecks(final List<Check> checks, final List<Check> newChecks) {
 		if (newChecks != null) {
 			for (Check check : newChecks) {
@@ -726,6 +957,15 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Evaluate loop.
+	 *
+	 * @param rootNode    the root node
+	 * @param evaluation  the evaluation
+	 * @param elementsMap the elements map
+	 * @param isCrawling  the is crawling
+	 * @return the list
+	 */
 	// Evalua la lista de nodos del documento
 	private List<Incidencia> evaluateLoop(final Node rootNode, final Evaluation evaluation, final Map<String, List<Check>> elementsMap, final boolean isCrawling) {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -762,6 +1002,12 @@ public class Evaluator {
 		return incidenceList;
 	}
 
+	/**
+	 * Extract CSS resources.
+	 *
+	 * @param rootNode   the root node
+	 * @param evaluation the evaluation
+	 */
 	private void extractCSSResources(final Node rootNode, final Evaluation evaluation) {
 		if (rootNode instanceof HTMLDocument) {
 			final HTMLDocument rootElement = (HTMLDocument) rootNode;
@@ -770,6 +1016,13 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Evaluate special.
+	 *
+	 * @param nodeGiven   the node given
+	 * @param evaluation  the evaluation
+	 * @param elementsMap the elements map
+	 */
 	// Evaluates any special tests (doctype etc.)
 	private void evaluateSpecial(final Node nodeGiven, final Evaluation evaluation, final Map<String, List<Check>> elementsMap) {
 		// get a list of checks for this element
@@ -792,6 +1045,12 @@ public class Evaluator {
 		}
 	}
 
+	/**
+	 * Sets the appropriate data.
+	 *
+	 * @param checksIds the checks ids
+	 * @param language  the language
+	 */
 	// sets the 'appropriate' flag for all data used in the given checks
 	private void setAppropriateData(final List<Integer> checksIds, final String language) {
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
@@ -805,6 +1064,13 @@ public class Evaluator {
 	}
 
 	// Saves the global information about the analysis in DataBase and return
+	/**
+	 * Sets the analisis DB.
+	 *
+	 * @param evaluation         the evaluation
+	 * @param checkAccessibility the check accessibility
+	 * @return the int
+	 */
 	// the id of the analysis
 	private int setAnalisisDB(final Evaluation evaluation, final CheckAccessibility checkAccessibility) {
 		try (Connection conn = DataBaseManager.getConnection()) {
@@ -828,6 +1094,15 @@ public class Evaluator {
 	}
 
 	// Gets the global information about the analysis from DataBase and returns
+	/**
+	 * Gets the analisis DB.
+	 *
+	 * @param conn          the conn
+	 * @param id            the id
+	 * @param doc           the doc
+	 * @param getOnlyChecks the get only checks
+	 * @return the analisis DB
+	 */
 	// it
 	public Evaluation getAnalisisDB(final Connection conn, final long id, final Document doc, final boolean getOnlyChecks) {
 		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
@@ -851,6 +1126,14 @@ public class Evaluator {
 		return eval;
 	}
 
+	/**
+	 * Gets the observatory analisis DB.
+	 *
+	 * @param conn the conn
+	 * @param id   the id
+	 * @param doc  the doc
+	 * @return the observatory analisis DB
+	 */
 	public Evaluation getObservatoryAnalisisDB(final Connection conn, final long id, final Document doc) {
 		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
 
@@ -877,6 +1160,12 @@ public class Evaluator {
 		return eval;
 	}
 
+	/**
+	 * Gets the checks executed.
+	 *
+	 * @param checksExecutedStr the checks executed str
+	 * @return the checks executed
+	 */
 	private List<Integer> getChecksExecuted(final String checksExecutedStr) {
 		final List<Integer> results = new ArrayList<>();
 		if (checksExecutedStr != null) {
@@ -888,6 +1177,14 @@ public class Evaluator {
 		return results;
 	}
 
+	/**
+	 * Gets the incidencias from analisis DB.
+	 *
+	 * @param conn         the conn
+	 * @param eval         the eval
+	 * @param getOnlyCheck the get only check
+	 * @return the incidencias from analisis DB
+	 */
 	// Gets the list of problems related with an analysis from DataBase
 	private Evaluation getIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval, final boolean getOnlyCheck) {
 		final List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck);
@@ -909,6 +1206,13 @@ public class Evaluator {
 		return eval;
 	}
 
+	/**
+	 * Gets the observatory incidencias from analisis DB.
+	 *
+	 * @param conn the conn
+	 * @param eval the eval
+	 * @return the observatory incidencias from analisis DB
+	 */
 	private Evaluation getObservatoryIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval) {
 		final List<Incidencia> arrlist = IncidenciaDatos.getObservatoryIncidenciasFromAnalisisId(conn, eval.getIdAnalisis());
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();

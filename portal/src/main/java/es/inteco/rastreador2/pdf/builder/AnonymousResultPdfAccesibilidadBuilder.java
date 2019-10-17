@@ -23,6 +23,7 @@ import com.lowagie.text.Font;
 import es.inteco.common.Constants;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
@@ -56,7 +57,7 @@ public class AnonymousResultPdfAccesibilidadBuilder extends AnonymousResultPdfBu
 	 */
 	@Override
 	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath) throws Exception {
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
+		ResultadosAnonimosObservatorioAccesibilidadUtils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true);
 	}
 
 	/*

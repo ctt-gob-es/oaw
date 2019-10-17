@@ -30,6 +30,7 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
@@ -1155,10 +1156,10 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	 */
 	@Override
 	protected void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, java.util.List<ObservatoryEvaluationForm> evaList) {
-		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
-		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
-		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioUNEEN2019Utils.infoLevelIVerificationMidsComparison(this.messageResources, resultL1);
-		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioUNEEN2019Utils.infoLevelIIVerificationMidsComparison(this.messageResources, resultL2);
+		final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioAccesibilidadUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_1);
+		final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioAccesibilidadUtils.getVerificationResultsByPoint(evaList, Constants.OBS_PRIORITY_2);
+		final java.util.List<LabelValueBean> labelsL1 = ResultadosAnonimosObservatorioAccesibilidadUtils.infoLevelIVerificationMidsComparison(this.messageResources, resultL1);
+		final java.util.List<LabelValueBean> labelsL2 = ResultadosAnonimosObservatorioAccesibilidadUtils.infoLevelIIVerificationMidsComparison(this.messageResources, resultL2);
 		scoreForm.setVerifications1(labelsL1);
 		scoreForm.setVerifications2(labelsL2);
 	}

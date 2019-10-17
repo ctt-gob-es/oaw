@@ -700,6 +700,10 @@ public interface Constants {
 	String REPORT_OBSERVATORY_2_NOBROKEN = "observatorio-2-nobroken";
 	String REPORT_OBSERVATORY_3 = "observatorio-3";
 	String REPORT_OBSERVATORY_3_NOBROKEN = "observatorio-3-nobroken";
+	String REPORT_OBSERVATORY_4 = "observatorio-4";
+	String REPORT_OBSERVATORY_4_NOBROKEN = "observatorio-4-nobroken";
+	String REPORT_OBSERVATORY_5 = "observatorio-5";
+	String REPORT_OBSERVATORY_5_NOBROKEN = "observatorio-5-nobroken";
 	String REPORT_UNE = "une";
 	String REPORT_OBSERVATORY_FILE = "observatorio-inteco-1-0";
 	String REPORT_UNE_FILE = "une-139803";

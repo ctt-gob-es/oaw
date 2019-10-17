@@ -27,29 +27,80 @@ import java.util.*;
 import java.util.List;
 
 /**
- *
+ * The Class AnonymousResultExportPdf.
  */
 public abstract class AnonymousResultExportPdf {
 
+	/** The basic service form. */
 	private final BasicServiceForm basicServiceForm;
+	
+	/** The basic service. */
 	private boolean basicService = false;
 
+	/**
+	 * Instantiates a new anonymous result export pdf.
+	 *
+	 * @param basicServiceForm the basic service form
+	 */
 	protected AnonymousResultExportPdf(final BasicServiceForm basicServiceForm) {
 		this.basicServiceForm = basicServiceForm;
 	}
 
+	/**
+	 * Gets the basic service form.
+	 *
+	 * @return the basic service form
+	 */
 	public BasicServiceForm getBasicServiceForm() {
 		return basicServiceForm;
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @throws Exception the exception
+	 */
 	public abstract void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont) throws Exception;
 
+	/**
+	 * Creates the objetive chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param evaList          the eva list
+	 * @param observatoryType  the observatory type
+	 * @throws DocumentException the document exception
+	 */
 	public abstract void createObjetiveChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, List<ObservatoryEvaluationForm> evaList,
 			long observatoryType) throws DocumentException;
 
+	/**
+	 * Creates the methodology chapter.
+	 *
+	 * @param messageResources      the message resources
+	 * @param document              the document
+	 * @param pdfTocManager         the pdf toc manager
+	 * @param titleFont             the title font
+	 * @param primaryReportPageList the primary report page list
+	 * @param observatoryType       the observatory type
+	 * @param isBasicService        the is basic service
+	 * @throws Exception the exception
+	 */
 	public abstract void createMethodologyChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont,
 			List<ObservatoryEvaluationForm> primaryReportPageList, long observatoryType, boolean isBasicService) throws Exception;
 
+	/**
+	 * Creates the section 34.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 */
 	protected void createSection34(final MessageResources messageResources, Section section) {
 		ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("ob.resAnon.intav.report.34.p1.bold"));
@@ -59,6 +110,12 @@ public abstract class AnonymousResultExportPdf {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.34.p3"), ConstantsFont.PARAGRAPH, section);
 	}
 
+	/**
+	 * Creates the section 341.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 */
 	protected void createSection341(final MessageResources messageResources, final Section section) {
 		final PropertiesManager pmgr = new PropertiesManager();
 
@@ -178,6 +235,12 @@ public abstract class AnonymousResultExportPdf {
 				true));
 	}
 
+	/**
+	 * Creates the section 343.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 */
 	protected void createSection343(final MessageResources messageResources, Section section) {
 		PDFUtils.addParagraph(messageResources.getMessage("ob.resAnon.intav.report.46.p1"), ConstantsFont.PARAGRAPH, section);
 
@@ -276,6 +339,15 @@ public abstract class AnonymousResultExportPdf {
 		section.add(list);
 	}
 
+	/**
+	 * Creates the content chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param d                the d
+	 * @param contents         the contents
+	 * @param pdfTocManager    the pdf toc manager
+	 * @throws DocumentException the document exception
+	 */
 	public void createContentChapter(final MessageResources messageResources, final Document d, final String contents, final PdfTocManager pdfTocManager) throws DocumentException {
 		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 
@@ -284,9 +356,30 @@ public abstract class AnonymousResultExportPdf {
 		d.add(chapter);
 	}
 
+	/**
+	 * Gets the mids comparation by verification level graphic.
+	 *
+	 * @param messageResources the message resources
+	 * @param level            the level
+	 * @param title            the title
+	 * @param filePath         the file path
+	 * @param noDataMess       the no data mess
+	 * @param evaList          the eva list
+	 * @param value            the value
+	 * @param b                the b
+	 * @return the mids comparation by verification level graphic
+	 * @throws Exception the exception
+	 */
 	public abstract void getMidsComparationByVerificationLevelGraphic(MessageResources messageResources, String level, String title, String filePath, String noDataMess,
 			List<ObservatoryEvaluationForm> evaList, String value, boolean b) throws Exception;
 
+	/**
+	 * Generate scores.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 */
 	public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
 		final ScoreForm scoreForm = new ScoreForm();
 
@@ -338,18 +431,48 @@ public abstract class AnonymousResultExportPdf {
 		return scoreForm;
 	}
 
+	/**
+	 * Generate scores verificacion.
+	 *
+	 * @param messageResources the message resources
+	 * @param scoreForm        the score form
+	 * @param evaList          the eva list
+	 */
 	protected abstract void generateScoresVerificacion(MessageResources messageResources, ScoreForm scoreForm, List<ObservatoryEvaluationForm> evaList);
 
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
 	public abstract String getTitle();
 
+	/**
+	 * Checks if is basic service.
+	 *
+	 * @return true, if is basic service
+	 */
 	public boolean isBasicService() {
 		return basicService;
 	}
 
+	/**
+	 * Sets the basic service.
+	 *
+	 * @param basicService the new basic service
+	 */
 	public void setBasicService(boolean basicService) {
 		this.basicService = basicService;
 	}
 
+	/**
+	 * Creates the section 31.
+	 *
+	 * @param resources       the resources
+	 * @param section         the section
+	 * @param observatoryType the observatory type
+	 * @param variante        the variante
+	 */
 	protected void createSection31(final MessageResources resources, final Section section, final long observatoryType, final String variante) {
 		final com.lowagie.text.List list = new com.lowagie.text.List();
 		PDFUtils.addParagraph(resources.getMessage("ob.resAnon.intav.report.31.p1." + variante), ConstantsFont.PARAGRAPH, section);
@@ -381,7 +504,10 @@ public abstract class AnonymousResultExportPdf {
 	}
 
 	/**
-	 * Métodos de utilidad
+	 * Métodos de utilidad.
+	 *
+	 * @param messageResources the message resources
+	 * @return the pdf P table
 	 */
 	protected PdfPTable createVerificationTable(final MessageResources messageResources) {
 		try {
@@ -497,6 +623,13 @@ public abstract class AnonymousResultExportPdf {
 		return null;
 	}
 
+	/**
+	 * Creates the methodology header table.
+	 *
+	 * @param messageResources the message resources
+	 * @param table            the table
+	 * @param title            the title
+	 */
 	protected void createMethodologyHeaderTable(final MessageResources messageResources, final PdfPTable table, final String title) {
 		table.addCell(PDFUtils.createColSpanTableCell(title, Constants.VERDE_C_MP, ConstantsFont.labelCellFont, 6, Element.ALIGN_LEFT));
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.33.table.header1"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
@@ -507,6 +640,18 @@ public abstract class AnonymousResultExportPdf {
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("ob.resAnon.intav.report.33.table.header6"), Color.GRAY, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the methodology table row.
+	 *
+	 * @param messageResources the message resources
+	 * @param table            the table
+	 * @param id               the id
+	 * @param name             the name
+	 * @param question         the question
+	 * @param answer           the answer
+	 * @param value            the value
+	 * @param modality         the modality
+	 */
 	protected void createMethodologyTableRow(final MessageResources messageResources, final PdfPTable table, final String id, final String name, final String question,
 			final com.lowagie.text.List answer, final com.lowagie.text.List value, final com.lowagie.text.List modality) {
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage(id), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, 0, -1));
@@ -517,10 +662,25 @@ public abstract class AnonymousResultExportPdf {
 		table.addCell(PDFUtils.createListTableCell(modality, Color.WHITE, Element.ALIGN_CENTER, 0));
 	}
 
+	/**
+	 * Creates the text list.
+	 *
+	 * @param messageResources the message resources
+	 * @param text             the text
+	 * @return the com.lowagie.text. list
+	 */
 	protected com.lowagie.text.List createTextList(final MessageResources messageResources, final String text) {
 		return createTextList(messageResources, text, Element.ALIGN_CENTER);
 	}
 
+	/**
+	 * Creates the text list.
+	 *
+	 * @param messageResources the message resources
+	 * @param text             the text
+	 * @param align            the align
+	 * @return the com.lowagie.text. list
+	 */
 	protected com.lowagie.text.List createTextList(final MessageResources messageResources, final String text, final int align) {
 		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
 		final com.lowagie.text.List pdfList = new com.lowagie.text.List();
@@ -534,6 +694,13 @@ public abstract class AnonymousResultExportPdf {
 		return pdfList;
 	}
 
+	/**
+	 * Creates the image list.
+	 *
+	 * @param messageResources the message resources
+	 * @param text             the text
+	 * @return the com.lowagie.text. list
+	 */
 	protected com.lowagie.text.List createImageList(final MessageResources messageResources, final String text) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final java.util.List<String> list = Arrays.asList(messageResources.getMessage(text).split(";"));
@@ -556,6 +723,13 @@ public abstract class AnonymousResultExportPdf {
 		return pdfList;
 	}
 
+	/**
+	 * Adds the URL table.
+	 *
+	 * @param messageResources      the message resources
+	 * @param primaryReportPageList the primary report page list
+	 * @return the pdf P table
+	 */
 	protected PdfPTable addURLTable(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> primaryReportPageList) {
 		final float[] columnsWidths = { 20f, 80f };
 		final PdfPTable table = new PdfPTable(columnsWidths);
@@ -578,6 +752,13 @@ public abstract class AnonymousResultExportPdf {
 		return table;
 	}
 
+	/**
+	 * Gets the validation level.
+	 *
+	 * @param scoreForm        the score form
+	 * @param messageResources the message resources
+	 * @return the validation level
+	 */
 	protected String getValidationLevel(final ScoreForm scoreForm, final MessageResources messageResources) {
 		if (scoreForm.getSuitabilityScore().compareTo(new BigDecimal(8)) >= 0) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.aa");

@@ -12,8 +12,31 @@
 ******************************************************************************/
 package es.gob.oaw.rastreador2.pdf.basicservice;
 
-import com.lowagie.text.*;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
+import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
+import static es.inteco.common.ConstantsFont.LINE_SPACE;
+
+import java.awt.Color;
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+
+import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.Element;
 import com.lowagie.text.Image;
+import com.lowagie.text.Section;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
@@ -30,19 +53,6 @@ import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-
-import java.awt.*;
-import java.io.File;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.*;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.common.ConstantsFont.*;
 
 /**
  * Clase encargada de construir la sección 'Resumen de Resultados' del informe
@@ -50,21 +60,49 @@ import static es.inteco.common.ConstantsFont.*;
  */
 public class BasicServiceObservatoryScorePdfSectionBuilder {
 
+	/** The current evaluation page list. */
 	private final List<ObservatoryEvaluationForm> currentEvaluationPageList;
+	
+	/** The previous evaluation page list. */
 	private final List<ObservatoryEvaluationForm> previousEvaluationPageList;
+	
+	/** The evolution. */
 	private final boolean evolution;
+	
+	/** The Constant TEMP_SUBDIR. */
 	private static final String TEMP_SUBDIR = "temp";
 
+	/**
+	 * Instantiates a new basic service observatory score pdf section builder.
+	 *
+	 * @param currentEvaluationPageList the current evaluation page list
+	 */
 	public BasicServiceObservatoryScorePdfSectionBuilder(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
 		this(currentEvaluationPageList, null);
 	}
 
+	/**
+	 * Instantiates a new basic service observatory score pdf section builder.
+	 *
+	 * @param currentEvaluationPageList  the current evaluation page list
+	 * @param previousEvaluationPageList the previous evaluation page list
+	 */
 	public BasicServiceObservatoryScorePdfSectionBuilder(final List<ObservatoryEvaluationForm> currentEvaluationPageList, final List<ObservatoryEvaluationForm> previousEvaluationPageList) {
 		this.currentEvaluationPageList = currentEvaluationPageList;
 		this.previousEvaluationPageList = previousEvaluationPageList;
 		evolution = previousEvaluationPageList != null && !previousEvaluationPageList.isEmpty();
 	}
 
+	/**
+	 * Adds the observatory score summary.
+	 *
+	 * @param pdfBuilder       the pdf builder
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param file             the file
+	 * @throws Exception the exception
+	 */
 	public void addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, final PdfTocManager pdfTocManager, final File file)
 			throws Exception {
 		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("observatorio.puntuacion.resultados.resumen").toUpperCase(), pdfTocManager,
@@ -158,6 +196,14 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		pdfTocManager.addChapterCount();
 	}
 
+	/**
+	 * Creates the evolution level cell.
+	 *
+	 * @param messageResources the message resources
+	 * @param currentLevel     the current level
+	 * @param previousLevel    the previous level
+	 * @return the pdf P cell
+	 */
 	/*
 	 * Crea una celda PdfPCell para una tabla del informa PDF con la evolución
 	 * del nivel de accesibilidad.
@@ -204,6 +250,15 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Adds the level allocation results summary.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 * @param file             the file
+	 * @param noDataMess       the no data mess
+	 * @throws Exception the exception
+	 */
 	private void addLevelAllocationResultsSummary(final MessageResources messageResources, final Section section, final File file, final String noDataMess) throws Exception {
 		if (previousEvaluationPageList != null && evolution) {
 			addLevelAllocationResultsSummaryWithEvolution(messageResources, section, file, noDataMess);
@@ -212,6 +267,15 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Adds the level allocation results summary no evolution.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 * @param file             the file
+	 * @param noDataMess       the no data mess
+	 * @throws Exception the exception
+	 */
 	private void addLevelAllocationResultsSummaryNoEvolution(final MessageResources messageResources, final Section section, final File file, final String noDataMess) throws Exception {
 		final Map<String, Integer> currentResultsByLevel = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(currentEvaluationPageList);
 
@@ -241,6 +305,12 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		section.add(table);
 	}
 
+	/**
+	 * Creates the image.
+	 *
+	 * @param section  the section
+	 * @param filePath the file path
+	 */
 	private void createImage(final Section section, final String filePath) {
 		final com.lowagie.text.Image image = PDFUtils.createImage(filePath, null);
 		if (image != null) {
@@ -251,6 +321,15 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Adds the level allocation results summary with evolution.
+	 *
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 * @param file             the file
+	 * @param noDataMess       the no data mess
+	 * @throws Exception the exception
+	 */
 	private void addLevelAllocationResultsSummaryWithEvolution(final MessageResources messageResources, final Section section, final File file, final String noDataMess) throws Exception {
 		final Map<String, Integer> currentResultsByLevel = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(currentEvaluationPageList);
 		final Map<String, Integer> previousResultsByLevel = ResultadosPrimariosObservatorioIntavUtils.getResultsByLevel(previousEvaluationPageList);
@@ -303,6 +382,18 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		section.add(table);
 	}
 
+	/**
+	 * Adds the mids comparation by verification level graphic.
+	 *
+	 * @param pdfBuilder       the pdf builder
+	 * @param messageResources the message resources
+	 * @param section          the section
+	 * @param file             the file
+	 * @param evaList          the eva list
+	 * @param noDataMess       the no data mess
+	 * @param level            the level
+	 * @throws Exception the exception
+	 */
 	private void addMidsComparationByVerificationLevelGraphic(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, final Section section, final File file,
 			final List<ObservatoryEvaluationForm> evaList, final String noDataMess, final String level) throws Exception {
 		final String title;
@@ -320,6 +411,15 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		createImage(section, filePath);
 	}
 
+	/**
+	 * Creates the observatory verification score table.
+	 *
+	 * @param messageResources the message resources
+	 * @param actualScore      the actual score
+	 * @param previousScore    the previous score
+	 * @param level            the level
+	 * @return the pdf P table
+	 */
 	private PdfPTable createObservatoryVerificationScoreTable(final MessageResources messageResources, final ScoreForm actualScore, final ScoreForm previousScore, final String level) {
 		if (previousScore != null && evolution) {
 			return createObservatoryVerificationScoreTableWithEvolution(messageResources, actualScore, previousScore, level);
@@ -328,6 +428,14 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the observatory verification score table no evolution.
+	 *
+	 * @param messageResources the message resources
+	 * @param actualScore      the actual score
+	 * @param level            the level
+	 * @return the pdf P table
+	 */
 	private PdfPTable createObservatoryVerificationScoreTableNoEvolution(final MessageResources messageResources, final ScoreForm actualScore, final String level) {
 		if (level.equals(Constants.OBS_PRIORITY_1)) {
 			return createObservatoryVerificationScoreTableNoEvolutionLevel(messageResources, actualScore.getVerifications1(), messageResources.getMessage("observatorio.puntuacion.nivel.1"),
@@ -338,6 +446,15 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the observatory verification score table no evolution level.
+	 *
+	 * @param messageResources the message resources
+	 * @param verifications    the verifications
+	 * @param scoreLabel       the score label
+	 * @param scoreValue       the score value
+	 * @return the pdf P table
+	 */
 	private PdfPTable createObservatoryVerificationScoreTableNoEvolutionLevel(final MessageResources messageResources, final List<LabelValueBean> verifications, final String scoreLabel,
 			final BigDecimal scoreValue) {
 		final float[] columnsWidths = new float[] { 0.65f, 0.35f };
@@ -361,6 +478,15 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		return table;
 	}
 
+	/**
+	 * Creates the observatory verification score table with evolution.
+	 *
+	 * @param messageResources the message resources
+	 * @param actualScore      the actual score
+	 * @param previousScore    the previous score
+	 * @param level            the level
+	 * @return the pdf P table
+	 */
 	private PdfPTable createObservatoryVerificationScoreTableWithEvolution(final MessageResources messageResources, final ScoreForm actualScore, final ScoreForm previousScore, final String level) {
 		if (level.equals(Constants.OBS_PRIORITY_1)) {
 			return createObservatoryVerificationScoreTableWithEvolutionLevel(messageResources, messageResources.getMessage("observatorio.puntuacion.nivel.1"), actualScore.getVerifications1(),
@@ -371,6 +497,17 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the observatory verification score table with evolution level.
+	 *
+	 * @param messageResources      the message resources
+	 * @param averageResultLabel    the average result label
+	 * @param actualVerifications   the actual verifications
+	 * @param previousVerifications the previous verifications
+	 * @param actualScoreLevel      the actual score level
+	 * @param previousScoreLevel    the previous score level
+	 * @return the pdf P table
+	 */
 	private PdfPTable createObservatoryVerificationScoreTableWithEvolutionLevel(final MessageResources messageResources, final String averageResultLabel,
 			final List<LabelValueBean> actualVerifications, final List<LabelValueBean> previousVerifications, final BigDecimal actualScoreLevel, final BigDecimal previousScoreLevel) {
 		final float[] columnsWidths = new float[] { 0.55f, 0.25f, 0.20f };
@@ -401,6 +538,14 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		return table;
 	}
 
+	/**
+	 * Creates the evolution difference cell value.
+	 *
+	 * @param actualValue   the actual value
+	 * @param previousValue the previous value
+	 * @param color         the color
+	 * @return the pdf P cell
+	 */
 	private PdfPCell createEvolutionDifferenceCellValue(final String actualValue, final String previousValue, final Color color) {
 		try {
 			return createEvolutionDifferenceCellValue(new BigDecimal(actualValue), new BigDecimal(previousValue), color);
@@ -409,11 +554,29 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the evolution difference cell value.
+	 *
+	 * @param actualValue   the actual value
+	 * @param previousValue the previous value
+	 * @param color         the color
+	 * @return the pdf P cell
+	 */
 	private PdfPCell createEvolutionDifferenceCellValue(final BigDecimal actualValue, final BigDecimal previousValue, final Color color) {
 		return PDFUtils.createTableCell(getEvolutionImage(actualValue, previousValue), new DecimalFormat("+0.00;-0.00").format(actualValue.subtract(previousValue)), color, ConstantsFont.noteCellFont,
 				Element.ALIGN_CENTER, DEFAULT_PADDING / 2, -1);
 	}
 
+	/**
+	 * Adds the results by page.
+	 *
+	 * @param messageResources the message resources
+	 * @param chapter          the chapter
+	 * @param file             the file
+	 * @param evaList          the eva list
+	 * @param noDataMess       the no data mess
+	 * @throws Exception the exception
+	 */
 	private void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final List<ObservatoryEvaluationForm> evaList, final String noDataMess)
 			throws Exception {
 		final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
@@ -461,10 +624,23 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		chapter.add(table);
 	}
 
+	/**
+	 * Gets the evolution image.
+	 *
+	 * @param actualValue   the actual value
+	 * @param previousValue the previous value
+	 * @return the evolution image
+	 */
 	private Image getEvolutionImage(final BigDecimal actualValue, final BigDecimal previousValue) {
 		return getEvolutionImage(actualValue.compareTo(previousValue));
 	}
 
+	/**
+	 * Gets the evolution image.
+	 *
+	 * @param compareValue the compare value
+	 * @return the evolution image
+	 */
 	private Image getEvolutionImage(final int compareValue) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (compareValue > 0) {
