@@ -1,6 +1,5 @@
 var lastUrl;
 var scroll;
-
 function cambiaTitulo() {
 	$("option").hover(function(e) {
 		var $target = $(e.target);
@@ -15,6 +14,16 @@ function categoriaFormatter(cellvalue, options, rowObject) {
 	if (rowObject.categoria.name != null) {
 
 		return rowObject.categoria.name;
+
+	} else {
+		return "";
+	}
+}
+
+function ambitoFormatter(cellvalue, options, rowObject) {
+	if (rowObject.ambito.name != null) {
+
+		return rowObject.ambito.name;
 
 	} else {
 		return "";
@@ -215,7 +224,7 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento", "Dependencia",
+													"Segmento", "\u00C1mbito", "Dependencia",
 													"URLs", "Activa",
 													"Directorio", "Ir",
 													"Eliminar" ],
@@ -283,6 +292,45 @@ function reloadGrid(path) {
 														// },
 														formatter : categoriaFormatter,
 														sortable : false
+													},
+													{
+														name : "ambitoaux",
+														width : 15,
+														edittype : "select",
+														align : "center",
+														editoptions : {
+
+															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+															buildSelect : function(
+																	data) {
+
+																var response = jQuery
+																		.parseJSON(data);
+																var s = '<select><option value=""></option>';
+
+																if (response
+																		&& response.length) {
+																	for (var i = 0, l = response.length; i < l; i++) {
+																		var ri = response[i];
+																		s += '<option class="dependenciaOption" value="'
+																				+ ri.id
+																				+ '">'
+																				+ ri.name
+																				+ '</option>';
+																	}
+																}
+
+																return s
+																		+ "</select>";
+															}
+
+														},
+														// editrules : {
+														// required : true
+														// },
+														formatter : ambitoFormatter,
+														sortable : false
+
 													},
 													{
 														name : "dependenciasSeleccionadas",

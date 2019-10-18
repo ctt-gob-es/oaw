@@ -36,6 +36,8 @@
 		<form-bean name="DependenciaObservatoryForm"
 			type="es.inteco.rastreador2.actionform.semillas.DependenciaForm" />
 
+		<form-bean name="AmbitoForm"
+			type="es.inteco.rastreador2.actionform.semillas.AmbitoForm" />
 
 		<!-- RASTREOS -->
 		<form-bean name="InsertarRastreoForm"

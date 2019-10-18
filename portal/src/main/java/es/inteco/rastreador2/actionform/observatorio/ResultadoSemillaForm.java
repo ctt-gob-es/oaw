@@ -24,6 +24,7 @@ public class ResultadoSemillaForm {
     private String score;
     private String nivel;
     private long idCategory;
+    private long idAmbit;
 
 
     public long getIdCategory() {
@@ -34,6 +35,14 @@ public class ResultadoSemillaForm {
         this.idCategory = idCategory;
     }
 
+    public long getIdAmbit() {
+        return idAmbit;
+    }
+
+    public void setIdAmbit(long idAmbit) {
+        this.idAmbit = idAmbit;
+    }
+    
     public String getId() {
         return id;
     }
