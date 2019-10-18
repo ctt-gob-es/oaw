@@ -38,7 +38,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private Long id;
 
 	/** The nombre. */
-	private String nombre;
+	private String nombre; 
 
 	/** The nombre antiguo. */
 	private String nombre_antiguo;
@@ -68,6 +68,9 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	/** The categoria. */
 	private CategoriaForm categoria;
 
+	/** The ambito. */
+	private AmbitoForm ambito;
+	
 	/** The in directory. */
 	private boolean inDirectory;
 
@@ -82,9 +85,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
-	
-	private AmbitoForm ambito;
-	
+		
 	private ComplejidadForm complejidad;
 	
 	private List<EtiquetaForm> etiquetas;
@@ -260,6 +261,26 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		this.categoria = categoria;
 	}
 
+
+	/**
+	 * Gets the ambito.
+	 *
+	 * @return the ambito
+	 */
+	public AmbitoForm getAmbito() {
+		return ambito;
+	}
+
+	/**
+	 * Sets the ambito.
+	 *
+	 * @param ambito the new ambito
+	 */
+	public void setAmbito(AmbitoForm ambito) {
+		this.ambito = ambito;
+	}
+
+	
 	/**
 	 * Reset.
 	 *
@@ -271,6 +292,9 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		super.reset(mapping, request);
 		if (categoria == null) {
 			categoria = new CategoriaForm();
+		}
+		if (ambito == null) {
+			ambito = new AmbitoForm();
 		}
 	}
 
@@ -553,7 +577,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 				+ listaUrls + ", listaUrlsString=" + listaUrlsString
 				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada
 				+ ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado=" + rastreoAsociado
-				+ ", categoria=" + categoria + ", inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
+				+ ", categoria=" + categoria + ", ambito=" + ambito + ",inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
 				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr +", dependencias=" + dependencias + "]";
 	}
 

@@ -15,6 +15,7 @@
 ******************************************************************************/
 package es.inteco.rastreador2.pdf.utils;
 
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class RankingInfo {
     private int categoryRank;
     private int categorySeedsNumber;
     private CategoriaForm categoria;
+    private AmbitoForm ambito;
 
     public String getDate() {
         return date;
@@ -86,6 +88,14 @@ public class RankingInfo {
         this.categoria = categoria;
     }
 
+    public AmbitoForm getAmbito() {
+        return ambito;
+    }
+
+    public void setAmbito(AmbitoForm ambito) {
+        this.ambito = ambito;
+    }
+    
     public BigDecimal getScore() {
         return score;
     }

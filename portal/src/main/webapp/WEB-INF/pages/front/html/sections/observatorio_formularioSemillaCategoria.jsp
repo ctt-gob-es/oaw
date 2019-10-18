@@ -16,6 +16,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<jsp:useBean id="breadCrumbsParams" class="java.util.HashMap" />
 	<bean:define id="idCat"><%= Constants.ID_CATEGORIA %></bean:define>
 	<bean:parameter name="<%= Constants.ID_CATEGORIA %>" id="idCategory"/>
+	
+	<bean:define id="idAmb"><%= Constants.ID_AMBITO %></bean:define>
+	<bean:parameter name="<%= Constants.ID_AMBITO %>" id="idAmbit"/>
+	
 	<bean:parameter name="<%= Constants.ACTION %>" id="accion"/>
 	<bean:define id="actionNewCS"><%= Constants.NEW_CATEGORY_SEED %></bean:define>
 	<c:set target="${breadCrumbsParams}" property="${idCat}" value="${idCategory}"/>
@@ -91,6 +95,23 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                                 </html:select>
                             </div>
                         </logic:notEmpty>
+                        
+                        
+                         <logic:notEmpty name="<%=Constants.SEED_AMBITS %>">
+                            <div class="formItem">
+                                <label for="ambito" class="control-label"><strong class="labelVisu"><bean:message key="nueva.semilla.webs.ambito" /></strong></label>
+                                <html:select property="ambito.id" styleClass="textoSelect form-control" styleId="ambito">
+                                    <html:option value=""> - <bean:message key="select.one.femenine"/> - </html:option>
+                                    <logic:iterate name="<%=Constants.SEED_AMBITS %>" id="ambit">
+                                        <bean:define id="idAmbit">
+                                            <bean:write name="ambit" property="id"/>
+                                        </bean:define>
+                                        <html:option value="<%=idAmbit %>"><bean:write name="ambit" property="name"/></html:option>
+                                    </logic:iterate>
+                                </html:select>
+                            </div>
+                        </logic:notEmpty>
+                        
                         <div class="formItem">
                             <p class="alert alert-info"><span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion"/> </em>: <bean:message key="nueva.semilla.webs.info" /></p>
                             <label for="listaUrlsString" class="control-label"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="editar.semilla.observatorio.url" /></strong></label>

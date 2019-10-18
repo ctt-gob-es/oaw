@@ -39,6 +39,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -89,6 +90,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				}
 
 				searchForm.setCategoria(request.getParameter("categoria"));
+				searchForm.setAmbito(request.getParameter("ambito"));
 				searchForm.setUrl(request.getParameter("url"));
 
 			}
@@ -121,7 +123,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	}
 
 	/**
-	 * Actualza la semilla.
+	 * Actualiza la semilla.
 	 *
 	 * @param mapping
 	 *            the mapping
@@ -239,6 +241,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			CategoriaForm categoriaSemilla = new CategoriaForm();
 			categoriaSemilla.setId(request.getParameter("segmento"));
 			semilla.setCategoria(categoriaSemilla);
+
+			AmbitoForm ambitoSemilla = new AmbitoForm();
+			ambitoSemilla.setId(request.getParameter("ambitoaux"));
+			semilla.setAmbito(ambitoSemilla);
 
 			MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
@@ -370,6 +376,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			categoriaSemilla.setId(request.getParameter("segmento"));
 			semilla.setCategoria(categoriaSemilla);
 
+			AmbitoForm ambitoSemilla = new AmbitoForm();
+			ambitoSemilla.setId(request.getParameter("ambitoaux"));
+			semilla.setAmbito(ambitoSemilla);
+			
 			try (Connection c = DataBaseManager.getConnection()) {
 
 				if (SemillaDAO.existSeed(c, semilla.getNombre(), Constants.ID_LISTA_SEMILLA_OBSERVATORIO)) {
@@ -498,6 +508,42 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
+
+	/**
+	 * Obtiene un listado de todos los ambitos. La respuesta se genera como
+	 * un JSON
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
+	public ActionForward listAmbitos(ActionMapping mapping, ActionForm form, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+
+			List<AmbitoForm> listAmbitos = SemillaDAO.getSeedAmbits(c, Constants.NO_PAGINACION);
+
+			String jsonAmbitos = new Gson().toJson(listAmbitos);
+
+			PrintWriter pw = response.getWriter();
+			pw.write(jsonAmbitos);
+			pw.flush();
+			pw.close();
+
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * Obtiene un listado de todas las dependencias. La respuesta se genera como
 	 * un JSON

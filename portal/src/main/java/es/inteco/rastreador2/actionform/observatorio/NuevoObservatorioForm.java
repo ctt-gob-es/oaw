@@ -47,6 +47,7 @@ public class NuevoObservatorioForm extends ValidatorForm {
     private List<SemillaForm> otherSeeds;
     private String buttonAction;
     private String[] categoria;
+    private String[] ambito;
     private CartuchoForm cartucho;
     private String pseudoAleatorio;
     private boolean activo;
@@ -201,6 +202,15 @@ public class NuevoObservatorioForm extends ValidatorForm {
     public void setCategoria(String[] categoria) {
         this.categoria = categoria;
     }
+    
+    public String[] getAmbito() {
+        return ambito;
+    }
+
+    public void setAmbito(String[] ambito) {
+        this.ambito = ambito;
+    }
+    
 
     public List<SemillaForm> getAddSeeds() {
         return addSeeds;
