@@ -24,6 +24,7 @@ import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.intav.action.AnalysisFromCrawlerAction;
 import es.inteco.rastreador2.intav.action.ResultsAction;
@@ -42,11 +43,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * The Class IntavUtils.
+ */
 public final class IntavUtils {
 
+    /**
+	 * Instantiates a new intav utils.
+	 */
     private IntavUtils() {
     }
 
+    /**
+	 * Calculate score.
+	 *
+	 * @param request     the request
+	 * @param idExecution the id execution
+	 * @return the score form
+	 */
     public static ScoreForm calculateScore(HttpServletRequest request, long idExecution) {
         Connection conn = null;
         try {
@@ -67,6 +81,15 @@ public final class IntavUtils {
         }
     }
 
+    /**
+	 * Generate scores.
+	 *
+	 * @param request      the request
+	 * @param conn         the conn
+	 * @param listAnalysis the list analysis
+	 * @return the score form
+	 * @throws Exception the exception
+	 */
     private static ScoreForm generateScores(HttpServletRequest request, Connection conn, List<Long> listAnalysis) throws Exception {
         ScoreForm scoreForm = new ScoreForm();
 
@@ -81,7 +104,13 @@ public final class IntavUtils {
             for (Long idAnalysis : listAnalysis) {
                 Evaluation evaluation = evaluator.getAnalisisDB(conn, idAnalysis, EvaluatorUtils.getDocList(), true);
                 String methodology = ObservatorioDAO.getMethodology(c, idExObs);
-                ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false,false);
+                
+                String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, idAnalysis);
+
+				boolean pointWarning = Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false;
+                
+                
+                ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false,pointWarning);
                 scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
 
                 String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
@@ -129,6 +158,14 @@ public final class IntavUtils {
         return scoreForm;
     }
 
+    /**
+	 * Generate scores.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 * @throws Exception the exception
+	 */
     public static ScoreForm generateScores(final MessageResources messageResources, List<ObservatoryEvaluationForm> evaList) throws Exception {
         final ScoreForm scoreForm = new ScoreForm();
 
@@ -184,6 +221,15 @@ public final class IntavUtils {
         return scoreForm;
     }
 
+    /**
+	 * Gets the failed checks.
+	 *
+	 * @param request          the request
+	 * @param evaluationForm   the evaluation form
+	 * @param guideline        the guideline
+	 * @param messageResources the message resources
+	 * @return the failed checks
+	 */
     public static Map<String, List<String>> getFailedChecks(HttpServletRequest request, ObservatoryEvaluationForm evaluationForm, Guideline guideline, MessageResources messageResources) {
         Map<String, List<String>> failedChecks = new TreeMap<>();
 
@@ -218,6 +264,14 @@ public final class IntavUtils {
         return failedChecks;
     }
 
+    /**
+	 * There is bigger error.
+	 *
+	 * @param idFailed      the id failed
+	 * @param relatedChecks the related checks
+	 * @param failedChecks  the failed checks
+	 * @return true, if successful
+	 */
     private static boolean thereIsBiggerError(Integer idFailed, Map<Integer, Integer> relatedChecks, List<Integer> failedChecks) {
         for (Map.Entry<Integer, Integer> relatedCheck : relatedChecks.entrySet()) {
             if (failedChecks.contains(relatedCheck.getKey()) && idFailed.equals(relatedCheck.getValue())) {
@@ -227,6 +281,13 @@ public final class IntavUtils {
         return false;
     }
 
+    /**
+	 * Gets the validation level.
+	 *
+	 * @param scoreForm        the score form
+	 * @param messageResources the message resources
+	 * @return the validation level
+	 */
     public static String getValidationLevel(final ScoreForm scoreForm, final MessageResources messageResources) {
         if (scoreForm.getSuitabilityScore().compareTo(new BigDecimal(8)) >= 0) {
             return messageResources.getMessage("resultados.anonimos.num.portales.aa");

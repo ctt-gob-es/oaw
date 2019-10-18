@@ -56,8 +56,8 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.intav.form.ScoreForm;
-import es.inteco.rastreador2.openOffice.export.OpenOfficeUNE2012DocumentBuilder;
 import es.inteco.rastreador2.openOffice.export.OpenOfficeUNE2012BDocumentBuilder;
+import es.inteco.rastreador2.openOffice.export.OpenOfficeUNE2012DocumentBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
@@ -68,19 +68,38 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
 
 /**
  * Clase para crear la sección Evolución de Resultados de los informes
- * evolutivos del servicio de diagnóstico
+ * evolutivos del servicio de diagnóstico.
  */
 public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 
+	/** The evolution results. */
 	private final Map<Date, List<ObservatoryEvaluationForm>> evolutionResults;
+	
+	/** The pmgr. */
 	private final PropertiesManager pmgr;
 
+	/**
+	 * Instantiates a new basic service observatory evolution results pdf section
+	 * builder.
+	 *
+	 * @param evolutionResults the evolution results
+	 */
 	public BasicServiceObservatoryEvolutionResultsPdfSectionBuilder(
 			final Map<Date, List<ObservatoryEvaluationForm>> evolutionResults) {
 		this.evolutionResults = evolutionResults;
 		pmgr = new PropertiesManager();
 	}
 
+	/**
+	 * Adds the evolution results.
+	 *
+	 * @param pdfBuilder       the pdf builder
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param file             the file
+	 * @throws DocumentException the document exception
+	 */
 	public void addEvolutionResults(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources,
 			final Document document, final PdfTocManager pdfTocManager, final File file) throws DocumentException {
 		if (evolutionResults.size() > 1) {
@@ -100,6 +119,16 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Evolution average score.
+	 *
+	 * @param pdfBuilder         the pdf builder
+	 * @param messageResources   the message resources
+	 * @param pdfTocManager      the pdf toc manager
+	 * @param file               the file
+	 * @param evaluationPageList the evaluation page list
+	 * @param chapter            the chapter
+	 */
 	private void evolutionAverageScore(AnonymousResultExportPdf pdfBuilder, MessageResources messageResources,
 			PdfTocManager pdfTocManager, File file, Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList,
 			Chapter chapter) {
@@ -184,6 +213,15 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		section.add(tablaRankings);
 	}
 
+	/**
+	 * Evolution conformance level.
+	 *
+	 * @param messageResources   the message resources
+	 * @param pdfTocManager      the pdf toc manager
+	 * @param file               the file
+	 * @param evaluationPageList the evaluation page list
+	 * @param chapter            the chapter
+	 */
 	private void evolutionConformanceLevel(MessageResources messageResources, PdfTocManager pdfTocManager, File file,
 			Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, Chapter chapter) {
 		final Section section = PDFUtils.createSection("Evolución de la distribución del nivel de accesibilidad",
@@ -288,6 +326,16 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		section.add(tablaRankings);
 	}
 
+	/**
+	 * Evolution average score by verification.
+	 *
+	 * @param messageResources   the message resources
+	 * @param pdfBuilder         the pdf builder
+	 * @param pdfTocManager      the pdf toc manager
+	 * @param file               the file
+	 * @param evaluationPageList the evaluation page list
+	 * @param chapter            the chapter
+	 */
 	private void evolutionAverageScoreByVerification(MessageResources messageResources,
 			AnonymousResultExportPdf pdfBuilder, PdfTocManager pdfTocManager, File file,
 			Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, Chapter chapter) {
@@ -310,6 +358,16 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 				evaluationPageList, section);
 	}
 
+	/**
+	 * Evolution average score by verification by level 1.
+	 *
+	 * @param messageResources   the message resources
+	 * @param pdfBuilder         the pdf builder
+	 * @param pdfTocManager      the pdf toc manager
+	 * @param file               the file
+	 * @param evaluationPageList the evaluation page list
+	 * @param section            the section
+	 */
 	private void evolutionAverageScoreByVerificationByLevel1(MessageResources messageResources,
 			AnonymousResultExportPdf pdfBuilder, PdfTocManager pdfTocManager, File file,
 			Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, Section section) {
@@ -360,6 +418,16 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		subSection.add(tablaRankings);
 	}
 
+	/**
+	 * Evolution average score by verification by level 2.
+	 *
+	 * @param messageResources   the message resources
+	 * @param pdfBuilder         the pdf builder
+	 * @param pdfTocManager      the pdf toc manager
+	 * @param file               the file
+	 * @param evaluationPageList the evaluation page list
+	 * @param section            the section
+	 */
 	private void evolutionAverageScoreByVerificationByLevel2(MessageResources messageResources,
 			AnonymousResultExportPdf pdfBuilder, PdfTocManager pdfTocManager, File file,
 			Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, Section section) {
@@ -409,6 +477,13 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		subSection.add(tablaRankings);
 	}
 
+	/**
+	 * Creates the evolution average score by verification data set.
+	 *
+	 * @param evaluationPageList the evaluation page list
+	 * @param verifications      the verifications
+	 * @return the default category dataset
+	 */
 	private DefaultCategoryDataset createEvolutionAverageScoreByVerificationDataSet(
 			final Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, final List<String> verifications) {
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -425,6 +500,15 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		return dataset;
 	}
 
+	/**
+	 * Adds the evolution average score by verification by level chart.
+	 *
+	 * @param messageResources the message resources
+	 * @param dataSet          the data set
+	 * @param path             the path
+	 * @param filename         the filename
+	 * @param subSection       the sub section
+	 */
 	private void addEvolutionAverageScoreByVerificationByLevelChart(final MessageResources messageResources,
 			DefaultCategoryDataset dataSet, final File path, final String filename, Section subSection) {
 		final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, true, 800, 400,
@@ -449,6 +533,13 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the evolution bar date legend table.
+	 *
+	 * @param evaluationPageList the evaluation page list
+	 * @param subSection         the sub section
+	 * @param dateFormat         the date format
+	 */
 	private void createEvolutionBarDateLegendTable(Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList,
 			Section subSection, DateFormat dateFormat) {
 		final float[] tablaFechasWidths = new float[evaluationPageList.size() + 1];
@@ -478,6 +569,16 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		subSection.add(tablaFechas);
 	}
 
+	/**
+	 * Creates the tabla rankings.
+	 *
+	 * @param messageResources   the message resources
+	 * @param pdfBuilder         the pdf builder
+	 * @param evaluationPageList the evaluation page list
+	 * @param scores             the scores
+	 * @param dateFormat         the date format
+	 * @return the pdf P table
+	 */
 	private PdfPTable createTablaRankings(final MessageResources messageResources, AnonymousResultExportPdf pdfBuilder,
 			Map<Date, List<ObservatoryEvaluationForm>> evaluationPageList, final Map<Date, ScoreForm> scores,
 			final DateFormat dateFormat) {
@@ -508,6 +609,12 @@ public class BasicServiceObservatoryEvolutionResultsPdfSectionBuilder {
 		return tablaRankings;
 	}
 
+	/**
+	 * Calculate percentage.
+	 *
+	 * @param values the values
+	 * @return the map
+	 */
 	private Map<String, BigDecimal> calculatePercentage(final Map<String, List<ObservatoryEvaluationForm>> values) {
 		final Map<String, Integer> count = new LinkedHashMap<>();
 

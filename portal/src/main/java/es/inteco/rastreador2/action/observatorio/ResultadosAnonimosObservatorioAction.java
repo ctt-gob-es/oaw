@@ -47,6 +47,7 @@ import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.Pagination;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
@@ -60,19 +61,19 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 
 	/** The Constant ERROR_PROPERTY_GRAFICA_OBSERVATORIO. */
 	private static final String ERROR_PROPERTY_GRAFICA_OBSERVATORIO = "graficaObservatorio";
-	
+
 	/** The Constant OBSERVATORY_NO_RESULTS. */
 	private static final String OBSERVATORY_NO_RESULTS = "observatorio.no.resultados";
-	
+
 	/** The Constant OBSERVATORY_ONE_RESULT. */
 	private static final String OBSERVATORY_ONE_RESULT = "observatorio.un.resultado";
 
 	/**
 	 * Execute.
 	 *
-	 * @param mapping the mapping
-	 * @param form the form
-	 * @param request the request
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
 	 * @param response the response
 	 * @return the action forward
 	 */
@@ -110,7 +111,7 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	 * Up load conclusion.
 	 *
 	 * @param mapping the mapping
-	 * @param form the form
+	 * @param form    the form
 	 * @param request the request
 	 * @return the action forward
 	 * @throws Exception the exception
@@ -166,7 +167,7 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	/**
 	 * Load file.
 	 *
-	 * @param request the request
+	 * @param request               the request
 	 * @param subirConclusionesForm the subir conclusiones form
 	 */
 	private static void loadFile(HttpServletRequest request, SubirConclusionesForm subirConclusionesForm) {
@@ -233,8 +234,8 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	/**
 	 * Regenerate graphic.
 	 *
-	 * @param mapping the mapping
-	 * @param request the request
+	 * @param mapping  the mapping
+	 * @param request  the request
 	 * @param filePath the file path
 	 * @return the action forward
 	 * @throws Exception the exception
@@ -266,8 +267,8 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	/**
 	 * Gets the graphics.
 	 *
-	 * @param mapping the mapping
-	 * @param request the request
+	 * @param mapping  the mapping
+	 * @param request  the request
 	 * @param filePath the file path
 	 * @return the graphics
 	 * @throws Exception the exception
@@ -304,11 +305,11 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	/**
 	 * Gets the global graphic.
 	 *
-	 * @param request the request
-	 * @param mapping the mapping
-	 * @param basePath the base path
+	 * @param request         the request
+	 * @param mapping         the mapping
+	 * @param basePath        the base path
 	 * @param observatoryType the observatory type
-	 * @param categories the categories
+	 * @param categories      the categories
 	 * @return the global graphic
 	 * @throws Exception the exception
 	 */
@@ -324,7 +325,17 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 						Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
 				final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
 
-				if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
+				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+					final Map<String, Object> graphics = ResultadosAnonimosObservatorioAccesibilidadUtils
+							.generateGlobalGraphics(
+									MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD),
+									request.getParameter(Constants.ID), graphicsPath, categories,
+									pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+					haveResults = graphics.size();
+					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
+						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
+					}
+				} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNEEN2019Utils
 							.generateGlobalGraphics(
 									MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019),
@@ -383,10 +394,10 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	/**
 	 * Gets the category graphic.
 	 *
-	 * @param request the request
-	 * @param mapping the mapping
-	 * @param idCategory the id category
-	 * @param filePath the file path
+	 * @param request         the request
+	 * @param mapping         the mapping
+	 * @param idCategory      the id category
+	 * @param filePath        the file path
 	 * @param observatoryType the observatory type
 	 * @return the category graphic
 	 * @throws Exception the exception
@@ -404,7 +415,20 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 
 				final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
 
-				if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
+				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+					final Map<String, Object> graphics = ResultadosAnonimosObservatorioAccesibilidadUtils
+							.generateCategoryGraphics(
+									MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD),
+									request.getParameter(Constants.ID), ObservatorioDAO.getCategoryById(c, idCategory),
+									graphicsPath,
+									pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.inteco.red.colors"), false);
+					haveResults = graphics.size();
+					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
+						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
+					}
+				}
+
+				else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNEEN2019Utils
 							.generateCategoryGraphics(
 									MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019),
@@ -469,9 +493,9 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 	/**
 	 * Gets the evolution graphic.
 	 *
-	 * @param request the request
-	 * @param mapping the mapping
-	 * @param filePath the file path
+	 * @param request         the request
+	 * @param mapping         the mapping
+	 * @param filePath        the file path
 	 * @param observatoryType the observatory type
 	 * @return the evolution graphic
 	 * @throws Exception the exception
@@ -489,7 +513,19 @@ public class ResultadosAnonimosObservatorioAction extends Action {
 						Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
 				final String application = CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId());
 
-				if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
+				if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(application)) {
+					final Map<String, Object> graphics = ResultadosAnonimosObservatorioAccesibilidadUtils
+							.generateEvolutionGraphics(
+									MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD),
+									request.getParameter(Constants.ID_OBSERVATORIO), request.getParameter(Constants.ID),
+									fileEvolutionPath,
+									pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"), false);
+					haveResults = graphics.size();
+					for (Map.Entry<String, Object> graphicEntry : graphics.entrySet()) {
+						request.setAttribute(graphicEntry.getKey(), graphicEntry.getValue());
+					}
+					forward = "getEvolutionGraphicsUNEEN2019";
+				} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(application)) {
 					final Map<String, Object> graphics = ResultadosAnonimosObservatorioUNEEN2019Utils
 							.generateEvolutionGraphics(
 									MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019),

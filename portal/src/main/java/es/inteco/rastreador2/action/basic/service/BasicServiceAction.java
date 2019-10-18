@@ -15,6 +15,20 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.basic.service;
 
+import java.text.MessageFormat;
+import java.util.Iterator;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.Globals;
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+
 import es.gob.oaw.basicservice.BasicServiceManager;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -25,16 +39,22 @@ import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
 import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
-import org.apache.struts.Globals;
-import org.apache.struts.action.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.text.MessageFormat;
-import java.util.Iterator;
-
+/**
+ * The Class BasicServiceAction.
+ */
 public class BasicServiceAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     @Override
     public ActionForward execute(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request, final HttpServletResponse response)
             throws Exception {
@@ -61,11 +81,18 @@ public class BasicServiceAction extends Action {
         return null;
     }
 
+    /**
+	 * Validate basic service form.
+	 *
+	 * @param basicServiceForm the basic service form
+	 * @param mapping          the mapping
+	 * @param request          the request
+	 * @return the action errors
+	 */
     private ActionErrors validateBasicServiceForm(final BasicServiceForm basicServiceForm, final ActionMapping mapping, final HttpServletRequest request) {
         final ActionErrors errors = basicServiceForm.validate(mapping, request);
         errors.add(BasicServiceUtils.validateReport(basicServiceForm));
         errors.add(BasicServiceUtils.validateUrlOrContent(basicServiceForm));
-        //TODO Error de desbordamiento del tamaño de las URLs en base de datos
         errors.add(BasicServiceUtils.validateUrlLenght(basicServiceForm));
         
         
@@ -83,6 +110,13 @@ public class BasicServiceAction extends Action {
         return errors;
     }
 
+    /**
+	 * Process validation errors.
+	 *
+	 * @param basicServiceForm the basic service form
+	 * @param errors           the errors
+	 * @return the string
+	 */
     private String processValidationErrors(final BasicServiceForm basicServiceForm, final ActionErrors errors) {
         final PropertiesManager pmgr = new PropertiesManager();
         final StringBuilder text = new StringBuilder(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.validation.errors"));

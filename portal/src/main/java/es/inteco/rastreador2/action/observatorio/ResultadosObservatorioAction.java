@@ -43,8 +43,20 @@ import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
+/**
+ * The Class ResultadosObservatorioAction.
+ */
 public class ResultadosObservatorioAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "view.observatory.results")) {
@@ -84,6 +96,13 @@ public class ResultadosObservatorioAction extends Action {
         return null;
     }
 
+    /**
+	 * Delete observatory executed seed.
+	 *
+	 * @param request the request
+	 * @param mapping the mapping
+	 * @return the action forward
+	 */
     private ActionForward deleteObservatoryExecutedSeed(final HttpServletRequest request, final ActionMapping mapping) {
         try (Connection c = DataBaseManager.getConnection()) {
             RastreoDAO.borrarRastreoRealizado(c, Long.parseLong(request.getParameter(Constants.ID)));
@@ -99,6 +118,13 @@ public class ResultadosObservatorioAction extends Action {
         return mapping.findForward(Constants.ERROR_PAGE);
     }
 
+    /**
+	 * Show delete seed execution.
+	 *
+	 * @param request the request
+	 * @param mapping the mapping
+	 * @return the action forward
+	 */
     private ActionForward showDeleteSeedExecution(final HttpServletRequest request, final ActionMapping mapping) {
         try (Connection c = DataBaseManager.getConnection()) {
             request.setAttribute(Constants.SEMILLA_FORM, SemillaDAO.getSeedById(c, Long.parseLong(request.getParameter(Constants.ID_SEMILLA))));
@@ -109,6 +135,14 @@ public class ResultadosObservatorioAction extends Action {
         return mapping.findForward(Constants.ERROR_PAGE);
     }
 
+    /**
+	 * Delete seed confirmation.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward deleteSeedConfirmation(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         if (request.getParameter(Constants.OBSERVATORY_ID) != null) {
             request.setAttribute(Constants.OBSERVATORY_ID, request.getParameter(Constants.OBSERVATORY_ID));
@@ -124,6 +158,14 @@ public class ResultadosObservatorioAction extends Action {
         return mapping.findForward(Constants.CONFIRMACION2);
     }
 
+    /**
+	 * Delete crawler seed.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward deleteCrawlerSeed(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         final String idSemilla = request.getParameter(Constants.SEMILLA);
         final String confirmacion = request.getParameter(Constants.CONFIRMACION);
@@ -144,6 +186,14 @@ public class ResultadosObservatorioAction extends Action {
         return new ActionForward(mapping.findForward(Constants.GET_SEED_RESULTS_FORWARD));
     }
 
+    /**
+	 * Throw crawler seed execution.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward throwCrawlerSeedExecution(ActionMapping mapping, HttpServletRequest request) throws Exception {
         Connection c = null;
         ActionForward forward = null;
@@ -202,6 +252,14 @@ public class ResultadosObservatorioAction extends Action {
         return forward;
     }
 
+    /**
+	 * Lanzar rastreo.
+	 *
+	 * @param c          the c
+	 * @param idCrawling the id crawling
+	 * @param idExObs    the id ex obs
+	 * @throws Exception the exception
+	 */
     private void lanzarRastreo(final Connection c, final String idCrawling, final String idExObs) throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, idCrawling);
@@ -229,6 +287,15 @@ public class ResultadosObservatorioAction extends Action {
         crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
     }
 
+    /**
+	 * Gets the seeds.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the seeds
+	 * @throws Exception the exception
+	 */
     private ActionForward getSeeds(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
         final SemillaForm semillaForm = (SemillaForm) form;
         final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
@@ -251,6 +318,14 @@ public class ResultadosObservatorioAction extends Action {
         return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
     }
 
+    /**
+	 * Gets the fulfilled observatories.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the fulfilled observatories
+	 * @throws Exception the exception
+	 */
     public ActionForward getFulfilledObservatories(final ActionMapping mapping, final HttpServletRequest request) throws Exception {
         final Long observatoryId = Long.valueOf(request.getParameter(Constants.OBSERVATORY_ID));
 
@@ -270,6 +345,15 @@ public class ResultadosObservatorioAction extends Action {
         return mapping.findForward(Constants.GET_FULFILLED_OBSERVATORIES);
     }
 
+    /**
+	 * Gets the annexes.
+	 *
+	 * @param mapping  the mapping
+	 * @param request  the request
+	 * @param response the response
+	 * @return the annexes
+	 * @throws Exception the exception
+	 */
     private ActionForward getAnnexes(final ActionMapping mapping, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
         try {
             final Long idObsExecution = Long.valueOf(request.getParameter(Constants.ID_EX_OBS));

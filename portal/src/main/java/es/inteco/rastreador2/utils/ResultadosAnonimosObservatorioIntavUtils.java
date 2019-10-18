@@ -1687,9 +1687,11 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
 						String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, idAnalysis);
 
+						// Only in NORMATIVA UNE EN2019, warnings points 0.5
 						final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils
 								.generateObservatoryEvaluationForm(evaluation, methodology, false,
 										Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion) ? true : false);
+
 						evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
 						final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c,
 								evaluationForm.getCrawlerExecutionId());
@@ -2377,7 +2379,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 	 */
 	public static Map<String, BigDecimal> getVerificationResultsByPoint(List<ObservatoryEvaluationForm> resultData,
 			String level) {
-		Map<String, Integer> results = new TreeMap<>();
+		Map<String, BigDecimal> results = new TreeMap<>();
 		Map<String, Integer> numPoint = new HashMap<>();
 
 		for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
@@ -2394,11 +2396,30 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 									// Si le damos un 1, lo añadimos a la puntuación e incrementamos el número
 									// de puntos que han puntuado
 									if (results.get(observatorySubgroupForm.getDescription()) == null) {
-										results.put(observatorySubgroupForm.getDescription(), 1);
+										results.put(observatorySubgroupForm.getDescription(), new BigDecimal(1));
 										numPoint.put(observatorySubgroupForm.getDescription(), 1);
 									} else {
-										results.put(observatorySubgroupForm.getDescription(),
-												results.get(observatorySubgroupForm.getDescription()) + 1);
+										results.put(observatorySubgroupForm.getDescription(), results
+												.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(1)));
+										if (numPoint.get(observatorySubgroupForm.getDescription()) == -1) {
+											numPoint.put(observatorySubgroupForm.getDescription(),
+													numPoint.get(observatorySubgroupForm.getDescription()) + 2);
+										} else {
+											numPoint.put(observatorySubgroupForm.getDescription(),
+													numPoint.get(observatorySubgroupForm.getDescription()) + 1);
+										}
+									}
+								} else if (observatorySubgroupForm.getDescription() != null
+										&& observatorySubgroupForm.getDescription().startsWith("minhap.observatory.5_0")
+										&& observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ZERO) {
+									// Si le damos un 1, lo añadimos a la puntuación e incrementamos el número
+									// de puntos que han puntuado
+									if (results.get(observatorySubgroupForm.getDescription()) == null) {
+										results.put(observatorySubgroupForm.getDescription(), new BigDecimal(0.5));
+										numPoint.put(observatorySubgroupForm.getDescription(), 1);
+									} else {
+										results.put(observatorySubgroupForm.getDescription(), results
+												.get(observatorySubgroupForm.getDescription()).add(new BigDecimal(0.5)));
 										if (numPoint.get(observatorySubgroupForm.getDescription()) == -1) {
 											numPoint.put(observatorySubgroupForm.getDescription(),
 													numPoint.get(observatorySubgroupForm.getDescription()) + 2);
@@ -2410,7 +2431,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 								} else {
 									// Si le damos un 0 solamente incrementamos el número de puntos
 									if (results.get(observatorySubgroupForm.getDescription()) == null) {
-										results.put(observatorySubgroupForm.getDescription(), 0);
+										results.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
 										numPoint.put(observatorySubgroupForm.getDescription(), 1);
 									} else {
 										numPoint.put(observatorySubgroupForm.getDescription(),
@@ -2419,7 +2440,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 								}
 							} else {
 								if (results.get(observatorySubgroupForm.getDescription()) == null) {
-									results.put(observatorySubgroupForm.getDescription(), 0);
+									results.put(observatorySubgroupForm.getDescription(), new BigDecimal(0));
 									numPoint.put(observatorySubgroupForm.getDescription(), -1);
 								}
 							}
@@ -2430,11 +2451,11 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 		}
 		// Cambiamos las claves por el nombre y calculamos la media
 		final Map<String, BigDecimal> verificationResultsByPoint = new TreeMap<>();
-		for (Map.Entry<String, Integer> resultEntry : results.entrySet()) {
+		for (Map.Entry<String, BigDecimal> resultEntry : results.entrySet()) {
 			String name = resultEntry.getKey().substring(resultEntry.getKey().length() - 5);
 			BigDecimal value;
 			if (numPoint.get(resultEntry.getKey()) != -1 && numPoint.get(resultEntry.getKey()) != 0) {
-				value = BigDecimal.valueOf(resultEntry.getValue())
+				value = resultEntry.getValue()
 						.divide(BigDecimal.valueOf(numPoint.get(resultEntry.getKey())), 2, BigDecimal.ROUND_HALF_UP)
 						.multiply(BigDecimal.TEN);
 			} else if (numPoint.get(resultEntry.getKey()) == -1) {
@@ -2547,7 +2568,10 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 
 			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c,
 					observatoryEvaluationList.get(0).getIdAnalysis());
-			if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+			if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
+				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
+			} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+				// TODO Fix max fails
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
