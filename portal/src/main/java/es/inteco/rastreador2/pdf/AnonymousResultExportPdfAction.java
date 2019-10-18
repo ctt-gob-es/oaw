@@ -40,6 +40,7 @@ import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfAccesibilidadBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfBuilder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2004Builder;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultPdfUNE2012Builder;
@@ -58,9 +59,9 @@ public class AnonymousResultExportPdfAction extends Action {
 	/**
 	 * Execute.
 	 *
-	 * @param mapping the mapping
-	 * @param form the form
-	 * @param request the request
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
 	 * @param response the response
 	 * @return the action forward
 	 */
@@ -77,8 +78,8 @@ public class AnonymousResultExportPdfAction extends Action {
 	/**
 	 * List pdf.
 	 *
-	 * @param mapping the mapping
-	 * @param request the request
+	 * @param mapping  the mapping
+	 * @param request  the request
 	 * @param response the response
 	 * @return the action forward
 	 */
@@ -143,8 +144,8 @@ public class AnonymousResultExportPdfAction extends Action {
 	/**
 	 * Gets the pdf builder.
 	 *
-	 * @param file the file
-	 * @param tipo the tipo
+	 * @param file    the file
+	 * @param tipo    the tipo
 	 * @param version the version
 	 * @return the pdf builder
 	 * @throws Exception the exception
@@ -155,9 +156,10 @@ public class AnonymousResultExportPdfAction extends Action {
 			return new AnonymousResultPdfUNE2012Builder(file, tipo);
 		} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(version)) {
 			return new AnonymousResultPdfUNE2012bBuilder(file, tipo);
-
 		} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(version)) {
 			return new AnonymousResultPdfUNEEN2019Builder(file, tipo);
+		} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(version)) {
+			return new AnonymousResultPdfAccesibilidadBuilder(file, tipo);
 		} else {
 			return new AnonymousResultPdfUNE2004Builder(file, tipo);
 		}
@@ -178,9 +180,9 @@ public class AnonymousResultExportPdfAction extends Action {
 	/**
 	 * Include evolution.
 	 *
-	 * @param c the c
+	 * @param c             the c
 	 * @param idObservatory the id observatory
-	 * @param idExecution the id execution
+	 * @param idExecution   the id execution
 	 * @return true, if successful
 	 * @throws Exception the exception
 	 */

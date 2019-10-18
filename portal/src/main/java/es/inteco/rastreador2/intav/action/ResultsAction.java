@@ -52,9 +52,9 @@ public class ResultsAction extends Action {
 	/**
 	 * Execute.
 	 *
-	 * @param mapping the mapping
-	 * @param form the form
-	 * @param request the request
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
 	 * @param response the response
 	 * @return the action forward
 	 * @throws Exception the exception
@@ -148,6 +148,8 @@ public class ResultsAction extends Action {
 					} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
 
 						request.setAttribute("aplicacion", Constants.NORMATIVA_UNE_EN2019);
+					} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
+						request.setAttribute("aplicacion", Constants.NORMATIVA_ACCESIBILIDAD);
 					}
 
 				}

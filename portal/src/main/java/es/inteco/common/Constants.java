@@ -637,7 +637,7 @@ public interface Constants {
 	String CONFIRMACION_ELIMINAR_TERM = "eliminaTerminoConf";
 	String CONFIRMACION_DELETE = "confirmacionDelete";
 	String CONFIRMACION_RELANZAR = "confirmacionRelanzar";
-	String CONFIRMACION_IMPORTAR= "confirmacionImportar";
+	String CONFIRMACION_IMPORTAR = "confirmacionImportar";
 	String TERM = "term";
 	String MALWARE_TERM_FORM = "MalwareTermForm";
 	String SAVE_TERM = "saveTerm";
@@ -719,6 +719,10 @@ public interface Constants {
 	String REPORT_OBSERVATORY_2_NOBROKEN = "observatorio-2-nobroken";
 	String REPORT_OBSERVATORY_3 = "observatorio-3";
 	String REPORT_OBSERVATORY_3_NOBROKEN = "observatorio-3-nobroken";
+	String REPORT_OBSERVATORY_4 = "observatorio-4";
+	String REPORT_OBSERVATORY_4_NOBROKEN = "observatorio-4-nobroken";
+	String REPORT_OBSERVATORY_5 = "observatorio-5";
+	String REPORT_OBSERVATORY_5_NOBROKEN = "observatorio-5-nobroken";
 	String REPORT_UNE = "une";
 	String REPORT_OBSERVATORY_FILE = "observatorio-inteco-1-0";
 	String REPORT_UNE_FILE = "une-139803";
@@ -881,9 +885,9 @@ public interface Constants {
 	String NORMATIVA_UNE_2012 = "UNE-2012";
 	String NORMATIVA_UNE_2012_B = "UNE-2012-B";
 	String NORMATIVA_UNE_EN2019 = "UNE-EN2019";
+	String NORMATIVA_ACCESIBILIDAD = "Accesibilidad";
 
 	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
-
 	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
+	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources-Accesibilidad";
 }
-
