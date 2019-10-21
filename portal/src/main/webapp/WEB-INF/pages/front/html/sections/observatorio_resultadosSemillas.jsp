@@ -130,7 +130,8 @@ Email: observ.accesibilidad@correo.gob.es
 			open : function() {
 
 				//Pasamos la fila
-				cargarSelect($('#grid').getLocalRow(rowid));
+				var a  = $('#grid').getLocalRow(rowid);
+				cargarSelect(a);
 
 			},
 			close : function() {
@@ -160,6 +161,11 @@ Email: observ.accesibilidad@correo.gob.es
 				'#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
 				.attr('selected', 'selected');
+		$(
+				'#nuevaSemillaMultidependencia  select[name=inDirectory] option[value='
+						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
+				.attr('selected', 'selected');
+		
 
 	}
 

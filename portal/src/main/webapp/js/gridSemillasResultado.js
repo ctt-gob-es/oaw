@@ -23,6 +23,16 @@ function categoriaFormatter(cellvalue, options, rowObject) {
 	}
 }
 
+function ambitoFormatter(cellvalue, options, rowObject) {
+	if (rowObject.ambito.name != null) {
+
+		return rowObject.ambito.name;
+
+	} else {
+		return "";
+	}
+}
+
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 	return rowObject.nombre;
 }
@@ -177,7 +187,7 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento", "Dependencia",
+													"Segmento","Ambito", "Dependencia",
 													"URLs", "Activa",
 													"Directorio",
 													"Puntuac\u00F3n",
@@ -340,6 +350,57 @@ function reloadGrid(path) {
 															edithidden : true
 														},
 														formatter : categoriaFormatter,
+														sortable : false
+													},
+													{
+														name : "ambitoaux",
+														width : 15,
+														edittype : "select",
+														align : "left",
+														editoptions : {
+															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+															buildSelect : function(
+																	data) {
+
+																var response = jQuery
+																		.parseJSON(data);
+																var s = '<select>';
+
+																if (response
+																		&& response.length) {
+																	for (var i = 0, l = response.length; i < l; i++) {
+																		var ri = response[i];
+																		if(ri.id == $('#grid').getLocalRow(gridSelRow).ambito.id){
+																			
+
+																			s += '<option onmouseover="cambiaTitulo()" selected="selected" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																		} else {
+																		
+																		
+																		s += '<option onmouseover="cambiaTitulo()" value="'
+																				+ ri.id
+																				+ '">'
+																				+ ri.name
+																				+ '</option>';
+																		}
+																	}
+																}
+
+																return s
+																		+ "</select>";
+															}
+
+														},
+														hidden : true,
+														editrules : {
+															required : true,
+															edithidden : true
+														},
+														formatter : ambitoFormatter,
 														sortable : false
 													},
 													{

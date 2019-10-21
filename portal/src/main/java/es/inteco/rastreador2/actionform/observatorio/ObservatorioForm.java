@@ -32,6 +32,7 @@ public class ObservatorioForm {
     private long lenguaje;
     private PeriodicidadForm periodicidadForm;
     private String[] categoria;
+    private String[] ambito;
     private CartuchoForm cartucho;
     private boolean pseudoAleatorio;
     private int estado;
@@ -147,5 +148,13 @@ public class ObservatorioForm {
 
     public void setCategoria(String[] categoria) {
         this.categoria = categoria;
+    }
+    
+    public String[] getAmbito() {
+        return ambito;
+    }
+
+    public void setAmbito(String[] ambito) {
+        this.ambito = ambito;
     }
 }
