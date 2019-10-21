@@ -120,7 +120,7 @@ public class NuevaSemillaIpAction extends Action {
                     String listaUrls = "";
                     listaUrls = GeneraRango.getRango(arrayPuertos, ip1, ip2, listaUrls);
 
-                    SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaIpForm.getNombreSemilla(), listaUrls, nuevaSemillaIpForm.getCategoria().getId(), null, null);
+                    SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaIpForm.getNombreSemilla(), listaUrls, nuevaSemillaIpForm.getCategoria().getId(), null, null, null);
 
                     ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.generada", "volver.nueva.semilla.ip");
                     return mapping.findForward(Constants.EXITO);

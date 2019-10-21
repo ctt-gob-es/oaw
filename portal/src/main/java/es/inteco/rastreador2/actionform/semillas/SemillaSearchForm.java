@@ -15,7 +15,6 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.semillas;
 
-
 import org.apache.struts.upload.FormFile;
 import org.apache.struts.validator.ValidatorForm;
 
@@ -24,32 +23,33 @@ import org.apache.struts.validator.ValidatorForm;
  */
 public class SemillaSearchForm extends ValidatorForm {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 1L;
-    
-    /** The id. */
-    private long id;
-    
-    /** The nombre. */
-    private String nombre;
-    
-    /** The categoria. */
-    private String categoria;
-    
-    /** The url. */
-    private String url;
-    
-    /** The file seeds. */
-    private FormFile fileSeeds;
-    
-    
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Gets the file seeds.
-     *
-     * @return the file seeds
-     */
-    public FormFile getFileSeeds() {
+	/** The id. */
+	private long id;
+
+	/** The nombre. */
+	private String nombre;
+
+	/** The categoria. */
+	private String categoria;
+
+	/** The ambito. */
+	private String ambito;
+
+	/** The url. */
+	private String url;
+
+	/** The file seeds. */
+	private FormFile fileSeeds;
+
+	/**
+	 * Gets the file seeds.
+	 *
+	 * @return the file seeds
+	 */
+	public FormFile getFileSeeds() {
 		return fileSeeds;
 	}
 
@@ -68,69 +68,88 @@ public class SemillaSearchForm extends ValidatorForm {
 	 * @return the url
 	 */
 	public String getUrl() {
-        return url;
-    }
+		return url;
+	}
 
-    /**
-     * Sets the url.
-     *
-     * @param url the new url
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	/**
+	 * Sets the url.
+	 *
+	 * @param url the new url
+	 */
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    /**
-     * Gets the id.
-     *
-     * @return the id
-     */
-    public long getId() {
-        return id;
-    }
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public long getId() {
+		return id;
+	}
 
-    /**
-     * Sets the id.
-     *
-     * @param id the new id
-     */
-    public void setId(long id) {
-        this.id = id;
-    }
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    /**
-     * Gets the nombre.
-     *
-     * @return the nombre
-     */
-    public String getNombre() {
-        return nombre;
-    }
+	/**
+	 * Gets the nombre.
+	 *
+	 * @return the nombre
+	 */
+	public String getNombre() {
+		return nombre;
+	}
 
-    /**
-     * Sets the nombre.
-     *
-     * @param nombre the new nombre
-     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	/**
+	 * Sets the nombre.
+	 *
+	 * @param nombre the new nombre
+	 */
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 
-    /**
-     * Gets the categoria.
-     *
-     * @return the categoria
-     */
-    public String getCategoria() {
-        return categoria;
-    }
+	/**
+	 * Gets the categoria.
+	 *
+	 * @return the categoria
+	 */
+	public String getCategoria() {
+		return categoria;
+	}
 
-    /**
-     * Sets the categoria.
-     *
-     * @param categoria the new categoria
-     */
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+	/**
+	 * Sets the categoria.
+	 *
+	 * @param categoria the new categoria
+	 */
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+
+	/**
+	 * Gets the ambito.
+	 *
+	 * @return the ambito
+	 */
+	public String getAmbito() {
+		return ambito;
+	}
+
+	/**
+	 * Sets the ambito.
+	 *
+	 * @param ambito the new ambito
+	 */
+	public void setAmbito(String ambito) {
+		this.ambito = ambito;
+	}
+
 }

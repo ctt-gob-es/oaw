@@ -32,6 +32,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -59,6 +60,12 @@ public final class SemillaDAO {
 	
 	/** The Constant ID_CATEGORIA. */
 	private static final String ID_CATEGORIA = "id_categoria";
+	
+	/** The Constant NOMBRE_AMB. */
+	private static final String NOMBRE_AMB = "al.nombre";
+	
+	/** The Constant ID_AMBITO. */
+	private static final String ID_AMBITO = "id_ambito";
 	
 	/** The Constant LISTA. */
 	private static final String LISTA = "lista";
@@ -117,14 +124,15 @@ public final class SemillaDAO {
 	 * @param nombreSemilla the nombre semilla
 	 * @param listaUrls     the lista urls
 	 * @param categoria     the categoria
+	 * @param ambito     	the ambito
 	 * @param acronimo      the acronimo
 	 * @param dependencia   the dependencia
 	 * @return the long
 	 * @throws Exception the exception
 	 */
 	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls,
-			String categoria, String acronimo, String dependencia) throws Exception {
-		return insertList(c, tipoLista, nombreSemilla, listaUrls, categoria, acronimo, dependencia, true, false);
+			String categoria, String ambito, String acronimo, String dependencia) throws Exception {
+		return insertList(c, tipoLista, nombreSemilla, listaUrls, categoria, ambito, acronimo, dependencia, true, false);
 	}
 
 	/**
@@ -135,6 +143,7 @@ public final class SemillaDAO {
 	 * @param nombreSemilla the nombre semilla
 	 * @param listaUrls     the lista urls
 	 * @param categoria     the categoria
+	 * @param ambito     	the ambito
 	 * @param acronimo      the acronimo
 	 * @param dependencia   the dependencia
 	 * @param activa        the activa
@@ -143,10 +152,10 @@ public final class SemillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls,
-			String categoria, String acronimo, String dependencia, boolean activa, boolean inDirectory)
+			String categoria, String ambito, String acronimo, String dependencia, boolean activa, boolean inDirectory)
 			throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement(
-				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?)",
+				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setLong(1, tipoLista);
 			ps.setString(2, nombreSemilla);
@@ -156,18 +165,23 @@ public final class SemillaDAO {
 			} else {
 				ps.setString(4, null);
 			}
-			if (StringUtils.isNotEmpty(acronimo)) {
-				ps.setString(5, acronimo);
+			if (StringUtils.isNotEmpty(ambito)) {
+				ps.setString(5, ambito);
 			} else {
 				ps.setString(5, null);
 			}
-			if (StringUtils.isNotEmpty(dependencia)) {
-				ps.setString(6, dependencia);
+			if (StringUtils.isNotEmpty(acronimo)) {
+				ps.setString(6, acronimo);
 			} else {
 				ps.setString(6, null);
 			}
-			ps.setBoolean(7, activa);
-			ps.setBoolean(8, inDirectory);
+			if (StringUtils.isNotEmpty(dependencia)) {
+				ps.setString(7, dependencia);
+			} else {
+				ps.setString(7, null);
+			}
+			ps.setBoolean(8, activa);
+			ps.setBoolean(9, inDirectory);
 			ps.executeUpdate();
 
 			try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -194,7 +208,7 @@ public final class SemillaDAO {
 	public static List<SemillaForm> getSeeds(Connection c, int type) throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
 
-		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM lista l WHERE id_tipo_lista = ? ;")) {
+		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM lista l LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) WHERE id_tipo_lista = ? ;")) {
 			ps.setLong(1, type);
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
@@ -208,6 +222,12 @@ public final class SemillaDAO {
 						categoriaForm.setName(rs.getString(NOMBRE_CAT));
 						categoriaForm.setOrden(rs.getInt(ORDEN));
 						semillaForm.setCategoria(categoriaForm);
+						
+						final AmbitoForm ambitoForm = new AmbitoForm();
+						ambitoForm.setId(rs.getString(ID_AMBITO));
+						ambitoForm.setName(rs.getString(NOMBRE_AMB));
+						semillaForm.setAmbito(ambitoForm);
+						
 						if (rs.getLong(ID_LISTA) == 0) {
 							semillaForm.setAsociada(false);
 						} else {
@@ -243,7 +263,7 @@ public final class SemillaDAO {
 
 		int count = 1;
 
-		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
+		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) WHERE id_tipo_lista = ? ";
 
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
@@ -253,6 +273,10 @@ public final class SemillaDAO {
 			query += " AND l.id_categoria = ? ";
 		}
 
+		if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
+			query += " AND l.id_ambito = ? ";
+		}
+		
 		if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 			query += " AND l.lista like ? ";
 		}
@@ -272,6 +296,10 @@ public final class SemillaDAO {
 				ps.setString(count++, searchForm.getCategoria());
 			}
 
+			if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
+				ps.setString(count++, searchForm.getAmbito());
+			}
+			
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 				ps.setString(count++, "%" + searchForm.getUrl() + "%");
 			}
@@ -295,6 +323,12 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
+					
+					final AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString(ID_AMBITO));
+					ambitoForm.setName(rs.getString(NOMBRE_AMB));
+					semillaForm.setAmbito(ambitoForm);
+
 					if (rs.getLong("l.activa") == 0) {
 						semillaForm.setActiva(false);
 					} else {
@@ -371,6 +405,10 @@ public final class SemillaDAO {
 			query += " AND l.id_categoria = ? ";
 		}
 
+		if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
+			query += " AND l.id_ambito = ? ";
+		}
+		
 		if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 			query += " AND l.lista like ? ";
 		}
@@ -386,6 +424,10 @@ public final class SemillaDAO {
 				ps.setString(count++, searchForm.getCategoria());
 			}
 
+			if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
+				ps.setString(count++, searchForm.getAmbito());
+			}
+			
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 				ps.setString(count, "%" + searchForm.getUrl() + "%");
 			}
@@ -623,7 +665,7 @@ public final class SemillaDAO {
 		final SemillaForm semillaForm = new SemillaForm();
 
 		try (PreparedStatement ps = c.prepareStatement(
-				"SELECT * FROM lista l LEFT OUTER JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) WHERE l.id_lista = ?")) {
+				"SELECT * FROM lista l LEFT OUTER JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) WHERE l.id_lista = ?")) {
 			ps.setLong(1, idSemilla);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
@@ -636,6 +678,12 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
+					
+					AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString(ID_AMBITO));
+					ambitoForm.setName(rs.getString(NOMBRE_AMB));
+					semillaForm.setAmbito(ambitoForm);
+					
 					// Multidependencia
 
 					// Multidependencia
@@ -751,7 +799,7 @@ public final class SemillaDAO {
 	public static void editSeed(Connection c, SemillaForm semillaForm) throws SQLException {
 		// Multidependencia
 		try (PreparedStatement ps = c.prepareStatement(
-				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory = ?, eliminar = ? WHERE id_lista = ? ")) {
+				"UPDATE lista SET lista = ?, nombre = ?, id_categoria = ?, id_ambito = ?,acronimo = ?, activa = ?, in_directory = ?, eliminar = ? WHERE id_lista = ? ")) {
 
 			ps.setString(1, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 			ps.setString(2, semillaForm.getNombre());
@@ -761,17 +809,23 @@ public final class SemillaDAO {
 			} else {
 				ps.setString(3, null);
 			}
-			if (semillaForm.getAcronimo() != null && !StringUtils.isEmpty(semillaForm.getAcronimo())) {
-				ps.setString(4, semillaForm.getAcronimo());
+			if (semillaForm.getAmbito().getId() != null
+					&& !StringUtils.isEmpty(semillaForm.getAmbito().getId())) {
+				ps.setString(4, semillaForm.getAmbito().getId());
 			} else {
 				ps.setString(4, null);
 			}
+			if (semillaForm.getAcronimo() != null && !StringUtils.isEmpty(semillaForm.getAcronimo())) {
+				ps.setString(5, semillaForm.getAcronimo());
+			} else {
+				ps.setString(5, null);
+			}
 			// Multidependencia
 
-			ps.setBoolean(5, semillaForm.isActiva());
-			ps.setBoolean(6, semillaForm.isInDirectory());
-			ps.setBoolean(7, semillaForm.isEliminar());
-			ps.setLong(8, semillaForm.getId());
+			ps.setBoolean(6, semillaForm.isActiva());
+			ps.setBoolean(7, semillaForm.isInDirectory());
+			ps.setBoolean(8, semillaForm.isEliminar());
+			ps.setLong(9, semillaForm.getId());
 			ps.executeUpdate();
 
 			// Soporte para múltiples dependencias
@@ -893,7 +947,7 @@ public final class SemillaDAO {
 			if (updateListDataForm.getIdListaRastreable() == 0) {
 				// Guardamos la lista Rastreable
 				insertList(c, Constants.ID_LISTA_RASTREABLE, updateListDataForm.getNombre() + "-Rastreable",
-						updateListDataForm.getListaRastreable(), null, null, null);
+						updateListDataForm.getListaRastreable(), null, null, null, null);
 				final long idCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-Rastreable",
 						null);
 				updateListDataForm.setIdListaRastreable(idCrawlableList);
@@ -913,7 +967,7 @@ public final class SemillaDAO {
 			if (updateListDataForm.getIdListaNoRastreable() == 0) {
 				// Guardamos la lista no Rastreable
 				insertList(c, Constants.ID_LISTA_NO_RASTREABLE, updateListDataForm.getNombre() + "-NoRastreable",
-						updateListDataForm.getListaNoRastreable(), null, null, null);
+						updateListDataForm.getListaNoRastreable(), null, null, null, null);
 				Long idNoCrawlableList = SemillaDAO.getIdList(c, updateListDataForm.getNombre() + "-NoRastreable",
 						null);
 				updateListDataForm.setIdListaNoRastreable(idNoCrawlableList);
@@ -953,6 +1007,443 @@ public final class SemillaDAO {
 		} catch (SQLException e) {
 			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	/**
+	 * Gets the seed categories.
+	 *
+	 * @param c    the c
+	 * @param page the page
+	 * @return the seed categories
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<AmbitoForm> getSeedAmbits(Connection c, int page) throws SQLException {
+		final List<AmbitoForm> ambits = new ArrayList<>();
+		final String query;
+		if (page == Constants.NO_PAGINACION) {
+			query = "SELECT * FROM ambitos_lista ORDER BY id_ambito ASC";
+		} else {
+			query = "SELECT * FROM ambitos_lista ORDER BY id_ambito ASC LIMIT ? OFFSET ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			if (page != Constants.NO_PAGINACION) {
+				final PropertiesManager pmgr = new PropertiesManager();
+				final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+				final int resultFrom = pagSize * page;
+				ps.setInt(1, pagSize);
+				ps.setInt(2, resultFrom);
+			}
+
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString(ID_AMBITO));
+					ambitoForm.setName(rs.getString(NOMBRE));
+					ambits.add(ambitoForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return ambits;
+	}
+
+	/**
+	 * Gets the seed ambit.
+	 *
+	 * @param c          the c
+	 * @param idAmbit the id ambit
+	 * @return the seed ambit
+	 * @throws SQLException the SQL exception
+	 */
+	public static AmbitoForm getSeedAmbit(Connection c, long idAmbit) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ambitos_lista WHERE id_ambito = ?")) {
+			ps.setLong(1, idAmbit);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					final AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString(ID_AMBITO));
+					ambitoForm.setName(rs.getString(NOMBRE));
+					return ambitoForm;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the seeds by ambit.
+	 *
+	 * @param c          the c
+	 * @param idAmbit the id ambit
+	 * @param page       the page
+	 * @param searchForm the search form
+	 * @return the seeds by ambit
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<SemillaForm> getSeedsByAmbit(Connection c, long idAmbit, int page, SemillaForm searchForm)
+			throws SQLException {
+		final List<SemillaForm> results = new ArrayList<>();
+		String query = "SELECT * FROM lista l WHERE id_ambito = ? ";
+
+		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+			query += " AND l.nombre like ? ";
+		}
+
+		query += "ORDER BY l.nombre ASC ";
+
+		if (page != Constants.NO_PAGINACION) {
+			query += "LIMIT ? OFFSET ?";
+		}
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			int count = 1;
+			ps.setLong(count++, idAmbit);
+
+			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+				ps.setString(count++, "%" + searchForm.getNombre() + "%");
+			}
+
+			if (page != Constants.NO_PAGINACION) {
+				PropertiesManager pmgr = new PropertiesManager();
+				int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+				int resultFrom = pagSize * page;
+				ps.setInt(count++, pagSize);
+				ps.setInt(count, resultFrom);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+
+				while (rs.next()) {
+					SemillaForm semillaForm = new SemillaForm();
+					semillaForm.setId(rs.getLong(ID_LISTA));
+					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setListaUrlsString(rs.getString(LISTA));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
+					semillaForm.setAcronimo(rs.getString("acronimo"));
+					// Multidependencia
+
+					PreparedStatement psDependencias = c.prepareStatement(
+							"SELECT d.id_dependencia, d.nombre FROM dependencia d WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?) ORDER BY UPPER(d.nombre)");
+					psDependencias.setLong(1, semillaForm.getId());
+
+					List<DependenciaForm> listDependencias = new ArrayList<>();
+					try (ResultSet rsDependencias = psDependencias.executeQuery()) {
+						while (rsDependencias.next()) {
+							DependenciaForm dependencia = new DependenciaForm();
+							dependencia.setId(rsDependencias.getLong("id_dependencia"));
+							dependencia.setName(rsDependencias.getString(NOMBRE));
+							listDependencias.add(dependencia);
+						}
+
+						semillaForm.setDependencias(listDependencias);
+					} catch (SQLException e) {
+						Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					}
+
+					// semillaForm.setDependencia(rs.getString("dependencia"));
+					semillaForm.setActiva(rs.getBoolean("activa"));
+					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
+					semillaForm.setEliminar(rs.getBoolean("eliminar"));
+					results.add(semillaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+
+	/**
+	 * Count seeds by ambit.
+	 *
+	 * @param c          the c
+	 * @param idAmbit the id ambit
+	 * @param searchForm the search form
+	 * @return the integer
+	 * @throws SQLException the SQL exception
+	 */
+	public static Integer countSeedsByAmbit(Connection c, long idAmbit, SemillaForm searchForm)
+			throws SQLException {
+		int count = 1;
+		String query = "SELECT COUNT(*) AS numSeeds FROM lista WHERE id_ambito = ? ";
+
+		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+			query += " AND nombre like ? ";
+		}
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(count++, idAmbit);
+			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+				ps.setString(count, "%" + searchForm.getNombre() + "%");
+			}
+
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt("numSeeds");
+				} else {
+					return 0;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Count seed ambits.
+	 *
+	 * @param c the c
+	 * @return the integer
+	 * @throws Exception the exception
+	 */
+	public static Integer countSeedAmbits(Connection c) throws Exception {
+		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) as numAmbits FROM ambitos_lista");
+				ResultSet rs = ps.executeQuery()) {
+			if (rs.next()) {
+				return rs.getInt("numAmbits");
+			}
+		} catch (Exception e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return 0;
+	}
+
+
+	/**
+	 * Gets the ambit observatory ids.
+	 *
+	 * @param c          the c
+	 * @param idAmbit the id ambit
+	 * @return the ambit observatory ids
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<Long> getAmbitObservatoryIds(Connection c, Long idAmbit) throws SQLException {
+		try (PreparedStatement ps = c
+				.prepareStatement("SELECT id_observatorio FROM observatorio_ambito WHERE id_ambito = ?")) {
+			ps.setLong(1, idAmbit);
+			try (ResultSet rs = ps.executeQuery()) {
+				final List<Long> observatoriesIdsList = new ArrayList<>();
+				while (rs.next()) {
+					observatoriesIdsList.add(rs.getLong(1));
+				}
+
+				return observatoriesIdsList;
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Delete category seed.
+	 *
+	 * @param c         the c
+	 * @param idSemilla the id semilla
+	 * @throws Exception the exception
+	 */
+	public static void deleteAmbitSeed(Connection c, String idSemilla) throws Exception {
+		try {
+			final List<ObservatorioForm> observatoryFormList = ObservatorioDAO.getObservatoriesFromSeed(c, idSemilla);
+			deleteObservatorySeed(c, Long.parseLong(idSemilla), observatoryFormList);
+		} catch (Exception e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Creates the seed ambit.
+	 *
+	 * @param c             the c
+	 * @param ambitoForm the ambito form
+	 * @return the long
+	 * @throws SQLException the SQL exception
+	 */
+	public static long createSeedAmbit(final Connection c, final AmbitoForm ambitoForm) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("INSERT INTO ambitos_lista nombre VALUES ?",
+				Statement.RETURN_GENERATED_KEYS)) {
+			ps.setString(1, ambitoForm.getName());
+			ps.executeUpdate();
+			try (ResultSet rs = ps.getGeneratedKeys()) {
+				if (rs.next()) {
+					return rs.getLong(1);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return 0;
+	}
+
+	/**
+	 * Update seed ambito.
+	 *
+	 * @param c             the c
+	 * @param categoriaForm the ambito form
+	 * @throws SQLException the SQL exception
+	 */
+	public static void updateSeedAmbit(Connection c, AmbitoForm ambitoForm) throws SQLException {
+		try (PreparedStatement ps = c
+				.prepareStatement("UPDATE ambitos_lista SET nombre = ? WHERE id_ambito = ?")) {
+			ps.setString(1, ambitoForm.getName());
+			ps.setString(2, ambitoForm.getId());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Save seeds ambit.
+	 *
+	 * @param c          the c
+	 * @param semillas   the semillas
+	 * @param idAmbi the id ambit
+	 * @throws SQLException the SQL exception
+	 */
+	public static void saveSeedsAmbit(Connection c, List<SemillaForm> semillas, String idAmbit)
+			throws SQLException {
+		PreparedStatement ps = null;
+		try {
+			c.setAutoCommit(false);
+
+			// Multidependencia
+			ps = c.prepareStatement(
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?)",
+					Statement.RETURN_GENERATED_KEYS);
+
+			for (SemillaForm semillaForm : semillas) {
+				ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+				ps.setString(2, semillaForm.getNombre());
+				ps.setString(3, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+				if (semillaForm.getCategoria() != null && StringUtils.isNotEmpty(semillaForm.getCategoria().getId())) {
+					ps.setString(4, semillaForm.getCategoria().getId());
+				} else {
+					ps.setString(4, null);
+				}		
+				ps.setString(5, idAmbit);
+				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+					ps.setString(6, semillaForm.getAcronimo());
+				} else {
+					ps.setString(6, null);
+				}
+
+				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
+						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(7, false);
+				} else {
+					ps.setBoolean(7, true);
+				}
+
+				if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+						&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(8, false);
+				} else {
+					ps.setBoolean(8, true);
+				}
+
+				if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+						&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(9, false);
+				} else {
+					ps.setBoolean(9, true);
+				}
+				
+				int affectedRows = ps.executeUpdate();
+
+				if (affectedRows == 0) {
+					// ps.close();
+					throw new SQLException("Creating user failed, no rows affected.");
+				}
+
+				ResultSet generatedKeys = ps.getGeneratedKeys();
+
+				// Multidependencia
+				if (generatedKeys.next()) {
+					semillaForm.setId(generatedKeys.getLong(1));
+
+					// Inserción de las nuevas
+
+					if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
+						StringBuilder slqInsertSemillaDependencia = new StringBuilder(
+								"INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
+
+						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
+
+							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
+
+							// Si viene informado el nombre de la
+							// depenedencia
+							// es
+							// para que se cree nueva. Si el nombre ya existe,
+							// se devuelve el id de la dependencia existente
+
+							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentDependencia.getName())) {
+
+								PreparedStatement psCreateDependencia = c.prepareStatement(
+										"INSERT INTO dependencia(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_dependencia=LAST_INSERT_ID(id_dependencia), nombre = ?",
+										Statement.RETURN_GENERATED_KEYS);
+								psCreateDependencia.setString(1, currentDependencia.getName());
+								psCreateDependencia.setString(2, currentDependencia.getName());
+
+								int affectedRowsD = psCreateDependencia.executeUpdate();
+
+								if (affectedRowsD == 0) {
+									throw new SQLException("Creating user failed, no rows affected.");
+								}
+
+								ResultSet generatedKeysD = psCreateDependencia.getGeneratedKeys();
+
+								if (generatedKeysD.next()) {
+									currentDependencia.setId(generatedKeysD.getLong(1));
+								} else {
+									throw new SQLException("Creating dependencias failed, no ID obtained.");
+								}
+
+							}
+
+							slqInsertSemillaDependencia.append("(").append(semillaForm.getId()).append(",")
+									.append(currentDependencia.getId()).append(")");
+
+							if (i < semillaForm.getDependencias().size() - 1) {
+								slqInsertSemillaDependencia.append(",");
+							}
+						}
+
+						PreparedStatement psInsertarSemillaDependencia = c
+								.prepareStatement(slqInsertSemillaDependencia.toString());
+
+						psInsertarSemillaDependencia.executeUpdate();
+					}
+
+				} else {
+					throw new SQLException("Creating dependencias failed, no ID obtained.");
+				}
+
+			}
+
+			// ps.executeBatch();
+
+			c.commit();
+		} catch (SQLException e) {
+			c.rollback();
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		} finally {
+			DAOUtils.closeQueries(ps, null);
 		}
 	}
 
@@ -1312,7 +1803,7 @@ public final class SemillaDAO {
 
 			// Multidependencia
 			ps = c.prepareStatement(
-					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?)",
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			for (SemillaForm semillaForm : semillas) {
@@ -1320,31 +1811,36 @@ public final class SemillaDAO {
 				ps.setString(2, semillaForm.getNombre());
 				ps.setString(3, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 				ps.setString(4, idCategory);
-				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-					ps.setString(5, semillaForm.getAcronimo());
+				if (semillaForm.getAmbito() != null && StringUtils.isNotEmpty(semillaForm.getAmbito().getId())) {
+					ps.setString(5, semillaForm.getAmbito().getId());
 				} else {
 					ps.setString(5, null);
+				}					
+				if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+					ps.setString(6, semillaForm.getAcronimo());
+				} else {
+					ps.setString(6, null);
 				}
 
 				if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
 						&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-					ps.setBoolean(6, false);
-				} else {
-					ps.setBoolean(6, true);
-				}
-
-				if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
-						&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 					ps.setBoolean(7, false);
 				} else {
 					ps.setBoolean(7, true);
 				}
 
-				if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
-						&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+				if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+						&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 					ps.setBoolean(8, false);
 				} else {
 					ps.setBoolean(8, true);
+				}
+
+				if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+						&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					ps.setBoolean(9, false);
+				} else {
+					ps.setBoolean(9, true);
 				}
 				
 				int affectedRows = ps.executeUpdate();
@@ -1432,6 +1928,10 @@ public final class SemillaDAO {
 		}
 	}
 
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/**
 	 * Save seed multidependencia.
 	 *
@@ -1447,7 +1947,7 @@ public final class SemillaDAO {
 			// Multidependencia
 
 			ps = c.prepareStatement(
-					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?)",
+					"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -1460,18 +1960,25 @@ public final class SemillaDAO {
 				ps.setString(4, null);
 			}
 
-			if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-				ps.setString(5, semillaForm.getAcronimo());
+			if (semillaForm.getAmbito() != null && StringUtils.isNotEmpty(semillaForm.getAmbito().getId())) {
+				ps.setString(5, semillaForm.getAmbito().getId());
 			} else {
 				ps.setString(5, null);
 			}
 
-			// Multidependencia
-			ps.setBoolean(6, semillaForm.isActiva());
-
-			ps.setBoolean(7, semillaForm.isInDirectory());
 			
-			ps.setBoolean(8, semillaForm.isEliminar());
+			if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
+				ps.setString(6, semillaForm.getAcronimo());
+			} else {
+				ps.setString(6, null);
+			}
+
+			// Multidependencia
+			ps.setBoolean(7, semillaForm.isActiva());
+
+			ps.setBoolean(8, semillaForm.isInDirectory());
+			
+			ps.setBoolean(9, semillaForm.isEliminar());
 
 			int affectedRows = ps.executeUpdate();
 
@@ -1645,7 +2152,7 @@ public final class SemillaDAO {
 	public static List<SemillaForm> getAllObservatorySeeds(Connection c) throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		int count = 1;
-		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? order by l.id_categoria, l.nombre";
+		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria)  LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) WHERE id_tipo_lista = ? order by l.id_categoria, l.nombre";
 
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
@@ -1667,6 +2174,12 @@ public final class SemillaDAO {
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					semillaForm.setCategoria(categoriaForm);
+					
+					final AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString(ID_AMBITO));
+					ambitoForm.setName(rs.getString(NOMBRE_AMB));
+					semillaForm.setAmbito(ambitoForm);
+					
 					if (rs.getLong("l.activa") == 0) {
 						semillaForm.setActiva(false);
 					} else {
@@ -1741,7 +2254,7 @@ public final class SemillaDAO {
 				if (semillaForm.getId() != null) {
 
 					ps = c.prepareStatement(
-							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, acronimo = ?, activa = ?, in_directory= ?, eliminar=?",
+							"INSERT INTO lista (id_lista,id_tipo_lista, nombre, lista, id_categoria, id_ambito, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE id_lista=LAST_INSERT_ID(id_lista), id_tipo_lista = ?, nombre = ?, lista = ?, id_categoria = ?, id_ambito=?, acronimo = ?, activa = ?, in_directory= ?, eliminar=?",
 							Statement.RETURN_GENERATED_KEYS);
 
 					ps.setLong(1, semillaForm.getId());
@@ -1749,99 +2262,102 @@ public final class SemillaDAO {
 					ps.setString(3, semillaForm.getNombre());
 					ps.setString(4, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 					ps.setString(5, semillaForm.getCategoria().getId());
+					ps.setString(6, semillaForm.getAmbito().getId());
 					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-						ps.setString(6, semillaForm.getAcronimo());
+						ps.setString(7, semillaForm.getAcronimo());
 					} else {
-						ps.setString(6, null);
+						ps.setString(7, null);
 					}
 
 					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
 							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(7, false);
-					} else {
-						ps.setBoolean(7, true);
-					}
-
-					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
-							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(8, false);
 					} else {
 						ps.setBoolean(8, true);
 					}
 
-					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
-							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(9, false);
 					} else {
 						ps.setBoolean(9, true);
 					}
+
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(10, false);
+					} else {
+						ps.setBoolean(10, true);
+					}
 					
 					/*******************/
 
-					ps.setInt(10, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
-					ps.setString(11, semillaForm.getNombre());
-					ps.setString(12, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
-					ps.setString(13, semillaForm.getCategoria().getId());
+					ps.setInt(11, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
+					ps.setString(12, semillaForm.getNombre());
+					ps.setString(13, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
+					ps.setString(14, semillaForm.getCategoria().getId());
+					ps.setString(15, semillaForm.getAmbito().getId());
 					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-						ps.setString(14, semillaForm.getAcronimo());
+						ps.setString(16, semillaForm.getAcronimo());
 					} else {
-						ps.setString(14, null);
+						ps.setString(16, null);
 					}
 					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
 							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(15, false);
-					} else {
-						ps.setBoolean(15, true);
-					}
-
-					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
-							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(16, false);
-					} else {
-						ps.setBoolean(16, true);
-					}
-					
-					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
-							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(17, false);
 					} else {
 						ps.setBoolean(17, true);
 					}
 
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(18, false);
+					} else {
+						ps.setBoolean(18, true);
+					}
+					
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(19, false);
+					} else {
+						ps.setBoolean(19, true);
+					}
+
 				} else {
 
 					ps = c.prepareStatement(
-							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?)",
+							"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, acronimo, activa, in_directory, eliminar) VALUES (?,?,?,?,?,?,?,?,?)",
 							Statement.RETURN_GENERATED_KEYS);
 
 					ps.setInt(1, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 					ps.setString(2, semillaForm.getNombre());
 					ps.setString(3, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
 					ps.setString(4, semillaForm.getCategoria().getId());
+					ps.setString(5, semillaForm.getAmbito().getId());
 					if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-						ps.setString(5, semillaForm.getAcronimo());
+						ps.setString(6, semillaForm.getAcronimo());
 					} else {
-						ps.setString(5, null);
+						ps.setString(6, null);
 					}
 					if (StringUtils.isNotEmpty(semillaForm.getActivaStr())
 							&& semillaForm.getActivaStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
-						ps.setBoolean(6, false);
-					} else {
-						ps.setBoolean(6, true);
-					}
-
-					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
-							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(7, false);
 					} else {
 						ps.setBoolean(7, true);
 					}
-					
-					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
-							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+
+					if (StringUtils.isNotEmpty(semillaForm.getInDirectoryStr())
+							&& semillaForm.getInDirectoryStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
 						ps.setBoolean(8, false);
 					} else {
 						ps.setBoolean(8, true);
+					}
+					
+					if (StringUtils.isNotEmpty(semillaForm.getEliminarStr())
+							&& semillaForm.getEliminarStr().equalsIgnoreCase(Boolean.FALSE.toString())) {
+						ps.setBoolean(9, false);
+					} else {
+						ps.setBoolean(9, true);
 					}
 
 				}

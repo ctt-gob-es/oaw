@@ -30,6 +30,7 @@ public class NuevaSemillaGoogleForm extends ValidatorForm {
     private String control;
     private String nombreSemilla;
     private CategoriaForm categoria;
+    private AmbitoForm ambito;
 
     public String getNombreSemilla() {
         return nombreSemilla;
@@ -71,6 +72,14 @@ public class NuevaSemillaGoogleForm extends ValidatorForm {
         this.categoria = categoria;
     }
 
+    public AmbitoForm getAmbito() {
+        return ambito;
+    }
+
+    public void setAmbito(AmbitoForm ambito) {
+        this.ambito = ambito;
+    }
+    
     @Override
     public void reset(ActionMapping mapping, HttpServletRequest request) {
         super.reset(mapping, request);

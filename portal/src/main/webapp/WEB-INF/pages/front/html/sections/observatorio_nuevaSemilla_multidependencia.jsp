@@ -57,6 +57,40 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 						});
 
+		//Cargar los ambitos
+
+		$jn('#selectAmbitosNuevaSemilla').empty();
+		$jn
+				.ajax(
+						{
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+						})
+				.done(
+						function(data) {
+
+							var response = $jn.parseJSON(data);
+
+							$jn('#selectAmbitosNuevaSemilla').append(
+									"<option value=''></option>");
+							if (response && response.length) {
+								for (var i = 0, l = response.length; i < l; i++) {
+									var ri = response[i];
+									$jn('#selectAmbitosNuevaSemilla')
+											.append(
+													'<option value="'+ri.id+'">'
+															+ ri.name
+															+ '</option>');
+								}
+							}
+
+							if (rowObject != null) {
+
+								$jn('#selectAmbitosNuevaSemilla').val(
+										rowObject.ambito.id);
+							}
+
+						});
+		
 		//Cargar las dependencias
 		$jn('#selectDependenciasNuevaSemilla').empty();
 		$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
@@ -209,6 +243,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</div>
 			</logic:notPresent>
 
+
+			<logic:present parameter="<%=Constants.ID_AMBITO%>">
+				<input type="hidden" name="ambitoaux"
+					value="<c:out value="${AmbitoForm.id }" />" />
+			</logic:present>
+			<logic:notPresent parameter="<%=Constants.ID_AMBITO%>">
+				<!-- Ambito/Ambitoaux -->
+				<div class="row formItem">
+					<label for="ambito" class="control-label"><strong
+						class="labelVisu"><bean:message
+								key="nueva.semilla.webs.ambito" /></strong></label>
+					<div class="col-xs-4">
+						<select name="ambitoaux" id="selectAmbitosNuevaSemilla"
+							class="textoSelect form-control"></select>
+					</div>
+				</div>
+			</logic:notPresent>
+			
+			
 			<!-- Urls -->
 			<div class="row formItem">
 				<p class="alert alert-info" style="margin-left: 23%;">

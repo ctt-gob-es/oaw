@@ -23,6 +23,7 @@ import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.observatorio.*;
 import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
 import es.inteco.rastreador2.actionform.rastreo.ObservatoryTypeForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
@@ -284,6 +285,25 @@ public final class ObservatorioDAO {
 		return category;
 	}
 
+	public static AmbitoForm getAmbitById(final Connection c, final Long id) throws SQLException {
+		final AmbitoForm ambit = new AmbitoForm();
+
+		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ambitos_lista WHERE id_ambito = ? ORDER BY id_ambito ASC")) {
+			ps.setLong(1, id);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					ambit.setId(String.valueOf(rs.getLong("id_ambito")));
+					ambit.setName(rs.getString("nombre"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+
+		return ambit;
+	}
+	
 	public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws SQLException {
 		final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
 
@@ -602,6 +622,16 @@ public final class ObservatorioDAO {
 				ps.executeBatch();
 			}
 
+			ps = c.prepareStatement("INSERT INTO observatorio_ambito VALUES (?,?)");
+			if (nuevoObservatorioForm.getAmbito() != null) {
+				for (String ambito : nuevoObservatorioForm.getAmbito()) {
+					ps.setLong(1, idObservatory);
+					ps.setLong(2, Long.parseLong(ambito));
+					ps.addBatch();
+				}
+				ps.executeBatch();
+			}
+			
 			if ((idObservatory != 0) && (nuevoObservatorioForm.getAddSeeds() != null) && (!nuevoObservatorioForm.getAddSeeds().isEmpty())) {
 				for (SemillaForm semillaForm : nuevoObservatorioForm.getAddSeeds()) {
 					ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)");
@@ -617,6 +647,13 @@ public final class ObservatorioDAO {
 					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, new SemillaForm()));
 				}
 			}
+			
+			if (nuevoObservatorioForm.getAmbito() != null) {
+				for (String ambito : nuevoObservatorioForm.getAmbito()) {
+					totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(ambito), Constants.NO_PAGINACION, new SemillaForm()));
+				}
+			}
+			
 			insertNewCrawlers(c, idObservatory, totalSeedsAdded);
 
 			c.commit();
@@ -915,8 +952,8 @@ public final class ObservatorioDAO {
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
 
-		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, rr.id FROM lista l "
-				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
+		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, rr.id, al.nombre FROM lista l "
+				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
 				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
 
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
@@ -964,6 +1001,7 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setId(rs.getString("l.id_lista"));
 					resultadoSemillaForm.setNombre(rs.getString("l.nombre"));
 					resultadoSemillaForm.setAcronimo(rs.getString("l.acronimo"));
+					
 
 					resultadoSemillaForm.setListaUrls(convertStringToList(rs.getString("l.lista")));
 
@@ -987,6 +1025,11 @@ public final class ObservatorioDAO {
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					resultadoSemillaForm.setCategoria(categoriaForm);
 
+					final AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString("l.id_ambito"));
+					ambitoForm.setName(rs.getString("al.nombre"));
+					resultadoSemillaForm.setAmbito(ambitoForm);
+					
 					// resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
 
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
