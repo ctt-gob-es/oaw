@@ -12,6 +12,22 @@
 ******************************************************************************/
 package es.inteco.rastreador2.openOffice.export;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+import org.odftoolkit.odfdom.OdfFileDom;
+import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+
 import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
@@ -21,20 +37,7 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-import org.odftoolkit.odfdom.OdfFileDom;
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2004
