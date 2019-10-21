@@ -12,6 +12,25 @@
 ******************************************************************************/
 package es.inteco.rastreador2.openOffice.export;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+import org.odftoolkit.odfdom.OdfFileDom;
+import org.odftoolkit.odfdom.doc.OdfDocument;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
+
 import es.inteco.common.Constants;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
@@ -20,25 +39,13 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012Utils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-import org.odftoolkit.odfdom.OdfFileDom;
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
- * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012
+ * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012.
  */
 public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder {
 
+    /** The Constant LEVEL_I_VERIFICATIONS. */
     public static final List<String> LEVEL_I_VERIFICATIONS = Arrays.asList(
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION,
@@ -51,6 +58,7 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_122_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_123_VERIFICATION);
 
+    /** The Constant LEVEL_II_VERIFICATIONS. */
     public static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_211_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_212_VERIFICATION,
@@ -63,12 +71,31 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_222_VERIFICATION,
             Constants.OBSERVATORY_GRAPHIC_EVOLUTION_223_VERIFICATION);
 
+    /**
+	 * Instantiates a new open office UNE 2012 document builder.
+	 *
+	 * @param executionId      the execution id
+	 * @param observatoryId    the observatory id
+	 * @param tipoObservatorio the tipo observatorio
+	 */
     public OpenOfficeUNE2012DocumentBuilder(final String executionId, final String observatoryId, final Long tipoObservatorio) {
         super(executionId, observatoryId, tipoObservatorio);
         numImg = 8;
         numSection = 5;
     }
 
+    /**
+	 * Builds the document.
+	 *
+	 * @param request           the request
+	 * @param graphicPath       the graphic path
+	 * @param date              the date
+	 * @param evolution         the evolution
+	 * @param pageExecutionList the page execution list
+	 * @param categories        the categories
+	 * @return the odf text document
+	 * @throws Exception the exception
+	 */
     public OdfTextDocument buildDocument(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
         final MessageResources messageResources = CrawlerUtils.getResources(request);
         ResultadosAnonimosObservatorioUNE2012Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)),observatoryId, graphicPath, Constants.MINISTERIO_P, true);
@@ -127,11 +154,29 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return odt;
     }
 
+    /**
+	 * Gets the embeded id image.
+	 *
+	 * @param tipoObservatorio the tipo observatorio
+	 * @param name             the name
+	 * @return the embeded id image
+	 */
     @Override
     protected String getEmbededIdImage(final Long tipoObservatorio, final String name) {
         return OpenOfficeUNE2012ImageUtils.getEmbededIdImage(tipoObservatorio, name);
     }
 
+    /**
+	 * Replace section 41.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection41(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.name") + ".jpg", "image/jpeg");
 
@@ -148,6 +193,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 42.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param categories        the categories
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNE2012Utils.createGraphicsMap(categories);
         for (Integer i : resultLists.keySet()) {
@@ -167,6 +224,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 43.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param categories        the categories
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection43(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNE2012Utils.createGraphicsMap(categories);
         for (Integer i : resultLists.keySet()) {
@@ -186,6 +255,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 441.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection441(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg", "image/jpeg");
         numImg++;
@@ -207,6 +287,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 442.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection442(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.2.name") + ".jpg", "image/jpeg");
         numImg++;
@@ -228,6 +319,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 451.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection451(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.1.name") + ".jpg", "image/jpeg");
         numImg++;
@@ -259,6 +361,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 452.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection452(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
         numImg++;
@@ -290,6 +403,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section 46.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSection46(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.aspect.mid.name") + ".jpg", "image/jpeg");
         numImg++;
@@ -306,6 +430,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 1.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat1(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<String, Integer> resultsMap = ResultadosAnonimosObservatorioUNE2012Utils.getResultsBySiteLevel(pageExecutionList);
@@ -329,6 +465,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 2.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat2(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.mark.allocation.segment.name", category.getOrden()) + ".jpg", "image/jpeg");
@@ -342,6 +490,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 31.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat31(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         final Map<String, BigDecimal> resultL1 = ResultadosAnonimosObservatorioUNE2012Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_1);
 
@@ -369,6 +529,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 32.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat32(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         final Map<String, BigDecimal> resultL2 = ResultadosAnonimosObservatorioUNE2012Utils.getVerificationResultsByPoint(pageExecutionList, Constants.OBS_PRIORITY_2);
 
@@ -396,6 +568,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 41.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat41(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<String, BigDecimal> results1 = ResultadosAnonimosObservatorioUNE2012Utils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_1);
@@ -431,6 +615,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 42.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat42(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<String, BigDecimal> results2 = ResultadosAnonimosObservatorioUNE2012Utils.getVerificationResultsByPointAndModality(pageExecutionList, Constants.OBS_PRIORITY_2);
@@ -466,6 +662,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section evolution suitability level.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionEvolutionSuitabilityLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNE2012Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageExecutionList);
@@ -503,6 +710,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section evolution average score.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionEvolutionAverageScore(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateEvolutionPuntuationDataSet(pageExecutionList);
@@ -519,6 +737,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section evolution score by verification.
+	 *
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionEvolutionScoreByVerification(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
         if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
             Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNE2012Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION, pageObservatoryMap);
@@ -631,6 +860,17 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section evolution score by aspect.
+	 *
+	 * @param messageResources the message resources
+	 * @param odt              the odt
+	 * @param odfFileContent   the odf file content
+	 * @param graphicPath      the graphic path
+	 * @param resultsByAspect  the results by aspect
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionEvolutionScoreByAspect(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final Map<Date, Map<String, BigDecimal>> resultsByAspect) throws Exception {
         if (resultsByAspect != null && !resultsByAspect.isEmpty()) {
             final PropertiesManager pmgr = new PropertiesManager();
@@ -671,6 +911,18 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Replace section cat 5.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
     private int replaceSectionCat5(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
         if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
             final Map<String, BigDecimal> result = ResultadosAnonimosObservatorioUNE2012Utils.aspectMidsPuntuationGraphicData(messageResources, pageExecutionList);
@@ -692,6 +944,12 @@ public class OpenOfficeUNE2012DocumentBuilder extends OpenOfficeDocumentBuilder 
         return numImg;
     }
 
+    /**
+	 * Gets the odf template.
+	 *
+	 * @return the odf template
+	 * @throws Exception the exception
+	 */
     private OdfTextDocument getOdfTemplate() throws Exception {
         final PropertiesManager pmgr = new PropertiesManager();
         if (tipoObservatorio == Constants.OBSERVATORY_TYPE_AGE) {

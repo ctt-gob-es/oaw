@@ -39,7 +39,6 @@ import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfDocument;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.odftoolkit.odfdom.doc.office.OdfOfficeAutomaticStyles;
-import org.odftoolkit.odfdom.doc.office.OdfOfficeStyles;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -140,12 +139,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceSectionCat5(messageResources, odtCategory, odfFileContentCategory, graphicPath, category, pageExecutionListCat);
 			// TODO Delete
 			odtCategory.save("/tmp/segmento_" + new Date().getTime() + ".odt");
-			replaceText(odtCategory, odfFileContentCategory, "-nombresegmento-", category.getName(), "text:span");
+			replaceText(odtCategory, odfFileContentCategory, "--nombresegmento--", category.getName(), "text:span");
+			replaceText(odtCategory, odfFileContentCategory, "--nombresegmento--", category.getName(), "text:p");
+			replaceText(odtCategory, odfFileContentCategory, "--nombresegmento--", category.getName(), "text:h");
 			// Add all DOM from create document to base doc
 			// appendEndDocument(odt, odfFileContent, odtCategory, odfFileContentCategory);
 			appendAtMarkerPosition(odt, odfFileContent, odtCategory, odfFileContentCategory, "categorysection");
 			mergeStylesToPrimaryDoc(odt, odtCategory);
-			mergeFontTypesToPrimaryDoc(odt, odtCategory);
+			//mergeFontTypesToPrimaryDoc(odt, odtCategory);
 			mergePictures(odt, odtCategory, graphicPath);
 		}
 		if (evolution) {
@@ -177,6 +178,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			numSection++;
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", "image/jpg");
 		}
+		
+
+		
 		return odt;
 	}
 
@@ -215,21 +219,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odtCategory            the odt category
 	 * @param odfFileContentCategory the odf file content category
 	 * @param markername             the markername
-	 * @throws Exception
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("all")
 	private void appendAtMarkerPosition(final OdfTextDocument odt, final OdfFileDom odfFileContent, OdfTextDocument odtCategory, OdfFileDom odfFileContentCategory, String markername)
 			throws Exception {
 		XPath xpath = odt.getXPath();
 		XPath xpath2 = odtCategory.getXPath();
-		// Appends al elements
+		// Appends all elements
 		DTMNodeList nodeList = (DTMNodeList) xpath.evaluate(String.format("//text:bookmark-start[@text:name='%s']", markername), odfFileContent, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			OdfElement node = (OdfElement) nodeList.item(i);
-			// TODO
 			NodeList nodeList2 = odtCategory.getOfficeBody().getFirstChild().getChildNodes();
 			for (int o = 0; o < nodeList2.getLength(); o++) {
-				// Fix level
 				Node cloneNode = nodeList2.item(o).cloneNode(true);
 				node.getParentNode().getParentNode().insertBefore(odfFileContent.adoptNode(cloneNode), node.getParentNode());
 			}
@@ -1115,6 +1117,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// Adopt style nodes from secondary doc
 		for (int i = 0; i < secondaryDocAutomaticStyles.getLength(); i++) {
 			Node style = secondaryDocAutomaticStyles.item(i).cloneNode(true);
+			if (style.hasAttributes()) {
+				NamedNodeMap attributes = style.getAttributes();
+				for (int j = 0; j < attributes.getLength(); j++) {
+					Node a = attributes.item(j);
+					if (a.getLocalName().equals("name")) {
+						a.setNodeValue(a.getNodeValue() + "");
+					}
+				}
+			}
+			if (style.hasChildNodes()) {
+				updateNodeChildrenStyleNames(style, "", "name");
+			}
 			primaryDocAutomaticStyles.appendChild(primaryContentDom.adoptNode(style));
 		}
 	}
