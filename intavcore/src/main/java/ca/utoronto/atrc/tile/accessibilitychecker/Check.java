@@ -983,7 +983,7 @@ public class Check {
 	}
 
 	/**
-	 * <<<<<<< HEAD Actualziada para que recupera la expresión regurlar de fichero de propiedades. ======= Actualziada para que recupera la expresión regurlar de fichero de propiedades. >>>>>>> 4.4.1
+	 * Actualziada para que recupera la expresión regurlar de fichero de propiedades.
 	 *
 	 * @param checkCode    the check code
 	 * @param nodeNode     the node node
@@ -3347,8 +3347,8 @@ public class Check {
 	}
 
 	/**
-	 * <<<<<<< HEAD Función que realiza la misma comprobación que functionTextMatch sólo que la expresión regular la va a recuperar de un fichero de propiedades. ======= Función que realiza la misma
-	 * comprobación que functionTextMatch sólo que la expresión regular la va a recuperar de un fichero de propiedades. >>>>>>> 4.4.1
+	 * Función que realiza la misma comprobación que functionTextMatch sólo que la expresión regular la va a recuperar de un fichero de propiedades.
+	 * 
 	 *
 	 * @param checkCode    the check code
 	 * @param nodeNode     the node node
@@ -3375,8 +3375,7 @@ public class Check {
 	}
 
 	/**
-	 * <<<<<<< HEAD Actualizada la función para que recupere las expresiones regulares de propiedades. ======= Actualizada la función para que recupere las expresiones regulares de propiedades.
-	 * >>>>>>> 4.4.1
+	 * Actualizada la función para que recupere las expresiones regulares de propiedades.
 	 *
 	 * @param checkCode    the check code
 	 * @param nodeNode     the node node
@@ -3643,8 +3642,7 @@ public class Check {
 	}
 
 	/**
-	 * <<<<<<< HEAD Comprueba que un texto no es igual a uno de los recuperados de un fichero de properties. ======= Comprueba que un texto no es igual a uno de los recuperados de un fichero de
-	 * properties. >>>>>>> 4.4.1
+	 * Comprueba que un texto no es igual a uno de los recuperados de un fichero de properties.
 	 *
 	 * @param checkCode    the check code
 	 * @param nodeNode     the node node
@@ -5074,9 +5072,8 @@ public class Check {
 	 *
 	 * @param checkCode    the check code
 	 * @param nodeNode     the node node
-	 * @param elementGiven the element given <<<<<<< HEAD
-	 * @return true si se detecta un uso incorrecto de br e imágenes (problema de accesibilidad), false en caso contrario ======= true si se detecta un uso incorrecto de br e imágenes (problema de
-	 *         accesibilidad), false en caso contrario >>>>>>> 4.4.1
+	 * @param elementGiven the element given
+	 * @return true si se detecta un uso incorrecto de br e imágenes (problema de accesibilidad), false en caso contrario
 	 */
 	private boolean functionFalseBrImageList(CheckCode checkCode, Node nodeNode, Element elementGiven) {
 		final int number = Integer.parseInt(checkCode.getFunctionNumber());
