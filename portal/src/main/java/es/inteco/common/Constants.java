@@ -438,6 +438,7 @@ public interface Constants {
 	String TODOS = "Todos";
 	String CARTUCHOS_VECTOR = "cartuchosVector";
 	String TIPOS_VECTOR = "tiposVector";
+	String AMBITOS_VECTOR = "ambitosVector";
 	String HILOS_VECTOR = "hilosVector";
 	String MODOS_VECTOR = "modosVector";
 	String PROFUNDIDADES_VECTOR = "profundidadesVector";

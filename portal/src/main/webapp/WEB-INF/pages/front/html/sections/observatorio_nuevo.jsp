@@ -71,6 +71,16 @@ Email: observ.accesibilidad@correo.gob.es
                                 </logic:iterate>
                             </html:select>
                         </div>
+                        
+                        <div class="formItem">
+                            <label for="type" class="control-label"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="nuevo.observatorio.ambito" /></strong></label>
+                            <html:select name="NuevoObservatorioForm" styleClass="textoSelect form-control" styleId="ambitoForm" property="ambitoForm.id" >
+                                <logic:iterate name="<%=Constants.AMBITOS_VECTOR %>" id="ambitoForm">
+                                    <bean:define id="idAmbito"><bean:write name="ambitoForm" property="id"/></bean:define>
+                                    <html:option value="<%=idAmbito %>" ><bean:write name="ambitoForm" property="name"/></html:option>
+                                </logic:iterate>
+                            </html:select>
+                        </div>
 
                         <div class="formItem">
                             <label for="activo" class="control-label"><strong class="labelVisu"><acronym title="<bean:message key="campo.obligatorio" />"> * </acronym><bean:message key="nuevo.observatorio.activo" /></strong></label>

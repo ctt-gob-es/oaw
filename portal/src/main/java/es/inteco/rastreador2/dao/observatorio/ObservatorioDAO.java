@@ -45,33 +45,42 @@ import java.util.Date;
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
+/**
+ * The Class ObservatorioDAO.
+ */
 public final class ObservatorioDAO {
-
+	/**
+	 * Instantiates a new observatorio DAO.
+	 */
 	private ObservatorioDAO() {
 	}
 
+	/**
+	 * Gets the fulfilled observatory.
+	 *
+	 * @param c                      the c
+	 * @param idObservatory          the id observatory
+	 * @param idObservatoryExecution the id observatory execution
+	 * @return the fulfilled observatory
+	 * @throws SQLException the SQL exception
+	 */
 	public static ObservatorioRealizadoForm getFulfilledObservatory(Connection c, long idObservatory, long idObservatoryExecution) throws SQLException {
 		final ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
-
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
-
 		try (PreparedStatement ps = c.prepareStatement("SELECT oreal.*, c.aplicacion, o.nombre FROM observatorios_realizados oreal " + "LEFT JOIN cartucho c ON (c.id_cartucho = oreal.id_cartucho) "
 				+ "JOIN observatorio o ON (oreal.id_observatorio = o.id_observatorio) " + "WHERE oreal.id_observatorio = ? AND oreal.id = ?")) {
 			ps.setLong(1, idObservatory);
 			ps.setLong(2, idObservatoryExecution);
-
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					observatorioRealizadoForm.setId(rs.getLong("id"));
 					observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
 					observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
-
 					final ObservatorioForm observatorio = new ObservatorioForm();
 					observatorio.setEstado(rs.getInt("estado"));
 					observatorio.setNombre(rs.getString("nombre"));
 					observatorioRealizadoForm.setObservatorio(observatorio);
-
 					final CartuchoForm cartucho = new CartuchoForm();
 					cartucho.setId(rs.getLong("id_cartucho"));
 					cartucho.setName(rs.getString("aplicacion"));
@@ -84,14 +93,34 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error en getFulfilledObservatory", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return observatorioRealizadoForm;
 	}
 
+	/**
+	 * Gets the fulfilled observatories.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param page          the page
+	 * @param date          the date
+	 * @return the fulfilled observatories
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date) throws SQLException {
 		return getFulfilledObservatories(c, idObservatory, page, date, true);
 	}
 
+	/**
+	 * Gets the fulfilled observatories.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param page          the page
+	 * @param date          the date
+	 * @param desc          the desc
+	 * @return the fulfilled observatories
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatorioRealizadoForm> getFulfilledObservatories(Connection c, long idObservatory, int page, Date date, boolean desc) throws SQLException {
 		List<ObservatorioRealizadoForm> results = new ArrayList<>();
 		PreparedStatement ps = null;
@@ -100,13 +129,10 @@ public final class ObservatorioDAO {
 		if (!desc) {
 			order = "ASC";
 		}
-
 		PropertiesManager pmgr = new PropertiesManager();
 		int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		int resultFrom = pagSize * page;
-
 		DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
-
 		try {
 			if (date == null) {
 				if (page == Constants.NO_PAGINACION) {
@@ -115,7 +141,6 @@ public final class ObservatorioDAO {
 				} else {
 					ps = c.prepareStatement("SELECT o.*, c.aplicacion, ob.* FROM observatorios_realizados o " + "JOIN observatorio ob ON (ob.id_observatorio = o.id_observatorio)"
 							+ "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho) " + "WHERE o.id_observatorio = ? ORDER BY o.fecha " + order + " LIMIT ? OFFSET ?");
-
 					ps.setInt(2, pagSize);
 					ps.setInt(3, resultFrom);
 				}
@@ -126,51 +151,48 @@ public final class ObservatorioDAO {
 				} else {
 					ps = c.prepareStatement("SELECT o.*, c.aplicacion, ob.* FROM observatorios_realizados o " + "JOIN observatorio ob ON (ob.id_observatorio = o.id_observatorio)"
 							+ "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho) " + "WHERE o.id_observatorio = ? AND o.fecha <= ? ORDER BY o.fecha " + order + " LIMIT ? OFFSET ?");
-
 					ps.setInt(3, pagSize);
 					ps.setInt(4, resultFrom);
 				}
 				ps.setTimestamp(2, new java.sql.Timestamp(date.getTime()));
 			}
 			ps.setLong(1, idObservatory);
-
 			rs = ps.executeQuery();
-
 			while (rs.next()) {
 				ObservatorioRealizadoForm observatorioRealizadoForm = new ObservatorioRealizadoForm();
 				observatorioRealizadoForm.setId(rs.getLong("id"));
 				observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
 				observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
-
 				ObservatorioForm observatorio = new ObservatorioForm();
 				observatorio.setEstado(rs.getInt("estado"));
 				observatorio.setNombre(rs.getString("ob.nombre"));
 				observatorioRealizadoForm.setObservatorio(observatorio);
-
 				CartuchoForm cartucho = new CartuchoForm();
 				cartucho.setId(rs.getLong("id_cartucho"));
 				cartucho.setName(rs.getString("aplicacion"));
 				observatorioRealizadoForm.setCartucho(cartucho);
-
 				results.add(observatorioRealizadoForm);
 			}
-
 		} catch (SQLException e) {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(ps, rs);
 		}
-
 		return results;
 	}
 
+	/**
+	 * Gets the all fulfilled observatories.
+	 *
+	 * @param c the c
+	 * @return the all fulfilled observatories
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatorioRealizadoForm> getAllFulfilledObservatories(Connection c) throws SQLException {
 		final List<ObservatorioRealizadoForm> results = new ArrayList<>();
-
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
-
 		try (Statement s = c.createStatement()) {
 			try (ResultSet rs = s.executeQuery("SELECT o.id, o.fecha, o.id_cartucho, c.aplicacion FROM observatorios_realizados o " + "LEFT JOIN cartucho c ON (c.id_cartucho = o.id_cartucho)")) {
 				while (rs.next()) {
@@ -178,12 +200,10 @@ public final class ObservatorioDAO {
 					observatorioRealizadoForm.setId(rs.getLong("id"));
 					observatorioRealizadoForm.setFecha(rs.getTimestamp("fecha"));
 					observatorioRealizadoForm.setFechaStr(df.format(rs.getTimestamp("fecha")));
-
 					final CartuchoForm cartucho = new CartuchoForm();
 					cartucho.setId(rs.getLong("id_cartucho"));
 					cartucho.setName(rs.getString("aplicacion"));
 					observatorioRealizadoForm.setCartucho(cartucho);
-
 					results.add(observatorioRealizadoForm);
 				}
 			}
@@ -191,10 +211,17 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error en getAllFulfilledObservatories", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return results;
 	}
 
+	/**
+	 * Count fulfilled observatories.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
 	public static int countFulfilledObservatories(Connection c, long idObservatory) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(id) FROM observatorios_realizados WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatory);
@@ -211,9 +238,15 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the observatory list.
+	 *
+	 * @param c the c
+	 * @return the observatory list
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatorioForm> getObservatoryList(Connection c) throws SQLException {
 		final List<ObservatorioForm> results = new ArrayList<>();
-
 		try (Statement s = c.createStatement()) {
 			try (ResultSet rs = s.executeQuery("SELECT o.id_observatorio, o.nombre, o.fecha_inicio, o.id_cartucho, p.dias, p.cronExpression " + "FROM observatorio o "
 					+ "JOIN periodicidad p ON (o.id_periodicidad = p.id_periodicidad) " + "WHERE o.activo = true;")) {
@@ -222,16 +255,13 @@ public final class ObservatorioDAO {
 					observatorioForm.setId(rs.getLong("id_observatorio"));
 					observatorioForm.setNombre(rs.getString("nombre"));
 					observatorioForm.setFecha_inicio(rs.getTimestamp("fecha_inicio"));
-
 					PeriodicidadForm periodicidadForm = new PeriodicidadForm();
 					periodicidadForm.setCronExpression(rs.getString("cronExpression"));
 					periodicidadForm.setDias(rs.getInt("dias"));
 					observatorioForm.setPeriodicidadForm(periodicidadForm);
-
 					CartuchoForm cartuchoForm = new CartuchoForm();
 					cartuchoForm.setId(rs.getLong("id_cartucho"));
 					observatorioForm.setCartucho(cartuchoForm);
-
 					results.add(observatorioForm);
 				}
 			}
@@ -239,13 +269,19 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error en getObservatoryList", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return results;
 	}
 
+	/**
+	 * Gets the observatories from seed.
+	 *
+	 * @param c      the c
+	 * @param idSeed the id seed
+	 * @return the observatories from seed
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatorioForm> getObservatoriesFromSeed(final Connection c, final String idSeed) throws SQLException {
 		final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
-
 		try (PreparedStatement ps = c
 				.prepareStatement("SELECT o.id_observatorio, o.nombre FROM observatorio o " + "JOIN rastreo r ON (o.id_observatorio = r.id_observatorio) " + "WHERE r.semillas = ?")) {
 			ps.setLong(1, Long.parseLong(idSeed));
@@ -261,13 +297,19 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return observatoryFormList;
 	}
 
+	/**
+	 * Gets the category by id.
+	 *
+	 * @param c  the c
+	 * @param id the id
+	 * @return the category by id
+	 * @throws SQLException the SQL exception
+	 */
 	public static CategoriaForm getCategoryById(final Connection c, final Long id) throws SQLException {
 		final CategoriaForm category = new CategoriaForm();
-
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM categorias_lista WHERE id_categoria = ? ORDER BY id_categoria ASC")) {
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -281,13 +323,19 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return category;
 	}
 
+	/**
+	 * Gets the ambit by id.
+	 *
+	 * @param c  the c
+	 * @param id the id
+	 * @return the ambit by id
+	 * @throws SQLException the SQL exception
+	 */
 	public static AmbitoForm getAmbitById(final Connection c, final Long id) throws SQLException {
 		final AmbitoForm ambit = new AmbitoForm();
-
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ambitos_lista WHERE id_ambito = ? ORDER BY id_ambito ASC")) {
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -300,20 +348,25 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return ambit;
 	}
-	
+
+	/**
+	 * Gets the observatories from category.
+	 *
+	 * @param c           the c
+	 * @param idCategoria the id categoria
+	 * @return the observatories from category
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws SQLException {
 		final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
-
 		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.id_observatorio), o.nombre, o.id_language, o.profundidad, o.amplitud, o.id_cartucho FROM observatorio o "
 				+ "JOIN rastreo r ON (o.id_observatorio = r.id_observatorio) " + "JOIN observatorio_categoria oc ON (o.id_observatorio = oc.id_observatorio) "
 				+ "WHERE oc.id_categoria = ? OR r.id_rastreo IN (SELECT " + "id_rastreo FROM rastreo WHERE semillas IN (SELECT " + "id_lista FROM lista WHERE id_categoria = ?))")) {
 			ps.setLong(1, Long.parseLong(idCategoria));
 			ps.setLong(2, Long.parseLong(idCategoria));
 			try (ResultSet rs = ps.executeQuery()) {
-
 				while (rs.next()) {
 					ObservatorioForm observatorioForm = new ObservatorioForm();
 					observatorioForm.setId(rs.getLong("id_observatorio"));
@@ -321,11 +374,9 @@ public final class ObservatorioDAO {
 					observatorioForm.setLenguaje(rs.getLong("id_language"));
 					observatorioForm.setProfundidad(rs.getInt("profundidad"));
 					observatorioForm.setAmplitud(rs.getInt("amplitud"));
-
 					CartuchoForm cartuchoForm = new CartuchoForm();
 					cartuchoForm.setId(rs.getLong("id_cartucho"));
 					observatorioForm.setCartucho(cartuchoForm);
-
 					List<CategoriaForm> selectedCategories = getObservatoryCategories(c, observatorioForm.getId());
 					observatorioForm.setCategoria(new String[selectedCategories.size()]);
 					int i = 0;
@@ -333,7 +384,6 @@ public final class ObservatorioDAO {
 						observatorioForm.getCategoria()[i] = categoria.getId();
 						i++;
 					}
-
 					observatoryFormList.add(observatorioForm);
 				}
 			}
@@ -341,13 +391,19 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return observatoryFormList;
 	}
 
+	/**
+	 * User list.
+	 *
+	 * @param c                      the c
+	 * @param cargarObservatorioForm the cargar observatorio form
+	 * @return the cargar observatorio form
+	 * @throws SQLException the SQL exception
+	 */
 	public static CargarObservatorioForm userList(Connection c, CargarObservatorioForm cargarObservatorioForm) throws SQLException {
 		final List<ListadoObservatorio> observatoryUserList = new ArrayList<>();
-
 		try (Statement s = c.createStatement()) {
 			try (ResultSet rs = s.executeQuery("SELECT nombre, id_observatorio FROM observatorio o")) {
 				int numObs = 0;
@@ -365,10 +421,16 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return cargarObservatorioForm;
 	}
 
+	/**
+	 * Gets the observatory seeds.
+	 *
+	 * @param c the c
+	 * @return the observatory seeds
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<SemillaForm> getObservatorySeeds(final Connection c) throws SQLException {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_lista, nombre FROM lista WHERE id_tipo_lista = ?")) {
@@ -388,18 +450,24 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Observatory list.
+	 *
+	 * @param c    the c
+	 * @param page the page
+	 * @return the cargar observatorio form
+	 * @throws SQLException the SQL exception
+	 */
 	public static CargarObservatorioForm observatoryList(final Connection c, int page) throws SQLException {
 		final CargarObservatorioForm cargarObservatorioForm = new CargarObservatorioForm();
 		final List<ListadoObservatorio> observatoryList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * page;
-
-		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name"
-				+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo)" + " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
+		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name, al.nombre as ambito"
+				+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo) LEFT JOIN ambitos_lista al ON al.id_ambito=o.id_ambito " + " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
 			ps.setInt(1, pagSize);
 			ps.setInt(2, resultFrom);
-
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final ListadoObservatorio ls = new ListadoObservatorio();
@@ -408,6 +476,7 @@ public final class ObservatorioDAO {
 					ls.setId_cartucho(rs.getLong("id_cartucho"));
 					ls.setCartucho(rs.getString("aplicacion"));
 					ls.setTipo(rs.getString("name"));
+					ls.setAmbito(rs.getString("ambito"));
 					observatoryList.add(ls);
 				}
 				cargarObservatorioForm.setListadoObservatorio(observatoryList);
@@ -417,10 +486,16 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", LoginDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return cargarObservatorioForm;
 	}
 
+	/**
+	 * Count observatories.
+	 *
+	 * @param c the c
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
 	public static int countObservatories(Connection c) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(id_observatorio) FROM observatorio"); ResultSet rs = ps.executeQuery()) {
 			if (rs.next()) {
@@ -434,6 +509,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Count seeds.
+	 *
+	 * @param c              the c
+	 * @param idObservatorio the id observatorio
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
 	public static int countSeeds(Connection c, long idObservatorio) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT COUNT(*) FROM observatorio_lista WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
@@ -450,32 +533,34 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Detele observatory.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @throws SQLException the SQL exception
+	 */
 	public static void deteleObservatory(final Connection c, final long idObservatory) throws SQLException {
 		final boolean isAutoCommit = c.getAutoCommit();
 		try {
 			c.setAutoCommit(false);
-
 			// RECUPERAMOS LOS IDS DE LOS RASTREOS DEL OBSERVATORIO
 			final List<Long> idsRastreos = getCrawlerIds(c, idObservatory);
-
 			// BORRAMOS RASTREOS Y RESULTADOS
 			for (Long idRastreo : idsRastreos) {
 				RastreoDAO.borrarRastreo(c, idRastreo);
 			}
-
 			// ELIMINAMOS LAS RELACIONES OBSERVATORIO_SEMILLA
 			try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?")) {
 				ps.setLong(1, idObservatory);
 				ps.executeUpdate();
 				DAOUtils.closeQueries(ps, null);
 			}
-
 			// ELIMINAMOS EL OBSERVATORIO
 			try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio WHERE id_observatorio = ?")) {
 				ps.setLong(1, idObservatory);
 				ps.executeUpdate();
 			}
-
 			c.commit();
 			c.setAutoCommit(isAutoCommit);
 		} catch (SQLException e) {
@@ -486,22 +571,24 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Detele fulfilled observatory.
+	 *
+	 * @param connR       the conn R
+	 * @param idExecution the id execution
+	 * @throws SQLException the SQL exception
+	 */
 	public static void deteleFulfilledObservatory(Connection connR, long idExecution) throws SQLException {
 		PreparedStatement ps = null;
-
 		try {
 			connR.setAutoCommit(false);
-
 			// RECUPERAMOS LOS IDS DE LOS RASTREOS DEL OBSERVATORIO
 			List<Long> crawlingExecutionsIds = getFulfilledCrawlingIds(connR, idExecution);
-
 			RastreoDAO.deleteAnalyse(connR, crawlingExecutionsIds);
-
 			// ELIMINAMOS EL OBSERVATORIO
 			ps = connR.prepareStatement("DELETE FROM observatorios_realizados WHERE id = ?");
 			ps.setLong(1, idExecution);
 			ps.executeUpdate();
-
 			connR.commit();
 		} catch (SQLException e) {
 			try {
@@ -517,6 +604,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the crawler ids.
+	 *
+	 * @param connR          the conn R
+	 * @param idObservatorio the id observatorio
+	 * @return the crawler ids
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<Long> getCrawlerIds(Connection connR, long idObservatorio) throws SQLException {
 		final List<Long> crawlerIds = new ArrayList<>();
 		// RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
@@ -534,6 +629,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the fulfilled crawling ids.
+	 *
+	 * @param connR       the conn R
+	 * @param idExecution the id execution
+	 * @return the fulfilled crawling ids
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<Long> getFulfilledCrawlingIds(Connection connR, long idExecution) throws SQLException {
 		final List<Long> crawlerIds = new ArrayList<>();
 		try (PreparedStatement ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr WHERE id_obs_realizado = ?")) {
@@ -550,6 +653,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the fulfilled crawling by observatory execution.
+	 *
+	 * @param connR       the conn R
+	 * @param idExecution the id execution
+	 * @return the fulfilled crawling by observatory execution
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<FulFilledCrawling> getFulfilledCrawlingByObservatoryExecution(Connection connR, long idExecution) throws SQLException {
 		final List<FulFilledCrawling> crawlings = new ArrayList<>();
 		try (PreparedStatement ps = connR.prepareStatement(
@@ -582,15 +693,21 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Insert observatory.
+	 *
+	 * @param c                     the c
+	 * @param nuevoObservatorioForm the nuevo observatorio form
+	 * @return the long
+	 * @throws Exception the exception
+	 */
 	public static long insertObservatory(Connection c, NuevoObservatorioForm nuevoObservatorioForm) throws Exception {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
 		try {
 			c.setAutoCommit(false);
-
-			ps = c.prepareStatement("INSERT INTO observatorio (nombre, id_periodicidad, profundidad, amplitud, fecha_inicio, id_guideline, pseudoaleatorio, id_language, id_cartucho, activo, id_tipo) "
-					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+			ps = c.prepareStatement("INSERT INTO observatorio (nombre, id_periodicidad, profundidad, amplitud, fecha_inicio, id_guideline, pseudoaleatorio, id_language, id_cartucho, activo, id_tipo, id_ambito) "
+					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?, ?)");
 			ps.setString(1, nuevoObservatorioForm.getNombre());
 			ps.setLong(2, Long.parseLong(nuevoObservatorioForm.getPeriodicidad()));
 			ps.setInt(3, Integer.parseInt(nuevoObservatorioForm.getProfundidad()));
@@ -602,8 +719,10 @@ public final class ObservatorioDAO {
 			ps.setLong(9, nuevoObservatorioForm.getCartucho().getId());
 			ps.setBoolean(10, nuevoObservatorioForm.isActivo());
 			ps.setLong(11, nuevoObservatorioForm.getTipo().getId());
+			ps.setString(12, nuevoObservatorioForm.getAmbitoForm().getId());
+			
+			
 			ps.executeUpdate();
-
 			long idObservatory = 0;
 			ps = c.prepareStatement("SELECT id_observatorio FROM observatorio WHERE Nombre = ?");
 			ps.setString(1, nuevoObservatorioForm.getNombre());
@@ -611,7 +730,6 @@ public final class ObservatorioDAO {
 			if (rs.next()) {
 				idObservatory = rs.getLong("id_observatorio");
 			}
-
 			ps = c.prepareStatement("INSERT INTO observatorio_categoria VALUES (?,?)");
 			if (nuevoObservatorioForm.getCategoria() != null) {
 				for (String categoria : nuevoObservatorioForm.getCategoria()) {
@@ -621,7 +739,6 @@ public final class ObservatorioDAO {
 				}
 				ps.executeBatch();
 			}
-
 			ps = c.prepareStatement("INSERT INTO observatorio_ambito VALUES (?,?)");
 			if (nuevoObservatorioForm.getAmbito() != null) {
 				for (String ambito : nuevoObservatorioForm.getAmbito()) {
@@ -631,7 +748,6 @@ public final class ObservatorioDAO {
 				}
 				ps.executeBatch();
 			}
-			
 			if ((idObservatory != 0) && (nuevoObservatorioForm.getAddSeeds() != null) && (!nuevoObservatorioForm.getAddSeeds().isEmpty())) {
 				for (SemillaForm semillaForm : nuevoObservatorioForm.getAddSeeds()) {
 					ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)");
@@ -640,22 +756,16 @@ public final class ObservatorioDAO {
 					ps.executeUpdate();
 				}
 			}
-
 			List<SemillaForm> totalSeedsAdded = nuevoObservatorioForm.getAddSeeds() == null ? new ArrayList<SemillaForm>() : nuevoObservatorioForm.getAddSeeds();
 			if (nuevoObservatorioForm.getCategoria() != null) {
 				for (String categoria : nuevoObservatorioForm.getCategoria()) {
 					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, new SemillaForm()));
 				}
 			}
-			
-			if (nuevoObservatorioForm.getAmbito() != null) {
-				for (String ambito : nuevoObservatorioForm.getAmbito()) {
-					totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(ambito), Constants.NO_PAGINACION, new SemillaForm()));
-				}
+			if (nuevoObservatorioForm.getAmbitoForm() != null && !StringUtils.isEmpty(nuevoObservatorioForm.getAmbitoForm().getId())) {
+				totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(nuevoObservatorioForm.getAmbitoForm().getId()), Constants.NO_PAGINACION, new SemillaForm()));
 			}
-			
 			insertNewCrawlers(c, idObservatory, totalSeedsAdded);
-
 			c.commit();
 			return idObservatory;
 		} catch (SQLException e) {
@@ -672,14 +782,20 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the observatory view.
+	 *
+	 * @param c              the c
+	 * @param idObservatorio the id observatorio
+	 * @param page           the page
+	 * @return the observatory view
+	 * @throws SQLException the SQL exception
+	 */
 	public static VerObservatorioForm getObservatoryView(Connection c, long idObservatorio, int page) throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
 		PropertiesManager pmgr = new PropertiesManager();
-
 		VerObservatorioForm verObservatorioForm = new VerObservatorioForm();
-
 		try {
 			ps = c.prepareStatement("SELECT DISTINCT(o.nombre) AS nombreObservatorio , o.id_guideline , " + "ca.* ,ot.*, p.nombre "
 					+ "AS periodicidad, cl.nombre AS nombreCategoria, profundidad, amplitud, pseudoaleatorio, activo FROM observatorio o "
@@ -696,21 +812,17 @@ public final class ObservatorioDAO {
 				verObservatorioForm.setPeriodicidad(rs.getString("periodicidad"));
 				verObservatorioForm.setNormaAnalisis(rs.getLong("id_guideline"));
 				verObservatorioForm.setActivo(rs.getBoolean("activo"));
-
 				CartuchoForm cartucho = new CartuchoForm();
 				cartucho.setId(rs.getLong("ca.id_cartucho"));
 				cartucho.setName(rs.getString("ca.aplicacion"));
 				verObservatorioForm.setCartucho(cartucho);
-
 				ObservatoryTypeForm tipo = new ObservatoryTypeForm();
 				tipo.setId(rs.getLong("ot.id_tipo"));
 				tipo.setName(rs.getString("ot.name"));
 				verObservatorioForm.setTipo(tipo);
-
 				verObservatorioForm.setCategorias(getObservatoryCategories(c, idObservatorio));
 			}
 			DAOUtils.closeQueries(ps, rs);
-
 			int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 			int resultFrom = pagSize * page;
 			List<SemillaForm> semillasList = new ArrayList<>();
@@ -733,13 +845,19 @@ public final class ObservatorioDAO {
 		} finally {
 			DAOUtils.closeQueries(ps, rs);
 		}
-
 		return verObservatorioForm;
 	}
 
+	/**
+	 * Gets the observatory form.
+	 *
+	 * @param c              the c
+	 * @param idObservatorio the id observatorio
+	 * @return the observatory form
+	 * @throws SQLException the SQL exception
+	 */
 	public static ObservatorioForm getObservatoryForm(final Connection c, final long idObservatorio) throws SQLException {
 		final ObservatorioForm observatorioForm = new ObservatorioForm();
-
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -755,11 +873,9 @@ public final class ObservatorioDAO {
 					observatorioForm.setPseudoAleatorio(rs.getBoolean("pseudoaleatorio"));
 					observatorioForm.setLenguaje(rs.getLong("id_language"));
 					observatorioForm.setTipo(rs.getLong("id_tipo"));
-
 					final CartuchoForm cartuchoForm = new CartuchoForm();
 					cartuchoForm.setId(rs.getLong("id_cartucho"));
 					observatorioForm.setCartucho(cartuchoForm);
-
 					final List<CategoriaForm> selectedCategories = getObservatoryCategories(c, idObservatorio);
 					observatorioForm.setCategoria(new String[selectedCategories.size()]);
 					int i = 0;
@@ -773,10 +889,17 @@ public final class ObservatorioDAO {
 			Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return observatorioForm;
 	}
 
+	/**
+	 * Gets the observatory form from execution.
+	 *
+	 * @param c                       the c
+	 * @param idObservatorioExecution the id observatorio execution
+	 * @return the observatory form from execution
+	 * @throws SQLException the SQL exception
+	 */
 	public static ObservatorioForm getObservatoryFormFromExecution(Connection c, long idObservatorioExecution) throws SQLException {
 		final ObservatorioForm observatorioForm = new ObservatorioForm();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio o JOIN observatorios_realizados ore " + "ON (o.id_observatorio = ore.id_observatorio) WHERE ore.id = ?;")) {
@@ -794,7 +917,6 @@ public final class ObservatorioDAO {
 					observatorioForm.setPseudoAleatorio(rs.getBoolean("pseudoaleatorio"));
 					observatorioForm.setLenguaje(rs.getLong("id_language"));
 					observatorioForm.setTipo(rs.getLong("id_tipo"));
-
 					CartuchoForm cartuchoForm = new CartuchoForm();
 					cartuchoForm.setId(rs.getLong("id_cartucho"));
 					observatorioForm.setCartucho(cartuchoForm);
@@ -807,6 +929,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the observatory data to update.
+	 *
+	 * @param c                         the c
+	 * @param modificarObservatorioForm the modificar observatorio form
+	 * @return the observatory data to update
+	 * @throws SQLException the SQL exception
+	 */
 	public static ModificarObservatorioForm getObservatoryDataToUpdate(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio o WHERE o.id_observatorio = ?")) {
 			ps.setLong(1, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
@@ -822,6 +952,14 @@ public final class ObservatorioDAO {
 		return modificarObservatorioForm;
 	}
 
+	/**
+	 * Populate modificar observatorio form from result set.
+	 *
+	 * @param c                         the c
+	 * @param modificarObservatorioForm the modificar observatorio form
+	 * @param rs                        the rs
+	 * @throws SQLException the SQL exception
+	 */
 	private static void populateModificarObservatorioFormFromResultSet(Connection c, ModificarObservatorioForm modificarObservatorioForm, ResultSet rs) throws SQLException {
 		modificarObservatorioForm.setAmplitud(String.valueOf(rs.getInt("amplitud")));
 		modificarObservatorioForm.setFecha(rs.getTimestamp("fecha_inicio"));
@@ -831,18 +969,14 @@ public final class ObservatorioDAO {
 		modificarObservatorioForm.setPseudoAleatorio(rs.getBoolean("pseudoaleatorio"));
 		modificarObservatorioForm.setNormaAnalisis(rs.getString("id_guideline"));
 		modificarObservatorioForm.setActivo(rs.getBoolean("activo"));
-
 		final CartuchoForm cartuchoForm = new CartuchoForm();
 		cartuchoForm.setId(rs.getLong("id_cartucho"));
 		modificarObservatorioForm.setCartucho(cartuchoForm);
-
 		final ObservatoryTypeForm tipo = new ObservatoryTypeForm();
 		tipo.setId(rs.getLong("id_tipo"));
 		modificarObservatorioForm.setTipo(tipo);
-
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
-
 		final Calendar cl1 = Calendar.getInstance();
 		cl1.setTime(modificarObservatorioForm.getFecha());
 		modificarObservatorioForm.setFechaInicio(df.format(cl1.getTime()));
@@ -850,10 +984,8 @@ public final class ObservatorioDAO {
 		final String minute = leftPad(String.valueOf(cl1.get(Calendar.MINUTE)), 2, '0');
 		modificarObservatorioForm.setHoraInicio(hour);
 		modificarObservatorioForm.setMinutoInicio(minute);
-
 		modificarObservatorioForm.setSemillasAnadidas(getSeedsFromObservatory(c, Long.parseLong(modificarObservatorioForm.getId_observatorio())));
 		modificarObservatorioForm.setSemillasNoAnadidas(getSeedsNotObservatory(c, Long.parseLong(modificarObservatorioForm.getId_observatorio())));
-
 		final List<CategoriaForm> selectedCategories = getObservatoryCategories(c, Long.valueOf(modificarObservatorioForm.getId_observatorio()));
 		modificarObservatorioForm.setCategoria(new String[selectedCategories.size()]);
 		final List<String> categoriesId = new ArrayList<>(selectedCategories.size());
@@ -861,8 +993,22 @@ public final class ObservatorioDAO {
 			categoriesId.add(categoria.getId());
 		}
 		modificarObservatorioForm.setCategoria(categoriesId.toArray(new String[categoriesId.size()]));
+		AmbitoForm ambitoForm = new AmbitoForm();
+		ambitoForm.setId(rs.getString("id_ambito"));
+		modificarObservatorioForm.setAmbitoForm(ambitoForm);
 	}
 
+	/**
+	 * Gets the result seeds from observatory.
+	 *
+	 * @param c              the c
+	 * @param searchForm     the search form
+	 * @param idObservatorio the id observatorio
+	 * @param idCategoria    the id categoria
+	 * @param page           the page
+	 * @return the result seeds from observatory
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ResultadoSemillaForm> getResultSeedsFromObservatory(final Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria, final int page)
 			throws SQLException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -870,49 +1016,38 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
-
 		String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id FROM lista l " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
 				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
-
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 			query += " AND l.lista like ?";
 		}
-
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND l.nombre like ?";
 		}
-
 		if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
 			query += " AND l.id_categoria = ?";
 		}
 		// Ordernar los resultados por categoría y nombre
 		query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
-
 		if (page != Constants.NO_PAGINACION) {
 			query += " LIMIT ? OFFSET ?";
 		}
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(paramCount++, idObservatorio);
-
 			if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 				ps.setString(paramCount++, "%" + searchForm.getListaUrlsString() + "%");
 			}
-
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(paramCount++, "%" + searchForm.getNombre() + "%");
 			}
-
 			if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
 				ps.setLong(paramCount++, idCategoria);
 			}
-
 			if (page != Constants.NO_PAGINACION) {
 				ps.setInt(paramCount++, pagSize);
 				ps.setInt(paramCount, resultFrom);
 			}
 			try (ResultSet rs = ps.executeQuery()) {
-
 				while (rs.next()) {
 					final ResultadoSemillaForm resultadoSemillaForm = new ResultadoSemillaForm();
 					resultadoSemillaForm.setId(rs.getString("l.id_lista"));
@@ -932,17 +1067,15 @@ public final class ObservatorioDAO {
 	}
 
 	/**
-	 * 
-	 * Devuelve toda la información de la semilla para que se pueda editar en un
-	 * grid
-	 * 
-	 * @param c
-	 * @param searchForm
-	 * @param idObservatorio
-	 * @param idCategoria
-	 * @param page
-	 * @return
-	 * @throws SQLException
+	 * Devuelve toda la información de la semilla para que se pueda editar en un grid.
+	 *
+	 * @param c              the c
+	 * @param searchForm     the search form
+	 * @param idObservatorio the id observatorio
+	 * @param idCategoria    the id categoria
+	 * @param page           the page
+	 * @return the result seeds full from observatory
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<ResultadoSemillaFullForm> getResultSeedsFullFromObservatory(final Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria, final int page)
 			throws SQLException {
@@ -951,95 +1084,71 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
-
 		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, rr.id, al.nombre FROM lista l "
-				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
-				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
-
+				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
+				+ "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " + "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 			query += " AND l.lista like ?";
 		}
-
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?)";
 		}
-
 		if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
 			query += " AND l.id_categoria = ?";
 		}
-
 		// Ordernar los resultados por categoría y nombre
 		query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
-
 		if (page != Constants.NO_PAGINACION) {
 			query += " LIMIT ? OFFSET ?";
 		}
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(paramCount++, idObservatorio);
-
 			if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 				ps.setString(paramCount++, "%" + searchForm.getListaUrlsString() + "%");
 			}
-
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(paramCount++, "%" + searchForm.getNombre() + "%");
 			}
-
 			if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
 				ps.setLong(paramCount++, idCategoria);
 			}
-
 			if (page != Constants.NO_PAGINACION) {
 				ps.setInt(paramCount++, pagSize);
 				ps.setInt(paramCount, resultFrom);
 			}
 			try (ResultSet rs = ps.executeQuery()) {
-
 				while (rs.next()) {
 					final ResultadoSemillaFullForm resultadoSemillaForm = new ResultadoSemillaFullForm();
 					resultadoSemillaForm.setId(rs.getString("l.id_lista"));
 					resultadoSemillaForm.setNombre(rs.getString("l.nombre"));
 					resultadoSemillaForm.setAcronimo(rs.getString("l.acronimo"));
-					
-
 					resultadoSemillaForm.setListaUrls(convertStringToList(rs.getString("l.lista")));
-
 					if (rs.getLong("l.activa") == 0) {
 						resultadoSemillaForm.setActiva(false);
 					} else {
 						resultadoSemillaForm.setActiva(true);
 					}
-
 					if (rs.getLong("l.in_directory") == 0) {
 						resultadoSemillaForm.setInDirectory(false);
 					} else {
 						resultadoSemillaForm.setInDirectory(true);
 					}
-
 					resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
-
 					final CategoriaForm categoriaForm = new CategoriaForm();
 					categoriaForm.setId(rs.getString("l.id_categoria"));
 					categoriaForm.setName(rs.getString("cl.nombre"));
 					categoriaForm.setOrden(rs.getInt("cl.orden"));
 					resultadoSemillaForm.setCategoria(categoriaForm);
-
 					final AmbitoForm ambitoForm = new AmbitoForm();
 					ambitoForm.setId(rs.getString("l.id_ambito"));
 					ambitoForm.setName(rs.getString("al.nombre"));
 					resultadoSemillaForm.setAmbito(ambitoForm);
-					
 					// resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
-
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
-
 					// Cargar las dependencias de la semilla
-
 					PreparedStatement psDependencias = c
 							.prepareStatement("SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
 					psDependencias.setString(1, resultadoSemillaForm.getId());
-
 					List<DependenciaForm> listDependencias = new ArrayList<>();
 					ResultSet rsDependencias = null;
 					try {
@@ -1050,7 +1159,6 @@ public final class ObservatorioDAO {
 							dependencia.setName(rsDependencias.getString("nombre"));
 							listDependencias.add(dependencia);
 						}
-
 						resultadoSemillaForm.setDependencias(listDependencias);
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
@@ -1058,7 +1166,6 @@ public final class ObservatorioDAO {
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
-
 					semillasFormList.add(resultadoSemillaForm);
 				}
 			}
@@ -1069,6 +1176,12 @@ public final class ObservatorioDAO {
 		return semillasFormList;
 	}
 
+	/**
+	 * Convert string to list.
+	 *
+	 * @param lista the lista
+	 * @return the list
+	 */
 	private static List<String> convertStringToList(final String lista) {
 		final List<String> urlsList = new ArrayList<>();
 		final StringTokenizer tokenizer = new StringTokenizer(lista, ";");
@@ -1076,43 +1189,43 @@ public final class ObservatorioDAO {
 			urlsList.add(tokenizer.nextToken());
 		}
 		return urlsList;
-
 	}
 
+	/**
+	 * Count result seeds from observatory.
+	 *
+	 * @param c                      the c
+	 * @param searchForm             the search form
+	 * @param idExecutionObservatory the id execution observatory
+	 * @param idCategory             the id category
+	 * @return the int
+	 * @throws SQLException the SQL exception
+	 */
 	public static int countResultSeedsFromObservatory(Connection c, SemillaForm searchForm, long idExecutionObservatory, long idCategory) throws SQLException {
 		int paramCount = 1;
-
 		String query = "SELECT COUNT(*) FROM lista l " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " + "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) "
 				+ "WHERE id_obs_realizado = ? ";
-
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 			query += " AND l.lista like ?";
 		}
-
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND l.nombre like ?";
 		}
-
 		if (idCategory != Constants.COMPLEXITY_SEGMENT_NONE) {
 			query += " AND l.id_categoria = ?";
 		}
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(paramCount++, idExecutionObservatory);
-
 			if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 				ps.setString(paramCount++, "%" + searchForm.getListaUrlsString() + "%");
 			}
-
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(paramCount++, "%" + searchForm.getNombre() + "%");
 			}
-
 			if (idCategory != Constants.COMPLEXITY_SEGMENT_NONE) {
 				ps.setLong(paramCount, idCategory);
 			}
 			try (ResultSet rs = ps.executeQuery()) {
-
 				if (rs.next()) {
 					return rs.getInt(1);
 				}
@@ -1124,6 +1237,14 @@ public final class ObservatorioDAO {
 		return 0;
 	}
 
+	/**
+	 * Gets the seeds from observatory.
+	 *
+	 * @param c              the c
+	 * @param idObservatorio the id observatorio
+	 * @return the seeds from observatory
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<SemillaForm> getSeedsFromObservatory(Connection c, long idObservatorio) throws SQLException {
 		final List<SemillaForm> semillasFormList = new ArrayList<>();
 		try (PreparedStatement ps = c
@@ -1144,6 +1265,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the seeds not observatory.
+	 *
+	 * @param c              the c
+	 * @param idObservatorio the id observatorio
+	 * @return the seeds not observatory
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<SemillaForm> getSeedsNotObservatory(Connection c, long idObservatorio) throws SQLException {
 		final List<SemillaForm> semillasFormList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM lista l WHERE l.id_tipo_lista = ? AND l.id_categoria IS NULL " + "AND (l.id_lista NOT IN ("
@@ -1165,10 +1294,17 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Update observatory crawlings.
+	 *
+	 * @param c              the c
+	 * @param newObservatory the new observatory
+	 * @param oldObservatory the old observatory
+	 * @throws SQLException the SQL exception
+	 */
 	private static void updateObservatoryCrawlings(final Connection c, final ModificarObservatorioForm newObservatory, final ObservatorioForm oldObservatory) throws SQLException {
 		final List<String> newCategories = Arrays.asList(newObservatory.getCategoria());
 		final List<String> oldCategories = Arrays.asList(oldObservatory.getCategoria());
-
 		// Desactivamos las categorías antiguas que no están entre las nuevas
 		for (String oldCategory : oldCategories) {
 			if (!newCategories.contains(oldCategory)) {
@@ -1178,7 +1314,6 @@ public final class ObservatorioDAO {
 				}
 			}
 		}
-
 		// Añadimos las categorías nuevas que no están entre las viejas
 		for (String newCategory : newCategories) {
 			final List<SemillaForm> seedsFromCategory = new ArrayList<>();
@@ -1189,18 +1324,23 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Update observatory.
+	 *
+	 * @param c                         the c
+	 * @param modificarObservatorioForm the modificar observatorio form
+	 * @return the modificar observatorio form
+	 * @throws Exception the exception
+	 */
 	public static ModificarObservatorioForm updateObservatory(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws Exception {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
-
 			// Actualizamos los rastreos
 			ObservatorioForm oldObservatory = getObservatoryForm(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			updateObservatoryCrawlings(c, modificarObservatorioForm, oldObservatory);
-
 			ps = c.prepareStatement(
-					"UPDATE observatorio SET Nombre = ?, Id_Periodicidad = ?, Profundidad = ?, Amplitud = ?, Fecha_Inicio = ?, id_guideline = ?, pseudoaleatorio = ?, id_language = ?, id_cartucho = ?, activo = ?, id_tipo = ? WHERE id_observatorio = ?");
-
+					"UPDATE observatorio SET Nombre = ?, Id_Periodicidad = ?, Profundidad = ?, Amplitud = ?, Fecha_Inicio = ?, id_guideline = ?, pseudoaleatorio = ?, id_language = ?, id_cartucho = ?, activo = ?, id_tipo = ?, id_ambito = ? WHERE id_observatorio = ?");
 			ps.setString(1, modificarObservatorioForm.getNombre());
 			ps.setInt(2, Integer.parseInt(modificarObservatorioForm.getPeriodicidad()));
 			ps.setInt(3, Integer.parseInt(modificarObservatorioForm.getProfundidad()));
@@ -1208,27 +1348,21 @@ public final class ObservatorioDAO {
 			modificarObservatorioForm
 					.setFecha(CrawlerUtils.getFechaInicio(modificarObservatorioForm.getFechaInicio(), modificarObservatorioForm.getHoraInicio(), modificarObservatorioForm.getMinutoInicio()));
 			ps.setTimestamp(5, new Timestamp(modificarObservatorioForm.getFecha().getTime()));
-
 			ps.setLong(6, CartuchoDAO.getGuideline(c, modificarObservatorioForm.getCartucho().getId()));
-
 			ps.setBoolean(7, modificarObservatorioForm.isPseudoAleatorio());
 			ps.setLong(8, modificarObservatorioForm.getLenguaje());
 			ps.setLong(9, modificarObservatorioForm.getCartucho().getId());
-
 			ps.setBoolean(10, modificarObservatorioForm.isActivo());
 			ps.setLong(11, modificarObservatorioForm.getTipo().getId());
-
-			ps.setLong(12, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
-
+			ps.setString(12, modificarObservatorioForm.getAmbitoForm().getId());
+			ps.setLong(13, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			ps.executeUpdate();
 			DAOUtils.closeQueries(ps, null);
-
 			// Rehacemos las asociaciones con las categorías
 			ps = c.prepareStatement("DELETE FROM observatorio_categoria WHERE id_observatorio = ?");
 			ps.setLong(1, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			ps.executeUpdate();
 			DAOUtils.closeQueries(ps, null);
-
 			ps = c.prepareStatement("INSERT INTO observatorio_categoria VALUES (?,?)");
 			if (modificarObservatorioForm.getCategoria() != null) {
 				for (String categoria : modificarObservatorioForm.getCategoria()) {
@@ -1238,16 +1372,12 @@ public final class ObservatorioDAO {
 				}
 				ps.executeBatch();
 			}
-
 			editCrawlings(c, modificarObservatorioForm);
-
 			disableCrawlers(c, modificarObservatorioForm.getSemillasNoAnadidas(), modificarObservatorioForm.getId_observatorio());
-
 			deleteSeedAssociation(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			addObservatorySeeds(c, modificarObservatorioForm.getSemillasAnadidas(), Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			// Insertamos los rastreos independientes de la categoría asociada
 			insertNewCrawlers(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()), modificarObservatorioForm.getSemillasAnadidas());
-
 			c.commit();
 		} catch (SQLException e) {
 			try {
@@ -1264,6 +1394,12 @@ public final class ObservatorioDAO {
 		return modificarObservatorioForm;
 	}
 
+	/**
+	 * Put data to insert.
+	 *
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @param observatorioForm    the observatorio form
+	 */
 	public static void putDataToInsert(final InsertarRastreoForm insertarRastreoForm, final ObservatorioForm observatorioForm) {
 		insertarRastreoForm.setId_observatorio(observatorioForm.getId());
 		insertarRastreoForm.setCartucho(observatorioForm.getCartucho().getId().toString());
@@ -1274,11 +1410,18 @@ public final class ObservatorioDAO {
 		insertarRastreoForm.setLenguaje(observatorioForm.getLenguaje());
 	}
 
+	/**
+	 * Insert new crawlers.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param seeds         the seeds
+	 * @throws SQLException the SQL exception
+	 */
 	public static void insertNewCrawlers(final Connection c, final long idObservatory, final List<SemillaForm> seeds) throws SQLException {
 		final InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
 		final ObservatorioForm observatorioForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
 		putDataToInsert(insertarRastreoForm, observatorioForm);
-
 		if (seeds != null) {
 			for (SemillaForm semillaForm : seeds) {
 				insertarRastreoForm.setCodigo(observatorioForm.getNombre() + "-" + SemillaDAO.getSeedById(c, semillaForm.getId()).getNombre());
@@ -1296,6 +1439,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Disable crawlers.
+	 *
+	 * @param c             the c
+	 * @param seeds         the seeds
+	 * @param idObservatory the id observatory
+	 * @throws SQLException the SQL exception
+	 */
 	private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String idObservatory) throws SQLException {
 		for (SemillaForm semillaForm : seeds) {
 			// Desactivamos los rastreos de las semilla sque han sido
@@ -1307,6 +1458,13 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Delete seed association.
+	 *
+	 * @param c              the c
+	 * @param idObservatorio the id observatorio
+	 * @throws SQLException the SQL exception
+	 */
 	private static void deleteSeedAssociation(Connection c, long idObservatorio) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM observatorio_lista WHERE id_observatorio = ?")) {
 			ps.setLong(1, idObservatorio);
@@ -1317,6 +1475,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Adds the observatory seeds.
+	 *
+	 * @param c             the c
+	 * @param seeds         the seeds
+	 * @param idObservatory the id observatory
+	 * @throws SQLException the SQL exception
+	 */
 	private static void addObservatorySeeds(final Connection c, final List<SemillaForm> seeds, final long idObservatory) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)")) {
 			for (SemillaForm semillaForm : seeds) {
@@ -1330,6 +1496,16 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the observatory execution ids.
+	 *
+	 * @param c             the c
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @param cartridgeId   the cartridge id
+	 * @return the observatory execution ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static Map<Long, Date> getObservatoryExecutionIds(Connection c, long observatoryId, long executionId, long cartridgeId) throws SQLException {
 		final Map<Long, Date> observatoryExecutionIdsList = new HashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -1348,10 +1524,18 @@ public final class ObservatorioDAO {
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return observatoryExecutionIdsList;
 	}
 
+	/**
+	 * Exist observatory crawl.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param idSeed        the id seed
+	 * @return the long
+	 * @throws SQLException the SQL exception
+	 */
 	private static long existObservatoryCrawl(final Connection c, final long idObservatory, final long idSeed) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " + "JOIN lista l ON (r.semillas = l.id_lista) "
 				+ "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio) " + "WHERE l.id_lista = ? AND o.id_observatorio = ?")) {
@@ -1367,15 +1551,12 @@ public final class ObservatorioDAO {
 	}
 
 	/**
-	 * Comprobamos que si existe un observatorio con un determinado nombre
+	 * Comprobamos que si existe un observatorio con un determinado nombre.
 	 *
-	 * @param c
-	 *            conexión Connection a la BD
-	 * @param observatoryName
-	 *            cadena String con el nombre del observatorio
-	 * @return true si existe un observatorio con ese nombre o false en caso
-	 *         contrario
-	 * @throws SQLException
+	 * @param c               conexión Connection a la BD
+	 * @param observatoryName cadena String con el nombre del observatorio
+	 * @return true si existe un observatorio con ese nombre o false en caso contrario
+	 * @throws SQLException the SQL exception
 	 */
 	public static boolean existObservatory(Connection c, String observatoryName) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM observatorio WHERE nombre = ?")) {
@@ -1389,6 +1570,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the crawler from category.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @return the crawler from category
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<Long> getCrawlerFromCategory(final Connection c, final long idObservatory) throws SQLException {
 		final List<Long> idCrawlerList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " + "JOIN lista l ON (r.semillas = l.id_lista) " + "WHERE l.id_categoria = ?")) {
@@ -1405,12 +1594,19 @@ public final class ObservatorioDAO {
 		return idCrawlerList;
 	}
 
+	/**
+	 * Gets the crawler from observatory.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @return the crawler from observatory
+	 * @throws SQLException the SQL exception
+	 */
 	private static List<Long> getCrawlerFromObservatory(Connection c, long idObservatory) throws SQLException {
 		final List<Long> idCrawlerList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.id_rastreo FROM rastreo r " + "JOIN observatorio o ON (o.id_observatorio = r.id_observatorio) " + "WHERE o.id_observatorio = ?")) {
 			ps.setLong(1, idObservatory);
 			try (ResultSet rs = ps.executeQuery()) {
-
 				while (rs.next()) {
 					idCrawlerList.add(rs.getLong("id_rastreo"));
 				}
@@ -1422,6 +1618,13 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Edits the crawlings.
+	 *
+	 * @param c                         the c
+	 * @param modificarObservatorioForm the modificar observatorio form
+	 * @throws SQLException the SQL exception
+	 */
 	private static void editCrawlings(Connection c, ModificarObservatorioForm modificarObservatorioForm) throws SQLException {
 		InsertarRastreoForm insertarRastreoForm = new InsertarRastreoForm();
 		insertarRastreoForm.setProfundidad(Integer.parseInt(modificarObservatorioForm.getProfundidad()));
@@ -1440,10 +1643,17 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the cartridge from executed observatory id.
+	 *
+	 * @param c             the c
+	 * @param observatoryId the observatory id
+	 * @return the cartridge from executed observatory id
+	 * @throws SQLException the SQL exception
+	 */
 	public static long getCartridgeFromExecutedObservatoryId(final Connection c, final Long observatoryId) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_cartucho FROM rastreos_realizados WHERE id = ?")) {
 			ps.setLong(1, observatoryId);
-
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getLong("id_cartucho");
@@ -1457,6 +1667,16 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the subsequent observatory execution ids.
+	 *
+	 * @param c             the c
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @param cartridgeId   the cartridge id
+	 * @return the subsequent observatory execution ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<Long> getSubsequentObservatoryExecutionIds(Connection c, Long observatoryId, Long executionId, Long cartridgeId) throws SQLException {
 		final List<Long> subsequentExecutionIds = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement(
@@ -1476,6 +1696,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Update observatory status.
+	 *
+	 * @param c          the c
+	 * @param executedId the executed id
+	 * @param estado     the estado
+	 * @throws SQLException the SQL exception
+	 */
 	public static void updateObservatoryStatus(Connection c, Long executedId, int estado) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorios_realizados SET estado = ? WHERE id = ?")) {
 			ps.setInt(1, estado);
@@ -1487,6 +1715,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the observatory categories.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @return the observatory categories
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<CategoriaForm> getObservatoryCategories(Connection c, Long idObservatory) throws SQLException {
 		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
 		try (PreparedStatement ps = c
@@ -1506,9 +1742,16 @@ public final class ObservatorioDAO {
 			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 	}
 
+	/**
+	 * Gets the execution observatory categories.
+	 *
+	 * @param c                      the c
+	 * @param idExecutionObservatory the id execution observatory
+	 * @return the execution observatory categories
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<CategoriaForm> getExecutionObservatoryCategories(final Connection c, final Long idExecutionObservatory) throws SQLException {
 		final List<CategoriaForm> observatoryCategories = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT cl.nombre, cl.id_categoria, cl.orden FROM rastreos_realizados rr " + "JOIN lista l ON (l.id_lista = rr.id_lista) "
@@ -1531,6 +1774,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Save methodology.
+	 *
+	 * @param c           the c
+	 * @param idExecution the id execution
+	 * @param methodology the methodology
+	 * @throws SQLException the SQL exception
+	 */
 	public static void saveMethodology(Connection c, Long idExecution, String methodology) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("INSERT INTO observatorio_metodologia (id_obs_realizado, metodologia) VALUES (?,?)")) {
 			ps.setLong(1, idExecution);
@@ -1542,6 +1793,14 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the methodology.
+	 *
+	 * @param c           the c
+	 * @param idExecution the id execution
+	 * @return the methodology
+	 * @throws SQLException the SQL exception
+	 */
 	public static String getMethodology(Connection c, Long idExecution) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio_metodologia WHERE id_obs_realizado = ?")) {
 			ps.setLong(1, idExecution);
@@ -1558,6 +1817,13 @@ public final class ObservatorioDAO {
 		}
 	}
 
+	/**
+	 * Gets the all observatory types.
+	 *
+	 * @param c the c
+	 * @return the all observatory types
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<ObservatoryTypeForm> getAllObservatoryTypes(Connection c) throws SQLException {
 		final List<ObservatoryTypeForm> typeList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM observatorio_tipo")) {
@@ -1577,15 +1843,36 @@ public final class ObservatorioDAO {
 	}
 
 	/**
-	 * Dada una ejecución de un observatorio obtiene el identificador de la
-	 * ejecución inmediatamente previa del mismo observatorio
+	 * Gets the all ambitos.
 	 *
-	 * @param c
-	 *            Conexión a la base de datos
-	 * @param idObservatoryExecution
-	 *            Identificador de la iteración (ejecución) de un observatorio
-	 * @return El identificador de la iteración anterior de ese observatorio o
-	 *         -1 si no existe
+	 * @param c the c
+	 * @return the all ambitos
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<AmbitoForm> getAllAmbitos(Connection c) throws SQLException {
+		final List<AmbitoForm> typeList = new ArrayList<>();
+		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM ambitos_lista")) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					AmbitoForm type = new AmbitoForm();
+					type.setId(rs.getString("id_ambito"));
+					type.setName(rs.getString("nombre"));
+					typeList.add(type);
+				}
+			}
+			return typeList;
+		} catch (Exception e) {
+			Logger.putLog("Error al recuperar la lista de roles", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Dada una ejecución de un observatorio obtiene el identificador de la ejecución inmediatamente previa del mismo observatorio.
+	 *
+	 * @param c                      Conexión a la base de datos
+	 * @param idObservatoryExecution Identificador de la iteración (ejecución) de un observatorio
+	 * @return El identificador de la iteración anterior de ese observatorio o -1 si no existe
 	 */
 	public static Long getPreviousObservatoryExecution(final Connection c, final Long idObservatoryExecution) {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id FROM observatorios_realizados " + "WHERE id_observatorio = ? AND id<? AND estado=0 ORDER BY fecha DESC")) {
