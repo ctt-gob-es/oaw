@@ -87,14 +87,14 @@ public class CrawlerJob implements InterruptableJob {
 	/** Listado de dominios rechazados. */
 	private final List<String> rejectedDomains = new ArrayList<>();
 
-	/** {@link MailService} */
+	/** {@link MailService}. */
 	private final MailService mailService = new MailService();
 
 	/** Solicitud de interrupción. */
 	private boolean interrupt = false;
 
 	/**
-	 * Comprueba si una URL pertenece al dominio
+	 * Comprueba si una URL pertenece al dominio.
 	 *
 	 * @param domain Dominio
 	 * @param url    URL a validar
@@ -112,7 +112,7 @@ public class CrawlerJob implements InterruptableJob {
 	}
 
 	/**
-	 * Comprueba si la lista de {@link CrawledLink} contiene una URL
+	 * Comprueba si la lista de {@link CrawledLink} contiene una URL.
 	 *
 	 * @param crawledLinks Lista de {@link CrawledLink}.
 	 * @param url          URL a validar.
@@ -137,10 +137,6 @@ public class CrawlerJob implements InterruptableJob {
 				return true;
 			}
 			
-
-			// http://google.es
-			// http://www.google.es
-			// https://google.es/
 		}
 		return false;
 	}
@@ -201,6 +197,12 @@ public class CrawlerJob implements InterruptableJob {
 		return mails;
 	}
 
+	/**
+	 * Execute.
+	 *
+	 * @param jobContext the job context
+	 * @throws JobExecutionException the job execution exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -633,11 +635,10 @@ public class CrawlerJob implements InterruptableJob {
 	/**
 	 * Check if content is not an HTML
 	 * 
-	 * This is mandatory if this page is passed by JS renderer that sometimes
-	 * returns XML or other content no HTML as HTML header
-	 * 
-	 * @param textContent
-	 * @return
+	 * This is mandatory if this page is passed by JS renderer that sometimes returns XML or other content no HTML as HTML header.
+	 *
+	 * @param textContent the text content
+	 * @return true, if successful
 	 */
 	private boolean checkIfContentIsNotHTML(final String textContent) {
 		return textContent.contains("</rss>");
@@ -1331,6 +1332,11 @@ public class CrawlerJob implements InterruptableJob {
 		return false;
 	}
 
+	/**
+	 * Interrupt.
+	 *
+	 * @throws UnableToInterruptJobException the unable to interrupt job exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
