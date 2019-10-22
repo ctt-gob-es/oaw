@@ -464,7 +464,7 @@ public final class ObservatorioDAO {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * page;
-		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name, al.nombre as ambito"
+		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name, al.nombre as ambito, o.activo as activo"
 				+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo) LEFT JOIN ambitos_lista al ON al.id_ambito=o.id_ambito "
 				+ " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
 			ps.setInt(1, pagSize);
@@ -478,6 +478,7 @@ public final class ObservatorioDAO {
 					ls.setCartucho(rs.getString("aplicacion"));
 					ls.setTipo(rs.getString("name"));
 					ls.setAmbito(rs.getString("ambito"));
+					ls.setEstado(rs.getBoolean("activo"));
 					observatoryList.add(ls);
 				}
 				cargarObservatorioForm.setListadoObservatorio(observatoryList);
@@ -1431,8 +1432,10 @@ public final class ObservatorioDAO {
 				final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
 				if (idCrawler == -1) {
 					insertarRastreoForm.setActive(semillaForm.isActiva());
+					RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
 					// TODO Desactivamos si la semilla está desactivada o borrada
 					if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+						
 						RastreoDAO.enableDisableCrawler(c, idCrawler, false);
 					} else {
 						RastreoDAO.enableDisableCrawler(c, idCrawler, true);

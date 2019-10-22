@@ -89,6 +89,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</caption>
 							<tr>
 								<th><bean:message key="indice.observatorio.nombre" /></th>
+								<th>Activo</th>
 								<th><bean:message key="nuevo.observatorio.tipo" /></th>
 								<th><bean:message key="nuevo.observatorio.ambito" /></th>
 								<th><bean:message key="indice.observatorio.cartucho" /></th>
@@ -114,6 +115,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 											</html:link>
 											<span class="glyphicon glyphicon-edit pull-right edit-mark" aria-hidden="true" />
 										</inteco:menu></td>
+									<td><logic:equal name="elemento" property="estado" value="true">Sí</logic:equal> <logic:notEqual
+											name="elemento" property="estado" value="true">No</logic:notEqual></td>
 									<td><bean:write name="elemento" property="tipo" /></td>
 									<td><logic:notEmpty name="elemento" property="ambito">
 											<bean:write name="elemento" property="ambito" />
