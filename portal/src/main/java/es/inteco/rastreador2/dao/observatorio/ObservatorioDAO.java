@@ -465,7 +465,8 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * page;
 		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.nombre), o.id_observatorio, c.id_cartucho, c.aplicacion, ot.name, al.nombre as ambito"
-				+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo) LEFT JOIN ambitos_lista al ON al.id_ambito=o.id_ambito " + " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
+				+ " FROM observatorio o JOIN cartucho c ON (o.id_cartucho = c.id_cartucho) JOIN observatorio_tipo ot ON (o.id_tipo=ot.id_tipo) LEFT JOIN ambitos_lista al ON al.id_ambito=o.id_ambito "
+				+ " ORDER BY o.id_observatorio LIMIT ? OFFSET ?")) {
 			ps.setInt(1, pagSize);
 			ps.setInt(2, resultFrom);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -706,8 +707,9 @@ public final class ObservatorioDAO {
 		ResultSet rs = null;
 		try {
 			c.setAutoCommit(false);
-			ps = c.prepareStatement("INSERT INTO observatorio (nombre, id_periodicidad, profundidad, amplitud, fecha_inicio, id_guideline, pseudoaleatorio, id_language, id_cartucho, activo, id_tipo, id_ambito) "
-					+ "VALUES (?,?,?,?,?,?,?,?,?,?,?, ?)");
+			ps = c.prepareStatement(
+					"INSERT INTO observatorio (nombre, id_periodicidad, profundidad, amplitud, fecha_inicio, id_guideline, pseudoaleatorio, id_language, id_cartucho, activo, id_tipo, id_ambito) "
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?, ?)");
 			ps.setString(1, nuevoObservatorioForm.getNombre());
 			ps.setLong(2, Long.parseLong(nuevoObservatorioForm.getPeriodicidad()));
 			ps.setInt(3, Integer.parseInt(nuevoObservatorioForm.getProfundidad()));
@@ -720,8 +722,6 @@ public final class ObservatorioDAO {
 			ps.setBoolean(10, nuevoObservatorioForm.isActivo());
 			ps.setLong(11, nuevoObservatorioForm.getTipo().getId());
 			ps.setString(12, nuevoObservatorioForm.getAmbitoForm().getId());
-			
-			
 			ps.executeUpdate();
 			long idObservatory = 0;
 			ps = c.prepareStatement("SELECT id_observatorio FROM observatorio WHERE Nombre = ?");
@@ -1431,9 +1431,19 @@ public final class ObservatorioDAO {
 				final Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, idObservatory, semillaForm.getId());
 				if (idCrawler == -1) {
 					insertarRastreoForm.setActive(semillaForm.isActiva());
-					RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
+					// TODO Desactivamos si la semilla está desactivada o borrada
+					if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+						RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+					} else {
+						RastreoDAO.enableDisableCrawler(c, idCrawler, true);
+					}
 				} else {
-					RastreoDAO.enableDisableCrawler(c, idCrawler, semillaForm.isActiva());
+					// TODO Desactivamos si la semilla está desactivada o borrada
+					if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+						RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+					} else {
+						RastreoDAO.enableDisableCrawler(c, idCrawler, true);
+					}
 				}
 			}
 		}
@@ -1450,10 +1460,15 @@ public final class ObservatorioDAO {
 	private static void disableCrawlers(Connection c, List<SemillaForm> seeds, String idObservatory) throws SQLException {
 		for (SemillaForm semillaForm : seeds) {
 			// Desactivamos los rastreos de las semilla sque han sido
-			// desasignadas al observatorio
+			// desasignadas al observatorio o
 			Long idCrawler = ObservatorioDAO.existObservatoryCrawl(c, Long.parseLong(idObservatory), semillaForm.getId());
 			if (idCrawler != -1) {
-				RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+				// RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+				if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+					RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+				} else {
+					RastreoDAO.enableDisableCrawler(c, idCrawler, true);
+				}
 			}
 		}
 	}
@@ -1640,6 +1655,15 @@ public final class ObservatorioDAO {
 			insertarRastreoForm.setCodigo(modificarObservatorioForm.getNombre() + "-" + semillaForm.getNombre());
 			insertarRastreoForm.setId_semilla(semillaForm.getId());
 			RastreoDAO.modificarRastreo(c, false, insertarRastreoForm, idCrawler);
+			
+			//Disable if is not activa or is eliminada
+			if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
+				RastreoDAO.enableDisableCrawler(c, idCrawler, false);
+			} else {
+				RastreoDAO.enableDisableCrawler(c, idCrawler, true);
+			}
+			
+			
 		}
 	}
 
