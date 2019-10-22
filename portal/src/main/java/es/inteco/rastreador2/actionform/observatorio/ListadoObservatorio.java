@@ -35,6 +35,8 @@ public class ListadoObservatorio {
 	private String tipo;
 	/** The ambito. */
 	private String ambito;
+	/** The estado. */
+	private boolean estado;
 
 	/**
 	 * Gets the cartucho.
@@ -160,5 +162,23 @@ public class ListadoObservatorio {
 	 */
 	public void setAmbito(String ambito) {
 		this.ambito = ambito;
+	}
+
+	/**
+	 * Checks if is estado.
+	 *
+	 * @return true, if is estado
+	 */
+	public boolean isEstado() {
+		return estado;
+	}
+
+	/**
+	 * Sets the estado.
+	 *
+	 * @param estado the new estado
+	 */
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 }
