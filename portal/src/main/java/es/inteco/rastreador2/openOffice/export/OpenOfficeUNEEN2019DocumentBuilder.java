@@ -30,10 +30,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
+import org.apache.xml.dtm.ref.DTMNodeList;
 import org.odftoolkit.odfdom.OdfElement;
 import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -42,8 +42,6 @@ import org.odftoolkit.odfdom.doc.office.OdfOfficeAutomaticStyles;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -146,7 +144,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			// appendEndDocument(odt, odfFileContent, odtCategory, odfFileContentCategory);
 			appendAtMarkerPosition(odt, odfFileContent, odtCategory, odfFileContentCategory, "categorysection");
 			mergeStylesToPrimaryDoc(odt, odtCategory);
-			//mergeFontTypesToPrimaryDoc(odt, odtCategory);
+			// mergeFontTypesToPrimaryDoc(odt, odtCategory);
 			mergePictures(odt, odtCategory, graphicPath);
 		}
 		if (evolution) {
@@ -178,9 +176,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			numSection++;
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", "image/jpg");
 		}
-		
-
-		
 		return odt;
 	}
 
@@ -191,9 +186,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent         the odf file content
 	 * @param odtCategory            the odt category
 	 * @param odfFileContentCategory the odf file content category
-	 * @throws XPathExpressionException the x path expression exception
+	 * @throws Exception
 	 */
-	private void appendEndDocument(final OdfTextDocument odt, final OdfFileDom odfFileContent, OdfTextDocument odtCategory, OdfFileDom odfFileContentCategory) throws XPathExpressionException {
+	private void appendEndDocument(final OdfTextDocument odt, final OdfFileDom odfFileContent, OdfTextDocument odtCategory, OdfFileDom odfFileContentCategory) throws Exception {
 		XPath xpath = odt.getXPath();
 		XPath xpath2 = odtCategory.getXPath();
 		// Appends al elements
@@ -227,7 +222,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		XPath xpath = odt.getXPath();
 		XPath xpath2 = odtCategory.getXPath();
 		// Appends all elements
-		DTMNodeList nodeList = (DTMNodeList) xpath.evaluate(String.format("//text:bookmark-start[@text:name='%s']", markername), odfFileContent, XPathConstants.NODESET);
+		NodeList nodeList = (NodeList) xpath.evaluate(String.format("//text:bookmark-start[@text:name='%s']", markername), odfFileContent, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			OdfElement node = (OdfElement) nodeList.item(i);
 			NodeList nodeList2 = odtCategory.getOfficeBody().getFirstChild().getChildNodes();
@@ -249,7 +244,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	protected void mergePictures(final OdfTextDocument odt, final OdfTextDocument odtSource, String graphicPath) throws Exception {
 		final XPath xpath = odtSource.getXPath();
 		final OdfFileDom odfFileContent = odtSource.getContentDom();
-		final DTMNodeList nodeList = (DTMNodeList) xpath.evaluate("//draw:image", odfFileContent, XPathConstants.NODESET);
+		final NodeList nodeList = (NodeList) xpath.evaluate("//draw:image", odfFileContent, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			OdfElement node = (OdfElement) nodeList.item(i);
 			String attribute = node.getAttribute("xlink:href");

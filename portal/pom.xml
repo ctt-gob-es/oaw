@@ -109,11 +109,20 @@
 			<artifactId>jdom</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.odftoolkit/odfdom-java -->
 		<dependency>
 			<groupId>org.odftoolkit</groupId>
 			<artifactId>odfdom-java</artifactId>
 			<version>0.8.6</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.odftoolkit/simple-odf -->
+		<dependency>
+			<groupId>org.odftoolkit</groupId>
+			<artifactId>simple-odf</artifactId>
+			<version>0.9.0-RC1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>

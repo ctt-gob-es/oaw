@@ -39,11 +39,24 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class ModificarObservatorioAction.
+ */
 public class ModificarObservatorioAction extends Action {
 
 //    private Log log = LogFactory.getLog(ModificarObservatorioAction.class);
 
-    public ActionForward execute(ActionMapping mapping, ActionForm form,
+    /**
+ * Execute.
+ *
+ * @param mapping  the mapping
+ * @param form     the form
+ * @param request  the request
+ * @param response the response
+ * @return the action forward
+ * @throws Exception the exception
+ */
+public ActionForward execute(ActionMapping mapping, ActionForm form,
                                  HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         try {
@@ -108,6 +121,13 @@ public class ModificarObservatorioAction extends Action {
         return null;
     }
 
+    /**
+	 * Adds the list to observatory.
+	 *
+	 * @param mapping the mapping
+	 * @param request the request
+	 * @return the action forward
+	 */
     private ActionForward addListToObservatory(ActionMapping mapping, HttpServletRequest request) {
         ModificarObservatorioForm modificarObservatorioForm = (ModificarObservatorioForm) request.getSession().getAttribute(Constants.MODIFICAR_OBSERVATORIO_FORM);
         modificarObservatorioForm.setSemillasAnadidas((List<SemillaForm>) request.getSession().getAttribute(Constants.ADD_OBSERVATORY_SEED_LIST));
@@ -117,6 +137,16 @@ public class ModificarObservatorioAction extends Action {
         return ObservatoryUtils.returnLists(request, mapping, modificarObservatorioForm.getSemillasAnadidas(), modificarObservatorioForm.getSemillasNoAnadidas(), false);
     }
 
+    /**
+	 * Load data.
+	 *
+	 * @param modificarObservatorioForm the modificar observatorio form
+	 * @param request                   the request
+	 * @param esPrimera                 the es primera
+	 * @param idObservatorio            the id observatorio
+	 * @return the modificar observatorio form
+	 * @throws Exception the exception
+	 */
     private ModificarObservatorioForm loadData(ModificarObservatorioForm modificarObservatorioForm, HttpServletRequest request, boolean esPrimera, String idObservatorio) throws Exception {
         try (Connection c = DataBaseManager.getConnection()) {
             if (idObservatorio != null) {
@@ -138,6 +168,7 @@ public class ModificarObservatorioAction extends Action {
             request.setAttribute(Constants.SEED_CATEGORIES, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
             request.setAttribute(Constants.CARTUCHOS_VECTOR, LoginDAO.getAllUserCartridge(c));
             request.setAttribute(Constants.TIPOS_VECTOR, ObservatorioDAO.getAllObservatoryTypes(c));
+            request.setAttribute(Constants.AMBITOS_VECTOR, ObservatorioDAO.getAllAmbitos(c));
 
             if (esPrimera) {
                 ObservatorioDAO.getObservatoryDataToUpdate(c, modificarObservatorioForm);
@@ -151,6 +182,15 @@ public class ModificarObservatorioAction extends Action {
         }
     }
 
+    /**
+	 * Edits the observatory.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
     private ActionForward editObservatory(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
         final ModificarObservatorioForm modificarObservatorioForm = (ModificarObservatorioForm) form;
         modificarObservatorioForm.setNombre_antiguo(request.getParameter(Constants.NOMBRE_ANTIGUO));
