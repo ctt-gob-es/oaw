@@ -105,22 +105,16 @@ Email: observ.accesibilidad@correo.gob.es
 					<div>
 						<div class="observatoryInfo">
 							<p>
-								<strong><bean:message
-										key="resultados.observatorio.vista.primaria.title" />: </strong>
-								<bean:write name="<%=Constants.EVALUATION_FORM %>"
-									property="source" />
+								<strong><bean:message key="resultados.observatorio.vista.primaria.title" />: </strong>
+								<bean:write name="<%=Constants.EVALUATION_FORM %>" property="source" />
 							</p>
 							<p>
-								<strong><bean:message
-										key="resultados.observatorio.vista.primaria.url" />: </strong>
-								<bean:write name="<%=Constants.EVALUATION_FORM %>"
-									property="url" />
+								<strong><bean:message key="resultados.observatorio.vista.primaria.url" />: </strong>
+								<bean:write name="<%=Constants.EVALUATION_FORM %>" property="url" />
 							</p>
 							<p>
-								<strong><bean:message key="observatorio.puntuacion" />:
-								</strong>
-								<bean:write name="<%=Constants.EVALUATION_FORM %>"
-									property="score" />
+								<strong><bean:message key="observatorio.puntuacion" />: </strong>
+								<bean:write name="<%=Constants.EVALUATION_FORM %>" property="score" />
 							</p>
 						</div>
 

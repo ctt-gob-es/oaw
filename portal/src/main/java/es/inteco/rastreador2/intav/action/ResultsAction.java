@@ -132,8 +132,13 @@ public class ResultsAction extends Action {
 					saveErrors(request, errors);
 				}
 				request.setAttribute(Constants.LIST_ANALYSIS, analysisList);
+
 				request.setAttribute(Constants.LIST_PAGE_LINKS,
 						Pagination.createPagination(request, numResult, pagina));
+				
+				
+				request.setAttribute("currentPage", pagina);
+				request.setAttribute("pageSize", pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
 					request.setAttribute(Constants.OBSERVATORY, request.getParameter(Constants.OBSERVATORY));

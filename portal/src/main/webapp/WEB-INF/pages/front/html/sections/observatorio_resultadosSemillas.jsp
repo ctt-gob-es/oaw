@@ -20,16 +20,14 @@ Email: observ.accesibilidad@correo.gob.es
 
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
 
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
-<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js"
-	type="text/javascript"></script>
+<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
 
 <script src="/oaw/js/gridSemillasResultado.js" type="text/javascript"></script>
 
@@ -232,12 +230,10 @@ Email: observ.accesibilidad@correo.gob.es
 	<inteco:properties key="cartridge.intav.id" file="crawler.properties" />
 </bean:define>
 <bean:define id="idCartridgeMultilanguage">
-	<inteco:properties key="cartridge.multilanguage.id"
-		file="crawler.properties" />
+	<inteco:properties key="cartridge.multilanguage.id" file="crawler.properties" />
 </bean:define>
 
-<bean:parameter name="<%=Constants.ID_OBSERVATORIO%>"
-	id="idObservatorio" />
+<bean:parameter name="<%=Constants.ID_OBSERVATORIO%>" id="idObservatorio" />
 <bean:parameter name="<%=Constants.ID_EX_OBS%>" id="idExObs" />
 <bean:parameter name="<%=Constants.ID_CARTUCHO%>" id="idCartucho" />
 
@@ -263,16 +259,13 @@ Email: observ.accesibilidad@correo.gob.es
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
 					</html:link></li>
-				<li><html:link forward="resultadosPrimariosObservatorio"
-						paramName="idObservatorio"
+				<li><html:link forward="resultadosPrimariosObservatorio" paramName="idObservatorio"
 						paramId="<%=Constants.ID_OBSERVATORIO%>">
 						<bean:message key="migas.indice.observatorios.realizados.lista" />
 					</html:link></li>
-				<li class="active"><bean:message
-						key="migas.resultado.observatorio" /></li>
+				<li class="active"><bean:message key="migas.resultado.observatorio" /></li>
 			</ol>
 		</div>
-
 		<div id="cajaformularios">
 			<h2>
 				<bean:message key="gestion.resultados.observatorio" />
@@ -280,40 +273,29 @@ Email: observ.accesibilidad@correo.gob.es
 
 			<div id="exitosNuevaSemillaMD" style="display: none"></div>
 
-			<html:form action="/secure/ResultadosObservatorio.do" method="get"
-				styleClass="formulario form-horizontal"
+			<html:form action="/secure/ResultadosObservatorio.do" method="get" styleClass="formulario form-horizontal"
 				styleId="resultadosObsBuscador">
-				<input type="hidden" name="<%=Constants.ACTION%>"
-					value="<%=Constants.GET_SEEDS%>" />
-				<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>"
-					value="<bean:write name="idObservatorio"/>" />
-				<input type="hidden" name="<%=Constants.ID_EX_OBS%>"
-					value="<bean:write name="idExObs"/>" />
-				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>"
-					value="<bean:write name="<%=Constants.ID_CARTUCHO%>"/>" />
+				<input type="hidden" name="<%=Constants.ACTION%>" value="<%=Constants.GET_SEEDS%>" />
+				<input type="hidden" name="<%=Constants.ID_OBSERVATORIO%>" value="<bean:write name="idObservatorio"/>" />
+				<input type="hidden" name="<%=Constants.ID_EX_OBS%>" value="<bean:write name="idExObs"/>" />
+				<input type="hidden" name="<%=Constants.ID_CARTUCHO%>" value="<bean:write name="<%=Constants.ID_CARTUCHO%>"/>" />
 				<fieldset>
 					<legend>Buscador</legend>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
-						<label for="nombre" class="control-label"><strong
-							class="labelVisu"><bean:message
+						<label for="nombre" class="control-label"><strong class="labelVisu"><bean:message
 									key="nueva.semilla.observatorio.nombre" /></strong></label>
-						<html:text styleClass="texto form-control" styleId="nombre"
-							property="nombre" />
+						<html:text styleClass="texto form-control" styleId="nombre" property="nombre" />
 					</div>
 					<div class="formItem">
-						<label for="listaUrlsString" class="control-label"><strong
-							class="labelVisu"><bean:message
+						<label for="listaUrlsString" class="control-label"><strong class="labelVisu"><bean:message
 									key="nueva.semilla.observatorio.url" /></strong></label>
-						<html:text styleClass="texto form-control"
-							styleId="listaUrlsString" property="listaUrlsString" />
+						<html:text styleClass="texto form-control" styleId="listaUrlsString" property="listaUrlsString" />
 					</div>
 					<div class="formButton">
-						<span onclick="buscar()" class="btn btn-default btn-lg"> <span
-							class="glyphicon glyphicon-search" aria-hidden="true"></span> <bean:message
-								key="boton.buscar" />
-						</span> <span onclick="limpiar()" class="btn btn-default btn-lg">
-							<span aria-hidden="true"></span> <bean:message
+						<span onclick="buscar()" class="btn btn-default btn-lg"> <span class="glyphicon glyphicon-search"
+							aria-hidden="true"></span> <bean:message key="boton.buscar" />
+						</span> <span onclick="limpiar()" class="btn btn-default btn-lg"> <span aria-hidden="true"></span> <bean:message
 								key="boton.limpiar" />
 						</span>
 						</button>
