@@ -38,6 +38,16 @@ function complejidadFormatter(cellvalue, options, rowObject) {
 	
 }
 
+function complejidadFormatter(cellvalue, options, rowObject) {
+	if (rowObject.complejidad.name != null) {
+
+		return rowObject.complejidad.name;
+
+	} else {
+		return "";
+	}
+}
+
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 	return rowObject.nombre;
 }
@@ -192,7 +202,7 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento","Ambito", "Dependencia",
+													"Segmento","Ambito", "Complejidad", "Dependencia",
 													"URLs", "Activa",
 													"Directorio","Complejidad",
 													"Puntuac\u00F3n", 
@@ -406,6 +416,57 @@ function reloadGrid(path) {
 															edithidden : true
 														},
 														formatter : ambitoFormatter,
+														sortable : false
+													},
+													{
+														name : "complejidadaux",
+														width : 15,
+														edittype : "select",
+														align : "center",
+														editoptions : {
+															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listComplejidades',
+															buildSelect : function(
+																	data) {
+
+																var response = jQuery
+																		.parseJSON(data);
+																var s = '<select>';
+
+																if (response
+																		&& response.length) {
+																	for (var i = 0, l = response.length; i < l; i++) {
+																		var ri = response[i];
+																		if(ri.id == $('#grid').getLocalRow(gridSelRow).complejidad.id){
+																			
+
+																			s += '<option onmouseover="cambiaTitulo()" selected="selected" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																		} else {
+																		
+																		
+																		s += '<option onmouseover="cambiaTitulo()" value="'
+																				+ ri.id
+																				+ '">'
+																				+ ri.name
+																				+ '</option>';
+																		}
+																	}
+																}
+
+																return s
+																		+ "</select>";
+															}
+
+														},
+														hidden : true,
+														editrules : {
+															required : true,
+															edithidden : true
+														},
+														//formatter : complejidadFormatter,
 														sortable : false
 													},
 													{

@@ -87,6 +87,9 @@ public class NuevoObservatorioForm extends ValidatorForm {
     /** The categoria. */
     private String[] categoria;
     
+    /** The complejidad. */
+    private String[] complejidad;
+    
     /** The ambito. */
     private String[] ambito;
     
@@ -455,6 +458,15 @@ public class NuevoObservatorioForm extends ValidatorForm {
 	 */
     public void setAmbito(String[] ambito) {
         this.ambito = ambito;
+    }
+    
+
+    public String[] getComplejidad() {
+        return complejidad;
+    }
+
+    public void setComplejidad(String[] complejidad) {
+        this.complejidad = complejidad;
     }
     
 

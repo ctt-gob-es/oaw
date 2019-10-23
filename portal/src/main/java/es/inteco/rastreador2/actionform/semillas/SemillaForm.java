@@ -71,6 +71,9 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	/** The ambito. */
 	private AmbitoForm ambito;
 	
+	/** The complejidad. */
+	private ComplejidadForm complejidad;
+	
 	/** The in directory. */
 	private boolean inDirectory;
 
@@ -85,9 +88,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
-		
-	private ComplejidadForm complejidad;
-	
+			
 	private List<EtiquetaForm> etiquetas;
 
 	/**
@@ -280,6 +281,25 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		this.ambito = ambito;
 	}
 
+	
+	/**
+	 * Gets the complejidad.
+	 *
+	 * @return the complejidad
+	 */
+	public ComplejidadForm getComplejidad() {
+		return complejidad;
+	}
+
+	/**
+	 * Sets the complejidad.
+	 *
+	 * @param complejidad the new complejidad
+	 */
+	public void setComplejidad(ComplejidadForm complejidad) {
+		this.complejidad = complejidad;
+	}
+	
 	
 	/**
 	 * Reset.
