@@ -18,3 +18,7 @@ ALTER TABLE `lista`  ADD KEY `id_ambito` (`id_ambito`);
 
 CREATE TABLE `oaw_js`.`observatorio_ambito` ( `id_observatorio` BIGINT(20) NOT NULL , `id_ambito` BIGINT(20) NOT NULL ) ENGINE = InnoDB;
 
+CREATE TABLE `oaw_js`.`complejidades_lista` ( `id_complejidad` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , `profundidad` BIGINT(20) NOT NULL , `amplitud` BIGINT(20) NOT NULL , PRIMARY KEY (`id_complejidad`));
+CREATE TABLE `oaw_js`.`observatorio_complejidad` ( `id_observatorio` BIGINT(20) NOT NULL , `id_complejidad` INT(20) NOT NULL ) ;
+ALTER TABLE `lista` ADD `id_complejidad` BIGINT(20);
+INSERT INTO `complejidades_lista` (`id_complejidad`, `nombre`, `profundidad`, `amplitud`) VALUES ('1', 'Baja', '4', '4'), ('2', 'Media', '4', '8'), ('3', 'Alta', '4', '11')

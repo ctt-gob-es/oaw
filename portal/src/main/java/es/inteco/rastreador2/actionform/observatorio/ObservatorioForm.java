@@ -33,6 +33,7 @@ public class ObservatorioForm {
     private PeriodicidadForm periodicidadForm;
     private String[] categoria;
     private String[] ambito;
+    private String[] complejidad;
     private CartuchoForm cartucho;
     private boolean pseudoAleatorio;
     private int estado;
@@ -157,4 +158,13 @@ public class ObservatorioForm {
     public void setAmbito(String[] ambito) {
         this.ambito = ambito;
     }
+    
+    public String[] getComplejidad() {
+        return complejidad;
+    }
+
+    public void setComplejidad(String[] complejidad) {
+        this.complejidad = complejidad;
+    }
+    
 }

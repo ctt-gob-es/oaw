@@ -39,6 +39,9 @@
 		<form-bean name="AmbitoForm"
 			type="es.inteco.rastreador2.actionform.semillas.AmbitoForm" />
 
+		<form-bean name="ComplejidadForm"
+			type="es.inteco.rastreador2.actionform.semillas.ComplejidadForm" />
+			
 		<!-- RASTREOS -->
 		<form-bean name="InsertarRastreoForm"
 			type="es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm" />
@@ -261,7 +264,11 @@
 		<forward name="loadObsMod"
 			path="/secure/ModificarObservatorio.do?action=modificar" />
 		<forward name="deleteSeed" path="/secure/EliminarSemilla.do" />
-
+		
+		<forward name="observatoryComplejidades"
+			path="/secure/ViewComplejidadesObservatorio.do?action=load" />
+			
+			
 		<forward name="indexAdmin" path="/secure/IndexAdmin.do" />
 		<forward name="loginSistema" path="/crawlerLoginAction.do" />
 		<forward name="errorPage" path=".errorPage" />
@@ -1261,6 +1268,18 @@
 			<forward name="confirmacionImportar"
 				path=".confirmarImportacion" />
 		</action>
+
+
+		<!-- Complejidad -->
+		<action path="/secure/ViewComplejidadesObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.ComplejidadesObservatorioAction"
+			name="ComplejidadForm">
+			<forward name="volver" path=".indexAdmin" />
+			<forward name="exito" path=".Exito" />
+			<forward name="confirmacionImportar"
+				path=".confirmarImportacion" />
+		</action>
+
 
 
 	</action-mappings>

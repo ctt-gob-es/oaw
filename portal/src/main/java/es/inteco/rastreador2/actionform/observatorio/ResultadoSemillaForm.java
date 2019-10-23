@@ -25,6 +25,7 @@ public class ResultadoSemillaForm {
     private String nivel;
     private long idCategory;
     private long idAmbit;
+    private long idComplexity;
 
 
     public long getIdCategory() {
@@ -41,6 +42,14 @@ public class ResultadoSemillaForm {
 
     public void setIdAmbit(long idAmbit) {
         this.idAmbit = idAmbit;
+    }
+    
+    public long getIdComplexity() {
+        return idComplexity;
+    }
+
+    public void setIdComplexity(long idComplexity) {
+        this.idComplexity = idComplexity;
     }
     
     public String getId() {

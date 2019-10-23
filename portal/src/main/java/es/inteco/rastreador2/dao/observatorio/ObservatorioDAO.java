@@ -25,6 +25,7 @@ import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
 import es.inteco.rastreador2.actionform.rastreo.ObservatoryTypeForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
@@ -302,6 +303,27 @@ public final class ObservatorioDAO {
 		}
 
 		return ambit;
+	}
+	
+	public static ComplejidadForm getComplexityById(final Connection c, final Long id) throws SQLException {
+		final ComplejidadForm complexity = new ComplejidadForm();
+
+		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM complejidades_lista WHERE id_complejidad = ? ORDER BY id_complejidad ASC")) {
+			ps.setLong(1, id);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					complexity.setId(String.valueOf(rs.getLong("id_complejidad")));
+					complexity.setName(rs.getString("nombre"));
+					complexity.setProfundidad(rs.getInt("profundidad"));
+					complexity.setAmplitud(rs.getInt("amplitud"));
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+
+		return complexity;
 	}
 	
 	public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws SQLException {
@@ -632,6 +654,16 @@ public final class ObservatorioDAO {
 				ps.executeBatch();
 			}
 			
+			ps = c.prepareStatement("INSERT INTO observatorio_complejidad VALUES (?,?)");
+			if (nuevoObservatorioForm.getComplejidad() != null) {
+				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
+					ps.setLong(1, idObservatory);
+					ps.setLong(2, Long.parseLong(complejidad));
+					ps.addBatch();
+				}
+				ps.executeBatch();
+			}
+			
 			if ((idObservatory != 0) && (nuevoObservatorioForm.getAddSeeds() != null) && (!nuevoObservatorioForm.getAddSeeds().isEmpty())) {
 				for (SemillaForm semillaForm : nuevoObservatorioForm.getAddSeeds()) {
 					ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)");
@@ -651,6 +683,12 @@ public final class ObservatorioDAO {
 			if (nuevoObservatorioForm.getAmbito() != null) {
 				for (String ambito : nuevoObservatorioForm.getAmbito()) {
 					totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(ambito), Constants.NO_PAGINACION, new SemillaForm()));
+				}
+			}
+			
+			if (nuevoObservatorioForm.getComplejidad() != null) {
+				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
+					totalSeedsAdded.addAll(SemillaDAO.getSeedsByComplexity(c, Long.parseLong(complejidad), Constants.NO_PAGINACION, new SemillaForm()));
 				}
 			}
 			
@@ -952,8 +990,8 @@ public final class ObservatorioDAO {
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
 
-		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, rr.id, al.nombre FROM lista l "
-				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
+		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud FROM lista l "
+				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "  + "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
 				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
 
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
@@ -1029,6 +1067,13 @@ public final class ObservatorioDAO {
 					ambitoForm.setId(rs.getString("l.id_ambito"));
 					ambitoForm.setName(rs.getString("al.nombre"));
 					resultadoSemillaForm.setAmbito(ambitoForm);
+					
+					final ComplejidadForm complejidadForm = new ComplejidadForm();
+					complejidadForm.setId(rs.getString("l.id_complejidad"));
+					complejidadForm.setName(rs.getString("cxl.nombre"));
+					complejidadForm.setProfundidad(rs.getInt("cxl.profundidad"));
+					complejidadForm.setAmplitud(rs.getInt("cxl.amplitud"));
+					resultadoSemillaForm.setComplejidad(complejidadForm);
 					
 					// resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
 

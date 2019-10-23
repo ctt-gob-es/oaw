@@ -48,6 +48,7 @@ public class NuevoObservatorioForm extends ValidatorForm {
     private String buttonAction;
     private String[] categoria;
     private String[] ambito;
+    private String[] complejidad;
     private CartuchoForm cartucho;
     private String pseudoAleatorio;
     private boolean activo;
@@ -212,6 +213,14 @@ public class NuevoObservatorioForm extends ValidatorForm {
     }
     
 
+    public String[] getComplejidad() {
+        return complejidad;
+    }
+
+    public void setComplejidad(String[] complejidad) {
+        this.complejidad = complejidad;
+    }
+    
     public List<SemillaForm> getAddSeeds() {
         return addSeeds;
     }
