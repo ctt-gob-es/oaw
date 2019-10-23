@@ -88,6 +88,18 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 		numSection = 5;
 	}
 
+	/**
+	 * Builds the document.
+	 *
+	 * @param request           the request
+	 * @param graphicPath       the graphic path
+	 * @param date              the date
+	 * @param evolution         the evolution
+	 * @param pageExecutionList the page execution list
+	 * @param categories        the categories
+	 * @return the odf text document
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -208,6 +220,13 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 		return odt;
 	}
 
+	/**
+	 * Gets the embeded id image.
+	 *
+	 * @param tipoObservatorio the tipo observatorio
+	 * @param name             the name
+	 * @return the embeded id image
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -333,7 +352,15 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 1 : 14 niveles
+	 * Prioridad 1 : 14 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSection441(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath,
@@ -368,7 +395,15 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 2 : 6 niveles
+	 * Prioridad 2 : 6 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSection442(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath,
@@ -394,7 +429,15 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 1 : 14 niveles
+	 * Prioridad 1 : 14 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSection451(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath,
@@ -444,7 +487,15 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 2 : 6 niveles
+	 * Prioridad 2 : 6 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSection452(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath,
@@ -580,7 +631,16 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 1 : 14 niveles
+	 * Prioridad 1 : 14 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSectionCat31(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
@@ -623,7 +683,16 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 2 : 6 niveles
+	 * Prioridad 2 : 6 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSectionCat32(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
@@ -659,7 +728,16 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 1 : 14 niveles
+	 * Prioridad 1 : 14 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSectionCat41(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
@@ -716,7 +794,16 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	}
 
 	/**
-	 * Prioridad 2 : 6 niveles
+	 * Prioridad 2 : 6 niveles.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param category          the category
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSectionCat42(final MessageResources messageResources, final OdfTextDocument odt,
 			final OdfFileDom odfFileContent, final String graphicPath, final CategoriaForm category,
@@ -1152,6 +1239,18 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 		return numImg;
 	}
 
+	/**
+	 * Replace section evolution score by segment.
+	 *
+	 * @param messageResources the message resources
+	 * @param odt              the odt
+	 * @param odfFileContent   the odf file content
+	 * @param graphicPath      the graphic path
+	 * @param resultsByAspect  the results by aspect
+	 * @param categories       the categories
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	private int replaceSectionEvolutionScoreBySegment(final MessageResources messageResources,
 			final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final Map<Date, Map<String, BigDecimal>> resultsByAspect, final List<CategoriaForm> categories)

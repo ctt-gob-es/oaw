@@ -1337,8 +1337,8 @@ public final class SemillaDAO {
 	/**
 	 * Update seed ambito.
 	 *
-	 * @param c             the c
-	 * @param categoriaForm the ambito form
+	 * @param c          the c
+	 * @param ambitoForm the ambito form
 	 * @throws SQLException the SQL exception
 	 */
 	public static void updateSeedAmbit(Connection c, AmbitoForm ambitoForm) throws SQLException {
@@ -1356,9 +1356,9 @@ public final class SemillaDAO {
 	/**
 	 * Save seeds ambit.
 	 *
-	 * @param c          the c
-	 * @param semillas   the semillas
-	 * @param idAmbi the id ambit
+	 * @param c        the c
+	 * @param semillas the semillas
+	 * @param idAmbit  the id ambit
 	 * @throws SQLException the SQL exception
 	 */
 	public static void saveSeedsAmbit(Connection c, List<SemillaForm> semillas, String idAmbit)
