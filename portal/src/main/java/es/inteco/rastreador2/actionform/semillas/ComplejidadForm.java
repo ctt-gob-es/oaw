@@ -15,14 +15,15 @@
 ******************************************************************************/
 package es.inteco.rastreador2.actionform.semillas;
 
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.upload.FormFile;
-import org.apache.struts.validator.ValidatorForm;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.upload.FormFile;
+import org.apache.struts.validator.ValidatorForm;
 
 /**
  * The Class ComplejidadForm.
