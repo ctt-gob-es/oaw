@@ -41,6 +41,7 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
@@ -245,6 +246,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			AmbitoForm ambitoSemilla = new AmbitoForm();
 			ambitoSemilla.setId(request.getParameter("ambitoaux"));
 			semilla.setAmbito(ambitoSemilla);
+			
+			ComplejidadForm complejidadSemilla = new ComplejidadForm();
+			complejidadSemilla.setId(request.getParameter("complejidadaux"));
+			semilla.setComplejidad(complejidadSemilla);
 
 			MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
@@ -379,6 +384,11 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			AmbitoForm ambitoSemilla = new AmbitoForm();
 			ambitoSemilla.setId(request.getParameter("ambitoaux"));
 			semilla.setAmbito(ambitoSemilla);
+			
+			
+			ComplejidadForm complejidadSemilla = new ComplejidadForm();
+			complejidadSemilla.setId(request.getParameter("complejidadaux"));
+			semilla.setComplejidad(complejidadSemilla);
 			
 			try (Connection c = DataBaseManager.getConnection()) {
 
@@ -534,6 +544,41 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 			PrintWriter pw = response.getWriter();
 			pw.write(jsonAmbitos);
+			pw.flush();
+			pw.close();
+
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Obtiene un listado de todos las complejidades. La respuesta se genera como
+	 * un JSON
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
+	public ActionForward listComplejidades(ActionMapping mapping, ActionForm form, HttpServletRequest request,HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+
+			List<ComplejidadForm> listComplejidades = SemillaDAO.getSeedComplexities(c, Constants.NO_PAGINACION);
+
+			String jsonComplejidades = new Gson().toJson(listComplejidades);
+
+			PrintWriter pw = response.getWriter();
+			pw.write(jsonComplejidades);
 			pw.flush();
 			pw.close();
 

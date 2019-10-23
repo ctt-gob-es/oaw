@@ -60,22 +60,51 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		//Cargar los ambitos
 
 		$jn('#selectAmbitosNuevaSemilla').empty();
+		$jn.ajax({
+			url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+		}).done(
+				function(data) {
+
+					var response = $jn.parseJSON(data);
+
+					$jn('#selectAmbitosNuevaSemilla').append(
+							"<option value=''></option>");
+					if (response && response.length) {
+						for (var i = 0, l = response.length; i < l; i++) {
+							var ri = response[i];
+							$jn('#selectAmbitosNuevaSemilla').append(
+									'<option value="'+ri.id+'">' + ri.name
+											+ '</option>');
+						}
+					}
+
+					if (rowObject != null) {
+
+						$jn('#selectAmbitosNuevaSemilla').val(
+								rowObject.ambito.id);
+					}
+
+				});
+
+		//Cargar las complejidades
+
+		$jn('#selectComplejidadesNuevaSemilla').empty();
 		$jn
 				.ajax(
 						{
-							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listAmbitos',
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listComplejidades',
 						})
 				.done(
 						function(data) {
 
 							var response = $jn.parseJSON(data);
 
-							$jn('#selectAmbitosNuevaSemilla').append(
+							$jn('#selectComplejidadesNuevaSemilla').append(
 									"<option value=''></option>");
 							if (response && response.length) {
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
-									$jn('#selectAmbitosNuevaSemilla')
+									$jn('#selectComplejidadesNuevaSemilla')
 											.append(
 													'<option value="'+ri.id+'">'
 															+ ri.name
@@ -85,12 +114,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							if (rowObject != null) {
 
-								$jn('#selectAmbitosNuevaSemilla').val(
-										rowObject.ambito.id);
+								$jn('#selectComplejidadesNuevaSemilla').val(
+										rowObject.complejidad.id);
 							}
 
 						});
-		
+
 		//Cargar las dependencias
 		$jn('#selectDependenciasNuevaSemilla').empty();
 		$('#selectDependenciasNuevaSemillaSeleccionadas').empty();
@@ -260,8 +289,24 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</div>
 				</div>
 			</logic:notPresent>
-			
-			
+
+			<logic:present parameter="<%=Constants.ID_COMPLEJIDAD%>">
+				<input type="hidden" name="segmento"
+					value="<c:out value="${ComplejidadForm.id }" />" />
+			</logic:present>
+			<logic:notPresent parameter="<%=Constants.ID_COMPLEJIDAD%>">
+				<!-- Complejidad/Complejidadaux -->
+				<div class="row formItem">
+					<label for="complejidad" class="control-label"><strong
+						class="labelVisu"><bean:message
+								key="nueva.semilla.webs.complejidad" /></strong></label>
+					<div class="col-xs-4">
+						<select name="complejidadaux" id="selectComplejidadesNuevaSemilla"
+							class="textoSelect form-control"></select>
+					</div>
+				</div>
+			</logic:notPresent>
+
 			<!-- Urls -->
 			<div class="row formItem">
 				<p class="alert alert-info" style="margin-left: 23%;">

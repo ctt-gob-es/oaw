@@ -30,6 +30,16 @@ function ambitoFormatter(cellvalue, options, rowObject) {
 	}
 }
 
+function complejidadFormatter(cellvalue, options, rowObject) {
+	if (rowObject.complejidad.name != null) {
+
+		return rowObject.complejidad.name;
+
+	} else {
+		return "";
+	}
+}
+
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 	return rowObject.nombre;
 }
@@ -224,7 +234,7 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento", "\u00C1mbito", "Dependencia",
+													"Segmento", "\u00C1mbito", "Complejidad", "Dependencia",
 													"URLs", "Activa",
 													"Directorio", "Ir",
 													"Eliminar" ],
@@ -329,6 +339,45 @@ function reloadGrid(path) {
 														// required : true
 														// },
 														formatter : ambitoFormatter,
+														sortable : false
+
+													},
+													{
+														name : "complejidadaux",
+														width : 15,
+														edittype : "select",
+														align : "center",
+														editoptions : {
+
+															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listComplejidades',
+															buildSelect : function(
+																	data) {
+
+																var response = jQuery
+																		.parseJSON(data);
+																var s = '<select><option value=""></option>';
+
+																if (response
+																		&& response.length) {
+																	for (var i = 0, l = response.length; i < l; i++) {
+																		var ri = response[i];
+																		s += '<option class="dependenciaOption" value="'
+																				+ ri.id
+																				+ '">'
+																				+ ri.name
+																				+ '</option>';
+																	}
+																}
+
+																return s
+																		+ "</select>";
+															}
+
+														},
+														// editrules : {
+														// required : true
+														// },
+														formatter : complejidadFormatter,
 														sortable : false
 
 													},
