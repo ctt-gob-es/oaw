@@ -12,7 +12,6 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.observatorio;
 
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +31,10 @@ import com.google.gson.Gson;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
-import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
-import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
-import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
-import es.inteco.rastreador2.utils.Pagination;
 
 /**
  * The Class ComplejidadesObservatorioAction.
