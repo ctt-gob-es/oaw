@@ -19,6 +19,11 @@ CREATE TABLE ambito_lista (
 
 INSERT INTO ambitos_lista (id_ambito, nombre) VALUES ('1', 'AGE'), ('2', 'CCAA'), ('3', 'EELL'), ('4', 'Otros');
 
+CREATE TABLE `oaw_js`.`complejidades_lista` ( `id_complejidad` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , `profundidad` BIGINT(20) NOT NULL , `amplitud` BIGINT(20) NOT NULL , PRIMARY KEY (`id_complejidad`));
+CREATE TABLE `oaw_js`.`observatorio_complejidad` ( `id_observatorio` BIGINT(20) NOT NULL , `id_complejidad` INT(20) NOT NULL ) ;
+ALTER TABLE `lista` ADD `id_complejidad` BIGINT(20);
+INSERT INTO `complejidades_lista` (`id_complejidad`, `nombre`, `profundidad`, `amplitud`) VALUES ('1', 'Baja', '4', '4'), ('2', 'Media', '4', '8'), ('3', 'Alta', '4', '11')
+
 ALTER TABLE lista ADD id_ambito BIGINT(20) NULL DEFAULT NULL AFTER id_categoria;
 ALTER TABLE lista  ADD KEY id_ambito (id_ambito);
 

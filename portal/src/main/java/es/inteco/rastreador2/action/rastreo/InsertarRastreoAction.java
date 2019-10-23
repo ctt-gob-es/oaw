@@ -131,14 +131,14 @@ public class InsertarRastreoAction extends Action {
 
                             if (insertarRastreoForm.getListaRastreable() != null && !insertarRastreoForm.getListaRastreable().isEmpty()) {
                                 //Guardamos la lista Rastreable
-                                SemillaDAO.insertList(c, Constants.ID_LISTA_RASTREABLE, insertarRastreoForm.getCodigo() + "-Rastreable", insertarRastreoForm.getListaRastreable(), null, null, null, null);
+                                SemillaDAO.insertList(c, Constants.ID_LISTA_RASTREABLE, insertarRastreoForm.getCodigo() + "-Rastreable", insertarRastreoForm.getListaRastreable(), null, null, null, null, null);
                                 Long idCrawlableList = SemillaDAO.getIdList(c, insertarRastreoForm.getCodigo() + "-Rastreable", null);
                                 insertarRastreoForm.setId_lista_rastreable(idCrawlableList);
                             }
 
                             if (insertarRastreoForm.getListaNoRastreable() != null && !insertarRastreoForm.getListaNoRastreable().isEmpty()) {
                                 //Guardamos la lista No rastreable
-                                SemillaDAO.insertList(c, Constants.ID_LISTA_NO_RASTREABLE, insertarRastreoForm.getCodigo() + "-NoRastreable", insertarRastreoForm.getListaNoRastreable(), null, null, null, null);
+                                SemillaDAO.insertList(c, Constants.ID_LISTA_NO_RASTREABLE, insertarRastreoForm.getCodigo() + "-NoRastreable", insertarRastreoForm.getListaNoRastreable(), null, null, null, null, null);
                                 Long idNoCrawlableList = SemillaDAO.getIdList(c, insertarRastreoForm.getCodigo() + "-NoRastreable", null);
                                 insertarRastreoForm.setId_lista_no_rastreable(idNoCrawlableList);
                             }

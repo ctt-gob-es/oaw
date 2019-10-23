@@ -437,7 +437,7 @@ public class SeedCategoriesAction extends Action {
 			try (Connection c = DataBaseManager.getConnection()) {
 				semillaForm.setListaUrlsString(semillaForm.getListaUrlsString().replace("\r\n", ";"));
 				final Long idSeed = SemillaDAO.insertList(c, 4, semillaForm.getNombre(),
-						semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), null, semillaForm.getAcronimo(),
+						semillaForm.getListaUrlsString(), semillaForm.getCategoria().getId(), null, null, semillaForm.getAcronimo(),
 						null);
 
 				final List<ObservatorioForm> observatoryIds = ObservatorioDAO.getObservatoriesFromCategory(c,

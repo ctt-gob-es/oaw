@@ -16,6 +16,7 @@ import java.util.List;
 
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 
 public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
@@ -29,6 +30,7 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 	private String activaStr;
 	private CategoriaForm categoria;
 	private AmbitoForm ambito;
+	private ComplejidadForm complejidad;
 	private boolean inDirectory;
 	private String inDirectoryStr;
 
@@ -104,6 +106,15 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 
 	public void setAmbito(AmbitoForm ambito) {
 		this.ambito = ambito;
+	}
+	
+	
+	public ComplejidadForm getComplejidad() {
+		return complejidad;
+	}
+
+	public void setComplejidad(ComplejidadForm complejidad) {
+		this.complejidad = complejidad;
 	}
 	
 	public boolean isInDirectory() {
