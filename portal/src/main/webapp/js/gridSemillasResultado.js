@@ -32,6 +32,11 @@ function ambitoFormatter(cellvalue, options, rowObject) {
 		return "";
 	}
 }
+function complejidadFormatter(cellvalue, options, rowObject) {
+
+		return "--complejidad--";
+	
+}
 
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 	return rowObject.nombre;
@@ -74,7 +79,7 @@ function nombreSemillaFormatter(cellvalue, options, rowObject) {
 
 function resultadosFormatter(cellvalue, options, rowObject) {
 	return "<a href="
-			+ "/oaw/secure//showTrackingAction.do?regeneratePDF=true&observatorio=si&id_observatorio="
+			+ "/oaw/secure/showTrackingAction.do?regeneratePDF=true&observatorio=si&id_observatorio="
 			+ $('[name=id_observatorio]').val()
 			+ '&idExObs='
 			+ $('[name=idExObs]').val()
@@ -189,8 +194,8 @@ function reloadGrid(path) {
 													"Nombre", "Acr\u00F3nimo",
 													"Segmento","Ambito", "Dependencia",
 													"URLs", "Activa",
-													"Directorio",
-													"Puntuac\u00F3n",
+													"Directorio","Complejidad",
+													"Puntuac\u00F3n", 
 													"Nivel Accesibilidad",
 													"Resultados", "Informe",
 													"Relanzar", "Eliminar" ],
@@ -534,6 +539,13 @@ function reloadGrid(path) {
 															edithidden : true
 														},
 														sortable : false
+													},
+													{
+														name : 'complejidad',
+														align : "center",
+														width : 10,
+														editable : false,
+														formatter : complejidadFormatter,
 													},
 													{
 														name : 'score',
