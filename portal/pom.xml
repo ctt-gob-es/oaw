@@ -1,26 +1,32 @@
-<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified and redistributed under the terms of 
-	the European Public License (EUPL), either version 1.2 or (at your option) any later version as soon as they are approved by the European Commission. Unless required 
-	by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
-	either express or implied. See the License for the specific language governing permissions and more details. You should have received a copy of the EUPL1.2 license 
-	along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+	This program is licensed and may be used, modified and redistributed under 
+	the terms of the European Public License (EUPL), either version 1.2 or (at 
+	your option) any later version as soon as they are approved by the European 
+	Commission. Unless required by applicable law or agreed to in writing, software 
+	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
+	License for the specific language governing permissions and more details. 
+	You should have received a copy of the EUPL1.2 license along with this program; 
+	if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>portal</artifactId>
-	<version>4.4.0</version>
+	<version>5.0.0</version>
 	<packaging>war</packaging>
 
 	<name>oaw-portal</name>
 
 	<properties>
-		<oaw.version>4.4.0</oaw.version>
+		<oaw.version>5.0.0</oaw.version>
 	</properties>
 
 	<parent>
 		<groupId>es.minhap.oaw</groupId>
 		<artifactId>oaw</artifactId>
-		<version>4.4.0</version>
+		<version>5.0.0</version>
 		<relativePath>../oaw/pom.xml</relativePath>
 	</parent>
 
@@ -47,7 +53,9 @@
 					<include>tiles-defs.xml</include>
 				</includes>
 				<filtering>true</filtering>
-				<!-- Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources) hay que usar ruta absoluta (usando la variable ${basedir}) -->
+				<!-- Como intentamos copiar el fichero a una ruta padre del directorio 
+					classes (raiz de resources) hay que usar ruta absoluta (usando la variable 
+					${basedir}) -->
 				<targetPath>${basedir}/target/oaw/WEB-INF</targetPath>
 			</resource>
 			<resource>
@@ -62,11 +70,14 @@
 				<includes>
 					<include>context.xml</include>
 				</includes>
-				<!-- Como intentamos copiar el fichero a una ruta padre del directorio classes (raiz de resources) hay que usar ruta absoluta (usando la variable ${basedir}) -->
+				<!-- Como intentamos copiar el fichero a una ruta padre del directorio 
+					classes (raiz de resources) hay que usar ruta absoluta (usando la variable 
+					${basedir}) -->
 				<targetPath>${basedir}/target/oaw/META-INF</targetPath>
 			</resource>
 		</resources>
-		<!-- <plugins> <plugin> <artifactId>maven-war-plugin</artifactId> <configuration> <packagingExcludes>META-INF/context.xml</packagingExcludes> </configuration> 
+		<!-- <plugins> <plugin> <artifactId>maven-war-plugin</artifactId> <configuration> 
+			<packagingExcludes>META-INF/context.xml</packagingExcludes> </configuration> 
 			</plugin> </plugins> -->
 
 	</build>
@@ -98,11 +109,20 @@
 			<artifactId>jdom</artifactId>
 			<version>1.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.odftoolkit/odfdom-java -->
 		<dependency>
 			<groupId>org.odftoolkit</groupId>
 			<artifactId>odfdom-java</artifactId>
 			<version>0.8.6</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.odftoolkit/simple-odf -->
+		<dependency>
+			<groupId>org.odftoolkit</groupId>
+			<artifactId>simple-odf</artifactId>
+			<version>0.9.0-RC1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -142,7 +162,8 @@
 		</dependency>
 
 		<!-- STRUTS -->
-		<!-- Es obligatorio añadir la dependencia a la versión 1.2.8 porque usa API que está eliminada en versiones posteriores -->
+		<!-- Es obligatorio añadir la dependencia a la versión 1.2.8 porque usa 
+			API que está eliminada en versiones posteriores -->
 		<dependency>
 			<groupId>struts</groupId>
 			<artifactId>struts</artifactId>

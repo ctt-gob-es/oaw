@@ -1208,7 +1208,6 @@ public final class EvaluatorUtils {
 				} catch (MalformedURLException e) {
 					try {
 						URI uri = new URI(url);
-						
 						return getConnection(encodeUrl(new URL(uri.getScheme(), uri.getHost(), newUrl).toString()), method, false);
 					} catch (URISyntaxException e1) {
 						return null;
@@ -1220,40 +1219,6 @@ public final class EvaluatorUtils {
 		return generateConnection(url, method);
 	}
 
-//	public static String getCookie(final HttpURLConnection connection) {
-//		// Cogemos la lista de cookies, teniendo en cuenta que el parametro
-//		// set-cookie no es sensible a mayusculas o minusculas
-//		final Map<String, List<String>> headerFields = connection.getHeaderFields();
-//		final List<String> headers = new ArrayList<>();
-//		if (headerFields != null && !headerFields.isEmpty()) {
-//			for (Map.Entry<String, List<String>> entry : headerFields.entrySet()) {
-//				if ("SET-COOKIE".equalsIgnoreCase(entry.getKey())) {
-//					headers.addAll(entry.getValue());
-//				}
-//			}
-//		}
-//		final StringBuilder headerText = new StringBuilder();
-//		for (String header : headers) {
-//			if (header.contains(";")) {
-//				if (!header.substring(0, header.indexOf(';')).toLowerCase().endsWith("deleted")) {
-//					headerText.append(header.substring(0, header.indexOf(';'))).append("; ");
-//				}
-//			} else {
-//				headerText.append(header).append("; ");
-//			}
-//		}
-//		return headerText.toString();
-//	}
-//
-//	public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
-//		final URL metaRedirection = new URL(url, redirectTo);
-//		final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
-//		if (!StringUtils.isEmpty(cookie)) {
-//			connection.setRequestProperty("Cookie", cookie);
-//		}
-//		Logger.putLog(String.format("Siguiendo la redirección de %s a %s", url, metaRedirection), EvaluatorUtils.class, Logger.LOG_LEVEL_INFO);
-//		return connection;
-//	}
 	/**
 	 * Gets the connection.
 	 *
@@ -1267,6 +1232,15 @@ public final class EvaluatorUtils {
 		return generateRendererConnection(url, method);
 	}
 
+	/**
+	 * Apply proxy.
+	 *
+	 * @param url           the url
+	 * @param proxyActive   the proxy active
+	 * @param proxyHttpHost the proxy http host
+	 * @param proxyHttpPort the proxy http port
+	 * @return true, if successful
+	 */
 	private static boolean applyProxy(String url, String proxyActive, String proxyHttpHost, String proxyHttpPort) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null && url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
