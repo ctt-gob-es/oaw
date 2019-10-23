@@ -382,5 +382,48 @@ public final class ObservatoryUtils {
 		}
 		return seedsResults;
 	}
+	/**
+	 * Calculate score and leve
+	 * 
+	 * @param c
+	 * @param seedsResults
+	 * @param idFulfilledObservatory
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<ResultadoSemillaFullForm> setAvgScoreFullfilledCrawl(final Connection c,
+			final List<ResultadoSemillaFullForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils
+				.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE, null);
+		final Map<Long, List<FulFilledCrawling>> fullfilledCrawlings = RastreoDAO.getFulfilledCrawlings2(c,
+				seedsResults, idFulfilledObservatory);
+		for (ResultadoSemillaFullForm seedResult : seedsResults) {
+			final List<FulFilledCrawling> seedFulfilledCrawlings = fullfilledCrawlings
+					.get(Long.valueOf(seedResult.getIdCrawling()));
+			if (seedFulfilledCrawlings != null && !seedFulfilledCrawlings.isEmpty()) {
+				int numPages = 0;
+				BigDecimal avgScore = BigDecimal.ZERO;
+				// Cambio de numero de urls maximas a anilizar
+				PropertiesManager pmgr = new PropertiesManager();
+				int maxUrl = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				final List<ObservatoryEvaluationForm> paginas = new ArrayList<>(maxUrl);
+				for (ObservatoryEvaluationForm observatory : observatories) {
+					if (observatory.getCrawlerExecutionId() == seedFulfilledCrawlings.get(0).getId()) {
+						numPages++;
+						avgScore = avgScore.add(observatory.getScore());
+						paginas.add(observatory);
+					}
+				}
+				if (numPages != 0) {
+					seedResult.setScore(
+							avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
+					seedResult.setNivel(IntavUtils
+							.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas)
+							.getLevel());
+				}
+			}
+		}
+		return seedsResults;
+	}
 
 }
