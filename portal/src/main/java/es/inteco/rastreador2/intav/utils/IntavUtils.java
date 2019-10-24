@@ -60,7 +60,7 @@ public final class IntavUtils {
 	 * @param idExecution the id execution
 	 * @return the score form
 	 */
-	public static ScoreForm calculateScore(HttpServletRequest request, long idExecution) {
+	public static ScoreForm calculateScore(HttpServletRequest request, long idExecution, MessageResources messageReources) {
 		Connection conn = null;
 		try {
 			conn = DataBaseManager.getConnection();
@@ -69,7 +69,7 @@ public final class IntavUtils {
 				EvaluatorUtility.initialize();
 			}
 			final List<Long> listAnalysis = AnalisisDatos.getAnalysisIdsByTracking(conn, idExecution);
-			return generateScores(request, conn, listAnalysis);
+			return generateScores(request, conn, listAnalysis, messageReources);
 		} catch (Exception e) {
 			Logger.putLog("Error al intentar calcular la puntuación del observatorio", ResultsAction.class, Logger.LOG_LEVEL_ERROR, e);
 			return null;
@@ -87,7 +87,7 @@ public final class IntavUtils {
 	 * @return the score form
 	 * @throws Exception the exception
 	 */
-	private static ScoreForm generateScores(HttpServletRequest request, Connection conn, List<Long> listAnalysis) throws Exception {
+	private static ScoreForm generateScores(HttpServletRequest request, Connection conn, List<Long> listAnalysis, MessageResources messageReources) throws Exception {
 		ScoreForm scoreForm = new ScoreForm();
 		int suitabilityGroups = 0;
 		long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
@@ -139,7 +139,10 @@ public final class IntavUtils {
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(listAnalysis.size()), 2, BigDecimal.ROUND_HALF_UP));
 		}
 		// El nivel de validación del portal
-		scoreForm.setLevel(getValidationLevel(scoreForm, CrawlerUtils.getResources(request)));
+		//scoreForm.setLevel(getValidationLevel(scoreForm, CrawlerUtils.getResources(request)));
+		
+		scoreForm.setLevel(getValidationLevel(scoreForm, messageReources));
+
 		return scoreForm;
 	}
 

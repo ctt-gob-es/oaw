@@ -29,6 +29,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
+import org.apache.struts.util.MessageResources;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.inteco.common.Constants;
@@ -141,21 +142,29 @@ public class ResultsAction extends Action {
 				request.setAttribute("pageSize", pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 
 				if (request.getParameter(Constants.OBSERVATORY) != null) {
-					request.setAttribute(Constants.OBSERVATORY, request.getParameter(Constants.OBSERVATORY));
-					request.setAttribute(Constants.SCORE, IntavUtils.calculateScore(request, idExecution));
-
+					
 					// Parametro adicional para los textos en la JSP
 					String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idExecution, idRastreo);
+					
+					MessageResources messageReources = MessageResources.getMessageResources("ApplicationResources");
 
 					if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
-
 						request.setAttribute("aplicacion", Constants.NORMATIVA_UNE_2012_B);
+						messageReources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B);
 					} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
-
 						request.setAttribute("aplicacion", Constants.NORMATIVA_UNE_EN2019);
+						messageReources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 					} else if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 						request.setAttribute("aplicacion", Constants.NORMATIVA_ACCESIBILIDAD);
+						messageReources= MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 					}
+					
+					
+					
+					request.setAttribute(Constants.OBSERVATORY, request.getParameter(Constants.OBSERVATORY));
+					request.setAttribute(Constants.SCORE, IntavUtils.calculateScore(request, idExecution,messageReources ));
+
+					
 
 				}
 			} else {
