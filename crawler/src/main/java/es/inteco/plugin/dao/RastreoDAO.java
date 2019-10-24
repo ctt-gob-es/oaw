@@ -36,7 +36,7 @@ public final class RastreoDAO {
 
 	/**
 	 * Actualiza el estado de todos los observatorios que están activos (OBS_LAUNCHED_STATUS) a finalizados con error (OBS_ERROR_STATUS).
-	 *
+//	 *
 	 * @param connection conexión (Connection) a la base de datos
 	 * @throws SQLException the SQL exception
 	 */
@@ -260,14 +260,6 @@ public final class RastreoDAO {
 		} catch (SQLException e) {
 			Logger.putLog("Error al obtener la complejidad de la semilla del rastreo id=" + idCrawl, RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-		return null;
-//		Seed seed = new Seed();
-//		seed.setId(1L);
-//		seed.setDepth(5);
-//		seed.setWidth(5);
-//		return seed;
-		
-		
-		
+		return null;		
 	}
 }

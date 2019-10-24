@@ -271,6 +271,14 @@ public class CrawlerJob implements InterruptableJob {
 			Logger.putLog("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			try {
 				RastreoDAO.actualizarEstadoRastreo(c, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
+				
+				// TODO Generar la puntuación al terminar el crawl y guardarlo en base de datos
+				
+				
+				
+				
+				
+				
 				final int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());
 				if (RastreoDAO.isCartuchoAccesibilidad(c, idCartucho)) {
 					if (crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) {

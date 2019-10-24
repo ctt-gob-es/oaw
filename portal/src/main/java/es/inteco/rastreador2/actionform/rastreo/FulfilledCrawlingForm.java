@@ -17,77 +17,168 @@ package es.inteco.rastreador2.actionform.rastreo;
 
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 
+/**
+ * The Class FulfilledCrawlingForm.
+ */
 public class FulfilledCrawlingForm {
-    private String id;
-    private String idCrawling;
-    private String user;
-    private String date;
-    private String idCartridge;
-    private String cartridge;
-    private SemillaForm seed;
-    private boolean selected;
+	/** The id. */
+	private String id;
+	/** The id crawling. */
+	private String idCrawling;
+	/** The user. */
+	private String user;
+	/** The date. */
+	private String date;
+	/** The id cartridge. */
+	private String idCartridge;
+	/** The cartridge. */
+	private String cartridge;
+	/** The seed. */
+	private SemillaForm seed;
+	/** The selected. */
+	private boolean selected;
 
-    public boolean isSelected() {
-        return selected;
-    }
+	/**
+	 * Checks if is selected.
+	 *
+	 * @return true, if is selected
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
+	/**
+	 * Sets the selected.
+	 *
+	 * @param selected the new selected
+	 */
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 
-    public String getCartridge() {
-        return cartridge;
-    }
+	/**
+	 * Gets the cartridge.
+	 *
+	 * @return the cartridge
+	 */
+	public String getCartridge() {
+		return cartridge;
+	}
 
-    public void setCartridge(String cartridge) {
-        this.cartridge = cartridge;
-    }
+	/**
+	 * Sets the cartridge.
+	 *
+	 * @param cartridge the new cartridge
+	 */
+	public void setCartridge(String cartridge) {
+		this.cartridge = cartridge;
+	}
 
-    public String getId() {
-        return id;
-    }
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getIdCrawling() {
-        return idCrawling;
-    }
+	/**
+	 * Gets the id crawling.
+	 *
+	 * @return the id crawling
+	 */
+	public String getIdCrawling() {
+		return idCrawling;
+	}
 
-    public void setIdCrawling(String idCrawling) {
-        this.idCrawling = idCrawling;
-    }
+	/**
+	 * Sets the id crawling.
+	 *
+	 * @param idCrawling the new id crawling
+	 */
+	public void setIdCrawling(String idCrawling) {
+		this.idCrawling = idCrawling;
+	}
 
-    public String getDate() {
-        return date;
-    }
+	/**
+	 * Gets the date.
+	 *
+	 * @return the date
+	 */
+	public String getDate() {
+		return date;
+	}
 
-    public void setDate(String date) {
-        this.date = date;
-    }
+	/**
+	 * Sets the date.
+	 *
+	 * @param date the new date
+	 */
+	public void setDate(String date) {
+		this.date = date;
+	}
 
-    public String getUser() {
-        return user;
-    }
+	/**
+	 * Gets the user.
+	 *
+	 * @return the user
+	 */
+	public String getUser() {
+		return user;
+	}
 
-    public void setUser(String user) {
-        this.user = user;
-    }
+	/**
+	 * Sets the user.
+	 *
+	 * @param user the new user
+	 */
+	public void setUser(String user) {
+		this.user = user;
+	}
 
-    public String getIdCartridge() {
-        return idCartridge;
-    }
+	/**
+	 * Gets the id cartridge.
+	 *
+	 * @return the id cartridge
+	 */
+	public String getIdCartridge() {
+		return idCartridge;
+	}
 
-    public void setIdCartridge(String idCartridge) {
-        this.idCartridge = idCartridge;
-    }
+	/**
+	 * Sets the id cartridge.
+	 *
+	 * @param idCartridge the new id cartridge
+	 */
+	public void setIdCartridge(String idCartridge) {
+		this.idCartridge = idCartridge;
+	}
 
-    public SemillaForm getSeed() {
-        return seed;
-    }
+	/**
+	 * Gets the seed.
+	 *
+	 * @return the seed
+	 */
+	public SemillaForm getSeed() {
+		return seed;
+	}
 
-    public void setSeed(SemillaForm seed) {
-        this.seed = seed;
-    }
+	/**
+	 * Sets the seed.
+	 *
+	 * @param seed the new seed
+	 */
+	public void setSeed(SemillaForm seed) {
+		this.seed = seed;
+	}
 }
