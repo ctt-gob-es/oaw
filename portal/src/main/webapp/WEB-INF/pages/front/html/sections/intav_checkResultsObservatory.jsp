@@ -25,21 +25,15 @@ Email: observ.accesibilidad@correo.gob.es
 <bean:parameter id="idCartucho" name="idCartucho" />
 
 <jsp:useBean id="paramsVolver" class="java.util.HashMap" />
-<c:set target="${paramsVolver}" property="idrastreo"
-	value="${idrastreo}" />
-<c:set target="${paramsVolver}" property="id_observatorio"
-	value="${id_observatorio}" />
+<c:set target="${paramsVolver}" property="idrastreo" value="${idrastreo}" />
+<c:set target="${paramsVolver}" property="id_observatorio" value="${id_observatorio}" />
 
 <jsp:useBean id="paramsVolverAFC" class="java.util.HashMap" />
-<c:set target="${paramsVolverAFC}" property="idrastreo"
-	value="${idrastreo}" />
-<c:set target="${paramsVolverAFC}" property="observatorio"
-	value="${observatorio}" />
+<c:set target="${paramsVolverAFC}" property="idrastreo" value="${idrastreo}" />
+<c:set target="${paramsVolverAFC}" property="observatorio" value="${observatorio}" />
 <c:set target="${paramsVolverAFC}" property="id" value="${id}" />
-<c:set target="${paramsVolverAFC}" property="id_observatorio"
-	value="${id_observatorio}" />
-<c:set target="${paramsVolverAFC}" property="idCartucho"
-	value="${idCartucho}" />
+<c:set target="${paramsVolverAFC}" property="id_observatorio" value="${id_observatorio}" />
+<c:set target="${paramsVolverAFC}" property="idCartucho" value="${idCartucho}" />
 
 <html:xhtml />
 
@@ -60,21 +54,17 @@ Email: observ.accesibilidad@correo.gob.es
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
 					</html:link></li>
-				<li><html:link forward="resultadosObservatorioSemillas"
-						paramId="<%= Constants.OBSERVATORY_ID %>"
-						paramName="<%= Constants.OBSERVATORY_ID %>">
+				<li><html:link forward="resultadosObservatorioSemillas" paramId="<%=Constants.OBSERVATORY_ID%>"
+						paramName="<%=Constants.OBSERVATORY_ID%>">
 						<bean:message key="migas.resultado.observatorio" />
 					</html:link></li>
-				<li><html:link forward="resultadosObservatorioSemillasLista"
-						name="paramsVolver">
-						<bean:message
-							key="migas.resultado.rastreos.realizados.observatorio" />
+				<li><html:link forward="resultadosObservatorioSemillasLista" name="paramsVolver">
+						<bean:message key="migas.resultado.rastreos.realizados.observatorio" />
 					</html:link></li>
 				<li><html:link forward="showTracking" name="paramsVolverAFC">
 						<bean:message key="migas.rastreos.realizados.url.analizadas" />
 					</html:link></li>
-				<li class="active"><bean:message
-						key="migas.resultados.observatorio.puntuacion" /></li>
+				<li class="active"><bean:message key="migas.resultados.observatorio.puntuacion" /></li>
 			</ol>
 		</div>
 
@@ -82,135 +72,112 @@ Email: observ.accesibilidad@correo.gob.es
 			<h2>
 				<bean:message key="resultados.observatorio.vista.primaria.h2" />
 			</h2>
-			<logic:notPresent name="<%=Constants.EVALUATION_FORM %>"
-				property="groups">
+			<logic:notPresent name="<%=Constants.EVALUATION_FORM%>" property="groups">
 				<div class="notaInformativaExito">
 					<p>
 						<bean:message key="indice.rastreo.vacio" />
 					</p>
 				</div>
 			</logic:notPresent>
-			<logic:present name="<%=Constants.EVALUATION_FORM %>"
-				property="groups">
-				<logic:empty name="<%=Constants.EVALUATION_FORM %>"
-					property="groups">
+			<logic:present name="<%=Constants.EVALUATION_FORM%>" property="groups">
+				<logic:empty name="<%=Constants.EVALUATION_FORM%>" property="groups">
 					<div class="notaInformativaExito">
 						<p>
 							<bean:message key="resultados.observatorio.vista.primaria.vacio" />
 						</p>
 					</div>
 				</logic:empty>
-				<logic:notEmpty name="<%=Constants.EVALUATION_FORM %>"
-					property="groups">
+				<logic:notEmpty name="<%=Constants.EVALUATION_FORM%>" property="groups">
 					<div>
 						<div class="observatoryInfo">
 							<p>
 								<strong><bean:message key="resultados.observatorio.vista.primaria.title" />: </strong>
-								<bean:write name="<%=Constants.EVALUATION_FORM %>" property="source" />
+								<bean:write name="<%=Constants.EVALUATION_FORM%>" property="source" />
 							</p>
 							<p>
 								<strong><bean:message key="resultados.observatorio.vista.primaria.url" />: </strong>
-								<bean:write name="<%=Constants.EVALUATION_FORM %>" property="url" />
+								<bean:write name="<%=Constants.EVALUATION_FORM%>" property="url" />
 							</p>
 							<p>
 								<strong><bean:message key="observatorio.puntuacion" />: </strong>
-								<bean:write name="<%=Constants.EVALUATION_FORM %>" property="score" />
+								<bean:write name="<%=Constants.EVALUATION_FORM%>" property="score" />
 							</p>
 						</div>
 
 						<div class="spacer"></div>
 
-						<logic:iterate id="levelGroup"
-							name="<%=Constants.EVALUATION_FORM %>" property="groups"
+						<logic:iterate id="levelGroup" name="<%=Constants.EVALUATION_FORM %>" property="groups"
 							type="es.inteco.intav.form.ObservatoryLevelForm">
 							<h3>
-								<logic:equal value="Priority 1" name="levelGroup"
-									property="name">
-									<bean:message key="first.level.bs" />
+								<logic:equal value="Priority 1" name="levelGroup" property="name">
+									<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+										<td><bean:message key="first.level.bs" bundle="resources2019" /></td>
+									</logic:equal>
+									<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+										<td><bean:message key="first.level.bs" bundle="resources2012b" /></td>
+									</logic:notEqual>
 								</logic:equal>
-								<logic:equal value="Priority 2" name="levelGroup"
-									property="name">
-									<bean:message key="second.level.bs" />
+								<logic:equal value="Priority 2" name="levelGroup" property="name">
+									<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+										<td><bean:message key="second.level.bs" bundle="resources2019" /></td>
+									</logic:equal>
+									<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+										<td><bean:message key="second.level.bs" bundle="resources2012b" /></td>
+									</logic:notEqual>
 								</logic:equal>
 							</h3>
 							<p>
-								<strong><bean:message key="observatorio.puntuacion" />:
-								</strong>
+								<strong><bean:message key="observatorio.puntuacion" />: </strong>
 								<bean:write name="levelGroup" property="score" />
 							</p>
 							<table>
 								<caption>
 									<bean:message key="observatorio.desglose.resultados" />
 								</caption>
-								<logic:iterate id="suitabilityGroup" name="levelGroup"
-									property="suitabilityGroups">
+								<logic:iterate id="suitabilityGroup" name="levelGroup" property="suitabilityGroups">
 									<thead>
 										<tr>
-											<th><bean:message key="observatorio.nivel.adecuacion" />
-												- <bean:write name="suitabilityGroup" property="name" /></th>
-											<th colspan="2"><bean:message
-													key="observatorio.puntuacion" />: <bean:write
-													name="suitabilityGroup" property="score" /></th>
+											<th><bean:message key="observatorio.nivel.adecuacion" /> - <bean:write name="suitabilityGroup"
+													property="name" /></th>
+											<th colspan="2"><bean:message key="observatorio.puntuacion" />: <bean:write name="suitabilityGroup"
+													property="score" /></th>
 										</tr>
 										<tr class="suitability">
-											<th><bean:message
-													key="resultados.observatorio.vista.primaria.grupo" /></th>
-											<th><bean:message
-													key="resultados.observatorio.vista.primaria.valor" /></th>
-											<th><bean:message
-													key="resultados.observatorio.vista.primaria.modalidad" /></th>
+											<th><bean:message key="resultados.observatorio.vista.primaria.grupo" /></th>
+											<th><bean:message key="resultados.observatorio.vista.primaria.valor" /></th>
+											<th><bean:message key="resultados.observatorio.vista.primaria.modalidad" /></th>
 										</tr>
 									</thead>
 									<tbody>
-										<logic:iterate id="subgroup" name="suitabilityGroup"
-											property="subgroups">
+										<logic:iterate id="subgroup" name="suitabilityGroup" property="subgroups">
 											<tr>
-												<td class="alignLeft"><bean:write name="subgroup"
-														property="guidelineId" /> : <bean:write name="subgroup"
-														property="description" /></td>
-												<logic:equal
-													value="<%= String.valueOf(Constants.OBS_VALUE_NOT_SCORE) %>"
-													name="subgroup" property="value">
-													<td><bean:message
-															key="resultados.observatorio.vista.primaria.valor.noPuntua" /></td>
+												<td class="alignLeft"><bean:write name="subgroup" property="guidelineId" /> : <bean:write
+														name="subgroup" property="description" /></td>
+												<logic:equal value="<%=String.valueOf(Constants.OBS_VALUE_NOT_SCORE)%>" name="subgroup" property="value">
+													<td><bean:message key="resultados.observatorio.vista.primaria.valor.noPuntua" /></td>
 													<td><html:img src="../images/modalidadVerde.png"
 															altKey="resultados.observatorio.vista.primaria.modalidad.noPuntua" /></td>
 												</logic:equal>
-												<logic:equal
-													value="<%= String.valueOf(Constants.OBS_VALUE_GREEN_ONE) %>"
-													name="subgroup" property="value">
-													<td><bean:message
-															key="resultados.observatorio.vista.primaria.valor.uno" /></td>
+												<logic:equal value="<%=String.valueOf(Constants.OBS_VALUE_GREEN_ONE)%>" name="subgroup" property="value">
+													<td><bean:message key="resultados.observatorio.vista.primaria.valor.uno" /></td>
 													<td><html:img src="../images/modalidadVerde.png"
 															altKey="resultados.observatorio.vista.primaria.modalidad.verde" /></td>
 												</logic:equal>
-												<logic:equal
-													value="<%= String.valueOf(Constants.OBS_VALUE_GREEN_ZERO) %>"
-													name="subgroup" property="value">
+												<logic:equal value="<%=String.valueOf(Constants.OBS_VALUE_GREEN_ZERO)%>" name="subgroup" property="value">
 
-													<logic:equal
-														value="<%= String.valueOf(Constants.NORMATIVA_UNE_EN2019) %>"
-														name="aplicacion">
-														<td><bean:message
-																key="resultados.observatorio.vista.primaria.valor.cero.pasa"
-																bundle="resources2019" /></td>
+													<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+														<td><bean:message key="resultados.observatorio.vista.primaria.valor.cero.pasa" bundle="resources2019" /></td>
 													</logic:equal>
-													<logic:notEqual
-														value="<%= String.valueOf(Constants.NORMATIVA_UNE_EN2019) %>"
-														name="aplicacion">
-														<td><bean:message
-																key="resultados.observatorio.vista.primaria.valor.cero.pasa"
+													<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+														<td><bean:message key="resultados.observatorio.vista.primaria.valor.cero.pasa"
 																bundle="resources2012b" /></td>
 													</logic:notEqual>
 
 													<td><html:img src="../images/modalidadVerde.png"
 															altKey="resultados.observatorio.vista.primaria.modalidad.verde" /></td>
 												</logic:equal>
-												<logic:equal
-													value="<%= String.valueOf(Constants.OBS_VALUE_RED_ZERO) %>"
-													name="subgroup" property="value">
-													<td><bean:message
-															key="resultados.observatorio.vista.primaria.valor.cero" /></td>
+												<logic:equal value="<%=String.valueOf(Constants.OBS_VALUE_RED_ZERO)%>" name="subgroup" property="value">
+													<td><bean:message key="resultados.observatorio.vista.primaria.valor.cero" /></td>
 													<td><html:img src="../images/modalidadRojo.png"
 															altKey="resultados.observatorio.vista.primaria.modalidad.rojo" /></td>
 												</logic:equal>
@@ -222,36 +189,29 @@ Email: observ.accesibilidad@correo.gob.es
 						</logic:iterate>
 
 						<%-- Puntuaciones por aspecto --%>
-						<logic:notEmpty name="<%=Constants.EVALUATION_FORM %>"
-							property="aspects">
+						<logic:notEmpty name="<%=Constants.EVALUATION_FORM%>" property="aspects">
 							<h3>
 								<bean:message key="aspect.list.score" />
 							</h3>
 							<ul class="resultados">
-								<logic:iterate name="<%=Constants.EVALUATION_FORM %>"
-									property="aspects" id="aspect">
+								<logic:iterate name="<%=Constants.EVALUATION_FORM %>" property="aspects" id="aspect">
 									<li><bean:define id="aspectKey">
 											<bean:write name="aspect" property="name" />
-										</bean:define> <strong><bean:message key="<%=aspectKey %>" />:</strong> <bean:write
-											name="aspect" property="score" /></li>
+										</bean:define> <strong><bean:message key="<%=aspectKey%>" />:</strong> <bean:write name="aspect" property="score" /></li>
 								</logic:iterate>
 							</ul>
 						</logic:notEmpty>
 
 						<%-- Puntuaciones por aspecto --%>
 						<h3>
-							<bean:message
-								key="resultados.observatorio.vista.primaria.errores.por.verificacion" />
+							<bean:message key="resultados.observatorio.vista.primaria.errores.por.verificacion" />
 						</h3>
-						<logic:notEmpty name="<%=Constants.FAILED_CHECKS %>">
+						<logic:notEmpty name="<%=Constants.FAILED_CHECKS%>">
 							<ul>
-								<logic:iterate name="<%=Constants.FAILED_CHECKS %>"
-									id="failedCheck">
-									<li><bean:write name="failedCheck" property="key"
-											filter="false" />
+								<logic:iterate name="<%=Constants.FAILED_CHECKS %>" id="failedCheck">
+									<li><bean:write name="failedCheck" property="key" filter="false" />
 										<ul>
-											<logic:iterate name="failedCheck" property="value"
-												id="failedCheckValue">
+											<logic:iterate name="failedCheck" property="value" id="failedCheckValue">
 												<li><bean:write name="failedCheckValue" filter="false" /></li>
 											</logic:iterate>
 										</ul></li>
@@ -263,8 +223,7 @@ Email: observ.accesibilidad@correo.gob.es
 				</logic:notEmpty>
 			</logic:present>
 			<p id="pCenter">
-				<html:link styleClass="btn btn-default btn-lg"
-					forward="showTracking" name="paramsVolverAFC">
+				<html:link styleClass="btn btn-default btn-lg" forward="showTracking" name="paramsVolverAFC">
 					<bean:message key="boton.volver" />
 				</html:link>
 			</p>
