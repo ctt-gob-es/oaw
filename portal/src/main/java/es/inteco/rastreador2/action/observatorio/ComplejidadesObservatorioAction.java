@@ -12,6 +12,7 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.observatorio;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,14 @@ import com.google.gson.Gson;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
+import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
+import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
+import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
+import es.inteco.rastreador2.utils.Pagination;
 
 /**
  * The Class ComplejidadesObservatorioAction.
@@ -44,19 +49,15 @@ public class ComplejidadesObservatorioAction extends DispatchAction {
 	/**
 	 * Load. Carga de la página.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
-	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward load(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_INTECO_OBS);
@@ -69,23 +70,68 @@ public class ComplejidadesObservatorioAction extends DispatchAction {
 		return mapping.findForward(Constants.EXITO);
 	}
 
+	/**
+	 * Search. Devuelve un JSON con los resultados de la búsqueda
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		try (Connection c = DataBaseManager.getConnection()) {
+
+			String nombre = request.getParameter("nombre");
+
+			if (!StringUtils.isEmpty(nombre)) {
+
+				nombre = es.inteco.common.utils.StringUtils.corregirEncoding(nombre);
+			}
+
+			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+
+			final int numResult = ComplejidadDAO.countComplejidades(c, nombre);
+
+			response.setContentType("text/json");
+
+			List<ComplejidadForm> listaComplejidades = ComplejidadDAO.getComplejidades(c, nombre, (pagina - 1));
+
+			String jsonSeeds = new Gson().toJson(listaComplejidades);
+
+			// Paginacion
+			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
+
+			String jsonPagination = new Gson().toJson(paginas);
+
+			PrintWriter pw = response.getWriter();
+			// pw.write(json);
+			pw.write("{\"complejidades\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult
+					+ "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.flush();
+			pw.close();
+		} catch (Exception e) {
+			Logger.putLog("Error: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		return null;
+	}
 
 	/**
 	 * Update.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
-	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
@@ -101,9 +147,11 @@ public class ComplejidadesObservatorioAction extends DispatchAction {
 
 			try (Connection c = DataBaseManager.getConnection()) {
 
-				if (ComplejidadDAO.existsComplejidad(c, complejidad)) {
+				if (ComplejidadDAO.existsComplejidad(c, complejidad)
+						&& !complejidad.getName().equalsIgnoreCase(complejidad.getNombreAntiguo())) {
 					response.setStatus(400);
-					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.complejidad.duplicado"));
+					response.getWriter()
+							.write(messageResources.getMessage("mensaje.error.nombre.complejidad.duplicado"));
 
 				} else {
 					ComplejidadDAO.update(c, complejidad);
@@ -142,16 +190,17 @@ public class ComplejidadesObservatorioAction extends DispatchAction {
 		List<JsonMessage> errores = new ArrayList<>();
 
 		String nombre = request.getParameter("nombre");
-		int profundidad = Integer.parseInt(request.getParameter("profundidad"));
-		int amplitud = Integer.parseInt(request.getParameter("nombre"));
+		String profundidad = request.getParameter("profundidad");
+		String amplitud = request.getParameter("amplitud");
 
 
-		if (StringUtils.isNotEmpty(nombre)) {
+		if (StringUtils.isNotEmpty(nombre) && (StringUtils.isNotEmpty(profundidad)) && (StringUtils.isNotEmpty(amplitud))) {
+			if(profundidad.matches("\\d+") && amplitud.matches("\\d+")) {
 
 			ComplejidadForm complejidad = new ComplejidadForm();
 			complejidad.setName(nombre);
-			complejidad.setProfundidad(profundidad);
-			complejidad.setAmplitud(amplitud);
+			complejidad.setProfundidad(Integer.parseInt(profundidad));
+			complejidad.setAmplitud(Integer.parseInt(amplitud));
 
 
 			try (Connection c = DataBaseManager.getConnection()) {
@@ -171,6 +220,13 @@ public class ComplejidadesObservatorioAction extends DispatchAction {
 				response.setStatus(400);
 				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
 			}
+			}else {
+				response.setStatus(400);
+				errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.campos.complejidad.numericos")));
+				response.getWriter().write(new Gson().toJson(errores));
+				
+			};
+			
 		} else {
 			response.setStatus(400);
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.complejidad.obligatorio")));
@@ -182,19 +238,15 @@ public class ComplejidadesObservatorioAction extends DispatchAction {
 	/**
 	 * Delete.
 	 *
-	 * @param mapping
-	 *            the mapping
-	 * @param form
-	 *            the form
-	 * @param request
-	 *            the request
-	 * @param response
-	 *            the response
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
 	 * @return the action forward
-	 * @throws Exception
-	 *             the exception
+	 * @throws Exception the exception
 	 */
-	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ActionForward delete(ActionMapping mapping, ActionForm form, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 

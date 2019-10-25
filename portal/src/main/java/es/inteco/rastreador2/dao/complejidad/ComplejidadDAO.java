@@ -122,7 +122,7 @@ public final class ComplejidadDAO {
 
 				while (rs.next()) {
 					ComplejidadForm complejidadForm = new ComplejidadForm();
-					complejidadForm.setId(rs.getString("c.id_complejidad"));
+					complejidadForm.setId(rs.getString("d.id_complejidad"));
 					complejidadForm.setName(rs.getString("d.nombre"));
 					complejidadForm.setProfundidad(rs.getInt("d.profundidad"));
 					complejidadForm.setAmplitud(rs.getInt("d.amplitud"));

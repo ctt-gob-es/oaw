@@ -45,6 +45,9 @@ public class ComplejidadForm extends ValidatorForm implements Serializable {
     /** The amplitud. */
     private int amplitud;
     
+	/** The nombre antiguo. */
+	private String nombreAntiguo;
+    
     /** The file seeds. */
     private FormFile fileSeeds;
     
@@ -126,6 +129,26 @@ public class ComplejidadForm extends ValidatorForm implements Serializable {
         this.amplitud = amplitud;
     }
     
+    
+	/**
+	 * Gets the nombre antiguo.
+	 *
+	 * @return the nombre antiguo
+	 */
+	public String getNombreAntiguo() {
+		return nombreAntiguo;
+	}
+
+	/**
+	 * Sets the nombre antiguo.
+	 *
+	 * @param nombreAntiguo
+	 *            the new nombre antiguo
+	 */
+	public void setNombreAntiguo(String nombreAntiguo) {
+		this.nombreAntiguo = nombreAntiguo;
+	}
+	
     /**
      * Gets the file seeds.
      *
