@@ -965,8 +965,8 @@
 		<action path="/secure/ViewComplejidadesObservatorio"
 			type="es.inteco.rastreador2.action.observatorio.ComplejidadesObservatorioAction" name="ComplejidadForm"
 			parameter="action" scope="request" validate="false">
-			<forward name="exito" path=".Exito" />
-			<forward name="volver" path=".Exito" />
+			<forward name="exito" path=".cargarComplejidadesObservatorio" />
+
 		</action>
 
 
