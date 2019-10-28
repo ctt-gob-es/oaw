@@ -60,18 +60,6 @@ Email: observ.accesibilidad@correo.gob.es
                 </ol>
             </div>
 
-<!--
-            <div id="migas">
-                <p class="oculto"><bean:message key="ubicacion.usuario" /> </p>
-                <html:link forward="observatoryMenu"><bean:message key="migas.observatorio" /></html:link> /
-                <html:link forward="getFulfilledObservatories" name="params"><bean:message key="migas.indice.observatorios.realizados.lista"/></html:link> /
-                <c:set target="${params}" property="${grParam}" value="${grValue}" />
-                <html:link forward="getObservatoryGraphic" name="params"><bean:message key="migas.indice.observatorios.menu.graficas"/></html:link> /
-
-
-                </p>
-            </div>
-            -->
 
             <div id="cajaformularios">
                 <h2><bean:message key="indice.observatorios.menu.graficas.segmento1" /></h2>

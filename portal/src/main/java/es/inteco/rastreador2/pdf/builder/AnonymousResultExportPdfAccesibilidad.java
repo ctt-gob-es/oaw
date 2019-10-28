@@ -1172,7 +1172,7 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	 */
 	@Override
 	public String getTitle() {
-		return "UNE 139803:2012";
+		return "UNE 139803:2012 Accesibilidad";
 	}
 
 }
