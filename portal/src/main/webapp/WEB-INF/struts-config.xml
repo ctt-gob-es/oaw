@@ -983,7 +983,6 @@
 
 	<message-resources parameter="ApplicationResources-UNEEN2019" null="false" key="resources2019" />
 
-
 	<!-- Tiles -->
 	<plug-in className="org.apache.struts.tiles.TilesPlugin">
 		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml" />
