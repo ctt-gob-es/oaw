@@ -62,7 +62,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									.jqGrid(
 											{
 												editUrl : '/oaw/secure/ViewComplejidadesObservatorio.do?action=update',
-												colNames : [ "Id", "Nombre",
+												colNames : [ "Id", "Nombre", "NombreAntiguo",
 														"Profundidad", "Amplitud",
 														"Eliminar" ],
 												colModel : [
@@ -80,6 +80,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 															},
 															sortable : false,
 															align : "center"
+														},
+														{
+															name : "nombreAntiguo",
+															formatter : nombreAntiguoFormatter,
+															hidden : true,
+															sortable : false
 														},
 														{
 															name : "profundidad",
@@ -258,11 +264,35 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	}
 
 
+	// Conservamos el nombre original para comprobaciones posteriores
+	function nombreAntiguoFormatter(cellvalue, options, rowObject) {
+		return rowObject.name;
+	}
 
 	function eliminarFormatter(cellvalue, options, rowObject) {
 		return "<span style='cursor:pointer' onclick='eliminarComplejidad("
 				+ options.rowId
 				+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
+	}
+	
+	function profundidadFormatter(cellvalue, options, rowObject) {
+		if (rowObject.profundidad != null) {
+
+			return rowObject.profundidad;
+
+		} else {
+			return "";
+		}
+	}
+	
+	function amplitudFormatter(cellvalue, options, rowObject) {
+		if (rowObject.amplitud != null) {
+
+			return rowObject.amplitud;
+
+		} else {
+			return "";
+		}
 	}
 
 	function eliminarComplejidad(rowId) {
@@ -313,8 +343,30 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 		dialogoEliminar.dialog("open");
 	}
 
+	
+	$(window)
+	.on(
+			'load',
+			function() {
 
+				var $jq = $.noConflict();
 
+				var lastUrl;
+
+				//Primera carga del grid el grid
+				$jq(document)
+						.ready(
+								function() {
+									reloadGrid('/oaw/secure/ViewComplejidadesObservatorio.do?action=search');
+
+								});
+
+			});
+
+	var windowWidth = $(window).width() * 0.5;
+	var windowHeight = $(window).height() * 0.4;
+
+	var dialog;
 
 	function dialogoNuevaComplejidad() {
 
@@ -418,6 +470,28 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					<div class="col-xs-8">
 						<input type="text" id="nombre" name="nombre"
 							class="textoLargo form-control" />
+					</div>
+				</div>
+				<!-- Profundidad -->
+				<div class="row formItem">
+					<label for="profundidad" class="control-label"
+						style="margin-left: 25px;"><strong class="labelVisu"><acronym
+							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+								key="nueva.complejidad.observatorio.profundidad" /></strong></label>
+					<div class="col-xs-8">
+						<input type="text" id="profundidad" name="profundidad"
+							class="textoCorto form-control" />
+					</div>
+				</div>
+				<!-- Amplitud -->
+				<div class="row formItem">
+					<label for="amplitud" class="control-label"
+						style="margin-left: 25px;"><strong class="labelVisu"><acronym
+							title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+								key="nueva.complejidad.observatorio.amplitud" /></strong></label>
+					<div class="col-xs-8">
+						<input type="text" id="amplitud" name="amplitud"
+							class="textoCorto form-control" />
 					</div>
 				</div>
 			</form>

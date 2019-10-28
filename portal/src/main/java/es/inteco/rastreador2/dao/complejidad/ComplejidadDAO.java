@@ -26,7 +26,6 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
-import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 
 /**
  * The Class ComplejidadDAO.
@@ -122,7 +121,7 @@ public final class ComplejidadDAO {
 
 				while (rs.next()) {
 					ComplejidadForm complejidadForm = new ComplejidadForm();
-					complejidadForm.setId(rs.getString("c.id_complejidad"));
+					complejidadForm.setId(rs.getString("d.id_complejidad"));
 					complejidadForm.setName(rs.getString("d.nombre"));
 					complejidadForm.setProfundidad(rs.getInt("d.profundidad"));
 					complejidadForm.setAmplitud(rs.getInt("d.amplitud"));
@@ -141,13 +140,10 @@ public final class ComplejidadDAO {
 	/**
 	 * Exists complejidad.
 	 *
-	 * @param c
-	 *            the c
-	 * @param dependencia
-	 *            the complejidad
+	 * @param c           the c
+	 * @param complejidad the complejidad
 	 * @return true, if successful
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static boolean existsComplejidad(Connection c, ComplejidadForm complejidad) throws SQLException {
 
@@ -175,12 +171,9 @@ public final class ComplejidadDAO {
 	/**
 	 * Save.
 	 *
-	 * @param c
-	 *            the c
-	 * @param dependencia
-	 *            the complejidad
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c           the c
+	 * @param complejidad the complejidad
+	 * @throws SQLException the SQL exception
 	 */
 	public static void save(Connection c, ComplejidadForm complejidad) throws SQLException {
 		final String query = "INSERT INTO complejidades_lista(nombre, profundidad, amplitud) VALUES (?,?,?)";
@@ -199,12 +192,9 @@ public final class ComplejidadDAO {
 	/**
 	 * Update.
 	 *
-	 * @param c
-	 *            the c
-	 * @param dependencia
-	 *            the complejidad
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c           the c
+	 * @param complejidad the complejidad
+	 * @throws SQLException the SQL exception
 	 */
 	public static void update(Connection c, ComplejidadForm complejidad) throws SQLException {
 		final String query = "UPDATE complejidades_lista SET nombre = ?, profundidad = ?, amplitud = ? WHERE id_complejidad = ?";
@@ -225,12 +215,9 @@ public final class ComplejidadDAO {
 	/**
 	 * Delete.
 	 *
-	 * @param c
-	 *            the c
-	 * @param idDependencia
-	 *            the id complejidad
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @param c             the c
+	 * @param idComplejidad the id complejidad
+	 * @throws SQLException the SQL exception
 	 */
 	public static void delete(Connection c, Long idComplejidad) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM complejidades_lista WHERE id_complejidad = ?")) {
