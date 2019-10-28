@@ -9,9 +9,9 @@ INSERT INTO usuario_cartucho (id_usuario, id_cartucho) VALUES(1, 10);
 INSERT INTO observatorio_tipo (id_tipo, name) VALUES ('4', 'OTROS');
 
 
-ALTER TABLE lista ADD eliminar BIGINT(20) NOT NULL DEFAULT '0' AFTER in_directory;
+ALTER TABLE lista ADD eliminar BIGINT(20) NOT NULL DEFAULT '0';
 
-CREATE TABLE ambito_lista (
+CREATE TABLE ambitos_lista (
 	id_ambito BIGINT(20) NOT NULL AUTO_INCREMENT , 
 	nombre VARCHAR(50)  NOT NULL , 
 	PRIMARY KEY (id_ambito)
@@ -19,13 +19,13 @@ CREATE TABLE ambito_lista (
 
 INSERT INTO ambitos_lista (id_ambito, nombre) VALUES ('1', 'AGE'), ('2', 'CCAA'), ('3', 'EELL'), ('4', 'Otros');
 
-CREATE TABLE `oaw_js`.`complejidades_lista` ( `id_complejidad` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , `profundidad` BIGINT(20) NOT NULL , `amplitud` BIGINT(20) NOT NULL , PRIMARY KEY (`id_complejidad`));
-CREATE TABLE `oaw_js`.`observatorio_complejidad` ( `id_observatorio` BIGINT(20) NOT NULL , `id_complejidad` INT(20) NOT NULL ) ;
-ALTER TABLE `lista` ADD `id_complejidad` BIGINT(20);
-INSERT INTO `complejidades_lista` (`id_complejidad`, `nombre`, `profundidad`, `amplitud`) VALUES ('1', 'Baja', '4', '4'), ('2', 'Media', '4', '8'), ('3', 'Alta', '4', '11')
+CREATE TABLE complejidades_lista ( id_complejidad BIGINT(20) NOT NULL AUTO_INCREMENT , nombre VARCHAR(50) NOT NULL , profundidad BIGINT(20) NOT NULL , amplitud BIGINT(20) NOT NULL , PRIMARY KEY (id_complejidad));
+CREATE TABLE observatorio_complejidad ( id_observatorio BIGINT(20) NOT NULL , id_complejidad INT(20) NOT NULL ) ;
+ALTER TABLE lista ADD id_complejidad BIGINT(20);
+INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES ('1', 'Baja', '4', '4'), ('2', 'Media', '4', '8'), ('3', 'Alta', '4', '11')
 
-ALTER TABLE lista ADD id_ambito BIGINT(20) NULL DEFAULT NULL AFTER id_categoria;
-ALTER TABLE lista  ADD KEY id_ambito (id_ambito);
+ALTER TABLE lista ADD id_ambito BIGINT(20) NULL DEFAULT NULL;
+ALTER TABLE lista ADD KEY id_ambito (id_ambito);
 
 CREATE TABLE observatorio_ambito ( 
 	id_observatorio BIGINT(20) NOT NULL , 
@@ -33,3 +33,10 @@ CREATE TABLE observatorio_ambito (
 );
 
 ALTER TABLE observatorio ADD id_ambito BIGINT(20);
+
+
+INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(1, 'Baja', 2, 2);
+INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(2, 'Media', 4, 8);
+INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(3, 'Alta', 4, 11);
+
+UPDATE lista SET id_complejidad=2;

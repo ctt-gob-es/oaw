@@ -288,6 +288,12 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarDependencias.jsp" />
 	</definition>
 
+	<!-- Página cargar complejidades observatorio -->
+	<definition name=".cargarComplejidadesObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarComplejidades.jsp" />
+	</definition>
+	
 	<!-- Pï¿½gina CARGAR RASTREOS REALIZADOS observatorio -->
 	<definition name=".cargarRastreosRealizadosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
