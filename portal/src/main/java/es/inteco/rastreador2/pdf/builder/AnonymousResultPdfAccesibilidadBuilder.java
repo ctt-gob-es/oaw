@@ -24,7 +24,6 @@ import es.inteco.common.Constants;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
  * AnonymousResultPdfUNE2012bBuilder. Clase replicada de
