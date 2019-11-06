@@ -290,6 +290,12 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarComplejidades.jsp" />
 	</definition>
 	
+			<!-- Página cargar etiquetas observatorio -->
+	<definition name=".cargarEtiquetasObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarEtiquetas.jsp" />
+	</definition>
+	
 	<!-- Página CARGAR RASTREOS REALIZADOS observatorio -->
 	<definition name=".cargarRastreosRealizadosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />

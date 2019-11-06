@@ -74,6 +74,7 @@ public interface Constants {
 	String EDIT_AMBIT_SEED = "editAmbitSeed";
 	String NEW_AMBIT_SEED = "newAmbitSeed";
 	String AMBITO_FORM = "AmbitoForm";
+	String CLASIFICACION_FORM = "ClasificacionForm";
 	String ADD_AMBIT_SEED = "addAmbitSeed";
 	String UPDATE_AMBIT_SEED = "updateAmbitSeed";
 	String AMBIT_SEED_FORM = "ambitSeedForm";
@@ -122,6 +123,23 @@ public interface Constants {
 	String CRAWLINGS_MENU = "crawlingsMenu";
 	String SECTION_FORM = "sectionForm";
 	String GENERATE_ALL_REPORTS = "generateAllReports";
+	String GET_SEED_CLASIFICATIONS = "getSeedTags";
+	String SEED_TAG = "seedTags";
+	String DELETE_TAG = "deleteTagt";
+	String DELETE_TAG_CONFIRMATION = "deleteTagConfirmation";
+	String NEW_SEED_TAG = "newSeedTag";
+	String SEED_TAG_FORM = "seedTagForm";
+	String ADD_SEED_TAG = "addSeedTag";
+	String EDIT_SEED_TAG = "editSeedTag";
+	String UPDATE_SEED_TAG = "updateSeedTag";
+	String VIEW_SEED_TAG = "viewSeedTag";
+	String DELETE_TAG_SEED_CONFIRMATION = "deleteTagSeedConfirmation";
+	String DELETE_TAG_SEED = "deleteTagSeed";
+	String EDIT_TAG_SEED = "editTagSeed";
+	String NEW_TAG_SEED = "newTagSeed";
+	String ETIQUETA_FORM = "EtiquetaForm";
+	String ADD_TAG_SEED = "addTagSeed";
+	String UPDATE_TAG_SEED = "updateTagSeed";
 
 	// XML semillas
 	String XML_LISTA = "lista";
@@ -392,6 +410,11 @@ public interface Constants {
 	String ID_CATEGORIA = "idcat";
 	String ID_AMBITO = "idamb";
 	String ID_COMPLEJIDAD = "idcom";
+	String ID_ETIQUETA = "ideti";
+	String ID_CLASIFICACION = "idclas";
+	String ID_TEMATICA = "idtem";
+	String ID_DISTRIBUCION = "iddis";
+	String ID_RECURRENCIA = "idrec";
 	String ID_CARTUCHO = "idCartucho";
 	String ID_TERMINO = "idter";
 	String ID_CATEGORIA_TERMINO = "idcatTerminoCat";
@@ -561,6 +584,7 @@ public interface Constants {
 	String SUBMENU_OBS_SEMILLA = "submenuSemillaObs";
 	String SUBMENU_OBS_DEPENDENCIAS = "submenuDependenciasObs";
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
+	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
 	String SUBMENU_OBSERVATORIO = "submenuObservatorio";
 	String SUBMENU_SERVICIO_DIAGNOSTICO = "submenuServicioDiagnostico";
 	String SUBMENU_CONECTIVIDAD = "submenuConectividad";

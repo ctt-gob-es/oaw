@@ -89,7 +89,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	/** The dependencias. */
 	private List<DependenciaForm> dependencias;
 			
-	private List<EtiquetaForm> etiquetas;
+	//private List<EtiquetaForm> etiquetas;
 
 	/**
 	 * Instantiates a new semilla form.
