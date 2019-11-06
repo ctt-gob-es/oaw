@@ -136,7 +136,24 @@ Email: observ.accesibilidad@correo.gob.es
 				</html:link>
 		</logic:notEqual>
 		</li>
-		
+
+	<logic:equal name="<%=Constants.SUBMENU%>"
+			value="<%=Constants.SUBMENU_OBS_ETIQUETAS%>">
+			<li class="active"><html:link styleId="subselected"
+					forward="observatoryEtiquetas"
+					titleKey="menu.config.etiquetas.title">
+					<bean:message key="menu.config.etiquetas" />
+				</html:link>
+		</logic:equal>
+		<logic:notEqual name="<%=Constants.SUBMENU%>"
+			value="<%=Constants.SUBMENU_OBS_ETIQUETAS%>">
+			<li><html:link forward="observatoryEtiquetas"
+					titleKey="menu.config.etiquetas.title">
+					<bean:message key="menu.config.etiquetas" />
+				</html:link>
+		</logic:notEqual>
+		</li>
+
 	</inteco:menu>
 </ul>
 </li>

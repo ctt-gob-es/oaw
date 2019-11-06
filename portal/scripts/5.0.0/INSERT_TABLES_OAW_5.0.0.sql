@@ -33,3 +33,9 @@ CREATE TABLE observatorio_ambito (
 );
 
 ALTER TABLE observatorio ADD id_ambito BIGINT(20);
+
+CREATE TABLE `oaw_js`.`etiqueta` ( `id_etiqueta` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , `id_clasificacion` BIGINT(20) NOT NULL , PRIMARY KEY (`id_etiqueta`));
+
+CREATE TABLE `oaw_js`.`clasificacion_etiqueta` ( `id_clasificacion` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , PRIMARY KEY (`id_clasificacion`));
+INSERT INTO `clasificacion_etiqueta` (`id_clasificacion`, `nombre`) VALUES ('1', 'Temática'), ('2', 'Distribución'), ('3', 'Recurrencia');
+
