@@ -203,6 +203,8 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG = "globalDataListDAG";
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CAS = "globalDataListCAS";
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CPS = "globalDataListCPS";
+	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPS = "globalDataListCMPS";
+	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMPC = "globalDataListCMPC";
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMA = "globalDataListCMA";
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVI = "globalDataListCMVI";
 	String OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_CMVII = "globalDataListCMVII";
@@ -213,6 +215,8 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_CATEGORIES = "cat";
 	String OBSERVATORY_NUM_CAS_GRAPH = "numGraphCAS";
 	String OBSERVATORY_NUM_CPS_GRAPH = "numGraphCPS";
+	String OBSERVATORY_NUM_CMPS_GRAPH = "numGraphCMPS";
+	String OBSERVATORY_NUM_CMPC_GRAPH = "numGraphCMPC";
 	String OBSERVATORY_NUM_GRAPH = "numGraph";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_111_VERIFICATION = "1.1.1";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_112_VERIFICATION = "1.1.2";
@@ -700,6 +704,12 @@ public interface Constants {
 	String OBS_PRIORITY_1 = "Priority 1";
 	String OBS_PRIORITY_2 = "Priority 2";
 	String OBS_PRIORITY_NONE = "none";
+	
+	String OBS_COMPILANCE_NONE = "No conforme";
+	String OBS_COMPILANCE_PARTIAL= "Parcialmente conforme";
+	String OBS_COMPILANCE_FULL= "Totalmente conforme";
+	
+	
 
 	String ADD_OBSERVATORY_SEED_LIST = "addSeedList";
 	String OTHER_OBSERVATORY_SEED_LIST = "otherSeedList";

@@ -21,33 +21,68 @@ import org.apache.struts.util.LabelValueBean;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The Class CategoryViewListForm.
+ */
 public class CategoryViewListForm {
 
+    /** The category. */
     private CategoriaForm category;
+    
+    /** The view list. */
     private List<LabelValueBean> viewList;
 
+    /**
+	 * Instantiates a new category view list form.
+	 */
     public CategoryViewListForm() {
         category = new CategoriaForm();
         viewList = new ArrayList<>();
     }
 
+    /**
+	 * Instantiates a new category view list form.
+	 *
+	 * @param category the category
+	 * @param viewList the view list
+	 */
     public CategoryViewListForm(CategoriaForm category, List<LabelValueBean> viewList) {
         this.category = category;
         this.viewList = viewList;
     }
 
+    /**
+	 * Gets the category.
+	 *
+	 * @return the category
+	 */
     public CategoriaForm getCategory() {
         return category;
     }
 
+    /**
+	 * Sets the category.
+	 *
+	 * @param category the new category
+	 */
     public void setCategory(CategoriaForm category) {
         this.category = category;
     }
 
+    /**
+	 * Gets the view list.
+	 *
+	 * @return the view list
+	 */
     public List<LabelValueBean> getViewList() {
         return viewList;
     }
 
+    /**
+	 * Sets the view list.
+	 *
+	 * @param viewList the new view list
+	 */
     public void setViewList(List<LabelValueBean> viewList) {
         this.viewList = viewList;
     }
