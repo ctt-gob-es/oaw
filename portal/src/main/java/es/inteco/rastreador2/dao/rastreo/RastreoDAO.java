@@ -61,11 +61,26 @@ import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
 import es.inteco.rastreador2.utils.Rastreo;
 
+/**
+ * The Class RastreoDAO.
+ */
 public final class RastreoDAO {
 
+	/**
+	 * Instantiates a new rastreo DAO.
+	 */
 	private RastreoDAO() {
 	}
 
+	/**
+	 * Gets the execution observatory crawler ids.
+	 *
+	 * @param c                      the c
+	 * @param idObservatoryExecution the id observatory execution
+	 * @param idCategory             the id category
+	 * @return the execution observatory crawler ids
+	 * @throws Exception the exception
+	 */
 	public static List<Long> getExecutionObservatoryCrawlerIds(Connection c, Long idObservatoryExecution, long idCategory) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
 		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
@@ -88,7 +103,49 @@ public final class RastreoDAO {
 			throw e;
 		}
 	}
+	
+	
+	/**
+	 * Gets the execution observatory crawler ids complexity.
+	 *
+	 * @param c                      the c
+	 * @param idObservatoryExecution the id observatory execution
+	 * @param idComplexity           the id complexity
+	 * @return the execution observatory crawler ids complexity
+	 * @throws Exception the exception
+	 */
+	public static List<Long> getExecutionObservatoryCrawlerIdsComplexity(Connection c, Long idObservatoryExecution, long idComplexity) throws Exception {
+		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
+		String query = "SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) " + "JOIN lista l ON (l.id_lista = r.semillas) " + "WHERE id_obs_realizado = ?";
+		if (idComplexity != 0) {
+			query = query + " AND l.id_complejidad = ? ";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idObservatoryExecution);
+			if (idComplexity != 0) {
+				ps.setLong(2, idComplexity);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					executionObservatoryCrawlersIds.add(rs.getLong(1));
+				}
+				return executionObservatoryCrawlersIds;
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error en getExecutionObservatoryCrawlerIdsComplexity", RastreoDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
 
+	/**
+	 * Gets the id rastreo realizado from id rastreo and id observatory execution.
+	 *
+	 * @param c                      the c
+	 * @param idRastreo              the id rastreo
+	 * @param idObservatoryExecution the id observatory execution
+	 * @return the id rastreo realizado from id rastreo and id observatory execution
+	 * @throws Exception the exception
+	 */
 	public static long getIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(Connection c, long idRastreo, long idObservatoryExecution) throws Exception {
 		final String query = "SELECT id FROM rastreos_realizados rr " + "WHERE id_rastreo = ? AND " + "id_obs_realizado = ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -108,6 +165,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Crawler can be throw.
+	 *
+	 * @param c          the c
+	 * @param userLogin  the user login
+	 * @param cartuchoID the cartucho ID
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	public static boolean crawlerCanBeThrow(Connection c, String userLogin, int cartuchoID) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) " + "WHERE u.usuario = ? AND uc.id_cartucho = ?")) {
 			ps.setString(1, userLogin);
@@ -121,6 +187,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Crawler to user.
+	 *
+	 * @param c          the c
+	 * @param idCrawling the id crawling
+	 * @param userLogin  the user login
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	public static boolean crawlerToUser(Connection c, Long idCrawling, String userLogin) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN usuario_cartucho uc ON (u.id_usuario = uc.id_usuario) "
 				+ "JOIN cartucho_rastreo cr ON (uc.id_cartucho = cr.id_cartucho) WHERE u.usuario = ? AND cr.id_rastreo = ?")) {
@@ -138,6 +213,15 @@ public final class RastreoDAO {
 		return false;
 	}
 
+	/**
+	 * Crawler to client account.
+	 *
+	 * @param c           the c
+	 * @param idCrawling  the id crawling
+	 * @param clientLogin the client login
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	public static boolean crawlerToClientAccount(Connection c, Long idCrawling, String clientLogin) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM usuario u JOIN cuenta_cliente_usuario ccu ON (u.id_usuario = ccu.id_usuario) "
 				+ "JOIN rastreo r ON (r.id_cuenta = ccu.id_cuenta) " + "WHERE u.usuario = ? AND r.id_rastreo = ?")) {
@@ -155,6 +239,15 @@ public final class RastreoDAO {
 		return false;
 	}
 
+	/**
+	 * Count rastreos realizados.
+	 *
+	 * @param c          the c
+	 * @param idCrawling the id crawling
+	 * @param searchForm the search form
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	public static int countRastreosRealizados(Connection c, Long idCrawling, CargarRastreosRealizadosSearchForm searchForm) throws Exception {
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM rastreos_realizados rr " + "JOIN usuario u ON (u.id_usuario = rr.id_usuario) WHERE id_rastreo = ?";
@@ -210,6 +303,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Count rastreo.
+	 *
+	 * @param c          the c
+	 * @param user       the user
+	 * @param searchForm the search form
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	public static int countRastreo(Connection c, String user, CargarRastreosSearchForm searchForm) throws Exception {
 		String query = "SELECT COUNT(*) FROM rastreo r " + "JOIN cartucho_rastreo cr ON r.Id_rastreo = cr.Id_rastreo " + "JOIN cartucho c ON cr.Id_cartucho = c.Id_cartucho "
 				+ "JOIN usuario_cartucho uc ON uc.Id_cartucho = c.Id_cartucho " + "JOIN usuario u ON u.Id_usuario = uc.Id_usuario WHERE u.usuario = ? " + "AND id_observatorio IS NULL ";
@@ -256,14 +358,14 @@ public final class RastreoDAO {
 	}
 
 	/**
-	 * Devuelve el listado de rastreos a los que puede acceder un usuario
+	 * Devuelve el listado de rastreos a los que puede acceder un usuario.
 	 *
-	 * @param c
-	 * @param user
-	 * @param searchForm
-	 * @param pagina
-	 * @return
-	 * @throws Exception
+	 * @param c          the c
+	 * @param user       the user
+	 * @param searchForm the search form
+	 * @param pagina     the pagina
+	 * @return the load crawling form
+	 * @throws SQLException the SQL exception
 	 */
 	public static CargarRastreosForm getLoadCrawlingForm(Connection c, String user, CargarRastreosSearchForm searchForm, int pagina) throws SQLException {
 		final CargarRastreosForm cargarRastreosForm = new CargarRastreosForm();
@@ -366,6 +468,14 @@ public final class RastreoDAO {
 		return cargarRastreosForm;
 	}
 
+	/**
+	 * Exist account from crawler.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
 	public static boolean existAccountFromCrawler(Connection c, long idRastreo) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_cuenta FROM rastreo WHERE id_rastreo = ?")) {
 			ps.setLong(1, idRastreo);
@@ -381,6 +491,14 @@ public final class RastreoDAO {
 		return false;
 	}
 
+	/**
+	 * Gets the id LR from rastreo.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @return the id LR from rastreo
+	 * @throws Exception the exception
+	 */
 	public static long getIdLRFromRastreo(Connection c, long idRastreo) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT lista_rastreable FROM rastreo WHERE id_rastreo = ? ")) {
 			ps.setLong(1, idRastreo);
@@ -396,6 +514,14 @@ public final class RastreoDAO {
 		return 0;
 	}
 
+	/**
+	 * Gets the id LNR from rastreo.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @return the id LNR from rastreo
+	 * @throws Exception the exception
+	 */
 	public static long getIdLNRFromRastreo(Connection c, long idRastreo) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT lista_no_rastreable FROM rastreo WHERE id_rastreo = ? ")) {
 			ps.setLong(1, idRastreo);
@@ -411,6 +537,13 @@ public final class RastreoDAO {
 		return 0;
 	}
 
+	/**
+	 * Borrar rastreo.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @throws SQLException the SQL exception
+	 */
 	public static void borrarRastreo(Connection c, long idRastreo) throws SQLException {
 		final boolean isAutoCommit = c.getAutoCommit();
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM rastreo WHERE id_rastreo = ?")) {
@@ -451,6 +584,13 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Borrar rastreo realizado.
+	 *
+	 * @param c                  the c
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @throws Exception the exception
+	 */
 	public static void borrarRastreoRealizado(final Connection c, final long idRastreoRealizado) throws Exception {
 		final boolean isAutoCommit = c.getAutoCommit();
 		try (PreparedStatement ps = c.prepareStatement("DELETE FROM rastreos_realizados WHERE id = ?")) {
@@ -472,6 +612,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the executed crawler ids.
+	 *
+	 * @param connR     the conn R
+	 * @param idRastreo the id rastreo
+	 * @return the executed crawler ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<Long> getExecutedCrawlerIds(Connection connR, long idRastreo) throws SQLException {
 		final List<Long> executedCrawlerIds = new ArrayList<>();
 		// RECUPERAMOS LOS IDS DE LOS RASTREOS REALIZADOS
@@ -489,6 +637,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the executed crawler id.
+	 *
+	 * @param connR                 the conn R
+	 * @param idRastreo             the id rastreo
+	 * @param idExecutedObservatory the id executed observatory
+	 * @return the executed crawler id
+	 * @throws SQLException the SQL exception
+	 */
 	public static Long getExecutedCrawlerId(Connection connR, long idRastreo, long idExecutedObservatory) throws SQLException {
 		try (PreparedStatement ps = connR
 				.prepareStatement("SELECT rr.id FROM rastreo r " + "JOIN rastreos_realizados rr ON (r.id_rastreo = rr.id_rastreo) " + "WHERE r.id_rastreo = ? AND rr.id_obs_realizado = ?")) {
@@ -507,6 +664,16 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the evolution executed crawler ids.
+	 *
+	 * @param connR      the conn R
+	 * @param idRastreo  the id rastreo
+	 * @param idTracking the id tracking
+	 * @param idCartucho the id cartucho
+	 * @return the evolution executed crawler ids
+	 * @throws Exception the exception
+	 */
 	public static List<Long> getEvolutionExecutedCrawlerIds(Connection connR, long idRastreo, long idTracking, long idCartucho) throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		int limit;
@@ -518,6 +685,17 @@ public final class RastreoDAO {
 		return getEvolutionExecutedCrawlerIds(connR, idRastreo, idTracking, idCartucho, limit);
 	}
 
+	/**
+	 * Gets the evolution executed crawler ids.
+	 *
+	 * @param connection         the connection
+	 * @param idRastreo          the id rastreo
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @param idCartucho         the id cartucho
+	 * @param limit              the limit
+	 * @return the evolution executed crawler ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<Long> getEvolutionExecutedCrawlerIds(final Connection connection, long idRastreo, long idRastreoRealizado, long idCartucho, int limit) throws SQLException {
 		final List<Long> executedCrawlerIds = new ArrayList<>();
 		try (PreparedStatement ps = connection.prepareStatement("SELECT r.id FROM rastreos_realizados r " + "WHERE id_rastreo = ? AND "
@@ -539,6 +717,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the executed crawler client accounts ids.
+	 *
+	 * @param connR           the conn R
+	 * @param idClientAccount the id client account
+	 * @return the executed crawler client accounts ids
+	 * @throws SQLException the SQL exception
+	 */
 	public static List<Long> getExecutedCrawlerClientAccountsIds(Connection connR, long idClientAccount) throws SQLException {
 		final List<Long> executedCrawlerIds = new ArrayList<>();
 		try (PreparedStatement ps = connR.prepareStatement("SELECT id FROM rastreos_realizados rr " + "JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) WHERE r.id_cuenta = ?")) {
@@ -555,6 +741,13 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Delete analyse.
+	 *
+	 * @param connection            the connection
+	 * @param idsRastreosRealizados the ids rastreos realizados
+	 * @throws SQLException the SQL exception
+	 */
 	public static void deleteAnalyse(Connection connection, List<Long> idsRastreosRealizados) throws SQLException {
 		if (idsRastreosRealizados != null && !idsRastreosRealizados.isEmpty()) {
 			// ELIMINAMOS LOS ANÁLISIS E INCIDENCIAS DE LOS RASTREOS DEL
@@ -583,6 +776,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Cargar datos cartucho rastreo.
+	 *
+	 * @param c             the c
+	 * @param nombreRastreo the nombre rastreo
+	 * @return the datos cartucho rastreo form
+	 * @throws SQLException the SQL exception
+	 */
 	public static DatosCartuchoRastreoForm cargarDatosCartuchoRastreo(Connection c, String nombreRastreo) throws SQLException {
 		final DatosCartuchoRastreoForm datosCartuchoRastreoForm = new DatosCartuchoRastreoForm();
 
@@ -630,13 +831,11 @@ public final class RastreoDAO {
 	}
 
 	/**
-	 * Actualiza la fecha de ejecución de un rastreo a la fecha actual
+	 * Actualiza la fecha de ejecución de un rastreo a la fecha actual.
 	 *
-	 * @param c
-	 *            conexión Connection a la base de datos
-	 * @param idRastreo
-	 *            identificador long del rastreo a actualizar
-	 * @throws SQLException
+	 * @param c         conexión Connection a la base de datos
+	 * @param idRastreo identificador long del rastreo a actualizar
+	 * @throws SQLException the SQL exception
 	 */
 	public static void actualizarFechaRastreo(Connection c, long idRastreo) throws SQLException {
 		try (PreparedStatement pst = c.prepareStatement("UPDATE rastreo SET fecha_lanzado = ? WHERE id_rastreo = ?")) {
@@ -649,6 +848,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Actualizar estado rastreo.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @param status    the status
+	 * @throws SQLException the SQL exception
+	 */
 	public static void actualizarEstadoRastreo(Connection c, int idRastreo, int status) throws SQLException {
 		try (PreparedStatement pst = c.prepareStatement("UPDATE rastreo SET estado = ? WHERE id_rastreo = ?")) {
 			pst.setInt(1, status);
@@ -660,6 +867,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Cargar fecha rastreo.
+	 *
+	 * @param c             the c
+	 * @param nombreRastreo the nombre rastreo
+	 * @return the string
+	 * @throws SQLException the SQL exception
+	 */
 	public static String cargarFechaRastreo(Connection c, String nombreRastreo) throws SQLException {
 		String f = "";
 		try (PreparedStatement ps = c.prepareStatement("SELECT fecha_lanzado FROM rastreo WHERE nombre_rastreo = ?")) {
@@ -684,6 +899,14 @@ public final class RastreoDAO {
 		return f;
 	}
 
+	/**
+	 * Existe rastreo.
+	 *
+	 * @param c             the c
+	 * @param nombreRastreo the nombre rastreo
+	 * @return true, if successful
+	 * @throws SQLException the SQL exception
+	 */
 	public static boolean existeRastreo(Connection c, String nombreRastreo) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM rastreo WHERE nombre_rastreo = ?")) {
 			ps.setString(1, nombreRastreo);
@@ -696,6 +919,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Cargar rastreo.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @param rastreo   the rastreo
+	 * @return the insertar rastreo form
+	 * @throws SQLException the SQL exception
+	 */
 	public static InsertarRastreoForm cargarRastreo(Connection c, int idRastreo, InsertarRastreoForm rastreo) throws SQLException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		try (PreparedStatement ps = c.prepareStatement("SELECT r.*, l.nombre AS nombreSemilla, l1.lista AS listaRastreable, " + "l2.lista AS listaNoRastreable, cr.id_cartucho FROM rastreo r "
@@ -737,6 +969,15 @@ public final class RastreoDAO {
 		return rastreo;
 	}
 
+	/**
+	 * Cargar rastreo ver.
+	 *
+	 * @param c              the c
+	 * @param idRastreo      the id rastreo
+	 * @param verRastreoForm the ver rastreo form
+	 * @return the ver rastreo form
+	 * @throws SQLException the SQL exception
+	 */
 	public static VerRastreoForm cargarRastreoVer(Connection c, long idRastreo, VerRastreoForm verRastreoForm) throws SQLException {
 		verRastreoForm.setId_rastreo(idRastreo);
 		try (PreparedStatement ps = c.prepareStatement("SELECT * , l.lista AS semilla, l1.lista AS l_lista_rastreable, "
@@ -798,6 +1039,14 @@ public final class RastreoDAO {
 		return verRastreoForm;
 	}
 
+	/**
+	 * Cargar rastreo ejecutado.
+	 *
+	 * @param c           the c
+	 * @param idExecution the id execution
+	 * @return the rastreo ejecutado form
+	 * @throws SQLException the SQL exception
+	 */
 	public static RastreoEjecutadoForm cargarRastreoEjecutado(Connection c, long idExecution) throws SQLException {
 		final RastreoEjecutadoForm rastreo = new RastreoEjecutadoForm();
 
@@ -820,17 +1069,13 @@ public final class RastreoDAO {
 	}
 
 	/**
-	 * Comprueba que el rastreo es válido para un usuario
+	 * Comprueba que el rastreo es válido para un usuario.
 	 *
-	 * @param c
-	 *            conexión Connection a la BD
-	 * @param idRastreo
-	 *            identificador del rastreo
-	 * @param user
-	 *            nombre de usuario
-	 * @return true si el usuario tiene asociado el cartucho de ese rastreo o
-	 *         false en caso contrario
-	 * @throws SQLException
+	 * @param c         conexión Connection a la BD
+	 * @param idRastreo identificador del rastreo
+	 * @param user      nombre de usuario
+	 * @return true si el usuario tiene asociado el cartucho de ese rastreo o false en caso contrario
+	 * @throws SQLException the SQL exception
 	 */
 	public static boolean rastreoValidoParaUsuario(final Connection c, final long idRastreo, final String user) throws SQLException {
 		try (PreparedStatement pstmt = c.prepareStatement("SELECT COUNT(*) FROM cartucho_rastreo WHERE id_rastreo = ? and id_cartucho = (SELECT id_cartucho FROM usuario WHERE usuario = ?)")) {
@@ -848,6 +1093,15 @@ public final class RastreoDAO {
 		return false;
 	}
 
+	/**
+	 * Insertar rastreo.
+	 *
+	 * @param c                   the c
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @param isAutomatic         the is automatic
+	 * @return the string
+	 * @throws SQLException the SQL exception
+	 */
 	public static String insertarRastreo(Connection c, InsertarRastreoForm insertarRastreoForm, boolean isAutomatic) throws SQLException {
 		PropertiesManager pmgr = new PropertiesManager();
 		PreparedStatement ps = null;
@@ -950,6 +1204,14 @@ public final class RastreoDAO {
 		return "";
 	}
 
+	/**
+	 * Checks if is automatic crawler.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @return true, if is automatic crawler
+	 * @throws SQLException the SQL exception
+	 */
 	public static boolean isAutomaticCrawler(Connection c, long idRastreo) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT automatico FROM rastreo WHERE id_rastreo = ?")) {
 			ps.setLong(1, idRastreo);
@@ -965,6 +1227,14 @@ public final class RastreoDAO {
 		return false;
 	}
 
+	/**
+	 * Update lists.
+	 *
+	 * @param c                   the c
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @return the insertar rastreo form
+	 * @throws Exception the exception
+	 */
 	private static InsertarRastreoForm updateLists(final Connection c, final InsertarRastreoForm insertarRastreoForm) throws Exception {
 		final UpdateListDataForm updateListDataForm = new UpdateListDataForm();
 
@@ -984,6 +1254,13 @@ public final class RastreoDAO {
 		return insertarRastreoForm;
 	}
 
+	/**
+	 * Removes the lists.
+	 *
+	 * @param c                   the c
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @throws Exception the exception
+	 */
 	private static void removeLists(Connection c, InsertarRastreoForm insertarRastreoForm) throws Exception {
 
 		UpdateListDataForm updateListDataForm = new UpdateListDataForm();
@@ -996,6 +1273,12 @@ public final class RastreoDAO {
 		SemillaDAO.removeLists(c, updateListDataForm);
 	}
 
+	/**
+	 * Update rastreo.
+	 *
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @throws Exception the exception
+	 */
 	public static void updateRastreo(final InsertarRastreoForm insertarRastreoForm) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			try {
@@ -1016,6 +1299,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Modificar rastreo.
+	 *
+	 * @param c                   the c
+	 * @param esMenu              the es menu
+	 * @param insertarRastreoForm the insertar rastreo form
+	 * @param idRastreo           the id rastreo
+	 * @throws SQLException the SQL exception
+	 */
 	public static void modificarRastreo(Connection c, boolean esMenu, InsertarRastreoForm insertarRastreoForm, Long idRastreo) throws SQLException {
 		PreparedStatement ps = null;
 		try {
@@ -1101,6 +1393,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the num active crawlings.
+	 *
+	 * @param conn      the conn
+	 * @param cartridge the cartridge
+	 * @return the num active crawlings
+	 * @throws SQLException the SQL exception
+	 */
 	public static int getNumActiveCrawlings(Connection conn, int cartridge) throws SQLException {
 		try (PreparedStatement ps = conn
 				.prepareStatement("SELECT COUNT(*) FROM rastreo r " + "JOIN cartucho_rastreo cr ON (r.id_rastreo = cr.id_rastreo)" + " WHERE estado = ? AND cr.id_cartucho = ?")) {
@@ -1119,6 +1419,16 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Adds the fulfilled crawling.
+	 *
+	 * @param conn                   the conn
+	 * @param dcrForm                the dcr form
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @param idUser                 the id user
+	 * @return the long
+	 * @throws SQLException the SQL exception
+	 */
 	public static Long addFulfilledCrawling(Connection conn, DatosCartuchoRastreoForm dcrForm, Long idFulfilledObservatory, Long idUser) throws SQLException {
 		try (PreparedStatement pst = conn.prepareStatement("INSERT INTO rastreos_realizados (id_rastreo, fecha, id_usuario, id_cartucho, id_obs_realizado, id_lista) VALUES (?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
@@ -1146,6 +1456,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Adds the fulfilled observatory.
+	 *
+	 * @param conn          the conn
+	 * @param idObservatory the id observatory
+	 * @param idCartridge   the id cartridge
+	 * @return the long
+	 * @throws Exception the exception
+	 */
 	public static Long addFulfilledObservatory(Connection conn, Long idObservatory, Long idCartridge) throws Exception {
 		try (PreparedStatement pst = conn.prepareStatement("INSERT INTO observatorios_realizados (id_observatorio, fecha, id_cartucho) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
 			pst.setLong(1, idObservatory);
@@ -1165,6 +1484,17 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the fulfilled crawlings.
+	 *
+	 * @param conn                   the conn
+	 * @param idCrawling             the id crawling
+	 * @param searchForm             the search form
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @param pagina                 the pagina
+	 * @return the fulfilled crawlings
+	 * @throws Exception the exception
+	 */
 	public static List<FulFilledCrawling> getFulfilledCrawlings(Connection conn, Long idCrawling, CargarRastreosRealizadosSearchForm searchForm, Long idFulfilledObservatory, int pagina)
 			throws Exception {
 		final List<FulFilledCrawling> crawlings = new ArrayList<>();
@@ -1259,6 +1589,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the fulfilled crawlings.
+	 *
+	 * @param conn                   the conn
+	 * @param seedsResults           the seeds results
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @return the fulfilled crawlings
+	 * @throws Exception the exception
+	 */
 	public static Map<Long, List<FulFilledCrawling>> getFulfilledCrawlings(Connection conn, List<ResultadoSemillaForm> seedsResults, Long idFulfilledObservatory) throws Exception {
 		final Map<Long, List<FulFilledCrawling>> results = new HashMap<>();
 		boolean isWhere = false;
@@ -1333,6 +1672,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the fulfilled crawlings 2.
+	 *
+	 * @param conn                   the conn
+	 * @param seedsResults           the seeds results
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @return the fulfilled crawlings 2
+	 * @throws Exception the exception
+	 */
 	public static Map<Long, List<FulFilledCrawling>> getFulfilledCrawlings2(Connection conn, List<ResultadoSemillaFullForm> seedsResults, Long idFulfilledObservatory) throws Exception {
 		final Map<Long, List<FulFilledCrawling>> results = new HashMap<>();
 		boolean isWhere = false;
@@ -1406,6 +1754,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the old crawlings.
+	 *
+	 * @param conn    the conn
+	 * @param numDays the num days
+	 * @return the old crawlings
+	 * @throws Exception the exception
+	 */
 	public static List<FulFilledCrawling> getOldCrawlings(Connection conn, int numDays) throws Exception {
 		final List<FulFilledCrawling> crawlings = new ArrayList<>();
 		try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM rastreos_realizados rr " + "JOIN observatorios_realizados ob ON (rr.id_obs_realizado = ob.id) " + "WHERE rr.fecha > ?")) {
@@ -1431,6 +1787,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the nombre norma.
+	 *
+	 * @param conn    the conn
+	 * @param idNorma the id norma
+	 * @return the nombre norma
+	 * @throws SQLException the SQL exception
+	 */
 	public static String getNombreNorma(Connection conn, long idNorma) throws SQLException {
 		try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM tguidelines WHERE cod_guideline = ?;")) {
 			ps.setLong(1, idNorma);
@@ -1446,6 +1810,12 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Convert string to list.
+	 *
+	 * @param lista the lista
+	 * @return the list
+	 */
 	private static List<String> convertStringToList(String lista) {
 		List<String> urlsList = new ArrayList<>();
 		StringTokenizer tokenizer = new StringTokenizer(lista, ";");
@@ -1455,6 +1825,14 @@ public final class RastreoDAO {
 		return urlsList;
 	}
 
+	/**
+	 * Enable disable crawler.
+	 *
+	 * @param conn      the conn
+	 * @param idCrawler the id crawler
+	 * @param activo    the activo
+	 * @throws SQLException the SQL exception
+	 */
 	public static void enableDisableCrawler(Connection conn, long idCrawler, boolean activo) throws SQLException {
 		try (PreparedStatement ps = conn.prepareStatement("UPDATE rastreo SET activo = ? WHERE id_rastreo = ?")) {
 			ps.setBoolean(1, activo);
@@ -1466,6 +1844,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the id seed by id rastreo.
+	 *
+	 * @param c         the c
+	 * @param idRastreo the id rastreo
+	 * @return the id seed by id rastreo
+	 * @throws SQLException the SQL exception
+	 */
 	public static long getIdSeedByIdRastreo(Connection c, long idRastreo) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT semillas FROM rastreo WHERE id_rastreo = ?")) {
 			ps.setLong(1, idRastreo);
@@ -1481,6 +1867,14 @@ public final class RastreoDAO {
 		return -1;
 	}
 
+	/**
+	 * Update crawler name.
+	 *
+	 * @param c         the c
+	 * @param name      the name
+	 * @param crawlerId the crawler id
+	 * @throws Exception the exception
+	 */
 	public static void updateCrawlerName(Connection c, String name, long crawlerId) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("UPDATE rastreo SET nombre_rastreo = ? WHERE id_rastreo = ?")) {
 			ps.setString(1, name);
@@ -1492,6 +1886,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the crawler from seed and observatory.
+	 *
+	 * @param c             the c
+	 * @param idSeed        the id seed
+	 * @param idObservatory the id observatory
+	 * @return the crawler from seed and observatory
+	 * @throws Exception the exception
+	 */
 	public static Long getCrawlerFromSeedAndObservatory(Connection c, long idSeed, long idObservatory) throws Exception {
 		try (PreparedStatement ps = c.prepareStatement("SELECT id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.semillas = ?")) {
 			ps.setLong(1, idObservatory);
@@ -1509,6 +1912,15 @@ public final class RastreoDAO {
 		return null;
 	}
 
+	/**
+	 * Gets the crawler category ids.
+	 *
+	 * @param connR          the conn R
+	 * @param idObservatorio the id observatorio
+	 * @param idCategoria    the id categoria
+	 * @return the crawler category ids
+	 * @throws Exception the exception
+	 */
 	public static List<Long> getCrawlerCategoryIds(Connection connR, long idObservatorio, long idCategoria) throws Exception {
 		final List<Long> crawlerIds = new ArrayList<>();
 		// RECUPERAMOS LOS IDS DE LOS RASTREOS PARA EL OBSERVATORIO
@@ -1530,6 +1942,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the recurrence.
+	 *
+	 * @param conn         the conn
+	 * @param idRecurrence the id recurrence
+	 * @return the recurrence
+	 * @throws Exception the exception
+	 */
 	public static PeriodicidadForm getRecurrence(Connection conn, long idRecurrence) throws Exception {
 		try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM periodicidad WHERE id_periodicidad = ?")) {
 			ps.setLong(1, idRecurrence);
@@ -1552,6 +1972,14 @@ public final class RastreoDAO {
 		return null;
 	}
 
+	/**
+	 * Gets the fullfilled crawling execution.
+	 *
+	 * @param conn        the conn
+	 * @param idExecution the id execution
+	 * @return the fullfilled crawling execution
+	 * @throws SQLException the SQL exception
+	 */
 	public static FulfilledCrawlingForm getFullfilledCrawlingExecution(Connection conn, long idExecution) throws SQLException {
 		try (PreparedStatement ps = conn.prepareStatement("SELECT rr.*, l.*, cl.* FROM rastreos_realizados rr " + "JOIN lista l ON (rr.id_lista = l.id_lista) "
 				+ "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " + "WHERE id = ? ")) {
@@ -1588,6 +2016,14 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Sets the observatory execution to crawler execution.
+	 *
+	 * @param conn             the conn
+	 * @param idObsExecution   the id obs execution
+	 * @param idExecuteCrawler the id execute crawler
+	 * @throws SQLException the SQL exception
+	 */
 	public static void setObservatoryExecutionToCrawlerExecution(Connection conn, long idObsExecution, long idExecuteCrawler) throws SQLException {
 		try (PreparedStatement ps = conn.prepareStatement("UPDATE rastreos_realizados SET id_obs_realizado = ? WHERE id = ?")) {
 			ps.setLong(1, idObsExecution);
@@ -1600,6 +2036,15 @@ public final class RastreoDAO {
 		}
 	}
 
+	/**
+	 * Gets the executed crawling.
+	 *
+	 * @param c          the c
+	 * @param idCrawling the id crawling
+	 * @param idSeed     the id seed
+	 * @return the executed crawling
+	 * @throws SQLException the SQL exception
+	 */
 	public static FulfilledCrawlingForm getExecutedCrawling(Connection c, Long idCrawling, Long idSeed) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT rr.id, rr.fecha, rr.id_rastreo, rr.id_cartucho FROM rastreos_realizados rr WHERE id_rastreo = ? AND id_lista = ? ORDER BY id DESC")) {
 			ps.setLong(1, idCrawling);
@@ -1623,12 +2068,13 @@ public final class RastreoDAO {
 	}
 
 	/**
-	 * Recuperamos los rastreos que no estén marcados como finalizados
-	 * 
-	 * @param c
-	 * @param idObservatory
-	 * @return
-	 * @throws Exception
+	 * Recuperamos los rastreos que no estén marcados como finalizados.
+	 *
+	 * @param c              the c
+	 * @param idObservatory  the id observatory
+	 * @param idObsRealizado the id obs realizado
+	 * @return the pending crawler from seed and observatory
+	 * @throws Exception the exception
 	 */
 	public static List<Long> getPendingCrawlerFromSeedAndObservatory(Connection c, Long idObservatory, Long idObsRealizado) throws Exception {
 		final List<Long> crawlerIds = new ArrayList<>();

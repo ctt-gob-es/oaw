@@ -38,6 +38,7 @@ import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
@@ -111,9 +112,14 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			final boolean evolution, final List<ObservatoryEvaluationForm> pageExecutionList,
 			final List<CategoriaForm> categories) throws Exception {
 		final MessageResources messageResources = CrawlerUtils.getResources(request);
+		
+		
+		
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId,
 				Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath, Constants.MINISTERIO_P,
 				true);
+		
+		
 		final OdfTextDocument odt = getOdfTemplate();
 		final OdfFileDom odfFileContent = odt.getContentDom();
 		final OdfFileDom odfStyles = odt.getStylesDom();
@@ -131,7 +137,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		replaceSection46(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 
 		for (CategoriaForm category : categories) {
-			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioUNEEN2019Utils
+			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioAccesibilidadUtils
 					.getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList);
 			replaceSectionCat1(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
 			replaceSectionCat2(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);

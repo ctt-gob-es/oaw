@@ -87,7 +87,7 @@ public class TestCrawl {
 
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
 
-		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.INFO);
+		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
 
 	}
 
@@ -121,7 +121,7 @@ public class TestCrawl {
 		
 
 		
-		this.test("https://web.larioja.org/bor-portada/", true);
+		this.test("https://www.miteco.gob.es/es/mapa-web/default.aspx", false);
 	
 		
 		
