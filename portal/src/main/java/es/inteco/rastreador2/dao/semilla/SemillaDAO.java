@@ -2546,6 +2546,7 @@ public final class SemillaDAO {
 			DAOUtils.closeQueries(ps, null);
 		}
 	}
+	
 
 	/**
 	 * Update category seeds.

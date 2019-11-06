@@ -35,8 +35,15 @@ CREATE TABLE observatorio_ambito (
 ALTER TABLE observatorio ADD id_ambito BIGINT(20);
 
 
+
 INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(1, 'Baja', 2, 2);
 INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(2, 'Media', 4, 8);
 INSERT INTO complejidades_lista (id_complejidad, nombre, profundidad, amplitud) VALUES(3, 'Alta', 4, 11);
 
 UPDATE lista SET id_complejidad=2;
+
+CREATE TABLE etiqueta ( `id_etiqueta` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , `id_clasificacion` BIGINT(20) NOT NULL , PRIMARY KEY (`id_etiqueta`));
+
+CREATE TABLE clasificacion_etiqueta ( `id_clasificacion` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , PRIMARY KEY (`id_clasificacion`));
+INSERT INTO clasificacion_etiqueta` (`id_clasificacion`, `nombre`) VALUES ('1', 'Temática'), ('2', 'Distribución'), ('3', 'Recurrencia');
+

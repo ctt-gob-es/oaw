@@ -291,7 +291,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</logic:notPresent>
 
 			<logic:present parameter="<%=Constants.ID_COMPLEJIDAD%>">
-				<input type="hidden" name="segmento"
+				<input type="hidden" name="complejidadaux"
 					value="<c:out value="${ComplejidadForm.id }" />" />
 			</logic:present>
 			<logic:notPresent parameter="<%=Constants.ID_COMPLEJIDAD%>">
