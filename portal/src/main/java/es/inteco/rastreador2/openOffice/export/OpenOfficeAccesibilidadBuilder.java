@@ -306,7 +306,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		int tableNum = 1;
 		for (CategoriaForm category : categories) {
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils
-					.infoComparisonBySegment(messageResources, res.get(category));
+					.infoComparisionAllocation(messageResources, res.get(category));
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b2-", results.get(0).getValue() + "%");
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b3-", results.get(1).getValue() + "%");
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b4-", results.get(2).getValue() + "%");
@@ -347,7 +347,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		int tableNum = 1;
 		for (CategoriaForm category : categories) {
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils
-					.infoComparisonBySegmentPuntuation(messageResources, res.get(category));
+					.infoComparisonAllocationPuntuation(messageResources, res.get(category));
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b2-", results.get(0).getValue());
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b3-", results.get(1).getValue());
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b4-", results.get(2).getValue());
