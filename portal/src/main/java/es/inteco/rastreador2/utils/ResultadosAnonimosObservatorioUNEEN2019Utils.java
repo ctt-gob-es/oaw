@@ -855,8 +855,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		Collections.sort(modalityComparisonList, new Comparator<ModalityComparisonForm>() {
 			@Override
 			public int compare(ModalityComparisonForm version1, ModalityComparisonForm version2) {
-				String[] v1 = version1.getVerification().substring(version1.getVerification().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length()).split("\\.");
-				String[] v2 = version2.getVerification().substring(version2.getVerification().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length()).split("\\.");
+				String[] v1 = version1.getVerification().split("\\.");
+				String[] v2 = version2.getVerification().split("\\.");
 				int major1 = major(v1);
 				int major2 = major(v2);
 				if (major1 == major2) {
@@ -1232,7 +1232,15 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		for (Map.Entry<String, BigDecimal> entry : resultsC.entrySet()) {
 			resultsOrdered.put(entry.getKey(), entry.getValue().divide(new BigDecimal(results.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
 		}
-		return resultsOrdered;
+		
+		Map<String, BigDecimal> resultsP = new TreeMap<>();
+		for (Map.Entry<String, BigDecimal> entry : resultsC.entrySet()) {
+			resultsP.put(entry.getKey(), entry.getValue().divide(new BigDecimal(results.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+		}
+		
+		
+		
+		return resultsP;
 	}
 
 	/**
