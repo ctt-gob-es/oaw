@@ -1221,14 +1221,15 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	}
 
 	/**
-	 * 
-	 * @param messageResources
-	 * @param odt
-	 * @param odfFileContent
-	 * @param graphicPath
-	 * @param pageExecutionList
-	 * @return
-	 * @throws Exception
+	 * Replace section compilance by verification level 1.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
 	 */
 	private int replaceSectionCompilanceByVerificationLevel1(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
@@ -1271,27 +1272,38 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		return numImg;
 	}
 
+	/**
+	 * Replace section compilance by verification level 2.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
 	private int replaceSectionCompilanceByVerificationLevel2(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		// replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + ".jpg", "image/jpeg");
-		replaceImageGeneric(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.name") + ".jpg",
-				messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.1.name"), "image/jpeg");
+		replaceImageGeneric(odt, graphicPath + messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.name") + ".jpg",
+				messageResources.getMessage("observatory.graphic.verification.compilance.comparation.level.2.name"), "image/jpeg");
 		numImg++;
 		final Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_2);
 		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNEEN2019Utils
 				.infoLevelVerificationCompilanceComparison(ResultadosAnonimosObservatorioUNEEN2019Utils.generatePercentajesCompilanceVerification(results));
-		replaceText(odt, odfFileContent, "-452.t1.b2-", res.get(0).getGreenPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.c2-", res.get(0).getRedPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.b3-", res.get(1).getGreenPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.c3-", res.get(1).getRedPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.b4-", res.get(2).getGreenPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.c4-", res.get(2).getRedPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.b5-", res.get(3).getGreenPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.c5-", res.get(3).getRedPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.b6-", res.get(4).getGreenPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.c6-", res.get(4).getRedPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.b7-", res.get(5).getGreenPercentage());
-		replaceText(odt, odfFileContent, "-452.t1.c7-", res.get(5).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.b2-", res.get(0).getGreenPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.c2-", res.get(0).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.b3-", res.get(1).getGreenPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.c3-", res.get(1).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.b4-", res.get(2).getGreenPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.c4-", res.get(2).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.b5-", res.get(3).getGreenPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.c5-", res.get(3).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.b6-", res.get(4).getGreenPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.c6-", res.get(4).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.b7-", res.get(5).getGreenPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.c7-", res.get(5).getRedPercentage());
 		return numImg;
 	}
 

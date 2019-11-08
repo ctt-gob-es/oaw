@@ -714,14 +714,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(pageExecutionList, level);
 		final DefaultCategoryDataset dataSet = createStackedBarDataSetForCompilance(results, messageResources);
 		// Incluimos los resultados en la request
-//		if (level.equals(Constants.OBS_PRIORITY_1)) {
-//			globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_COMPILANCE_VERIFICATION_I, infoLevelVerificationCompilanceComparison(results));
-//		} else if (level.equals(Constants.OBS_PRIORITY_2)) {
-//			globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_COMPILANCE_VERIFICATION_II, infoLevelVerificationCompilanceComparison(results));
-//		}
+		if (level.equals(Constants.OBS_PRIORITY_1)) {
+			globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_COMPILANCE_VERIFICATION_I, infoLevelVerificationCompilanceComparison(generatePercentajesCompilanceVerification(results)));
+		} else if (level.equals(Constants.OBS_PRIORITY_2)) {
+			globalGraphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_COMPILANCE_VERIFICATION_II, infoLevelVerificationCompilanceComparison(generatePercentajesCompilanceVerification(results)));
+		}
 		if (!file.exists() || regenerate) {
 			final PropertiesManager pmgr = new PropertiesManager();
-			final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.modality.colors"));
+			final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.compilance.colors"));
 			GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 		}
 	}
@@ -1161,7 +1161,38 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	private static DefaultCategoryDataset createStackedBarDataSetForCompilance(final Map<Long, Map<String, BigDecimal>> results, final MessageResources messageResources) {
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		Map<String, BigDecimal> resultsOrdered = generatePercentajesCompilanceVerification(results);
-		for (Map.Entry<String, BigDecimal> entry : resultsOrdered.entrySet()) {
+		Map<String, BigDecimal> resultsOrderedReordered = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String version1, String version2) {
+				String[] v1 = version1.split("\\.");
+				String[] v2 = version2.split("\\.");
+				int major1 = major(v1);
+				int major2 = major(v2);
+				if (major1 == major2) {
+					if (minor(v1) == minor(v2)) { // Devolvemos 1
+													// aunque sean iguales
+													// porque las claves lleva
+													// asociado un subfijo que
+													// aqui no tenemos en cuenta
+						return 1;
+					}
+					return minor(v1).compareTo(minor(v2));
+				}
+				return major1 > major2 ? 1 : -1;
+			}
+
+			private int major(String[] version) {
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, ""));
+			}
+
+			private Integer minor(String[] version) {
+				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")) : 0;
+			}
+		});
+		for (Map.Entry<String, BigDecimal> entryO : resultsOrdered.entrySet()) {
+			resultsOrderedReordered.put(entryO.getKey(), entryO.getValue());
+		}
+		for (Map.Entry<String, BigDecimal> entry : resultsOrderedReordered.entrySet()) {
 			if (entry.getKey().contains(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.compilance.red"), entry.getKey().replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, ""));
 			} else if (entry.getKey().contains(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
@@ -1232,14 +1263,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		for (Map.Entry<String, BigDecimal> entry : resultsC.entrySet()) {
 			resultsOrdered.put(entry.getKey(), entry.getValue().divide(new BigDecimal(results.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
 		}
-		
 		Map<String, BigDecimal> resultsP = new TreeMap<>();
-		for (Map.Entry<String, BigDecimal> entry : resultsC.entrySet()) {
-			resultsP.put(entry.getKey(), entry.getValue().divide(new BigDecimal(results.size()), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED));
+		for (Map.Entry<String, BigDecimal> entry : resultsOrdered.entrySet()) {
+			resultsP.put(entry.getKey(), entry.getValue());
 		}
-		
-		
-		
 		return resultsP;
 	}
 
