@@ -38,6 +38,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
@@ -197,6 +198,39 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			}
 
 			semilla.setDependencias(listaDependencias);
+			
+			
+			// Soporte a etiquetas
+			List<EtiquetaForm> listaEtiquetas = new ArrayList<>();
+
+			// Si viene de la edición en el grid, el parámetro viene como
+			// valores separados por comas, si viene de la edición en los
+			// reslutados de observatorio viene el parametro tantas veces como
+			// valores tenga
+			String[] arrayEtiquetas = request.getParameterValues("etiquetasaux");
+			if (arrayEtiquetas != null && arrayEtiquetas.length > 1) {
+				for (int i = 0; i < arrayEtiquetas.length; i++) {
+					EtiquetaForm etiqueta = new EtiquetaForm();
+					etiqueta.setId(Long.parseLong(arrayEtiquetas[i]));
+					listaEtiquetas.add(etiqueta);
+				}
+
+			} else {
+				// Solo un parámetro que intentaremos separar por comas, si no
+				// las tiene devolverá un único valor
+				String etiquetas = request.getParameter("etiquetasaux");
+
+				if (!StringUtils.isEmpty(etiquetas)) {
+					String[] idsEtiquetas = etiquetas.split(",");
+					for (int i = 0; i < idsEtiquetas.length; i++) {
+						EtiquetaForm etiqueta = new EtiquetaForm();
+						etiqueta.setId(Long.parseLong(idsEtiquetas[i]));
+						listaEtiquetas.add(etiqueta);
+					}
+				}
+			}
+
+			semilla.setEtiquetas(listaEtiquetas);
 
 			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
 
@@ -336,6 +370,22 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 			semilla.setDependencias(listaDependencias);
 
+			
+			// Soporte a etiquetas
+			List<EtiquetaForm> listaEtiquetas = new ArrayList<>();
+
+			String[] etiquetas = request.getParameterValues("etiquetasaux");
+			if (etiquetas != null && etiquetas.length > 0) {
+				for (int i = 0; i < etiquetas.length; i++) {
+					EtiquetaForm etiqueta = new EtiquetaForm();
+					etiqueta.setId(Long.parseLong(etiquetas[i]));
+					listaEtiquetas.add(etiqueta);
+				}
+			}
+
+			semilla.setEtiquetas(listaEtiquetas);
+			
+			
 			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
 
 				semilla.setListaUrlsString(normalizarUrl(semilla.getListaUrlsString()));
@@ -624,6 +674,41 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
+	/**
+	 * Obtiene un listado de todas las etiquetas. La respuesta se genera como
+	 * un JSON
+	 *
+	 * @param mapping
+	 *            the mapping
+	 * @param form
+	 *            the form
+	 * @param request
+	 *            the request
+	 * @param response
+	 *            the response
+	 * @return the action forward
+	 * @throws Exception
+	 *             the exception
+	 */
+	public ActionForward listEtiquetas(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		try (Connection c = DataBaseManager.getConnection()) {
+
+			List<EtiquetaForm> listEtiquetas = SemillaDAO.getSeedEtiquetas(c, Constants.NO_PAGINACION);
+
+			String jsonEtiquetas = new Gson().toJson(listEtiquetas);
+
+			PrintWriter pw = response.getWriter();
+			pw.write(jsonEtiquetas);
+			pw.flush();
+			pw.close();
+
+		} catch (Exception e) {
+			Logger.putLog("Error: ", SemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		return null;
+	}
+	
 	/**
 	 * Normalizar url.
 	 * 

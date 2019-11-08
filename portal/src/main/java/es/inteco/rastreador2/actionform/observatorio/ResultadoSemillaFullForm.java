@@ -14,6 +14,7 @@ package es.inteco.rastreador2.actionform.observatorio;
 
 import java.util.List;
 
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
@@ -35,6 +36,8 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 	private String inDirectoryStr;
 
 	private List<DependenciaForm> dependencias;
+	private List<EtiquetaForm> etiquetas;
+
 
 	public String getNombre() {
 		return nombre;
@@ -139,6 +142,14 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 
 	public void setDependencias(List<DependenciaForm> dependencias) {
 		this.dependencias = dependencias;
+	}
+	
+	public List<EtiquetaForm> getEtiquetas() {
+		return etiquetas;
+	}
+
+	public void setEtiquetas(List<EtiquetaForm> etiquetas) {
+		this.etiquetas = etiquetas;
 	}
 
 }

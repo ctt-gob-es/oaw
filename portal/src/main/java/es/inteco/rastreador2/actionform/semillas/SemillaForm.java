@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.action.ActionMapping;
 import org.apache.struts.validator.ValidatorForm;
 
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
+
 /**
  * The Class SemillaForm.
  */
@@ -73,6 +75,9 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	
 	/** The complejidad. */
 	private ComplejidadForm complejidad;
+	
+	/** The complejidad. */
+	private List<EtiquetaForm> etiquetas;
 	
 	/** The in directory. */
 	private boolean inDirectory;
@@ -503,6 +508,91 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	
 
 	/**
+	 * Gets the etiquetas.
+	 *
+	 * @return the etiquetas
+	 */
+	public List<EtiquetaForm> getEtiquetas() {
+		return etiquetas;
+	}
+
+	/**
+	 * Sets the etiquetas.
+	 *
+	 * @param etiquetas the new etiquetas
+	 */
+	public void setEtiquetas(List<EtiquetaForm> etiquetas) {
+		this.etiquetas = etiquetas;
+	}
+
+	/**
+	 * Adds the etiqueta.
+	 *
+	 * @param dependencia the etiqueta
+	 */
+	public void addEtiqueta(EtiquetaForm etiqueta) {
+		if (this.etiquetas == null) {
+			this.etiquetas = new ArrayList<EtiquetaForm>();
+		}
+		this.etiquetas.add(etiqueta);
+	}
+
+	/**
+	 * Adds the etiqueta por nombre.
+	 *
+	 * @param nombre the nombre
+	 */
+	public void addEtiquetaPorNombre(String nombre) {
+		if (this.etiquetas == null) {
+			this.etiquetas = new ArrayList<EtiquetaForm>();
+		}
+		// DependenciaForm dependencia = new DependenciaForm();
+		// dependencia.setName(nombre);
+		// this.dependencias.add(dependencia);
+
+		if (!StringUtils.isEmpty(nombre)) {
+			String[] nombres = nombre.split("\r\n");
+
+			// Try split without \r
+			if (nombres.length == 1) {
+				nombres = nombre.split("\n");
+			}
+
+			for (String currentNombre : nombres) {
+				EtiquetaForm etiqueta = new EtiquetaForm();
+				etiqueta.setName(currentNombre.trim());
+				this.etiquetas.add(etiqueta);
+			}
+		}
+
+	}
+
+	/**
+	 * Sets the category name.
+	 *
+	 * @param categoryName the new category name
+	 */
+	public void setCategoryName(String categoryName) {
+		this.categoria = new CategoriaForm();
+		categoria.setName(categoryName);
+	}
+
+	/**
+	 * Sets the id str.
+	 *
+	 * @param strId the new id str
+	 */
+	public void setIdStr(String strId) {
+		if (strId != null && !StringUtils.isEmpty(strId)) {
+			this.setId(Long.parseLong(strId));
+		} else {
+			this.setId(null);
+		}
+
+	}
+	
+
+	/**
 	 * Gets the dependencias.
 	 *
 	 * @return the dependencias
@@ -561,31 +651,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		}
 
 	}
-
-	/**
-	 * Sets the category name.
-	 *
-	 * @param categoryName the new category name
-	 */
-	public void setCategoryName(String categoryName) {
-		this.categoria = new CategoriaForm();
-		categoria.setName(categoryName);
-	}
-
-	/**
-	 * Sets the id str.
-	 *
-	 * @param strId the new id str
-	 */
-	public void setIdStr(String strId) {
-		if (strId != null && !StringUtils.isEmpty(strId)) {
-			this.setId(Long.parseLong(strId));
-		} else {
-			this.setId(null);
-		}
-
-	}
-
+	
+	
 	/**
 	 * To string.
 	 *
