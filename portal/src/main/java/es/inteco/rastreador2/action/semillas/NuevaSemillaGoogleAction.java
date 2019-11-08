@@ -93,7 +93,7 @@ public class NuevaSemillaGoogleAction extends Action {
                             }
                         }
                     }
-                    SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaGoogleForm.getNombreSemilla(), listaUrls, nuevaSemillaGoogleForm.getCategoria().getId(),  null, null, null, null);
+                    SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaGoogleForm.getNombreSemilla(), listaUrls, nuevaSemillaGoogleForm.getCategoria().getId(),  null, null, null, null, null);
 
                     ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.generada", "volver.nueva.semilla.google");
                     return mapping.findForward(Constants.EXITO);

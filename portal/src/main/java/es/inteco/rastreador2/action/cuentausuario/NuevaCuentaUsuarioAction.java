@@ -93,20 +93,20 @@ public class NuevaCuentaUsuarioAction extends Action {
                             }
 
                             //Guardamos la semilla
-                            SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaCuentaUsuarioForm.getNombre() + "-Semilla", nuevaCuentaUsuarioForm.getDominio(), null, null, null, null, null);
+                            SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaCuentaUsuarioForm.getNombre() + "-Semilla", nuevaCuentaUsuarioForm.getDominio(), null, null, null, null, null, null);
                             Long idSeed = SemillaDAO.getIdList(c, nuevaCuentaUsuarioForm.getNombre() + "-Semilla", null);
                             nuevaCuentaUsuarioForm.setIdSeed(idSeed);
 
                             if (nuevaCuentaUsuarioForm.getListaRastreable() != null && !nuevaCuentaUsuarioForm.getListaRastreable().isEmpty()) {
                                 //Guardamos la lista Rastreable
-                                SemillaDAO.insertList(c, Constants.ID_LISTA_RASTREABLE, nuevaCuentaUsuarioForm.getNombre() + "-Rastreable", nuevaCuentaUsuarioForm.getListaRastreable(), null, null, null, null, null);
+                                SemillaDAO.insertList(c, Constants.ID_LISTA_RASTREABLE, nuevaCuentaUsuarioForm.getNombre() + "-Rastreable", nuevaCuentaUsuarioForm.getListaRastreable(), null, null, null, null, null, null);
                                 Long idCrawlableList = SemillaDAO.getIdList(c, nuevaCuentaUsuarioForm.getNombre() + "-Rastreable", null);
                                 nuevaCuentaUsuarioForm.setIdCrawlableList(idCrawlableList);
                             }
 
                             if (nuevaCuentaUsuarioForm.getListaNoRastreable() != null && !nuevaCuentaUsuarioForm.getListaNoRastreable().isEmpty()) {
                                 //Guardamos la lista No rastreable
-                                SemillaDAO.insertList(c, Constants.ID_LISTA_NO_RASTREABLE, nuevaCuentaUsuarioForm.getNombre() + "-NoRastreable", nuevaCuentaUsuarioForm.getListaNoRastreable(), null, null, null, null, null);
+                                SemillaDAO.insertList(c, Constants.ID_LISTA_NO_RASTREABLE, nuevaCuentaUsuarioForm.getNombre() + "-NoRastreable", nuevaCuentaUsuarioForm.getListaNoRastreable(), null, null, null, null, null, null);
                                 Long idNoCrawlableList = SemillaDAO.getIdList(c, nuevaCuentaUsuarioForm.getNombre() + "-NoRastreable", null);
                                 nuevaCuentaUsuarioForm.setIdNoCrawlableList(idNoCrawlableList);
                             }
