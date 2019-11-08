@@ -55,17 +55,13 @@ import es.inteco.utils.CrawlerUtils;
  * Created by mikunis on 26/11/14.
  */
 public class TestCrawl {
-
 	public static final Log LOG = LogFactory.getLog("root");
-
 	/** Constante EMPTY_STRING. */
 	private static final String EMPTY_STRING = "";
-
 	private final List<CrawledLink> crawlingDomains = new ArrayList<CrawledLink>();
 	private final List<String> auxDomains = new ArrayList<String>();
 	private final List<String> md5Content = new ArrayList<String>();
 	private final List<String> rejectedDomains = new ArrayList<String>();
-	
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -73,22 +69,17 @@ public class TestCrawl {
 		System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
 		System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 		final InitialContext ic = new InitialContext();
-
 		ic.createSubcontext("java:");
 		ic.createSubcontext("java:/comp");
 		ic.createSubcontext("java:/comp/env");
 		ic.createSubcontext("java:/comp/env/jdbc");
-
 		// Construct DataSource
 		final MysqlConnectionPoolDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
 		mysqlDataSource.setURL("jdbc:mysql://localhost:3306/oaw_js");
 		mysqlDataSource.setUser("root");
 		mysqlDataSource.setPassword("root");
-
 		ic.bind("java:/comp/env/jdbc/oaw", mysqlDataSource);
-
 		org.apache.log4j.Logger.getRootLogger().setLevel(org.apache.log4j.Level.OFF);
-
 	}
 
 	private static boolean isOuterDomain(String domain, String url) {
@@ -105,45 +96,40 @@ public class TestCrawl {
 	private static boolean isInTheSameDirectory(String link, String urlRoot) {
 		final String protocolRegExp = "https?://";
 		final String urlRootDirectory = urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1
-				? urlRoot.replaceAll(protocolRegExp, "").substring(0,
-						urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/"))
+				? urlRoot.replaceAll(protocolRegExp, "").substring(0, urlRoot.replaceAll(protocolRegExp, "").lastIndexOf("/"))
 				: urlRoot.replaceAll(protocolRegExp, "");
-
-		final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1
-				? link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/"))
+		final String linkDirectory = link.replaceAll(protocolRegExp, "").lastIndexOf("/") != -1 ? link.replaceAll(protocolRegExp, "").substring(0, link.replaceAll(protocolRegExp, "").lastIndexOf("/"))
 				: link.replaceAll(protocolRegExp, "");
-
 		return linkDirectory.contains(urlRootDirectory);
 	}
 
 	@Test
 	public void crawlPrincipales() throws Exception {
 		
-
-		
-		this.test("https://www.miteco.gob.es/es/mapa-web/default.aspx", false);
-	
-		
-		
-		
-		
-
-
-		
-		
-
-		
-		
-
-		
-		
-		
+		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
+		this.test("http://www.comunidad.madrid", false);
+		this.test("https://web.gencat.cat/ca/inici/", false);
+		this.test("https://www.gva.es/va/inicio/presentacion", false);
+		this.test("https://www.aragon.es/", false);
+		this.test("https://www.gobiernodecanarias.org/principal/", false);
+		this.test("http://www.cantabria.es/", false);
+		this.test("https://www.larioja.org/es", false);
+		this.test("http://www.caib.es/govern/index.do?lang=ca", false);
+		this.test("http://www.navarra.es/home_es/", false);
+		this.test("https://www.asturias.es/", false);
+		this.test("http://www.euskadi.eus/hasiera/", false);
+		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
+		this.test("https://www.jcyl.es/", false);
+		this.test("http://www.juntaex.es/web/", false);
+		this.test("http://www.ceuta.es/", false);
+		this.test("https://www.castillalamancha.es/", true);
+		this.test("http://www.carm.es", false);
+		this.test("https://www.xunta.gal/portada", false);
 	}
 
 	public void test(String url, boolean enDirectorio) throws Exception {
 		System.out.println(url);
-		System.out.println(
-				"-------------------------------------------------------------------------------------------\n\n");
+		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
 		crawlerData.setProfundidad(4);
@@ -153,16 +139,12 @@ public class TestCrawl {
 		crawlerData.setIdCrawling(-1);
 		crawlerData.setInDirectory(enDirectorio);
 		makeCrawl(crawlerData);
-
 		for (CrawledLink cl : crawlingDomains) {
 			System.out.println(cl.getUrl());
 		}
-		System.out.println(
-				"-------------------------------------------------------------------------------------------\n\n");
-
+		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		crawlingDomains.clear();
 		// Assert.assertEquals(33, crawlingDomains.size());
-
 	}
 
 	/**
@@ -171,30 +153,20 @@ public class TestCrawl {
 	 * @param crawlerData the crawler data
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-
 	public void makeCrawl(final CrawlerData crawlerData) throws IOException {
-
 		final PropertiesManager pmgr = new PropertiesManager();
-
 		final int maxNumRetries = 3;
 		final int maxNumRedirections = 15;
 		final long timeRetry = 20000;
-
 		List<IgnoredLink> ignoredLinks = null;
-
 		String cookie = null;
-
 		final int chosenDepth = crawlerData.getProfundidad();
 		for (String url : crawlerData.getUrls()) {
-
 			String domain = null;
-			if (url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript")
-					&& !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
-					&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc")
-					&& !url.endsWith(".epub") && !url.endsWith(".xml") && !url.endsWith(".xls")
+			if (url != null && !url.isEmpty() && !url.toLowerCase().startsWith("javascript") && !url.toLowerCase().startsWith("mailto") && !url.toLowerCase().startsWith("tel")
+					&& !url.toLowerCase().endsWith(".pdf") && !url.toLowerCase().endsWith(".doc") && !url.endsWith(".epub") && !url.endsWith(".xml") && !url.endsWith(".xls")
 					&& !url.endsWith(".wsdl")) {
 				try {
-
 					HttpURLConnection connection = CrawlerUtils.getConnection(url, null, false);
 					// Para la conexión inicial aumentamos los tiempos de espera
 					connection.setConnectTimeout(connection.getConnectTimeout() * 2);
@@ -202,59 +174,39 @@ public class TestCrawl {
 					int numRetries = 0;
 					int numRedirections = 0;
 					int responseCode = Integer.MAX_VALUE;
-
-					while ((numRetries < maxNumRetries) && (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE)
-							&& (numRedirections < maxNumRedirections)) {
+					while ((numRetries < maxNumRetries) && (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRedirections < maxNumRedirections)) {
 						url = connection.getURL().toString();
 						connection.connect();
 						responseCode = connection.getResponseCode();
 						if (numRedirections == 0) {
 							cookie = CrawlerUtils.getCookie(connection);
 						}
-						if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url)
-								&& !CrawlerUtils.isOpenDNSResponse(connection)) {
+						if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url) && !CrawlerUtils.isOpenDNSResponse(connection)) {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
-
 							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-
 							// TODO Sólo se pasa al renderizador para recuperar el contenido
-
-							final String textContent = CrawlerUtils.getTextContent(
-									CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
+							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
-
 							// TODO Recuerar el charset
 							final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
 							markableInputStream.close();
-
 							final Document document = CrawlerDOMUtils.getDocument(textContent);
-
 							final String metaRedirect = CrawlerDOMUtils.getMetaRedirect(url, document);
-
 							if (checkIfContentIsNotHTML(textContent)) {
-								Logger.putLog(String.format("La url %s ha sido rechazada por ser un RSS", url),
-										CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-
+								Logger.putLog(String.format("La url %s ha sido rechazada por ser un RSS", url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 								rejectedDomains.add(url);
 							} else if (StringUtils.isEmpty(metaRedirect)) {
 								final String textContentHash = CrawlerUtils.getHash(textContent);
-
 								// Si no está ya incluida en el rastreo
 								if (!md5Content.contains(textContentHash)) {
-									final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries,
-											numRedirections);
-
+									final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries, numRedirections);
 									// TODO Propagar el charset
 									crawledLink.setCharset(charset);
-
 									crawlingDomains.add(crawledLink);
 									md5Content.add(textContentHash);
-									Logger.putLog(String.format("Introducida la URL número %d: %s",
-											crawlingDomains.size(), url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-
-									System.out.println(String.format("Introducida la URL número %d: %s",
-											crawlingDomains.size(), url));
+									Logger.putLog(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+									System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), url));
 									if (crawlerData.getProfundidad() > 1 || crawlerData.getTopN() != 1) {
 										// Si se trata de un observatorio, o la
 										// petición viene del servicio básico
@@ -268,9 +220,7 @@ public class TestCrawl {
 										makeCrawl(domain, url, url, cookie, crawlerData, ignoredLinks);
 									}
 								} else {
-									Logger.putLog(String.format(
-											"La url %s ha sido rechazada por estar incluida en el rastreo", url),
-											CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+									Logger.putLog(String.format("La url %s ha sido rechazada por estar incluida en el rastreo", url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 									rejectedDomains.add(url);
 								}
 							} else {
@@ -278,29 +228,22 @@ public class TestCrawl {
 								connection = CrawlerUtils.followRedirection(cookie, new URL(url), metaRedirect);
 								responseCode = Integer.MAX_VALUE;
 							}
-						} else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE
-								&& responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+						} else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
 							numRedirections++;
-							connection = CrawlerUtils.followRedirection(cookie, new URL(url),
-									connection.getHeaderField("location"));
+							connection = CrawlerUtils.followRedirection(cookie, new URL(url), connection.getHeaderField("location"));
 						} else {
 							if (CrawlerUtils.isOpenDNSResponse(connection)) {
-								Logger.putLog("La URL solicitada ha provocado la respuesta del OpenDNS",
-										CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-								if ((numRetries < maxNumRetries - 1)
-										&& (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST)) {
+								Logger.putLog("La URL solicitada ha provocado la respuesta del OpenDNS", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+								if ((numRetries < maxNumRetries - 1) && (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST)) {
 									Thread.sleep(timeRetry);
 								}
 								numRetries++;
 							} else if (contains(crawlingDomains, url)) {
-								Logger.putLog(String
-										.format("La url %s ha sido rechazada por estar incluida en el rastreo", url),
-										CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+								Logger.putLog(String.format("La url %s ha sido rechazada por estar incluida en el rastreo", url), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 								rejectedDomains.add(url);
 							} else {
-								Logger.putLog(String.format(
-										"No se ha podido acceder a la raiz del rastreo configurado %s ya que ha respondido con el código %d",
-										url, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+								Logger.putLog(String.format("No se ha podido acceder a la raiz del rastreo configurado %s ya que ha respondido con el código %d", url, responseCode), CrawlerJob.class,
+										Logger.LOG_LEVEL_INFO);
 								if (numRetries < maxNumRetries - 1) {
 									Thread.sleep(timeRetry);
 								}
@@ -308,35 +251,27 @@ public class TestCrawl {
 							}
 						}
 					}
-
 					connection.disconnect();
-
 					Collections.reverse(auxDomains);
 					for (String auxDomain : auxDomains) {
 						try {
 							if ((crawlingDomains.size() <= (chosenDepth * crawlerData.getTopN()))) {
 								if (!contains(crawlingDomains, auxDomain) && !rejectedDomains.contains(auxDomain)) {
-									isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks,
-											false, false);
+									isLinkToAdd(url, domain, auxDomain, cookie, null, crawlerData, false, ignoredLinks, false, false);
 								}
 							} else {
 								break;
 							}
 						} catch (Exception e) {
-							Logger.putLog(String.format("Error al intentar introducir la url auxiliar %s: %s",
-									auxDomain, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+							Logger.putLog(String.format("Error al intentar introducir la url auxiliar %s: %s", auxDomain, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 						}
 					}
-
-					Logger.putLog(String.format("Terminado el rastreo para %s, se han recogido %d enlaces: ", url,
-							crawlingDomains.size()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+					Logger.putLog(String.format("Terminado el rastreo para %s, se han recogido %d enlaces: ", url, crawlingDomains.size()), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 					for (CrawledLink crawledLink : crawlingDomains) {
 						Logger.putLog(crawledLink.getUrl(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 					}
-
 				} catch (Exception e) {
-					Logger.putLog(String.format("Error al rastrear el dominio %s: %s", url, e.getMessage()),
-							CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
+					Logger.putLog(String.format("Error al rastrear el dominio %s: %s", url, e.getMessage()), CrawlerJob.class, Logger.LOG_LEVEL_INFO, e);
 				}
 			} else {
 				Logger.putLog("Rechazada la url " + url, CrawlerJob.class, Logger.LOG_LEVEL_INFO);
@@ -473,7 +408,6 @@ public class TestCrawl {
 //			}
 //		}
 //	}
-
 	private boolean contains(List<CrawledLink> crawledLinks, String url) {
 		for (CrawledLink crawledLink : crawledLinks) {
 			if (crawledLink.getUrl().equals(url)) {
@@ -483,11 +417,9 @@ public class TestCrawl {
 		return false;
 	}
 
-	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie,
-			List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
+	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
 			List<IgnoredLink> ignoredLinks) throws Exception {
-		return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie,
-				levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
+		return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
 	}
 
 	private boolean isHtmlTextContent(String domain, String urlLink, String cookie) throws Exception {
@@ -496,8 +428,7 @@ public class TestCrawl {
 		connection.connect();
 		int responseCode = connection.getResponseCode();
 		if (responseCode == HttpURLConnection.HTTP_OK) {
-			if (connection.getHeaderField("content-type") != null
-					&& connection.getHeaderField("content-type").contains("text/html")) {
+			if (connection.getHeaderField("content-type") != null && connection.getHeaderField("content-type").contains("text/html")) {
 				return true;
 			} else {
 				LOG.info("La url " + urlLink + " ha sido rechazada por no ser un documento de tipo text/html");
@@ -511,40 +442,30 @@ public class TestCrawl {
 		return false;
 	}
 
-	private boolean hasAccessToUrl(String rootUrl, String domain, String urlLink, String cookie,
-			List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
+	private boolean hasAccessToUrl(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
 			List<IgnoredLink> ignoredLinks) throws Exception {
 		HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, false);
 		connection.setRequestProperty("Cookie", cookie);
 		int responseCode = Integer.MAX_VALUE;
 		int numRetries = 0;
 		int numRedirections = 0;
-
 		PropertiesManager pmgr = new PropertiesManager();
 		int maxNumRetries = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.retries"));
 		int maxNumRedirections = Integer.parseInt(pmgr.getValue("crawler.core.properties", "max.number.redirections"));
-
-		while ((responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRetries < maxNumRetries)
-				&& (numRedirections < maxNumRedirections)) {
+		while ((responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) && (numRetries < maxNumRetries) && (numRedirections < maxNumRedirections)) {
 			urlLink = connection.getURL().toString();
 			connection.connect();
 			responseCode = connection.getResponseCode();
 			if (responseCode > HttpURLConnection.HTTP_BAD_REQUEST) {
 				numRetries++;
-			} else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE
-					&& responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+			} else if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE && responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
 				numRedirections++;
-				connection = CrawlerUtils.followRedirection(cookie, new URL(urlLink),
-						connection.getHeaderField("location"));
+				connection = CrawlerUtils.followRedirection(cookie, new URL(urlLink), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
 				InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-
 				// String remoteContent = CrawlerUtils.getTextContent(connection,
 				// markableInputStream);
-
-				final String remoteContent = CrawlerUtils
-						.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
-
+				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				if (!CrawlerUtils.isRss(remoteContent)) {
 					Document document = CrawlerDOMUtils.getDocument(remoteContent);
 					String metaRedirect = CrawlerDOMUtils.getMetaRedirect(urlLink, document);
@@ -552,37 +473,29 @@ public class TestCrawl {
 						String remoteContentHash = CrawlerUtils.getHash(remoteContent);
 						if (isValidUrl(rootUrl, domain, urlLink, crawlerData)) {
 							if (!md5Content.contains(remoteContentHash)) {
-								CrawledLink crawledLink = new CrawledLink(urlLink, remoteContent, numRetries,
-										numRedirections);
+								CrawledLink crawledLink = new CrawledLink(urlLink, remoteContent, numRetries, numRedirections);
 								if (levelLinks != null) {
 									levelLinks.add(crawledLink);
 								}
 								crawlingDomains.add(crawledLink);
 								md5Content.add(remoteContentHash);
 								LOG.info("Introducida la URL número " + crawlingDomains.size() + ": " + urlLink);
-
-								System.out.println(String.format("Introducida la URL número %d: %s",
-										crawlingDomains.size(), urlLink));
+								System.out.println(String.format("Introducida la URL número %d: %s", crawlingDomains.size(), urlLink));
 								return true;
 							} else {
 								LOG.info("La url " + urlLink + " ha sido rechazada por estar incluida en el rastreo");
 								rejectedDomains.add(urlLink);
 							}
-
 							if (addAuxiliaryLinks) {
 								List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
 								for (String urlLinkAux : urlLinks) {
 									try {
-										urlLinkAux = CrawlerUtils
-												.getAbsoluteUrl(document, urlLink, CrawlerUtils.encodeUrl(urlLinkAux))
-												.toString().replaceAll("\\.\\./", "");
+										urlLinkAux = CrawlerUtils.getAbsoluteUrl(document, urlLink, CrawlerUtils.encodeUrl(urlLinkAux)).toString().replaceAll("\\.\\./", "");
 										if (!auxDomains.contains(urlLinkAux)) {
 											auxDomains.add(urlLinkAux);
 										}
 									} catch (Exception e) {
-										LOG.info("La URL " + urlLink
-												+ " del enlace encontrado ha dado problemas de conexión: "
-												+ e.getMessage());
+										LOG.info("La URL " + urlLink + " del enlace encontrado ha dado problemas de conexión: " + e.getMessage());
 									}
 								}
 							}
@@ -596,13 +509,10 @@ public class TestCrawl {
 					LOG.info("La url " + urlLink + " ha sido rechazada por tratarse de un RSS");
 				}
 			} else {
-				LOG.info("La url " + urlLink + " ha respondido con el código " + responseCode
-						+ " y no se le pasara al analizador");
+				LOG.info("La url " + urlLink + " ha respondido con el código " + responseCode + " y no se le pasara al analizador");
 			}
-
 			connection.disconnect();
 		}
-
 		return false;
 	}
 
@@ -617,11 +527,9 @@ public class TestCrawl {
 	 * @param ignoredLinks the ignored links
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie,
-			final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws IOException {
+	private void makeCrawl(final String domain, final String rootUrl, final String url, final String cookie, final CrawlerData crawlerData, final List<IgnoredLink> ignoredLinks) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
-		final int unlimitedTopN = Integer
-				.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "amplitud.ilimitada.value"));
+		final int unlimitedTopN = Integer.parseInt(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES, "amplitud.ilimitada.value"));
 		if (crawlerData.getProfundidad() > 0) {
 			final List<CrawledLink> levelLinks = new ArrayList<>();
 			final HttpURLConnection connection = CrawlerUtils.getConnection(url, domain, true);
@@ -633,35 +541,25 @@ public class TestCrawl {
 					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
 					// final String textContent = CrawlerUtils.getTextContent(connection,
 					// markableInputStream);
-					final String textContent = CrawlerUtils
-							.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
+					final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 					markableInputStream.close();
 					final String textContentHash = CrawlerUtils.getHash(textContent);
-
 					if (!md5Content.contains(textContentHash)) {
 						md5Content.add(textContentHash);
 					}
-
 					final Document document = CrawlerDOMUtils.getDocument(textContent);
 					final List<String> urlLinks = CrawlerDOMUtils.getDomLinks(document, ignoredLinks);
-
 					if (crawlerData.isPseudoaleatorio()) {
 						Collections.shuffle(urlLinks, new Random(System.currentTimeMillis()));
 					}
-
 					int maxIntentosBuscarTipos = 0;
 					int cont = 0;
 					for (String urlLink : urlLinks) {
 						try {
-							final String absoluteUrlLink = CrawlerUtils
-									.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString()
-									.replaceAll("\\.\\./", EMPTY_STRING);
+							final String absoluteUrlLink = CrawlerUtils.getAbsoluteUrl(document, url, CrawlerUtils.encodeUrl(urlLink)).toString().replaceAll("\\.\\./", EMPTY_STRING);
 							if (isValidUrl(rootUrl, domain, absoluteUrlLink, crawlerData)) {
-								if ((crawlerData.getTopN() == unlimitedTopN) || ((cont < crawlerData.getTopN())
-										&& maxIntentosBuscarTipos < crawlerData.getMaxIntentosBuscarTipos())) {
-
-									if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData,
-											true, ignoredLinks, crawlerData.isCheckFormPage(),
+								if ((crawlerData.getTopN() == unlimitedTopN) || ((cont < crawlerData.getTopN()) && maxIntentosBuscarTipos < crawlerData.getMaxIntentosBuscarTipos())) {
+									if (isLinkToAdd(rootUrl, domain, absoluteUrlLink, cookie, levelLinks, crawlerData, true, ignoredLinks, crawlerData.isCheckFormPage(),
 											crawlerData.isCheckTablePage())) {
 										cont++;
 									} else if (!auxDomains.contains(absoluteUrlLink)) {
@@ -675,52 +573,42 @@ public class TestCrawl {
 										// de tipos para salir de este bucle
 										auxDomains.add(absoluteUrlLink);
 										maxIntentosBuscarTipos++;
-
 									}
-
 								} else if (!auxDomains.contains(absoluteUrlLink)) {
 									auxDomains.add(absoluteUrlLink);
 									cont++;
 								}
 							}
 						} catch (Exception e) {
-							Logger.putLog("La URL " + urlLink + " del enlace encontrado ha dado problemas de conexión: "
-									+ e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+							Logger.putLog("La URL " + urlLink + " del enlace encontrado ha dado problemas de conexión: " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 						}
 					}
-
 					crawlerData.setProfundidad(crawlerData.getProfundidad() - 1);
 					for (CrawledLink levelLink : levelLinks) {
 						makeCrawl(domain, rootUrl, levelLink.getUrl(), cookie, crawlerData, ignoredLinks);
 					}
 				}
 			} catch (Exception e) {
-				Logger.putLog("La url " + url + " ha dado problemas de conexión: " + e.getMessage(), CrawlerJob.class,
-						Logger.LOG_LEVEL_INFO);
+				Logger.putLog("La url " + url + " ha dado problemas de conexión: " + e.getMessage(), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			}
 		}
 	}
 
 	private boolean isValidUrl(String urlRoot, String domain, String urlLink, CrawlerData crawlerData) {
 		PropertiesManager pmgr = new PropertiesManager();
-
 		if (urlLink.length() < Integer.parseInt(pmgr.getValue("crawler.core.properties", "link.chars.max.length"))) {
 			if (crawlerData.isExhaustive() || !isOuterDomain(domain, urlLink)) {
 				if (!crawlerData.isInDirectory() || isInTheSameDirectory(urlLink, urlRoot)) {
 					if (!contains(crawlingDomains, urlLink)) {
 						if (!rejectedDomains.contains(urlLink)) {
-							if (crawlerData.getExceptions() == null
-									|| !CrawlerUtils.domainMatchs(crawlerData.getExceptions(), urlLink)) {
-								if (crawlerData.getCrawlingList() == null
-										|| CrawlerUtils.domainMatchs(crawlerData.getCrawlingList(), urlLink)) {
+							if (crawlerData.getExceptions() == null || !CrawlerUtils.domainMatchs(crawlerData.getExceptions(), urlLink)) {
+								if (crawlerData.getCrawlingList() == null || CrawlerUtils.domainMatchs(crawlerData.getCrawlingList(), urlLink)) {
 									return true;
 								} else {
-									LOG.info("La URL " + urlLink
-											+ " ha sido rechazada por no estar incluida en la lista de dominio rastreable");
+									LOG.info("La URL " + urlLink + " ha sido rechazada por no estar incluida en la lista de dominio rastreable");
 								}
 							} else {
-								LOG.info("La URL " + urlLink
-										+ " ha sido rechazada por estar incluida en la lista de excepciones");
+								LOG.info("La URL " + urlLink + " ha sido rechazada por estar incluida en la lista de excepciones");
 							}
 						} else {
 							LOG.info("La URL " + urlLink + " ha sido rechazada por haber sido rechazada previamente");
@@ -737,53 +625,38 @@ public class TestCrawl {
 		} else {
 			LOG.info("La URL " + urlLink + " ha sido rechazada por ser demasiado larga");
 		}
-
 		return false;
 	}
 
 	/**
-	 * Comprueba si en los dominios registrados por el crawler existe una URL del
-	 * mismo directorio que la URL dada.
+	 * Comprueba si en los dominios registrados por el crawler existe una URL del mismo directorio que la URL dada.
 	 * 
-	 * Se excluye la comprobación si el directorio de la URL es el raiz de la
-	 * página.
+	 * Se excluye la comprobación si el directorio de la URL es el raiz de la página.
 	 *
 	 * @param domain  Dominio de la página.
 	 * @param urlLink URL a comprobar
-	 * @return true si ya existe otra URL del mismo directorio. false en caso
-	 *         contrario.
+	 * @return true si ya existe otra URL del mismo directorio. false en caso contrario.
 	 */
 	private boolean checkIsSameDirectory(String domain, String urlLink) {
-
 		boolean crawledLinkSameDirectory = false;
 		// Es un directorio del que ya tenemos alguna página
 		// Si es la raiz va a descartar todo
-
 		// URLs en directorio
 		if (urlLink.lastIndexOf("/") > 0) {
-
 			// String directorio = urlLink.substring(0,
 			// urlLink.lastIndexOf("/") + 1);
-
 			String part1 = urlLink.substring(0, urlLink.indexOf(domain) + domain.length());
 			String dirTmp = urlLink.substring(urlLink.indexOf(part1) + part1.length());
 			String dirTmp2 = dirTmp.indexOf("/") != -1 ? dirTmp.substring(dirTmp.indexOf("/") + 1) : "";
-			String directorio = dirTmp2 != "" && dirTmp2.indexOf("/") != -1 ? dirTmp2.substring(0, dirTmp2.indexOf("/"))
-					: "";
-
+			String directorio = dirTmp2 != "" && dirTmp2.indexOf("/") != -1 ? dirTmp2.substring(0, dirTmp2.indexOf("/")) : "";
 			// Si el patrón está en la lista este de descarta temporalmente
 			// Si el directorio no la raiz
-
 			if (!StringUtils.isEmpty(directorio)) {
 				for (CrawledLink link : crawlingDomains) {
 					if (link != null && !StringUtils.isEmpty(link.getUrl()) && link.getUrl().startsWith(directorio)) {
 						crawledLinkSameDirectory = true;
-						Logger.putLog(
-								"*******  La URL " + urlLink
-										+ " se ha descartado inicialmente por existir otras en el mismo directorio.",
-								CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+						Logger.putLog("*******  La URL " + urlLink + " se ha descartado inicialmente por existir otras en el mismo directorio.", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 						break;
-
 					}
 				}
 			}
@@ -807,30 +680,21 @@ public class TestCrawl {
 	 * @return true, if is link to add
 	 * @throws Exception the exception
 	 */
-	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie,
-			List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
+	private boolean isLinkToAdd(String rootUrl, String domain, String urlLink, String cookie, List<CrawledLink> levelLinks, CrawlerData crawlerData, boolean addAuxiliaryLinks,
 			List<IgnoredLink> ignoredLinks, boolean checkIsFormPage, boolean checkIsTablePage) throws Exception {
-
 		boolean ckecks = checkIsFormPage && checkIsTablePage;
 		boolean isFormPage = false;
 		boolean isTablePage = false;
-
 		// Comprobar si es necesario buscar de tipos indicados
 		if (checkIsFormPage || checkIsTablePage) {
-
 			Document doc = loadDocumentFromURL(domain, urlLink, cookie);
-
-			if (checkIsFormPage && doc != null && doc.getElementsByTagName("form") != null
-					&& doc.getElementsByTagName("form").getLength() != 0) {
+			if (checkIsFormPage && doc != null && doc.getElementsByTagName("form") != null && doc.getElementsByTagName("form").getLength() != 0) {
 				isTablePage = true;
 				// Quitamos el flag ya que ya hemos encontrado al menos una
 				// página de este tipo
 				crawlerData.setCheckFormPage(false);
-
 			}
-
-			if (checkIsTablePage && doc != null && doc.getElementsByTagName("table") != null
-					&& doc.getElementsByTagName("table").getLength() != 0) {
+			if (checkIsTablePage && doc != null && doc.getElementsByTagName("table") != null && doc.getElementsByTagName("table").getLength() != 0) {
 				isTablePage = true;
 				// Quitamos el flag ya que ya hemos encontrado al menos una
 				// página de este tipo
@@ -842,20 +706,15 @@ public class TestCrawl {
 		if (checkIsSameDirectory(domain, urlLink)) {
 			return false;
 		}
-
 		// No es un directorio repetido en el directorio pero aún no encontramos
 		// páginas con los
 		// tipos indicados respondemos falso para que se guarde como auxiliar
 		else if (ckecks && (!isFormPage || !isTablePage)) {
 			return false;
 		}
-
 		// En caso contrario (no hay otra del mismo directorio y pasó los
 		// checks) seguimos con las comprobaciones
-		return
-
-		isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks,
-				crawlerData, addAuxiliaryLinks, ignoredLinks);
+		return isHtmlTextContent(domain, urlLink, cookie) && hasAccessToUrl(rootUrl, domain, urlLink, cookie, levelLinks, crawlerData, addAuxiliaryLinks, ignoredLinks);
 	}
 
 	/**
@@ -869,23 +728,16 @@ public class TestCrawl {
 	 * @throws Exception   the exception
 	 */
 	private Document loadDocumentFromURL(String domain, String urlLink, String cookie) throws IOException, Exception {
-
 		Document doc = null;
-
 		final HttpURLConnection connection = CrawlerUtils.getConnection(urlLink, domain, true);
 		connection.setRequestProperty("Cookie", cookie);
 		connection.connect();
 		int responseCode = connection.getResponseCode();
 		if (responseCode == HttpURLConnection.HTTP_OK) {
-
-			if (connection.getHeaderField("content-type") != null
-					&& connection.getHeaderField("content-type").contains("text/html")) {
-
+			if (connection.getHeaderField("content-type") != null && connection.getHeaderField("content-type").contains("text/html")) {
 				CheckAccessibility checkAccessibility = new CheckAccessibility();
 				checkAccessibility.setUrl(urlLink);
-
 				CheckerParser parser = new CheckerParser();
-
 				String content = StringUtils.getContentAsString(connection.getInputStream(), "UTF-8");
 				for (int i = 0; i < 2 && doc == null; i++) {
 					content = addFinalTags(content);
@@ -893,7 +745,6 @@ public class TestCrawl {
 					if (newInputStream.markSupported()) {
 						newInputStream.mark(Integer.MAX_VALUE);
 					}
-
 					try {
 						// Reseteamos el stream para volver a analizarlo
 						newInputStream.reset();
@@ -902,21 +753,15 @@ public class TestCrawl {
 						doc = parser.getDocument();
 					} catch (Exception e) {
 						parser = new CheckerParser(true);
-						Logger.putLog(
-								"Error al parsear al documento. Se intentará de nuevo con el balanceo de etiquetas",
-								EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
+						Logger.putLog("Error al parsear al documento. Se intentará de nuevo con el balanceo de etiquetas", EvaluatorUtility.class, Logger.LOG_LEVEL_WARNING);
 					}
 				}
-
 			}
-
 		} else {
-			Logger.putLog(String.format("La url %s ha sido rechazada por devolver el código %d", urlLink, responseCode),
-					CrawlerJob.class, Logger.LOG_LEVEL_INFO);
+			Logger.putLog(String.format("La url %s ha sido rechazada por devolver el código %d", urlLink, responseCode), CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			rejectedDomains.add(urlLink);
 		}
 		connection.disconnect();
-
 		return doc;
 	}
 
@@ -929,11 +774,9 @@ public class TestCrawl {
 	private static String addFinalTags(String inStr) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final String regExpMatcher = pmgr.getValue("intav.properties", "incompleted.tags.reg.exp.matcher");
-
 		final String[] tags = pmgr.getValue("intav.properties", "incompleted.tags").split(";");
 		for (String tag : tags) {
-			final Pattern pattern = Pattern.compile(regExpMatcher.replace("@", tag),
-					Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+			final Pattern pattern = Pattern.compile(regExpMatcher.replace("@", tag), Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 			final Matcher matcher = pattern.matcher(inStr);
 			String matchedTag;
 			while (matcher.find()) {
@@ -941,15 +784,13 @@ public class TestCrawl {
 				inStr = inStr.replace(matchedTag, matchedTag.subSequence(0, matchedTag.length() - 1) + "/>");
 			}
 		}
-
 		return inStr;
 	}
 
 	/**
 	 * Check if content is not an HTML
 	 * 
-	 * This is mandatory if this page is passed by JS renderer that sometimes
-	 * returns XML or other content no HTML as HTML header
+	 * This is mandatory if this page is passed by JS renderer that sometimes returns XML or other content no HTML as HTML header
 	 * 
 	 * @param textContent
 	 * @return
