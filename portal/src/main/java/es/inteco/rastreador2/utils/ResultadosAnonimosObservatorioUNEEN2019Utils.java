@@ -77,7 +77,10 @@ import es.inteco.view.forms.ComplexityViewListForm;
  */
 public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	
+	/** The Constant CHART_EVOLUTION_MP_GREEN_COLOR. */
 	private static final String CHART_EVOLUTION_MP_GREEN_COLOR = "chart.evolution.mp.green.color";
+	
+	/** The Constant CHART_EVOLUTION_INTECO_RED_COLORS. */
 	private static final String CHART_EVOLUTION_INTECO_RED_COLORS = "chart.evolution.inteco.red.colors";
 	/** The Constant GRAFICA_SIN_DATOS. */
 	private static final String GRAFICA_SIN_DATOS = "grafica.sin.datos";
@@ -263,7 +266,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + graphicSuffix + ".jpg";
 				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
-
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.name") + graphicSuffix + ".jpg";
 				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
 				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.name") + graphicSuffix + ".jpg";
@@ -296,11 +298,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			String id = complejidad.getId();
 			String name = complejidad.getName();
 			String graphicSuffix = "_".concat(name.replaceAll("\\s+", ""));
-			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, false);
+			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, true);
 			if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
 				String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", graphicSuffix) + ".jpg";
 				getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, regenerate);
+				title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
+				file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.compilance.segment.name", graphicSuffix) + ".jpg";
+				getSegmentCompilanceGraphic(messageResources, pageExecutionList, categoryGraphics, title, file, noDataMess, regenerate);
 				title = messageResources.getMessage("observatory.graphic.mark.allocation.segment.title", name);
 				file = filePath + messageResources.getMessage("observatory.graphic.mark.allocation.segment.name", graphicSuffix) + ".jpg";
 				List<ObservatorySiteEvaluationForm> result = getSitesListByLevel(pageExecutionList);
@@ -316,6 +321,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_1, regenerate);
 				file = filePath + messageResources.getMessage("observatory.graphic.modality.by.verification.level.2.name") + graphicSuffix + ".jpg";
 				getModalityByVerificationLevelGraphic(messageResources, pageExecutionList, categoryGraphics, "", file, noDataMess, Constants.OBS_PRIORITY_2, regenerate);
+				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.1.name") + graphicSuffix + ".jpg";
+				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_1, title, file, noDataMess, pageExecutionList, color, regenerate);
+				file = filePath + messageResources.getMessage("observatory.graphic.compilance.by.verification.level.2.name") + graphicSuffix + ".jpg";
+				getCompilanceComparationByVerificationLevelGraphic(messageResources, categoryGraphics, Constants.OBS_PRIORITY_2, title, file, noDataMess, pageExecutionList, color, regenerate);
 			}
 			return categoryGraphics;
 		} catch (Exception e) {
@@ -2275,7 +2284,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalCompilanceLevel(messageResources, resultCompilance));
 		infoGlobalCompilanceLevel(messageResources, resultCompilance);
 	}
-	
+
 	/**
 	 * Gets the segment compilance graphic.
 	 *
