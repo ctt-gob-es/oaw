@@ -37,10 +37,8 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.etiquetas.ClasificacionForm;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
-import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
-import es.inteco.rastreador2.dao.dependencia.DependenciaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
 import es.inteco.rastreador2.utils.Pagination;
 
@@ -278,7 +276,7 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 		return null;
 	}
 
-
+	
 /**
  * Obtiene un listado de todas las clasficaciones. La respuesta se genera como
  * un JSON

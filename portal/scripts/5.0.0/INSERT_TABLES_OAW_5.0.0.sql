@@ -47,3 +47,22 @@ CREATE TABLE etiqueta ( `id_etiqueta` BIGINT(20) NOT NULL AUTO_INCREMENT , `nomb
 CREATE TABLE clasificacion_etiqueta ( `id_clasificacion` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , PRIMARY KEY (`id_clasificacion`));
 INSERT INTO clasificacion_etiqueta` (`id_clasificacion`, `nombre`) VALUES ('1', 'Tem√°tica'), ('2', 'Distribuci√≥n'), ('3', 'Recurrencia');
 
+CREATE TABLE `oaw_js`.`etiqueta` ( `id_etiqueta` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , `id_clasificacion` BIGINT(20) NOT NULL , PRIMARY KEY (`id_etiqueta`));
+CREATE TABLE `oaw_js`.`clasificacion_etiqueta` ( `id_clasificacion` BIGINT(20) NOT NULL AUTO_INCREMENT , `nombre` VARCHAR(50) NOT NULL , PRIMARY KEY (`id_clasificacion`));
+INSERT INTO `clasificacion_etiqueta` (`id_clasificacion`, `nombre`) VALUES ('1', 'Tem·tica'), ('2', 'DistribuciÛn'), ('3', 'Recurrencia');
+ALTER TABLE `lista` ADD `id_etiquetas` VARCHAR(50) NOT NULL AFTER `id_complejidad`;
+CREATE TABLE `oaw_js`.`etiquetas_lista` ( `id_etiqueta_lista` INT(20) NOT NULL AUTO_INCREMENT , `id_etiqueta` INT(20) NOT NULL , `id_lista` INT(20) NOT NULL , PRIMARY KEY (`id_etiqueta_lista`));
+
+CREATE TABLE `semilla_etiqueta` (
+  `id_lista` bigint(20) NOT NULL DEFAULT 0,
+  `id_etiqueta` bigint(20) NOT NULL DEFAULT 0
+);
+
+
+ALTER TABLE `semilla_etiqueta`
+  ADD PRIMARY KEY (`id_lista`,`id_etiqueta`),
+  ADD KEY `semilla_etiqueta_ibfk_1` (`id_etiqueta`);
+  
+  ALTER TABLE `semilla_etiqueta`
+  ADD CONSTRAINT `semilla_etiqueta_ibfk_1` FOREIGN KEY (`id_etiqueta`) REFERENCES `etiqueta` (`id_etiqueta`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
