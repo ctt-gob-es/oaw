@@ -291,10 +291,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_SPAN_NODE);
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_P_NODE);
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_H_NODE);
-				
-				
-				
-				// Rename documentStyles names???
+				// Rename documentStyles names to avoid conflicts
 				renameStyles(odtCategory, odfFileContentCategory, graphicSuffix);
 				appendsNodeAndChildsAtMarkerPosition(odt, odfFileContent, odtCategory, odfFileContentCategory, CATEGORYSECTION_BOOKMARK);
 				mergePictures(odt, odtCategory, graphicPath);
@@ -327,6 +324,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_SPAN_NODE);
 				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_P_NODE);
 				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_H_NODE);
+				// Rename documentStyles names to avoid conflicts
+				renameStyles(odtComplexity, odfFileContentComplejidad, graphicSuffix);
 				// Add all DOM from create document to base doc
 				appendsNodeAndChildsAtMarkerPosition(odt, odfFileContent, odtComplexity, odfFileContentComplejidad, COMPLEJIDADSECTION_BOOKMARK);
 				mergePictures(odt, odtComplexity, graphicPath);
@@ -338,9 +337,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		}
 		// Evolution
 		if (evolution) {
-			if (tipoObservatorio == Constants.OBSERVATORY_TYPE_EELL) {
-				numSection = 10;
-			}
+			// General results
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId));
 			final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
@@ -349,8 +346,13 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			}
 			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap);
 			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
-			replaceImg(odt, graphicPath + "EvolucionNivelConformidadCombinada.jpg", MIME_TYPE_JPG);
+			replaceImageGeneric(odt, graphicPath + "EvolucionNivelConformidadCombinada" + JPG_EXTENSION, "EvolucionNivelConformidadCombinada", MIME_TYPE_JPG);
+			// Section compliance
+			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap);
+			replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
+			replaceImageGeneric(odt, graphicPath + "EvolucionNivelCumplimientoCombinada" + JPG_EXTENSION, "EvolucionNivelCumplimientoCombinada", MIME_TYPE_JPG);
 			replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
+			// Mid by verification
 			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
 					new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
 					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
@@ -360,12 +362,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", MIME_TYPE_JPG);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", MIME_TYPE_JPG);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", MIME_TYPE_JPG);
+			// TODO Compliance by verification
+			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
+					new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg" },
+					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+			replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
+			replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
+			// By aspects
 			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
 			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", MIME_TYPE_JPG);
-			numSection++;
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", MIME_TYPE_JPG);
-			replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsByAspect, categories);
+			// replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", MIME_TYPE_JPG);
+			// replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsByAspect, categories);
 		}
 		// Fix crop images (fo:clip attribute) after merge several documents
 		NodeList nodeList = odt.getContentDom().getElementsByTagName(STYLE_GRAPHIC_PROPERTIES);
@@ -490,6 +498,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			OdfElement node = (OdfElement) nodeList.item(i);
 			node.setAttribute(TEXT_CONTINUE_NUMBERING, Constants.TRUE);
+			node.setAttribute("text:style-name", "LFO3");
 		}
 	}
 
@@ -597,32 +606,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceImageGeneric(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG);
 		numImg++;
 		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_NONE);
-		final Map<String, Integer> resultCompilance = new TreeMap<>();
-		// Process results
-		int totalC = 0;
-		int totalPC = 0;
-		int totalNC = 0;
-		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
-			int countC = 0;
-			int countNC = 0;
-			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
-				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
-					countC++;
-				} else {
-					countNC++;
-				}
-			}
-			if (countC == result.getValue().size()) {
-				totalC++;
-			} else if (countC > countNC) {
-				totalPC++;
-			} else {
-				totalNC++;
-			}
-		}
-		resultCompilance.put(Constants.OBS_COMPILANCE_NONE, totalNC);
-		resultCompilance.put(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
-		resultCompilance.put(Constants.OBS_COMPILANCE_FULL, totalC);
+		final Map<String, Integer> resultCompilance = ResultadosAnonimosObservatorioUNEEN2019Utils.getSityesByCompliance(results);
 		List<GraphicData> labelValueBean = ResultadosAnonimosObservatorioUNEEN2019Utils.infoGlobalCompilanceLevel(messageResources, resultCompilance);
 		replaceText(odt, odfFileContent, TABLE_GLOBAL_COMPLIANCE_DISTRIBUTION_CELL_ROW_1_CELL_1, labelValueBean.get(1).getPercentageP());
 		replaceText(odt, odfFileContent, TABLE_GLOBAL_COMPLIANCE_DISTRIBUTION_CELL_ROW_2_CELL_1, labelValueBean.get(0).getPercentageP());
@@ -1834,13 +1818,57 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "1.t1", resultDataAA, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, "101.t1", resultDataAA, true);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "2.t1", resultDataA, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, "102.t1", resultDataA, true);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "3.t1", resultDataNV, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, "103.t1", resultDataNV, true);
+		} else {
+			final PropertiesManager pmgr = new PropertiesManager();
+			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
+			numImg++;
+			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
+			numImg++;
+			numImg++;
+			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
+			numImg++;
+			numImg++;
+		}
+		return numImg;
+	}
+
+	/**
+	 * TODO.
+	 *
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @return the int
+	 * @throws Exception the exception
+	 */
+	private int replaceSectionEvolutionComplianceLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
+		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
+			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId,
+					pageExecutionList);
+			final PropertiesManager pmgr = new PropertiesManager();
+			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+			final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_PARTIAL, df);
+			final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_FULL, df);
+			final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_NONE, df);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, "111.t1", resultDataAA, true);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, "112.t1", resultDataA, true);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, "113.t1", resultDataNV, true);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
@@ -2170,8 +2198,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param suffix         the suffix
 	 * @throws Exception the exception
 	 */
-	private static void renameStyles(final OdfTextDocument doc,  final OdfFileDom odfFileContent, String suffix) throws Exception {
-
+	private static void renameStyles(final OdfTextDocument doc, final OdfFileDom odfFileContent, String suffix) throws Exception {
 		OdfOfficeAutomaticStyles docStyles = odfFileContent.getAutomaticStyles();
 		// Adopt style nodes from secondary doc
 		for (int i = 0; i < docStyles.getLength(); i++) {
@@ -2182,12 +2209,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				String newName = prevousName + suffix;
 				style.setAttribute("style:name", newName);
 				final XPath xpath = doc.getXPath();
-				
 				final NodeList nodeList = (NodeList) xpath.evaluate(String.format("//text:h[@text:style-name = '%s']", prevousName), odfFileContent, XPathConstants.NODESET);
 				// Make the change on the selected nodes
 				for (int idx = 0; idx < nodeList.getLength(); idx++) {
 					OdfElement node = (OdfElement) nodeList.item(idx);
 					node.setAttribute("text:style-name", newName);
+//					if (node.getParentNode() != null && node.getParentNode().getParentNode() != null) {
+//						((OdfElement) node.getParentNode().getParentNode()).setAttribute("style-name", "LFO3");
+//					}
 				}
 			}
 		}
