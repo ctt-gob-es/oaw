@@ -76,10 +76,8 @@ import es.inteco.view.forms.ComplexityViewListForm;
  * @author alvaro.pelaez
  */
 public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
-	
 	/** The Constant CHART_EVOLUTION_MP_GREEN_COLOR. */
 	private static final String CHART_EVOLUTION_MP_GREEN_COLOR = "chart.evolution.mp.green.color";
-	
 	/** The Constant CHART_EVOLUTION_INTECO_RED_COLORS. */
 	private static final String CHART_EVOLUTION_INTECO_RED_COLORS = "chart.evolution.inteco.red.colors";
 	/** The Constant GRAFICA_SIN_DATOS. */
@@ -1938,6 +1936,59 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
+	 * Calculate percentage approval site compliance.
+	 *
+	 * @param result           the result
+	 * @param suitabilityLevel the suitability level
+	 * @return the map
+	 */
+	public static Map<String, BigDecimal> calculatePercentageApprovalSiteCompliance(final Map<Date, Map<Long, Map<String, Integer>>> result, final String suitabilityLevel) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
+		return calculatePercentageApprovalSiteCompliance(result, suitabilityLevel, df);
+	}
+
+	/**
+	 * Calculate percentage approval site compliance.
+	 *
+	 * @param result           the result
+	 * @param suitabilityLevel the suitability level
+	 * @param dateFormat       the date format
+	 * @return the map
+	 */
+	public static Map<String, BigDecimal> calculatePercentageApprovalSiteCompliance(final Map<Date, Map<Long, Map<String, Integer>>> result, final String suitabilityLevel,
+			final DateFormat dateFormat) {
+		final TreeMap<String, BigDecimal> percentagesMap = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				try {
+					final Date fecha1 = new Date(dateFormat.parse(o1).getTime());
+					final Date fecha2 = new Date(dateFormat.parse(o2).getTime());
+					return fecha1.compareTo(fecha2);
+				} catch (Exception e) {
+					Logger.putLog("Error al ordenar fechas de evolución. ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+				return 0;
+			}
+		});
+		for (Map.Entry<Date, Map<Long, Map<String, Integer>>> dateMapEntry : result.entrySet()) {
+			BigDecimal percentage = BigDecimal.ZERO;
+			for (Map.Entry<Long, Map<String, Integer>> longMapEntry : dateMapEntry.getValue().entrySet()) {
+				int totalSites = longMapEntry.getValue().get(Constants.OBS_COMPILANCE_FULL) + longMapEntry.getValue().get(Constants.OBS_COMPILANCE_PARTIAL)
+						+ longMapEntry.getValue().get(Constants.OBS_COMPILANCE_NONE);
+				if (totalSites > 0) {
+					int numSites = longMapEntry.getValue().get(suitabilityLevel);
+					if (numSites > 0) {
+						percentage = (new BigDecimal(numSites)).divide(new BigDecimal(totalSites), 2, BigDecimal.ROUND_HALF_UP).multiply(BIG_DECIMAL_HUNDRED);
+					}
+				}
+			}
+			percentagesMap.put(dateFormat.format(dateMapEntry.getKey()), percentage);
+		}
+		return percentagesMap;
+	}
+
+	/**
 	 * Calculate percentage approval site level.
 	 *
 	 * @param result           the result
@@ -1977,16 +2028,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		return percentagesMap;
 	}
 
-	// public static Map<Date, Map<Long, Map<String, Integer>>>
-	// getEvolutionObservatoriesSitesByType(final String observatoryId, final
-	// String executionId, final Map<Date, List<ObservatoryEvaluationForm>>
-	// result) {
-	//// final String observatoryId =
-	// request.getParameter(Constants.ID_OBSERVATORIO);
-	//// final String executionId = request.getParameter(Constants.ID);
-	// return getEvolutionObservatoriesSitesByType(observatoryId, executionId,
-	// result);
-	// }
 	/**
 	 * Gets the evolution observatories sites by type.
 	 *
@@ -2005,6 +2046,33 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
 				final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
 				final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
+				resultData.put(longDateEntry.getValue(), sites);
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return resultData;
+	}
+
+	/**
+	 * Gets the evolution observatories sites by compliance.
+	 *
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @param result        the result
+	 * @return the evolution observatories sites by compliance
+	 */
+	public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByCompliance(final String observatoryId, final String executionId,
+			final Map<Date, List<ObservatoryEvaluationForm>> result) {
+		final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<>();
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(observatoryId));
+			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId),
+					observatoryForm.getCartucho().getId());
+			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
+				final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
+				final Map<Long, Map<String, Integer>> sites = new TreeMap<>();
+				sites.put(longDateEntry.getKey(), getSityesByCompliance(getVerificationResultsByPointAndCrawl(pageList, Constants.OBS_PRIORITY_NONE)));
 				resultData.put(longDateEntry.getValue(), sites);
 			}
 		} catch (Exception e) {
@@ -2137,6 +2205,43 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
+	 * Gets the sityes by compliance.
+	 *
+	 * @param results the results
+	 * @return the sityes by compliance
+	 */
+	public static Map<String, Integer> getSityesByCompliance(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<String, Integer> resultCompilance = new TreeMap<>();
+		// Process results
+		int totalC = 0;
+		int totalPC = 0;
+		int totalNC = 0;
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else {
+					countNC++;
+				}
+			}
+			if (countC == result.getValue().size()) {
+				totalC++;
+			} else if (countC > countNC) {
+				totalPC++;
+			} else {
+				totalNC++;
+			}
+		}
+		resultCompilance.put(Constants.OBS_COMPILANCE_NONE, totalNC);
+		resultCompilance.put(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
+		resultCompilance.put(Constants.OBS_COMPILANCE_FULL, totalC);
+		return resultCompilance;
+	}
+
+	/**
+	 * 
 	 * Gets the sites list by level.
 	 *
 	 * @param pages the pages
@@ -2246,43 +2351,57 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final File file = new File(filePath);
 		Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_NONE);
-		final Map<String, Integer> resultCompilance = new TreeMap<>();
+		final Map<String, Integer> resultCompilance = getComplinaceMap(results);
 		if (!file.exists() || regenerate) {
 			// Process results
 			final int total = results.size();
-			int totalC = 0;
-			int totalPC = 0;
-			int totalNC = 0;
-			for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
-				int countC = 0;
-				int countNC = 0;
-				for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
-					if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
-						countC++;
-					} else {
-						countNC++;
-					}
-				}
-				if (countC == result.getValue().size()) {
-					totalC++;
-				} else if (countC > countNC) {
-					totalPC++;
-				} else {
-					totalNC++;
-				}
-			}
-			resultCompilance.put(Constants.OBS_COMPILANCE_NONE, totalNC);
-			resultCompilance.put(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
-			resultCompilance.put(Constants.OBS_COMPILANCE_FULL, totalC);
 			final DefaultPieDataset dataSet = new DefaultPieDataset();
-			dataSet.setValue(Constants.OBS_COMPILANCE_NONE, totalNC);
-			dataSet.setValue(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
-			dataSet.setValue(Constants.OBS_COMPILANCE_FULL, totalC);
+//			dataSet.setValue(Constants.OBS_COMPILANCE_NONE, totalNC);
+//			dataSet.setValue(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
+//			dataSet.setValue(Constants.OBS_COMPILANCE_FULL, totalC);
+			dataSet.setValue(Constants.OBS_COMPILANCE_NONE, resultCompilance.get(Constants.OBS_COMPILANCE_NONE));
+			dataSet.setValue(Constants.OBS_COMPILANCE_PARTIAL, resultCompilance.get(Constants.OBS_COMPILANCE_PARTIAL));
+			dataSet.setValue(Constants.OBS_COMPILANCE_FULL, resultCompilance.get(Constants.OBS_COMPILANCE_FULL));
 			GraphicsUtils.createPieChart(dataSet, "", messageResources.getMessage("observatory.graphic.site.number"), total, filePath, noDataMess,
 					pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), x, y);
 		}
 		graphics.put(Constants.OBSERVATORY_GRAPHIC_GLOBAL_DATA_LIST_DAG, infoGlobalCompilanceLevel(messageResources, resultCompilance));
 		infoGlobalCompilanceLevel(messageResources, resultCompilance);
+	}
+
+	/**
+	 * Gets the complinace map.
+	 *
+	 * @param results the results
+	 * @return the complinace map
+	 */
+	private static Map<String, Integer> getComplinaceMap(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<String, Integer> resultCompilance = new TreeMap<>();
+		int totalC = 0;
+		int totalPC = 0;
+		int totalNC = 0;
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else {
+					countNC++;
+				}
+			}
+			if (countC == result.getValue().size()) {
+				totalC++;
+			} else if (countC > countNC) {
+				totalPC++;
+			} else {
+				totalNC++;
+			}
+		}
+		resultCompilance.put(Constants.OBS_COMPILANCE_NONE, totalNC);
+		resultCompilance.put(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
+		resultCompilance.put(Constants.OBS_COMPILANCE_FULL, totalC);
+		return resultCompilance;
 	}
 
 	/**
@@ -2545,34 +2664,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		resultCompilance.put(Constants.OBS_COMPILANCE_FULL, 0);
 		// Resultados del segmento (ya vienen filtrados)
 		Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(observatoryEvaluationList, Constants.OBS_PRIORITY_NONE);
-//TODO 
-		// Process results
-		final int total = results.size();
-		int totalC = 0;
-		int totalPC = 0;
-		int totalNC = 0;
-		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
-			int countC = 0;
-			int countNC = 0;
-			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
-				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
-					countC++;
-				} else {
-					countNC++;
-				}
-			}
-			if (countC == result.getValue().size()) {
-				totalC++;
-			} else if (countC > countNC) {
-				totalPC++;
-			} else {
-				totalNC++;
-			}
-		}
-		resultCompilance.put(Constants.OBS_COMPILANCE_NONE, totalNC);
-		resultCompilance.put(Constants.OBS_COMPILANCE_PARTIAL, totalPC);
-		resultCompilance.put(Constants.OBS_COMPILANCE_FULL, totalC);
-		return resultCompilance;
+		return getComplinaceMap(results);
 	}
 
 	/**
@@ -3409,9 +3501,37 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
 		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
 		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMap);
-		evolutionSuitabilityDatePercentMap.put("Parcial", calculatePercentageApprovalSiteLevel(result, Constants.OBS_NV));
-		evolutionSuitabilityDatePercentMap.put("Prioridad 1", calculatePercentageApprovalSiteLevel(result, Constants.OBS_A));
-		evolutionSuitabilityDatePercentMap.put("Prioridad 1 y 2", calculatePercentageApprovalSiteLevel(result, Constants.OBS_AA));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_NV_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_NV));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_A_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_A));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_AA_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_AA));
+		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
+		for (Map.Entry<String, Map<String, BigDecimal>> evolutionSuitabilityEntry : evolutionSuitabilityDatePercentMap.entrySet()) {
+			for (Map.Entry<String, BigDecimal> datePercentEntry : evolutionSuitabilityEntry.getValue().entrySet()) {
+				dataSet.addValue(datePercentEntry.getValue(), evolutionSuitabilityEntry.getKey(), datePercentEntry.getKey());
+			}
+		}
+		final String noDataMess = "noData";
+		final PropertiesManager pmgr = new PropertiesManager();
+		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
+		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
+	}
+
+	/**
+	 * TODO Generate evolution suitability chart.
+	 *
+	 * @param observatoryId      the observatory id
+	 * @param executionId        the execution id
+	 * @param filePath           the file path
+	 * @param pageObservatoryMap the page observatory map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateEvolutionComplianceChart(final String observatoryId, final String executionId, final String filePath,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
+		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
+		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId, pageObservatoryMap);
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_NONE, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_NONE));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_PARTIAL, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_PARTIAL));
+		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_FULL, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_FULL));
 		final DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 		for (Map.Entry<String, Map<String, BigDecimal>> evolutionSuitabilityEntry : evolutionSuitabilityDatePercentMap.entrySet()) {
 			for (Map.Entry<String, BigDecimal> datePercentEntry : evolutionSuitabilityEntry.getValue().entrySet()) {
@@ -3597,6 +3717,46 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		chartForm1.setShowColumsLabels(false);
 		GraphicsUtils.createStandardBarChart(chartForm1, filePaths[0], "", messageResources, true);
 		final ChartForm chartForm2 = new ChartForm(dataSet2, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
+		chartForm2.setFixedColorBars(true);
+		chartForm2.setShowColumsLabels(false);
+		GraphicsUtils.createStandardBarChart(chartForm2, filePaths[1], "", messageResources, true);
+	}
+
+	/**
+	 * TODO Generate evolution compliance by verification chart split.
+	 *
+	 * @param messageResources   the message resources
+	 * @param filePaths          the file paths
+	 * @param pageObservatoryMap the page observatory map
+	 * @param verifications      the verifications
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateEvolutionComplianceByVerificationChartSplit(final MessageResources messageResources, final String[] filePaths,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DefaultCategoryDataset dataSet1 = new DefaultCategoryDataset();
+		final DefaultCategoryDataset dataSet2 = new DefaultCategoryDataset();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+			final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
+			Map<String, BigDecimal> percentajes = generatePercentajesCompilanceVerification(results);
+			int v = 0;
+			for (String verification : verifications) {
+				// Para un observatorio en concreto recuperamos la puntuación de
+				// una verificación
+				final BigDecimal value = percentajes.get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
+				if (v < 7) {
+					dataSet1.addValue(value, entry.getKey().getTime(), verification);
+				} else {
+					dataSet2.addValue(value, entry.getKey().getTime(), verification);
+				}
+				v++;
+			}
+		}
+		final ChartForm chartForm1 = new ChartForm(dataSet1, true, true, false, true, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
+		chartForm1.setFixedColorBars(true);
+		chartForm1.setShowColumsLabels(false);
+		GraphicsUtils.createStandardBarChart(chartForm1, filePaths[0], "", messageResources, true);
+		final ChartForm chartForm2 = new ChartForm(dataSet2, true, true, false, true, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
 		chartForm2.setFixedColorBars(true);
 		chartForm2.setShowColumsLabels(false);
 		GraphicsUtils.createStandardBarChart(chartForm2, filePaths[1], "", messageResources, true);
