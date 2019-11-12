@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -335,9 +334,13 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				forceContinueNumbering(odt, odfFileContent);
 			}
 		}
-		// Evolution
+		/**
+		 * Evolution
+		 */
 		if (evolution) {
-			// General results
+			/**
+			 * General results
+			 */
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId));
 			final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
@@ -372,8 +375,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
 			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", MIME_TYPE_JPG);
-			// replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", MIME_TYPE_JPG);
-			// replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsByAspect, categories);
+			/**
+			 * Results fixed
+			 */
+			/**
+			 * Results by segment
+			 */
 		}
 		// Fix crop images (fo:clip attribute) after merge several documents
 		NodeList nodeList = odt.getContentDom().getElementsByTagName(STYLE_GRAPHIC_PROPERTIES);
