@@ -38,6 +38,7 @@ import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.GraphicData;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
@@ -111,9 +112,14 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			final boolean evolution, final List<ObservatoryEvaluationForm> pageExecutionList,
 			final List<CategoriaForm> categories) throws Exception {
 		final MessageResources messageResources = CrawlerUtils.getResources(request);
+		
+		
+		
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId,
 				Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath, Constants.MINISTERIO_P,
 				true);
+		
+		
 		final OdfTextDocument odt = getOdfTemplate();
 		final OdfFileDom odfFileContent = odt.getContentDom();
 		final OdfFileDom odfStyles = odt.getStylesDom();
@@ -131,7 +137,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		replaceSection46(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 
 		for (CategoriaForm category : categories) {
-			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioUNEEN2019Utils
+			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioAccesibilidadUtils
 					.getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList);
 			replaceSectionCat1(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
 			replaceSectionCat2(messageResources, odt, odfFileContent, graphicPath, category, pageExecutionListCat);
@@ -300,7 +306,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		int tableNum = 1;
 		for (CategoriaForm category : categories) {
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils
-					.infoComparisonBySegment(messageResources, res.get(category));
+					.infoComparisionAllocation(messageResources, res.get(category));
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b2-", results.get(0).getValue() + "%");
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b3-", results.get(1).getValue() + "%");
 			replaceText(odt, odfFileContent, "-42.t" + tableNum + ".b4-", results.get(2).getValue() + "%");
@@ -341,7 +347,7 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 		int tableNum = 1;
 		for (CategoriaForm category : categories) {
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils
-					.infoComparisonBySegmentPuntuation(messageResources, res.get(category));
+					.infoComparisonAllocationPuntuation(messageResources, res.get(category));
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b2-", results.get(0).getValue());
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b3-", results.get(1).getValue());
 			replaceText(odt, odfFileContent, "-43.t" + tableNum + ".b4-", results.get(2).getValue());
