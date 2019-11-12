@@ -1703,6 +1703,30 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryEvaluationList the observatory evaluation list
 	 * @param executionId               the execution id
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	public static List<ObservatoryEvaluationForm> filterObservatoriesByFixed(final List<ObservatoryEvaluationForm> observatoryEvaluationList, final Long executionId) throws Exception {
+		final List<ObservatoryEvaluationForm> results = new ArrayList<>();
+		try (Connection conn = DataBaseManager.getConnection()) {
+			final List<Long> listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(conn, executionId, Constants.COMPLEXITY_SEGMENT_NONE);
+			for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
+				if (listExecutionsIds.contains(observatoryEvaluationForm.getCrawlerExecutionId())) {
+					results.add(observatoryEvaluationForm);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error al filtrar observatorios. ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+
+	/**
+	 * Filter observatories by complexity.
+	 *
+	 * @param observatoryEvaluationList the observatory evaluation list
+	 * @param executionId               the execution id
 	 * @param complexityId              the complexity id
 	 * @return the list
 	 * @throws Exception the exception
