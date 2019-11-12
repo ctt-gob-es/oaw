@@ -4874,7 +4874,7 @@ public class Check {
 			if (u.isAbsolute()) {
 				final Document document;
 				if (((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).get(href) == null) {
-					Logger.putLog("Accediendo a la declaraciÃ³n de accesibilidad en " + href, Check.class, Logger.LOG_LEVEL_INFO);
+					Logger.putLog("Accediendo a la declaración de accesibilidad en " + href, Check.class, Logger.LOG_LEVEL_INFO);
 					document = CheckUtils.getRemoteDocument(href, href, 0);
 					((HashMap<String, Document>) elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT)).put(href, document);
 				} else {

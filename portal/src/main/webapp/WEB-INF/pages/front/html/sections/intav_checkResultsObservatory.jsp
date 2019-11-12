@@ -110,19 +110,29 @@ Email: observ.accesibilidad@correo.gob.es
 							type="es.inteco.intav.form.ObservatoryLevelForm">
 							<h3>
 								<logic:equal value="Priority 1" name="levelGroup" property="name">
+									<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+										<td><bean:message key="first.level.bs" bundle="resources2019" /></td>
+									</logic:equal>
 									<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
 										<td><bean:message key="first.level.bs" bundle="resources2019" /></td>
 									</logic:equal>
 									<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
-										<td><bean:message key="first.level.bs" bundle="resources2012b" /></td>
+										<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+											<td><bean:message key="first.level.bs" bundle="resources2012b" /></td>
+										</logic:notEqual>
 									</logic:notEqual>
 								</logic:equal>
 								<logic:equal value="Priority 2" name="levelGroup" property="name">
+									<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+										<td><bean:message key="second.level.bs" bundle="resources2019" /></td>
+									</logic:equal>
 									<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
 										<td><bean:message key="second.level.bs" bundle="resources2019" /></td>
 									</logic:equal>
-									<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
-										<td><bean:message key="second.level.bs" bundle="resources2012b" /></td>
+									<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+										<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
+											<td><bean:message key="second.level.bs" bundle="resources2012b" /></td>
+										</logic:notEqual>
 									</logic:notEqual>
 								</logic:equal>
 							</h3>
@@ -195,9 +205,11 @@ Email: observ.accesibilidad@correo.gob.es
 							</h3>
 							<ul class="resultados">
 								<logic:iterate name="<%=Constants.EVALUATION_FORM %>" property="aspects" id="aspect">
-									<li><bean:define id="aspectKey">
-											<bean:write name="aspect" property="name" />
-										</bean:define> <strong><bean:message key="<%=aspectKey%>" />:</strong> <bean:write name="aspect" property="score" /></li>
+									<logic:notEqual value="-1" name="aspect" property="score">
+										<li><bean:define id="aspectKey">
+												<bean:write name="aspect" property="name" />
+											</bean:define> <strong><bean:message key="<%=aspectKey%>" />:</strong> <bean:write name="aspect" property="score" /></li>
+									</logic:notEqual>
 								</logic:iterate>
 							</ul>
 						</logic:notEmpty>
