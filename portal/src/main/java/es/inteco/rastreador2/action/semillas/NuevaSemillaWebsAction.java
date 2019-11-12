@@ -62,7 +62,7 @@ public class NuevaSemillaWebsAction extends Action {
                             return mapping.findForward(Constants.NUEVA_SEMILLA_FORWARD);
                         }
 
-                        SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaWebsForm.getNombreSemilla(), SeedUtils.getSeedUrlsForDatabase(validUrls), nuevaSemillaWebsForm.getCategoria().getId(), null, null, null, null);
+                        SemillaDAO.insertList(c, Constants.ID_LISTA_SEMILLA, nuevaSemillaWebsForm.getNombreSemilla(), SeedUtils.getSeedUrlsForDatabase(validUrls), nuevaSemillaWebsForm.getCategoria().getId(), null, null, null, null, null);
 
                         ActionUtils.setSuccesActionAttributes(request, "mensaje.exito.semilla.generada", "volver.listado.semillas");
                         return mapping.findForward(Constants.EXITO);

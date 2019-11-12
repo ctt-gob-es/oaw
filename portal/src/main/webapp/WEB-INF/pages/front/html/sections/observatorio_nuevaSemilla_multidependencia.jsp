@@ -179,6 +179,66 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 								}
 							}
 						});
+		
+		//Cargar las etiquetas
+		$jn('#selectEtiquetasNuevaSemilla').empty();
+		$('#selectEtiquetasNuevaSemillaSeleccionadas').empty();
+		$jn
+				.ajax(
+						{
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listEtiquetas',
+						})
+				.done(
+						function(data) {
+
+							var response = $jn.parseJSON(data);
+
+							if (response && response.length) {
+								for (var i = 0, l = response.length; i < l; i++) {
+									var ri = response[i];
+									$jn('#selectEtiquetasNuevaSemilla')
+											.append(
+													'<option value="'+ri.id+'">'
+															+ ri.name
+															+ '</option>');
+								}
+
+								$(
+										'#selectEtiquetasNuevaSemillaSeleccionadas')
+										.css(
+												'width',
+												$(
+														'#selectEtiquetasNuevaSemilla')
+														.width()
+														+ 'px');
+
+								//Marcar seleccionadas si exiten
+
+								if (rowObject != null) {
+
+									$
+											.each(
+													rowObject.etiquetas,
+													function(index, value) {
+
+														$(
+																'#selectEtiquetasNuevaSemilla option[value='
+																		+ value.id
+																		+ ']')
+																.attr(
+																		'selected',
+																		'selected');
+														$(
+																'#selectEtiquetasNuevaSemilla')
+																.find(
+																		'option:selected')
+																.remove()
+																.appendTo(
+																		'#selectEtiquetasNuevaSemillaSeleccionadas');
+													});
+								}
+							}
+						});
 	}
 </script>
 
@@ -307,6 +367,33 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</div>
 			</logic:notPresent>
 
+
+			<!-- Etiquetas -->
+			<div class="row formItem">
+				<label for="etiqueta" class="control-label"><strong
+					class="labelVisu"><bean:message
+							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
+
+				<div class="col-xs-4">
+					<select multiple class="form-control"
+						id="selectEtiquetasNuevaSemilla"></select>
+				</div>
+				<div class="col-xs-1">
+					<input type='button' id="addEtiqueta" value="&gt;&gt;"
+						onclick="$('#selectEtiquetasNuevaSemilla').find('option:selected').remove().appendTo('#selectEtiquetasNuevaSemillaSeleccionadas');">
+
+					<input type='button' id="removeEtiqueta" value="&lt;&lt;"
+						onclick="$('#selectEtiquetasNuevaSemillaSeleccionadas').find('option:selected').remove().appendTo('#selectEtiquetasNuevaSemilla');">
+				</div>
+				<div class="col-xs-4">
+					<select multiple class="form-control"
+						id="selectEtiquetasNuevaSemillaSeleccionadas"
+						name="etiquetasSeleccionadas"></select>
+				</div>
+
+
+			</div>
+			
 			<!-- Urls -->
 			<div class="row formItem">
 				<p class="alert alert-info" style="margin-left: 23%;">
