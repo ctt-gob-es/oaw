@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
@@ -258,7 +260,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories) throws Exception {
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
-				Constants.MINISTERIO_P, true);
+				Constants.MINISTERIO_P, true, null, null);
 		final OdfTextDocument odt = getOdfTemplate();
 		final OdfFileDom odfFileContent = odt.getContentDom();
 		final OdfFileDom odfStyles = odt.getStylesDom();
@@ -266,93 +268,108 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 		replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
 		// Global sections
-		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities);
+		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, null);
 		// Generate categories document and merge with parent
-		for (CategoriaForm category : categories) {
-			OdfTextDocument odtCategory = getOdfTemplateCategories();
-			OdfFileDom odfFileContentCategory = odtCategory.getContentDom();
-			// Modificar para que coja la plantilla de segmentos, haga los reemplazos e introduzca en el documento padre
-			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalResultData(executionId, Long.parseLong(category.getId()),
-					pageExecutionList, false);
-			if (pageExecutionListCat != null && !pageExecutionListCat.isEmpty()) {
-				String graphicSuffix = "_".concat(category.getName().replaceAll(REGEX_SPACES_1_MORE, EMPTY_STRING));
-				replaceSectionAllocationDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionCompilandeDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionAllocationPuntuactionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionMidAllocationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				// Replace titles with group name
-				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_SPAN_NODE);
-				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_P_NODE);
-				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_H_NODE);
-				// Rename documentStyles names to avoid conflicts
-				renameStyles(odtCategory, odfFileContentCategory, graphicSuffix);
-				appendsNodeAndChildsAtMarkerPosition(odt, odfFileContent, odtCategory, odfFileContentCategory, CATEGORYSECTION_BOOKMARK);
-				mergePictures(odt, odtCategory, graphicPath);
-				odtCategory.close();
-				mergeStylesToPrimaryDoc(odt, odtCategory, graphicSuffix);
-				mergeFontTypesToPrimaryDoc(odt, odtCategory);
-				forceContinueNumbering(odt, odfFileContent);
-			}
-		}
+		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, null);
 		// Generate complexities
-		for (ComplejidadForm complejidad : ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1)) {
-			OdfTextDocument odtComplexity = getOdfTemplateComplexities();
-			OdfFileDom odfFileContentComplejidad = odtComplexity.getContentDom();
-			// Modificar para que coja la plantilla de segmentos, haga los reemplazos e introduzca en el documento padre
-			final List<ObservatoryEvaluationForm> executionListComplejidad = ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalResultData(executionId, Long.parseLong(complejidad.getId()),
-					pageExecutionList, true);
-			if (executionListComplejidad != null && !executionListComplejidad.isEmpty()) {
-				String graphicSuffix = "_".concat(complejidad.getName().replaceAll(REGEX_SPACES_1_MORE, EMPTY_STRING));
-				replaceSectionAllocationDistributionGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionCompilandeDistributionGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionAllocationPuntuactionGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionMidAllocationLevel1Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionMidAllocationLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionModalityLevel1Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionModalityLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionAspectsGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				// Replace titles with group name
-				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_SPAN_NODE);
-				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_P_NODE);
-				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_H_NODE);
-				// Rename documentStyles names to avoid conflicts
-				renameStyles(odtComplexity, odfFileContentComplejidad, graphicSuffix);
-				// Add all DOM from create document to base doc
-				appendsNodeAndChildsAtMarkerPosition(odt, odfFileContent, odtComplexity, odfFileContentComplejidad, COMPLEJIDADSECTION_BOOKMARK);
-				mergePictures(odt, odtComplexity, graphicPath);
-				odtComplexity.close();
-				mergeStylesToPrimaryDoc(odt, odtComplexity, graphicSuffix);
-				mergeFontTypesToPrimaryDoc(odt, odtComplexity);
-				forceContinueNumbering(odt, odfFileContent);
-			}
+		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null);
+		// Evolution
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null);
+		finishDocumentConfiguration(odt, odfFileContent);
+		return odt;
+	}
+
+	/**
+	 * Builds the document filtered.
+	 *
+	 * @param request            the request
+	 * @param graphicPath        the graphic path
+	 * @param date               the date
+	 * @param evolution          the evolution
+	 * @param pageExecutionList  the page execution list
+	 * @param categories         the categories
+	 * @param tagsToFilter       the tags to filter
+	 * @param grpahicConditional the grpahic conditional
+	 * @param exObsIds           the ex obs ids
+	 * @return the odf text document
+	 * @throws Exception the exception
+	 */
+	@Override
+	public OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution,
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds)
+			throws Exception {
+		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
+				Constants.MINISTERIO_P, true, tagsToFilter, exObsIds);
+		final OdfTextDocument odt = getOdfTemplate();
+		final OdfFileDom odfFileContent = odt.getContentDom();
+		final OdfFileDom odfStyles = odt.getStylesDom();
+		List<ComplejidadForm> complexitivities = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
+		replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
+		replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
+		// Global sections
+		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter);
+		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter);
+		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter);
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds);
+		finishDocumentConfiguration(odt, odfFileContent);
+		return odt;
+	}
+
+	/**
+	 * Finish document configuration.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @throws Exception the exception
+	 */
+	private void finishDocumentConfiguration(final OdfTextDocument odt, final OdfFileDom odfFileContent) throws Exception {
+		// Fix crop images (fo:clip attribute) after merge several documents
+		NodeList nodeList = odt.getContentDom().getElementsByTagName(STYLE_GRAPHIC_PROPERTIES);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			OdfElement node = (OdfElement) nodeList.item(i);
+			node.removeAttribute(FO_CLIP);
 		}
-		/**
-		 * Evolution
-		 */
+		// Update title
+		replaceDocumentTitle(odt, odfFileContent, "");
+		// Add generated tables styles
+		addTableStyles(odt);
+	}
+
+	/**
+	 * Replace evolution section.
+	 *
+	 * @param graphicPath      the graphic path
+	 * @param evolution        the evolution
+	 * @param messageResources the message resources
+	 * @param odt              the odt
+	 * @param odfFileContent   the odf file content
+	 * @param tagsFilter       the tags filter
+	 * @param exObsIds         the ex obs ids
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception   the exception
+	 */
+	private void replaceEvolutionSection(final String graphicPath, final boolean evolution, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			String[] tagsFilter, String[] exObsIds) throws IOException, Exception {
 		if (evolution) {
 			/**
 			 * General results
 			 */
+			// TODO Apply id exc obs
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
-					Long.valueOf(executionId));
+					Long.valueOf(executionId), tagsFilter, exObsIds);
 			final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
 			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
 				resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 			}
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap);
-			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
+			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap,
+					exObsIds);
+			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds);
 			replaceImageGeneric(odt, graphicPath + "EvolucionNivelConformidadCombinada" + JPG_EXTENSION, "EvolucionNivelConformidadCombinada", MIME_TYPE_JPG);
 			// Section compliance
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap);
-			replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
+			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap,
+					exObsIds);
+			replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds);
 			replaceImageGeneric(odt, graphicPath + "EvolucionNivelCumplimientoCombinada" + JPG_EXTENSION, "EvolucionNivelCumplimientoCombinada", MIME_TYPE_JPG);
 			replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
 			// Mid by verification
@@ -382,17 +399,105 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			 * Results by segment
 			 */
 		}
-		// Fix crop images (fo:clip attribute) after merge several documents
-		NodeList nodeList = odt.getContentDom().getElementsByTagName(STYLE_GRAPHIC_PROPERTIES);
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			OdfElement node = (OdfElement) nodeList.item(i);
-			node.removeAttribute(FO_CLIP);
+	}
+
+	/**
+	 * Replace complexitivy section.
+	 *
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param tagsFilter        the tags filter
+	 * @throws SQLException             the SQL exception
+	 * @throws Exception                the exception
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void replaceComplexitivySection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources, final OdfTextDocument odt,
+			final OdfFileDom odfFileContent, String[] tagsFilter) throws SQLException, Exception, XPathExpressionException {
+		for (ComplejidadForm complejidad : ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1)) {
+			OdfTextDocument odtComplexity = getOdfTemplateComplexities();
+			OdfFileDom odfFileContentComplejidad = odtComplexity.getContentDom();
+			// Modificar para que coja la plantilla de segmentos, haga los reemplazos e introduzca en el documento padre
+			final List<ObservatoryEvaluationForm> executionListComplejidad = ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalResultData(executionId, Long.parseLong(complejidad.getId()),
+					pageExecutionList, true, tagsFilter);
+			if (executionListComplejidad != null && !executionListComplejidad.isEmpty()) {
+				String graphicSuffix = "_".concat(complejidad.getName().replaceAll(REGEX_SPACES_1_MORE, EMPTY_STRING));
+				replaceSectionAllocationDistributionGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionCompilandeDistributionGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionAllocationPuntuactionGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionMidAllocationLevel1Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionMidAllocationLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionModalityLevel1Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionModalityLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionAspectsGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				// Replace titles with group name
+				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_SPAN_NODE);
+				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_P_NODE);
+				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_H_NODE);
+				// Rename documentStyles names to avoid conflicts
+				renameStyles(odtComplexity, odfFileContentComplejidad, graphicSuffix);
+				// Add all DOM from create document to base doc
+				appendsNodeAndChildsAtMarkerPosition(odt, odfFileContent, odtComplexity, odfFileContentComplejidad, COMPLEJIDADSECTION_BOOKMARK);
+				mergePictures(odt, odtComplexity, graphicPath);
+				odtComplexity.close();
+				mergeStylesToPrimaryDoc(odt, odtComplexity, graphicSuffix);
+				mergeFontTypesToPrimaryDoc(odt, odtComplexity);
+				forceContinueNumbering(odt, odfFileContent);
+			}
 		}
-		// Update title
-		replaceDocumentTitle(odt, odfFileContent, "");
-		// Add generated tables styles
-		addTableStyles(odt);
-		return odt;
+	}
+
+	/**
+	 * Replace segment section.
+	 *
+	 * @param graphicPath       the graphic path
+	 * @param pageExecutionList the page execution list
+	 * @param categories        the categories
+	 * @param messageResources  the message resources
+	 * @param odt               the odt
+	 * @param odfFileContent    the odf file content
+	 * @param tagsFilter        the tags filter
+	 * @throws Exception                the exception
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void replaceSegmentSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsFilter) throws Exception, XPathExpressionException {
+		for (CategoriaForm category : categories) {
+			OdfTextDocument odtCategory = getOdfTemplateCategories();
+			OdfFileDom odfFileContentCategory = odtCategory.getContentDom();
+			// Modificar para que coja la plantilla de segmentos, haga los reemplazos e introduzca en el documento padre
+			final List<ObservatoryEvaluationForm> pageExecutionListCat = ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalResultData(executionId, Long.parseLong(category.getId()),
+					pageExecutionList, false, tagsFilter);
+			if (pageExecutionListCat != null && !pageExecutionListCat.isEmpty()) {
+				String graphicSuffix = "_".concat(category.getName().replaceAll(REGEX_SPACES_1_MORE, EMPTY_STRING));
+				replaceSectionAllocationDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionCompilandeDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionAllocationPuntuactionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionMidAllocationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
+				replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				// Replace titles with group name
+				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_SPAN_NODE);
+				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_P_NODE);
+				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_H_NODE);
+				// Rename documentStyles names to avoid conflicts
+				renameStyles(odtCategory, odfFileContentCategory, graphicSuffix);
+				appendsNodeAndChildsAtMarkerPosition(odt, odfFileContent, odtCategory, odfFileContentCategory, CATEGORYSECTION_BOOKMARK);
+				mergePictures(odt, odtCategory, graphicPath);
+				odtCategory.close();
+				mergeStylesToPrimaryDoc(odt, odtCategory, graphicSuffix);
+				mergeFontTypesToPrimaryDoc(odt, odtCategory);
+				forceContinueNumbering(odt, odfFileContent);
+			}
+		}
 	}
 
 	/**
@@ -405,18 +510,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odt               the odt
 	 * @param odfFileContent    the odf file content
 	 * @param complexitivities  the complexitivities
+	 * @param tagsFilter        the tags filter
 	 * @throws Exception the exception
 	 */
 	private void replaceGlobalSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
-			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities) throws Exception {
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, String[] tagsFilter) throws Exception {
 		replaceSectionGlobalAccesibilityDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionComparisionPuntuactionAllocationSegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
-		replaceSectionComparisionPuntuactionAllocationComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList);
-		replaceSectionComparisionPercentajeCompilanceSegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
-		replaceSectionComparisionPercentajeCompilanceComplexitivy(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList);
-		replaceSectionComparisionPuntuactionBySegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList);
-		replaceSectionComparisionPuntuactionByComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList);
+		replaceSectionComparisionPuntuactionAllocationSegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList, tagsFilter);
+		replaceSectionComparisionPuntuactionAllocationComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter);
+		replaceSectionComparisionPercentajeCompilanceSegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList, tagsFilter);
+		replaceSectionComparisionPercentajeCompilanceComplexitivy(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter);
+		replaceSectionComparisionPuntuactionBySegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList, tagsFilter);
+		replaceSectionComparisionPuntuactionByComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter);
 		replaceSectionPuntuacionByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionPuntuacionByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
@@ -690,11 +796,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param categories        the categories
 	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionComparisionPuntuactionAllocationSegment(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+			final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMap(categories);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -709,7 +816,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			}
 			numImg++;
 		}
-		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, categories);
+		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, categories,
+				tagsFilter);
 		// Create table
 		String header1 = HEADER_NIVEL_DE_PRIORIDAD;
 		String header2 = HEADER_PORCENTAJE_DE_PORTALES;
@@ -741,11 +849,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param complexities      the complexities
 	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private void replaceSectionComparisionPuntuactionAllocationComplexity(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final List<ComplejidadForm> complexities, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+			final List<ComplejidadForm> complexities, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapComplexities(complexities);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -760,7 +869,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			}
 		}
 		final Map<ComplejidadForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageResultsByComplexityMap(executionId, pageExecutionList,
-				ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1));
+				ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1), tagsFilter);
 		String header1 = HEADER_NIVEL_DE_PRIORIDAD;
 		String header2 = HEADER_PORCENTAJE_DE_PORTALES;
 		String columna1 = HEADER_AA;
@@ -788,11 +897,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param categories        the categories
 	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private void replaceSectionComparisionPercentajeCompilanceSegment(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+			final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMap(categories);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -806,7 +916,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			}
 		}
 		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageCompilanceResultsBySegmentMap(executionId, pageExecutionList,
-				categories);
+				categories, tagsFilter);
 		String header1 = HEADER_NIVEL_DE_CONFORMIDAD;
 		String header2 = HEADER_PORCENTAJE_DE_PORTALES;
 		String columna1 = HEADER_TOTALMENTE_CONFORME;
@@ -875,11 +985,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param complexitivities  the complexitivities
 	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private void replaceSectionComparisionPercentajeCompilanceComplexitivy(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
-			final String graphicPath, final List<ComplejidadForm> complexitivities, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+			final String graphicPath, final List<ComplejidadForm> complexitivities, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapComplexities(complexitivities);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -894,7 +1005,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			}
 		}
 		final Map<ComplejidadForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageCompilanceResultsByComplexitivityMap(executionId, pageExecutionList,
-				ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1));
+				ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1), tagsFilter);
 		String header1 = HEADER_NIVEL_DE_CONFORMIDAD;
 		String header2 = HEADER_PORCENTAJE_DE_PORTALES;
 		String columna1 = HEADER_TOTALMENTE_CONFORME;
@@ -1039,11 +1150,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param categories        the categories
 	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private void replaceSectionComparisionPuntuactionBySegment(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+			final List<CategoriaForm> categories, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMap(categories);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -1057,7 +1169,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				addImageNext(odt, graphicPath + grpahicName + JPG_EXTENSION, grpahicName, IMAGE_JPEG, prevImage);
 			}
 		}
-		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, categories);
+		final Map<CategoriaForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, categories,
+				tagsFilter);
 		String header1 = HEADER_NIVEL_DE_PRIORIDAD;
 		String header2 = HEADER_PUNTUACIÓN_MEDIA_DE_LOS_PORTALES;
 		String columna1 = HEADER_AA;
@@ -1126,11 +1239,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param complexitivities  the complexitivities
 	 * @param pageExecutionList the page execution list
+	 * @param tagsFilter        the tags filter
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private void replaceSectionComparisionPuntuactionByComplexity(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final List<ComplejidadForm> complexitivities, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
+			final List<ComplejidadForm> complexitivities, final List<ObservatoryEvaluationForm> pageExecutionList, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = ResultadosAnonimosObservatorioUNEEN2019Utils.createGraphicsMapComplexities(complexitivities);
 		String prevImage = EMPTY_STRING;
 		for (Integer i : resultLists.keySet()) {
@@ -1145,7 +1259,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			}
 		}
 		final Map<ComplejidadForm, Map<String, BigDecimal>> res = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateMidPuntuationResultsByComplexitivityMap(executionId, pageExecutionList,
-				complexitivities);
+				complexitivities, tagsFilter);
 		String header1 = HEADER_NIVEL_DE_PRIORIDAD;
 		String header2 = HEADER_PUNTUACIÓN_MEDIA_DE_LOS_PORTALES;
 		String columna1 = HEADER_AA;
@@ -1810,14 +1924,15 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent    the odf file content
 	 * @param graphicPath       the graphic path
 	 * @param pageExecutionList the page execution list
+	 * @param exObsIds          the ex obs ids
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionEvolutionSuitabilityLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String[] exObsIds) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
-					pageExecutionList);
+					pageExecutionList, exObsIds);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
 			final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
@@ -1854,14 +1969,15 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent    the odf file content
 	 * @param graphicPath       the graphic path
 	 * @param pageExecutionList the page execution list
+	 * @param exObsIds          the ex obs ids
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionEvolutionComplianceLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String[] exObsIds) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId,
-					pageExecutionList);
+					pageExecutionList, exObsIds);
 			final PropertiesManager pmgr = new PropertiesManager();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
 			final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_PARTIAL, df);

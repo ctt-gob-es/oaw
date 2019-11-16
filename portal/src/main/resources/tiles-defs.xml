@@ -786,5 +786,10 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportar.jsp" />
 	</definition>
+	
+	<definition name=".configurarFiltrosAgregados" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosAgregados.jsp" />
+	</definition>	
 
 </tiles-definitions>    

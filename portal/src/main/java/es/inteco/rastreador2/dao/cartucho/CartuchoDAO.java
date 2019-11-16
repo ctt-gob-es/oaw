@@ -27,11 +27,25 @@ import es.inteco.plugin.dao.WebAnalyzerDao;
 import es.inteco.rastreador2.dao.login.LoginDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 
+/**
+ * The Class CartuchoDAO.
+ */
 public final class CartuchoDAO {
 
+	/**
+	 * Instantiates a new cartucho DAO.
+	 */
 	private CartuchoDAO() {
 	}
 
+	/**
+	 * Gets the application from cartdige id
+	 *
+	 * @param c          the c
+	 * @param idCartucho the id cartucho
+	 * @return the application
+	 * @throws SQLException the SQL exception
+	 */
 	public static String getApplication(final Connection c, final Long idCartucho) throws SQLException {
 		String application = "";
 		try (PreparedStatement ps = c.prepareStatement("SELECT aplicacion FROM cartucho WHERE id_cartucho = ?")) {
@@ -48,6 +62,13 @@ public final class CartuchoDAO {
 		return application;
 	}
 
+	/**
+	 * Gets the nombre cartucho.
+	 *
+	 * @param idTracking the id tracking
+	 * @return the nombre cartucho
+	 * @throws Exception the exception
+	 */
 	public static String[] getNombreCartucho(long idTracking) throws Exception {
 		try (Connection conn = DataBaseManager.getConnection()) {
 			final List<String> cartridgeNames = WebAnalyzerDao.getCartridgeNames(conn, idTracking);
@@ -59,16 +80,12 @@ public final class CartuchoDAO {
 	}
 
 	/**
-	 * Método que devuelve el id de la normativa asociada al cartucho, en caso
-	 * de los cartuchos de accesibilidad y -1 en otros casos
+	 * Método que devuelve el id de la normativa asociada al cartucho, en caso de los cartuchos de accesibilidad y -1 en otros casos.
 	 *
-	 * @param c
-	 *            Connection a la base de datos
-	 * @param idCartucho
-	 *            id del cartucho
-	 * @return el id de la normativa asociada si es un cartucho de accesibilidad
-	 *         y -1 en otros casos
-	 * @throws SQLException
+	 * @param c          Connection a la base de datos
+	 * @param idCartucho id del cartucho
+	 * @return el id de la normativa asociada si es un cartucho de accesibilidad y -1 en otros casos
+	 * @throws SQLException the SQL exception
 	 */
 	public static int getGuideline(final Connection c, long idCartucho) throws SQLException {
 		int idGuideline = -1;
@@ -87,15 +104,12 @@ public final class CartuchoDAO {
 	}
 
 	/**
-	 * Método que dado un id de cartucho indica si el cartucho pertenece a una
-	 * normativa de accesibilidad o no
+	 * Método que dado un id de cartucho indica si el cartucho pertenece a una normativa de accesibilidad o no.
 	 *
-	 * @param c
-	 *            Connection a la base de datos
-	 * @param idCartucho
-	 *            id del cartucho
+	 * @param c          Connection a la base de datos
+	 * @param idCartucho id del cartucho
 	 * @return true si el cartucho pertenece a un cartucho de accesibilidad
-	 * @throws SQLException
+	 * @throws SQLException the SQL exception
 	 */
 	public static boolean isCartuchoAccesibilidad(Connection c, long idCartucho) throws SQLException {
 		try (PreparedStatement pes = c.prepareStatement("SELECT nombre FROM cartucho WHERE id_cartucho = ?")) {
@@ -113,14 +127,13 @@ public final class CartuchoDAO {
 	}
 
 	/**
-	 * Obtiene el nombre de la aplicación del cartucho asociado a un
-	 * rastreo realizado
-	 * 
-	 * @param c
-	 * @param idRastreoRealizado
-	 * @param idRastreo
-	 * @return
-	 * @throws SQLException
+	 * Obtiene el nombre de la aplicación del cartucho asociado a un rastreo realizado.
+	 *
+	 * @param c                  the c
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @param idRastreo          the id rastreo
+	 * @return the application from executed observatory id
+	 * @throws SQLException the SQL exception
 	 */
 	public static String getApplicationFromExecutedObservatoryId(final Connection c, final Long idRastreoRealizado, final Long idRastreo) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("SELECT aplicacion FROM cartucho c, rastreos_realizados rr where c.id_cartucho=rr.id_cartucho and rr.id_rastreo=? and rr.id=?")) {
@@ -140,6 +153,14 @@ public final class CartuchoDAO {
 		}
 	}
 	
+	/**
+	 * Gets the application from analisis id.
+	 *
+	 * @param c          the c
+	 * @param idAnalisis the id analisis
+	 * @return the application from analisis id
+	 * @throws SQLException the SQL exception
+	 */
 	public static String getApplicationFromAnalisisId(final Connection c, final Long idAnalisis) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement("select c.aplicacion from cartucho c, tanalisis ta where c.id_guideline=ta.cod_guideline and ta.cod_analisis=?")) {
 			ps.setLong(1, idAnalisis);

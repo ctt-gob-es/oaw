@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -128,7 +129,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
-			final String type, final boolean regenerate) throws Exception {
+			final String type, final boolean regenerate, String[] tagsFilter, String[] exObsIds) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			String color = pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_INTECO_RED_COLORS);
@@ -138,16 +139,16 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, idExecutionObservatory);
 			final List<ComplejidadForm> complejidades = ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1);
 			// Gráficos globales
-			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate);
+			generateGlobalGraphics(messageResources, executionId, filePath, categories, color, regenerate, tagsFilter);
 			// Gráficos por segmento
 			for (CategoriaForm categoryForm : categories) {
-				generateCategoryGraphics(messageResources, executionId, categoryForm, filePath, color, regenerate);
+				generateCategoryGraphics(messageResources, executionId, categoryForm, filePath, color, regenerate, tagsFilter);
 			}
 			// Gráficos por complejidad
 			for (ComplejidadForm complejidad : complejidades) {
-				generateComplexityGraphics(messageResources, executionId, complejidad, filePath, color, regenerate);
+				generateComplexityGraphics(messageResources, executionId, complejidad, filePath, color, regenerate, tagsFilter);
 			}
-			generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate);
+			generateEvolutionGraphics(messageResources, observatoryId, executionId, filePath, color, regenerate, tagsFilter, exObsIds);
 		} catch (Exception e) {
 			Logger.putLog("No se han generado las gráficas correctamente.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
@@ -167,8 +168,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateGlobalGraphics(final MessageResources messageResources, final String executionId, final String filePath, final List<CategoriaForm> categories,
-			final String color, final boolean regenerate) throws Exception {
-		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, Constants.COMPLEXITY_SEGMENT_NONE, null, false);
+			final String color, final boolean regenerate, String[] tagsFilter) throws Exception {
+		final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(executionId, Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
 		final Map<String, Object> globalGraphics = new HashMap<>();
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
@@ -181,24 +182,24 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			getGlobalCompilanceGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, regenerate);
 			// Gráfico nivel de cumplimiento global
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkByComplexityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades);
+			getGlobalMarkByComplexityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades, tagsFilter);
 			// Comparación adecuación segmento
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
-			getGlobalAllocationBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate);
+			getGlobalAllocationBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
 			// Comparación adecuación complejidad
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexity.mark.name") + ".jpg";
-			getGloballAllocationByComplexity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate);
+			getGloballAllocationByComplexity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
 			// Comparación cumplimiento por segmento
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.segments.mark.name") + ".jpg";
-			getGlobalCompilanceBySgment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate);
+			getGlobalCompilanceBySgment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
 			// Comparación complimiento por complejidad
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.name") + ".jpg";
-			getGlobalCompilanceByComplexitivity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate);
+			getGlobalCompilanceByComplexitivity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, categories);
+			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, categories, tagsFilter);
 			// Comparación de la puntuación por complejidad
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexitiviy.strached.name") + ".jpg";
-			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades);
+			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades, tagsFilter);
 			// Comparación puntuación por verificación
 			file = filePath + messageResources.getMessage("observatory.graphic.verification.mid.comparation.level.1.name") + ".jpg";
 			getMidsComparationByVerificationLevelGraphic(messageResources, globalGraphics, Constants.OBS_PRIORITY_1, "", file, noDataMess, pageExecutionList, color, regenerate);
@@ -234,14 +235,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateCategoryGraphics(final MessageResources messageResources, final String idExecution, final CategoriaForm category, final String filePath,
-			final String color, final boolean regenerate) throws Exception {
+			final String color, final boolean regenerate, String[] tagsFilter) throws Exception {
 		final Map<String, Object> categoryGraphics = new HashMap<>();
 		try {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
 			String id = category.getId();
 			String name = category.getName();
 			String graphicSuffix = "_".concat(name.replaceAll("\\s+", ""));
-			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, false);
+			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, false, tagsFilter);
 			if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
 				String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", graphicSuffix) + ".jpg";
@@ -289,14 +290,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<String, Object> generateComplexityGraphics(final MessageResources messageResources, final String idExecution, final ComplejidadForm complejidad, final String filePath,
-			final String color, final boolean regenerate) throws Exception {
+			final String color, final boolean regenerate, String[] tagsFilter) throws Exception {
 		final Map<String, Object> categoryGraphics = new HashMap<>();
 		try {
 			final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
 			String id = complejidad.getId();
 			String name = complejidad.getName();
 			String graphicSuffix = "_".concat(name.replaceAll("\\s+", ""));
-			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, true);
+			final List<ObservatoryEvaluationForm> pageExecutionList = getGlobalResultData(idExecution, Long.parseLong(id), null, true, tagsFilter);
 			if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 				String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.title", name);
 				String file = filePath + messageResources.getMessage("observatory.graphic.accessibility.level.allocation.segment.name", graphicSuffix) + ".jpg";
@@ -343,22 +344,25 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @return the map
 	 * @throws Exception the exception
 	 */
-	public static Map<String, Object> generateEvolutionGraphics(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color, boolean regenerate)
-			throws Exception {
-		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId));
+	public static Map<String, Object> generateEvolutionGraphics(MessageResources messageResources, String observatoryId, final String executionId, String filePath, String color, boolean regenerate,
+			String[] tagsFilter, String[] exObsIds) throws Exception {
+		final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = resultEvolutionData(Long.valueOf(observatoryId), Long.valueOf(executionId), tagsFilter, exObsIds);
 		final Map<String, Object> evolutionGraphics = new HashMap<>();
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
 			if (pageObservatoryMap.size() != 1) {
 				final String noDataMess = messageResources.getMessage(GRAFICA_SIN_DATOS);
 				String title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.A.title");
 				String file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + ".jpg";
-				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_A, title, file, noDataMess, pageObservatoryMap, color, regenerate);
+				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_A, title, file, noDataMess, pageObservatoryMap, color, regenerate,
+						exObsIds);
 				title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.AA.title");
 				file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + ".jpg";
-				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_AA, title, file, noDataMess, pageObservatoryMap, color, regenerate);
+				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_AA, title, file, noDataMess, pageObservatoryMap, color, regenerate,
+						exObsIds);
 				title = messageResources.getMessage("observatory.graphic.accessibility.evolution.approval.NV.title");
 				file = filePath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + ".jpg";
-				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_NV, title, file, noDataMess, pageObservatoryMap, color, regenerate);
+				getApprovalLevelEvolutionGraphic(messageResources, observatoryId, executionId, evolutionGraphics, Constants.OBS_NV, title, file, noDataMess, pageObservatoryMap, color, regenerate,
+						exObsIds);
 				file = filePath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + ".jpg";
 				getMidMarkEvolutionGraphic(messageResources, evolutionGraphics, noDataMess, file, pageObservatoryMap, color, regenerate);
 				getMidMarkVerificationEvolutionGraphic(messageResources, evolutionGraphics, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION, noDataMess, filePath, pageObservatoryMap, color,
@@ -912,12 +916,12 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalAllocationBySegment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
 			final DefaultCategoryDataset dataSet = createDataSet(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
@@ -951,12 +955,12 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	// TODO Situación de cumplimiento por segmento
 	public static void getGlobalCompilanceBySgment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageCompilanceResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageCompilanceResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
 			final DefaultCategoryDataset dataSet = createCompilanceDataSet(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
@@ -989,12 +993,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalCompilanceByComplexitivity(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate, String[] tagsFilter)
+			throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageCompilanceResultsByComplexitivityMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageCompilanceResultsByComplexitivityMap(executionId, pageExecutionList, resultLists.get(i),
+					tagsFilter);
 			final DefaultCategoryDataset dataSet = createDataSetComplexityCompilance(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
@@ -1027,12 +1033,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGloballAllocationByComplexity(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
-			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate) throws Exception {
+			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> complexities, final boolean regenerate, String[] tagsFilter)
+			throws Exception {
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsByComplexityMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = calculatePercentageResultsByComplexityMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
 			final DefaultCategoryDataset dataSet = createDataSetComplexity(resultsBySegment, messageResources);
 			final PropertiesManager pmgr = new PropertiesManager();
 			// Si la gráfica no existe, la creamos
@@ -1471,9 +1478,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	public static void getApprovalLevelEvolutionGraphic(final MessageResources messageResources, final String observatoryId, final String executionId, Map<String, Object> evolutionGraphics,
 			final String suitabilityLevel, final String title, final String filePath, final String noDataMess, final Map<Date, List<ObservatoryEvaluationForm>> observatoryResult, final String color,
-			final boolean regenerate) throws Exception {
+			final boolean regenerate, String[] exObsIds) throws Exception {
 		final File file = new File(filePath);
-		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, observatoryResult);
+		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, observatoryResult, exObsIds);
 		final Map<String, BigDecimal> resultData = calculatePercentageApprovalSiteLevel(result, suitabilityLevel);
 		// Los incluimos en la request
 		if (suitabilityLevel.equals(Constants.OBS_A)) {
@@ -1584,12 +1591,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categoryId         the category id
 	 * @param pageExecutionList  the page execution list
 	 * @param isComplexityFilter the is complexity filter
+	 * @param tagsFilter         TODO
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			boolean isComplexityFilter) throws Exception {
-		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter);
+			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
+		return getGlobalResultData(executionId, categoryId, pageExecutionList, null, isComplexityFilter, tagsFilter);
 	}
 
 	/**
@@ -1600,16 +1608,17 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param pageExecutionList  the page execution list
 	 * @param idCrawler          the id crawler
 	 * @param isComplexityFilter the is complexity filter
+	 * @param tagsFilter         TODO
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler,
-			boolean isComplexityFilter) throws Exception {
+			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
-		try {
-			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
-		} catch (NeedsRefreshException nre) {
+//		try {
+//			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
+//		} catch (NeedsRefreshException nre) {
 			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNEEN2019Utils.class,
 					Logger.LOG_LEVEL_INFO);
 			try (Connection c = DataBaseManager.getConnection()) {
@@ -1617,7 +1626,12 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				final List<Long> listAnalysis = new ArrayList<>();
 				List<Long> listExecutionsIds = new ArrayList<>();
 				if (idCrawler == null) {
-					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
+					// TODO Filter by tags
+					if (tagsFilter != null && tagsFilter.length > 0) {
+						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsMatchTags(c, Long.parseLong(executionId), tagsFilter);
+					} else {
+						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
+					}
 				} else {
 					listExecutionsIds.add(idCrawler);
 				}
@@ -1659,7 +1673,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				throw e;
 			}
 			CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
-		}
+//		}
 		// TODO Filteer by category or complexity
 		if (!isComplexityFilter) {
 			return filterObservatoriesByCategory(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
@@ -2061,16 +2075,26 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @return the evolution observatories sites by type
 	 */
 	public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(final String observatoryId, final String executionId,
-			final Map<Date, List<ObservatoryEvaluationForm>> result) {
+			final Map<Date, List<ObservatoryEvaluationForm>> result, String[] exObsIds) {
 		final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(observatoryId));
 			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId),
 					observatoryForm.getCartucho().getId());
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
-				final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
-				final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
-				resultData.put(longDateEntry.getValue(), sites);
+				if (exObsIds != null) {
+					List<String> list = Arrays.asList(exObsIds);
+					// Only add selected observatoriess
+					if (list.contains((String.valueOf(longDateEntry.getKey())))) {
+						final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
+						final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
+						resultData.put(longDateEntry.getValue(), sites);
+					}
+				} else {
+					final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
+					final Map<Long, Map<String, Integer>> sites = getSitesByType(pageList);
+					resultData.put(longDateEntry.getValue(), sites);
+				}
 			}
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -2087,17 +2111,28 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @return the evolution observatories sites by compliance
 	 */
 	public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByCompliance(final String observatoryId, final String executionId,
-			final Map<Date, List<ObservatoryEvaluationForm>> result) {
+			final Map<Date, List<ObservatoryEvaluationForm>> result, String[] exObsIds) {
 		final Map<Date, Map<Long, Map<String, Integer>>> resultData = new HashMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, Long.parseLong(observatoryId));
 			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, Long.parseLong(observatoryId), Long.parseLong(executionId),
 					observatoryForm.getCartucho().getId());
 			for (Map.Entry<Long, Date> longDateEntry : executedObservatoryIdMap.entrySet()) {
-				final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
-				final Map<Long, Map<String, Integer>> sites = new TreeMap<>();
-				sites.put(longDateEntry.getKey(), getSityesByCompliance(getVerificationResultsByPointAndCrawl(pageList, Constants.OBS_PRIORITY_NONE)));
-				resultData.put(longDateEntry.getValue(), sites);
+				if (exObsIds != null) {
+					List<String> list = Arrays.asList(exObsIds);
+					// Only add selected observatoriess
+					if (list.contains((String.valueOf(longDateEntry.getKey())))) {
+						final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
+						final Map<Long, Map<String, Integer>> sites = new TreeMap<>();
+						sites.put(longDateEntry.getKey(), getSityesByCompliance(getVerificationResultsByPointAndCrawl(pageList, Constants.OBS_PRIORITY_NONE)));
+						resultData.put(longDateEntry.getValue(), sites);
+					}
+				} else {
+					final List<ObservatoryEvaluationForm> pageList = result.get(longDateEntry.getValue());
+					final Map<Long, Map<String, Integer>> sites = new TreeMap<>();
+					sites.put(longDateEntry.getKey(), getSityesByCompliance(getVerificationResultsByPointAndCrawl(pageList, Constants.OBS_PRIORITY_NONE)));
+					resultData.put(longDateEntry.getValue(), sites);
+				}
 			}
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -2112,59 +2147,23 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId   the execution id
 	 * @return the map
 	 */
-	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId) {
+	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
 		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
 			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
-				final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false);
-				resultData.put(entry.getValue(), pageList);
-			}
-		} catch (Exception e) {
-			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
-		}
-		return resultData;
-	}
-
-	/**
-	 * Result evolution data.
-	 *
-	 * @param observatoryId the observatory id
-	 * @param executionId   the execution id
-	 * @param categoryId    the category id
-	 * @return the map
-	 */
-	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionCategoryData(final Long observatoryId, final Long executionId, final Long categoryId) {
-		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
-		try (Connection c = DataBaseManager.getConnection()) {
-			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
-			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
-			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
-				final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, false);
-				resultData.put(entry.getValue(), pageList);
-			}
-		} catch (Exception e) {
-			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
-		}
-		return resultData;
-	}
-
-	/**
-	 * Result evolution data.
-	 *
-	 * @param observatoryId the observatory id
-	 * @param executionId   the execution id
-	 * @return the map
-	 */
-	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionDataComplexity(final Long observatoryId, final Long executionId) {
-		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
-		try (Connection c = DataBaseManager.getConnection()) {
-			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
-			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
-			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
-				final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, true);
-				resultData.put(entry.getValue(), pageList);
+				if (exObsIds != null) {
+					List<String> list = Arrays.asList(exObsIds);
+					// Only add selected observatoriess
+					if (list.contains((String.valueOf(entry.getKey())))) {
+						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
+						resultData.put(entry.getValue(), pageList);
+					}
+				} else {
+					final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsFilter);
+					resultData.put(entry.getValue(), pageList);
+				}
 			}
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
@@ -2180,13 +2179,77 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categoryId    the category id
 	 * @return the map
 	 */
-	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionCategoryDataComplexity(final Long observatoryId, final Long executionId, final Long categoryId) {
+	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionCategoryData(final Long observatoryId, final Long executionId, final Long categoryId, String[] tagsFilter,
+			String[] exObsIds) {
 		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
 			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
 			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
-				final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, true);
+				if (exObsIds != null) {
+					List<String> list = Arrays.asList(exObsIds);
+					// Only add selected observatoriess
+					if (list.contains((String.valueOf(entry.getKey())))) {
+						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, false, tagsFilter);
+						resultData.put(entry.getValue(), pageList);
+					}
+				} else {
+					final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, false, tagsFilter);
+					resultData.put(entry.getValue(), pageList);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return resultData;
+	}
+
+	/**
+	 * Result evolution data.
+	 *
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @return the map
+	 */
+	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionDataComplexity(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
+		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
+			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
+			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
+				if (exObsIds != null) {
+					List<String> list = Arrays.asList(exObsIds);
+					// Only add selected observatoriess
+					if (list.contains((String.valueOf(entry.getKey())))) {
+						final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, true, tagsFilter);
+						resultData.put(entry.getValue(), pageList);
+					}
+				} else {
+					final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), Constants.COMPLEXITY_SEGMENT_NONE, null, true, tagsFilter);
+					resultData.put(entry.getValue(), pageList);
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return resultData;
+	}
+
+	/**
+	 * Result evolution data.
+	 *
+	 * @param observatoryId the observatory id
+	 * @param executionId   the execution id
+	 * @param categoryId    the category id
+	 * @return the map
+	 */
+	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionCategoryDataComplexity(final Long observatoryId, final Long executionId, final Long categoryId, String[] tagsFilter) {
+		final Map<Date, List<ObservatoryEvaluationForm>> resultData = new TreeMap<>();
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, observatoryId);
+			final Map<Long, Date> executedObservatoryIdMap = ObservatorioDAO.getObservatoryExecutionIds(c, observatoryId, executionId, observatoryForm.getCartucho().getId());
+			for (Map.Entry<Long, Date> entry : executedObservatoryIdMap.entrySet()) {
+				final List<ObservatoryEvaluationForm> pageList = getGlobalResultData(String.valueOf(entry.getKey()), categoryId, null, true, tagsFilter);
 				resultData.put(entry.getValue(), pageList);
 			}
 		} catch (Exception e) {
@@ -2554,13 +2617,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalMarkBySegmentGraphic(final MessageResources messageResources, final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<CategoriaForm> categories) throws Exception {
+			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<CategoriaForm> categories, String[] tagsFilter) throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsBySegmentMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
 			if (!file.exists()) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSet(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
@@ -2590,13 +2653,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalMarkByComplexitivityGraphic(final MessageResources messageResources, final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<ComplejidadForm> complexitivities) throws Exception {
+			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<ComplejidadForm> complexitivities, String[] tagsFilter)
+			throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexitivities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsByComplexitivityMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsByComplexitivityMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
 			if (!file.exists()) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSetComplexity(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
@@ -2626,13 +2690,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static void getGlobalMarkByComplexityGraphic(final MessageResources messageResources, final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<ComplejidadForm> complexities) throws Exception {
+			Map<String, Object> globalGraphics, final String title, final String filePath, final String noDataMess, final List<ComplejidadForm> complexities, String[] tagsFilter) throws Exception {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final Map<Integer, List<ComplejidadForm>> resultLists = createGraphicsMapComplexities(complexities);
 		final List<ComplexityViewListForm> categoriesLabels = new ArrayList<>();
 		for (int i = 1; i <= resultLists.size(); i++) {
 			final File file = new File(filePath.substring(0, filePath.indexOf(".jpg")) + i + ".jpg");
-			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsByComplecityMap(executionId, pageExecutionList, resultLists.get(i));
+			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = calculateMidPuntuationResultsByComplecityMap(executionId, pageExecutionList, resultLists.get(i), tagsFilter);
 			if (!file.exists()) {
 				final ChartForm observatoryGraphicsForm = new ChartForm(createDataSetComplexity(resultDataBySegment, messageResources), true, true, false, false, true, false, false, x, y,
 						pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
@@ -3065,51 +3129,53 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 		// Se recorren las páginas de cada observatorio
-		for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
-			boolean isA = true;
-			boolean isAA = true;
-			// Se recorren los niveles de análisis
-			for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
-				// Se recorren los niveles de acecuación
-				for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
-					int numZeroRed = 0;
-					if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
-						if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isA)) {
-							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-									numZeroRed = numZeroRed + 1;
+		if (observatoryEvaluationList != null && !observatoryEvaluationList.isEmpty()) {
+			for (ObservatoryEvaluationForm observatoryEvaluationForm : observatoryEvaluationList) {
+				boolean isA = true;
+				boolean isAA = true;
+				// Se recorren los niveles de análisis
+				for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
+					// Se recorren los niveles de acecuación
+					for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
+						int numZeroRed = 0;
+						if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
+							if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isA)) {
+								for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+									if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
+										numZeroRed = numZeroRed + 1;
+									}
+								}
+								if (numZeroRed > maxFails) {
+									isA = false;
 								}
 							}
-							if (numZeroRed > maxFails) {
-								isA = false;
-							}
-						}
-					} else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
-						if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isAA)) {
-							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-									numZeroRed = numZeroRed + 1;
+						} else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
+							if ((observatoryLevel.getName().equals(Constants.OBS_N1)) || (isAA)) {
+								for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+									if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
+										numZeroRed = numZeroRed + 1;
+									}
 								}
-							}
-							if (numZeroRed > maxFails) {
-								isAA = false;
+								if (numZeroRed > maxFails) {
+									isAA = false;
+								}
 							}
 						}
 					}
 				}
-			}
-			if (isA && isAA) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_AA);
-				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_AA, globalResult2);
-			} else if (isA) {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_A);
-				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_A, globalResult2);
-			} else {
-				final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_NV);
-				globalResult2.add(observatoryEvaluationForm);
-				globalResult.put(Constants.OBS_NV, globalResult2);
+				if (isA && isAA) {
+					final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_AA);
+					globalResult2.add(observatoryEvaluationForm);
+					globalResult.put(Constants.OBS_AA, globalResult2);
+				} else if (isA) {
+					final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_A);
+					globalResult2.add(observatoryEvaluationForm);
+					globalResult.put(Constants.OBS_A, globalResult2);
+				} else {
+					final List<ObservatoryEvaluationForm> globalResult2 = globalResult.get(Constants.OBS_NV);
+					globalResult2.add(observatoryEvaluationForm);
+					globalResult.put(Constants.OBS_NV, globalResult2);
+				}
 			}
 		}
 		return globalResult;
@@ -3229,54 +3295,56 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	public static Map<Long, Map<String, BigDecimal>> getVerificationResultsByPointAndCrawl(final List<ObservatoryEvaluationForm> resultData, final String level) {
 		final Map<Long, Map<String, Integer>> results = new TreeMap<>();
 		final Map<Long, Map<String, Integer>> numPointG = new LinkedHashMap<>();
-		for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
-			for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
-				if (level.equals(Constants.OBS_PRIORITY_NONE) || observatoryLevelForm.getName().equals(level)) {
-					for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
-						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-							Map<String, Integer> results2 = new TreeMap<>();
-							Map<String, Integer> numPoint = new TreeMap<>();
-							// Se comprueba si puntúa o no puntúa
-							if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
-								if (results2.get(observatorySubgroupForm.getDescription()) == null) {
-									results2.put(observatorySubgroupForm.getDescription(), 0);
-									numPoint.put(observatorySubgroupForm.getDescription(), 0);
-								}
-								// Si puntúa, se isNombreValido si se le da un 0
-								// o un 1
-								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
-									// Si le damos un 1, lo añadimos a la
-									// puntuación e incrementamos el número de
-									// puntos que han puntuado
-									results2.put(observatorySubgroupForm.getDescription(), results2.get(observatorySubgroupForm.getDescription()) + 1);
-									if (numPoint.get(observatorySubgroupForm.getDescription()) == -1) {
-										numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 2);
+		if (resultData != null && !resultData.isEmpty()) {
+			for (ObservatoryEvaluationForm observatoryEvaluationForm : resultData) {
+				for (ObservatoryLevelForm observatoryLevelForm : observatoryEvaluationForm.getGroups()) {
+					if (level.equals(Constants.OBS_PRIORITY_NONE) || observatoryLevelForm.getName().equals(level)) {
+						for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
+							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+								Map<String, Integer> results2 = new TreeMap<>();
+								Map<String, Integer> numPoint = new TreeMap<>();
+								// Se comprueba si puntúa o no puntúa
+								if (observatorySubgroupForm.getValue() != Constants.OBS_VALUE_NOT_SCORE) {
+									if (results2.get(observatorySubgroupForm.getDescription()) == null) {
+										results2.put(observatorySubgroupForm.getDescription(), 0);
+										numPoint.put(observatorySubgroupForm.getDescription(), 0);
+									}
+									// Si puntúa, se isNombreValido si se le da un 0
+									// o un 1
+									if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_GREEN_ONE) {
+										// Si le damos un 1, lo añadimos a la
+										// puntuación e incrementamos el número de
+										// puntos que han puntuado
+										results2.put(observatorySubgroupForm.getDescription(), results2.get(observatorySubgroupForm.getDescription()) + 1);
+										if (numPoint.get(observatorySubgroupForm.getDescription()) == -1) {
+											numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 2);
+										} else {
+											numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 1);
+										}
 									} else {
+										// Si le damos un 0 solamente incrementamos
+										// el número de puntos
 										numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 1);
 									}
-								} else {
-									// Si le damos un 0 solamente incrementamos
-									// el número de puntos
-									numPoint.put(observatorySubgroupForm.getDescription(), numPoint.get(observatorySubgroupForm.getDescription()) + 1);
+								} else if (results2.get(observatorySubgroupForm.getDescription()) == null) {
+									results2.put(observatorySubgroupForm.getDescription(), 0);
+									numPoint.put(observatorySubgroupForm.getDescription(), -1);
 								}
-							} else if (results2.get(observatorySubgroupForm.getDescription()) == null) {
-								results2.put(observatorySubgroupForm.getDescription(), 0);
-								numPoint.put(observatorySubgroupForm.getDescription(), -1);
-							}
-							// ADDD
-							if (results.get(observatoryEvaluationForm.getCrawlerExecutionId()) != null) {
-								final Map<String, Integer> value = results.get(observatoryEvaluationForm.getCrawlerExecutionId());
-								value.putAll(results2);
-								results.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
-							} else {
-								results.put(observatoryEvaluationForm.getCrawlerExecutionId(), results2);
-							}
-							if (numPointG.get(observatoryEvaluationForm.getCrawlerExecutionId()) != null) {
-								final Map<String, Integer> value = numPointG.get(observatoryEvaluationForm.getCrawlerExecutionId());
-								value.putAll(numPoint);
-								numPointG.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
-							} else {
-								numPointG.put(observatoryEvaluationForm.getCrawlerExecutionId(), numPoint);
+								// ADDD
+								if (results.get(observatoryEvaluationForm.getCrawlerExecutionId()) != null) {
+									final Map<String, Integer> value = results.get(observatoryEvaluationForm.getCrawlerExecutionId());
+									value.putAll(results2);
+									results.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
+								} else {
+									results.put(observatoryEvaluationForm.getCrawlerExecutionId(), results2);
+								}
+								if (numPointG.get(observatoryEvaluationForm.getCrawlerExecutionId()) != null) {
+									final Map<String, Integer> value = numPointG.get(observatoryEvaluationForm.getCrawlerExecutionId());
+									value.putAll(numPoint);
+									numPointG.put(observatoryEvaluationForm.getCrawlerExecutionId(), value);
+								} else {
+									numPointG.put(observatoryEvaluationForm.getCrawlerExecutionId(), numPoint);
+								}
 							}
 						}
 					}
@@ -3339,7 +3407,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	// Cálculo de resultados
 	public static Map<CategoriaForm, Map<String, BigDecimal>> calculatePercentageResultsBySegmentMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<CategoriaForm> categories) throws Exception {
+			final List<CategoriaForm> categories, String[] tagsFilter) throws Exception {
 		final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
 			@Override
 			public int compare(CategoriaForm o1, CategoriaForm o2) {
@@ -3347,7 +3415,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		});
 		for (CategoriaForm category : categories) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, false);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, false, tagsFilter);
 			resultsBySegment.put(category, calculatePercentage(getResultsBySiteLevel(resultDataSegment)));
 		}
 		return resultsBySegment;
@@ -3363,7 +3431,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<ComplejidadForm, Map<String, BigDecimal>> calculatePercentageResultsByComplexityMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<ComplejidadForm> complexities) throws Exception {
+			final List<ComplejidadForm> complexities, String[] tagsFilter) throws Exception {
 		final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<ComplejidadForm>() {
 			@Override
 			public int compare(ComplejidadForm o1, ComplejidadForm o2) {
@@ -3371,7 +3439,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		});
 		for (ComplejidadForm complexity : complexities) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(complexity.getId()), pageExecutionList, true);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(complexity.getId()), pageExecutionList, true, tagsFilter);
 			resultsBySegment.put(complexity, calculatePercentage(getResultsBySiteLevel(resultDataSegment)));
 		}
 		return resultsBySegment;
@@ -3387,7 +3455,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<CategoriaForm, Map<String, BigDecimal>> calculatePercentageCompilanceResultsBySegmentMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<CategoriaForm> categories) throws Exception {
+			final List<CategoriaForm> categories, String[] tagsFilter) throws Exception {
 		final Map<CategoriaForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
 			@Override
 			public int compare(CategoriaForm o1, CategoriaForm o2) {
@@ -3395,7 +3463,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		});
 		for (CategoriaForm category : categories) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, false);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, false, tagsFilter);
 			resultsBySegment.put(category, calculatePercentage(getResultsBySiteCompilance(resultDataSegment)));
 		}
 		return resultsBySegment;
@@ -3411,7 +3479,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<ComplejidadForm, Map<String, BigDecimal>> calculatePercentageCompilanceResultsByComplexitivityMap(final String executionId,
-			final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> completivities) throws Exception {
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<ComplejidadForm> completivities, String[] tagsFilter) throws Exception {
 		final Map<ComplejidadForm, Map<String, BigDecimal>> resultsBySegment = new TreeMap<>(new Comparator<ComplejidadForm>() {
 			@Override
 			public int compare(ComplejidadForm o1, ComplejidadForm o2) {
@@ -3419,7 +3487,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		});
 		for (ComplejidadForm complexitivity : completivities) {
-			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(complexitivity.getId()), pageExecutionList, true);
+			final List<ObservatoryEvaluationForm> resultDataSegment = getGlobalResultData(executionId, Long.parseLong(complexitivity.getId()), pageExecutionList, true, tagsFilter);
 			resultsBySegment.put(complexitivity, calculatePercentage(getResultsBySiteCompilance(resultDataSegment)));
 		}
 		return resultsBySegment;
@@ -3435,7 +3503,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<CategoriaForm, Map<String, BigDecimal>> calculateMidPuntuationResultsBySegmentMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<CategoriaForm> categories) throws Exception {
+			final List<CategoriaForm> categories, String[] tagsFilter) throws Exception {
 		try {
 			final Map<CategoriaForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<>(new Comparator<CategoriaForm>() {
 				@Override
@@ -3444,7 +3512,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				}
 			});
 			for (CategoriaForm category : categories) {
-				final List<ObservatorySiteEvaluationForm> categoryList = getSitesListByLevel(getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, false));
+				final List<ObservatorySiteEvaluationForm> categoryList = getSitesListByLevel(getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, false, tagsFilter));
 				resultDataBySegment.put(category, barGraphicFromMidPuntuationSegmentData(categoryList));
 			}
 			return resultDataBySegment;
@@ -3464,7 +3532,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<ComplejidadForm, Map<String, BigDecimal>> calculateMidPuntuationResultsByComplexitivityMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<ComplejidadForm> complexitivities) throws Exception {
+			final List<ComplejidadForm> complexitivities, String[] tagsFilter) throws Exception {
 		try {
 			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<>(new Comparator<ComplejidadForm>() {
 				@Override
@@ -3473,7 +3541,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				}
 			});
 			for (ComplejidadForm category : complexitivities) {
-				final List<ObservatorySiteEvaluationForm> categoryList = getSitesListByLevel(getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, true));
+				final List<ObservatorySiteEvaluationForm> categoryList = getSitesListByLevel(getGlobalResultData(executionId, Long.parseLong(category.getId()), pageExecutionList, true, tagsFilter));
 				resultDataBySegment.put(category, barGraphicFromMidPuntuationSegmentData(categoryList));
 			}
 			return resultDataBySegment;
@@ -3493,7 +3561,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws Exception the exception
 	 */
 	public static Map<ComplejidadForm, Map<String, BigDecimal>> calculateMidPuntuationResultsByComplecityMap(final String executionId, final List<ObservatoryEvaluationForm> pageExecutionList,
-			final List<ComplejidadForm> complexities) throws Exception {
+			final List<ComplejidadForm> complexities, String[] tagsFilter) throws Exception {
 		try {
 			final Map<ComplejidadForm, Map<String, BigDecimal>> resultDataBySegment = new TreeMap<>(new Comparator<ComplejidadForm>() {
 				@Override
@@ -3502,7 +3570,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				}
 			});
 			for (ComplejidadForm complexity : complexities) {
-				final List<ObservatorySiteEvaluationForm> categoryList = getSitesListByLevel(getGlobalResultData(executionId, Long.parseLong(complexity.getId()), pageExecutionList, true));
+				final List<ObservatorySiteEvaluationForm> categoryList = getSitesListByLevel(getGlobalResultData(executionId, Long.parseLong(complexity.getId()), pageExecutionList, true, tagsFilter));
 				resultDataBySegment.put(complexity, barGraphicFromMidPuntuationSegmentData(categoryList));
 			}
 			return resultDataBySegment;
@@ -3522,9 +3590,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String[] exObsIds) throws IOException {
 		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
-		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMap);
+		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMap, exObsIds);
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_NV_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_NV));
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_A_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_A));
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_AA_LABEL, calculatePercentageApprovalSiteLevel(result, Constants.OBS_AA));
@@ -3550,9 +3618,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceChart(final String observatoryId, final String executionId, final String filePath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String[] exObsIds) throws IOException {
 		final Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();
-		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId, pageObservatoryMap);
+		final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId, pageObservatoryMap, exObsIds);
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_NONE, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_NONE));
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_PARTIAL, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_PARTIAL));
 		evolutionSuitabilityDatePercentMap.put(Constants.OBS_COMPILANCE_FULL, calculatePercentageApprovalSiteCompliance(result, Constants.OBS_COMPILANCE_FULL));
@@ -3579,7 +3647,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionBySegmentSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<CategoriaForm> categories) throws IOException {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<CategoriaForm> categories, String[] exObsIds) throws IOException {
 		// TODO Filtrar por segmento
 		Map<String, Map<Date, List<ObservatoryEvaluationForm>>> pageObservatoryMapBySegment = new LinkedHashMap<>();
 		Map<String, List<ObservatoryEvaluationForm>> pagesSegment = new LinkedHashMap<>();
@@ -3617,7 +3685,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		// TODO Calcular porcentajes por segmento
 		final Map<String, Map<String, Map<String, BigDecimal>>> evolutionSuitabilityDatePercentMapBySegment = new LinkedHashMap<>();
 		for (CategoriaForm category : categories) {
-			final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMapBySegment.get(category.getName()));
+			final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMapBySegment.get(category.getName()), exObsIds);
 			Map<String, Map<String, BigDecimal>> evolutionSuitabilityDatePercentMap = null;
 			if (!evolutionSuitabilityDatePercentMapBySegment.containsKey(category.getName())) {
 				evolutionSuitabilityDatePercentMap = new LinkedHashMap<>();

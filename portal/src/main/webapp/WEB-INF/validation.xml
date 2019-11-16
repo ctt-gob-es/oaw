@@ -21,7 +21,7 @@
 
 	<formset>
 		<form name="ModificarUsuarioPassForm">
-			<field property="username" ds="required">
+			<field property="username" depends="required">
 				<arg0 key="error.username" />
 			</field>
 			<field property="password" depends="required, minlength">

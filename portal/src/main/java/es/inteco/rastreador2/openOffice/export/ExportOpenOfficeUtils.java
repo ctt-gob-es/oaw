@@ -19,6 +19,7 @@ import static es.inteco.common.Constants.PDF_PROPERTIES;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,12 +39,12 @@ import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
  * The Class ExportOpenOfficeUtils.
  */
 public final class ExportOpenOfficeUtils {
-
 	/**
 	 * Instantiates a new export open office utils.
 	 */
@@ -60,39 +61,66 @@ public final class ExportOpenOfficeUtils {
 	 * @param tipoObservatorio            the tipo observatorio
 	 * @param numberObservatoryExecutions the number observatory executions
 	 */
-	public static void createOpenOfficeDocument(final HttpServletRequest request, final String filePath,
-			final String graphicPath, final String date, final Long tipoObservatorio, int numberObservatoryExecutions) {
+	public static void createOpenOfficeDocument(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio,
+			int numberObservatoryExecutions) {
 		final long idObservatory;
 		if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
 			idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
 		} else {
 			idObservatory = 0;
 		}
-
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
-			final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils
-					.getGlobalResultData(request.getParameter(Constants.ID), Constants.COMPLEXITY_SEGMENT_NONE, null);
-			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c,
-					Long.valueOf(request.getParameter(Constants.ID)));
-
-			final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(
-					request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO),
-					tipoObservatorio, CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
-			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocument(request, graphicPath, date,
-					includeEvolution(numberObservatoryExecutions), pageExecutionList, categories);
-
+			final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(request.getParameter(Constants.ID),
+					Constants.COMPLEXITY_SEGMENT_NONE, null);
+			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, Long.valueOf(request.getParameter(Constants.ID)));
+			final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO), tipoObservatorio,
+					CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
+			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocument(request, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList, categories);
 			odt.save(filePath);
-
-			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size",
-					"text/xml");
-
+			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
 			odt.close();
 		} catch (Exception e) {
-			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class,
-					Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
+	}
 
+	/**
+	 * Creates the open office document filtered.
+	 *
+	 * @param request                     the request
+	 * @param filePath                    the file path
+	 * @param graphicPath                 the graphic path
+	 * @param date                        the date
+	 * @param tipoObservatorio            the tipo observatorio
+	 * @param numberObservatoryExecutions the number observatory executions
+	 */
+	public static void createOpenOfficeDocumentFiltered(final HttpServletRequest request, final String filePath, final String graphicPath, final String date, final Long tipoObservatorio,
+			int numberObservatoryExecutions, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds) {
+		final long idObservatory;
+		if (request.getParameter(Constants.ID_OBSERVATORIO) != null) {
+			idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
+		} else {
+			idObservatory = 0;
+		}
+		try (Connection c = DataBaseManager.getConnection()) {
+			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+
+			//TODO Apply tags filter
+			final List<ObservatoryEvaluationForm> pageExecutionList = ResultadosAnonimosObservatorioUNEEN2019Utils.getGlobalResultData(request.getParameter(Constants.ID),
+					Constants.COMPLEXITY_SEGMENT_NONE, null, false, tagsToFilter);
+
+			final List<CategoriaForm> categories = ObservatorioDAO.getExecutionObservatoryCategories(c, Long.valueOf(request.getParameter(Constants.ID)));
+			final OpenOfficeDocumentBuilder openOfficeDocumentBuilder = getDocumentBuilder(request.getParameter(Constants.ID), request.getParameter(Constants.ID_OBSERVATORIO), tipoObservatorio,
+					CartuchoDAO.getApplication(c, observatoryForm.getCartucho().getId()));
+			final OdfTextDocument odt = openOfficeDocumentBuilder.buildDocumentFiltered(request, graphicPath, date, includeEvolution(numberObservatoryExecutions), pageExecutionList, categories,
+					tagsToFilter, grpahicConditional, exObsIds);
+			odt.save(filePath);
+			removeAttributeFromFile(filePath, "META-INF/manifest.xml", "manifest:file-entry", "manifest:size", "text/xml");
+			odt.close();
+		} catch (Exception e) {
+			Logger.putLog("Error al exportar los resultados a OpenOffice", ExportOpenOfficeAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
 	}
 
 	/**
@@ -104,8 +132,7 @@ public final class ExportOpenOfficeUtils {
 	 * @param version          the version
 	 * @return the document builder
 	 */
-	private static OpenOfficeDocumentBuilder getDocumentBuilder(final String executionId, final String observatoryId,
-			final Long tipoObservatorio, final String version) {
+	private static OpenOfficeDocumentBuilder getDocumentBuilder(final String executionId, final String observatoryId, final Long tipoObservatorio, final String version) {
 		if (Constants.NORMATIVA_ACCESIBILIDAD.equals(version)) {
 			return new OpenOfficeAccesibilidadBuilder(executionId, observatoryId, tipoObservatorio);
 		} else if (Constants.NORMATIVA_UNE_EN2019.equals(version)) {
@@ -115,7 +142,6 @@ public final class ExportOpenOfficeUtils {
 		} else if (Constants.NORMATIVA_UNE_2012_B.equals(version)) {
 			return new OpenOfficeUNE2012BDocumentBuilder(executionId, observatoryId, tipoObservatorio);
 		} else {
-
 			return new OpenOfficeUNE2004DocumentBuilder(executionId, observatoryId, tipoObservatorio);
 		}
 	}
@@ -141,11 +167,9 @@ public final class ExportOpenOfficeUtils {
 	 * @param mymeType  the myme type
 	 * @throws Exception the exception
 	 */
-	private static void removeAttributeFromFile(final String doc, final String xmlFile, final String node,
-			final String attribute, final String mymeType) throws Exception {
+	private static void removeAttributeFromFile(final String doc, final String xmlFile, final String node, final String attribute, final String mymeType) throws Exception {
 		final OdfPackage odfPackageNew = OdfPackage.loadPackage(doc);
 		final Document packageDocument = odfPackageNew.getDom(xmlFile);
-
 		final NodeList nodeList = packageDocument.getElementsByTagName(node);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			((Element) nodeList.item(i)).removeAttribute(attribute);
@@ -154,5 +178,4 @@ public final class ExportOpenOfficeUtils {
 		odfPackageNew.save(doc);
 		odfPackageNew.close();
 	}
-
 }
