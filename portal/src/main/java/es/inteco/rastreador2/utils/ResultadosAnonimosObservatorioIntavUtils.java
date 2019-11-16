@@ -1302,6 +1302,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 							seedForm.setCategory(ffCrawling.getSeed().getCategoria().getName());
 							evaluationForm.setSeed(seedForm);
 						}
+					
 						observatoryEvaluationList.add(evaluationForm);
 						// TODO save into database score, level
 						evaluationForm.getScore();

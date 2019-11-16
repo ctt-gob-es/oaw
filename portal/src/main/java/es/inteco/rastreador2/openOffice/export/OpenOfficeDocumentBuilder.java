@@ -212,4 +212,22 @@ public abstract class OpenOfficeDocumentBuilder {
 	 * @return the embeded id image
 	 */
 	protected abstract String getEmbededIdImage(Long tipoObservatorio, String name);
+
+	/**
+	 * Builds the document filtered.
+	 *
+	 * @param request           the request
+	 * @param graphicPath       the graphic path
+	 * @param date              the date
+	 * @param evolution         the evolution
+	 * @param pageExecutionList the page execution list
+	 * @param categories        the categories
+	 * @param exObsIds 
+	 * @param grpahicConditional 
+	 * @param tagsToFilter 
+	 * @return the odf text document odf text document
+	 * @throws Exception the exception
+	 */
+	public abstract OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
+			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds) throws Exception;
 }

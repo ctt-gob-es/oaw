@@ -1,0 +1,173 @@
+.tagbox-wrapper {
+  display: inline-block;
+  width: 400px;
+  position: relative;
+  cursor: text;
+
+  vertical-align: middle;
+  border: 1px solid #b3bbc2;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(179, 187, 194, 0.4);
+  transition: height .2s, border-radius .2s;
+  padding: 0 4px;
+  background: white;
+  min-height: 23px;
+
+  font: 13px/21px "Helvetica Neue", sans-serif;
+  color: #656e7b;
+
+  &.focus {
+    outline: none;
+    background: #f5faff;
+    color: #445d77;
+    border-color: #96b5d1;
+    box-shadow: inset 0 1px 1px #e2edf7, 0 0 4px rgba(75, 125, 170, 0.3);
+  }
+
+  input {
+    font: 13px/21px "Helvetica Neue", sans-serif;
+    color: #656e7b;
+
+    outline: none;
+    border: none;
+    background: transparent;
+    margin: 1px 0;
+    line-height: 19px;
+    vertical-align: top;
+  }
+
+  &.full input {
+    display: none;
+  }
+}
+
+.tagbox-dropdown {
+  font: 13px/21px "Helvetica Neue", sans-serif;
+  color: #656e7b;
+
+  position: absolute;
+  top: 100%;
+  left: -1px;
+  right: -1px;
+  z-index: 1000000;
+  overflow: auto;
+
+  background-color: #f0f3f5;
+  background-image: linear-gradient(top, #f8f9fb, #e8edf0);
+  margin-top: 5px;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), inset 0 0 0 1px rgba(74, 85, 99, 0.4), inset 0 -1px 1px rgba(0, 0, 0, 0.1), 0 1px 1px rgba(0, 0, 0, 0.05);
+
+  .empty {
+    color: #87919c;
+    text-align: center;
+    text-indent: 0;
+  }
+}
+
+.tagbox-item {
+  position: relative;
+  line-height: 30px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  height: auto;
+  padding: 1px 10px;
+  border-bottom: 1px solid rgba(74, 85, 99, 0.3);
+
+  &.empty {
+    cursor: default;
+  }
+
+  &:not(.empty){
+    &.selected {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    &:hover, &.selected:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    &:active {
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  &:last-of-type {
+    border-bottom: none;
+  }
+}
+
+.tagbox-token {
+  display: inline-block;
+  position: relative;
+  cursor: default;
+
+  height: 21px;
+  padding: 0 18px 0 6px;
+  margin: 1px 4px 1px -3px;
+  overflow: hidden;
+  background-color: #dde9f5;
+  background-image: linear-gradient(top, #e9f1f8, #d1e2f2);
+  font-size: 11px;
+  line-height: 26px;
+  font-weight: 500;
+  vertical-align: middle;
+  color: #637990;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 1px rgba(44, 81, 121, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+  transition: opacity .2s, width .2s;
+
+  &.selected {
+    box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(44, 81, 121, 0.4), inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+  }
+
+  span {
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    line-height: 21px;
+  }
+
+  a {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 14px;
+    cursor: pointer;
+
+    font-size: 13px;
+    line-height: 21px;
+    color: #a2b6cc;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: color .2s;
+
+
+    &:hover {
+      color: #56738f;
+    }
+  }
+}
+
+.tagbox-wrapper.single {
+  .tagbox-token {
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    box-shadow: none;
+    margin: 0;
+    height: auto;
+
+    span {
+      line-height: 23px;
+    }
+  }
+}
