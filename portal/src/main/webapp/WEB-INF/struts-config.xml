@@ -22,6 +22,9 @@
 			type="es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm" />
 		<form-bean name="SemillaObservatorioForm" type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
 		<form-bean name="JsonSemillaObservatorioForm" type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
+		<form-bean name="JsonServicioDiagnosticoForm" type="s.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
+		
+		
 		<form-bean name="NuevoObservatorioForm"
 			type="es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm" />
 		<form-bean name="SubirConclusionesForm"
@@ -476,6 +479,14 @@
 			validate="false">
 			<forward name="exito" path=".cargarSemillasObservatorio" />
 		</action>
+		
+		
+		<action path="/secure/JsonServicioDiagnostico"
+			type="es.gob.oaw.rastreador2.action.diagnostico.JsonServicioDiagnosticoAction" parameter="action"
+			validate="false">
+
+		</action>
+		
 
 
 		<action path="/secure/VerObservatorio" type="es.inteco.rastreador2.action.observatorio.VerObservatorioAction"
