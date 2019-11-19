@@ -2880,10 +2880,8 @@ public final class SemillaDAO {
 			} else {
 				throw new SQLException("Creating dependencias failed, no ID obtained.");
 			}
+
 			
-			
-			if (generatedKeys.next()) {
-				semillaForm.setId(generatedKeys.getLong(1));
 			if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty()) {
 				StringBuilder slqInsertSemillaEtiqueta = new StringBuilder(
 						"INSERT INTO semilla_etiqueta(id_lista, id_etiqueta) VALUES ");
@@ -2906,9 +2904,6 @@ public final class SemillaDAO {
 				psInsertarSemillaEtiqueta.executeUpdate();
 			}
 
-		} else {
-			throw new SQLException("Creating etiquetas failed, no ID obtained.");
-		}
 
 			c.commit();
 		} catch (SQLException e) {
@@ -3466,7 +3461,7 @@ public final class SemillaDAO {
 					// lo permite
 					try {
 						PreparedStatement deleteSemillaEtiqueta = c
-								.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
+								.prepareStatement("DELETE FROM semilla_etiqueta WHERE id_lista = ?");
 
 						deleteSemillaEtiqueta.setLong(1, semillaForm.getId());
 						deleteSemillaEtiqueta.executeUpdate();

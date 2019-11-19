@@ -52,7 +52,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	private String listaUrlsString;
 
 	/** The acronimo. */
-	// private String dependencia;
 	private String acronimo;
 
 	/** The asociada. */
@@ -76,7 +75,7 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	/** The complejidad. */
 	private ComplejidadForm complejidad;
 	
-	/** The complejidad. */
+	/** The etiquetas. */
 	private List<EtiquetaForm> etiquetas;
 	
 	/** The in directory. */

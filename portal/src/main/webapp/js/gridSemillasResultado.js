@@ -75,6 +75,28 @@ function titleDependenciasFormatter(cellvalue, options, rowObject) {
 }
 
 
+function etiquetasFormatter(cellvalue, options, rowObject) {
+	var cellFormatted = "<ul style='list-style: none; padding-left: 0;' >";
+
+	$.each(rowObject.etiquetas, function(index, value) {
+		cellFormatted = cellFormatted + "<li class='listado-grid'>" + value.name + "</li>";
+	});
+
+	cellFormatted = cellFormatted + "</ul>";
+
+	return cellFormatted;
+}
+
+function titleEtiquetasFormatter(cellvalue, options, rowObject) {
+	var cellFormatted = "";
+
+	$.each(rowObject.etiquetas, function(index, value) {
+		cellFormatted = cellFormatted + value.name + "\n";
+	});
+
+	return cellFormatted;
+}
+
 function urlsFormatter(cellvalue, options, rowObject) {
 	return rowObject.listaUrls.toString().replace(/\,/g, '\r\n');;
 }
@@ -202,7 +224,7 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento","Ambito", "Complejidad", "Dependencia",
+													"Segmento","Ambito", "Complejidad", "Dependencia", "Etiqueta,"
 													"URLs", "Activa",
 													"Directorio","Complejidad",
 													"Puntuac\u00F3n", 
@@ -551,6 +573,90 @@ function reloadGrid(path) {
 															}
 														},
 														formatter : dependenciasFormatter,
+														sortable : false
+													},
+													{
+														name : "etiquetasSeleccionadas",
+														// Prueba para devolver
+														// un title
+														// personalizado
+														cellattr : function(
+																rowId, val,
+																rawObject, cm,
+																rdata) {
+															return 'title="'+titleEtiquetasFormatter(val,null,rawObject)+'"';
+														},
+														align : "left",
+														width : 60,
+														hidden : true,
+														editrules : {
+															required : true,
+															edithidden : true
+														},
+														edittype : "select",
+														editoptions : {
+
+															class : "form-control",
+															multiple : true,
+															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listEtiquetas',
+															buildSelect : function(
+																	data) {
+
+																// Seleccionar
+																// las que ya
+																// asociadas
+
+																var idsEtiquetas = [];
+
+																$
+																		.each(
+																				$(
+																						'#grid')
+																						.getLocalRow(
+																								gridSelRow).etiquetas,
+																				function(
+																						index,
+																						value) {
+																					idsEtiquetas
+																							.push(value.id);
+																				});
+
+																var response = jQuery
+																		.parseJSON(data);
+																var s = '<select><option disabled style="display: none;"></option>';
+
+																if (response
+																		&& response.length) {
+																	for (var i = 0; i < response.length; i++) {
+																		var ri = response[i];
+
+																		if ($
+																				.inArray(
+																						ri.id,
+																						idsEtiquetas) >= 0) {
+
+																			s += '<option selected="selected" value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+
+																		} else {
+																			s += '<option value="'
+																					+ ri.id
+																					+ '">'
+																					+ ri.name
+																					+ '</option>';
+																		}
+
+																	}
+																}
+
+																return s
+																		+ "</select>";
+															}
+														},
+														formatter : etiquetasFormatter,
 														sortable : false
 													},
 													{
