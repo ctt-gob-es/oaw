@@ -28,6 +28,29 @@ function estadoFormatter(cellvalue, options, rowObject) {
 	return value;
 }
 
+function observatorioFormatter(cellvalue, options, rowObject) {
+
+	var valur = "";
+	
+	if (cellvalue.startsWith("observatorio-5")) {
+		value = "Accesibilidad";
+	} else if (cellvalue.startsWith("observatorio-4")) {
+		value = "UNE-EN2019";
+	} else if (cellvalue.startsWith("observatorio-3")) {
+		value = "UNE-2012 (versi&#243; 2)";
+	} else if (cellvalue.startsWith("observatorio-2")) {
+		valur = "UNE-2012";
+	} else if (cellvalue.startsWith("observatorio-1")) {
+		valur = "UNE-2004";
+	}
+
+	if (cellvalue.endsWith("nobroken")) {
+		value = value + " (sin enlaces rotos)";
+	}
+	
+	return value;
+}
+
 function tipoAnalisisFormatter(cellvalue, options, rowObject) {
 	var value = "";
 
@@ -135,11 +158,12 @@ function reloadGrid(path, gridId, paginadorId) {
 										name : "report",
 										width : 20,
 										sortable : false,
+										formatter: observatorioFormatter
 									}, {
 										name : "analysisType",
 										width : 20,
 										sortable : false,
-										formatter: tipoAnalisisFormatter
+										formatter : tipoAnalisisFormatter
 									}, {
 										name : "inDirectory",
 										width : 10,
