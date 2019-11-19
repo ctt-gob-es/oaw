@@ -49,34 +49,7 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 	 */
 	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection c = DataBaseManager.getConnection()) {
-			ServicioDiagnosticoForm search = new ServicioDiagnosticoForm();
-			if (!StringUtils.isEmpty(search.getUser())) {
-				search.setUser(request.getParameter("usuario"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("url"))) {
-				search.setDomain(request.getParameter("url"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("email"))) {
-				search.setEmail(request.getParameter("email"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("profundidad"))) {
-				search.setDepth(Integer.parseInt(request.getParameter("profundidad")));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("anchura"))) {
-				search.setWidth(Integer.parseInt(request.getParameter("anchura")));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("informe"))) {
-				search.setReport(request.getParameter("informe"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("estado"))) {
-				search.setStatus(request.getParameter("estado"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("tipo"))) {
-				search.setAnalysisType(request.getParameter("tipo"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("directorio"))) {
-				search.setInDirectory(Integer.parseInt(request.getParameter("directorio")));
-			}
+			ServicioDiagnosticoForm search = composeFilterFromRequest(request);
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final int numResult = DiagnosisDAO.count(c, search);
 			List<ServicioDiagnosticoForm> listSD = DiagnosisDAO.find(c, (pagina - 1), search);
@@ -97,6 +70,50 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 	}
 
 	/**
+	 * Compose filter from request.
+	 *
+	 * @param request the request
+	 * @return the servicio diagnostico form
+	 */
+	private ServicioDiagnosticoForm composeFilterFromRequest(HttpServletRequest request) {
+		ServicioDiagnosticoForm search = new ServicioDiagnosticoForm();
+		if (!StringUtils.isEmpty(search.getUser())) {
+			search.setUser(request.getParameter("usuario"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("url"))) {
+			search.setDomain(request.getParameter("url"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("email"))) {
+			search.setEmail(request.getParameter("email"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("profundidad"))) {
+			search.setDepth(Integer.parseInt(request.getParameter("profundidad")));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("anchura"))) {
+			search.setWidth(Integer.parseInt(request.getParameter("anchura")));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("informe"))) {
+			search.setReport(request.getParameter("informe"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("estado"))) {
+			search.setStatus(request.getParameter("estado"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("tipo"))) {
+			search.setAnalysisType(request.getParameter("tipo"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("directorio"))) {
+			search.setInDirectory(Integer.parseInt(request.getParameter("directorio")));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("startDate"))) {
+			search.setStartDate(request.getParameter("startDate") + " 00:00:00");
+		}
+		if (!StringUtils.isEmpty(request.getParameter("endDate"))) {
+			search.setEndDate(request.getParameter("endDate") + " 23:59:59");
+		}
+		return search;
+	}
+
+	/**
 	 * Export.
 	 *
 	 * @param mapping  the mapping
@@ -108,74 +125,12 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 	 */
 	public ActionForward export(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try (Connection conn = DataBaseManager.getConnection()) {
-			ServicioDiagnosticoForm search = new ServicioDiagnosticoForm();
-			if (!StringUtils.isEmpty(search.getUser())) {
-				search.setUser(request.getParameter("usuario"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("url"))) {
-				search.setDomain(request.getParameter("url"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("email"))) {
-				search.setEmail(request.getParameter("email"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("profundidad"))) {
-				search.setDepth(Integer.parseInt(request.getParameter("profundidad")));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("anchura"))) {
-				search.setWidth(Integer.parseInt(request.getParameter("anchura")));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("informe"))) {
-				search.setReport(request.getParameter("informe"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("estado"))) {
-				search.setStatus(request.getParameter("estado"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("tipo"))) {
-				search.setAnalysisType(request.getParameter("tipo"));
-			}
-			if (!StringUtils.isEmpty(request.getParameter("directorio"))) {
-				search.setInDirectory(Integer.parseInt(request.getParameter("directorio")));
-			}
+			ServicioDiagnosticoForm search = composeFilterFromRequest(request);
 			final String csv = DiagnosisDAO.getCSV(conn, search);
 			CrawlerUtils.returnStringAsFile(response, csv, "servicio_diagnostico_" + new Date().getTime() + ".csv", "text/csv");
 		} catch (Exception e) {
 			Logger.putLog("ERROR al intentar exportar datos del servicio de diagnóstico", ServicioDiagnosticoAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return null;
-	}
-
-	/**
-	 * Convert to including end date.
-	 *
-	 * @param format  the format
-	 * @param endDate the end date
-	 * @return the date
-	 * @throws ParseException the parse exception
-	 */
-	private Date convertToIncludingEndDate(final DateFormat format, final String endDate) throws ParseException {
-		final Calendar calendar = new GregorianCalendar();
-		calendar.setTime(format.parse(endDate));
-		calendar.add(Calendar.DAY_OF_MONTH, 1);
-		return calendar.getTime();
-	}
-
-	/**
-	 * Comprueba que el rango de fechas de la exportación del servicio de diagnóstico sea correcto (la fecha de inicio no puede ser posterior a la final).
-	 *
-	 * @param errors                  the errors
-	 * @param servicioDiagnosticoForm the servicio diagnostico form
-	 */
-	private void validarRangoFechas(final ActionErrors errors, final ServicioDiagnosticoForm servicioDiagnosticoForm) {
-		final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-		try {
-			final Date startDate = format.parse(servicioDiagnosticoForm.getStartDate());
-			final Date endDate = format.parse(servicioDiagnosticoForm.getEndDate());
-			// Si la fecha de inicio es posterior a la final es un fallo
-			if (startDate.after(endDate)) {
-				errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("errors.date.range"));
-			}
-		} catch (ParseException pe) {
-			errors.add(ActionErrors.GLOBAL_MESSAGE, new ActionMessage("errors.date.range"));
-		}
 	}
 }
