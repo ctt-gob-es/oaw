@@ -17,8 +17,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<inteco:properties key="role.observatory.id" file="crawler.properties" />
 </bean:define>
 <bean:define id="rolAdmin">
-	<inteco:properties key="role.administrator.id"
-		file="crawler.properties" />
+	<inteco:properties key="role.administrator.id" file="crawler.properties" />
 </bean:define>
 
 <div id="main">
@@ -33,8 +32,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:message key="ubicacion.usuario" />
 			</p>
 			<ol class="breadcrumb">
-				<li class="active"><span class="glyphicon glyphicon-home"
-					aria-hidden="true"></span> <bean:message key="migas.observatorio" /></li>
+				<li><html:link forward="observatoryMenu">
+						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+						<bean:message key="migas.observatorio" />
+					</html:link></li>
+				<li><html:link forward="resultadosPrimariosObservatorio" paramName="idObservatory" paramId="id_observatorio">
+						<bean:message key="migas.indice.observatorios.realizados.lista" />
+					</html:link></li>
+				<li class="active"><bean:message key="migas.estado.observatorio" /></li>
 			</ol>
 		</div>
 
@@ -52,10 +57,55 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<th>Acciones</th>
 					</tr>
 					<tr>
-						<td style="text-align: center"><bean:write name="estado"
-								property="estado" /></td>
-						<td><span class="glyphicon glyphicon-refresh"
-							style="color: #e21430"></span></td>
+
+
+
+
+
+						<jsp:useBean id="paramsRelanzar" class="java.util.HashMap" />
+						<c:set target="${paramsRelanzar}" property="action" value="confirm" />
+						<c:set target="${paramsRelanzar}" property="id_observatorio" value="${idObservatory}" />
+						<c:set target="${paramsRelanzar}" property="idExObs" value="${idExecutedObservatorio}" />
+						<c:set target="${paramsRelanzar}" property="idCartucho" value="${idCartucho}" />
+
+						<logic:equal name="estado" property="idEstado" value="3">
+							<td style="text-align: center"><bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
+							</td>
+							<td><html:link forward="relanzarObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+										title="Relanzar esta iteraci&oacute;n del observatorio" />
+									<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+								</html:link></td>
+
+						</logic:equal>
+						<logic:equal name="estado" property="idEstado" value="1">
+							<td><bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" /></td>
+
+							<td><html:link forward="relanzarObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+										title="Relanzar esta iteraci&oacute;n del observatorio" />
+									<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+								</html:link></td>
+
+						</logic:equal>
+						<logic:equal name="estado" property="idEstado" value="0">
+							<td><bean:message key="resultado.observatorio.rastreo.realizado.estado.terminado" /></td>
+							<td><html:link forward="resultadosObservatorioSemillas" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
+										title="Ver resultados de este observatorio" />
+									<span class="sr-only">Resultados</span>
+								</html:link></td>
+						</logic:equal>
+						<logic:equal name="estado" property="idEstado" value="2">
+							<td><bean:message key="resultado.observatorio.rastreo.realizado.estado.error" /></td>
+
+							<td><html:link forward="relanzarObservatorio" name="paramsRelanzar">
+									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+										title="Relanzar esta iteraci&oacute;n del observatorio" />
+									<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
+								</html:link></td>
+
+						</logic:equal>
 					</tr>
 				</tbody>
 			</table>
@@ -67,82 +117,105 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<tbody>
 					<tr>
 						<th>Total de semillas</th>
-						<th>Total de semillas analizadas correctamente</th>
+						<th>Total de semillas procesadas</th>
+						<th>Total de semillas procesada con resultados</th>
 						<th>Tiempo total</th>
 						<th>Tiempo medio</th>
 						<th>Tiempo estimado fin</th>
 					</tr>
 
 					<tr>
-						<td style="text-align: center"><bean:write name="estado"
-								property="totalSemillas" /></td>
-						<td><bean:write name="estado" property="semillasAnalizadas" />
-							(<bean:write name="estado" property="porcentajeCompletado"
-								format="###.##" />% completado)</td>
-						<td><bean:write name="estado" property="tiempoTotal" />
-							minutos (<bean:write name="estado" property="tiempoTotalHoras" />
-							horas)</td>
-						<td><bean:write name="estado" property="tiempoMedio" />
-							minutos</td>
-						<td><bean:write name="estado" property="tiempoEstimado" />
-							minutos (<bean:write name="estado" property="tiempoEstimadoHoras" />
-							Horas)</td>
+						<td style="text-align: center"><bean:write name="estado" property="totalSemillas" /></td>
+						<td><bean:write name="estado" property="semillasAnalizadas" /> (<bean:write name="estado"
+								property="porcentajeCompletado" format="###.##" />% completado)</td>
+						<td><bean:write name="estado" property="semillasAnalizadasOk" /> (<bean:write name="estado"
+								property="porcentajeCompletadoOk" format="###.##" />% completado)</td>
+						<td><bean:write name="estado" property="tiempoTotal" /> minutos (<bean:write name="estado"
+								property="tiempoTotalHoras" /> horas)</td>
+						<td><bean:write name="estado" property="tiempoMedio" /> minutos</td>
+						<td><bean:write name="estado" property="tiempoEstimado" /> minutos (<bean:write name="estado"
+								property="tiempoEstimadoHoras" /> Horas)</td>
 					</tr>
 
 				</tbody>
 			</table>
 
-			<h2>Análisis en curso</h2>
+			<logic:notEqual name="estado" property="idEstado" value="0">
+				<h2>Análisis en curso/útlimo análisis</h2>
 
-			<table class="table table-stripped table-bordered table-hover">
-				<caption>Información del análisis en curso</caption>
-				<tbody>
+				<table class="table table-stripped table-bordered table-hover">
+					<caption>Información del análisis en curso</caption>
+					<tbody>
 
-					<tr>
-						<th>Semilla actual</th>
-					</tr>
-					<tr>
-						<td style="text-align: center"><bean:write name="analisis"
-								property="nombre" />&nbsp;(<bean:write name="analisis" property="url" />)</td>
-					</tr>
-				</tbody>
-			</table>
-			<table class="table table-stripped table-bordered table-hover">
-				<caption>Información del análisis en curso</caption>
-				<tbody>
-					<tr>
-						<th>Total URL recogidas</th>
-						<th>Total URL analizadas</th>
-						<th>Última URL analizada</th>
-						<th>Fin última URl analizada</th>
-						<th>Tiempo medio</th>
-						<th>Tiempo total</th>
-						<th>Tiempo estimado fin</th>
-					</tr>
+						<tr>
+							<th>Semilla</th>
+						</tr>
+						<tr>
+							<td style="text-align: center"><bean:write name="analisis" property="nombre" />&nbsp;(<bean:write
+									name="analisis" property="url" />)</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table table-stripped table-bordered table-hover">
+					<caption>Información del análisis en curso</caption>
+					<tbody>
+						<tr>
+							<th>Total URL recogidas</th>
+							<th>Total URL analizadas</th>
+							<th>Última URL analizada</th>
+							<th>Fin última URl analizada</th>
+							<th>Tiempo medio</th>
+							<th>Tiempo total</th>
+							<th>Tiempo estimado fin</th>
+						</tr>
 
-					<tr>
-						<td><bean:write name="analisis" property="totalUrl" /> <span
-							class="glyphicon glyphicon glyphicon-info-sign"
-							style="color: #e21430"></span></td>
-						<td><bean:write name="analisis" property="totalUrlAnalizadas" />
-							(<bean:write name="analisis" property="porcentajeCompletado"
-								format="###.##" />% completado)</td>
-						<td><bean:write name="analisis" property="ultimaUrl" /></td>
-						<td><fmt:formatDate value="${analisis.fechaUltimaUrl}"
-								pattern="dd-MM-yyyy HH:mm" /></td>
-						<td><bean:write name="analisis" property="tiempoMedio" />
-							segundos</td>
-						<td><bean:write name="analisis" property="tiempoAcumulado" />
-							segundos</td>
-						<td><bean:write name="analisis" property="tiempoEstimado" />
-							segundos</td>
-					</tr>
+						<tr>
+							<td><bean:write name="analisis" property="totalUrl" /> <span
+								class="glyphicon glyphicon glyphicon-info-sign" style="color: #e21430"></span></td>
+							<td><bean:write name="analisis" property="totalUrlAnalizadas" /> (<bean:write name="analisis"
+									property="porcentajeCompletado" format="###.##" />% completado)</td>
+							<td><bean:write name="analisis" property="ultimaUrl" /></td>
+							<td><fmt:formatDate value="${analisis.fechaUltimaUrl}" pattern="dd-MM-yyyy HH:mm" /></td>
+							<td><bean:write name="analisis" property="tiempoMedio" /> segundos</td>
+							<td><bean:write name="analisis" property="tiempoAcumulado" /> segundos</td>
+							<td><bean:write name="analisis" property="tiempoEstimado" /> segundos</td>
+						</tr>
 
-				</tbody>
-			</table>
+					</tbody>
+				</table>
 
-			<h2>Portales sin analizar</h2>
+				<h2>Portales sin analizar aún</h2>
+				<table class="table table-stripped table-bordered table-hover">
+					<caption>Información del análisis en curso</caption>
+					<tbody>
+						<tr>
+							<th>Nombre</th>
+							<th>URL</th>
+							<!-- 						<th>Relanzar</th> -->
+						</tr>
 
+						<logic:empty name="notCrawledSeedsYet">
+							<tr>
+								<td colspan="2">Sin resultados</td>
+							</tr>
+						</logic:empty>
+
+						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet">
+
+							<tr>
+								<td style="text-align: left"><bean:write name="notCrawledSeedsYet" property="nombre" /></td>
+								<td><bean:write name="notCrawledSeedsYet" property="listaUrlsString" /></td>
+								<!-- 							<td><span class="glyphicon glyphicon-refresh" style="color: #e21430"></span></td> -->
+							</tr>
+						</logic:iterate>
+
+
+
+					</tbody>
+				</table>
+			</logic:notEqual>
+			
+			<h2>Portales sin resultados</h2>
 			<table class="table table-stripped table-bordered table-hover">
 				<caption>Información del análisis en curso</caption>
 				<tbody>
@@ -152,16 +225,39 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<th>Relanzar</th>
 					</tr>
 
-					<tr>
-						<td style="text-align: left">Ministerio de Justicia</td>
-						<td>http://www.mjusticia.gob.es/</td>
-						<td><span class="glyphicon glyphicon-refresh"
-							style="color: #e21430"></span></td>
-					</tr>
+					<logic:empty name="finishWithoutResults">
+						<tr>
+							<td colspan="3">Sin resultados</td>
+						</tr>
+					</logic:empty>
+
+					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis">
+
+						<tr>
+							<td style="text-align: left"><bean:write name="crawlWithoutAnalisis" property="nombre" /></td>
+							<td>
+								<%-- 							<bean:write name="crawlWithoutAnalisis" property="listaUrls" /> --%> <logic:iterate
+									name="crawlWithoutAnalisis" property="listaUrls" id="url">
+									<bean:write name="url" />
+								</logic:iterate>
+
+							</td>
+							<td><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" /> <%-- 							<c:set --%> <%-- 									target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
+									target="${paramsRelanzarCrawl}" property="id" value="${crawlWithoutAnalisis.idFulfilledCrawling}" />--%> <c:set
+									target="${paramsRelanzarCrawl}" property="id_observatorio" value="${idObservatory}" /> <c:set
+									target="${paramsRelanzarCrawl}" property="idExObs" value="${idExecutedObservatorio}" /> <c:set
+									target="${paramsRelanzarCrawl}" property="idCartucho" value="${idCartucho}" /> <c:set
+									target="${paramsRelanzarCrawl}" property="idSemilla" value="${crawlWithoutAnalisis.id}" /> <html:link
+									forward="resultadosObservatorioLanzarEjecucion" name="paramsRelanzarCrawl">
+									<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
+										title="Relanzar esta iteraci&oacute;n del observatorio" />
+									<span class="sr-only">Relanzar análisis</span>
+								</html:link></td>
+						</tr>
+					</logic:iterate>
 
 				</tbody>
 			</table>
-
 
 		</div>
 		<!-- fin cajaformularios -->

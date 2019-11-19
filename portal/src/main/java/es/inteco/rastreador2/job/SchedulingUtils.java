@@ -18,11 +18,23 @@ package es.inteco.rastreador2.job;
 import es.inteco.crawler.job.CrawlerData;
 import es.inteco.crawler.job.CrawlerJob;
 
+/**
+ * The Class SchedulingUtils.
+ */
 public final class SchedulingUtils {
 
+    /**
+	 * Instantiates a new scheduling utils.
+	 */
     private SchedulingUtils() {
     }
 
+    /**
+	 * Start.
+	 *
+	 * @param crawlerData the crawler data
+	 * @throws Exception the exception
+	 */
     public static void start(final CrawlerData crawlerData) throws Exception {
         final CrawlerJob crawlerJob = new CrawlerJob();
         crawlerJob.launchCrawler(crawlerData);

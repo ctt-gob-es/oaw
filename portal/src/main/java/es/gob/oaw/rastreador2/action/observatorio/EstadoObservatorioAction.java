@@ -13,6 +13,8 @@
 package es.gob.oaw.rastreador2.action.observatorio;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +29,10 @@ import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.crawler.job.ObservatoryStatus;
 import es.inteco.crawler.job.ObservatorySummary;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
+import es.inteco.rastreador2.actionform.semillas.SemillaForm;
+import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 
 /**
  * EstadoObservatorioAction. {@link Action} Estado de un observatorio.
@@ -34,37 +40,50 @@ import es.inteco.plugin.dao.DataBaseManager;
  * @author alvaro.pelaez
  */
 public class EstadoObservatorioAction extends Action {
-
+	/**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.
-	 * ActionMapping, org.apache.struts.action.ActionForm,
-	 * javax.servlet.http.HttpServletRequest,
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action. ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest,
 	 * javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		final Integer idObservatory = Integer.valueOf(request.getParameter(Constants.ID_OBSERVATORIO));
 		final Integer idEjecucionObservatorio = Integer.valueOf(request.getParameter(Constants.ID_EX_OBS));
-
+		final Integer idCartucho = Integer.valueOf(request.getParameter(Constants.ID_CARTUCHO));
 		try (Connection c = DataBaseManager.getConnection()) {
-
 			ObservatorySummary estado = EstadoObservatorioDAO.getObservatorySummary(c, idObservatory, idEjecucionObservatorio);
-			
-			//Estado del último análisis hecho/análisis en curso
-			ObservatoryStatus estadoObservatorio = EstadoObservatorioDAO.findEstadoObservatorio(c, idObservatory,
-					idEjecucionObservatorio);
-
+			// Estado del último análisis hecho/análisis en curso
+			ObservatoryStatus estadoObservatorio = EstadoObservatorioDAO.findEstadoObservatorio(c, idObservatory, idEjecucionObservatorio);
+			// Semillas sin analizar
+			List<SemillaForm> notCrawledSeedsYet = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryNotCrawledYet(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
+			// List<SemillaForm> finishWithoutResults = RastreoDAO.getFinishCrawlerFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(), idEjecucionObservatorio.longValue());
+			List<Long> finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis = ObservatorioDAO.getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(c, idObservatory.longValue(),
+					idEjecucionObservatorio.longValue());
+			List<ResultadoSemillaFullForm> finishWithoutResults = new ArrayList<ResultadoSemillaFullForm>();
+			if (finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis != null && !finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis.isEmpty()) {
+				finishWithoutResults = ObservatorioDAO.getResultSeedsFullFromObservatoryByIds(c, new SemillaForm(), idEjecucionObservatorio.longValue(), 0l, -1,
+						finishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis);
+			}
 			// TODO Datos del observatorio
+			request.setAttribute("idCartucho", idCartucho);
+			request.setAttribute("idObservatory", idObservatory);
+			request.setAttribute("idExecutedObservatorio", idEjecucionObservatorio);
 			request.setAttribute("estado", estado);
 			request.setAttribute("analisis", estadoObservatorio);
-
+			request.setAttribute("notCrawledSeedsYet", notCrawledSeedsYet);
+			request.setAttribute("finishWithoutResults", finishWithoutResults);
 		}
-
 		return mapping.findForward(Constants.EXITO);
-
 	}
 }

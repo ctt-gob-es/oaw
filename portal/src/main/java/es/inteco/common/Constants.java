@@ -693,6 +693,7 @@ public interface Constants {
 	String CONFIRMACION_DELETE = "confirmacionDelete";
 	String CONFIRMACION_RELANZAR = "confirmacionRelanzar";
 	String CONFIRMACION_IMPORTAR = "confirmacionImportar";
+	String CONFIGURAR_FILTROS_AGREGADOS= "configurarFiltrosAgregados";
 	String TERM = "term";
 	String MALWARE_TERM_FORM = "MalwareTermForm";
 	String SAVE_TERM = "saveTerm";
@@ -954,4 +955,14 @@ public interface Constants {
 	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
 	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
 	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources-Accesibilidad";
+	
+	String CHECK_GLOBAL_MODALITY_GRPAHICS = "checkGlobalModalityGrpahics";
+	String CHECK_GLOBAL_ASPECTS_GRPAHICS = "checkGlobalAspectsGrpahics";
+	String CHECK_SEGMENT_MODALITY_GRPAHICS = "checkSegmentModalityGrpahics";
+	String CHECK_SEGMENT_PMV_GRPAHICS = "checkSegmentPMVGrpahics";
+	String CHECK_SEGMENT_ASPECTS_GRPAHICS = "checkSegmentAspectsGrpahics";
+	
+	String CHECK_EVO_COMPLIANCE_VERIFICATION_GRPAHICS = "checkEvoComplianceVerificationGrpahics";
+	String CHECK_EVO_ASPECTS_GRPAHICS = "checkEvoAspectsGrpahics";
+	
 }

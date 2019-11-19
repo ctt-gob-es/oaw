@@ -80,3 +80,8 @@ CREATE TABLE semilla_etiqueta (
 
 ALTER TABLE semilla_etiqueta ADD PRIMARY KEY (id_lista,id_etiqueta), ADD KEY semilla_etiqueta_ibfk_1 (id_etiqueta);
 ALTER TABLE semilla_etiqueta ADD CONSTRAINT semilla_etiqueta_ibfk_1 FOREIGN KEY (id_etiqueta) REFERENCES etiqueta (id_etiqueta) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+ALTER TABLE `rastreos_realizados` ADD `level` VARCHAR(128) NOT NULL AFTER `id_lista`, ADD `score` VARCHAR(32) NOT NULL AFTER `level`;
+
+

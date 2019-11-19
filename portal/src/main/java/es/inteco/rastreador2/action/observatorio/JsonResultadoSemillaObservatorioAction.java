@@ -89,7 +89,8 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 
 			// Calculamos la puntuación media de cada semilla y la guardamos en
 			// sesion
-			ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution);
+			//TODO Viene de sesión
+			//ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution);
 
 			String jsonResultados = new Gson().toJson(seedsResults2);
 
