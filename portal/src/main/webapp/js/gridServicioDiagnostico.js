@@ -1,9 +1,45 @@
 var lastUrl;
 var scroll;
 
+function estadoFormatter(cellvalue, options, rowObject) {
+	var value = "";
+
+	switch (cellvalue) {
+	case "finished":
+		value = "Finalizado";
+		break;
+	case "error":
+		value = "Error";
+		break;
+	case "not_crawled":
+		value = "No analizado";
+		break;
+	case "launched":
+		value = "Lanzado";
+		break;
+	case "missing_params":
+		value = "Par&#225;metros incorrectos";
+		break;
+
+	default:
+		value = cellvalue;
+	}
+
+	return value;
+}
+
+function tipoFormatter(cellvalue, options, rowObject) {
+
+	if (!cellvalue) {
+		return "Otros";
+	}
+
+	return cellvalue;
+}
+
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
 // de paginación. Si no le llega nada usa la url por defecto
-function reloadGrid(path) {
+function reloadGrid(path, gridId, paginadorId) {
 
 	// Mantener el scroll
 	scroll = $(window).scrollTop();
@@ -14,7 +50,7 @@ function reloadGrid(path) {
 		lastUrl = '/oaw/secure/JsonServicioDiagnostico.do?action=search';
 	}
 
-	$('#grid').jqGrid('clearGridData');
+	$('#' + gridId).jqGrid('clearGridData');
 
 	$
 			.ajax({
@@ -30,9 +66,9 @@ function reloadGrid(path) {
 
 						total = data.paginador.total;
 
-						$('#grid').jqGrid(
+						$('#' + gridId).jqGrid(
 								{
-									colNames : [ "URL", "Tipo de portal",
+									colNames : [ "URL", "Tipo de portal *",
 											"Usuario", "Email", "Profundidad",
 											"Amplitud", "Tipo de informe",
 											"Tipo de an&#225;lisis",
@@ -46,7 +82,8 @@ function reloadGrid(path) {
 									}, {
 										name : "type",
 										width : 20,
-										sortable : false
+										sortable : false,
+										formatter : tipoFormatter,
 									}, {
 										name : "user",
 										width : 20,
@@ -75,14 +112,17 @@ function reloadGrid(path) {
 										name : "inDirectory",
 										width : 20,
 										sortable : false,
+										template : "booleanCheckboxFa",
 									}, {
 										name : "registerResult",
 										width : 20,
 										sortable : false,
+										template : "booleanCheckboxFa",
 									}, {
 										name : "status",
 										width : 20,
 										sortable : false,
+										formatter : estadoFormatter,
 									}, {
 										name : "date",
 										width : 20,
@@ -112,15 +152,15 @@ function reloadGrid(path) {
 								}).jqGrid("inlineNav");
 
 						// Recargar el grid
-						$('#grid').jqGrid('setGridParam', {
+						$('#' + gridId).jqGrid('setGridParam', {
 							data : JSON.parse(ajaxJson)
 						}).trigger('reloadGrid');
 
-						$('#grid').unbind("contextmenu");
+						$('#' + gridId).unbind("contextmenu");
 
 						// Mostrar sin resultados
 						if (total == 0) {
-							$('#grid')
+							$('#' + gridId)
 									.append(
 											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="13" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 						}
@@ -128,14 +168,14 @@ function reloadGrid(path) {
 						// Paginador
 						paginas = data.paginas;
 
-						$('#paginador').empty();
+						$('#' + paginadorId).empty();
 
 						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {
 
 							$.each(paginas, function(key, value) {
 								if (value.active == true) {
-									$('#paginador').append(
+									$('#' + paginadorId).append(
 											'<a href="javascript:reloadGrid(\''
 													+ value.path
 													+ '\')" class="'
@@ -143,7 +183,7 @@ function reloadGrid(path) {
 													+ ' btn btn-default">'
 													+ value.title + '</a>');
 								} else {
-									$('#paginador').append(
+									$('#' + paginadorId).append(
 											'<span class="' + value.styleClass
 													+ ' btn">' + value.title
 													+ '</span>');

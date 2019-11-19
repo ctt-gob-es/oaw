@@ -30,6 +30,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -351,7 +353,8 @@ public final class DiagnosisDAO {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
-		StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
+		StringBuilder query = new StringBuilder(
+				"SELECT (select nombre from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain)) as ambito, id,usr,language,domain,email,depth,width,report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result FROM basic_service WHERE 1=1 ");
 		addSearchParameters(search, query);
 		query.append("ORDER BY id DESC");
 		query.append(" LIMIT " + pagSize + " OFFSET " + resultFrom);
@@ -452,6 +455,7 @@ public final class DiagnosisDAO {
 		result.setAnalysisType(rs.getString("analysis_type"));
 		result.setInDirectory(rs.getInt("in_directory"));
 		result.setRegisterResult(rs.getInt("register_result"));
+		result.setType(rs.getString("ambito"));
 		return result;
 	}
 
@@ -466,7 +470,7 @@ public final class DiagnosisDAO {
 	 */
 	private static void setSearchParameters(final ServicioDiagnosticoForm search, PreparedStatement ps, int nextParameterCount) throws SQLException, ParseException {
 		if (search != null) {
-			final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+			final DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			if (!StringUtils.isEmpty(search.getUser())) {
 				ps.setString(nextParameterCount++, search.getUser());
 			}
@@ -499,8 +503,7 @@ public final class DiagnosisDAO {
 				ps.setDate(nextParameterCount++, new Date(startDate.getTime()));
 			}
 			if (search.getEndDate() != null) {
-				final java.util.Date endDate = format.parse(search.getEndDate());
-				ps.setDate(nextParameterCount++, new Date(endDate.getTime()));
+				ps.setDate(nextParameterCount++, new Date(convertToIncludingEndDate(format, search.getEndDate()).getTime()));
 			}
 		}
 	}
@@ -541,11 +544,18 @@ public final class DiagnosisDAO {
 				query.append(" AND 	in_directory = ? ");
 			}
 			if (search.getStartDate() != null) {
-				query.append(" AND 	date >= ? ");
+				query.append(" AND 	date >= STR_TO_DATE(?, '%Y-%m-%d') ");
 			}
 			if (search.getEndDate() != null) {
-				query.append(" AND 	date <= ? ");
+				query.append(" AND 	date <= STR_TO_DATE(?, '%Y-%m-%d') ");
 			}
 		}
+	}
+
+	private static java.util.Date convertToIncludingEndDate(final DateFormat format, final String endDate) throws ParseException {
+		final Calendar calendar = new GregorianCalendar();
+		calendar.setTime(format.parse(endDate));
+		calendar.add(Calendar.DAY_OF_MONTH, 1);
+		return calendar.getTime();
 	}
 }

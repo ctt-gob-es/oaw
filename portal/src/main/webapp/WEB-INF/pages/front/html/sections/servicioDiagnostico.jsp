@@ -19,24 +19,27 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 
+
 <!--  JQ GRID   -->
 <script>
 	//Buscador
 	function buscar() {
 		reloadGrid('/oaw/secure/JsonServicioDiagnostico.do?action=search&'
-				+ $('#ServicioDiagnosticoForm').serialize());
+				+ $('#ServicioDiagnosticoForm').serialize(), 'grid',
+				'paginador');
 	}
-	
+
 	function exportar() {
-		window.location.href ='/oaw/secure/JsonServicioDiagnostico.do?action=export&'+ $('#ServicioDiagnosticoForm').serialize();
+		window.location.href = '/oaw/secure/JsonServicioDiagnostico.do?action=export&'
+				+ $('#ServicioDiagnosticoForm').serialize();
 	}
 
 	function limpiar() {
 		$('#ServicioDiagnosticoForm')[0].reset();
 		reloadGrid('/oaw/secure/JsonServicioDiagnostico.do?action=search&'
-				+ $('#ServicioDiagnosticoForm').serialize());
-		
-		
+				+ $('#ServicioDiagnosticoForm').serialize(), 'grid',
+				'paginador');
+
 	}
 
 	$(window)
@@ -55,16 +58,56 @@
 												cache : false
 											});
 
+											var d = new Date();
+
+											var month = d.getMonth() + 1;
+											var day = d.getDate();
+
+											var output = (day < 10 ? '0' : '')
+													+ day + '/'
+													+ (month < 10 ? '0' : '')
+													+ month + '/'
+													+ d.getFullYear();
+
+											reloadGrid(
+													'/oaw/secure/JsonServicioDiagnostico.do?action=search&estado=launched&startDate='
+															+ output
+															+ '&endDate='
+															+ output,
+													'gridActuales',
+													'paginadorActuales');
+
 											$('#ServicioDiagnosticoForm')[0]
 													.reset();
-											reloadGrid('/oaw/secure/JsonServicioDiagnostico.do?action=search&'
-													+ $(
-															'#ServicioDiagnosticoForm')
-															.serialize());
+											reloadGrid(
+													'/oaw/secure/JsonServicioDiagnostico.do?action=search&'
+															+ $(
+																	'#ServicioDiagnosticoForm')
+																	.serialize(),
+													'grid', 'paginador');
+
 										});
 
 					});
 </script>
+
+<style>
+td {
+	padding: 10px 5px !important;
+}
+
+.ui-jqgrid-bdiv.ui-corner-bottom {
+	    overflow: hidden !important;
+}
+
+#gbox_grid, #gbox_gridActuales {
+
+	margin:10px 0 !important;
+
+}
+
+</style>
+
 <!-- servicioDiagnostico.jsp -->
 <div id="main">
 
@@ -194,7 +237,7 @@
 							<option value="missing_params">Parámetros incorrectos</option>
 						</select>
 					</div>
-					
+
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu">En directorio</strong></label> <select id="informe" name="informe"
 							class="texto form-control">
@@ -235,8 +278,7 @@
 							aria-hidden="true"></span> <bean:message key="boton.buscar" />
 						</span> <span onclick="limpiar()" class="btn btn-default btn-lg"> <span aria-hidden="true"></span> <bean:message
 								key="boton.limpiar" />
-						</span>
-						<span onclick="exportar()" class="btn btn-primary btn-lg"> <span aria-hidden="true"></span> <bean:message
+						</span> <span onclick="exportar()" class="btn btn-primary btn-lg"> <span aria-hidden="true"></span> <bean:message
 								key="boton.exportar" />
 						</span>
 					</div>
@@ -244,58 +286,31 @@
 			</form>
 
 
-			<%-- 			<html:form styleClass="formulario" method="post" action="/secure/ServicioDiagnostico.do" 
-				onsubmit="return chooseValidation(this)">
-				<jsp:include page="/common/crawler_messages.jsp" />
+			<div class="col-md-12">
+				<h2>Análisis en curso</h2>
+				<table id="gridActuales" class="gridTable"></table>
 
-				<fieldset>
-					<legend>
-						<bean:message key="servicio.diagnostico.fecha.legend" />
-					</legend>
-					<p>
-						<bean:message key="leyenda.campo.obligatorio" />
-					</p>
-					<div class="formItem">
-						<label for="startDate" class="labelCorto"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-									key="servicio.diagnostico.fecha.inicio" />: </strong></label>
-						<html:text styleClass="textoCorto" name="ServicioDiagnosticoForm" property="startDate" styleId="startDate"
-							onkeyup="escBarra(event, document.forms['ServicioDiagnosticoForm'].elements['startDate'], 1)" maxlength="10" />
-						<span> <img src="../images/boton-calendario.gif"
-							onclick="popUpCalendar(this, document.forms['ServicioDiagnosticoForm'].elements['startDate'], 'dd/mm/yyyy')"
-							alt="<bean:message key="img.calendario.alt" />" />
-						</span>
-						<bean:message key="date.format" />
-					</div>
-					<div class="formItem">
-						<label for="endDate" class="labelCorto"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-									key="servicio.diagnostico.fecha.fin" />: </strong></label>
-						<html:text styleClass="textoCorto" name="ServicioDiagnosticoForm" property="endDate" styleId="endDate"
-							onkeyup="escBarra(event, document.forms['ServicioDiagnosticoForm'].elements['endDate'], 1)" maxlength="10" />
-						<span> <img src="../images/boton-calendario.gif"
-							onclick="popUpCalendar(this, document.forms['ServicioDiagnosticoForm'].elements['endDate'], 'dd/mm/yyyy')"
-							alt="<bean:message key="img.calendario.alt" />" />
-						</span>
-						<bean:message key="date.format" />
-					</div>
-					<div class="formButton">
-						<html:submit property="accion" styleClass="btn btn-primary btn-lg">
-							<bean:message key="boton.exportar" />
-						</html:submit>
-					</div>
-				</fieldset>
+				<p class="alert alert-info pull-left">
+					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+					</em>: Se muestran los análisis en estado "Lanzado" del día en curso
+				</p>
 
+				<p id="paginadorActuales"></p>
+			</div>
+			<div class="col-md-12">
 
-				<!-- 				JsonResultadoObservatorio -->
-				
+				<!-- Grid -->
+				<h2>Resultados de la búsqueda</h2>
+				<table id="grid"></table>
+				<p id="paginador"></p>
 
-			</html:form>--%>
+				<p class="alert alert-info pull-left">
+					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+					</em>: * El tipo de portal se indicará si la URL analizada en el servicio de diagnóstico coincide con alguna de las
+					semillas almacenadas en base de datos. En caso contrario, se indicará como "Otros"
+				</p>
 
-			<!-- Grid -->
-			<table id="grid"></table>
-			<p id="paginador"></p>
-
+			</div>
 			<p id="pCenter">
 				<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
 					<bean:message key="boton.volver" />
