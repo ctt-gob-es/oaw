@@ -197,25 +197,25 @@ td {
 
 					<div class="formItem">
 						<label for="informe"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.informe" /></strong></label> <select id="amplitud" name="amplitud"
+									key="servicio.diagnostirco.estadisticas.informe" /></strong></label> <select id="informe" name="informe"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
-							<option value="informe-obs-5">Accesibilidad</option>
-							<option value="informe-obs-4">UNE-EN2019</option>
-							<option value="informe-obs-3">UNE-2012 (versi&#243;n 2)</option>
-							<option value="informe-obs-2">UNE-2012</option>
-							<option value="informe-obs-1">UNE-2004</option>
+							<option value="observatorio-5">Accesibilidad</option>
+							<option value="observatorio-4">UNE-EN2019</option>
+							<option value="observatorio-3">UNE-2012 (versi&#243;n 2)</option>
+							<option value="observatorio-2">UNE-2012</option>
+							<option value="observatorio-1">UNE-2004</option>
 						</select>
 					</div>
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.tipo" /></strong></label> <select id="informe" name="informe"
+									key="servicio.diagnostirco.estadisticas.tipo" /></strong></label> <select id="tipo" name="tipo"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="url">URL</option>
 							<option value="lista_urls">Lista de URLs</option>
-							<option value="c&oacute;digo_fuente">C&oacute;digo_fuente</option>
+							<option value="c\u00F3digo_fuente">C&oacute;digo_fuente</option>
 						</select>
 					</div>
 
