@@ -200,14 +200,14 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			semilla.setDependencias(listaDependencias);
 			
 			
-			// Soporte a etiquetas
+			// Soporte a múltiples etiquetas
 			List<EtiquetaForm> listaEtiquetas = new ArrayList<>();
 
 			// Si viene de la edición en el grid, el parámetro viene como
 			// valores separados por comas, si viene de la edición en los
 			// reslutados de observatorio viene el parametro tantas veces como
 			// valores tenga
-			String[] arrayEtiquetas = request.getParameterValues("etiquetasaux");
+			String[] arrayEtiquetas = request.getParameterValues("etiquetasSeleccionadas");
 			if (arrayEtiquetas != null && arrayEtiquetas.length > 1) {
 				for (int i = 0; i < arrayEtiquetas.length; i++) {
 					EtiquetaForm etiqueta = new EtiquetaForm();
@@ -218,7 +218,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			} else {
 				// Solo un parámetro que intentaremos separar por comas, si no
 				// las tiene devolverá un único valor
-				String etiquetas = request.getParameter("etiquetasaux");
+				String etiquetas = request.getParameter("etiquetasSeleccionadas");
 
 				if (!StringUtils.isEmpty(etiquetas)) {
 					String[] idsEtiquetas = etiquetas.split(",");
@@ -231,6 +231,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			}
 
 			semilla.setEtiquetas(listaEtiquetas);
+			
+
 
 			if (!StringUtils.isEmpty(semilla.getListaUrlsString())) {
 
@@ -374,7 +376,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			// Soporte a etiquetas
 			List<EtiquetaForm> listaEtiquetas = new ArrayList<>();
 
-			String[] etiquetas = request.getParameterValues("etiquetasaux");
+			String[] etiquetas = request.getParameterValues("etiquetasSeleccionadas");
 			if (etiquetas != null && etiquetas.length > 0) {
 				for (int i = 0; i < etiquetas.length; i++) {
 					EtiquetaForm etiqueta = new EtiquetaForm();

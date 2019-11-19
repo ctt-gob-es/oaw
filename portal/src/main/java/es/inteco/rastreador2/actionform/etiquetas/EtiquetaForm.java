@@ -13,6 +13,7 @@
 * Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
+
 package es.inteco.rastreador2.actionform.etiquetas;
 
 import java.io.Serializable;
@@ -31,6 +32,8 @@ import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 /**
  * The Class EtiquetaForm.
  */
+
+
 public class EtiquetaForm extends ValidatorForm implements Serializable {
 
 	/** The Constant serialVersionUID. */

@@ -27,6 +27,7 @@ import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.login.CartuchoForm;
@@ -1216,13 +1217,39 @@ public final class ObservatorioDAO {
 							listDependencias.add(dependencia);
 						}
 						resultadoSemillaForm.setDependencias(listDependencias);
+						
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
+					
+					
+					// Cargar las etiquetas de la semilla
+					PreparedStatement psEtiquetas = c
+							.prepareStatement("SELECT id_etiqueta, nombre FROM etiqueta WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?)");
+					psEtiquetas.setString(1, resultadoSemillaForm.getId());
+					List<EtiquetaForm> listEtiquetas = new ArrayList<>();
+					ResultSet rsEtiquetas = null;
+					try {
+						rsEtiquetas = psEtiquetas.executeQuery();
+						while (rsEtiquetas.next()) {
+							EtiquetaForm etiqueta = new EtiquetaForm();
+							etiqueta.setId(rsEtiquetas.getLong("id_etiqueta"));
+							etiqueta.setName(rsEtiquetas.getString("nombre"));
+							listEtiquetas.add(etiqueta);
+						}
+						resultadoSemillaForm.setEtiquetas(listEtiquetas);
 					semillasFormList.add(resultadoSemillaForm);
+					
+				} catch (SQLException e) {
+					Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+					throw e;
+				} finally {
+					DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
+				}
+				
 				}
 			}
 		} catch (SQLException e) {
