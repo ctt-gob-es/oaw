@@ -353,7 +353,6 @@ public final class ObservatoryUtils {
 				}
 				if (numPages != 0) {
 					seedResult.setScore(avgScore.divide(BigDecimal.valueOf(numPages), 2, BigDecimal.ROUND_HALF_UP).toPlainString());
-					
 					String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, Long.parseLong(seedResult.getIdFulfilledCrawling()), Long.parseLong(seedResult.getIdCrawling()));
 					if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), paginas).getLevel());
@@ -364,7 +363,8 @@ public final class ObservatoryUtils {
 					} else {
 						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
 					}
-					
+					// seedResult.getIdCrawling()
+					RastreoDAO.setScoreAndLevelCrawling(c, Long.valueOf(seedResult.getIdFulfilledCrawling()), seedResult.getScore(), seedResult.getNivel());
 //					seedResult.setNivel(IntavUtils.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
 				}
 			}

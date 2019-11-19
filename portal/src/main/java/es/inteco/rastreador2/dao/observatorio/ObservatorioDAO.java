@@ -19,6 +19,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
 import es.inteco.rastreador2.actionform.observatorio.*;
 import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
@@ -353,10 +354,16 @@ public final class ObservatorioDAO {
 		return ambit;
 	}
 
-	
+	/**
+	 * Gets the complexity by id.
+	 *
+	 * @param c  the c
+	 * @param id the id
+	 * @return the complexity by id
+	 * @throws SQLException the SQL exception
+	 */
 	public static ComplejidadForm getComplexityById(final Connection c, final Long id) throws SQLException {
 		final ComplejidadForm complexity = new ComplejidadForm();
-
 		try (PreparedStatement ps = c.prepareStatement("SELECT * FROM complejidades_lista WHERE id_complejidad = ? ORDER BY id_complejidad ASC")) {
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -371,11 +378,8 @@ public final class ObservatorioDAO {
 			Logger.putLog("Error al cerrar el preparedStament", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return complexity;
 	}
-	
-
 
 	/**
 	 * Gets the observatories from category.
@@ -385,7 +389,6 @@ public final class ObservatorioDAO {
 	 * @return the observatories from category
 	 * @throws SQLException the SQL exception
 	 */
-
 	public static List<ObservatorioForm> getObservatoriesFromCategory(Connection c, String idCategoria) throws SQLException {
 		final List<ObservatorioForm> observatoryFormList = new ArrayList<>();
 		try (PreparedStatement ps = c.prepareStatement("SELECT DISTINCT(o.id_observatorio), o.nombre, o.id_language, o.profundidad, o.amplitud, o.id_cartucho FROM observatorio o "
@@ -776,7 +779,6 @@ public final class ObservatorioDAO {
 				}
 				ps.executeBatch();
 			}
-			
 			ps = c.prepareStatement("INSERT INTO observatorio_complejidad VALUES (?,?)");
 			if (nuevoObservatorioForm.getComplejidad() != null) {
 				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
@@ -786,7 +788,6 @@ public final class ObservatorioDAO {
 				}
 				ps.executeBatch();
 			}
-			
 			if ((idObservatory != 0) && (nuevoObservatorioForm.getAddSeeds() != null) && (!nuevoObservatorioForm.getAddSeeds().isEmpty())) {
 				for (SemillaForm semillaForm : nuevoObservatorioForm.getAddSeeds()) {
 					ps = c.prepareStatement("INSERT INTO observatorio_lista VALUES(?,?)");
@@ -804,14 +805,11 @@ public final class ObservatorioDAO {
 			if (nuevoObservatorioForm.getAmbitoForm() != null && !StringUtils.isEmpty(nuevoObservatorioForm.getAmbitoForm().getId())) {
 				totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(nuevoObservatorioForm.getAmbitoForm().getId()), Constants.NO_PAGINACION, new SemillaForm()));
 			}
-			
 			if (nuevoObservatorioForm.getComplejidad() != null) {
 				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
 					totalSeedsAdded.addAll(SemillaDAO.getSeedsByComplexity(c, Long.parseLong(complejidad), Constants.NO_PAGINACION, new SemillaForm()));
 				}
 			}
-			
-
 			insertNewCrawlers(c, idObservatory, totalSeedsAdded);
 			c.commit();
 			return idObservatory;
@@ -1063,8 +1061,8 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
-		String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id FROM lista l " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
-				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
+		String query = "SELECT l.id_lista, l.nombre, r.activo, r.id_rastreo, l.id_categoria, rr.id, rr.level, rr.score FROM lista l "
+				+ "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) " + "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 			query += " AND l.lista like ?";
 		}
@@ -1103,6 +1101,9 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
 					resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
+					// TODO Get score and level
+					resultadoSemillaForm.setScore(rs.getString("rr.score"));
+					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
 					semillasFormList.add(resultadoSemillaForm);
 				}
 			}
@@ -1131,11 +1132,10 @@ public final class ObservatorioDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
 		final int resultFrom = pagSize * page;
 		int paramCount = 1;
-
-		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud FROM lista l "
-				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "  + "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
+		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level FROM lista l "
+				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
+				+ "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
 				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
-
 		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
 			query += " AND l.lista like ?";
 		}
@@ -1172,6 +1172,8 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setNombre(rs.getString("l.nombre"));
 					resultadoSemillaForm.setAcronimo(rs.getString("l.acronimo"));
 					resultadoSemillaForm.setListaUrls(convertStringToList(rs.getString("l.lista")));
+					resultadoSemillaForm.setScore(rs.getString("rr.score"));
+					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
 					if (rs.getLong("l.activa") == 0) {
 						resultadoSemillaForm.setActiva(false);
 					} else {
@@ -1192,14 +1194,184 @@ public final class ObservatorioDAO {
 					ambitoForm.setId(rs.getString("l.id_ambito"));
 					ambitoForm.setName(rs.getString("al.nombre"));
 					resultadoSemillaForm.setAmbito(ambitoForm);
-					
 					final ComplejidadForm complejidadForm = new ComplejidadForm();
 					complejidadForm.setId(rs.getString("l.id_complejidad"));
 					complejidadForm.setName(rs.getString("cxl.nombre"));
 					complejidadForm.setProfundidad(rs.getInt("cxl.profundidad"));
 					complejidadForm.setAmplitud(rs.getInt("cxl.amplitud"));
 					resultadoSemillaForm.setComplejidad(complejidadForm);
-					
+					// resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
+					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
+					// Cargar las dependencias de la semilla
+					PreparedStatement psDependencias = c
+							.prepareStatement("SELECT id_dependencia, nombre FROM dependencia WHERE id_dependencia in (SELECT id_dependencia FROM semilla_dependencia WHERE id_lista = ?)");
+					psDependencias.setString(1, resultadoSemillaForm.getId());
+					List<DependenciaForm> listDependencias = new ArrayList<>();
+					ResultSet rsDependencias = null;
+					try {
+						rsDependencias = psDependencias.executeQuery();
+						while (rsDependencias.next()) {
+							DependenciaForm dependencia = new DependenciaForm();
+							dependencia.setId(rsDependencias.getLong("id_dependencia"));
+							dependencia.setName(rsDependencias.getString("nombre"));
+							listDependencias.add(dependencia);
+						}
+						resultadoSemillaForm.setDependencias(listDependencias);
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					} finally {
+						DAOUtils.closeQueries(psDependencias, rsDependencias);
+					}
+					semillasFormList.add(resultadoSemillaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return semillasFormList;
+	}
+
+	
+	/**
+	 * Gets the finish crawler ids from seed and observatory without analisis.
+	 *
+	 * @param c              the c
+	 * @param idObservatory  the id observatory
+	 * @param idObsRealizado the id obs realizado
+	 * @return the finish crawler ids from seed and observatory without analisis
+	 * @throws Exception the exception
+	 */
+	public static List<Long> getFinishCrawlerIdsFromSeedAndObservatoryWithoutAnalisis(Connection c, Long idObservatory, Long idObsRealizado) throws Exception {
+		final List<Long> crawlerIds = new ArrayList<>();
+		// Union de rastreos no realizados y rastreos empezados pero no
+		// terminados (<> estado 4)
+		String query = "SELECT DISTINCT u.id_rastreo  FROM ("
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo  IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE id_obs_realizado = ? ) AND r.activo = 1 AND r.estado = 3 ) "
+				+ "UNION ALL "
+				+ "(SELECT r.id_rastreo FROM rastreo r WHERE r.id_observatorio = ? AND r.id_rastreo  IN (SELECT rr.id_rastreo FROM  rastreos_realizados rr WHERE rr.id_obs_realizado = ? AND rr.id not IN (select ta.cod_rastreo as id_rastreo from tanalisis ta))    AND r.activo = 1  )"
+				+ ") u ORDER BY u.id_rastreo ASC";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idObservatory);
+			ps.setLong(2, idObsRealizado);
+			ps.setLong(3, idObservatory);
+			ps.setLong(4, idObsRealizado);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					crawlerIds.add(rs.getLong("id_rastreo"));
+				}				
+			}
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", EstadoObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		
+		return  crawlerIds;
+	}
+	
+	
+	/**
+	 * Gets the result seeds full from observatory by ids.
+	 *
+	 * @param c              the c
+	 * @param searchForm     the search form
+	 * @param idObservatorio the id observatorio
+	 * @param idCategoria    the id categoria
+	 * @param page           the page
+	 * @param crawlIds       the crawl ids
+	 * @return the result seeds full from observatory by ids
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<ResultadoSemillaFullForm> getResultSeedsFullFromObservatoryByIds(final Connection c, final SemillaForm searchForm, final Long idObservatorio, final Long idCategoria,
+			final int page, final List<Long> crawlIds) throws SQLException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final List<ResultadoSemillaFullForm> semillasFormList = new ArrayList<>();
+		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"));
+		final int resultFrom = pagSize * page;
+		int paramCount = 1;
+		String query = "SELECT l.id_lista, l.nombre, l.acronimo ,l.activa, l.in_directory, l.lista, r.activo, cl.nombre, cl.orden , r.id_rastreo, l.id_categoria, l.id_ambito, l.id_complejidad, rr.id, al.nombre, cxl.nombre, cxl.profundidad, cxl.amplitud, rr.score, rr.level FROM lista l "
+				+ "LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) " + "LEFT JOIN ambitos_lista al ON(l.id_ambito = al.id_ambito) "
+				+ "LEFT JOIN complejidades_lista cxl ON(l.id_complejidad = cxl.id_complejidad) " + "LEFT JOIN rastreos_realizados rr ON (rr.id_lista = l.id_lista) "
+				+ "LEFT JOIN rastreo r ON (rr.id_rastreo = r.id_rastreo) " + "WHERE id_obs_realizado = ? ";
+		if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
+			query += " AND l.lista like ?";
+		}
+		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+			query += " AND UPPER(l.nombre) like UPPER(?)";
+		}
+		if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
+			query += " AND l.id_categoria = ?";
+		}
+		if (crawlIds != null && !crawlIds.isEmpty()) {
+			String temp = " AND r.id_rastreo IN (";
+			for (int i = 0; i < crawlIds.size(); i++) {
+				temp += ",?";
+			}
+			temp = temp.replaceFirst(",", "");
+			temp += ")";
+			query = query + temp;
+		}
+		// Ordernar los resultados por categoría y nombre
+		query += " ORDER BY l.id_categoria ASC, l.nombre ASC";
+		if (page != Constants.NO_PAGINACION) {
+			query += " LIMIT ? OFFSET ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(paramCount++, idObservatorio);
+			if (StringUtils.isNotEmpty(searchForm.getListaUrlsString())) {
+				ps.setString(paramCount++, "%" + searchForm.getListaUrlsString() + "%");
+			}
+			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
+				ps.setString(paramCount++, "%" + searchForm.getNombre() + "%");
+			}
+			if (idCategoria != Constants.COMPLEXITY_SEGMENT_NONE) {
+				ps.setLong(paramCount++, idCategoria);
+			}
+			if (page != Constants.NO_PAGINACION) {
+				ps.setInt(paramCount++, pagSize);
+				ps.setInt(paramCount, resultFrom);
+			}
+			if (crawlIds != null && !crawlIds.isEmpty()) {
+				for (int i = 0; i < crawlIds.size(); i++) {
+					ps.setLong(paramCount++, crawlIds.get(i));
+				}
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final ResultadoSemillaFullForm resultadoSemillaForm = new ResultadoSemillaFullForm();
+					resultadoSemillaForm.setId(rs.getString("l.id_lista"));
+					resultadoSemillaForm.setNombre(rs.getString("l.nombre"));
+					resultadoSemillaForm.setAcronimo(rs.getString("l.acronimo"));
+					resultadoSemillaForm.setListaUrls(convertStringToList(rs.getString("l.lista")));
+					resultadoSemillaForm.setScore(rs.getString("rr.score"));
+					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
+					if (rs.getLong("l.activa") == 0) {
+						resultadoSemillaForm.setActiva(false);
+					} else {
+						resultadoSemillaForm.setActiva(true);
+					}
+					if (rs.getLong("l.in_directory") == 0) {
+						resultadoSemillaForm.setInDirectory(false);
+					} else {
+						resultadoSemillaForm.setInDirectory(true);
+					}
+					resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
+					final CategoriaForm categoriaForm = new CategoriaForm();
+					categoriaForm.setId(rs.getString("l.id_categoria"));
+					categoriaForm.setName(rs.getString("cl.nombre"));
+					categoriaForm.setOrden(rs.getInt("cl.orden"));
+					resultadoSemillaForm.setCategoria(categoriaForm);
+					final AmbitoForm ambitoForm = new AmbitoForm();
+					ambitoForm.setId(rs.getString("l.id_ambito"));
+					ambitoForm.setName(rs.getString("al.nombre"));
+					resultadoSemillaForm.setAmbito(ambitoForm);
+					final ComplejidadForm complejidadForm = new ComplejidadForm();
+					complejidadForm.setId(rs.getString("l.id_complejidad"));
+					complejidadForm.setName(rs.getString("cxl.nombre"));
+					complejidadForm.setProfundidad(rs.getInt("cxl.profundidad"));
+					complejidadForm.setAmplitud(rs.getInt("cxl.amplitud"));
+					resultadoSemillaForm.setComplejidad(complejidadForm);
 					// resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
 					// Cargar las dependencias de la semilla
@@ -1517,7 +1689,6 @@ public final class ObservatorioDAO {
 					RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
 					// TODO Desactivamos si la semilla está desactivada o borrada
 					if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
-						
 						RastreoDAO.enableDisableCrawler(c, idCrawler, false);
 					} else {
 						RastreoDAO.enableDisableCrawler(c, idCrawler, true);
@@ -1740,15 +1911,12 @@ public final class ObservatorioDAO {
 			insertarRastreoForm.setCodigo(modificarObservatorioForm.getNombre() + "-" + semillaForm.getNombre());
 			insertarRastreoForm.setId_semilla(semillaForm.getId());
 			RastreoDAO.modificarRastreo(c, false, insertarRastreoForm, idCrawler);
-			
-			//Disable if is not activa or is eliminada
+			// Disable if is not activa or is eliminada
 			if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
 				RastreoDAO.enableDisableCrawler(c, idCrawler, false);
 			} else {
 				RastreoDAO.enableDisableCrawler(c, idCrawler, true);
 			}
-			
-			
 		}
 	}
 

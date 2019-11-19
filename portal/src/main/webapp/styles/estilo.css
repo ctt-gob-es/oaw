@@ -1228,3 +1228,8 @@ to {
 .warning-import {
 	background-color: #ffc107 !important;
 }
+
+.label100{
+	width: 100% !important;
+    text-align: left !important;
+}

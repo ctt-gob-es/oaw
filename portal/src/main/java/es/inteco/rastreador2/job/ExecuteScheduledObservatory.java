@@ -38,6 +38,7 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.cuentausuario.CuentaCliente;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
@@ -46,6 +47,8 @@ import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
+import es.inteco.rastreador2.utils.ObservatoryUtils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 
 /**
  * The Class ExecuteScheduledObservatory.
@@ -159,6 +162,15 @@ public class ExecuteScheduledObservatory implements StatefulJob {
 
 				ObservatorioDAO.updateObservatoryStatus(c, idFulfilledObservatory,
 						Constants.FINISHED_OBSERVATORY_STATUS);
+				
+				//TODO Generate cache add observatory ends
+				ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), 0, null);
+				
+				final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c,
+						new SemillaForm(), idFulfilledObservatory, 0L, - 1);
+
+				ObservatoryUtils.setAvgScore2(c, seedsResults2, idFulfilledObservatory);
+				
 				Logger.putLog("Finalizado el observatorio con id " + observatoryId, ExecuteScheduledObservatory.class,
 						Logger.LOG_LEVEL_INFO);
 

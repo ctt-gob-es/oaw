@@ -493,14 +493,14 @@
 						455 con valor GREEN-ZERO si hay más de un enlace interno entonces falla también 
 						por la comprobación 456 y el valor es RED-ZERO -->
 					<!-- Comprobamos que si hay enlaces rotos -->
-					<check id="455" onlyWarning="true" />
+<!-- 					<check id="455" onlyWarning="true" /> -->
 					<!-- Comprobamos que haya MÁS de 1 enlace roto -->
-					<check id="456" relatedWith="455" />
+<!-- 					<check id="456" relatedWith="455" /> -->
 					<!-- Idem para enlaces externos -->
 					<!-- Comprobamos que si hay enlaces externos rotos -->
-					<check id="457" onlyWarning="true" />
+<!-- 					<check id="457" onlyWarning="true" /> -->
 					<!-- Comprobamos que haya MÁS de 2 enlaces rotos -->
-					<check id="458" relatedWith="457" />
+<!-- 					<check id="458" relatedWith="457" /> -->
 				</checks>
 			</subgroup>
 		</suitability>

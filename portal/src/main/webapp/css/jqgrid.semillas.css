@@ -10,11 +10,11 @@ permissions and more details.
 You should have received a copy of the EUPL1.2 license along with this program; if not, 
 you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 */
-#gbox_grid table#grid {
+#gbox_grid table#grid, #gbox_grid table.gridTable {
 	border-collapse: inherit;
 }
 
-.ui-jqgrid-htable, #grid {
+.ui-jqgrid-htable, #grid, .gridTable {
 	border: none !Important;
 	margin: 0 !Important;
 	font-size: 14px !Important;
