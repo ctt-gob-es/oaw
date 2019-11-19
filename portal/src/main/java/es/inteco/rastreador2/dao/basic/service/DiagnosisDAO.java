@@ -437,8 +437,13 @@ public final class DiagnosisDAO {
 	 * @param rs the rs
 	 * @return the form from result set
 	 * @throws SQLException the SQL exception
+	 * @throws ParseException 
 	 */
-	private static ServicioDiagnosticoForm getFormFromResultSet(ResultSet rs) throws SQLException {
+	private static ServicioDiagnosticoForm getFormFromResultSet(ResultSet rs) throws SQLException, ParseException {
+		
+		//2019-11-19 10:38:26.0
+		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
+		
 		ServicioDiagnosticoForm result = new ServicioDiagnosticoForm();
 		result.setId(rs.getLong("id"));
 		result.setUser(rs.getString("usr"));
@@ -448,14 +453,20 @@ public final class DiagnosisDAO {
 		result.setDepth(rs.getInt("depth"));
 		result.setWidth(rs.getInt("width"));
 		result.setReport(rs.getString("report"));
-		result.setDate(rs.getDate("date"));
 		result.setStatus(rs.getString("status"));
-		result.setSendDate(rs.getDate("send_date"));
 		result.setSchedulingDate(rs.getDate("scheduling_date"));
 		result.setAnalysisType(rs.getString("analysis_type"));
 		result.setInDirectory(rs.getInt("in_directory"));
 		result.setRegisterResult(rs.getInt("register_result"));
 		result.setType(rs.getString("ambito"));
+		
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("date"))) {
+			result.setDate(format.parse(rs.getString("date")));	
+		}
+		if(!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("send_date"))) {
+		result.setSendDate(format.parse(rs.getString("send_date")));
+		}
+		
 		return result;
 	}
 
