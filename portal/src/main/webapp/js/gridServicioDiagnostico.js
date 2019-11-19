@@ -28,10 +28,40 @@ function estadoFormatter(cellvalue, options, rowObject) {
 	return value;
 }
 
+function tipoAnalisisFormatter(cellvalue, options, rowObject) {
+	var value = "";
+
+	switch (cellvalue) {
+	case "url":
+		value = "URL";
+		break;
+	case "lista_urls":
+		value = "Lista de URLs";
+		break;
+	case "c\u00F3digo_fuente":
+		value = "C&#243;digo fuente";
+		break;
+
+	default:
+		value = cellvalue;
+	}
+
+	return value;
+}
+
 function tipoFormatter(cellvalue, options, rowObject) {
 
 	if (!cellvalue) {
 		return "Otros";
+	}
+
+	return cellvalue;
+}
+
+function usuarioFormatter(cellvalue, options, rowObject) {
+
+	if (!cellvalue || cellvalue == 'null') {
+		return "-";
 	}
 
 	return cellvalue;
@@ -88,6 +118,7 @@ function reloadGrid(path, gridId, paginadorId) {
 										name : "user",
 										width : 20,
 										sortable : false,
+										formatter : usuarioFormatter
 									}, {
 										name : "email",
 										width : 20,
@@ -108,14 +139,15 @@ function reloadGrid(path, gridId, paginadorId) {
 										name : "analysisType",
 										width : 20,
 										sortable : false,
+										formatter: tipoAnalisisFormatter
 									}, {
 										name : "inDirectory",
-										width : 20,
+										width : 10,
 										sortable : false,
 										template : "booleanCheckboxFa",
 									}, {
 										name : "registerResult",
-										width : 20,
+										width : 10,
 										sortable : false,
 										template : "booleanCheckboxFa",
 									}, {

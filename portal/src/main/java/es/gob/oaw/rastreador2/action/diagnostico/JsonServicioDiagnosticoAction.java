@@ -2,26 +2,20 @@ package es.gob.oaw.rastreador2.action.diagnostico;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
 import org.apache.struts.actions.DispatchAction;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import es.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm;
 import es.inteco.common.Constants;
@@ -53,11 +47,19 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final int numResult = DiagnosisDAO.count(c, search);
 			List<ServicioDiagnosticoForm> listSD = DiagnosisDAO.find(c, (pagina - 1), search);
-			String jsonSeeds = new Gson().toJson(listSD);
+			
+			
+			Gson gson = new GsonBuilder()
+					   .setDateFormat("dd/MM/yyyy HH:mm").create();
+			
+			String jsonSeeds = gson.toJson(listSD);
 			response.setContentType("text/json");
 			// Paginacion
 			List<PageForm> paginas = Pagination.createPagination(request, numResult, pagina);
-			String jsonPagination = new Gson().toJson(paginas);
+			
+
+			
+			String jsonPagination = gson.toJson(paginas);
 			PrintWriter pw = response.getWriter();
 			// pw.write(json);
 			pw.write("{\"diagnosticos\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");

@@ -97,15 +97,12 @@ td {
 }
 
 .ui-jqgrid-bdiv.ui-corner-bottom {
-	    overflow: hidden !important;
+	overflow: hidden !important;
 }
 
 #gbox_grid, #gbox_gridActuales {
-
-	margin:10px 0 !important;
-
+	margin: 10px 0 !important;
 }
-
 </style>
 
 <!-- servicioDiagnostico.jsp -->
@@ -161,33 +158,10 @@ td {
 							name="email" />
 					</div>
 
-					<div class="formItem">
-						<label for="email" class="control-label"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.email" /></strong></label> <input type="text" class="texto form-control" id="email"
-							name="email" />
-					</div>
-
-
 
 					<div class="formItem">
-						<label for="profundidad"><strong class="labelVisu"> Profundidad</strong></label> <select id="profundidad"
-							name="profundidad" class="texto form-control">
-							<option selected="selected" value=""></option>
-							<option value="1">1</option>
-							<option value="2">2</option>
-							<option value="3">3</option>
-							<option value="4">4</option>
-							<option value="5">5</option>
-							<option value="6">6</option>
-							<option value="7">7</option>
-							<option value="8">8</option>
-							<option value="9">9</option>
-							<option value="10">10</option>
-						</select>
-					</div>
-
-					<div class="formItem">
-						<label for="amplitud"><strong class="labelVisu"> Amplitud</strong></label> <select id="amplitud" name="amplitud"
+						<label for="profundidad"><strong class="labelVisu"> <bean:message
+									key="servicio.diagnostirco.estadisticas.profundidad" /></strong></label> <select id="profundidad" name="profundidad"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="1">1</option>
@@ -204,7 +178,26 @@ td {
 					</div>
 
 					<div class="formItem">
-						<label for="informe"><strong class="labelVisu">Informe</strong></label> <select id="amplitud" name="amplitud"
+						<label for="amplitud"><strong class="labelVisu"> <bean:message
+									key="servicio.diagnostirco.estadisticas.amplitud" /></strong></label> <select id="amplitud" name="amplitud"
+							class="texto form-control">
+							<option selected="selected" value=""></option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+						</select>
+					</div>
+
+					<div class="formItem">
+						<label for="informe"><strong class="labelVisu"><bean:message
+									key="servicio.diagnostirco.estadisticas.informe" /></strong></label> <select id="amplitud" name="amplitud"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="informe-obs-5">Accesibilidad</option>
@@ -216,7 +209,8 @@ td {
 					</div>
 
 					<div class="formItem">
-						<label for="amplitud"><strong class="labelVisu">Tipo</strong></label> <select id="informe" name="informe"
+						<label for="amplitud"><strong class="labelVisu"><bean:message
+									key="servicio.diagnostirco.estadisticas.tipo" /></strong></label> <select id="informe" name="informe"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="url">URL</option>
@@ -227,7 +221,8 @@ td {
 
 
 					<div class="formItem">
-						<label for="amplitud"><strong class="labelVisu">Estado</strong></label> <select id="estado" name="estado"
+						<label for="amplitud"><strong class="labelVisu"><bean:message
+									key="servicio.diagnostirco.estadisticas.estado" /></strong></label> <select id="estado" name="estado"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="launched">Lanzado</option>
@@ -239,7 +234,8 @@ td {
 					</div>
 
 					<div class="formItem">
-						<label for="amplitud"><strong class="labelVisu">En directorio</strong></label> <select id="informe" name="informe"
+						<label for="amplitud"><strong class="labelVisu"><bean:message
+									key="servicio.diagnostirco.estadisticas.directorio" /></strong></label> <select id="informe" name="informe"
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="0">No</option>
@@ -287,12 +283,14 @@ td {
 
 
 			<div class="col-md-12">
-				<h2>Análisis en curso</h2>
+				<h2>
+					<bean:message key="servicio.diagnostirco.estadisticas.encurso.title" />
+				</h2>
 				<table id="gridActuales" class="gridTable"></table>
 
 				<p class="alert alert-info pull-left">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
-					</em>: Se muestran los análisis en estado "Lanzado" del día en curso
+					</em>: <bean:message key="servicio.diagnostirco.estadisticas.encurso.info" />
 				</p>
 
 				<p id="paginadorActuales"></p>
@@ -300,14 +298,13 @@ td {
 			<div class="col-md-12">
 
 				<!-- Grid -->
-				<h2>Resultados de la búsqueda</h2>
+				<h2><bean:message key="servicio.diagnostirco.estadisticas.resultados.title" /></h2>
 				<table id="grid"></table>
 				<p id="paginador"></p>
 
 				<p class="alert alert-info pull-left">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
-					</em>: * El tipo de portal se indicará si la URL analizada en el servicio de diagnóstico coincide con alguna de las
-					semillas almacenadas en base de datos. En caso contrario, se indicará como "Otros"
+					</em>: <bean:message key="servicio.diagnostirco.estadisticas.resultados.info" />
 				</p>
 
 			</div>
