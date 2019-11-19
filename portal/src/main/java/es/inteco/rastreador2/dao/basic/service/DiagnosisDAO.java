@@ -359,11 +359,6 @@ public final class DiagnosisDAO {
 		query.append("ORDER BY id DESC");
 		query.append(" LIMIT " + pagSize + " OFFSET " + resultFrom);
 		try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
-//			final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-//			final java.util.Date startDate = format.parse(search.getStartDate());
-//			final java.util.Date endDate = format.parse(search.getEndDate());
-//			ps.setDate(1, new Date(startDate.getTime()));
-//			ps.setDate(2, new Date(endDate.getTime()));
 			int nextParameterCount = 1;
 			setSearchParameters(search, ps, nextParameterCount);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -436,14 +431,12 @@ public final class DiagnosisDAO {
 	 *
 	 * @param rs the rs
 	 * @return the form from result set
-	 * @throws SQLException the SQL exception
-	 * @throws ParseException 
+	 * @throws SQLException   the SQL exception
+	 * @throws ParseException
 	 */
 	private static ServicioDiagnosticoForm getFormFromResultSet(ResultSet rs) throws SQLException, ParseException {
-		
-		//2019-11-19 10:38:26.0
+		// 2019-11-19 10:38:26.0
 		final DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.s");
-		
 		ServicioDiagnosticoForm result = new ServicioDiagnosticoForm();
 		result.setId(rs.getLong("id"));
 		result.setUser(rs.getString("usr"));
@@ -459,14 +452,12 @@ public final class DiagnosisDAO {
 		result.setInDirectory(rs.getInt("in_directory"));
 		result.setRegisterResult(rs.getInt("register_result"));
 		result.setType(rs.getString("ambito"));
-		
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("date"))) {
-			result.setDate(format.parse(rs.getString("date")));	
+			result.setDate(format.parse(rs.getString("date")));
 		}
-		if(!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("send_date"))) {
-		result.setSendDate(format.parse(rs.getString("send_date")));
+		if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("send_date"))) {
+			result.setSendDate(format.parse(rs.getString("send_date")));
 		}
-		
 		return result;
 	}
 
@@ -483,13 +474,13 @@ public final class DiagnosisDAO {
 		if (search != null) {
 			final DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 			if (!StringUtils.isEmpty(search.getUser())) {
-				ps.setString(nextParameterCount++, search.getUser());
+				ps.setString(nextParameterCount++, "%" + search.getUser() + "%");
 			}
 			if (!StringUtils.isEmpty(search.getDomain())) {
-				ps.setString(nextParameterCount++, search.getDomain());
+				ps.setString(nextParameterCount++, "%" + search.getDomain() + "%");
 			}
 			if (!StringUtils.isEmpty(search.getEmail())) {
-				ps.setString(nextParameterCount++, search.getEmail());
+				ps.setString(nextParameterCount++, "%" + search.getEmail() + "%");
 			}
 			if (search.getDepth() != null) {
 				ps.setInt(nextParameterCount++, search.getDepth());
@@ -498,7 +489,7 @@ public final class DiagnosisDAO {
 				ps.setInt(nextParameterCount++, search.getWidth());
 			}
 			if (!StringUtils.isEmpty(search.getReport())) {
-				ps.setString(nextParameterCount++, search.getReport());
+				ps.setString(nextParameterCount++, "%" + search.getReport() + "%");
 			}
 			if (!StringUtils.isEmpty(search.getStatus())) {
 				ps.setString(nextParameterCount++, search.getStatus());
