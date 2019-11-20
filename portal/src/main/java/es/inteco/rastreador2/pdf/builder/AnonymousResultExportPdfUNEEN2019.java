@@ -1190,6 +1190,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 	 */
 	public void createSeedDetailsChapter(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, final Font titleFont, SemillaForm seed) throws Exception {
 		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.seed.detail.title"), pdfTocManager, titleFont);
+		chapter.add(Chunk.NEWLINE);
 		chapter.add(new Paragraph(messageResources.getMessage("pdf.accessibility.seed.detail.p1"), ConstantsFont.PARAGRAPH));
 		SemillaForm fullSeed = SemillaDAO.getSeedById(DataBaseManager.getConnection(), seed.getId());
 		java.util.List<EtiquetaForm> etiquetas = fullSeed.getEtiquetas();
