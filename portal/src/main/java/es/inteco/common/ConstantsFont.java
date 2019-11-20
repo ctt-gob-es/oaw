@@ -56,6 +56,7 @@ public final class ConstantsFont {
     public static final Font CHAPTER_TITLE_MP_FONT_3_L = new Font(arial, 12, Font.NORMAL, Constants.VERDE_O_MP);
     public static final Font DOCUMENT_TITLE_MP_FONT = new Font(arial, 34, Font.BOLD, Constants.VERDE_O_MP);
     public static final Font DOCUMENT_SUBTITLE_MP_FONT = new Font(arial, 20, Font.BOLD, Constants.VERDE_O_MP);
+    public static final Font DOCUMENT_SUBTITLE_2_MP_FONT = new Font(arial, 18, Font.BOLD, Constants.VERDE_O_MP);
     public static final Font DOCUMENT_NOTICE_MP_FONT = new Font(arial, 20, Font.NORMAL, Color.BLACK);
     public static final Font PARAGRAPH_TITLE_TABLE_FONT = new Font(arial, 10, Font.BOLD, Constants.ROJO_INTECO);
     public static final Font levelTitleMPFont = new Font(arial, 14, Font.BOLD, Constants.VERDE_C_MP);
@@ -110,6 +111,8 @@ public final class ConstantsFont {
     public static final Font SCORE_FONT = new Font(arial, 14, Font.NORMAL, Color.BLACK);
     public static final Font SCORE_BOLD_FONT = new Font(arial, 14, Font.BOLD, Color.BLACK);
     public static final Font MORE_INFO_FONT = new Font(arial, 8, Font.ITALIC, Color.BLACK);
+    
+    public static final Font MORE_INFO_FONT_BOLD = new Font(arial, 8, Font.BOLDITALIC, Color.BLACK);
 
     public static final Font ANCHOR_FONT = new Font(arial, 10, Font.ITALIC, LINK_COLOR);
     public static final Font LINK_FONT = new Font(monospaced, 10, Font.ITALIC, LINK_COLOR);

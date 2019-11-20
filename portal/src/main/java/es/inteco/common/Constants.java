@@ -346,6 +346,8 @@ public interface Constants {
 	Color NARANJA_MP = new Color(245, 164, 55);
 	Color VERDE_O_MP = new Color(106, 130, 54);
 	Color VERDE_C_MP = new Color(126, 154, 64);
+	
+	Color MARRRON_C_NC = new Color(196, 89, 17);
 
 	Color COLOR_RESULTADO_0_FALLA = new Color(225, 18, 13);
 	// public static final Color COLOR_RESULTADO_0_PASA = new Color(247, 150,
