@@ -49,7 +49,6 @@ import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
  * Created by mikunis on 1/18/17.
  */
 public class ObservatoryPageResultsPdfSectionBuilder {
-
 	/** The current evaluation page list. */
 	protected final List<ObservatoryEvaluationForm> currentEvaluationPageList;
 
@@ -100,31 +99,25 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
 			final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
-
 			chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
-
 			// Creación de las tablas resumen de resultado por verificación de
 			// cada página
 			for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
-				final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L);
-				levelTitle.setSpacingBefore(HALF_LINE_SPACE);
-				chapter.add(levelTitle);
-				chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
+				Section section = PDFUtils.createSection("Verificaciones. Nivel de adecuación " + getPriorityName(messageResources, observatoryLevelForm.getName()), pdfTocManager.getIndex(),
+						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
+				section.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
 			}
-
 			if (withOutLevels) {
 				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
 			} else {
 				addCheckCodes(messageResources, evaluationForm, chapter);
 			}
-
 			final SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("observatory.servicio.diagnostico.url"), ConstantsFont.ANCHOR_FONT);
 			externalLink.setExternalLink(true);
 			externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
 			final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
 			specialChunkMap.put(1, externalLink);
 			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
-
 			document.add(chapter);
 			pdfTocManager.addChapterCount();
 			counter++;
@@ -141,49 +134,40 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	protected PdfPTable createPaginaTableInfo(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm) {
 		final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
 		final String url = evaluationForm.getUrl();
-
 		final BigDecimal puntuacionMedia = evaluationForm.getScore();
 		final String nivelAdecuacion = ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm));
 		final List<BigDecimal> puntuacionesMediasNivel = new ArrayList<>();
 		for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
 			puntuacionesMediasNivel.add(observatoryLevelForm.getScore());
 		}
-
 		final float[] widths = { 0.22f, 0.78f };
 		final PdfPTable table = new PdfPTable(widths);
 		table.setWidthPercentage(100);
 		table.setSpacingBefore(10);
 		table.setSpacingAfter(0);
-
 		// Titulo
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.title"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
 				DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createTableCell(title, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
-
 		// URL
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
 				DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createLinkedTableCell(url, url, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
-
 		// Puntuación Media Página
 		table.addCell(PDFUtils.createTableCell("Puntuación Media", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createTableCell(puntuacionMedia.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
-
 		// Nivel de Adecuación (a.k.a. Modalidad)
 		table.addCell(
 				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.adecuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createTableCell(nivelAdecuacion, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
-
 		// Puntuaciones Medias Nivel Accesibilidad
 		int contador = 1;
 		for (BigDecimal puntuacionMediaNivel : puntuacionesMediasNivel) {
-
 			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { String.valueOf(contador) }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
 					Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 			table.addCell(PDFUtils.createTableCell(puntuacionMediaNivel.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			contador++;
 		}
-
 		return table;
 	}
 
@@ -215,7 +199,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	protected PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm) {
 		final float[] widths = { 0.60f, 0.20f, 0.20f };
 		final PdfPTable table = new PdfPTable(widths);
-
 		table.setSpacingBefore(10);
 		table.setSpacingAfter(5);
 		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.verificacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
@@ -224,7 +207,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.valor"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
 		table.addCell(
 				PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
-
 		for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
 				String value = null;
@@ -237,7 +219,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 						modality = messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad.pasa");
 						fuente = ConstantsFont.descriptionFont;
 					} else if (observatorySubgroupFormValue == Constants.OBS_VALUE_GREEN_ZERO) {
-						//value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero");
+						// value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero");
 						value = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa");
 						modality = messageResources.getMessage("resultados.observatorio.vista.primaria.modalidad.pasa");
 						fuente = ConstantsFont.WARNING_FONT;
@@ -253,7 +235,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				} catch (Exception e) {
 					Logger.putLog("Error al crear tabla, resultados primarios.", BasicServicePdfReport.class, Logger.LOG_LEVEL_ERROR, e);
 				}
-
 				final PdfPCell descriptionCell = new PdfPCell(new Paragraph(messageResources.getMessage(observatorySubgroupForm.getDescription()), ConstantsFont.descriptionFont));
 				final PdfPCell valueCell = PDFUtils.createTableCell(value, Color.WHITE, fuente, Element.ALIGN_CENTER, 0);
 				final PdfPCell modalityCell;
@@ -264,13 +245,11 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				}
 				modalityCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 				modalityCell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-
 				table.addCell(descriptionCell);
 				table.addCell(valueCell);
 				table.addCell(modalityCell);
 			}
 		}
-
 		return table;
 	}
 
@@ -293,7 +272,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 							if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
 								for (ProblemForm problem : verification.getProblems()) {
 									final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, levelSection, verification, problem);
-
 									if (problem.getCheck().equals("232") || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
 										addW3CCopyright(levelSection, problem.getCheck());
 									}
@@ -323,12 +301,10 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		tablaVerificacionProblema.setSpacingBefore(10);
 		tablaVerificacionProblema.setWidthPercentage(100);
 		levelSection.add(tablaVerificacionProblema);
-
 		final PdfPCell verificacion = PDFUtils.createTableCell(messageResources.getMessage(verification.getDescription()), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
 				DEFAULT_PADDING, -1);
 		verificacion.setColspan(2);
 		tablaVerificacionProblema.addCell(verificacion);
-
 		final String problema;
 		final Font font;
 		if (problem.getType().equals(pmgr.getValue(Constants.INTAV_PROPERTIES, "confidence.level.medium"))) {
@@ -348,14 +324,12 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		celdaProblema.setBorder(0);
 		celdaProblema.setVerticalAlignment(Element.ALIGN_TOP);
 		tablaVerificacionProblema.addCell(celdaProblema);
-
 		final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
 		final PdfPCell comprobacion = PDFUtils.createTableCell(StringUtils.removeHtmlTags(checkDescriptionsManager.getErrorMessage(problem.getCheck())), Color.WHITE,
 				ConstantsFont.strongDescriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1);
 		comprobacion.setBorder(0);
 		comprobacion.setVerticalAlignment(Element.ALIGN_TOP);
 		tablaVerificacionProblema.addCell(comprobacion);
-
 		return tablaVerificacionProblema;
 	}
 
@@ -373,7 +347,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				}
 			}
 		}
-
 		return false;
 	}
 
@@ -389,7 +362,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -447,7 +419,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 							if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
 								for (ProblemForm problem : verification.getProblems()) {
 									final PdfPTable tablaVerificacionProblema = createTablaVerificacionProblema(messageResources, prioritySection, verification, problem);
-
 									if (problem.getCheck().equals("232") || EvaluatorUtils.isCssValidationCheck(Integer.parseInt(problem.getCheck()))) {
 										addW3CCopyright(prioritySection, problem.getCheck());
 									}

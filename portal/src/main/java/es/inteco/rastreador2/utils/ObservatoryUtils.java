@@ -404,7 +404,7 @@ public final class ObservatoryUtils {
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
-				} else {
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
 				}
 			}

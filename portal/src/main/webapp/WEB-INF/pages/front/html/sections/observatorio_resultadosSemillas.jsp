@@ -302,13 +302,27 @@ Email: observ.accesibilidad@correo.gob.es
 				</fieldset>
 			</html:form>
 
+			<jsp:useBean id="params" class="java.util.HashMap" />
+			<c:set target="${params}" property="id_observatorio" value="${id_observatorio}" />
+			<c:set target="${params}" property="idCartucho" value="${idCartucho}" />
+			<c:set target="${params}" property="idExObs" value="${idExObs}" />
+
+			<p class="pull-right">
+				<html:link forward="regenerarResultadosObservatorioSemillas" name="params">
+					<span class="btn btn-default btn-lg"><span class="glyphicon glyphicon 	glyphicon glyphicon-repeat"
+						aria-hidden="true" data-toggle="tooltip" title="Regenerar las puntuaciones" /> </span>
+					<span>Regenerar puntuaciones</span>
+				</html:link>
+			</p>
+
+
 			<!-- Grid -->
 			<table id="grid">
 			</table>
 
-
-
 			<p id="paginador"></p>
+
+
 
 
 		</div>
