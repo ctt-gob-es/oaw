@@ -50,12 +50,24 @@ import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
  */
 public class ObservatoryPageResultsPdfSectionBuilder {
 
+	/** The current evaluation page list. */
 	protected final List<ObservatoryEvaluationForm> currentEvaluationPageList;
 
+	/**
+	 * Instantiates a new observatory page results pdf section builder.
+	 *
+	 * @param currentEvaluationPageList the current evaluation page list
+	 */
 	public ObservatoryPageResultsPdfSectionBuilder(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
 		this.currentEvaluationPageList = currentEvaluationPageList;
 	}
 
+	/**
+	 * Adds the W 3 C copyright.
+	 *
+	 * @param subSubSection the sub sub section
+	 * @param check         the check
+	 */
 	protected static void addW3CCopyright(Section subSubSection, String check) {
 		final PropertiesManager PMGR = new PropertiesManager();
 		final Paragraph p = new Paragraph();
@@ -73,6 +85,15 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		subSubSection.add(p);
 	}
 
+	/**
+	 * Adds the page results.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param withOutLevels    the with out levels
+	 * @throws Exception the exception
+	 */
 	public void addPageResults(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, boolean withOutLevels) throws Exception {
 		int counter = 1;
 		for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
@@ -110,6 +131,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the pagina table info.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaluationForm   the evaluation form
+	 * @return the pdf P table
+	 */
 	protected PdfPTable createPaginaTableInfo(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm) {
 		final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
 		final String url = evaluationForm.getUrl();
@@ -159,6 +187,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		return table;
 	}
 
+	/**
+	 * Gets the priority name.
+	 *
+	 * @param messageResources the message resources
+	 * @param name             the name
+	 * @return the priority name
+	 */
 	protected String getPriorityName(final MessageResources messageResources, final String name) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (name.equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1"))) {
@@ -170,6 +205,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the pagina table verification summary.
+	 *
+	 * @param messageResources     the message resources
+	 * @param observatoryLevelForm the observatory level form
+	 * @return the pdf P table
+	 */
 	protected PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm) {
 		final float[] widths = { 0.60f, 0.20f, 0.20f };
 		final PdfPTable table = new PdfPTable(widths);
@@ -232,6 +274,14 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		return table;
 	}
 
+	/**
+	 * Adds the check codes.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaluationForm   the evaluation form
+	 * @param chapter          the chapter
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private void addCheckCodes(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {
@@ -256,6 +306,16 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Creates the tabla verificacion problema.
+	 *
+	 * @param messageResources the message resources
+	 * @param levelSection     the level section
+	 * @param verification     the verification
+	 * @param problem          the problem
+	 * @return the pdf P table
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	protected PdfPTable createTablaVerificacionProblema(final MessageResources messageResources, final Section levelSection, final ObservatorySubgroupForm verification, final ProblemForm problem)
 			throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -299,6 +359,12 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		return tablaVerificacionProblema;
 	}
 
+	/**
+	 * Checks for problems.
+	 *
+	 * @param priority the priority
+	 * @return true, if successful
+	 */
 	protected boolean hasProblems(final ObservatoryLevelForm priority) {
 		for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm verification : level.getSubgroups()) {
@@ -311,6 +377,12 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		return false;
 	}
 
+	/**
+	 * Checks for problems.
+	 *
+	 * @param level the level
+	 * @return true, if successful
+	 */
 	protected boolean hasProblems(final ObservatorySuitabilityForm level) {
 		for (ObservatorySubgroupForm verification : level.getSubgroups()) {
 			if (verification.getProblems() != null && !verification.getProblems().isEmpty()) {
@@ -321,6 +393,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		return false;
 	}
 
+	/**
+	 * Gets the level name.
+	 *
+	 * @param messageResources the message resources
+	 * @param level            the level
+	 * @return the level name
+	 */
 	protected String getLevelName(final MessageResources messageResources, final ObservatorySuitabilityForm level) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (level.getName().equalsIgnoreCase(pmgr.getValue(INTAV_PROPERTIES, "priority.1.level"))) {
@@ -332,6 +411,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		}
 	}
 
+	/**
+	 * Gets the priority name.
+	 *
+	 * @param messageResources the message resources
+	 * @param priority         the priority
+	 * @return the priority name
+	 */
 	protected String getPriorityName(final MessageResources messageResources, final ObservatoryLevelForm priority) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		if (priority.getName().equals(pmgr.getValue(INTAV_PROPERTIES, "priority.1"))) {
@@ -344,13 +430,12 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	}
 
 	/**
-	 * Crear las incidencias sin niveles, sólo con prioridades como será en la
-	 * revisión de la metodología UNE-2012
-	 * 
-	 * @param messageResources
-	 * @param evaluationForm
-	 * @param chapter
-	 * @throws IOException
+	 * Crear las incidencias sin niveles, sólo con prioridades como será en la revisión de la metodología UNE-2012.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaluationForm   the evaluation form
+	 * @param chapter          the chapter
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {

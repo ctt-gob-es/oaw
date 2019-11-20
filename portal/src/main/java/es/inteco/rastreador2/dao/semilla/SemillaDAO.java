@@ -32,6 +32,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
+import es.inteco.rastreador2.actionform.etiquetas.ClasificacionForm;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
@@ -688,7 +689,7 @@ public final class SemillaDAO {
 					}
 					// Etiquetas
 					PreparedStatement psEtiquetas = c.prepareStatement(
-							"SELECT e.id_etiqueta, e.nombre FROM etiqueta e WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?) ORDER BY UPPER(e.nombre)");
+							"SELECT e.id_etiqueta, e.nombre, e.id_clasificacion FROM etiqueta e WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?) ORDER BY UPPER(e.nombre)");
 					psEtiquetas.setLong(1, semillaForm.getId());
 					List<EtiquetaForm> listEtiquetas = new ArrayList<>();
 					try (ResultSet rsEtiquetas = psEtiquetas.executeQuery()) {
@@ -696,6 +697,9 @@ public final class SemillaDAO {
 							EtiquetaForm etiqueta = new EtiquetaForm();
 							etiqueta.setId(rsEtiquetas.getLong("id_etiqueta"));
 							etiqueta.setName(rsEtiquetas.getString(NOMBRE));
+							ClasificacionForm clasificacion = new ClasificacionForm();
+							clasificacion.setId(rsEtiquetas.getString("id_clasificacion"));
+							etiqueta.setClasificacion(clasificacion);
 							listEtiquetas.add(etiqueta);
 						}
 						semillaForm.setEtiquetas(listEtiquetas);
