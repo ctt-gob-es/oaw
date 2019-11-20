@@ -2500,8 +2500,10 @@ public final class SemillaDAO {
 				throw new SQLException("Creating user failed, no rows affected.");
 			}
 			ResultSet generatedKeys = ps.getGeneratedKeys();
+			
 			if (generatedKeys.next()) {
 				semillaForm.setId(generatedKeys.getLong(1));
+				
 				// Inserción de las nuevas
 				if (semillaForm.getDependencias() != null && !semillaForm.getDependencias().isEmpty()) {
 					StringBuilder slqInsertSemillaDependencia = new StringBuilder("INSERT INTO semilla_dependencia(id_lista, id_dependencia) VALUES ");
@@ -2515,11 +2517,8 @@ public final class SemillaDAO {
 					PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
 					psInsertarSemillaDependencia.executeUpdate();
 				}
-			} else {
-				throw new SQLException("Creating dependencias failed, no ID obtained.");
-			}
-			if (generatedKeys.next()) {
-				semillaForm.setId(generatedKeys.getLong(1));
+				
+				// Inserción de las nuevas etiquetas
 				if (semillaForm.getEtiquetas() != null && !semillaForm.getEtiquetas().isEmpty()) {
 					StringBuilder slqInsertSemillaEtiqueta = new StringBuilder("INSERT INTO semilla_etiqueta(id_lista, id_etiqueta) VALUES ");
 					for (int i = 0; i < semillaForm.getEtiquetas().size(); i++) {
@@ -2532,9 +2531,11 @@ public final class SemillaDAO {
 					PreparedStatement psInsertarSemillaEtiqueta = c.prepareStatement(slqInsertSemillaEtiqueta.toString());
 					psInsertarSemillaEtiqueta.executeUpdate();
 				}
+				
 			} else {
-				throw new SQLException("Creating etiquetas failed, no ID obtained.");
+				throw new SQLException("Creating dependencias or tags failed, no ID obtained.");
 			}
+
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
@@ -2865,7 +2866,7 @@ public final class SemillaDAO {
 					} else {
 						ps.setBoolean(11, true);
 					}
-					/*******************/
+
 					ps.setInt(12, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 					ps.setString(13, semillaForm.getNombre());
 					ps.setString(14, SeedUtils.getSeedUrlsForDatabase(semillaForm.getListaUrls()));
@@ -2946,7 +2947,7 @@ public final class SemillaDAO {
 						for (int i = 0; i < semillaForm.getDependencias().size(); i++) {
 							DependenciaForm currentDependencia = semillaForm.getDependencias().get(i);
 							// Si viene informado el nombre de la
-							// depenedencia
+							// dependencia
 							// es
 							// para que se cree nueva. Si el nombre ya existe,
 							// se devuelve el id de la dependencia existente
@@ -2978,13 +2979,16 @@ public final class SemillaDAO {
 				} else {
 					throw new SQLException("Creating dependencias failed, no ID obtained.");
 				}
+				
 				// Etiquetas
 				if (generatedKeys.next()) {
 					semillaForm.setId(generatedKeys.getLong(1));
 					// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
 					// lo permite
 					try {
-						PreparedStatement deleteSemillaEtiqueta = c.prepareStatement("DELETE FROM semilla_dependencia WHERE id_lista = ?");
+						PreparedStatement deleteSemillaEtiqueta = c
+								.prepareStatement("DELETE FROM semilla_etiqueta WHERE id_lista = ?");
+
 						deleteSemillaEtiqueta.setLong(1, semillaForm.getId());
 						deleteSemillaEtiqueta.executeUpdate();
 					} catch (SQLException e) {

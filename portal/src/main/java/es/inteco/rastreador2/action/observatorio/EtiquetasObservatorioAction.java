@@ -81,8 +81,7 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 	 * @return the action forward
 	 * @throws Exception the exception
 	 */
-	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward search(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		try (Connection c = DataBaseManager.getConnection()) {
 
@@ -95,11 +94,11 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 
-			final int numResult = EtiquetaDAO.countTags(c, nombre);
+			final int numResult = EtiquetaDAO.countEtiquetas(c, nombre);
 
 			response.setContentType("text/json");
 
-			List<EtiquetaForm> listaEtiquetas = EtiquetaDAO.getTags(c);
+			List<EtiquetaForm> listaEtiquetas = EtiquetaDAO.getEtiquetas(c);
 
 			String jsonSeeds = new Gson().toJson(listaEtiquetas);
 
@@ -131,8 +130,7 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 	 * @return the action forward
 	 * @throws Exception the exception
 	 */
-	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	public ActionForward update(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 
@@ -148,11 +146,9 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 
 			try (Connection c = DataBaseManager.getConnection()) {
 
-				if (EtiquetaDAO.existsTag(c,etiqueta.getName())
-						&& !etiqueta.getName().equalsIgnoreCase(etiqueta.getNombreAntiguo())) {
+				if (EtiquetaDAO.existsEtiqueta(c,etiqueta) && !etiqueta.getName().equalsIgnoreCase(etiqueta.getNombreAntiguo())) {
 					response.setStatus(400);
-					response.getWriter()
-							.write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
+					response.getWriter().write(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado"));
 
 				} else {
 					String clasificacion = request.getParameter("clasificacionaux");
@@ -160,7 +156,7 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 					clasificacionEtiqueta.setId(clasificacion);
 					etiqueta.setClasificacion(clasificacionEtiqueta);
 					
-					EtiquetaDAO.updateTag(c, etiqueta);
+					EtiquetaDAO.updateEtiqueta(c, etiqueta);
 					response.getWriter().write(messageResources.getMessage("mensaje.exito.etiqueta.generada"));
 				}
 
@@ -211,12 +207,12 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 			
 			try (Connection c = DataBaseManager.getConnection()) {
 
-				if (EtiquetaDAO.existsTag(c, etiqueta.getName())) {
+				if (EtiquetaDAO.existsEtiqueta(c, etiqueta)) {
 					response.setStatus(400);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.etiqueta.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
-					EtiquetaDAO.saveTag(c, etiqueta);
+					EtiquetaDAO.saveEtiqueta(c, etiqueta);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.generada")));
 					response.getWriter().write(new Gson().toJson(errores));
 				}
@@ -258,7 +254,7 @@ public class EtiquetasObservatorioAction extends DispatchAction {
 
 			try (Connection c = DataBaseManager.getConnection()) {
 
-				EtiquetaDAO.deleteTag(c, Integer.parseInt(id));
+				EtiquetaDAO.deleteEtiqueta(c, Long.parseLong(id));
 				errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.etiqueta.eliminada")));
 				response.getWriter().write(new Gson().toJson(errores));
 
