@@ -47,6 +47,36 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													+ 'px');
 						}
 					});
+	
+	//Cargar las etiquetas
+	$('#selectEtiquetasNuevaSemilla').empty();
+	$('#selectEtiquetasNuevaSemillaSeleccionadas').empty();
+	$
+			.ajax(
+					{
+						url : '/oaw/secure/JsonSemillasObservatorio.do?action=listEtiquetas',
+					})
+			.done(
+					function(data) {
+
+						var response = $.parseJSON(data);
+
+						if (response && response.length) {
+							for (var i = 0, l = response.length; i < l; i++) {
+								var ri = response[i];
+								$('#selectEtiquetasNuevaSemilla').append(
+										'<option value="'+ri.id+'">' + ri.name
+												+ '</option>');
+							}
+
+							$('#selectEtiquetasNuevaSemillaSeleccionadas')
+									.css(
+											'width',
+											$('#selectEtiquetasNuevaSemilla')
+													.width()
+													+ 'px');
+						}
+					});
 </script>
 
 
@@ -125,6 +155,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									key="editar.semilla.observatorio.dependencia" /></strong></label>
 						<html:text styleClass="texto form-control" styleId="dependencia"
 							property="dependencia" />
+					</div>
+
+					<div class="formItem">
+						<label for="etiqueta" class="control-label"><strong
+							class="labelVisu"><bean:message
+									key="editar.semilla.observatorio.etiqueta" /></strong></label>
+						<html:text styleClass="texto form-control" styleId="etiqueta"
+							property="etiqueta" />
 					</div>
 
 

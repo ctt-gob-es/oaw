@@ -408,7 +408,7 @@ function reloadGrid(path) {
 
 													},
 													{
-														name : "etiquetasaux",
+														name : "etiquetasSeleccionadas",
 														cellattr : function(
 																rowId, val,
 																rawObject, cm,

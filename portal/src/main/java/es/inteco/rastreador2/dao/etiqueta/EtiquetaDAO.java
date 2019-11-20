@@ -42,12 +42,115 @@ import es.inteco.rastreador2.utils.DAOUtils;
  */
 public final class EtiquetaDAO {
 
-	private static final String SQL_EXCEPTION = null;
-
 	/**
 	 * Instantiates a new etiqueta DAO.
 	 */
 	private EtiquetaDAO() {
+	}
+	
+	/**
+	 * Count etiqueta.
+	 *
+	 * @param c
+	 *            the c
+	 * @param nombre
+	 *            the nombre
+	 * @return the int
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public static int countEtiquetas(Connection c, String nombre) throws SQLException {
+		int count = 1;
+		String query = "SELECT COUNT(*) FROM etiqueta e WHERE 1=1 ";
+
+		if (StringUtils.isNotEmpty(nombre)) {
+			query += " AND UPPER(e.nombre) like UPPER(?) ";
+		}
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+
+			if (StringUtils.isNotEmpty(nombre)) {
+				ps.setString(count++, "%" + nombre + "%");
+			}
+
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt(1);
+				} else {
+					return 0;
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+	
+	/**
+	 * Gets the etiquetas.
+	 *
+	 * @param c    the c
+	 * @param type the type
+	 * @return the tags
+	 * @throws SQLException the SQL exceptio
+	 */
+	public static List<EtiquetaForm> getEtiquetas(Connection c) throws SQLException {
+		final List<EtiquetaForm> results = new ArrayList<>();
+		
+		String query = "SELECT e.id_etiqueta, e.nombre, e.id_clasificacion, c.id_clasificacion, c.nombre"
+				+ " FROM etiqueta e LEFT JOIN clasificacion_etiqueta c ON(e.id_clasificacion = c.id_clasificacion) WHERE 1=1  ORDER BY UPPER(e.nombre) ASC";
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					final EtiquetaForm etiquetaForm = new EtiquetaForm();
+					etiquetaForm.setId(rs.getLong("e.id_etiqueta"));
+					etiquetaForm.setName(rs.getString("e.nombre"));
+
+					final ClasificacionForm clasificacionForm = new ClasificacionForm();
+					clasificacionForm.setId(rs.getString("e.id_clasificacion"));
+					clasificacionForm.setNombre(rs.getString("c.nombre"));
+					etiquetaForm.setClasificacion(clasificacionForm);
+					
+					results.add(etiquetaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+	
+	/**
+	 * Exists etiqueta.
+	 *
+	 * @param c
+	 *            the c
+	 * @param dependencia
+	 *            the etiqueta
+	 * @return true, if successful
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public static boolean existsEtiqueta(Connection c, EtiquetaForm  etiqueta) throws SQLException {
+		boolean exists = false;
+
+		final String query = "SELECT * FROM etiqueta WHERE UPPER(nombre) = UPPER(?)";
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setString(1, etiqueta.getName());
+			ResultSet result = ps.executeQuery();
+
+			if (result.next()) {
+				exists = true;
+			}
+
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return exists;
 	}
 	
 	/**
@@ -57,7 +160,7 @@ public final class EtiquetaDAO {
 	 * @param etiquetaForm the etiqueta form
 	 * @throws SQLException the SQL exception
 	 */
-	public static void saveTag(Connection c, EtiquetaForm etiquetaForm) throws SQLException {
+	public static void saveEtiqueta(Connection c, EtiquetaForm etiquetaForm) throws SQLException {
 		PreparedStatement ps = null;
 		try {
 			c.setAutoCommit(false);
@@ -78,43 +181,62 @@ public final class EtiquetaDAO {
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
-			Logger.putLog(SQL_EXCEPTION, EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL_EXCEPTION: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			DAOUtils.closeQueries(ps, null);
 		}
 	}
 
+
 	/**
-	 * Exists etiqueta.
+	 * Update.
 	 *
 	 * @param c
 	 *            the c
 	 * @param dependencia
 	 *            the etiqueta
-	 * @return true, if successful
 	 * @throws SQLException
 	 *             the SQL exception
 	 */
-	public static boolean existsTag(Connection c, String  nombreEtiqueta) throws SQLException {
-		boolean exists = false;
+	public static void updateEtiqueta(Connection c, EtiquetaForm etiqueta) throws SQLException {
 
-		final String query = "SELECT * FROM etiqueta WHERE UPPER(nombre) = UPPER(?)";
+		final String query = "UPDATE etiqueta SET nombre = ?, id_clasificacion = ? WHERE id_etiqueta = ?";
 
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-			ps.setString(1, nombreEtiqueta);
-			ResultSet result = ps.executeQuery();
-
-			if (result.next()) {
-				exists = true;
-			}
-
+			ps.setString(1, etiqueta.getName());
+			ps.setString(2, etiqueta.getClasificacion().getId());
+			ps.setLong(3, etiqueta.getId());
+			ps.executeUpdate();
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-		return exists;
+
 	}
+	
+
+	/**
+	 * Delete.
+	 *
+	 * @param c
+	 *            the c
+	 * @param idDependencia
+	 *            the id etiqueta
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public static void deleteEtiqueta(Connection c, long idEtiqueta) throws SQLException {
+		try (PreparedStatement ps = c.prepareStatement("DELETE FROM etiqueta WHERE id_etiqueta = ?")) {
+			ps.setLong(1, idEtiqueta);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+	}
+
+
 	
 	/**
 	 * Insert tag.
@@ -144,132 +266,15 @@ public final class EtiquetaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog(SQL_EXCEPTION, EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL_EXCEPTION:", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 
 		return null;
 	}
 
-	/**
-	 * Gets the etiquetas.
-	 *
-	 * @param c    the c
-	 * @param type the type
-	 * @return the tags
-	 * @throws SQLException the SQL exceptio
-	 */
-	public static List<EtiquetaForm> getTags(Connection c) throws SQLException {
-		final List<EtiquetaForm> results = new ArrayList<>();
-		
-		String query = "SELECT e.id_etiqueta, e.nombre, e.id_clasificacion, c.id_clasificacion, c.nombre"
-				+ " FROM etiqueta e LEFT JOIN clasificacion_etiqueta c ON(e.id_clasificacion = c.id_clasificacion) WHERE 1=1  ORDER BY UPPER(e.nombre) ASC";
 
-		try (PreparedStatement ps = c.prepareStatement(query)) {
-			try (ResultSet rs = ps.executeQuery()) {
-				while (rs.next()) {
-					final EtiquetaForm etiquetaForm = new EtiquetaForm();
-					etiquetaForm.setId(rs.getLong("e.id_etiqueta"));
-					etiquetaForm.setName(rs.getString("e.nombre"));
 
-					final ClasificacionForm clasificacionForm = new ClasificacionForm();
-					clasificacionForm.setId(rs.getString("e.id_clasificacion"));
-					clasificacionForm.setNombre(rs.getString("c.nombre"));
-					etiquetaForm.setClasificacion(clasificacionForm);
-					
-					results.add(etiquetaForm);
-				}
-			}
-		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-		return results;
-	}
-	
-	/**
-	 * Count etiqueta.
-	 *
-	 * @param c
-	 *            the c
-	 * @param nombre
-	 *            the nombre
-	 * @return the int
-	 * @throws SQLException
-	 *             the SQL exception
-	 */
-	public static int countTags(Connection c, String nombre) throws SQLException {
-		int count = 1;
-		String query = "SELECT COUNT(*) FROM etiqueta e WHERE 1=1 ";
-
-		if (StringUtils.isNotEmpty(nombre)) {
-			query += " AND UPPER(e.nombre) like UPPER(?) ";
-		}
-
-		try (PreparedStatement ps = c.prepareStatement(query)) {
-
-			if (StringUtils.isNotEmpty(nombre)) {
-				ps.setString(count++, "%" + nombre + "%");
-			}
-
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					return rs.getInt(1);
-				} else {
-					return 0;
-				}
-			}
-		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Delete.
-	 *
-	 * @param c
-	 *            the c
-	 * @param idDependencia
-	 *            the id etiqueta
-	 * @throws SQLException
-	 *             the SQL exception
-	 */
-	public static void deleteTag(Connection c, long idEtiqueta) throws SQLException {
-		try (PreparedStatement ps = c.prepareStatement("DELETE FROM etiqueta WHERE id_etiqueta = ?")) {
-			ps.setLong(1, idEtiqueta);
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-	}
-
-	/**
-	 * Update.
-	 *
-	 * @param c
-	 *            the c
-	 * @param dependencia
-	 *            the etiqueta
-	 * @throws SQLException
-	 *             the SQL exception
-	 */
-	public static void updateTag(Connection c, EtiquetaForm etiqueta) throws SQLException {
-
-		final String query = "UPDATE etiqueta SET nombre = ?, id_clasificacion = ? WHERE id_etiqueta = ?";
-
-		try (PreparedStatement ps = c.prepareStatement(query)) {
-			ps.setString(1, etiqueta.getName());
-			ps.setString(2, etiqueta.getClasificacion().getId());
-			ps.setLong(3, etiqueta.getId());
-			ps.executeUpdate();
-		} catch (SQLException e) {
-			Logger.putLog("SQL Exception: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-			throw e;
-		}
-
-	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -308,7 +313,7 @@ public final class EtiquetaDAO {
 				}
 			}
 		} catch (SQLException e) {
-			Logger.putLog(SQL_EXCEPTION, EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("SQL_EXCEPTION: ", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
 		return classifications;
@@ -328,7 +333,7 @@ public static Integer countTagClassifications (Connection c) throws Exception {
 			return rs.getInt("numClassifications");
 		}
 	} catch (Exception e) {
-		Logger.putLog(SQL_EXCEPTION, EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		Logger.putLog("SQL_EXCEPTION:", EtiquetaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 		throw e;
 	}
 	return 0;

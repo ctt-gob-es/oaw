@@ -90,7 +90,7 @@ $(window)
 
 			var lastUrl;
 
-			//Primera carga del grid el grid
+			// Primera carga del grid el grid
 			$jq(document)
 					.ready(
 							function() {
@@ -101,8 +101,8 @@ $(window)
 		});
 
 
-//Recarga el grid. Recibe como parámetro la url de la acción con la información
-//de paginación.
+// Recarga el grid. Recibe como parámetro la url de la acción con la información
+// de paginación.
 function reloadGrid(path) {
 
 	lastUrl = path;
@@ -187,10 +187,10 @@ function reloadGrid(path) {
 
 														},
 														hidden : false,
-//														editrules : {
-//															required : true,
-//															edithidden : true
-//														},
+// editrules : {
+// required : true,
+// edithidden : true
+// },
 														formatter : clasificacionFormatter,
 														sortable : false
 													},
@@ -323,7 +323,7 @@ function reloadGrid(path) {
 
 						$('#paginador').empty();
 
-						//Si solo hay una página no pintamos el paginador
+						// Si solo hay una página no pintamos el paginador
 						if (paginas.length > 1) {
 
 							$

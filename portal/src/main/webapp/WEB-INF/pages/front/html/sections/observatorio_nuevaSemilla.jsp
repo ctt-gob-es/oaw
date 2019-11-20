@@ -54,6 +54,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
                             <label for="dependencia"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.dependencia" /></strong></label>
                             <html:text styleClass="texto form-control" styleId="dependencia" property="dependencia" />
                         </div>
+                        
+                                                <div class="formItem">
+                            <label for="etiqueta"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.etiqueta" /></strong></label>
+                            <html:text styleClass="texto form-control" styleId="etiqueta" property="etiqueta" />
+                        </div>
+                        
                         <div class="formItem">
                             <label for="acronimo"><strong class="labelVisu"><bean:message key="nueva.semilla.observatorio.acronimo" /></strong></label>
                             <html:text styleClass="texto form-control" styleId="acronimo" property="acronimo" />
