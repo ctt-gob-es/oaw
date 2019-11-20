@@ -173,6 +173,17 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</div>
 					</fieldset>
 
+
+					<fieldset>
+						<legend> Filtrar por etiquetas </legend>
+						<div class="formItem">
+
+							<label for="url" class="control-label"><strong class="labelVisu">Etiquetas</strong></label> <input name="tags"
+								autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />
+						</div>
+					</fieldset>
+
+
 					<input type="hidden" name="esPrimera" value="true" /> <input type="hidden" name="isPrimary" value="false" /> <input
 						type="hidden" name="idCartucho" value="<c:out value="${param.idCartucho}"/>" /> <input type="hidden"
 						name="id_observatorio" value="<c:out value="${param.id_observatorio}"/>" /> <input type="hidden" name="idExObs"

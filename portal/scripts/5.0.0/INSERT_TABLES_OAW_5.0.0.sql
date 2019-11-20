@@ -82,6 +82,14 @@ ALTER TABLE semilla_etiqueta ADD PRIMARY KEY (id_lista,id_etiqueta), ADD KEY sem
 ALTER TABLE semilla_etiqueta ADD CONSTRAINT semilla_etiqueta_ibfk_1 FOREIGN KEY (id_etiqueta) REFERENCES etiqueta (id_etiqueta) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
-ALTER TABLE `rastreos_realizados` ADD `level` VARCHAR(128) NOT NULL AFTER `id_lista`, ADD `score` VARCHAR(32) NOT NULL AFTER `level`;
+ALTER TABLE rastreos_realizados ADD level VARCHAR(128) NOT NULL AFTER id_lista, ADD score VARCHAR(32) NOT NULL AFTER level;
+
+
+CREATE TABLE observatorio_plantillas (
+  id_plantilla int(11)  NOT NULL AUTO_INCREMENT,
+  nombre varchar(1024) NOT NULL,
+  documento LONGBLOB NOT NULL,
+  PRIMARY KEY (id_plantilla)
+);
 
 
