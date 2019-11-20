@@ -272,8 +272,8 @@ public final class PrimaryExportPdfUtils {
 						pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
 						pdfTocManager.addChapterCount();
 						// TODO Resumen de resultados
-						final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRanking(idObservatoryExecution, crawling.getSeed()) : null;
-						final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRanking(idObservatoryExecution, crawling.getSeed()) : null;
+						final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
+						final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
 						AnonymousResultExportPdfUNEEN2019.addObservatoryScoreSummary(pdfBuilder, messageResources2019, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList,
 								file, rankingActual, rankingPrevio);
 						pdfTocManager.addChapterCount();

@@ -95,6 +95,24 @@ public class ObservatoryManager {
 			return null;
 		}
 	}
+	
+	
+	/**
+	 * Calculate previous ranking with compliance.
+	 *
+	 * @param idObservatoryExecution the id observatory execution
+	 * @param currentSeed            the current seed
+	 * @return the ranking info
+	 */
+	public RankingInfo calculatePreviousRankingWithCompliance(final Long idObservatoryExecution, final SemillaForm currentSeed) {
+		try (Connection c = DataBaseManager.getConnection()) {
+			final Long previousObservatoryExecution = ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution);
+			return calculateRankingWithCompliance(previousObservatoryExecution, currentSeed);
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+			return null;
+		}
+	}
 
 	/**
 	 * Calcula el ranking (posición a nivel global y en su segmento) de una semilla.
@@ -104,6 +122,65 @@ public class ObservatoryManager {
 	 * @return un objeto RankingInfo con la información de ranking
 	 */
 	public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
+		try (Connection c = DataBaseManager.getConnection()) {
+			List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c,
+					new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
+			if (seedsResults.isEmpty()) {
+				return null;
+			}
+			final RankingInfo rankingInfo = new RankingInfo();
+			rankingInfo.setGlobalSeedsNumber(seedsResults.size());
+			rankingInfo.setCategorySeedsNumber(0);
+			rankingInfo.setGlobalRank(1);
+			rankingInfo.setCategoryRank(1);
+			rankingInfo.setCategoria(currentSeed.getCategoria());
+			final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c,
+					ObservatorioDAO.getObservatoryFormFromExecution(c, idObservatoryExecution).getId(),
+					idObservatoryExecution);
+
+			final PropertiesManager pmgr = new PropertiesManager();
+			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
+			rankingInfo.setDate(df.format(observatoryRealizadoForm.getFecha()));
+
+			seedsResults = ObservatoryUtils.setAvgScore(c, seedsResults, idObservatoryExecution);
+			// Buscamos la puntuación concreta de la semilla
+			for (ResultadoSemillaForm seedForm : seedsResults) {
+				if (Long.parseLong(seedForm.getId()) == currentSeed.getId()) {
+					rankingInfo.setScore(new BigDecimal(seedForm.getScore()));
+				}
+			}
+
+			// Miramos el ranking comparando con el resto de semillas
+			for (ResultadoSemillaForm seedForm : seedsResults) {
+				if (seedForm.getScore() != null) {
+					final BigDecimal seedFormScore = new BigDecimal(seedForm.getScore());
+					if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+						rankingInfo.incrementGlobalRank();
+					}
+					if (currentSeed.getCategoria().getId().equals(String.valueOf(seedForm.getIdCategory()))) {
+						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
+						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
+							rankingInfo.incrementCategoryRank();
+						}
+					}
+				}
+			}
+			return rankingInfo;
+		} catch (Exception e) {
+			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Calculate ranking with compliance.
+	 *
+	 * @param idObservatoryExecution the id observatory execution
+	 * @param currentSeed            the current seed
+	 * @return the ranking info
+	 */
+	public RankingInfo calculateRankingWithCompliance(final Long idObservatoryExecution, final SemillaForm currentSeed) {
 		try (Connection c = DataBaseManager.getConnection()) {
 			List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
 			if (seedsResults.isEmpty()) {
