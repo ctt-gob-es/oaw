@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 
 import com.lowagie.text.Chapter;
@@ -42,6 +43,7 @@ import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
+import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
@@ -88,9 +90,11 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @param messageResources the message resources
 	 * @param document         the document
 	 * @param pdfTocManager    the pdf toc manager
+	 * @param currentScore     the current score
 	 * @throws DocumentException the document exception
 	 */
-	public void addObservatoryResultsSummaryWithCompliance(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws DocumentException {
+	public void addObservatoryResultsSummaryWithCompliance(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, ScoreForm currentScore)
+			throws DocumentException {
 		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 //		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 //		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
@@ -113,7 +117,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("resultados.primarios.res.verificacion.p4"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 		boldWords.clear();
-		addResultsByVerification(messageResources, chapter, currentEvaluationPageList, pdfTocManager);
+		addResultsByVerificationAndCompliance(messageResources, chapter, currentEvaluationPageList, pdfTocManager, currentScore);
 		document.add(chapter);
 		pdfTocManager.addChapterCount();
 	}
@@ -128,12 +132,32 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 */
 	private void addResultsByVerification(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager) {
 		chapter.newPage();
-		createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
+		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
 		/*
 		 * if (evaList.size() > 2 && evaList.size() < 17) { chapter.newPage(); }
 		 */
 		chapter.newPage();
-		createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager);
+		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager);
+	}
+
+	/**
+	 * Adds the results by verification and compliance.
+	 *
+	 * @param messageResources the message resources
+	 * @param chapter          the chapter
+	 * @param evaList          the eva list
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param currentScore     the current score
+	 */
+	private void addResultsByVerificationAndCompliance(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager,
+			ScoreForm currentScore) {
+		chapter.newPage();
+		createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager, currentScore);
+		/*
+		 * if (evaList.size() > 2 && evaList.size() < 17) { chapter.newPage(); }
+		 */
+		chapter.newPage();
+		createTablaResumenResultadosPorNivelAndCompliance(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager, currentScore);
 	}
 
 	/**
@@ -180,9 +204,10 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @param evaList          the eva list
 	 * @param groupIndex       the group index
 	 * @param pdfTocManager    the pdf toc manager
+	 * @param currentScore     the current score
 	 */
 	private void createTablaResumenResultadosPorNivelAndCompliance(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final int groupIndex,
-			final PdfTocManager pdfTocManager) {
+			final PdfTocManager pdfTocManager, ScoreForm currentScore) {
 		ObservatoryEvaluationForm observatoryEvaluationForm = evaList.get(0);
 		List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
 		if (groups != null && !groups.isEmpty() && groups.size() > groupIndex) {
@@ -207,31 +232,39 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
 			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.sitioweb"), Color.WHITE, ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0,
 					"anchor_resultados_page_" + contadorPagina));
-			for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
-				for (ObservatorySuitabilityForm suitabilityForm : observatoryLevelForm.getSuitabilityGroups()) {
-					for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-						
-						String subgroupDescription = messageResources.getMessage(subgroupForm.getDescription());
-
-						
-						
-						if (result.getValue().get(subgroupDescription.substring(0, subgroupDescription.indexOf(" "))).compareTo(new BigDecimal(9)) >= 0) {
-							table.addCell(PDFUtils.createTableCell("C", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
-						} else {
-							table.addCell(PDFUtils.createTableCell("NC", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
-						}
-					}
+			if (LEVEL_I_GROUP_INDEX == groupIndex) {
+				for (LabelValueBean value : currentScore.getVerifications1()) {
+					evaluateCompliance(table, value);
 				}
-				/*
-				 * for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
-				 * 
-				 * 
-				 * if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) { table.addCell(PDFUtils.createTableCell("C", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont,
-				 * Element.ALIGN_CENTER, 0)); } else { table.addCell(PDFUtils.createTableCell("NC", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0)); } }
-				 */
+			}
+			if (LEVEL_II_GROUP_INDEX == groupIndex) {
+				for (LabelValueBean value : currentScore.getVerifications2()) {
+					evaluateCompliance(table, value);
+				}
 			}
 			section.add(table);
 			section.add(createTablaResumenResultadosPorNivelLeyenda(messageResources, observatoryLevelForm));
+		}
+	}
+
+	/**
+	 * Evaluate compliance.
+	 *
+	 * @param table the table
+	 * @param value the value
+	 */
+	private void evaluateCompliance(final PdfPTable table, LabelValueBean value) {
+		try {
+			BigDecimal bigDecimal = new BigDecimal(value.getValue());
+			if (bigDecimal.compareTo(new BigDecimal(9)) >= 0) {
+				table.addCell(PDFUtils.createTableCell("C", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
+			} else if (bigDecimal.compareTo(new BigDecimal(0)) >= 0) {
+				table.addCell(PDFUtils.createTableCell("NC", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
+			} else {
+				table.addCell(PDFUtils.createTableCell("NP", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
+			}
+		} catch (NumberFormatException e) {
+			table.addCell(PDFUtils.createTableCell("NP", Constants.MARRRON_C_NC, ConstantsFont.labelHeaderCellFont, Element.ALIGN_CENTER, 0));
 		}
 	}
 
@@ -371,13 +404,12 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold("Conformidad de verificación en el sitio web", ""));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C"));
 		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No conforme", "NC:"));
+		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No puntúa", "N:"));
 		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresConformidadTableCell.setBorder(0);
 		table.addCell(leyendaValoresConformidadTableCell);
 		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
-		
 		leyenda.add(PDFUtils.buildLeyendaListItemBold("Verificaciones", ""));
-		
 		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {
 			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
 				final String checkId = messageResources.getMessage(subgroupForm.getDescription()).substring(0, 6);

@@ -1619,60 +1619,60 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 //		try {
 //			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
 //		} catch (NeedsRefreshException nre) {
-			Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNEEN2019Utils.class,
-					Logger.LOG_LEVEL_INFO);
-			try (Connection c = DataBaseManager.getConnection()) {
-				observatoryEvaluationList = new ArrayList<>();
-				final List<Long> listAnalysis = new ArrayList<>();
-				List<Long> listExecutionsIds = new ArrayList<>();
-				if (idCrawler == null) {
-					// TODO Filter by tags
-					if (tagsFilter != null && tagsFilter.length > 0) {
-						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsMatchTags(c, Long.parseLong(executionId), tagsFilter);
-					} else {
-						listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
-					}
+		Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNEEN2019Utils.class,
+				Logger.LOG_LEVEL_INFO);
+		try (Connection c = DataBaseManager.getConnection()) {
+			observatoryEvaluationList = new ArrayList<>();
+			final List<Long> listAnalysis = new ArrayList<>();
+			List<Long> listExecutionsIds = new ArrayList<>();
+			if (idCrawler == null) {
+				// TODO Filter by tags
+				if (tagsFilter != null && tagsFilter.length > 0) {
+					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsMatchTags(c, Long.parseLong(executionId), tagsFilter);
 				} else {
-					listExecutionsIds.add(idCrawler);
+					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIds(c, Long.parseLong(executionId), Constants.COMPLEXITY_SEGMENT_NONE);
 				}
-				if (pageExecutionList == null) {
-					for (Long idExecution : listExecutionsIds) {
-						listAnalysis.addAll(AnalisisDatos.getAnalysisIdsByTracking(c, idExecution));
-					}
-					// Inicializamos el evaluador
-					if (!EvaluatorUtility.isInitialized()) {
-						EvaluatorUtility.initialize();
-					}
-					final Evaluator evaluator = new Evaluator();
-					for (Long idAnalysis : listAnalysis) {
-						final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(c, idAnalysis, EvaluatorUtils.getDocList());
-						final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
-						final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false, true);
-						evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
-						final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
-						if (ffCrawling != null) {
-							final SeedForm seedForm = new SeedForm();
-							seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
-							seedForm.setAcronym(ffCrawling.getSeed().getAcronimo());
-							seedForm.setName(ffCrawling.getSeed().getNombre());
-							// Multidependencia
-							seedForm.setCategory(ffCrawling.getSeed().getCategoria().getName());
-							evaluationForm.setSeed(seedForm);
-						}
-						observatoryEvaluationList.add(evaluationForm);
-					}
-				} else {
-					for (ObservatoryEvaluationForm observatory : pageExecutionList) {
-						if (listExecutionsIds.contains(observatory.getCrawlerExecutionId())) {
-							observatoryEvaluationList.add(observatory);
-						}
-					}
-				}
-			} catch (SQLException e) {
-				Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
-				throw e;
+			} else {
+				listExecutionsIds.add(idCrawler);
 			}
-			CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
+			if (pageExecutionList == null) {
+				for (Long idExecution : listExecutionsIds) {
+					listAnalysis.addAll(AnalisisDatos.getAnalysisIdsByTracking(c, idExecution));
+				}
+				// Inicializamos el evaluador
+				if (!EvaluatorUtility.isInitialized()) {
+					EvaluatorUtility.initialize();
+				}
+				final Evaluator evaluator = new Evaluator();
+				for (Long idAnalysis : listAnalysis) {
+					final Evaluation evaluation = evaluator.getObservatoryAnalisisDB(c, idAnalysis, EvaluatorUtils.getDocList());
+					final String methodology = ObservatorioDAO.getMethodology(c, Long.parseLong(executionId));
+					final ObservatoryEvaluationForm evaluationForm = EvaluatorUtils.generateObservatoryEvaluationForm(evaluation, methodology, false, true);
+					evaluationForm.setObservatoryExecutionId(Long.parseLong(executionId));
+					final FulfilledCrawlingForm ffCrawling = RastreoDAO.getFullfilledCrawlingExecution(c, evaluationForm.getCrawlerExecutionId());
+					if (ffCrawling != null) {
+						final SeedForm seedForm = new SeedForm();
+						seedForm.setId(String.valueOf(ffCrawling.getSeed().getId()));
+						seedForm.setAcronym(ffCrawling.getSeed().getAcronimo());
+						seedForm.setName(ffCrawling.getSeed().getNombre());
+						// Multidependencia
+						seedForm.setCategory(ffCrawling.getSeed().getCategoria().getName());
+						evaluationForm.setSeed(seedForm);
+					}
+					observatoryEvaluationList.add(evaluationForm);
+				}
+			} else {
+				for (ObservatoryEvaluationForm observatory : pageExecutionList) {
+					if (listExecutionsIds.contains(observatory.getCrawlerExecutionId())) {
+						observatoryEvaluationList.add(observatory);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog("Error en getGlobalResultData", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
 //		}
 		// TODO Filteer by category or complexity
 		if (!isComplexityFilter) {
@@ -2309,7 +2309,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
-				} else {
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
 				}
 			}
@@ -2473,7 +2473,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 					countC++;
-				} else {
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					countNC++;
 				}
 			}
@@ -2522,7 +2522,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
 					if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
 						countC++;
-					} else {
+					} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 						countNC++;
 					}
 				}

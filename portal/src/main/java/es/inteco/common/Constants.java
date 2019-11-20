@@ -59,6 +59,7 @@ public interface Constants {
 	String CERTIFICATE_FORM = "certificateForm";
 	String INDEX_ADMIN = "indexAdmin";
 	String GET_SEEDS = "getSeeds";
+	String REGENERATE_RESULTS = "regenerateResults";
 	String GET_SEED_AMBITS = "getSeedAmbits";
 	String SEED_AMBITS = "seedAmbits";
 	String DELETE_AMBIT = "deleteAmbit";

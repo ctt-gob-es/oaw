@@ -22,9 +22,10 @@
 			type="es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm" />
 		<form-bean name="SemillaObservatorioForm" type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
 		<form-bean name="JsonSemillaObservatorioForm" type="es.inteco.rastreador2.actionform.semillas.SemillaForm" />
-		<form-bean name="JsonServicioDiagnosticoForm" type="s.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
-		
-		
+		<form-bean name="JsonServicioDiagnosticoForm"
+			type="s.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
+
+
 		<form-bean name="NuevoObservatorioForm"
 			type="es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm" />
 		<form-bean name="SubirConclusionesForm"
@@ -266,6 +267,8 @@
 		<forward name="resultadosPrimariosObservatorio"
 			path="/secure/ResultadosObservatorio.do?action=getFulfilledObservatories" />
 		<forward name="resultadosObservatorioSemillas" path="/secure/ResultadosObservatorio.do?action=getSeeds" />
+		<forward name="regenerarResultadosObservatorioSemillas"
+			path="/secure/ResultadosObservatorio.do?action=regenerateResults" />
 		<forward name="resultadosObservatorioSemillasLista"
 			path="/secure/ResultadosObservatorio.do?action=listaResultados" />
 		<forward name="resultadosObservatorioLanzarEjecucion"
@@ -306,7 +309,7 @@
 
 		<!-- Forwards OpenOffice -->
 		<forward name="anonymousExportOpenOfficeAction" path="/secure/exportOpenOfficeAction.do" />
-		
+
 		<forward name="filteredExportOpenOfficeAction" path="/secure/ConfigExportOpenOfficeAction" />
 
 
@@ -479,14 +482,13 @@
 			validate="false">
 			<forward name="exito" path=".cargarSemillasObservatorio" />
 		</action>
-		
-		
+
+
 		<action path="/secure/JsonServicioDiagnostico"
-			type="es.gob.oaw.rastreador2.action.diagnostico.JsonServicioDiagnosticoAction" parameter="action"
-			validate="false">
+			type="es.gob.oaw.rastreador2.action.diagnostico.JsonServicioDiagnosticoAction" parameter="action" validate="false">
 
 		</action>
-		
+
 
 
 		<action path="/secure/VerObservatorio" type="es.inteco.rastreador2.action.observatorio.VerObservatorioAction"

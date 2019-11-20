@@ -280,7 +280,10 @@ public final class PrimaryExportPdfUtils {
 						// Resultados por verificación
 						final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 								currentEvaluationPageList);
-						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources2019, document, pdfTocManager);
+						
+						final ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
+						
+						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources2019, document, pdfTocManager, currentScore);
 						// Detalles por página
 						final ObservatoryPageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new ObservatoryPageResultsPdfSectionBuilder(currentEvaluationPageList);
 						observatoryPageResultsSectionBuilder.addPageResults(messageResources2019, document, pdfTocManager, true);
