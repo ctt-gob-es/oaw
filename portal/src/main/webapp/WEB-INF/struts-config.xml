@@ -128,6 +128,9 @@
 
 		<form-bean name="ServicioDiagnosticoForm"
 			type="es.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm" />
+
+		<form-bean name="PlantillaForm" type="es.inteco.rastreador2.actionform.semillas.PlantillaForm" />
+
 	</form-beans>
 
 	<!-- Global Exception Definitions -->
@@ -337,6 +340,10 @@
 		<forward name="observatoryEtiquetas" path="/secure/ViewEtiquetasObservatorio.do?action=load" />
 
 
+		<forward name="observatoryPlantillas" path="/secure/Plantilla.do?action=load" />
+
+
+
 	</global-forwards>
 
 	<!-- Action Mapping Definitions -->
@@ -489,6 +496,10 @@
 
 		</action>
 
+		<action path="/secure/Plantilla" name="PlantillaForm"
+			type="es.inteco.rastreador2.action.observatorio.PlantillaAction" parameter="action" scope="request" validate="false">
+			<forward name="exito" path=".cargarPlantillasObservatorio" />
+		</action>
 
 
 		<action path="/secure/VerObservatorio" type="es.inteco.rastreador2.action.observatorio.VerObservatorioAction"

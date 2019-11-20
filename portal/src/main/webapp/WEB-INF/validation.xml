@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
-	This program is licensed and may be used, modified and redistributed under 
-	the terms of the European Public License (EUPL), either version 1.2 or (at 
-	your option) any later version as soon as they are approved by the European 
-	Commission. Unless required by applicable law or agreed to in writing, software 
-	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
-	License for the specific language governing permissions and more details. 
-	You should have received a copy of the EUPL1.2 license along with this program; 
-	if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 
-	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	- - - - - - - - Modificaciones: MINHAFP (Ministerio de Hacienda y Función 
-	Pública) Email: observ.accesibilidad@correo.gob.es -->
+<!-- Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, This program is licensed and may be 
+	used, modified and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) 
+	any later version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to 
+	in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+	ANY KIND, either express or implied. See the License for the specific language governing permissions and more details. You 
+	should have received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 
+	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Modificaciones: MINHAFP (Ministerio 
+	de Hacienda y Función Pública) Email: observ.accesibilidad@correo.gob.es -->
 
 <!DOCTYPE form-validation PUBLIC
         "-//Apache Software Foundation//DTD Commons Validator Rules Configuration 1.1.3//EN"
@@ -139,8 +134,7 @@
 					<var-value>8</var-value>
 				</var>
 			</field>
-			<field property="confirmar_password"
-				depends="required, minlength">
+			<field property="confirmar_password" depends="required, minlength">
 				<arg0 key="error.confirmacion.password" />
 				<arg1 name="minlength" key="${var:minlength}" resource="false" />
 				<var>
@@ -168,8 +162,7 @@
 					<var-value>8</var-value>
 				</var>
 			</field>
-			<field property="confirmar_password"
-				depends="required, minlength">
+			<field property="confirmar_password" depends="required, minlength">
 				<arg0 key="error.confirmacion.password" />
 				<arg1 name="minlength" key="${var:minlength}" resource="false" />
 				<var>
@@ -203,8 +196,7 @@
 					<var-value>8</var-value>
 				</var>
 			</field>
-			<field property="confirmar_password"
-				depends="required, minlength">
+			<field property="confirmar_password" depends="required, minlength">
 				<arg0 key="error.confirmacion.password" />
 				<arg1 name="minlength" key="${var:minlength}" resource="false" />
 				<var>
@@ -219,8 +211,7 @@
 
 
 		<form name="NuevoTerminoCatForm">
-			<field property="porcentaje"
-				depends="required, float, floatRange">
+			<field property="porcentaje" depends="required, float, floatRange">
 				<arg0 key="error.peso" />
 				<arg1 name="floatRange" key="${var:min}" />
 				<arg2 name="floatRange" key="${var:max}" />
@@ -403,8 +394,7 @@
 					<var-value>65535</var-value>
 				</var>
 			</field>
-			<field property="ipInicial1"
-				depends="required,integer,intRange">
+			<field property="ipInicial1" depends="required,integer,intRange">
 				<arg0 key="error.ipInicial1" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />
@@ -417,8 +407,7 @@
 					<var-value>255</var-value>
 				</var>
 			</field>
-			<field property="ipInicial2"
-				depends="required,integer,intRange">
+			<field property="ipInicial2" depends="required,integer,intRange">
 				<arg0 key="error.ipInicial2" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />
@@ -431,8 +420,7 @@
 					<var-value>255</var-value>
 				</var>
 			</field>
-			<field property="ipInicial3"
-				depends="required,integer,intRange">
+			<field property="ipInicial3" depends="required,integer,intRange">
 				<arg0 key="error.ipInicial3" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />
@@ -445,8 +433,7 @@
 					<var-value>255</var-value>
 				</var>
 			</field>
-			<field property="ipInicial4"
-				depends="required,integer,intRange">
+			<field property="ipInicial4" depends="required,integer,intRange">
 				<arg0 key="error.ipInicial4" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />
@@ -562,6 +549,14 @@
 				<arg0 key="error.etiqueta" />
 			</field>
 		</form>
+
+		<form name="PlantillaForm">
+			<field property="nombre" depends="required">
+				<arg0 key="error.etiqueta" />
+			</field>
+		</form>
+
+
 
 		<form name="ClasificacionForm">
 			<field property="name" depends="required">
@@ -726,8 +721,7 @@
 
 	<formset>
 		<form name="BasicServiceForm">
-			<!-- <field property="domain" depends="url"> <arg0 key="basic.service.domain"/> 
-				</field> -->
+			<!-- <field property="domain" depends="url"> <arg0 key="basic.service.domain"/> </field> -->
 			<field property="content" depends="maxlength">
 				<arg0 key="basic.service.content" />
 				<arg1 name="maxlength" key="${var:minlength}" resource="false" />
@@ -745,8 +739,7 @@
 			<field property="report" depends="required">
 				<arg0 key="basic.service.report" />
 			</field>
-			<field property="profundidad"
-				depends="required, intRange, integer">
+			<field property="profundidad" depends="required, intRange, integer">
 				<arg0 key="basic.service.depth" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />
@@ -760,8 +753,7 @@
 					<var-value>4</var-value>
 				</var>
 			</field>
-			<field property="amplitud"
-				depends="required, intRange, integer">
+			<field property="amplitud" depends="required, intRange, integer">
 				<arg0 key="basic.service.width" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />

@@ -2801,7 +2801,7 @@ public final class SemillaDAO {
 						rsEtiquetas = psEtiquetas.executeQuery();
 						while (rsEtiquetas.next()) {
 							EtiquetaForm etiqueta = new EtiquetaForm();
-							etiqueta.setId(rsEtiquetas.getLong("id_dependencia"));
+							etiqueta.setId(rsEtiquetas.getLong("id_etiqueta"));
 							etiqueta.setName(rsEtiquetas.getString(NOMBRE));
 							listEtiquetas.add(etiqueta);
 						}

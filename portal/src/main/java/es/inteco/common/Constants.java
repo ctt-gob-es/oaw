@@ -596,6 +596,7 @@ public interface Constants {
 	String SUBMENU_OBS_SEMILLA = "submenuSemillaObs";
 	String SUBMENU_OBS_DEPENDENCIAS = "submenuDependenciasObs";
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
+	String SUBMENU_OBS_PLANTILLAS = "submenuPlantillassObs";
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
 	String SUBMENU_OBSERVATORIO = "submenuObservatorio";
 	String SUBMENU_SERVICIO_DIAGNOSTICO = "submenuServicioDiagnostico";
