@@ -83,6 +83,9 @@ public class ResultadosObservatorioAction extends Action {
 						return showDeleteSeedExecution(request, mapping);
 					} else if (action.equals(Constants.ACCION_BORRAR_EJECUCION)) {
 						return deleteObservatoryExecutedSeed(request, mapping);
+					} else if (action.equalsIgnoreCase(Constants.REGENERATE_RESULTS)) {
+						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
+						return regenerateResults(mapping, form, request);
 					}
 				}
 			} else {
@@ -275,7 +278,7 @@ public class ResultadosObservatorioAction extends Action {
 		crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
 		// TODO Calculate scores
 		ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExObs), 0, null);
-		//TODO Recuperar sólo el ejectado
+		// TODO Recuperar sólo el ejectado
 		final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, new SemillaForm(), Long.parseLong(idExObs), 0L, -1);
 		ObservatoryUtils.setAvgScore2(c, seedsResults2, Long.parseLong(idExObs));
 	}
@@ -363,5 +366,28 @@ public class ResultadosObservatorioAction extends Action {
 			saveErrors(request, errors);
 			return getFulfilledObservatories(mapping, request);
 		}
+	}
+
+	private ActionForward regenerateResults(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+		final SemillaForm semillaForm = (SemillaForm) form;
+		final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
+		try (Connection c = DataBaseManager.getConnection()) {
+			final PropertiesManager pmgr = new PropertiesManager();
+			final int numResultA = ObservatorioDAO.countResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE);
+			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
+			// Obtenemos las semillas de esa página del listado
+			final List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, semillaForm, idObservatoryExecution, (long) Constants.COMPLEXITY_SEGMENT_NONE, pagina - 1);
+			// Calculamos la puntuación media de cada semilla y la guardamos en sesion
+			final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, new SemillaForm(), idObservatoryExecution, 0L, -1);
+			request.setAttribute(Constants.OBSERVATORY_SEED_LIST, ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution));
+			// TOTO La vamos a recuperar de base de datos...
+			request.setAttribute(Constants.OBSERVATORY_SEED_LIST, seedsResults);
+			request.setAttribute(Constants.LIST_PAGE_LINKS,
+					Pagination.createPagination(request, numResultA, pmgr.getValue(CRAWLER_PROPERTIES, "observatoryListSeed.pagination.size"), pagina, Constants.PAG_PARAM));
+		} catch (Exception e) {
+			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			throw new Exception(e);
+		}
+		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
 	}
 }

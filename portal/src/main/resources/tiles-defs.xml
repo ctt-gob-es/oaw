@@ -220,7 +220,8 @@
 	<!-- Página GRÁFICAS OBSERVATORIO COMPARATIVA MULTILINGÜISMO -->
 	<definition name=".graficasObservatorioMultilanguageEvolucion" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
-		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_multilanguage_graficas_comparativa.jsp" />
+		<put name="contents"
+			value="/WEB-INF/pages/front/html/sections/observatorio_multilanguage_graficas_comparativa.jsp" />
 	</definition>
 
 	<!-- Página FORMULARIO NUEVO USUARIO OBSERVATORIO -->
@@ -284,18 +285,26 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarDependencias.jsp" />
 	</definition>
 
+
+	<definition name=".cargarPlantillasObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarPlantillas.jsp" />
+	</definition>
+
+
+
 	<!-- Página cargar complejidades observatorio -->
 	<definition name=".cargarComplejidadesObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarComplejidades.jsp" />
 	</definition>
-	
-			<!-- Página cargar etiquetas observatorio -->
+
+	<!-- Página cargar etiquetas observatorio -->
 	<definition name=".cargarEtiquetasObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarEtiquetas.jsp" />
 	</definition>
-	
+
 	<!-- Página CARGAR RASTREOS REALIZADOS observatorio -->
 	<definition name=".cargarRastreosRealizadosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
@@ -786,10 +795,10 @@
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_confirmacionImportar.jsp" />
 	</definition>
-	
+
 	<definition name=".configurarFiltrosAgregados" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_configurarFiltrosAgregados.jsp" />
-	</definition>	
+	</definition>
 
 </tiles-definitions>    

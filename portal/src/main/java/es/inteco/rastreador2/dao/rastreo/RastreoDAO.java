@@ -52,6 +52,7 @@ import es.inteco.rastreador2.actionform.rastreo.LenguajeForm;
 import es.inteco.rastreador2.actionform.rastreo.RastreoEjecutadoForm;
 import es.inteco.rastreador2.actionform.rastreo.VerRastreoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.UpdateListDataForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
@@ -1930,8 +1931,10 @@ public final class RastreoDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static FulfilledCrawlingForm getFullfilledCrawlingExecution(Connection conn, long idExecution) throws SQLException {
-		try (PreparedStatement ps = conn.prepareStatement("SELECT rr.*, l.*, cl.* FROM rastreos_realizados rr " + "JOIN lista l ON (rr.id_lista = l.id_lista) "
-				+ "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " + "WHERE id = ? ")) {
+		try (PreparedStatement ps = conn.prepareStatement("SELECT rr.*, l.*, cl.*, cm.* FROM rastreos_realizados rr " + "JOIN lista l ON (rr.id_lista = l.id_lista) "
+				+ "LEFT JOIN categorias_lista cl ON (l.id_categoria = cl.id_categoria) " 
+				+ "LEFT JOIN complejidades_lista cm ON (l.id_complejidad = cm.id_complejidad) " + 
+				"WHERE id = ? ")) {
 			ps.setLong(1, idExecution);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
@@ -1951,6 +1954,12 @@ public final class RastreoDAO {
 					categoria.setId(rs.getString("cl.id_categoria"));
 					categoria.setOrden(rs.getInt("cl.orden"));
 					semilla.setCategoria(categoria);
+					
+					//Complejidad
+					final ComplejidadForm complejidad = new ComplejidadForm();
+					complejidad.setId(rs.getString("cm.id_complejidad"));
+					complejidad.setName(rs.getString("cm.nombre"));
+					semilla.setComplejidad(complejidad);
 					form.setSeed(semilla);
 					return form;
 				}

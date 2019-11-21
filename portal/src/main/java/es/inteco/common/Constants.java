@@ -59,6 +59,7 @@ public interface Constants {
 	String CERTIFICATE_FORM = "certificateForm";
 	String INDEX_ADMIN = "indexAdmin";
 	String GET_SEEDS = "getSeeds";
+	String REGENERATE_RESULTS = "regenerateResults";
 	String GET_SEED_AMBITS = "getSeedAmbits";
 	String SEED_AMBITS = "seedAmbits";
 	String DELETE_AMBIT = "deleteAmbit";
@@ -346,6 +347,8 @@ public interface Constants {
 	Color NARANJA_MP = new Color(245, 164, 55);
 	Color VERDE_O_MP = new Color(106, 130, 54);
 	Color VERDE_C_MP = new Color(126, 154, 64);
+	
+	Color MARRRON_C_NC = new Color(196, 89, 17);
 
 	Color COLOR_RESULTADO_0_FALLA = new Color(225, 18, 13);
 	// public static final Color COLOR_RESULTADO_0_PASA = new Color(247, 150,
@@ -593,6 +596,7 @@ public interface Constants {
 	String SUBMENU_OBS_SEMILLA = "submenuSemillaObs";
 	String SUBMENU_OBS_DEPENDENCIAS = "submenuDependenciasObs";
 	String SUBMENU_OBS_COMPLEJIDADES = "submenuComplejidadesObs";
+	String SUBMENU_OBS_PLANTILLAS = "submenuPlantillassObs";
 	String SUBMENU_OBS_ETIQUETAS = "submenuEtiquetasObs";
 	String SUBMENU_OBSERVATORIO = "submenuObservatorio";
 	String SUBMENU_SERVICIO_DIAGNOSTICO = "submenuServicioDiagnostico";
@@ -964,5 +968,9 @@ public interface Constants {
 	
 	String CHECK_EVO_COMPLIANCE_VERIFICATION_GRPAHICS = "checkEvoComplianceVerificationGrpahics";
 	String CHECK_EVO_ASPECTS_GRPAHICS = "checkEvoAspectsGrpahics";
+	String ID_BASE_TEMPLATE = "idPlantillaBase";
+	String ID_SEGMENT_TEMPLATE = "idPlantillaSegmento";
+	String ID_COMPLEXITY_TEMPLATE = "idPlantillaComplejidad";
+	
 	
 }
