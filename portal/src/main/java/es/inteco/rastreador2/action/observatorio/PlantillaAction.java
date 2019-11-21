@@ -143,11 +143,9 @@ public class PlantillaAction extends DispatchAction {
 		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
 		List<JsonMessage> errores = new ArrayList<>();
 		PlantillaForm plantilla = (PlantillaForm) form;
-		if (StringUtils.isNotEmpty(plantilla.getNombre())) {
+		plantilla.setNombre(request.getParameter("nombre"));
+		if (!StringUtils.isNotEmpty(plantilla.getNombre())) {
 			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.plantilla.obligatorio")));
-		}
-		if (plantilla.getDocumento() == null || plantilla.getDocumento().length == 0) {
-			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.obligatorio")));
 		}
 		if (errores.size() == 0) {
 			try (Connection c = DataBaseManager.getConnection()) {
@@ -156,7 +154,7 @@ public class PlantillaAction extends DispatchAction {
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.plantilla.duplicado")));
 					response.getWriter().write(new Gson().toJson(errores));
 				} else {
-					PlantillaDAO.update(c, plantilla);
+					PlantillaDAO.rename(c, plantilla);
 					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.plantilla.generada")));
 					response.getWriter().write(new Gson().toJson(errores));
 				}
@@ -232,6 +230,53 @@ public class PlantillaAction extends DispatchAction {
 		} else {
 			response.setStatus(400);
 			response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+		}
+		return null;
+	}
+
+	/**
+	 * Upload.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	public ActionForward upload(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		MessageResources messageResources = MessageResources.getMessageResources("ApplicationResources");
+		List<JsonMessage> errores = new ArrayList<>();
+		PlantillaForm plantilla = (PlantillaForm) form;
+		if (!StringUtils.isNotEmpty(plantilla.getNombre())) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.plantilla.obligatorio")));
+		}
+		if (plantilla.getFile() == null || StringUtils.isEmpty(plantilla.getFile().getFileName())) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.obligatorio")));
+		}
+		if (!plantilla.getFile().getFileName().endsWith(".odt")) {
+			errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.documento.plantilla.formato")));
+		}
+		if (errores.size() == 0) {
+			try (Connection c = DataBaseManager.getConnection()) {
+				if (PlantillaDAO.existsPlantilla(c, plantilla)) {
+					response.setStatus(400);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.error.nombre.plantilla.duplicado")));
+					response.getWriter().write(new Gson().toJson(errores));
+				} else {
+					plantilla.setDocumento(plantilla.getFile().getFileData());
+					PlantillaDAO.update(c, plantilla);
+					errores.add(new JsonMessage(messageResources.getMessage("mensaje.exito.plantilla.generada")));
+					response.getWriter().write(new Gson().toJson(errores));
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error: ", PlantillaAction.class, Logger.LOG_LEVEL_ERROR, e);
+				response.setStatus(400);
+				response.getWriter().write(messageResources.getMessage("mensaje.error.generico"));
+			}
+		} else {
+			response.setStatus(400);
+			response.getWriter().write(new Gson().toJson(errores));
 		}
 		return null;
 	}

@@ -85,10 +85,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						<span class="glyphicon glyphicon-home" aria-hidden="true"></span>
 						<bean:message key="migas.observatorio" />
 					</html:link></li>
-				<li class="active">Configurar informe agregado</li>
+				<li class="active"><bean:message key="report.config.title" /></li>
 			</ol>
 		</div>
-		<div id="cajaformularios">
+		<div id="cajaformularios" style="background: #FCFCFC !important;">
 
 			<h2>
 				<bean:message key="configurar.agregado.title" />
@@ -103,16 +103,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 					<fieldset>
-						<legend> Filtrar por etiquetas </legend>
+						<legend>
+							<bean:message key="report.config.etiquetas.filter.title" />
+						</legend>
 						<div class="formItem">
 
 							<label for="url" class="control-label"><strong class="labelVisu">Etiquetas</strong></label> <input name="tags"
 								autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />
+
+
 						</div>
+
+						<p class="alert alert-info">
+							<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+							</em>:
+							<bean:message key="report.config.etiquetas.filter.info" />
+						</p>
+
+
+
+
 					</fieldset>
 
 					<fieldset>
-						<legend> Observatorios para incluir en el evolutivo </legend>
+						<legend>
+							<bean:message key="report.config.observatorios.filter.title" />
+						</legend>
 
 						<div class="formItem">
 
@@ -134,7 +150,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</fieldset>
 
 					<fieldset>
-						<legend> Gráficas adicionales a incluir </legend>
+						<legend>
+							<bean:message key="report.config.graficas.filter.title" />
+						</legend>
+
+
+						<bean:message key="report.config.graficas.filter.info" />
 
 						<div class="formItem">
 							<label class="label100"><input type="checkbox" value="true" name="checkGlobalModalityGrpahics">
@@ -171,15 +192,75 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							<label class="label100"><input type="checkbox" value="true" name="checkEvoAspectsGrpahics">
 								Incluir gráfico evolutivo de aspectos </label><br>
 						</div>
+
+
+
+
 					</fieldset>
 
 
 					<fieldset>
-						<legend> Filtrar por etiquetas </legend>
+						<legend>
+							<bean:message key="report.config.plantillas.filter.title" />
+						</legend>
 						<div class="formItem">
 
-							<label for="url" class="control-label"><strong class="labelVisu">Etiquetas</strong></label> <input name="tags"
-								autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />
+							<label for="url" class="control-label"><strong class="labelVisu"><abbr
+									title="<bean:message key="campo.obligatorio" />"> * </abbr> <bean:message
+										key="report.config.plantillas.filter.base" /></strong></label> <select required name="<%=Constants.ID_BASE_TEMPLATE%>">
+								<option value=""></option>
+								<logic:iterate name="plantillas" id="plantilla">
+
+									<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
+											property="nombre" /></option>
+
+								</logic:iterate>
+							</select>
+
+						</div>
+
+						<div class="formItem">
+
+							<label for="url" class="control-label"><strong class="labelVisu"><abbr
+									title="<bean:message key="campo.obligatorio" />"> * </abbr> <bean:message
+										key="report.config.plantillas.filter.segmentos" /></strong></label> <select required name="<%=Constants.ID_SEGMENT_TEMPLATE%>">
+								<option value=""></option>
+								<logic:iterate name="plantillas" id="plantilla">
+
+									<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
+											property="nombre" /></option>
+
+								</logic:iterate>
+							</select>
+
+							<p class="alert alert-info">
+								<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+								</em>:
+								<bean:message key="report.config.plantillas.filter.segmentos.info" />
+							</p>
+						</div>
+
+
+						<div class="formItem">
+
+							<label for="url" class="control-label"><strong class="labelVisu"><abbr
+									title="<bean:message key="campo.obligatorio" />"> * </abbr> <bean:message
+										key="report.config.plantillas.filter.complejidades" /></strong></label> <select required
+								name="<%=Constants.ID_COMPLEXITY_TEMPLATE%>">
+								<option value=""></option>
+								<logic:iterate name="plantillas" id="plantilla">
+
+									<option value="<bean:write name="plantilla" property="id" />"><bean:write name="plantilla"
+											property="nombre" /></option>
+
+								</logic:iterate>
+							</select>
+
+							<p class="alert alert-info">
+								<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+								</em>:
+								<bean:message key="report.config.plantillas.filter.complejidades.info" />
+							</p>
 						</div>
 					</fieldset>
 
