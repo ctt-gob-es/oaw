@@ -64,6 +64,7 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ComplianceComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
@@ -227,8 +228,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	private static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION);
+	/** The id base template. */
 	private Long idBaseTemplate;
+	/** The id segment template. */
 	private Long idSegmentTemplate;
+	/** The id complexity template. */
 	private Long idComplexityTemplate;
 
 	/**
@@ -288,15 +292,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/**
 	 * Builds the document filtered.
 	 *
-	 * @param request            the request
-	 * @param graphicPath        the graphic path
-	 * @param date               the date
-	 * @param evolution          the evolution
-	 * @param pageExecutionList  the page execution list
-	 * @param categories         the categories
-	 * @param tagsToFilter       the tags to filter
-	 * @param grpahicConditional the grpahic conditional
-	 * @param exObsIds           the ex obs ids
+	 * @param request              the request
+	 * @param graphicPath          the graphic path
+	 * @param date                 the date
+	 * @param evolution            the evolution
+	 * @param pageExecutionList    the page execution list
+	 * @param categories           the categories
+	 * @param tagsToFilter         the tags to filter
+	 * @param grpahicConditional   the grpahic conditional
+	 * @param exObsIds             the ex obs ids
+	 * @param idBaseTemplate       the id base template
+	 * @param idSegmentTemplate    the id segment template
+	 * @param idComplexityTemplate the id complexity template
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */
@@ -307,7 +314,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		this.idBaseTemplate = idBaseTemplate;
 		this.idComplexityTemplate = idComplexityTemplate;
 		this.idSegmentTemplate = idSegmentTemplate;
-		
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
 				Constants.MINISTERIO_P, true, tagsToFilter, exObsIds);
@@ -368,47 +374,76 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			// TODO Apply id exc obs
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId), tagsFilter, exObsIds);
-			final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
-			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-				resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
-			}
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap,
-					exObsIds);
-			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds);
-			replaceImageGeneric(odt, graphicPath + "EvolucionNivelConformidadCombinada" + JPG_EXTENSION, "EvolucionNivelConformidadCombinada", MIME_TYPE_JPG);
-			// Section compliance
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap,
-					exObsIds);
-			replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds);
-			replaceImageGeneric(odt, graphicPath + "EvolucionNivelCumplimientoCombinada" + JPG_EXTENSION, "EvolucionNivelCumplimientoCombinada", MIME_TYPE_JPG);
-			replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
-			// Mid by verification
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
-					new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
-					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
-					pageObservatoryMap, LEVEL_II_VERIFICATIONS);
-			replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", MIME_TYPE_JPG);
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", MIME_TYPE_JPG);
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", MIME_TYPE_JPG);
-			// TODO Compliance by verification
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
-					new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg" },
-					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
-			replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
-			replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
-			// By aspects
-			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
-			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
-			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", MIME_TYPE_JPG);
+			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMap, "eg");
 			/**
 			 * Results fixed
 			 */
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
+					Long.valueOf(executionId), new String[] { "1" }, exObsIds);
+			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, "ef");
 			/**
 			 * Results by segment
 			 */
 		}
+	}
+
+	/**
+	 * Evolution sections.
+	 *
+	 * @param graphicPath        the graphic path
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param exObsIds           the ex obs ids
+	 * @param pageObservatoryMap the page observatory map
+	 * @param prefix             the prefix
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception   the exception
+	 */
+	private void evolutionSections(final String graphicPath, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] exObsIds,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String prefix) throws IOException, Exception {
+		final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+		}
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap,
+				exObsIds);
+		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
+		replaceImageGeneric(odt, graphicPath + "EvolucionNivelConformidadCombinada" + JPG_EXTENSION, "EvolucionNivelConformidadCombinada", MIME_TYPE_JPG);
+		// Section compliance
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap,
+				exObsIds);
+		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
+		replaceImageGeneric(odt, graphicPath + "EvolucionNivelCumplimientoCombinada" + JPG_EXTENSION, "EvolucionNivelCumplimientoCombinada", MIME_TYPE_JPG);
+		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		// Mid by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
+				new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
+				pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", "EvolucionPuntuacionMediaVerificacionNAIICombinada", MIME_TYPE_JPG);
+		// TODO Compliance by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
+				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg" }, pageObservatoryMap,
+				LEVEL_I_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
+				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg" }, pageObservatoryMap,
+				LEVEL_II_VERIFICATIONS);
+		
+		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+
+		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg", "EvolucionCumplimientiVerificacionNAIICombinada", MIME_TYPE_JPG);
+
+		// By aspects
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
+		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
+		replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", MIME_TYPE_JPG);
 	}
 
 	/**
@@ -1449,39 +1484,75 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			String graphicSuffix, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_1);
-			final List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioUNEEN2019Utils
+			final List<ComplianceComparisonForm> labels = ResultadosAnonimosObservatorioUNEEN2019Utils
 					.infoLevelVerificationCompilanceComparison(ResultadosAnonimosObservatorioUNEEN2019Utils.generatePercentajesCompilanceVerification(results));
 			String graphicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_COMPILANCE_BY_VERIFICATION_LEVEL_1_NAME);
 			replaceImageGeneric(odt, graphicPath + graphicName + graphicSuffix + JPG_EXTENSION, graphicName, IMAGE_JPEG);
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c2-", labels.get(0).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d2-", labels.get(0).getGrayPercentage());
+			
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b3-", labels.get(1).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c3-", labels.get(1).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d3-", labels.get(1).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b4-", labels.get(2).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c4-", labels.get(2).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d4-", labels.get(2).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b5-", labels.get(3).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c5-", labels.get(3).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d5-", labels.get(3).getGrayPercentage());
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b6-", labels.get(4).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c6-", labels.get(4).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d6-", labels.get(4).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c7-", labels.get(5).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d7-", labels.get(5).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b8-", labels.get(6).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c8-", labels.get(6).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d8-", labels.get(6).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b9-", labels.get(7).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c9-", labels.get(7).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d9-", labels.get(7).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b10-", labels.get(8).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c10-", labels.get(8).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d10-", labels.get(8).getGrayPercentage());
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b11-", labels.get(9).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c11-", labels.get(9).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d11-", labels.get(9).getGrayPercentage());
 			// nUEVOS
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b12-", labels.get(10).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c12-", labels.get(10).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d12-", labels.get(10).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b13-", labels.get(11).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c13-", labels.get(11).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d13-", labels.get(11).getGrayPercentage());
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b14-", labels.get(12).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c14-", labels.get(12).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d14-", labels.get(12).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b15-", labels.get(13).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c15-", labels.get(13).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d15-", labels.get(13).getGrayPercentage());
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
@@ -1504,22 +1575,35 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			final String graphicSuffix, final List<ObservatoryEvaluationForm> pageExecutionList) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_2);
-			final List<ModalityComparisonForm> labels = ResultadosAnonimosObservatorioUNEEN2019Utils
+			final List<ComplianceComparisonForm> labels = ResultadosAnonimosObservatorioUNEEN2019Utils
 					.infoLevelVerificationCompilanceComparison(ResultadosAnonimosObservatorioUNEEN2019Utils.generatePercentajesCompilanceVerification(results));
 			String graphicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_COMPILANCE_BY_VERIFICATION_LEVEL_2_NAME);
 			replaceImageGeneric(odt, graphicPath + graphicName + graphicSuffix + JPG_EXTENSION, graphicName, IMAGE_JPEG);
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c2-", labels.get(0).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d2-", labels.get(0).getGrayPercentage());
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b3-", labels.get(1).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c3-", labels.get(1).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d3-", labels.get(1).getGrayPercentage());
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b4-", labels.get(2).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c4-", labels.get(2).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d4-", labels.get(2).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b5-", labels.get(3).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c5-", labels.get(3).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d5-", labels.get(3).getGrayPercentage());
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b6-", labels.get(4).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c6-", labels.get(4).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d6-", labels.get(4).getGrayPercentage());
+			
+			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c7-", labels.get(5).getRedPercentage());
+			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d7-", labels.get(5).getGrayPercentage());
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
@@ -1573,36 +1657,77 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String graphicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_1_NAME);
 		replaceImageGeneric(odt, graphicPath + graphicName + JPG_EXTENSION, graphicName, IMAGE_JPEG);
 		final Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_1);
-		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNEEN2019Utils
+		final List<ComplianceComparisonForm> res = ResultadosAnonimosObservatorioUNEEN2019Utils
 				.infoLevelVerificationCompilanceComparison(ResultadosAnonimosObservatorioUNEEN2019Utils.generatePercentajesCompilanceVerification(results));
 		replaceText(odt, odfFileContent, "-451c.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c2-", res.get(0).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d2-", res.get(0).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b3-", res.get(1).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c3-", res.get(1).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d3-", res.get(1).getGrayPercentage());
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b4-", res.get(2).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c4-", res.get(2).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d4-", res.get(2).getGrayPercentage());
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b5-", res.get(3).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c5-", res.get(3).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d5-", res.get(3).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b6-", res.get(4).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c6-", res.get(4).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d6-", res.get(4).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c7-", res.get(5).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d7-", res.get(5).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b8-", res.get(6).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c8-", res.get(6).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d8-", res.get(6).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b9-", res.get(7).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c9-", res.get(7).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d9-", res.get(7).getGrayPercentage());
+		
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b10-", res.get(8).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c10-", res.get(8).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d10-", res.get(8).getGrayPercentage());
+		
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b11-", res.get(9).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c11-", res.get(9).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d11-", res.get(9).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b12-", res.get(10).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c12-", res.get(10).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d12-", res.get(10).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b13-", res.get(11).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c13-", res.get(11).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d13-", res.get(11).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b14-", res.get(12).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c14-", res.get(12).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d14-", res.get(12).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-451c.t1.b15-", res.get(13).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c15-", res.get(13).getRedPercentage());
+		replaceText(odt, odfFileContent, "-451c.t1.d15-", res.get(13).getRedPercentage());
+		
 	}
 
 	/**
@@ -1621,20 +1746,33 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String graphicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_VERIFICATION_COMPILANCE_COMPARATION_LEVEL_2_NAME);
 		replaceImageGeneric(odt, graphicPath + graphicName + JPG_EXTENSION, graphicName, IMAGE_JPEG);
 		final Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(pageExecutionList, Constants.OBS_PRIORITY_2);
-		final List<ModalityComparisonForm> res = ResultadosAnonimosObservatorioUNEEN2019Utils
+		final List<ComplianceComparisonForm> res = ResultadosAnonimosObservatorioUNEEN2019Utils
 				.infoLevelVerificationCompilanceComparison(ResultadosAnonimosObservatorioUNEEN2019Utils.generatePercentajesCompilanceVerification(results));
 		replaceText(odt, odfFileContent, "-452c.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c2-", res.get(0).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.d2-", res.get(0).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-452c.t1.b3-", res.get(1).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c3-", res.get(1).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.d3-", res.get(1).getGrayPercentage());
+		
 		replaceText(odt, odfFileContent, "-452c.t1.b4-", res.get(2).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c4-", res.get(2).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.d4-", res.get(2).getGrayPercentage());
+		
+		
 		replaceText(odt, odfFileContent, "-452c.t1.b5-", res.get(3).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c5-", res.get(3).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.d5-", res.get(3).getGrayPercentage());
+		
 		replaceText(odt, odfFileContent, "-452c.t1.b6-", res.get(4).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c6-", res.get(4).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.d6-", res.get(4).getGrayPercentage());
+		
 		replaceText(odt, odfFileContent, "-452c.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c7-", res.get(5).getRedPercentage());
+		replaceText(odt, odfFileContent, "-452c.t1.d7-", res.get(5).getGrayPercentage());
 	}
 
 	/**
@@ -1935,11 +2073,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param pageExecutionList the page execution list
 	 * @param exObsIds          the ex obs ids
+	 * @param prefix            the prefix
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionEvolutionSuitabilityLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String[] exObsIds) throws Exception {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String[] exObsIds, String prefix) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
 					pageExecutionList, exObsIds);
@@ -1950,13 +2089,13 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, "101.t1", resultDataAA, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t1.1", resultDataAA, true);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, "102.t1", resultDataA, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t1.2", resultDataA, true);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, "103.t1", resultDataNV, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t1.3", resultDataNV, true);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
@@ -1980,11 +2119,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param graphicPath       the graphic path
 	 * @param pageExecutionList the page execution list
 	 * @param exObsIds          the ex obs ids
+	 * @param prefix            the prefix
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionEvolutionComplianceLevel(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String[] exObsIds) throws Exception {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String[] exObsIds, String prefix) throws Exception {
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId,
 					pageExecutionList, exObsIds);
@@ -1995,13 +2135,13 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_NONE, df);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.AA.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, "111.t1", resultDataAA, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t2.1", resultDataAA, true);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.A.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, "112.t1", resultDataA, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t2.2", resultDataA, true);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.accesibility.evolution.approval.NV.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, "113.t1", resultDataNV, true);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t2.3", resultDataNV, true);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
@@ -2024,16 +2164,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent    the odf file content
 	 * @param graphicPath       the graphic path
 	 * @param pageExecutionList the page execution list
+	 * @param prefix            the prefix
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionEvolutionAverageScore(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList) throws Exception {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageExecutionList, String prefix) throws Exception {
+		numSection = 10;
 		if (pageExecutionList != null && !pageExecutionList.isEmpty()) {
 			final Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateEvolutionPuntuationDataSet(pageExecutionList);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.mid.puntuation.name") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "4.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t3", resultData);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
@@ -2051,96 +2193,98 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent     the odf file content
 	 * @param graphicPath        the graphic path
 	 * @param pageObservatoryMap the page observatory map
+	 * @param prefix             the prefix
 	 * @return the int
 	 * @throws Exception the exception
 	 */
 	private int replaceSectionEvolutionScoreByVerification(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
-			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap) throws Exception {
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String prefix) throws Exception {
+		numSection = 10;
 		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
 			// TABLA 1
 			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION,
 					pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "5.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.1", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.2") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "6.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.2", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.3") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "7.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.3", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.4") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "8.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.4", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.5") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "9.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.5", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.6") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "10.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.6", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.7") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "11.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.7", resultData);
 			// Reorganización de los datos
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.8") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "12.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.8", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.9") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "13.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.9", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.10") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "14.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.10", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.11") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "15.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.11", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.12") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "16.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.12", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.13") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "17.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.13", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.14") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "18.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.14", resultData);
 			// TABLA 2
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "19.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.21", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "20.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.22", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.3") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "21.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.23", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.4") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "22.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.24", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.5") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "23.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.25", resultData);
 			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionPuntuationDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION, pageObservatoryMap);
 			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.6") + JPG_EXTENSION, IMAGE_JPEG);
 			numImg++;
-			replaceEvolutionTextCellTables(odt, odfFileContent, numSection + "24.t1", resultData);
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t4.26", resultData);
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			for (int i = 5; i < 25; i++) {
@@ -2151,6 +2295,116 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		return numImg;
 	}
 
+	
+	/**
+	 * Replace section compliance by verification.
+	 *
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param graphicPath        the graphic path
+	 * @param pageObservatoryMap the page observatory map
+	 * @param prefix             the prefix
+	 * @return the int
+	 * @throws Exception the exception
+	 */
+	private int replaceSectionComplianceByVerification(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String prefix) throws Exception {
+		numSection = 10;
+		if (pageObservatoryMap != null && !pageObservatoryMap.isEmpty()) {
+			// TABLA 1
+			Map<String, BigDecimal> resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION,
+					pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.1") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.1", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.2") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.2", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.3") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.3", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_4_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.4") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.4", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_5_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.5") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.5", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_6_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.6") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.6", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_7_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.7") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.7", resultData);
+			// Reorganización de los datos
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_8_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.8") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.8", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_9_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.9") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.9", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_10_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.10") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.10", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_11_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.11") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.11", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.12") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.12", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.13") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.13", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "1.14") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.14", resultData);
+			// TABLA 2
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.21", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.2") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.22", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.3") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.23", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.4") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.24", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.5") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.25", resultData);
+			resultData = ResultadosAnonimosObservatorioUNEEN2019Utils.calculateVerificationEvolutionComplianceDataSet(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION, pageObservatoryMap);
+			replaceImg(odt, graphicPath + messageResources.getMessage("observatory.graphic.evolution.verification.mid.puntuation.name", "2.6") + JPG_EXTENSION, IMAGE_JPEG);
+			numImg++;
+			replaceEvolutionTextCellTables(odt, odfFileContent, prefix + ".t5.26", resultData);
+		} else {
+			final PropertiesManager pmgr = new PropertiesManager();
+			for (int i = 5; i < 25; i++) {
+				replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
+				numImg++;
+			}
+		}
+		return numImg;
+	}
 	/**
 	 * Replace section evolution score by aspect.
 	 *
@@ -2164,6 +2418,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 */
 	private int replaceSectionEvolutionScoreByAspect(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, final String graphicPath,
 			final Map<Date, Map<String, BigDecimal>> resultsByAspect) throws Exception {
+		numSection = 10;
 		if (resultsByAspect != null && !resultsByAspect.isEmpty()) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
@@ -2278,7 +2533,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @throws Exception the exception
 	 */
 	private OdfTextDocument getOdfTemplate() throws Exception {
-		
 		// TODO Load from database
 		PlantillaForm plantilla = PlantillaDAO.findById(DataBaseManager.getConnection(), idBaseTemplate);
 		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {

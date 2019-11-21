@@ -42,8 +42,6 @@ import org.jfree.data.KeyToGroupMap;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import com.opensymphony.oscache.base.NeedsRefreshException;
-
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluation;
 import ca.utoronto.atrc.tile.accessibilitychecker.Evaluator;
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
@@ -60,6 +58,7 @@ import es.inteco.intav.form.SeedForm;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.observatorio.ComplianceComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.rastreo.FulfilledCrawlingForm;
@@ -126,6 +125,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath               Ruta para guardar los temporales
 	 * @param type                   Tipo de grafico. Si es MP cambia el color del gráfico
 	 * @param regenerate             Indica si hay que regenerar el gráfico o no.
+	 * @param tagsFilter             the tags filter
+	 * @param exObsIds               the ex obs ids
 	 * @throws Exception Excepción lanzada
 	 */
 	public static void generateGraphics(final MessageResources messageResources, String executionId, final Long idExecutionObservatory, final String observatoryId, final String filePath,
@@ -164,6 +165,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categories       Categorias para el gráfico global
 	 * @param color            Color del gráfico
 	 * @param regenerate       Indica si hay que regenerar el gráfico o no.
+	 * @param tagsFilter       the tags filter
 	 * @return Mapa de gráficos
 	 * @throws Exception the exception
 	 */
@@ -231,6 +233,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath         Ruta para guardar los temporales
 	 * @param color            Color del gráfico
 	 * @param regenerate       Indica si hay que regenerar el gráfico o no.
+	 * @param tagsFilter       the tags filter
 	 * @return Mapa de gráficos
 	 * @throws Exception the exception
 	 */
@@ -286,6 +289,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath         the file path
 	 * @param color            the color
 	 * @param regenerate       the regenerate
+	 * @param tagsFilter       the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -341,6 +345,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath         the file path
 	 * @param color            the color
 	 * @param regenerate       the regenerate
+	 * @param tagsFilter       the tags filter
+	 * @param exObsIds         the ex obs ids
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -847,20 +853,27 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param results the results
 	 * @return the list
 	 */
-	public static List<ModalityComparisonForm> infoLevelVerificationCompilanceComparison(final Map<String, BigDecimal> results) {
-		final List<ModalityComparisonForm> modalityComparisonList = new ArrayList<>();
+	public static List<ComplianceComparisonForm> infoLevelVerificationCompilanceComparison(final Map<String, BigDecimal> results) {
+		final List<ComplianceComparisonForm> modalityComparisonList = new ArrayList<>();
 		for (String key : results.keySet()) {
 			if (!modalityComparisonList.contains(new ModalityComparisonForm(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")))
 					&& !modalityComparisonList.contains(new ModalityComparisonForm(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "")))) {
-				final ModalityComparisonForm modalityComparisonForm = new ModalityComparisonForm();
+				final ComplianceComparisonForm modalityComparisonForm = new ComplianceComparisonForm();
 				if (key.contains(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
 					modalityComparisonForm.setVerification(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, ""));
 					modalityComparisonForm.setGreenPercentage(results.get(key).toString().replace(_00, "") + "%");
+					// Null other percentajes
 					if (results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX) != null) {
 						modalityComparisonForm
 								.setRedPercentage(results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
 					} else {
 						modalityComparisonForm.setRedPercentage("0%");
+					}
+					if (results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX) != null) {
+						modalityComparisonForm
+								.setGrayPercentage(results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX).toString().replace(_00, "") + "%");
+					} else {
+						modalityComparisonForm.setGrayPercentage("0%");
 					}
 				} else if (key.contains(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX)) {
 					modalityComparisonForm.setVerification(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, ""));
@@ -871,15 +884,36 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					} else {
 						modalityComparisonForm.setGreenPercentage("0%");
 					}
+					if (results.get(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX) != null) {
+						modalityComparisonForm
+								.setGrayPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX).toString().replace(_00, "") + "%");
+					} else {
+						modalityComparisonForm.setGrayPercentage("0%");
+					}
+				} else if (key.contains(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
+					modalityComparisonForm.setVerification(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
+					modalityComparisonForm.setRedPercentage(results.get(key).toString().replace(_00, "") + "%");
+					if (results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX) != null) {
+						modalityComparisonForm
+								.setGreenPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
+					} else {
+						modalityComparisonForm.setGreenPercentage("0%");
+					}
+					if (results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX) != null) {
+						modalityComparisonForm
+								.setRedPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
+					} else {
+						modalityComparisonForm.setRedPercentage("0%");
+					}
 				}
 				modalityComparisonList.add(modalityComparisonForm);
 			}
 		}
 		// Necesitamos implementar un orden específico para que p.e.
 		// 1.10 vaya después de 1.9 y no de 1.
-		Collections.sort(modalityComparisonList, new Comparator<ModalityComparisonForm>() {
+		Collections.sort(modalityComparisonList, new Comparator<ComplianceComparisonForm>() {
 			@Override
-			public int compare(ModalityComparisonForm version1, ModalityComparisonForm version2) {
+			public int compare(ComplianceComparisonForm version1, ComplianceComparisonForm version2) {
 				String[] v1 = version1.getVerification().split("\\.");
 				String[] v2 = version2.getVerification().split("\\.");
 				int major1 = major(v1);
@@ -912,6 +946,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param pageExecutionList the page execution list
 	 * @param categories        the categories
 	 * @param regenerate        the regenerate
+	 * @param tagsFilter        the tags filter
 	 * @return the global mark by segments group graphic
 	 * @throws Exception the exception
 	 */
@@ -950,6 +985,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param pageExecutionList the page execution list
 	 * @param categories        the categories
 	 * @param regenerate        the regenerate
+	 * @param tagsFilter        the tags filter
 	 * @return the global compilance by sgment
 	 * @throws Exception the exception
 	 */
@@ -989,6 +1025,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param pageExecutionList the page execution list
 	 * @param complexities      the complexities
 	 * @param regenerate        the regenerate
+	 * @param tagsFilter        the tags filter
 	 * @return the global compilance by complexitivity
 	 * @throws Exception the exception
 	 */
@@ -1029,6 +1066,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param pageExecutionList the page execution list
 	 * @param complexities      the complexities
 	 * @param regenerate        the regenerate
+	 * @param tagsFilter        the tags filter
 	 * @return the global mark by complexity group graphic
 	 * @throws Exception the exception
 	 */
@@ -1210,11 +1248,11 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 
 			private int major(String[] version) {
-				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, ""));
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
 			}
 
 			private Integer minor(String[] version) {
-				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")) : 0;
+				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")) : 0;
 			}
 		});
 		for (Map.Entry<String, BigDecimal> entryO : resultsOrdered.entrySet()) {
@@ -1225,6 +1263,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.compilance.red"), entry.getKey().replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, ""));
 			} else if (entry.getKey().contains(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
 				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.compilance.green"), entry.getKey().replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, ""));
+			} else if (entry.getKey().contains(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
+				dataSet.addValue(entry.getValue(), messageResources.getMessage("observatory.graphic.compilance.gray"), entry.getKey().replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
 			}
 		}
 		return dataSet;
@@ -1259,11 +1299,11 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 
 			private int major(String[] version) {
-				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, ""));
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
 			}
 
 			private Integer minor(String[] version) {
-				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")) : 0;
+				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")) : 0;
 			}
 		});
 		// Process results
@@ -1277,9 +1317,17 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					} else {
 						resultsC.put(keyCompilance, new BigDecimal(1));
 					}
-				} else {
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
 					// If exists +1
 					String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX);
+					if (resultsC.containsKey(keyNoCompilance)) {
+						resultsC.put(keyNoCompilance, resultsC.get(keyNoCompilance).add(new BigDecimal(1)));
+					} else {
+						resultsC.put(keyNoCompilance, new BigDecimal(1));
+					}
+				} else {
+					// If exists +1
+					String keyNoCompilance = verificationResult.getKey().concat(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX);
 					if (resultsC.containsKey(keyNoCompilance)) {
 						resultsC.put(keyNoCompilance, resultsC.get(keyNoCompilance).add(new BigDecimal(1)));
 					} else {
@@ -1473,6 +1521,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param observatoryResult the observatory result
 	 * @param color             the color
 	 * @param regenerate        the regenerate
+	 * @param exObsIds          the ex obs ids
 	 * @return the approval level evolution graphic
 	 * @throws Exception the exception
 	 */
@@ -1874,6 +1923,45 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
+	 * Calculate verification evolution compliance data set.
+	 *
+	 * @param verification the verification
+	 * @param result       the result
+	 * @return the map
+	 */
+	public static Map<String, BigDecimal> calculateVerificationEvolutionComplianceDataSet(final String verification, final Map<Date, List<ObservatoryEvaluationForm>> result) {
+		final TreeMap<String, BigDecimal> resultData = new TreeMap<>(new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				final PropertiesManager pmgr = new PropertiesManager();
+				final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+				try {
+					final Date fecha1 = new Date(df.parse(o1).getTime());
+					final Date fecha2 = new Date(df.parse(o2).getTime());
+					return fecha1.compareTo(fecha2);
+				} catch (Exception e) {
+					Logger.putLog("Error al ordenar fechas de evolución.", ResultadosAnonimosObservatorioUNEEN2019Utils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+				return 0;
+			}
+		});
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : result.entrySet()) {
+			// Para un observatorio en concreto recuperamos la puntuación de una
+			// verificación
+			final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
+			final BigDecimal value = generatePercentajesCompilanceVerification(results).get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
+			if (value != null) {
+				resultData.put(df.format(entry.getKey()), value);
+			} else {
+				resultData.put(df.format(entry.getKey()), BigDecimal.ZERO);
+			}
+		}
+		return resultData;
+	}
+
+	/**
 	 * Calculate evolution puntuation data set.
 	 *
 	 * @param result the result
@@ -2072,6 +2160,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param observatoryId the observatory id
 	 * @param executionId   the execution id
 	 * @param result        the result
+	 * @param exObsIds      the ex obs ids
 	 * @return the evolution observatories sites by type
 	 */
 	public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByType(final String observatoryId, final String executionId,
@@ -2108,6 +2197,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param observatoryId the observatory id
 	 * @param executionId   the execution id
 	 * @param result        the result
+	 * @param exObsIds      the ex obs ids
 	 * @return the evolution observatories sites by compliance
 	 */
 	public static Map<Date, Map<Long, Map<String, Integer>>> getEvolutionObservatoriesSitesByCompliance(final String observatoryId, final String executionId,
@@ -2145,6 +2235,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryId the observatory id
 	 * @param executionId   the execution id
+	 * @param tagsFilter    the tags filter
+	 * @param exObsIds      the ex obs ids
 	 * @return the map
 	 */
 	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionData(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
@@ -2177,6 +2269,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param observatoryId the observatory id
 	 * @param executionId   the execution id
 	 * @param categoryId    the category id
+	 * @param tagsFilter    the tags filter
+	 * @param exObsIds      the ex obs ids
 	 * @return the map
 	 */
 	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionCategoryData(final Long observatoryId, final Long executionId, final Long categoryId, String[] tagsFilter,
@@ -2209,6 +2303,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 *
 	 * @param observatoryId the observatory id
 	 * @param executionId   the execution id
+	 * @param tagsFilter    the tags filter
+	 * @param exObsIds      the ex obs ids
 	 * @return the map
 	 */
 	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionDataComplexity(final Long observatoryId, final Long executionId, String[] tagsFilter, String[] exObsIds) {
@@ -2241,6 +2337,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param observatoryId the observatory id
 	 * @param executionId   the execution id
 	 * @param categoryId    the category id
+	 * @param tagsFilter    the tags filter
 	 * @return the map
 	 */
 	public static Map<Date, List<ObservatoryEvaluationForm>> resultEvolutionCategoryDataComplexity(final Long observatoryId, final Long executionId, final Long categoryId, String[] tagsFilter) {
@@ -2613,6 +2710,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath          the file path
 	 * @param noDataMess        the no data mess
 	 * @param categories        the categories
+	 * @param tagsFilter        the tags filter
 	 * @return the global mark by segment graphic
 	 * @throws Exception the exception
 	 */
@@ -2649,6 +2747,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath          the file path
 	 * @param noDataMess        the no data mess
 	 * @param complexitivities  the complexitivities
+	 * @param tagsFilter        the tags filter
 	 * @return the global mark by complexitivity graphic
 	 * @throws Exception the exception
 	 */
@@ -2686,6 +2785,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath          the file path
 	 * @param noDataMess        the no data mess
 	 * @param complexities      the complexities
+	 * @param tagsFilter        the tags filter
 	 * @return the global mark by complexity graphic
 	 * @throws Exception the exception
 	 */
@@ -3402,6 +3502,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param categories        the categories
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3427,6 +3528,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param complexities      the complexities
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3451,6 +3553,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param categories        the categories
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3475,6 +3578,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param completivities    the completivities
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3499,6 +3603,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param categories        the categories
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3528,6 +3633,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param complexitivities  the complexitivities
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3557,6 +3663,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId       the execution id
 	 * @param pageExecutionList the page execution list
 	 * @param complexities      the complexities
+	 * @param tagsFilter        the tags filter
 	 * @return the map
 	 * @throws Exception the exception
 	 */
@@ -3587,6 +3694,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId        the execution id
 	 * @param filePath           the file path
 	 * @param pageObservatoryMap the page observatory map
+	 * @param exObsIds           the ex obs ids
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
@@ -3615,6 +3723,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param executionId        the execution id
 	 * @param filePath           the file path
 	 * @param pageObservatoryMap the page observatory map
+	 * @param exObsIds           the ex obs ids
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionComplianceChart(final String observatoryId, final String executionId, final String filePath,
@@ -3644,6 +3753,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param filePath           the file path
 	 * @param pageObservatoryMap the page observatory map
 	 * @param categories         the categories
+	 * @param exObsIds           the ex obs ids
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void generateEvolutionBySegmentSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
@@ -3852,6 +3962,38 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		chartForm2.setFixedColorBars(true);
 		chartForm2.setShowColumsLabels(false);
 		GraphicsUtils.createStandardBarChart(chartForm2, filePaths[1], "", messageResources, true);
+	}
+
+	/**
+	 * Generate evolution compliance by verification chart.
+	 *
+	 * @param messageResources   the message resources
+	 * @param filePaths          the file paths
+	 * @param pageObservatoryMap the page observatory map
+	 * @param verifications      the verifications
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateEvolutionComplianceByVerificationChart(final MessageResources messageResources, final String[] filePaths,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DefaultCategoryDataset dataSet1 = new DefaultCategoryDataset();
+		final DefaultCategoryDataset dataSet2 = new DefaultCategoryDataset();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+			final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
+			Map<String, BigDecimal> percentajes = generatePercentajesCompilanceVerification(results);
+			int v = 0;
+			for (String verification : verifications) {
+				// Para un observatorio en concreto recuperamos la puntuación de
+				// una verificación
+				final BigDecimal value = percentajes.get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
+				dataSet1.addValue(value, entry.getKey().getTime(), verification);
+				v++;
+			}
+		}
+		final ChartForm chartForm1 = new ChartForm(dataSet1, true, true, false, true, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
+		chartForm1.setFixedColorBars(true);
+		chartForm1.setShowColumsLabels(false);
+		GraphicsUtils.createStandardBarChart(chartForm1, filePaths[0], "", messageResources, true);
 	}
 
 	/**

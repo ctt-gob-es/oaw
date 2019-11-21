@@ -224,7 +224,7 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento","Ambito", "Complejidad", "Dependencia", "Etiqueta,"
+													"Segmento","Ambito", "Complejidad", "Dependencia", "Etiqueta",
 													"URLs", "Activa",
 													"Directorio","Complejidad",
 													"Puntuac\u00F3n", 
