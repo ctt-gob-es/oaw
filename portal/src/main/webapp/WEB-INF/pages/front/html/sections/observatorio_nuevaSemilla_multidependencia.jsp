@@ -14,12 +14,60 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <%@ include file="/common/taglibs.jsp"%>
 <%@page import="es.inteco.common.Constants"%>
 <html:javascript formName="JsonSemillaObservatorioForm" />
+<script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
+<style>
+/* Make sure you reset e'erything beforehand. */
+* {
+	margin: 0;
+	padding: 0;
+}
 
+/* Although you can't see the box here, so add some padding. */
+.tagbox-item .name, .tagbox-item .email { /* The name and email within the dropdown */
+	display: block;
+	float: left;
+	width: 35%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 
+.tagbox-item .email {
+	float: right;
+	width: 65%;
+}
+</style>
+
+ 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 <script type="text/javascript">
-	var $jn = jQuery.noConflict();
+
+var $jn = jQuery.noConflict();
+
+$(window).on('load', function() {
+
+	$jn(document).ready(function() {
+		$.ajax({
+			url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+			method : 'POST',
+			cache : false
+		}).success(function(response) {
+
+			$('#tagsFilter').tagbox({
+				items : response.etiquetas,
+				searchIn : [ 'name' ],
+				rowFormat : '<span class="name">{{name}}</span>',
+				tokenFormat : '{{name}}',
+				valueField : 'id',
+				itemClass : 'user'
+			});
+
+		})
+
+	});
+
+});
 
 	function cargarSelect(rowObject) {
 
@@ -369,7 +417,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 			<!-- Etiquetas -->
-			<div class="row formItem">
+<!--  	 	<div class="row formItem">
 				<label for="etiqueta" class="control-label"><strong
 					class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
@@ -390,9 +438,20 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						id="selectEtiquetasNuevaSemillaSeleccionadas"
 						name="etiquetasSeleccionadas"></select>
 				</div>
+-->
 
-
-			</div>
+			</div>		
+			
+			
+					<!-- Etiquetas -->
+			<div class="row formItem">
+				<label for="etiqueta" class="control-label"><strong class="labelVisu"> <bean:message
+							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
+				<div class="col-xs-6">
+					 <input name="etiquetasSeleccionadas"
+								autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />
+				</div>
+			</div>		
 			
 			<!-- Urls -->
 			<div class="row formItem">
