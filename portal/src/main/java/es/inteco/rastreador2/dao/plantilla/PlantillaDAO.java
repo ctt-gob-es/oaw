@@ -31,14 +31,19 @@ public final class PlantillaDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static List<PlantillaForm> findAll(Connection c, int pagina) throws SQLException {
-		List<PlantillaForm> plantillas = new ArrayList<PlantillaForm>();
 		final PropertiesManager pmgr = new PropertiesManager();
-		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
-		final int resultFrom = pagSize * pagina;
-		// query += " LIMIT ? OFFSET ?";
-		try (PreparedStatement ps = c.prepareStatement("SELECT p.id_plantilla, p.nombre FROM observatorio_plantillas p ORDER BY p.nombre ASC LIMIT ? OFFSET ?")) {
-			ps.setLong(1, pagSize);
-			ps.setLong(2, resultFrom);
+		List<PlantillaForm> plantillas = new ArrayList<PlantillaForm>();
+		StringBuilder sql = new StringBuilder("SELECT p.id_plantilla, p.nombre FROM observatorio_plantillas p ORDER BY p.nombre ASC ");
+		if (pagina >= 0) {
+			sql.append("LIMIT ? OFFSET ?");
+		}
+		try (PreparedStatement ps = c.prepareStatement(sql.toString())) {
+			if (pagina >= 0) {
+				final int limit = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+				final int offset = limit * pagina;
+				ps.setLong(1, limit);
+				ps.setLong(2, offset);
+			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					PlantillaForm plantilla = new PlantillaForm();
@@ -71,15 +76,11 @@ public final class PlantillaDAO {
 					plantilla = new PlantillaForm();
 					plantilla.setId(rs.getLong("p.id_plantilla"));
 					plantilla.setNombre(rs.getString("p.nombre"));
-					
 					Blob blob = rs.getBlob("p.documento");
-
-					int blobLength = (int) blob.length();  
+					int blobLength = (int) blob.length();
 					byte[] blobAsBytes = blob.getBytes(1, blobLength);
-
-					//release the blob and free up memory. (since JDBC 4.0)
+					// release the blob and free up memory. (since JDBC 4.0)
 					blob.free();
-					
 					plantilla.setDocumento(blobAsBytes);
 					return plantilla;
 				}
@@ -100,9 +101,10 @@ public final class PlantillaDAO {
 	 */
 	public static boolean existsPlantilla(Connection c, PlantillaForm plantilla) throws SQLException {
 		boolean exists = false;
-		final String query = "SELECT * FROM observatorio_plantillas WHERE UPPER(nombre) = UPPER(?)";
+		final String query = "SELECT * FROM observatorio_plantillas WHERE UPPER(nombre) = UPPER(?) AND id_plantilla <> ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, plantilla.getNombre());
+			ps.setLong(2, plantilla.getId());
 			ResultSet result = ps.executeQuery();
 			if (result.next()) {
 				exists = true;
@@ -167,11 +169,35 @@ public final class PlantillaDAO {
 	 * @return true, if successful
 	 * @throws SQLException the SQL exception
 	 */
+	public static boolean rename(Connection c, final PlantillaForm plantilla) throws SQLException {
+		boolean saved = false;
+		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_plantillas SET nombre = ?  WHERE id_plantilla = ?", Statement.RETURN_GENERATED_KEYS)) {
+			ps.setString(1, plantilla.getNombre());
+			ps.setLong(2, plantilla.getId());
+			int affectedRows = ps.executeUpdate();
+			if (affectedRows == 0) {
+				saved = true;
+			}
+		} catch (SQLException e) {
+			throw e;
+		}
+		return saved;
+	}
+
+	/**
+	 * Update.
+	 *
+	 * @param c         the c
+	 * @param plantilla the plantilla
+	 * @return true, if successful
+	 * @throws SQLException the SQL exception
+	 */
 	public static boolean update(Connection c, final PlantillaForm plantilla) throws SQLException {
 		boolean saved = false;
-		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_plantillas SET nombre = ?, clave = ?, c.documento WHERE id_plantilla = ?", Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement ps = c.prepareStatement("UPDATE observatorio_plantillas SET nombre = ?, documento = ?  WHERE id_plantilla = ?", Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, plantilla.getNombre());
-			ps.setBytes(2, plantilla.getDocumento());
+			Blob blobValue = new SerialBlob(plantilla.getDocumento());
+			ps.setBlob(2, blobValue);
 			ps.setLong(3, plantilla.getId());
 			int affectedRows = ps.executeUpdate();
 			if (affectedRows == 0) {

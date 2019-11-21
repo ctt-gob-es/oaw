@@ -968,5 +968,9 @@ public interface Constants {
 	
 	String CHECK_EVO_COMPLIANCE_VERIFICATION_GRPAHICS = "checkEvoComplianceVerificationGrpahics";
 	String CHECK_EVO_ASPECTS_GRPAHICS = "checkEvoAspectsGrpahics";
+	String ID_BASE_TEMPLATE = "idPlantillaBase";
+	String ID_SEGMENT_TEMPLATE = "idPlantillaSegmento";
+	String ID_COMPLEXITY_TEMPLATE = "idPlantillaComplejidad";
+	
 	
 }

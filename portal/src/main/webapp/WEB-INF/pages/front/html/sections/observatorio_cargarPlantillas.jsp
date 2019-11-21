@@ -33,19 +33,64 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var scroll;
 	
 	
-	function uploadFormatter(){
-		return "up";
+	function uploadFormatter(cellvalue, options, rowObject){
+		//return "up";
+		
+		return "<span style='cursor:pointer' onclick='uploadPlantilla("
+		+ options.rowId
+		+ ")'class='glyphicon glyphicon-cloud-upload'></span><span class='sr-only'>Eliminar</span></span>";
 	}
 	
 	function downloadFormatter(cellvalue, options, rowObject){
 		return "<span style='cursor:pointer' onclick='downloadPlantilla("
 		+ options.rowId
-		+ ")'class='glyphicon glyphicon-download'></span><span class='sr-only'>Eliminar</span></span>";
+		+ ")'class='glyphicon glyphicon-cloud-download'></span><span class='sr-only'>Dscargar</span></span>";
 	}
 
 	function downloadPlantilla(rowId){
 		window.location = '/oaw/secure/Plantilla.do?action=download&idPlantilla='+ rowId;
+	}
+	
+	function uploadPlantilla(rowId){
+		
+		var plantilla = $('#grid').jqGrid('getRowData', rowId);
+		
+		$("#nuevaPlantillaForm #nombre").val(plantilla.nombre);
+		$('#nuevaPlantillaForm').append('<input type="hidden" name="id" value="'+rowId+'" />')
+		
+		$("#dialogoNuevaPlantilla").append
+		
+		window.scrollTo(0, 0);
 
+		$('#existosPlantilla').hide();
+		$('#erroresPlantilla').hide();
+
+		dialog = $("#dialogoNuevaPlantilla").dialog({
+			height : windowHeight,
+			width : windowWidth,
+			modal : true,
+			title : 'RASTREADOR WEB - Actualizar Plantilla',
+			buttons : {
+				"Guardar" : {
+					click: function() {
+						
+						actualizarPlantilla();
+					},
+					text : "Guardar",
+					class: 'jdialog-btn-save'
+				},
+				"Cancelar" : {
+					click: function() {
+						dialog.dialog("close");
+					},
+					text: "Cancelar",
+					class: 'jdialog-btn-cancel'
+				}
+			},
+			close : function() {
+				$('#nuevaPlantillaForm')[0].reset();
+			}
+		});
 		
 	}
 
@@ -443,11 +488,63 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 		return guardado;
 	}
+	
+	
+	function actualizarPlantilla() {
+		$('#existosPlantilla').hide();
+		$('#existosPlantilla').html("");
+		$('#erroresPlantilla').hide();
+		$('#erroresPlantilla').html("");
+
+		var guardado = $.ajax({
+			url : '/oaw/secure/Plantilla.do?action=upload',
+			data: new FormData($("#nuevaPlantillaForm")[0]),
+        	processData: false, 
+        	contentType: false, 
+			method : 'POST',
+			cache : false
+		}).success(
+				function(response) {
+					$('#existosPlantilla').addClass('alert alert-success');
+					$('#existosPlantilla').append("<ul>");
+
+					$.each(JSON.parse(response), function(index, value) {
+						$('#existosPlantilla').append(
+								'<li>' + value.message + '</li>');
+					});
+
+					$('#existosPlantilla').append("</ul>");
+					$('#existosPlantilla').show();
+					dialog.dialog("close");
+					reloadGrid(lastUrl);
+
+				}).error(
+				function(response) {
+					$('#erroresPlantilla').addClass('alert alert-danger');
+					$('#erroresPlantilla').append("<ul>");
+
+					$.each(JSON.parse(response.responseText), function(index,
+							value) {
+						$('#erroresPlantilla').append(
+								'<li>' + value.message + '</li>');
+					});
+
+					$('#erroresPlantilla').append("</ul>");
+					$('#erroresPlantilla').show();
+
+				}
+
+		);
+
+		return guardado;
+	}
 </script>
 
 
 <!-- observatorio_cargarDependencias.jsp -->
 <div id="main">
+
+
 
 
 	<div id="dialogoNuevaPlantilla" style="display: none">

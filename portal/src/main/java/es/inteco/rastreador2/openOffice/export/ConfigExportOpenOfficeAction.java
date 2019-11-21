@@ -92,6 +92,18 @@ public class ConfigExportOpenOfficeAction extends Action {
 		if (request.getParameter(Constants.CHECK_EVO_ASPECTS_GRPAHICS) != null) {
 			grpahicConditional.put(Constants.CHECK_EVO_ASPECTS_GRPAHICS, Boolean.parseBoolean(request.getParameter(Constants.CHECK_EVO_ASPECTS_GRPAHICS)));
 		}
+		Long idBaseTemplate = null;
+		if (request.getParameter(Constants.ID_BASE_TEMPLATE) != null) {
+			idBaseTemplate = Long.parseLong(request.getParameter(Constants.ID_BASE_TEMPLATE));
+		}
+		Long idSegmentTemplate = null;
+		if (request.getParameter(Constants.ID_SEGMENT_TEMPLATE) != null) {
+			idSegmentTemplate = Long.parseLong(request.getParameter(Constants.ID_SEGMENT_TEMPLATE));
+		}
+		Long idComplexityTemplate = null;
+		if (request.getParameter(Constants.ID_COMPLEXITY_TEMPLATE) != null) {
+			idComplexityTemplate = Long.parseLong(request.getParameter(Constants.ID_COMPLEXITY_TEMPLATE));
+		}
 		// Evol executions ids
 		String[] exObsIds = request.getParameterValues("evol");
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -104,7 +116,7 @@ public class ConfigExportOpenOfficeAction extends Action {
 			filePath = basePath + PDFUtils.formatSeedName(observatoryForm.getNombre()) + ".odt";
 			final String graphicPath = basePath + "temp" + File.separator;
 			ExportOpenOfficeUtils.createOpenOfficeDocumentFiltered(request, filePath, graphicPath, df.format(observatoryFFForm.getFecha()), observatoryForm.getTipo(), exObsIds.length, tagsToFilter,
-					grpahicConditional, exObsIds);
+					grpahicConditional, exObsIds, idBaseTemplate, idSegmentTemplate, idComplexityTemplate);
 			FileUtils.deleteDir(new File(graphicPath));
 		} catch (Exception e) {
 			Logger.putLog("Error al exportar a pdf", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);

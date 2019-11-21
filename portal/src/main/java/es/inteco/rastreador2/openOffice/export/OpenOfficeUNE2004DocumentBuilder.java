@@ -920,21 +920,24 @@ public class OpenOfficeUNE2004DocumentBuilder extends OpenOfficeDocumentBuilder 
 	/**
 	 * Builds the document filtered.
 	 *
-	 * @param request            the request
-	 * @param graphicPath        the graphic path
-	 * @param date               the date
-	 * @param evolution          the evolution
-	 * @param pageExecutionList  the page execution list
-	 * @param categories         the categories
-	 * @param tagsToFilter       the tags to filter
-	 * @param grpahicConditional the grpahic conditional
-	 * @param exObsIds           the ex obs ids
+	 * @param request              the request
+	 * @param graphicPath          the graphic path
+	 * @param date                 the date
+	 * @param evolution            the evolution
+	 * @param pageExecutionList    the page execution list
+	 * @param categories           the categories
+	 * @param tagsToFilter         the tags to filter
+	 * @param grpahicConditional   the grpahic conditional
+	 * @param exObsIds             the ex obs ids
+	 * @param idBaseTemplate       the id base template
+	 * @param idSegmentTemplate    the id segment template
+	 * @param idComplexityTemplate the id complexity template
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */
 	@Override
 	public OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
-			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds) throws Exception {
+			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds,Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate) throws Exception {
 		return buildDocument(request, graphicPath, date, evolution, pageExecutionList, categories);
 	}
 

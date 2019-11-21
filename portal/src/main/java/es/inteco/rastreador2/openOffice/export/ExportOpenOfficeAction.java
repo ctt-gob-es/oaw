@@ -38,6 +38,7 @@ import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
 import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
+import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.utils.CrawlerUtils;
@@ -69,13 +70,14 @@ public class ExportOpenOfficeAction extends Action {
 		if (request.getParameter(Constants.ID_CARTUCHO) != null) {
 			idCartucho = Long.parseLong(request.getParameter(Constants.ID_CARTUCHO));
 		}
-		// TODO Get application
 		String application;
 		try {
-			application = CartuchoDAO.getApplication(DataBaseManager.getConnection(), idCartucho);
+			Connection connection = DataBaseManager.getConnection();
+			application = CartuchoDAO.getApplication(connection, idCartucho);
 			if (Constants.NORMATIVA_UNE_EN2019.equals(application)) {
+				request.setAttribute("plantillas", PlantillaDAO.findAll(connection, -1));
 				request.setAttribute(Constants.ID_OBSERVATORIO, request.getParameter(Constants.ID_OBSERVATORIO));
-				request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(DataBaseManager.getConnection(), idObservatory, -1, null));
+				request.setAttribute(Constants.FULFILLED_OBSERVATORIES, ObservatorioDAO.getFulfilledObservatories(connection, idObservatory, -1, null));
 				request.setAttribute(Constants.ID_CARTUCHO, idCartucho);
 				return mapping.findForward(Constants.CONFIGURAR_FILTROS_AGREGADOS);
 			} else {

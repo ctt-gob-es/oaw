@@ -37,6 +37,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
 import org.odftoolkit.odfdom.OdfElement;
@@ -66,7 +67,9 @@ import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
+import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
+import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
@@ -224,6 +227,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	private static final List<String> LEVEL_II_VERIFICATIONS = Arrays.asList(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION, Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION,
 			Constants.OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION);
+	private Long idBaseTemplate;
+	private Long idSegmentTemplate;
+	private Long idComplexityTemplate;
 
 	/**
 	 * Instantiates a new open office document builder.
@@ -296,8 +302,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 */
 	@Override
 	public OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution,
-			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds)
-			throws Exception {
+			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds,
+			Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate) throws Exception {
+		this.idBaseTemplate = idBaseTemplate;
+		this.idComplexityTemplate = idComplexityTemplate;
+		this.idSegmentTemplate = idSegmentTemplate;
+		
 		final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, Long.parseLong(request.getParameter(Constants.ID)), observatoryId, graphicPath,
 				Constants.MINISTERIO_P, true, tagsToFilter, exObsIds);
@@ -2268,8 +2278,15 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @throws Exception the exception
 	 */
 	private OdfTextDocument getOdfTemplate() throws Exception {
-		final PropertiesManager pmgr = new PropertiesManager();
-		return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.common"));
+		
+		// TODO Load from database
+		PlantillaForm plantilla = PlantillaDAO.findById(DataBaseManager.getConnection(), idBaseTemplate);
+		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {
+			File f = File.createTempFile("tmp_base_template", ".odt");
+			FileUtils.writeByteArrayToFile(f, plantilla.getDocumento());
+			return (OdfTextDocument) OdfDocument.loadDocument(f);
+		}
+		return null;
 	}
 
 	/**
@@ -2279,8 +2296,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @throws Exception the exception
 	 */
 	private OdfTextDocument getOdfTemplateCategories() throws Exception {
-		final PropertiesManager pmgr = new PropertiesManager();
-		return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.common.category"));
+		// TODO Load from database
+		PlantillaForm plantilla = PlantillaDAO.findById(DataBaseManager.getConnection(), idSegmentTemplate);
+		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {
+			File f = File.createTempFile("tmp_segment_template", ".odt");
+			FileUtils.writeByteArrayToFile(f, plantilla.getDocumento());
+			return (OdfTextDocument) OdfDocument.loadDocument(f);
+		}
+		return null;
 	}
 
 	/**
@@ -2290,8 +2313,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @throws Exception the exception
 	 */
 	private OdfTextDocument getOdfTemplateComplexities() throws Exception {
-		final PropertiesManager pmgr = new PropertiesManager();
-		return (OdfTextDocument) OdfDocument.loadDocument(pmgr.getValue(CRAWLER_PROPERTIES, "export.open.office.template.common.complexities"));
+		// TODO Load from database
+		PlantillaForm plantilla = PlantillaDAO.findById(DataBaseManager.getConnection(), idComplexityTemplate);
+		if (plantilla != null && plantilla.getDocumento() != null && plantilla.getDocumento().length > 0) {
+			File f = File.createTempFile("tmp_complexity_template", ".odt");
+			FileUtils.writeByteArrayToFile(f, plantilla.getDocumento());
+			return (OdfTextDocument) OdfDocument.loadDocument(f);
+		}
+		return null;
 	}
 
 	/**
