@@ -377,10 +377,12 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			List<EtiquetaForm> listaEtiquetas = new ArrayList<>();
 
 			String[] etiquetas = request.getParameterValues("etiquetasSeleccionadas");
-			if (etiquetas != null && etiquetas.length > 0) {
-				for (int i = 0; i < etiquetas.length; i++) {
+			String[] arrayEtiquetas = etiquetas[0].split(",");
+
+			if (arrayEtiquetas != null && arrayEtiquetas.length > 0) {
+				for (int i = 0; i < arrayEtiquetas.length; i++) {
 					EtiquetaForm etiqueta = new EtiquetaForm();
-					etiqueta.setId(Long.parseLong(etiquetas[i]));
+					etiqueta.setId(Long.parseLong(arrayEtiquetas[i]));
 					listaEtiquetas.add(etiqueta);
 				}
 			}
