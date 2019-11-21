@@ -22,6 +22,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,11 +47,6 @@ import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.intav.utils.IntavUtils;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfAccesibilidad;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNE2012b;
-import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
-import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 
 /**
  * The Class ObservatoryUtils.
@@ -373,13 +369,64 @@ public final class ObservatoryUtils {
 	}
 
 	/**
-	 * Calculate score and leve
-	 * 
-	 * @param c
-	 * @param seedsResults
-	 * @param idFulfilledObservatory
-	 * @return
-	 * @throws Exception
+	 * TODO Set comoliance level.
+	 *
+	 * @param c                      the c
+	 * @param seedsResults           the seeds results
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @return the list
+	 * @throws Exception the exception
+	 */
+	public static List<ResultadoSemillaForm> setCompliance(final Connection c, final List<ResultadoSemillaForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
+		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE,
+				null);
+		// IdExecutedCrawl and verifications
+		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(observatories, Constants.OBS_PRIORITY_NONE);
+		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
+		for (ResultadoSemillaForm seedResult : seedsResults) {
+			seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling())));
+		}
+		return seedsResults;
+	}
+
+	/**
+	 * Calculate crawling compliance.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	private static Map<Long, String> calculateCrawlingCompliance(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<Long, String> resultCompilance = new TreeMap<>();
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+					countNC++;
+				}
+			}
+			if (countC == result.getValue().size()) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
+			} else if (countC > countNC) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
+			} else {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
+			}
+		}
+		return resultCompilance;
+	}
+
+	/**
+	 * Calculate score and leve.
+	 *
+	 * @param c                      the c
+	 * @param seedsResults           the seeds results
+	 * @param idFulfilledObservatory the id fulfilled observatory
+	 * @return the list
+	 * @throws Exception the exception
 	 */
 	public static List<ResultadoSemillaFullForm> setAvgScoreFullfilledCrawl(final Connection c, final List<ResultadoSemillaFullForm> seedsResults, final Long idFulfilledObservatory) throws Exception {
 		final List<ObservatoryEvaluationForm> observatories = ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idFulfilledObservatory), Constants.COMPLEXITY_SEGMENT_NONE,

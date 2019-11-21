@@ -94,8 +94,8 @@ Email: observ.accesibilidad@correo.gob.es
 											property="action" value="confirm" /> <c:set target="${paramsRelanzar}" property="id_observatorio"
 											value="${id_observatorio}" /> <c:set target="${paramsRelanzar}" property="idExObs"
 											value="${fulfilledObservatory.id}" /> <c:set target="${paramsRelanzar}" property="idCartucho"
-											value="${fulfilledObservatory.cartucho.id}" />
-										<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="3">
+											value="${fulfilledObservatory.cartucho.id}" /> <logic:equal name="fulfilledObservatory"
+											property="observatorio.estado" value="3">
 
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.relanzado" />
 
@@ -153,20 +153,11 @@ Email: observ.accesibilidad@correo.gob.es
 
 
 										</logic:equal></td>
-									<td>
-										<%-- 									<logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0"> --%> <%-- 											<html:link forward="resultadosObservatorioSemillas" name="params"> --%>
-										<!-- 												<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip" --> <!-- 													title="Ver resultados de este observatorio" /> -->
-										<!-- 												<span class="sr-only">Resultados</span> --> <%-- 											</html:link> --%> <%-- 										</logic:equal> <logic:notEqual name="fulfilledObservatory" property="observatorio.estado" value="0"> --%>
-										<!-- 											<span class="glyphicon glyphicon-ban-circle" aria-hidden="true" data-toggle="tooltip" --> <!-- 												title="Resultados no disponibles" /> -->
-										<!-- 											<span class="sr-only">Resultados</span> --> <%-- 										</logic:notEqual> --%> <html:link
-											forward="resultadosObservatorioSemillas" name="params">
+									<td><html:link forward="resultadosObservatorioSemillas" name="params">
 											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
 												title="Ver resultados de este observatorio" />
 											<span class="sr-only">Resultados</span>
-										</html:link>
-
-
-									</td>
+										</html:link> </td>
 									<td><jsp:useBean id="paramsInformeAgregado" class="java.util.HashMap" /> <c:set
 											target="${paramsInformeAgregado}" property="idCartucho" value="${fulfilledObservatory.cartucho.id}" /> <c:set
 											target="${paramsInformeAgregado}" property="id_observatorio" value="${id_observatorio}" /> <c:set
