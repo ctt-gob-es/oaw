@@ -726,6 +726,7 @@ public interface Constants {
 	String OBS_VALUE_RED_SUFFIX = "_red";
 	
 	String OBS_VALUE_NO_COMPILANCE_SUFFIX = "_compilanceN";
+	String OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX = "_compilanceA";
 	String OBS_VALUE_COMPILANCE_SUFFIX = "_compilanceS";
 
 	String OBS_A = "A";

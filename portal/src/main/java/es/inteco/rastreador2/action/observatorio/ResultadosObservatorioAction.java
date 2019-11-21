@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
@@ -276,11 +277,18 @@ public class ResultadosObservatorioAction extends Action {
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, Long.parseLong(idExObs), Long.valueOf(userData.getId()));
 		final CrawlerJob crawlerJob = new CrawlerJob();
 		crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
-		// TODO Calculate scores
+		// Calculate scores
 		ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExObs), 0, null);
-		// TODO Recuperar sólo el ejectado
+		// Recuperar sólo el ejectado
 		final List<ResultadoSemillaFullForm> seedsResults2 = ObservatorioDAO.getResultSeedsFullFromObservatory(c, new SemillaForm(), Long.parseLong(idExObs), 0L, -1);
-		ObservatoryUtils.setAvgScore2(c, seedsResults2, Long.parseLong(idExObs));
+		for (ResultadoSemillaFullForm seedsResult : seedsResults2) {
+			if (seedsResult.getIdFulfilledCrawling().equals(idFulfilledCrawling.toString())) {
+				List<ResultadoSemillaFullForm> tmp = new ArrayList<ResultadoSemillaFullForm>();
+				tmp.add(seedsResult);
+				ObservatoryUtils.setAvgScore2(c, tmp, Long.parseLong(idExObs));
+				break;
+			}
+		}
 	}
 
 	/**
