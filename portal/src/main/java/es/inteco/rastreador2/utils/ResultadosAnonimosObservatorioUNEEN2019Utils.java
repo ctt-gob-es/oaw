@@ -856,8 +856,9 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	public static List<ComplianceComparisonForm> infoLevelVerificationCompilanceComparison(final Map<String, BigDecimal> results) {
 		final List<ComplianceComparisonForm> modalityComparisonList = new ArrayList<>();
 		for (String key : results.keySet()) {
-			if (!modalityComparisonList.contains(new ModalityComparisonForm(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")))
-					&& !modalityComparisonList.contains(new ModalityComparisonForm(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "")))) {
+			if (!modalityComparisonList.contains(new ComplianceComparisonForm(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")))
+					&& !modalityComparisonList.contains(new ComplianceComparisonForm(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "")))
+					&& !modalityComparisonList.contains(new ComplianceComparisonForm(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")))) {
 				final ComplianceComparisonForm modalityComparisonForm = new ComplianceComparisonForm();
 				if (key.contains(Constants.OBS_VALUE_COMPILANCE_SUFFIX)) {
 					modalityComparisonForm.setVerification(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, ""));
@@ -892,7 +893,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					}
 				} else if (key.contains(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX)) {
 					modalityComparisonForm.setVerification(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
-					modalityComparisonForm.setRedPercentage(results.get(key).toString().replace(_00, "") + "%");
+					modalityComparisonForm.setGrayPercentage(results.get(key).toString().replace(_00, "") + "%");
 					if (results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX) != null) {
 						modalityComparisonForm
 								.setGreenPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
