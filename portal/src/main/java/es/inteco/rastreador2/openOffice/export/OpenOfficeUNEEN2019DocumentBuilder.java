@@ -189,9 +189,9 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/** The Constant HEADER_AA. */
 	private static final String HEADER_AA = "AA";
 	/** The Constant HEADER_PORCENTAJE_DE_PORTALES. */
-	private static final String HEADER_PORCENTAJE_DE_PORTALES = "Porcentaje de portales";
+	private static final String HEADER_PORCENTAJE_DE_PORTALES = "Porcentaje de sitios web";
 	/** The Constant HEADER_NIVEL_DE_PRIORIDAD. */
-	private static final String HEADER_NIVEL_DE_PRIORIDAD = "Nivel de prioridad";
+	private static final String HEADER_NIVEL_DE_PRIORIDAD = "Nivel de adecuación estimado";
 	/** The Constant FECHA_BOOKMARK. */
 	private static final String FECHA_BOOKMARK = "[fecha]";
 	/** The Constant CATEGORYSECTION_BOOKMARK. */
@@ -871,7 +871,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna3 = HEADER_NO_VALIDO;
 		for (CategoriaForm category : categories) {
 			String name = category.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de adecuación: " + name + "</text:p>";
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Nivel de adecuación estimado: " + name + "</text:p>";
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASSEGMENTO_BOOKMARK);
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
@@ -969,51 +969,10 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		String columna3 = HEADER_NO_CONFORME;
 		for (CategoriaForm category : categories) {
 			String name = category.getName();
-			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de cumplimiento: " + name + "</text:p>";
+			String stringTitle = "<text:p text:style-name=\"Titulo_5f_tablas\"><text:soft-page-break/>Porcentaje de cumplimiento estimado: " + name + "</text:p>";
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(category));
-//			StringBuilder sb = new StringBuilder();
-//			sb.append("<table:table table:name='Table_Allocation_").append(name).append("' table:style-name='TableGraphic'>");
-//			sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
-//			sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
-//			// Header row
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-//			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-//			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header2).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 1
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna1).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(0).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 2
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna2).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(1).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 3
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna3).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(2).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			sb.append("</table:table>");
 			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
 			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOSEGMENTO_BOOKMARK);
@@ -1062,47 +1021,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisonCompilancePuntuaction(messageResources, res.get(complejidad));
-//			StringBuilder sb = new StringBuilder();
-//			sb.append("<table:table table:name='Table_Allocation_").append(name).append("' table:style-name='TableGraphic'>");
-//			sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
-//			sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
-//			// Header row
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-//			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-//			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header2).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 1
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna1).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(0).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 2
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna2).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(1).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 3
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna3).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(2).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			sb.append("</table:table>");
 			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
 			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASCUMPLIMIENTOCOMPLEJIDAD_BOOKMARK);
@@ -1227,47 +1145,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
-//			StringBuilder sb = new StringBuilder();
-//			sb.append("<table:table table:name='Table_Allocation_").append(name).append("' table:style-name='TableGraphic'>");
-//			sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
-//			sb.append("<table:table-column table:style-name='TableGraphicColumn2'/>");
-//			// Header row
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-//			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header1).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
-//			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(header2).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 1
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna1).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(0).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 2
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna2).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(1).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			// Row 3
-//			sb.append("<table:table-row>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(columna3).append("</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
-//			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(results.get(2).getValue()).append("%</text:p>");
-//			sb.append("</table:table-cell>");
-//			sb.append("</table:table-row>");
-//			sb.append("</table:table>");
+
 			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
 			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
@@ -1851,12 +1729,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceImageGeneric(odt, graphicPath + messageResources.getMessage("observatory.graphic.accessibility.level.compilance.segment.name", graphicSuffix) + JPG_EXTENSION,
 					messageResources.getMessage("observatory.graphic.accessibility.level.compilance.segment.name", EMPTY_STRING), IMAGE_JPEG);
 			numImg++;
-			replaceText(odt, odfFileContent, "--nv.con.percent.aa--", labelValueBean.get(0).getPercentageP());
-			replaceText(odt, odfFileContent, "--nv.con.num.aa--", labelValueBean.get(0).getNumberP());
-			replaceText(odt, odfFileContent, "--nv.con.percent.a--", labelValueBean.get(1).getPercentageP());
-			replaceText(odt, odfFileContent, "--nv.con.num.a--", labelValueBean.get(1).getNumberP());
-			replaceText(odt, odfFileContent, "--nv.con.percent.nv--", labelValueBean.get(2).getPercentageP());
-			replaceText(odt, odfFileContent, "--nv.con.num.nv--", labelValueBean.get(2).getNumberP());
+			replaceText(odt, odfFileContent, "--nv.cmp.percent.aa--", labelValueBean.get(0).getPercentageP());
+			replaceText(odt, odfFileContent, "--nv.cmp.num.aa--", labelValueBean.get(0).getNumberP());
+			replaceText(odt, odfFileContent, "--nv.cmp.percent.a--", labelValueBean.get(1).getPercentageP());
+			replaceText(odt, odfFileContent, "--nv.cmp.num.a--", labelValueBean.get(1).getNumberP());
+			replaceText(odt, odfFileContent, "--nv.cmp.percent.nv--", labelValueBean.get(2).getPercentageP());
+			replaceText(odt, odfFileContent, "--nv.cmp.num.nv--", labelValueBean.get(2).getNumberP());
 		} else {
 			final PropertiesManager pmgr = new PropertiesManager();
 			replaceImg(odt, pmgr.getValue(CRAWLER_PROPERTIES, EXPORT_OPEN_OFFICE_GRAPHIC_NO_RESULTS), IMAGE_JPEG);
