@@ -184,7 +184,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			getGlobalCompilanceGraphic(messageResources, pageExecutionList, globalGraphics, "", file, noDataMess, regenerate);
 			// Gráfico nivel de cumplimiento global
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkByComplexityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades, tagsFilter);
+			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, categories, tagsFilter);
 			// Comparación adecuación segmento
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segments.mark.name") + ".jpg";
 			getGlobalAllocationBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
@@ -197,8 +197,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			// Comparación complimiento por complejidad
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.name") + ".jpg";
 			getGlobalCompilanceByComplexitivity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
-			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.segment.strached.name") + ".jpg";
-			getGlobalMarkBySegmentGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, categories, tagsFilter);
 			// Comparación de la puntuación por complejidad
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.allocation.complexitiviy.strached.name") + ".jpg";
 			getGlobalMarkByComplexitivityGraphic(messageResources, executionId, pageExecutionList, globalGraphics, "", file, noDataMess, complejidades, tagsFilter);
@@ -871,8 +869,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 						modalityComparisonForm.setRedPercentage("0%");
 					}
 					if (results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX) != null) {
-						modalityComparisonForm
-								.setGrayPercentage(results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX).toString().replace(_00, "") + "%");
+						modalityComparisonForm.setGrayPercentage(
+								results.get(key.replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX).toString().replace(_00, "") + "%");
 					} else {
 						modalityComparisonForm.setGrayPercentage("0%");
 					}
@@ -886,8 +884,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 						modalityComparisonForm.setGreenPercentage("0%");
 					}
 					if (results.get(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX) != null) {
-						modalityComparisonForm
-								.setGrayPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX).toString().replace(_00, "") + "%");
+						modalityComparisonForm.setGrayPercentage(
+								results.get(key.replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX).toString().replace(_00, "") + "%");
 					} else {
 						modalityComparisonForm.setGrayPercentage("0%");
 					}
@@ -895,14 +893,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					modalityComparisonForm.setVerification(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
 					modalityComparisonForm.setGrayPercentage(results.get(key).toString().replace(_00, "") + "%");
 					if (results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX) != null) {
-						modalityComparisonForm
-								.setGreenPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
+						modalityComparisonForm.setGreenPercentage(
+								results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
 					} else {
 						modalityComparisonForm.setGreenPercentage("0%");
 					}
 					if (results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX) != null) {
-						modalityComparisonForm
-								.setRedPercentage(results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
+						modalityComparisonForm.setRedPercentage(
+								results.get(key.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "") + Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX).toString().replace(_00, "") + "%");
 					} else {
 						modalityComparisonForm.setRedPercentage("0%");
 					}
@@ -1249,11 +1247,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 
 			private int major(String[] version) {
-				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+						.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
 			}
 
 			private Integer minor(String[] version) {
-				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")) : 0;
+				return version.length > 1 ? Integer.parseInt(
+						version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""))
+						: 0;
 			}
 		});
 		for (Map.Entry<String, BigDecimal> entryO : resultsOrdered.entrySet()) {
@@ -1300,11 +1301,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 
 			private int major(String[] version) {
-				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
+				return Integer.parseInt(version[0].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "")
+						.replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""));
 			}
 
 			private Integer minor(String[] version) {
-				return version.length > 1 ? Integer.parseInt(version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, "")) : 0;
+				return version.length > 1 ? Integer.parseInt(
+						version[1].replace(Constants.OBS_VALUE_NO_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_COMPILANCE_SUFFIX, "").replace(Constants.OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX, ""))
+						: 0;
 			}
 		});
 		// Process results
