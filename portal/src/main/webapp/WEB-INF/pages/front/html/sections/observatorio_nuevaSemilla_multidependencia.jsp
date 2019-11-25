@@ -24,7 +24,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 }
 
 /* Although you can't see the box here, so add some padding. */
-.tagbox-item .name, .tagbox-item .email { /* The name and email within the dropdown */
+.tagbox-item .name, .tagbox-item .email {
+	/* The name and email within the dropdown */
 	display: block;
 	float: left;
 	width: 35%;
@@ -38,36 +39,35 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 }
 </style>
 
- 
+
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 <script type="text/javascript">
+	var $jn = jQuery.noConflict();
 
-var $jn = jQuery.noConflict();
+	$(window).on('load', function() {
 
-$(window).on('load', function() {
+		$jn(document).ready(function() {
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
 
-	$jn(document).ready(function() {
-		$.ajax({
-			url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-			method : 'POST',
-			cache : false
-		}).success(function(response) {
+				$('#tagsFilter').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user'
+				});
 
-			$('#tagsFilter').tagbox({
-				items : response.etiquetas,
-				searchIn : [ 'name' ],
-				rowFormat : '<span class="name">{{name}}</span>',
-				tokenFormat : '{{name}}',
-				valueField : 'id',
-				itemClass : 'user'
-			});
+			})
 
-		})
+		});
 
 	});
-
-});
 
 	function cargarSelect(rowObject) {
 
@@ -227,7 +227,7 @@ $(window).on('load', function() {
 								}
 							}
 						});
-		
+
 		//Cargar las etiquetas
 		$jn('#selectEtiquetasNuevaSemilla').empty();
 		$('#selectEtiquetasNuevaSemillaSeleccionadas').empty();
@@ -244,15 +244,12 @@ $(window).on('load', function() {
 							if (response && response.length) {
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
-									$jn('#selectEtiquetasNuevaSemilla')
-											.append(
-													'<option value="'+ri.id+'">'
-															+ ri.name
-															+ '</option>');
+									$jn('#selectEtiquetasNuevaSemilla').append(
+											'<option value="'+ri.id+'">'
+													+ ri.name + '</option>');
 								}
 
-								$(
-										'#selectEtiquetasNuevaSemillaSeleccionadas')
+								$('#selectEtiquetasNuevaSemillaSeleccionadas')
 										.css(
 												'width',
 												$(
@@ -287,6 +284,7 @@ $(window).on('load', function() {
 								}
 							}
 						});
+
 	}
 </script>
 
@@ -302,6 +300,7 @@ $(window).on('load', function() {
 
 			<input type="hidden" name="id" /> <input type="hidden"
 				name="nombreAntiguo" />
+
 			<!-- Nombre -->
 			<div class="row formItem">
 				<label for="nombre" class="control-label"><strong
@@ -313,6 +312,8 @@ $(window).on('load', function() {
 						class="texto form-control" />
 				</div>
 			</div>
+
+
 			<!-- Activa -->
 			<div class="row formItem">
 				<label for="nombre" class="control-label"><strong
@@ -327,12 +328,13 @@ $(window).on('load', function() {
 					</select>
 				</div>
 			</div>
+
+
 			<!-- Dependencias -->
 			<div class="row formItem">
 				<label for="dependencia" class="control-label"><strong
 					class="labelVisu"><bean:message
 							key="nueva.semilla.observatorio.dependencia" /></strong></label>
-
 				<div class="col-xs-4">
 					<select multiple class="form-control"
 						id="selectDependenciasNuevaSemilla"></select>
@@ -349,9 +351,9 @@ $(window).on('load', function() {
 						id="selectDependenciasNuevaSemillaSeleccionadas"
 						name="dependenciasSeleccionadas"></select>
 				</div>
-
-
 			</div>
+
+
 			<!-- Acronimo -->
 			<div class="row formItem">
 				<label for="acronimo" class="control-label"><strong
@@ -417,42 +419,17 @@ $(window).on('load', function() {
 
 
 			<!-- Etiquetas -->
-<!--  	 	<div class="row formItem">
-				<label for="etiqueta" class="control-label"><strong
-					class="labelVisu"><bean:message
-							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
-
-				<div class="col-xs-4">
-					<select multiple class="form-control"
-						id="selectEtiquetasNuevaSemilla"></select>
-				</div>
-				<div class="col-xs-1">
-					<input type='button' id="addEtiqueta" value="&gt;&gt;"
-						onclick="$('#selectEtiquetasNuevaSemilla').find('option:selected').remove().appendTo('#selectEtiquetasNuevaSemillaSeleccionadas');">
-
-					<input type='button' id="removeEtiqueta" value="&lt;&lt;"
-						onclick="$('#selectEtiquetasNuevaSemillaSeleccionadas').find('option:selected').remove().appendTo('#selectEtiquetasNuevaSemilla');">
-				</div>
-				<div class="col-xs-4">
-					<select multiple class="form-control"
-						id="selectEtiquetasNuevaSemillaSeleccionadas"
-						name="etiquetasSeleccionadas"></select>
-				</div>
--->
-
-			</div>		
-			
-			
-					<!-- Etiquetas -->
 			<div class="row formItem">
-				<label for="etiqueta" class="control-label"><strong class="labelVisu"> <bean:message
+				<label for="etiqueta" class="control-label"><strong
+					class="labelVisu"> <bean:message
 							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
 				<div class="col-xs-6">
-					 <input name="etiquetasSeleccionadas"
-								autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />
+					<input name="etiquetasSeleccionadas" autocapitalize="off"
+						placeholder="Escriba para buscar..." autofocus id="tagsFilter"
+						type="text" value="" />
 				</div>
-			</div>		
-			
+			</div>
+
 			<!-- Urls -->
 			<div class="row formItem">
 				<p class="alert alert-info" style="margin-left: 23%;">
@@ -465,7 +442,7 @@ $(window).on('load', function() {
 						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 							key="nueva.semilla.observatorio.url" /></strong></label>
 				<div class="col-xs-8">
-					<textarea rows="5" cols="50" name="listaUrlsString"
+					<textarea rows="5" cols="50" name="listaURLsString"
 						class="form-control"></textarea>
 				</div>
 			</div>
@@ -487,9 +464,6 @@ $(window).on('load', function() {
 					</select>
 				</div>
 			</div>
-
-
-
 
 
 		</fieldset>
