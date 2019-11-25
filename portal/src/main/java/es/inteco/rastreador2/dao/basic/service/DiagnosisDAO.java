@@ -90,7 +90,7 @@ public final class DiagnosisDAO {
 	 */
 	public static long insertBasicServices(final Connection conn, final BasicServiceForm basicServiceForm, final String status) {
 		try (PreparedStatement ps = conn.prepareStatement(
-				"INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+				"INSERT INTO basic_service (usr, language, domain, email, depth, width, report, date, status, scheduling_date, analysis_type, in_directory, register_result, complexity) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setString(1, basicServiceForm.getUser());
 			ps.setString(2, basicServiceForm.getLanguage());
@@ -114,6 +114,7 @@ public final class DiagnosisDAO {
 			}
 			ps.setBoolean(12, basicServiceForm.isInDirectory());
 			ps.setBoolean(13, basicServiceForm.isRegisterAnalysis());
+			ps.setString(14, basicServiceForm.getComplexity());
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
@@ -158,6 +159,7 @@ public final class DiagnosisDAO {
 					} else if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.LISTA_URLS) {
 						basicServiceForm.setDomain(rs.getString("domain"));
 					}
+					basicServiceForm.setComplexity(rs.getString("complexity"));
 					return basicServiceForm;
 				}
 			}
@@ -354,7 +356,7 @@ public final class DiagnosisDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
 		StringBuilder query = new StringBuilder(
-				"SELECT (select nombre from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain)) as ambito, id,usr,language,domain,email,depth,width,report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result FROM basic_service WHERE 1=1 ");
+				"SELECT (select nombre from ambitos_lista where id_ambito =(select id_ambito from lista where lista = domain)) as ambito, id,usr,language,domain,email,depth,width,report,date,send_date, status,scheduling_date,analysis_type,in_directory,register_result, (select nombre from complejidades_lista where id_complejidad = complexity) as complexity_name FROM basic_service WHERE 1=1 ");
 		addSearchParameters(search, query);
 		query.append("ORDER BY id DESC");
 		query.append(" LIMIT " + pagSize + " OFFSET " + resultFrom);
@@ -407,7 +409,31 @@ public final class DiagnosisDAO {
 	 * @return the basic service request CSV
 	 */
 	public static String getCSV(final Connection conn, final ServicioDiagnosticoForm search) {
-		StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
+		//StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
+		
+		
+
+		StringBuilder query = new StringBuilder("SELECT id,"
+				+ "usr,"
+				+ "language,"
+				+ "domain,"
+				+ "email,"
+				+ "depth,"
+				+ "width,"
+				+ "(select lower(nombre) from complejidades_lista where id_complejidad = complexity) as complexity,"
+				+ "report,"
+				+ "date,"
+				+ "status,"
+				+ "send_date,"
+				+ "scheduling_date,"
+				+ "analysis_type,"
+				+ "in_directory,"
+				+ "register_result"
+				+ " FROM basic_service WHERE 1=1");
+				
+		
+		
+		
 		addSearchParameters(search, query);
 		try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
 			int nextParameterCount = 1;
@@ -432,7 +458,7 @@ public final class DiagnosisDAO {
 	 * @param rs the rs
 	 * @return the form from result set
 	 * @throws SQLException   the SQL exception
-	 * @throws ParseException
+	 * @throws ParseException the parse exception
 	 */
 	private static ServicioDiagnosticoForm getFormFromResultSet(ResultSet rs) throws SQLException, ParseException {
 		// 2019-11-19 10:38:26.0
@@ -458,6 +484,7 @@ public final class DiagnosisDAO {
 		if (!org.apache.commons.lang3.StringUtils.isEmpty(rs.getString("send_date"))) {
 			result.setSendDate(format.parse(rs.getString("send_date")));
 		}
+		result.setComplexityName(rs.getString("complexity_name"));
 		return result;
 	}
 
@@ -554,6 +581,14 @@ public final class DiagnosisDAO {
 		}
 	}
 
+	/**
+	 * Convert to including end date.
+	 *
+	 * @param format  the format
+	 * @param endDate the end date
+	 * @return the java.util. date
+	 * @throws ParseException the parse exception
+	 */
 	private static java.util.Date convertToIncludingEndDate(final DateFormat format, final String endDate) throws ParseException {
 		final Calendar calendar = new GregorianCalendar();
 		calendar.setTime(format.parse(endDate));

@@ -79,31 +79,16 @@ function etiquetasFormatter(cellvalue, options, rowObject) {
 		data = data.slice(0, -1);
 	}
 
-	var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' data-tags='"
-			+ data + "'>";
+	var cellFormatted = "<div class='tagbox-wrapper'>";
 
 	$.each(rowObject.etiquetas, function(index, value) {
-		cellFormatted = cellFormatted + "<li class='listado-grid'>"
-				+ value.name + "</li>";
+		cellFormatted = cellFormatted + "<div class='tagbox-token'><span>"
+				+ value.name + "</span></div>";
 	});
 
-	cellFormatted = cellFormatted + "</ul>";
+	cellFormatted = cellFormatted + "</div>";
 
 	return cellFormatted;
-
-	// var cellValue = "";
-	//	
-	//	
-	// $.each(rowObject.etiquetas, function(index, value) {
-	// cellValue = cellValue + value.id + ",";
-	// });
-	//	
-	//	
-	// var cellFormatted = '<input name="tags" autocapitalize="off"
-	// placeholder="Escriba para buscar..." autofocus id="tagsFilter"
-	// type="text" value="'+cellValue+'" />';
-	//	
-	// return cellFormatted;
 }
 
 function titleDependenciasFormatter(cellvalue, options, rowObject) {
@@ -155,7 +140,6 @@ function complexityEdit(value, options, rowObject) {
 	element.setAttribute("type", "text");
 	element.setAttribute("autocapitalize", "off");
 	element.setAttribute("placeholder", "Escriba para buscar...");
-	
 
 	var seed = $('#grid').jqGrid('getRowData', options.rowId);
 
@@ -172,7 +156,7 @@ function complexityEdit(value, options, rowObject) {
 			if (data) {
 				data = data.slice(0, -1);
 			}
-			
+
 			element.setAttribute('value', data);
 
 		}
@@ -224,75 +208,6 @@ function dialogoErrorEdit(mensaje) {
 
 }
 
-function myelem(value,options, rowObject){
-	
-	//var el = $('<input name="etiquetasSeleccionadas" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />');
-	
-	
-	/*$.ajax({
-		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-		method : 'POST',
-		cache : false
-	}).success(function(response) {
-
-		$('#tagsFilter').tagbox({
-			items : response.etiquetas,
-			searchIn : [ 'name' ],
-			rowFormat : '<span class="name">{{name}}</span>',
-			tokenFormat : '{{name}}',
-			valueField : 'id',
-			itemClass : 'user'
-		});
-
-	})*/
-
-	return '<input type="text" />';
-	
-	//return '<input onClick = "loadEtiquetas(this)" name="etiquetasSeleccionadas" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />';
-	//return el[0];
-}
-
-function loadEtiquetas(e){
-	
-	console.Log(e);
-}
-
-
-function myval(elem, operation, value){
-    //return elem.val();
-	
-
-	if (operation === 'get') {
-		return $(elem).val();
-	} else if (operation === 'set') {
-		$('input', elem).val(value);
-	}
-}
-	
-/*
-
-	$(window).on('load', function() {
-		$jq(document).ready(function() {
-			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-				method : 'POST',
-				cache : false
-			}).success(function(response) {
-
-				$('#tagsFilter').tagbox({
-					items : response.etiquetas,
-					searchIn : [ 'name' ],
-					rowFormat : '<span class="name">{{name}}</span>',
-					tokenFormat : '{{name}}',
-					valueField : 'id',
-					itemClass : 'user'
-				});
-
-			})
-
-		});
-	});*/
-	
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
 // de paginación. Si no le llega nada usa la url por defecto
 function reloadGrid(path) {
@@ -475,7 +390,7 @@ function reloadGrid(path) {
 														formatter : complejidadFormatter,
 														sortable : false
 
-													},/*
+													},
 													{
 														name : "etiquetasSeleccionadas",
 														cellattr : function(
@@ -503,33 +418,7 @@ function reloadGrid(path) {
 														},
 														formatter : etiquetasFormatter,
 														sortable : false
-													},*/
-													{
-														name : "etiquetasSeleccionadas",
-														cellattr : function(
-																rowId, val,
-																rawObject, cm,
-																rdata) {
-															return 'title="'
-																	+ titleEtiquetasFormatter(
-																			val,
-																			null,
-																			rawObject)
-																	+ '"';
-														},
-														align : "left",
-														width : 25,
-														// editrules : {
-														// required : true
-														// },
-														edittype : "custom",
-														editoptions : {
-														custom_element: myelem, 
-														custom_value:myval,
-														},
-														formatter : etiquetasFormatter,
-														sortable : false
-													},	
+													},
 													{
 														name : "dependenciasSeleccionadas",
 														// Prueba para devolver

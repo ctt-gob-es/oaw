@@ -96,7 +96,7 @@ public class BasicServiceAction extends Action {
         errors.add(BasicServiceUtils.validateUrlLenght(basicServiceForm));
         
         
-        if (basicServiceForm.isRegisterAnalysis()) {
+       /* if (basicServiceForm.isRegisterAnalysis()) {
             if (basicServiceForm.getAnalysisType() == BasicServiceAnalysisType.URL) {
                 if (!"4".equals(basicServiceForm.getProfundidad()) && !"4".equals(basicServiceForm.getAmplitud())) {
                     errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.evolution.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
@@ -105,7 +105,7 @@ public class BasicServiceAction extends Action {
                     && basicServiceForm.getDomain().split("\r\n").length != 17) {
                 errors.add(Globals.ERROR_KEY, new ActionMessage("basic.service.evolution.not.valid", Constants.REPORT_OBSERVATORY, Constants.REPORT_UNE));
             }
-        }
+        }*/
 
         return errors;
     }

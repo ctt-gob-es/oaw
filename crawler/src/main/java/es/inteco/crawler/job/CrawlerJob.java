@@ -391,21 +391,21 @@ public class CrawlerJob implements InterruptableJob {
 		String cookie = null;
 		int depth = crawlerData.getProfundidad();
 		int width = crawlerData.getTopN();
-//		// TODO Aplply seed complex only if is not basic service
-//		if (crawlerData.getIdCrawling() > 0) {
-//			try {
-//				Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
-//				if (s != null) {
-//					depth = s.getDepth();
-//					width = s.getWidth();
-//					// Set to recursive calls
-//					crawlerData.setTopN(width);
-//					crawlerData.setProfundidad(depth);
-//				}
-//			} catch (Exception e) {
-//				Logger.putLog("Error al obtener la complejidad de la semilla del rastreo id=" + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
-//			}
-//		}
+		// TODO Aplply seed complex only if is not basic service an only if is not manual selection
+		if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size()==1) {
+			try {
+				Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
+				if (s != null) {
+					depth = s.getDepth();
+					width = s.getWidth();
+					// Set to recursive calls
+					crawlerData.setTopN(width);
+					crawlerData.setProfundidad(depth);
+				}
+			} catch (Exception e) {
+				Logger.putLog("Error al obtener la complejidad de la semilla del rastreo id=" + crawlerData.getIdCrawling(), CrawlerJob.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+		}
 		// Make crawl
 		for (String url : crawlerData.getUrls()) {
 			String domain = null;

@@ -31,7 +31,7 @@ function estadoFormatter(cellvalue, options, rowObject) {
 function observatorioFormatter(cellvalue, options, rowObject) {
 
 	var valur = "";
-	
+
 	if (cellvalue.startsWith("observatorio-5")) {
 		value = "Accesibilidad";
 	} else if (cellvalue.startsWith("observatorio-4")) {
@@ -47,7 +47,7 @@ function observatorioFormatter(cellvalue, options, rowObject) {
 	if (cellvalue.endsWith("nobroken")) {
 		value = value + " (sin enlaces rotos)";
 	}
-	
+
 	return value;
 }
 
@@ -90,6 +90,16 @@ function usuarioFormatter(cellvalue, options, rowObject) {
 	return cellvalue;
 }
 
+function complexityFormatter(cellvalue, options, rowObject) {
+
+
+	if (cellvalue) {
+		return cellvalue;
+	}
+
+	return "-";
+}
+
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
 // de paginación. Si no le llega nada usa la url por defecto
 function reloadGrid(path, gridId, paginadorId) {
@@ -123,7 +133,8 @@ function reloadGrid(path, gridId, paginadorId) {
 								{
 									colNames : [ "URL", "Tipo de portal *",
 											"Usuario", "Email", "Profundidad",
-											"Amplitud", "Tipo de informe",
+											"Amplitud", "Complejidad",
+											"Tipo de informe",
 											"Tipo de an&#225;lisis",
 											"En directorio", "Hist&#243;rico",
 											"Estado", "Fecha de solicitud",
@@ -155,10 +166,15 @@ function reloadGrid(path, gridId, paginadorId) {
 										width : 10,
 										sortable : false,
 									}, {
+										name : "complexityName",
+										width : 20,
+										sortable : false,
+										formatter : complexityFormatter
+									}, {
 										name : "report",
 										width : 20,
 										sortable : false,
-										formatter: observatorioFormatter
+										formatter : observatorioFormatter
 									}, {
 										name : "analysisType",
 										width : 20,
