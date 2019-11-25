@@ -31,7 +31,6 @@ import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
  * The Class ComplejidadDAO.
  */
 public final class ComplejidadDAO {
-
 	/**
 	 * Instantiates a new dependencia DAO.
 	 */
@@ -41,28 +40,21 @@ public final class ComplejidadDAO {
 	/**
 	 * Count dependencias.
 	 *
-	 * @param c
-	 *            the c
-	 * @param nombre
-	 *            the nombre
+	 * @param c      the c
+	 * @param nombre the nombre
 	 * @return the int
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static int countComplejidades(Connection c, String nombre) throws SQLException {
 		int count = 1;
 		String query = "SELECT COUNT(*) FROM complejidades_lista d WHERE 1=1 ";
-
 		if (StringUtils.isNotEmpty(nombre)) {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
-
 			if (StringUtils.isNotEmpty(nombre)) {
 				ps.setString(count++, "%" + nombre + "%");
 			}
-
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getInt(1);
@@ -79,37 +71,27 @@ public final class ComplejidadDAO {
 	/**
 	 * Gets the complejidades.
 	 *
-	 * @param c
-	 *            the c
-	 * @param nombre
-	 *            the nombre
-	 * @param page
-	 *            the page
+	 * @param c      the c
+	 * @param nombre the nombre
+	 * @param page   the page
 	 * @return the complejidades
-	 * @throws SQLException
-	 *             the SQL exception
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<ComplejidadForm> getComplejidades(Connection c, String nombre, int page) throws SQLException {
 		final List<ComplejidadForm> results = new ArrayList<>();
 		String query = "SELECT d.id_complejidad, d.nombre, d.profundidad, d.amplitud FROM complejidades_lista d WHERE 1=1 ";
-
 		if (StringUtils.isNotEmpty(nombre)) {
 			query += " AND UPPER(d.nombre) like UPPER(?) ";
 		}
-
 		query += "ORDER BY UPPER(d.nombre) ASC ";
-
 		if (page != Constants.NO_PAGINACION) {
 			query += "LIMIT ? OFFSET ?";
 		}
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			int count = 1;
-
 			if (StringUtils.isNotEmpty(nombre)) {
 				ps.setString(count++, "%" + nombre + "%");
 			}
-
 			if (page != Constants.NO_PAGINACION) {
 				PropertiesManager pmgr = new PropertiesManager();
 				int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
@@ -118,15 +100,12 @@ public final class ComplejidadDAO {
 				ps.setInt(count, resultFrom);
 			}
 			try (ResultSet rs = ps.executeQuery()) {
-
 				while (rs.next()) {
 					ComplejidadForm complejidadForm = new ComplejidadForm();
 					complejidadForm.setId(rs.getString("d.id_complejidad"));
 					complejidadForm.setName(rs.getString("d.nombre"));
 					complejidadForm.setProfundidad(rs.getInt("d.profundidad"));
 					complejidadForm.setAmplitud(rs.getInt("d.amplitud"));
-
-
 					results.add(complejidadForm);
 				}
 			}
@@ -146,26 +125,46 @@ public final class ComplejidadDAO {
 	 * @throws SQLException the SQL exception
 	 */
 	public static boolean existsComplejidad(Connection c, ComplejidadForm complejidad) throws SQLException {
-
 		boolean exists = false;
-
 		final String query = "SELECT * FROM complejidades_lista WHERE UPPER(nombre) = UPPER(?)";
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, complejidad.getName());
 			ResultSet result = ps.executeQuery();
-
 			if (result.next()) {
 				exists = true;
 			}
-
 		} catch (SQLException e) {
 			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 		return exists;
+	}
 
+	/**
+	 * Gets the by id.
+	 *
+	 * @param c  the c
+	 * @param id the id
+	 * @return the by id
+	 * @throws SQLException the SQL exception
+	 */
+	public static ComplejidadForm getById(Connection c, String id) throws SQLException {
+
+		final String query = "SELECT * FROM complejidades_lista WHERE id_complejidad = ?";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, Long.parseLong(id));
+			ResultSet result = ps.executeQuery();
+			if (result.next()) {
+				ComplejidadForm cmp = new ComplejidadForm();
+				cmp.setAmplitud(result.getInt("amplitud"));
+				cmp.setProfundidad(result.getInt("profundidad"));
+				return cmp;
+			}
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return null;
 	}
 
 	/**
@@ -177,7 +176,6 @@ public final class ComplejidadDAO {
 	 */
 	public static void save(Connection c, ComplejidadForm complejidad) throws SQLException {
 		final String query = "INSERT INTO complejidades_lista(nombre, profundidad, amplitud) VALUES (?,?,?)";
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, complejidad.getName());
 			ps.setInt(2, complejidad.getProfundidad());
@@ -198,7 +196,6 @@ public final class ComplejidadDAO {
 	 */
 	public static void update(Connection c, ComplejidadForm complejidad) throws SQLException {
 		final String query = "UPDATE complejidades_lista SET nombre = ?, profundidad = ?, amplitud = ? WHERE id_complejidad = ?";
-
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, complejidad.getName());
 			ps.setInt(2, complejidad.getProfundidad());
@@ -209,7 +206,6 @@ public final class ComplejidadDAO {
 			Logger.putLog("SQL Exception: ", ComplejidadDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-
 	}
 
 	/**
@@ -228,5 +224,4 @@ public final class ComplejidadDAO {
 			throw e;
 		}
 	}
-
 }

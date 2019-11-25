@@ -40,6 +40,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
+import org.bouncycastle.asn1.cmp.CMPCertificate;
 import org.odftoolkit.odfdom.OdfElement;
 import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -78,6 +79,10 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilder {
+	/** The Constant PMASECTION_BOOKMARK. */
+	private static final String PMASECTION_NAME = "SectionPMA";
+	private static final String CMV_SECTION_NAME = "SectionCMV";
+	private static final String PMV_SECTION_NAME = "SectionPMV";
 	/** The Constant FO_CLIP. */
 	private static final String FO_CLIP = "fo:clip";
 	/** The Constant STYLE_GRAPHIC_PROPERTIES. */
@@ -170,6 +175,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	private static final String TEXT_LIST = "//text:list";
 	/** The Constant TEXT_BOOKMARK_START_TEXT_NAME_S. */
 	private static final String TEXT_BOOKMARK_START_TEXT_NAME_S = "//text:bookmark-start[@text:name='%s']";
+	/** The Constant TEXT_SECTION_NAME_S. */
+	private static final String TEXT_SECTION_NAME_S = "//text:section[@text:name='%s']";
 	/** The Constant TEXT_TITLE. */
 	private static final String TEXT_TITLE = "//text:title";
 	/** The Constant HEADER_PUNTUACIÓN_MEDIA_DE_LOS_PORTALES. */
@@ -278,14 +285,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 		replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
 		// Global sections
-		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, null);
+		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, null, null);
 		// Generate categories document and merge with parent
-		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, null);
+		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, null, null);
 		// Generate complexities
-		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null);
+		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null, null);
 		// Evolution
 		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null);
-		finishDocumentConfiguration(odt, odfFileContent);
+		finishDocumentConfiguration(odt, odfFileContent, "");
 		return odt;
 	}
 
@@ -304,13 +311,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param idBaseTemplate       the id base template
 	 * @param idSegmentTemplate    the id segment template
 	 * @param idComplexityTemplate the id complexity template
+	 * @param reportTitle          the report title
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */
 	@Override
 	public OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution,
 			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds,
-			Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate) throws Exception {
+			Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, String reportTitle) throws Exception {
 		this.idBaseTemplate = idBaseTemplate;
 		this.idComplexityTemplate = idComplexityTemplate;
 		this.idSegmentTemplate = idSegmentTemplate;
@@ -324,11 +332,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 		replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
 		// Global sections
-		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter);
-		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter);
-		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter);
+		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter, grpahicConditional);
+		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
+		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
 		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds);
-		finishDocumentConfiguration(odt, odfFileContent);
+		finishDocumentConfiguration(odt, odfFileContent, reportTitle);
 		return odt;
 	}
 
@@ -337,9 +345,10 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 *
 	 * @param odt            the odt
 	 * @param odfFileContent the odf file content
+	 * @param reportTitle    the report title
 	 * @throws Exception the exception
 	 */
-	private void finishDocumentConfiguration(final OdfTextDocument odt, final OdfFileDom odfFileContent) throws Exception {
+	private void finishDocumentConfiguration(final OdfTextDocument odt, final OdfFileDom odfFileContent, String reportTitle) throws Exception {
 		// Fix crop images (fo:clip attribute) after merge several documents
 		NodeList nodeList = odt.getContentDom().getElementsByTagName(STYLE_GRAPHIC_PROPERTIES);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -347,7 +356,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			node.removeAttribute(FO_CLIP);
 		}
 		// Update title
-		replaceDocumentTitle(odt, odfFileContent, "");
+		replaceDocumentTitle(odt, odfFileContent, reportTitle);
 		// Add generated tables styles
 		addTableStyles(odt);
 	}
@@ -431,15 +440,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg" }, pageObservatoryMap,
 				LEVEL_I_VERIFICATIONS);
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
-				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg" }, pageObservatoryMap,
-				LEVEL_II_VERIFICATIONS);
-		
+				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg" }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
 		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
-
 		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
 		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
 		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg", "EvolucionCumplimientiVerificacionNAIICombinada", MIME_TYPE_JPG);
-
 		// By aspects
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
 		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
@@ -449,18 +454,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/**
 	 * Replace complexitivy section.
 	 *
-	 * @param graphicPath       the graphic path
-	 * @param pageExecutionList the page execution list
-	 * @param messageResources  the message resources
-	 * @param odt               the odt
-	 * @param odfFileContent    the odf file content
-	 * @param tagsFilter        the tags filter
+	 * @param graphicPath        the graphic path
+	 * @param pageExecutionList  the page execution list
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param tagsFilter         the tags filter
+	 * @param grpahicConditional the grpahic conditional
 	 * @throws SQLException             the SQL exception
 	 * @throws Exception                the exception
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void replaceComplexitivySection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources, final OdfTextDocument odt,
-			final OdfFileDom odfFileContent, String[] tagsFilter) throws SQLException, Exception, XPathExpressionException {
+			final OdfFileDom odfFileContent, String[] tagsFilter, Map<String, Boolean> grpahicConditional) throws SQLException, Exception, XPathExpressionException {
 		for (ComplejidadForm complejidad : ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1)) {
 			OdfTextDocument odtComplexity = getOdfTemplateComplexities();
 			OdfFileDom odfFileContentComplejidad = odtComplexity.getContentDom();
@@ -499,18 +505,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/**
 	 * Replace segment section.
 	 *
-	 * @param graphicPath       the graphic path
-	 * @param pageExecutionList the page execution list
-	 * @param categories        the categories
-	 * @param messageResources  the message resources
-	 * @param odt               the odt
-	 * @param odfFileContent    the odf file content
-	 * @param tagsFilter        the tags filter
+	 * @param graphicPath        the graphic path
+	 * @param pageExecutionList  the page execution list
+	 * @param categories         the categories
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param tagsFilter         the tags filter
+	 * @param grpahicConditional the grpahic conditional
 	 * @throws Exception                the exception
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void replaceSegmentSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
-			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsFilter) throws Exception, XPathExpressionException {
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsFilter, Map<String, Boolean> grpahicConditional) throws Exception, XPathExpressionException {
 		for (CategoriaForm category : categories) {
 			OdfTextDocument odtCategory = getOdfTemplateCategories();
 			OdfFileDom odfFileContentCategory = odtCategory.getContentDom();
@@ -522,13 +529,28 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				replaceSectionAllocationDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionCompilandeDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionAllocationPuntuactionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionMidAllocationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_PMV_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_PMV_GRPAHICS))) {
+					replaceSectionMidAllocationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+					replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				} else {
+					// remove pmasection
+					removeSection(odt, odfFileContent, PMV_SECTION_NAME);
+				}
+				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS))) {
+					replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+					replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				} else {
+					// remove pmasection
+					removeSection(odt, odfFileContent, CMV_SECTION_NAME);
+				}
 				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_ASPECTS_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_ASPECTS_GRPAHICS))) {
+					replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				} else {
+					// remove pmasection
+					removeSection(odtCategory, odfFileContentCategory, PMASECTION_NAME);
+				}
 				// Replace titles with group name
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_SPAN_NODE);
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_P_NODE);
@@ -559,7 +581,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @throws Exception the exception
 	 */
 	private void replaceGlobalSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
-			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, String[] tagsFilter) throws Exception {
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, String[] tagsFilter, Map<String, Boolean> grpahicConditional) throws Exception {
 		replaceSectionGlobalAccesibilityDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionComparisionPuntuactionAllocationSegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList, tagsFilter);
@@ -570,11 +592,21 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionComparisionPuntuactionByComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter);
 		replaceSectionPuntuacionByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionPuntuacionByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionModalityByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		if (grpahicConditional.containsKey(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS))) {
+			replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+			replaceSectionModalityByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		} else {
+			// remove pmasection
+			removeSection(odt, odfFileContent, PMASECTION_NAME);
+		}
 		replaceSectionCompilanceByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionCompilanceByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionComparisionAspects(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		if (grpahicConditional.containsKey(Constants.CHECK_GLOBAL_ASPECTS_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_GLOBAL_ASPECTS_GRPAHICS))) {
+			replaceSectionComparisionAspects(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		} else {
+			// remove pmasection
+			removeSection(odt, odfFileContent, CMV_SECTION_NAME);
+		}
 	}
 
 	/**
@@ -594,6 +626,40 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				node.setTextContent(newTitle);
 			}
 			odt.getOfficeMetadata().setTitle(newTitle);
+		}
+	}
+
+	/**
+	 * Removes the by bookmark.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param bookmark       the bookmark
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void removeByBookmark(final OdfTextDocument odt, final OdfFileDom odfFileContent, String bookmark) throws XPathExpressionException {
+		XPath xpath = odt.getXPath();
+		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_BOOKMARK_START_TEXT_NAME_S, bookmark), odfFileContent, XPathConstants.NODESET);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			OdfElement node = (OdfElement) nodeList.item(i);
+			node.getParentNode().removeChild(node);
+		}
+	}
+
+	/**
+	 * Removes the section.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param sectionName    the section name
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void removeSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, String sectionName) throws XPathExpressionException {
+		XPath xpath = odt.getXPath();
+		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_SECTION_NAME_S, sectionName), odfFileContent, XPathConstants.NODESET);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			OdfElement node = (OdfElement) nodeList.item(i);
+			node.getParentNode().removeChild(node);
 		}
 	}
 
@@ -1145,7 +1211,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
-
 			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
 			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
@@ -1369,47 +1434,30 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c2-", labels.get(0).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d2-", labels.get(0).getGrayPercentage());
-			
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b3-", labels.get(1).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c3-", labels.get(1).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d3-", labels.get(1).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b4-", labels.get(2).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c4-", labels.get(2).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d4-", labels.get(2).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b5-", labels.get(3).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c5-", labels.get(3).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d5-", labels.get(3).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b6-", labels.get(4).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c6-", labels.get(4).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d6-", labels.get(4).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c7-", labels.get(5).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d7-", labels.get(5).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b8-", labels.get(6).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c8-", labels.get(6).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d8-", labels.get(6).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b9-", labels.get(7).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c9-", labels.get(7).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d9-", labels.get(7).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b10-", labels.get(8).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c10-", labels.get(8).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d10-", labels.get(8).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b11-", labels.get(9).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c11-", labels.get(9).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d11-", labels.get(9).getGrayPercentage());
@@ -1417,17 +1465,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b12-", labels.get(10).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c12-", labels.get(10).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d12-", labels.get(10).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b13-", labels.get(11).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c13-", labels.get(11).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d13-", labels.get(11).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b14-", labels.get(12).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c14-", labels.get(12).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d14-", labels.get(12).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b15-", labels.get(13).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c15-", labels.get(13).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d15-", labels.get(13).getGrayPercentage());
@@ -1460,25 +1503,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c2-", labels.get(0).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d2-", labels.get(0).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b3-", labels.get(1).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c3-", labels.get(1).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d3-", labels.get(1).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b4-", labels.get(2).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c4-", labels.get(2).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d4-", labels.get(2).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b5-", labels.get(3).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c5-", labels.get(3).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d5-", labels.get(3).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b6-", labels.get(4).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c6-", labels.get(4).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d6-", labels.get(4).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c7-", labels.get(5).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d7-", labels.get(5).getGrayPercentage());
@@ -1540,72 +1576,45 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, "-451c.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c2-", res.get(0).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d2-", res.get(0).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b3-", res.get(1).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c3-", res.get(1).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d3-", res.get(1).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b4-", res.get(2).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c4-", res.get(2).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d4-", res.get(2).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b5-", res.get(3).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c5-", res.get(3).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d5-", res.get(3).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b6-", res.get(4).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c6-", res.get(4).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d6-", res.get(4).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c7-", res.get(5).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d7-", res.get(5).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b8-", res.get(6).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c8-", res.get(6).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d8-", res.get(6).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b9-", res.get(7).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c9-", res.get(7).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d9-", res.get(7).getGrayPercentage());
-		
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b10-", res.get(8).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c10-", res.get(8).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d10-", res.get(8).getGrayPercentage());
-		
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b11-", res.get(9).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c11-", res.get(9).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d11-", res.get(9).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b12-", res.get(10).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c12-", res.get(10).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d12-", res.get(10).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b13-", res.get(11).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c13-", res.get(11).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d13-", res.get(11).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b14-", res.get(12).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c14-", res.get(12).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d14-", res.get(12).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b15-", res.get(13).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c15-", res.get(13).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d15-", res.get(13).getRedPercentage());
-		
 	}
 
 	/**
@@ -1629,25 +1638,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, "-452c.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c2-", res.get(0).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d2-", res.get(0).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b3-", res.get(1).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c3-", res.get(1).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d3-", res.get(1).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b4-", res.get(2).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c4-", res.get(2).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d4-", res.get(2).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b5-", res.get(3).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c5-", res.get(3).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d5-", res.get(3).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b6-", res.get(4).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c6-", res.get(4).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d6-", res.get(4).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c7-", res.get(5).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d7-", res.get(5).getGrayPercentage());
@@ -2173,7 +2175,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		return numImg;
 	}
 
-	
 	/**
 	 * Replace section compliance by verification.
 	 *
@@ -2283,6 +2284,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		}
 		return numImg;
 	}
+
 	/**
 	 * Replace section evolution score by aspect.
 	 *
