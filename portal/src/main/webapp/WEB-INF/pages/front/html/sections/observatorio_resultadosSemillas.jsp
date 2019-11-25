@@ -148,7 +148,7 @@ Email: observ.accesibilidad@correo.gob.es
 				$('#grid').getLocalRow(rowid).nombre);
 		$('#nuevaSemillaMultidependencia input[name=acronimo]').val(
 				$('#grid').getLocalRow(rowid).acronimo);
-		$('#nuevaSemillaMultidependencia textarea[name=listaURLsString]').val(
+		$('#nuevaSemillaMultidependencia textarea[name=listaUrlsString]').val(
 				$('#grid').getLocalRow(rowid).listaUrls.toString().replace(/\,/g, '\r\n'));
 		$('#nuevaSemillaMultidependencia  select[name=activa] option[value='
 						+ $('#grid').getLocalRow(rowid).activa + ']').attr(

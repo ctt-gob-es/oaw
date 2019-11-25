@@ -379,7 +379,7 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 			String[] etiquetas = request.getParameterValues("etiquetasSeleccionadas");
 			String[] arrayEtiquetas = etiquetas[0].split(",");
 
-			if (arrayEtiquetas != null && arrayEtiquetas.length > 0) {
+			if (etiquetas[0] != "" && arrayEtiquetas != null && arrayEtiquetas.length > 0) {
 				for (int i = 0; i < arrayEtiquetas.length; i++) {
 					EtiquetaForm etiqueta = new EtiquetaForm();
 					etiqueta.setId(Long.parseLong(arrayEtiquetas[i]));
