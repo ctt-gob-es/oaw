@@ -442,7 +442,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
 							key="nueva.semilla.observatorio.url" /></strong></label>
 				<div class="col-xs-8">
-					<textarea rows="5" cols="50" name="listaURLsString"
+					<textarea rows="5" cols="50" name="listaUrlsString"
 						class="form-control"></textarea>
 				</div>
 			</div>
