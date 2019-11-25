@@ -359,10 +359,8 @@ public final class ObservatoryUtils {
 					} else {
 						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
 					}
-					// seedResult.getIdCrawling()
-					RastreoDAO.setScoreAndLevelCrawling(c, Long.valueOf(seedResult.getIdFulfilledCrawling()), seedResult.getScore(), seedResult.getNivel());
-//					seedResult.setNivel(IntavUtils.generateScores(MessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
-				}
+					//Save scrore and level on database
+					RastreoDAO.setScoreAndLevelCrawling(c, Long.valueOf(seedResult.getIdFulfilledCrawling()), seedResult.getScore(), seedResult.getNivel());				}
 			}
 		}
 		return seedsResults;
