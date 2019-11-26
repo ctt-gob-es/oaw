@@ -234,7 +234,7 @@ function reloadGrid(path, gridId, paginadorId) {
 						if (total == 0) {
 							$('#' + gridId)
 									.append(
-											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="13" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
+											'<tr role="row" class="ui-widget-content jqgfirstrow ui-row-ltr"><td colspan="14" style="padding: 15px !important;" role="gridcell">Sin resultados</td></tr>');
 						}
 
 						// Paginador

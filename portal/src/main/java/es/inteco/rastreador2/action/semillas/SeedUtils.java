@@ -40,7 +40,6 @@ import es.inteco.rastreador2.actionform.semillas.SemillaForm;
  * The Class SeedUtils.
  */
 public final class SeedUtils {
-
 	/**
 	 * Instantiates a new seed utils.
 	 */
@@ -61,7 +60,6 @@ public final class SeedUtils {
 			if (!seedUrl.startsWith("http://") && !seedUrl.startsWith("https://")) {
 				seedUrl = "http://" + seedUrl;
 			}
-
 			if (validate) {
 				try {
 					URLConnection ur = new URL(seedUrl).openConnection();
@@ -74,7 +72,6 @@ public final class SeedUtils {
 				validUrls.add(seedUrl);
 			}
 		}
-
 		return validUrls;
 	}
 
@@ -95,7 +92,6 @@ public final class SeedUtils {
 				listaUrl = listaUrl + ";" + url;
 			}
 		}
-
 		return listaUrl;
 	}
 
@@ -108,46 +104,25 @@ public final class SeedUtils {
 	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<SemillaForm> getSeedsFromFile(InputStream inputStream, boolean includeCategory)
-			throws Exception {
+	public static List<SemillaForm> getSeedsFromFile(InputStream inputStream, boolean includeCategory) throws Exception {
 		try {
 			Digester digester = new Digester();
 			digester.setValidating(false);
 			digester.push(new ArrayList<SemillaForm>());
-
 			digester.addObjectCreate(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, SemillaForm.class);
-
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ID,
-					"setIdStr", 0);
-
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_NOMBRE,
-					"setNombre", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACTIVA,
-					"setActivaStr", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_IN_DIRECTORY,
-					"setInDirectoryStr", 0);
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACRONIMO,
-					"setAcronimo", 0);
-
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ID, "setIdStr", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_NOMBRE, "setNombre", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACTIVA, "setActivaStr", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_IN_DIRECTORY, "setInDirectoryStr", 0);
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ACRONIMO, "setAcronimo", 0);
 			// URL como lista
-			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL,
-					"addListUrl", 0);
-
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_URL, "addListUrl", 0);
 			// Lista de dependencias
-			digester.addCallMethod(
-					Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_DEPENDENCIA + "/",
-					"addDependenciaPorNombre", 0);
-
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_DEPENDENCIA + "/", "addDependenciaPorNombre", 0);
 			if (includeCategory) {
-
-				digester.addCallMethod(
-						Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_SEGMENTO + "/",
-						"setCategoryName", 0);
-
+				digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_SEGMENTO + "/", "setCategoryName", 0);
 			}
-
 			digester.addSetNext(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, "add");
-
 			return (List<SemillaForm>) digester.parse(inputStream);
 		} catch (Exception e) {
 			throw e;
@@ -172,9 +147,7 @@ public final class SeedUtils {
 	 * @param includeCategory the include category
 	 * @throws Exception the exception
 	 */
-	public static void writeFileToResponse(HttpServletResponse response, List<SemillaForm> seeds,
-			boolean includeCategory) throws Exception {
-
+	public static void writeFileToResponse(HttpServletResponse response, List<SemillaForm> seeds, boolean includeCategory) throws Exception {
 		OutputFormat of = new OutputFormat("XML", "ISO-8859-1", true);
 		XMLSerializer serializer = new XMLSerializer(response.getWriter(), of);
 		response.setContentType("text/xml");
@@ -182,38 +155,25 @@ public final class SeedUtils {
 		ContentHandler hd = serializer.asContentHandler();
 		hd.startDocument();
 		hd.startElement("", "", Constants.XML_LISTA, null);
-
 		for (SemillaForm semillaForm : seeds) {
-
 			hd.startElement("", "", Constants.XML_SEMILLA, null);
-
 			hd.startElement("", "", Constants.XML_ID, null);
-			hd.characters(String.valueOf(semillaForm.getId()).toCharArray(), 0,
-					String.valueOf(semillaForm.getId()).length());
+			hd.characters(String.valueOf(semillaForm.getId()).toCharArray(), 0, String.valueOf(semillaForm.getId()).length());
 			hd.endElement("", "", Constants.XML_ID);
-
 			hd.startElement("", "", Constants.XML_NOMBRE, null);
 			hd.characters(semillaForm.getNombre().toCharArray(), 0, semillaForm.getNombre().length());
 			hd.endElement("", "", Constants.XML_NOMBRE);
-
 			hd.startElement("", "", Constants.XML_ACTIVA, null);
-			hd.characters(String.valueOf(semillaForm.isActiva()).toCharArray(), 0,
-					String.valueOf(semillaForm.isActiva()).length());
+			hd.characters(String.valueOf(semillaForm.isActiva()).toCharArray(), 0, String.valueOf(semillaForm.isActiva()).length());
 			hd.endElement("", "", Constants.XML_ACTIVA);
-
 			// Lista de URLs
-
 			List<String> urls = null;
-
 			if (semillaForm.getListaUrlsString() != null) {
-
 				urls = Arrays.asList(semillaForm.getListaUrlsString().split(";"));
 			}
-
 			hd.startElement("", "", Constants.XML_URL, null);
 			if (urls != null && !urls.isEmpty()) {
 				for (int i = 0; i < urls.size(); i++) {
-
 					hd.characters(urls.get(i).toCharArray(), 0, urls.get(i).length());
 					if (i < urls.size() - 1) {
 						hd.characters("\n".toCharArray(), 0, "\n".length());
@@ -221,57 +181,38 @@ public final class SeedUtils {
 				}
 			}
 			hd.endElement("", "", Constants.XML_URL);
-
 			// ACRONIMO
 			hd.startElement("", "", Constants.XML_ACRONIMO, null);
 			if (StringUtils.isNotEmpty(semillaForm.getAcronimo())) {
-
 				hd.characters(semillaForm.getAcronimo().toCharArray(), 0, semillaForm.getAcronimo().length());
-
 			}
 			hd.endElement("", "", Constants.XML_ACRONIMO);
-
 			// Multidependencia
-
 			// Depenencias separadas por salto de linea
 			hd.startElement("", "", Constants.XML_DEPENDENCIA, null);
 			List<DependenciaForm> dependencias = semillaForm.getDependencias();
-
 			if (dependencias != null && !dependencias.isEmpty()) {
-
 				for (int i = 0; i < dependencias.size(); i++) {
-					hd.characters(dependencias.get(i).getName().toCharArray(), 0,
-							dependencias.get(i).getName().length());
-
+					hd.characters(dependencias.get(i).getName().toCharArray(), 0, dependencias.get(i).getName().length());
 					if (i < dependencias.size() - 1) {
 						hd.characters("\n".toCharArray(), 0, "\n".length());
 					}
 				}
-
 			}
 			hd.endElement("", "", Constants.XML_DEPENDENCIA);
-
 			hd.startElement("", "", Constants.XML_IN_DIRECTORY, null);
-			hd.characters(String.valueOf(semillaForm.isInDirectory()).toCharArray(), 0,
-					String.valueOf(semillaForm.isInDirectory()).length());
+			hd.characters(String.valueOf(semillaForm.isInDirectory()).toCharArray(), 0, String.valueOf(semillaForm.isInDirectory()).length());
 			hd.endElement("", "", Constants.XML_IN_DIRECTORY);
-
 			if (includeCategory) {
-
 				hd.startElement("", "", Constants.XML_SEGMENTO, null);
 				if (semillaForm.getCategoria() != null && semillaForm.getCategoria().getName() != null) {
-					hd.characters(semillaForm.getCategoria().getName().toCharArray(), 0,
-							semillaForm.getCategoria().getName().length());
+					hd.characters(semillaForm.getCategoria().getName().toCharArray(), 0, semillaForm.getCategoria().getName().length());
 				}
 				hd.endElement("", "", Constants.XML_SEGMENTO);
-
 			}
-
 			hd.endElement("", "", Constants.XML_SEMILLA);
 		}
-
 		hd.endElement("", "", Constants.XML_LISTA);
 		hd.endDocument();
 	}
-
 }

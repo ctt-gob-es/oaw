@@ -48,7 +48,6 @@ import org.odftoolkit.odfdom.doc.office.OdfOfficeAutomaticStyles;
 import org.odftoolkit.odfdom.doc.style.OdfStyle;
 import org.odftoolkit.odfdom.dom.element.OdfStyleBase;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
-import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableCellProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableColumnProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableProperties;
@@ -73,13 +72,54 @@ import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
 import es.inteco.rastreador2.utils.GraphicData;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012BUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilder {
+	private static final String EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO = "EvolucionPuntuacionMediaObservatorio";
+	private static final String EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS = "EvolucionPuntuacionMediaObservatorioFijos";
+	/** The Constant FIXED_RESULTS_PREFIX. */
+	private static final String FIXED_RESULTS_PREFIX = "ef";
+	/** The Constant GLOBAL_RESULTS_PREFIX. */
+	private static final String GLOBAL_RESULTS_PREFIX = "eg";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED = "EvolucionPuntuacionMediaAspectoCombinadaFijos";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED = "EvolucionCumplimientiVerificacionNAIICombinadaFijos";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED = "EvolucionCumplimientiVerificacionNAICombinadaSplit2Fijos";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED = "EvolucionCumplimientiVerificacionNAICombinadaSplit1Fijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED = "EvolucionPuntuacionMediaVerificacionNAIICombinadaFijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2Fijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1Fijos";
+	/** The Constant EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED = "EvolucionNivelCumplimientoCombinadaFijos";
+	/** The Constant EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED = "EvolucionNivelConformidadCombinadaFijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA = "EvolucionPuntuacionMediaAspectoCombinada";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA = "EvolucionCumplimientiVerificacionNAIICombinada";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 = "EvolucionCumplimientiVerificacionNAICombinadaSplit2";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 = "EvolucionCumplimientiVerificacionNAICombinadaSplit1";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA = "EvolucionPuntuacionMediaVerificacionNAIICombinada";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1";
+	/** The Constant EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA = "EvolucionNivelCumplimientoCombinada";
+	/** The Constant EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA = "EvolucionNivelConformidadCombinada";
 	/** The Constant SEGMENT_EVOLUTION_BOOKMARK. */
 	private static final String SEGMENT_EVOLUTION_BOOKMARK = "evolutionsegmentsection";
 	/** The Constant PMASECTION_BOOKMARK. */
@@ -390,13 +430,13 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			// TODO Apply id exc obs
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId), tagsFilter, exObsIds);
-			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMap, "eg");
+			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMap, GLOBAL_RESULTS_PREFIX);
 			/**
 			 * Results fixed
 			 */
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId), new String[] { "1" }, exObsIds);
-			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, "ef");
+			evolutionSectionsFixed(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, FIXED_RESULTS_PREFIX);
 			/**
 			 * Results by segment
 			 */
@@ -687,40 +727,112 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
 			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 		}
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap,
-				exObsIds);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionNivelConformidadCombinada" + JPG_EXTENSION, "EvolucionNivelConformidadCombinada", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA, MIME_TYPE_JPG);
 		// Section compliance
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap,
-				exObsIds);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
 		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionNivelCumplimientoCombinada" + JPG_EXTENSION, "EvolucionNivelCumplimientoCombinada", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA, MIME_TYPE_JPG);
 		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO,
+				MIME_TYPE_JPG);
 		// Mid by verification
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
-				new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
+				new String[] { graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION,
+						graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION },
 				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
-				pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources,
+				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
 		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", "EvolucionPuntuacionMediaVerificacionNAIICombinada", MIME_TYPE_JPG);
-		// TODO Compliance by verification
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
-				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg" }, pageObservatoryMap,
-				LEVEL_I_VERIFICATIONS);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA, MIME_TYPE_JPG);
+		// Compliance by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources, new String[] {
+				graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
-				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg" }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
 		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg", "EvolucionCumplimientiVerificacionNAIICombinada", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1, MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2, MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA, MIME_TYPE_JPG);
 		// By aspects
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION,
+				pageObservatoryMap);
 		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
-		replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", MIME_TYPE_JPG);
+		replaceImg(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION, MIME_TYPE_JPG);
+	}
+
+	/**
+	 * Evolution sectionsf IXED.
+	 *
+	 * @param graphicPath        the graphic path
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param exObsIds           the ex obs ids
+	 * @param pageObservatoryMap the page observatory map
+	 * @param prefix             the prefix
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception   the exception
+	 */
+	private void evolutionSectionsFixed(final String graphicPath, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] exObsIds,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String prefix) throws IOException, Exception {
+		final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+		}
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
+		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED, MIME_TYPE_JPG);
+		// Section compliance
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
+		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED, MIME_TYPE_JPG);
+		// Puntuation
+		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS,
+				MIME_TYPE_JPG);
+		// Mid by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
+				new String[] { graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
+						graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources,
+				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED,
+				MIME_TYPE_JPG);
+		// Compliance by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
+						graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED, MIME_TYPE_JPG);
+		// By aspects
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION,
+				pageObservatoryMap);
+		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
+		replaceImg(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION, MIME_TYPE_JPG);
 	}
 
 	/**
@@ -910,7 +1022,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param bookmark       the bookmark
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void removeByBookmark(final OdfTextDocument odt, final OdfFileDom odfFileContent, String bookmark) throws XPathExpressionException {
+	private void removeBookmark(final OdfTextDocument odt, final OdfFileDom odfFileContent, String bookmark) throws XPathExpressionException {
 		XPath xpath = odt.getXPath();
 		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_BOOKMARK_START_TEXT_NAME_S, bookmark), odfFileContent, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
