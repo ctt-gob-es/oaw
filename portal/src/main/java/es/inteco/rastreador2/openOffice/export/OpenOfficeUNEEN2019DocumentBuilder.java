@@ -40,7 +40,6 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.commons.io.FileUtils;
 import org.apache.struts.util.LabelValueBean;
 import org.apache.struts.util.MessageResources;
-import org.bouncycastle.asn1.cmp.CMPCertificate;
 import org.odftoolkit.odfdom.OdfElement;
 import org.odftoolkit.odfdom.OdfFileDom;
 import org.odftoolkit.odfdom.doc.OdfDocument;
@@ -49,6 +48,7 @@ import org.odftoolkit.odfdom.doc.office.OdfOfficeAutomaticStyles;
 import org.odftoolkit.odfdom.doc.style.OdfStyle;
 import org.odftoolkit.odfdom.dom.element.OdfStyleBase;
 import org.odftoolkit.odfdom.dom.style.OdfStyleFamily;
+import org.odftoolkit.odfdom.dom.style.props.OdfParagraphProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableCellProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableColumnProperties;
 import org.odftoolkit.odfdom.dom.style.props.OdfTableProperties;
@@ -73,15 +73,20 @@ import es.inteco.rastreador2.actionform.semillas.PlantillaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.plantilla.PlantillaDAO;
 import es.inteco.rastreador2.utils.GraphicData;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNE2012BUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilder {
+	/** The Constant SEGMENT_EVOLUTION_BOOKMARK. */
+	private static final String SEGMENT_EVOLUTION_BOOKMARK = "evolutionsegmentsection";
 	/** The Constant PMASECTION_BOOKMARK. */
 	private static final String PMASECTION_NAME = "SectionPMA";
+	/** The Constant CMV_SECTION_NAME. */
 	private static final String CMV_SECTION_NAME = "SectionCMV";
+	/** The Constant PMV_SECTION_NAME. */
 	private static final String PMV_SECTION_NAME = "SectionPMV";
 	/** The Constant FO_CLIP. */
 	private static final String FO_CLIP = "fo:clip";
@@ -291,7 +296,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		// Generate complexities
 		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null, null);
 		// Evolution
-		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null);
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null, null);
 		finishDocumentConfiguration(odt, odfFileContent, "");
 		return odt;
 	}
@@ -335,7 +340,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter, grpahicConditional);
 		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
 		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
-		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds);
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds, categories);
 		finishDocumentConfiguration(odt, odfFileContent, reportTitle);
 		return odt;
 	}
@@ -359,6 +364,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceDocumentTitle(odt, odfFileContent, reportTitle);
 		// Add generated tables styles
 		addTableStyles(odt);
+		addHeaderStyles(odt);
 	}
 
 	/**
@@ -371,11 +377,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent   the odf file content
 	 * @param tagsFilter       the tags filter
 	 * @param exObsIds         the ex obs ids
+	 * @param categories       the categories
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws Exception   the exception
 	 */
 	private void replaceEvolutionSection(final String graphicPath, final boolean evolution, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
-			String[] tagsFilter, String[] exObsIds) throws IOException, Exception {
+			String[] tagsFilter, String[] exObsIds, final List<CategoriaForm> categories) throws IOException, Exception {
 		if (evolution) {
 			/**
 			 * General results
@@ -393,7 +400,272 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			/**
 			 * Results by segment
 			 */
+			// TODO Evolutivo por segmentos
+			for (CategoriaForm categoria : categories) {
+				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(Long.valueOf(observatoryId),
+						Long.valueOf(executionId), Long.valueOf(categoria.getId()), tagsFilter, exObsIds);
+				evolutionSegmentSection(messageResources, odt, odfFileContent, pageObservatoryMapCat, graphicPath, exObsIds, categoria);
+			}
 		}
+	}
+
+	/**
+	 * Evolution segment section.
+	 *
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param pageObservatoryMap the page observatory map
+	 * @param graphicPath        the graphic path
+	 * @param exObsIds           the ex obs ids
+	 * @param category           the category
+	 * @throws Exception the exception
+	 */
+	private void evolutionSegmentSection(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String graphicPath, String[] exObsIds, CategoriaForm category) throws Exception {
+		String graphicSuffix = "_".concat(category.getName().replaceAll("\\s+", ""));
+		// H2
+		StringBuilder sb = new StringBuilder("");
+		sb.append("<text:list text:continue-numbering=\"true\" text:style-name=\"LFO3\">");
+		sb.append("<text:list-item>");
+		sb.append("<text:list>");
+		sb.append("<text:list-item>");
+		sb.append("<text:h text:style-name=\"H2\" text:outline-level=\"2\">Evolución del segmento " + category.getName() + "</text:h>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		Element sectionheader = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, sectionheader, SEGMENT_EVOLUTION_BOOKMARK);
+		replaceEvolutionSuitabilitySegmentSection(odt, odfFileContent, pageObservatoryMap, graphicPath, exObsIds, category, graphicSuffix);
+		replaceEvolutionComplianceSegmentSection(odt, odfFileContent, pageObservatoryMap, graphicPath, exObsIds, category, graphicSuffix);
+	}
+
+	/**
+	 * Replace evolution compliance segment section.
+	 *
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param pageObservatoryMap the page observatory map
+	 * @param graphicPath        the graphic path
+	 * @param exObsIds           the ex obs ids
+	 * @param category           the category
+	 * @param graphicSuffix      the graphic suffix
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws Exception                    the exception
+	 */
+	private void replaceEvolutionComplianceSegmentSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
+			String graphicPath, String[] exObsIds, CategoriaForm category, String graphicSuffix) throws SAXException, IOException, ParserConfigurationException, Exception {
+		StringBuilder sb;
+		sb = new StringBuilder("");
+		sb.append("<text:list text:continue-numbering=\"true\" text:style-name=\"LFO3\">");
+		sb.append("<text:list-item>");
+		sb.append("<text:list>");
+		sb.append("<text:list-item>");
+		sb.append("<text:h text:style-name=\"H3\" text:outline-level=\"3\">");
+		sb.append("Evolución de la situación de cumplimientos estimada: segmento " + category.getName());
+		sb.append("</text:h>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		Element sectionSubheader2 = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, sectionSubheader2, SEGMENT_EVOLUTION_BOOKMARK);
+		sb = new StringBuilder("");
+		sb.append("<text:p text:style-name=\"P\">");
+		sb.append("A continuación se muestra la evolución de la situación de cumplimiento estimada de los sitios web analizados pertenecientes al segmento " + category.getName());
+		sb.append("</text:p>");
+		Element paragrphaCompliance = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, paragrphaCompliance, SEGMENT_EVOLUTION_BOOKMARK);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId,
+				graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg", pageObservatoryMap, exObsIds);
+		final File fC = new File(graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg");
+		String imageComplianceDom = "<text:p text:style-name=\"P33\"><draw:frame draw:style-name='fr4' draw:name='" + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix
+				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
+				+ "<draw:image xlink:href='Pictures/" + fC.getName() + "' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/>" + "<svg:desc> </svg:desc>" + "</draw:frame></text:p>";
+		Element newImageCompliance = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(imageComplianceDom.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, newImageCompliance, SEGMENT_EVOLUTION_BOOKMARK);
+		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + fC.getName(), fC, MIME_TYPE_JPG);
+		// TODO Table
+		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId,
+				pageObservatoryMap, exObsIds);
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+		// Date-PercentajeMap
+		final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_PARTIAL, df);
+		final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_FULL, df);
+		final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_NONE, df);
+		int evolutionColumns = resultDataA.size();
+		sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Evolution_Compliance_Segment").append(graphicSuffix).append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		for (int i = 0; i < evolutionColumns; i++) {
+			sb.append("<table:table-column table:style-name='TableGraphicColumn" + i + "'/>");
+		}
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'></text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(entry.getKey()).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// AA row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>Totalmente conforme</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataAA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// A row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>Parcialmente conforme</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// NV row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>No conforme</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		sb.append("</table:table>");
+		Element table = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, table, SEGMENT_EVOLUTION_BOOKMARK);
+	}
+
+	/**
+	 * Replace evolution suitability segment section.
+	 *
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param pageObservatoryMap the page observatory map
+	 * @param graphicPath        the graphic path
+	 * @param exObsIds           the ex obs ids
+	 * @param category           the category
+	 * @param graphicSuffix      the graphic suffix
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws Exception                    the exception
+	 */
+	private void replaceEvolutionSuitabilitySegmentSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
+			String graphicPath, String[] exObsIds, CategoriaForm category, String graphicSuffix) throws SAXException, IOException, ParserConfigurationException, Exception {
+		StringBuilder sb;
+		// H3 Suitability
+		sb = new StringBuilder("");
+		sb.append("<text:list text:continue-numbering=\"true\" text:style-name=\"LFO3\">");
+		sb.append("<text:list-item>");
+		sb.append("<text:list>");
+		sb.append("<text:list-item>");
+		sb.append("<text:h text:style-name=\"H3\" text:outline-level=\"3\">");
+		sb.append("Evolución del nivel de adecuación estimado: segmento " + category.getName());
+		sb.append("</text:h>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		Element sectionSubheader1 = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, sectionSubheader1, SEGMENT_EVOLUTION_BOOKMARK);
+		// Paragraph suitability
+		sb = new StringBuilder("");
+		sb.append("<text:p text:style-name=\"P\">");
+		sb.append("A continuación se muestra la evolución del nivel de adecuación estimado de los sitios web analizados pertenecientes al segmento " + category.getName());
+		sb.append("</text:p>");
+		Element paragrhphSuitability = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, paragrhphSuitability, SEGMENT_EVOLUTION_BOOKMARK);
+		// Graphic suitability
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix + ".jpg",
+				pageObservatoryMap, exObsIds);
+		final File f = new File(graphicPath + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix + ".jpg");
+		String newImageDOm = "<text:p text:style-name=\"P\"><draw:frame draw:style-name='fr4' draw:name='" + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix
+				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
+				+ "<draw:image xlink:href='Pictures/" + f.getName() + "' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/>" + "<svg:desc> </svg:desc>" + "</draw:frame></text:p>";
+		Element newIMage = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(newImageDOm.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, newIMage, SEGMENT_EVOLUTION_BOOKMARK);
+		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + f.getName(), f, MIME_TYPE_JPG);
+		// TODO Table
+		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
+				pageObservatoryMap, exObsIds);
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+		// Date-PercentajeMap
+		final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
+		final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
+		final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
+		int evolutionColumns = resultDataA.size();
+		sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Evolution_Suitability_Segment").append(graphicSuffix).append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		for (int i = 0; i < evolutionColumns; i++) {
+			sb.append("<table:table-column table:style-name='TableGraphicColumn" + i + "'/>");
+		}
+		// header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'></text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(entry.getKey()).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// AA row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>AA</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataAA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// A row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>A</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// NV row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>No válido</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		sb.append("</table:table>");
+		Element table = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, table, SEGMENT_EVOLUTION_BOOKMARK);
 	}
 
 	/**
@@ -570,14 +842,15 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/**
 	 * Replace global section.
 	 *
-	 * @param graphicPath       the graphic path
-	 * @param pageExecutionList the page execution list
-	 * @param categories        the categories
-	 * @param messageResources  the message resources
-	 * @param odt               the odt
-	 * @param odfFileContent    the odf file content
-	 * @param complexitivities  the complexitivities
-	 * @param tagsFilter        the tags filter
+	 * @param graphicPath        the graphic path
+	 * @param pageExecutionList  the page execution list
+	 * @param categories         the categories
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param complexitivities   the complexitivities
+	 * @param tagsFilter         the tags filter
+	 * @param grpahicConditional the grpahic conditional
 	 * @throws Exception the exception
 	 */
 	private void replaceGlobalSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
@@ -899,6 +1172,22 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	}
 
 	/**
+	 * Generate table evolution.
+	 *
+	 * @param header1  the header 1
+	 * @param header2  the header 2
+	 * @param columna1 the columna 1
+	 * @param columna2 the columna 2
+	 * @param columna3 the columna 3
+	 * @param name     the name
+	 * @param results  the results
+	 * @return the string builder
+	 */
+	private StringBuilder generateTableEvolution(String header1, String header2, String columna1, String columna2, String columna3, String name, List<LabelValueBean> results) {
+		return null;
+	}
+
+	/**
 	 * Replace global section comparison allocation by segment.
 	 *
 	 * @param messageResources  the message resources
@@ -1153,6 +1442,30 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		graphicTableCenter.setProperty(OdfTextProperties.FontWeight, "normal");
 		graphicTableCenter.setProperty(OdfTextProperties.FontWeightComplex, "normal");
 	}
+
+	/**
+	 * Adds the header styles.
+	 *
+	 * @param odt the odt
+	 * @throws Exception the exception
+	 */
+	private void addHeaderStyles(final OdfTextDocument odt) throws Exception {
+		OdfOfficeAutomaticStyles styles = odt.getContentDom().getOrCreateAutomaticStyles();
+		OdfStyle paragraphStyleH2 = styles.newStyle(OdfStyleFamily.Paragraph);
+		// <style:style style:name="P161" style:family="paragraph" style:parent-style-name="H2" style:list-style-name="LFO3"/>
+		paragraphStyleH2.setAttribute("style:name", "HeaderStyle2");
+		paragraphStyleH2.setAttribute("style:parent-style-name", "H2");
+		paragraphStyleH2.setAttribute("style:list-style-name", "LFO3");
+		OdfStyle paragraphStyleH3 = styles.newStyle(OdfStyleFamily.Paragraph);
+		// <style:style style:name="P184" style:family="paragraph" style:parent-style-name="H3" style:list-style-name="LFO3"/>
+		paragraphStyleH3.setAttribute("style:name", "HeaderStyle3");
+		paragraphStyleH3.setAttribute("style:parent-style-name", "H3");
+		paragraphStyleH3.setAttribute("style:list-style-name", "LFO3");
+	}
+//	<style:style style:family="paragraph" style:list-style-name="" style:name="P164" style:parent-style-name="Text_20_body">
+//	<style:paragraph-properties fo:hyphenation-ladder-count="no-limit" fo:line-height="130%" fo:text-align="justify" style:justify-single-word="false"/>
+//	<style:text-properties fo:hyphenate="false" officeooo:paragraph-rsid="01764396"/>
+//	</style:style>
 
 	/**
 	 * Append paragraph to marker.
