@@ -739,7 +739,7 @@
 			<field property="report" depends="required">
 				<arg0 key="basic.service.report" />
 			</field>
-			<field property="profundidad" depends="required, intRange, integer">
+			<!-- <field property="profundidad" depends="required, intRange, integer">
 				<arg0 key="basic.service.depth" />
 				<arg1 name="intRange" key="${var:min}" />
 				<arg2 name="intRange" key="${var:max}" />
@@ -749,7 +749,6 @@
 				</var>
 				<var>
 					<var-name>max</var-name>
-					<!-- <var-value>4</var-value> -->
 					<var-value>4</var-value>
 				</var>
 			</field>
@@ -763,10 +762,9 @@
 				</var>
 				<var>
 					<var-name>max</var-name>
-					<!-- <var-value>4</var-value> -->
 					<var-value>8</var-value>
 				</var>
-			</field>
+			</field> -->
 		</form>
 	</formset>
 	<formset>

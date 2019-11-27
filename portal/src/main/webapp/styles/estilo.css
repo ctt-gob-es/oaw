@@ -849,10 +849,25 @@ div.detail p {
 	text-align: left;
 }
 /* Cuerpo de la página */
-#main {
+#main  {
 	float: left;
 	margin-top: 30px;
 	width: 100%
+}
+
+
+
+#fullwidthgrid{
+    clear: both;
+    width: 98%;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#fullwidthgridheader {
+	margin-top: 15px;
+    float: left;
+    width: 100%;
 }
 
 #normaDiv {
@@ -912,7 +927,7 @@ div.detail p {
 	width: 76%;
 }
 
-#container_der table {
+#container_der table, #fullwidthgrid table {
 	margin: 1% auto;
 	background: silver;
 	width: 100%;
@@ -920,7 +935,7 @@ div.detail p {
 	border: 2px solid #CCC
 }
 
-#container_der table th {
+#container_der table th, #fullwidthgrid table th {
 	text-align: center;
 	background: #e1120d;
 	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
@@ -933,17 +948,22 @@ div.detail p {
 	font-variant: petite-caps;
 }
 
-#container_der table tr.suitability th {
+#container_der table tr.suitability th,
+#fullwidthgrid table tr.suitability th {
 	background: silver
 }
 
-#container_der table td {
+#container_der table td,
+#fullwidthgrid   table td{
 	text-align: center;
 	background: white;
 	border: 1px solid #CCC
 }
 
-#container_der table td.alignLeft {
+#container_der table td.alignLeft,
+#fullwidthgrid table td.alignLeft{
+	
+	
 	text-align: left
 }
 
@@ -1232,4 +1252,27 @@ to {
 .label100{
 	width: 100% !important;
     text-align: left !important;
+}
+
+#fullwidthgrid .tagbox-token{
+	float:left;
+	clear:both;
+	    margin-bottom: 3px;
+}
+#fullwidthgrid .tagbox-wrapper{
+	    border: none;
+    box-shadow: none;
+    width: 90%;
+}
+#fullwidthgrid .tagbox-wrapper.focus {
+	background-color:#fff !important;
+}
+#fullwidthgrid .tagbox-wrapper input{
+    
+    float: left;
+    clear: both;
+    border-width: 2px;
+    border-style: inset;
+    border-color: initial;
+    border-image: initial;
 }

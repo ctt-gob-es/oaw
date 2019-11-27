@@ -391,8 +391,8 @@ public class CrawlerJob implements InterruptableJob {
 		String cookie = null;
 		int depth = crawlerData.getProfundidad();
 		int width = crawlerData.getTopN();
-		// TODO Aplply seed complex only if is not basic service
-		if (crawlerData.getIdCrawling() > 0) {
+		// TODO Aplply seed complex only if is not basic service an only if is not manual selection
+		if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size()==1) {
 			try {
 				Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
 				if (s != null) {

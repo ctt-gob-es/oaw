@@ -48,6 +48,8 @@ public class ServicioDiagnosticoForm extends ValidatorForm {
 	private String endDate;
 	/** The type. */
 	private String type;
+	/** The complexity name. */
+	private String complexityName;
 
 	/**
 	 * Gets the start date.
@@ -371,5 +373,23 @@ public class ServicioDiagnosticoForm extends ValidatorForm {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * Gets the complexity name.
+	 *
+	 * @return the complexity name
+	 */
+	public String getComplexityName() {
+		return complexityName;
+	}
+
+	/**
+	 * Sets the complexity name.
+	 *
+	 * @param complexityName the new complexity name
+	 */
+	public void setComplexityName(String complexityName) {
+		this.complexityName = complexityName;
 	}
 }

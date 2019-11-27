@@ -84,6 +84,8 @@ public class BasicServiceForm extends ValidatorForm {
 	private Date date;
 	/** The analysis type. */
 	private BasicServiceAnalysisType analysisType = BasicServiceAnalysisType.URL;
+	/** The complexity. */
+	private String complexity;
 
 	/**
 	 * Gets the language.
@@ -464,5 +466,23 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public void setAnalysisType(BasicServiceAnalysisType analysisType) {
 		this.analysisType = analysisType;
+	}
+
+	/**
+	 * Gets the complexity.
+	 *
+	 * @return the complexity
+	 */
+	public String getComplexity() {
+		return complexity;
+	}
+
+	/**
+	 * Sets the complexity.
+	 *
+	 * @param complexity the new complexity
+	 */
+	public void setComplexity(String complexity) {
+		this.complexity = complexity;
 	}
 }

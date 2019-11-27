@@ -229,6 +229,6 @@ public abstract class OpenOfficeDocumentBuilder {
 	 * @throws Exception the exception
 	 */
 	public abstract OdfTextDocument buildDocumentFiltered(HttpServletRequest request, String graphicPath, String date, boolean evolution, List<ObservatoryEvaluationForm> pageExecutionList,
-			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate) throws Exception;
+			List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds, Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, String reportTitle) throws Exception;
 
 }
