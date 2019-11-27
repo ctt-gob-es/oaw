@@ -33,6 +33,7 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 
@@ -145,7 +146,20 @@ public final class SeedUtils {
 						"setCategoryName", 0);
 
 			}
+			
+			//ambito
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_AMBITO,
+					"setAmbitName", 0);
 
+			//complejidad
+			digester.addCallMethod(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_COMPLEJIDAD,
+					"setComplexityName", 0);
+			
+			// Lista de etiquetas
+			digester.addCallMethod(
+					Constants.XML_LISTA + "/" + Constants.XML_SEMILLA + "/" + Constants.XML_ETIQUETAS + "/",
+					"addEtiquetaPorNombre", 0);
+			
 			digester.addSetNext(Constants.XML_LISTA + "/" + Constants.XML_SEMILLA, "add");
 
 			return (List<SemillaForm>) digester.parse(inputStream);
@@ -267,6 +281,41 @@ public final class SeedUtils {
 
 			}
 
+			//ambito
+			hd.startElement("", "", Constants.XML_AMBITO, null);
+			if (semillaForm.getAmbito() != null && semillaForm.getAmbito().getName() != null) {
+				hd.characters(semillaForm.getAmbito().getName().toCharArray(), 0,
+						semillaForm.getAmbito().getName().length());
+			}
+			hd.endElement("", "", Constants.XML_AMBITO);
+			
+			//complejidad
+			hd.startElement("", "", Constants.XML_COMPLEJIDAD, null);
+			if (semillaForm.getComplejidad() != null && semillaForm.getComplejidad().getName() != null) {
+				hd.characters(semillaForm.getComplejidad().getName().toCharArray(), 0,
+						semillaForm.getComplejidad().getName().length());
+			}
+			hd.endElement("", "", Constants.XML_COMPLEJIDAD);
+			
+			
+			//etiquetas
+			hd.startElement("", "", Constants.XML_ETIQUETAS, null);
+			List<EtiquetaForm> etiquetas = semillaForm.getEtiquetas();
+
+			if (etiquetas != null && !etiquetas.isEmpty()) {
+
+				for (int i = 0; i < etiquetas.size(); i++) {
+					hd.characters(etiquetas.get(i).getName().toCharArray(), 0,
+							etiquetas.get(i).getName().length());
+
+					if (i < etiquetas.size() - 1) {
+						hd.characters("\n".toCharArray(), 0, "\n".length());
+					}
+				}
+
+			}
+			hd.endElement("", "", Constants.XML_ETIQUETAS);
+			
 			hd.endElement("", "", Constants.XML_SEMILLA);
 		}
 

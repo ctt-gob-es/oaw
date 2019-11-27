@@ -277,7 +277,10 @@ public class SeedMassImportAction extends Action {
 		ActionErrors errors = form.validate(mapping, request);
 
 		try (Connection c = DataBaseManager.getConnection()) {
-			SemillaDAO.saveOrUpdateSeed(c, seeds);
+			for (SemillaForm semillaFormTemp: seeds) {
+					SemillaDAO.saveSeedMultidependencia(c, semillaFormTemp);;
+				}
+			//SemillaDAO.saveOrUpdateSeed(c, seeds);
 			session.removeAttribute(Constants.OBSERVATORY_SEED_LIST);
 			errors.add("xmlFile", new ActionMessage("no.xml.file"));
 			ActionMessages messages = new ActionMessages();
