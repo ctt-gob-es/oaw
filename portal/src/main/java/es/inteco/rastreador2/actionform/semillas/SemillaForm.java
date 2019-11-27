@@ -545,9 +545,6 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 		if (this.etiquetas == null) {
 			this.etiquetas = new ArrayList<EtiquetaForm>();
 		}
-		// DependenciaForm dependencia = new DependenciaForm();
-		// dependencia.setName(nombre);
-		// this.dependencias.add(dependencia);
 
 		if (!StringUtils.isEmpty(nombre)) {
 			String[] nombres = nombre.split("\r\n");
@@ -574,6 +571,26 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 	public void setCategoryName(String categoryName) {
 		this.categoria = new CategoriaForm();
 		categoria.setName(categoryName);
+	}
+
+	/**
+	 * Sets the ambit name.
+	 *
+	 * @param ambitName the new ambit name
+	 */
+	public void setAmbitName(String ambitName) {
+		this.ambito = new AmbitoForm();
+		ambito.setName(ambitName);
+	}
+
+	/**
+	 * Sets the complexity name.
+	 *
+	 * @param complexityName the new complexity name
+	 */
+	public void setComplexityName(String complexityName) {
+		this.complejidad = new ComplejidadForm();
+		complejidad.setName(complexityName);
 	}
 
 	/**
