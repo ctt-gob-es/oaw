@@ -78,6 +78,56 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
  * Clase encargada de construir el documento OpenOffice con los resultados del observatorio usando la metodología UNE 2012 - VERSIÓN 2017.
  */
 public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilder {
+	private static final String EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO = "EvolucionPuntuacionMediaObservatorio";
+	private static final String EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS = "EvolucionPuntuacionMediaObservatorioFijos";
+	/** The Constant FIXED_RESULTS_PREFIX. */
+	private static final String FIXED_RESULTS_PREFIX = "ef";
+	/** The Constant GLOBAL_RESULTS_PREFIX. */
+	private static final String GLOBAL_RESULTS_PREFIX = "eg";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED = "EvolucionPuntuacionMediaAspectoCombinadaFijos";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED = "EvolucionCumplimientiVerificacionNAIICombinadaFijos";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED = "EvolucionCumplimientiVerificacionNAICombinadaSplit2Fijos";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED = "EvolucionCumplimientiVerificacionNAICombinadaSplit1Fijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED = "EvolucionPuntuacionMediaVerificacionNAIICombinadaFijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2Fijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1Fijos";
+	/** The Constant EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED = "EvolucionNivelCumplimientoCombinadaFijos";
+	/** The Constant EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED = "EvolucionNivelConformidadCombinadaFijos";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA = "EvolucionPuntuacionMediaAspectoCombinada";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA = "EvolucionCumplimientiVerificacionNAIICombinada";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 = "EvolucionCumplimientiVerificacionNAICombinadaSplit2";
+	/** The Constant EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 = "EvolucionCumplimientiVerificacionNAICombinadaSplit1";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA = "EvolucionPuntuacionMediaVerificacionNAIICombinada";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2";
+	/** The Constant EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1. */
+	private static final String EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 = "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1";
+	/** The Constant EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA = "EvolucionNivelCumplimientoCombinada";
+	/** The Constant EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA. */
+	private static final String EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA = "EvolucionNivelConformidadCombinada";
+	/** The Constant SEGMENT_EVOLUTION_BOOKMARK. */
+	private static final String SEGMENT_EVOLUTION_BOOKMARK = "evolutionsegmentsection";
+	/** The Constant PMASECTION_BOOKMARK. */
+	private static final String PMASECTION_NAME = "SectionPMA";
+	/** The Constant CMV_SECTION_NAME. */
+	private static final String CMV_SECTION_NAME = "SectionCMV";
+	/** The Constant PMV_SECTION_NAME. */
+	private static final String PMV_SECTION_NAME = "SectionPMV";
 	/** The Constant FO_CLIP. */
 	private static final String FO_CLIP = "fo:clip";
 	/** The Constant STYLE_GRAPHIC_PROPERTIES. */
@@ -170,6 +220,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	private static final String TEXT_LIST = "//text:list";
 	/** The Constant TEXT_BOOKMARK_START_TEXT_NAME_S. */
 	private static final String TEXT_BOOKMARK_START_TEXT_NAME_S = "//text:bookmark-start[@text:name='%s']";
+	/** The Constant TEXT_SECTION_NAME_S. */
+	private static final String TEXT_SECTION_NAME_S = "//text:section[@text:name='%s']";
 	/** The Constant TEXT_TITLE. */
 	private static final String TEXT_TITLE = "//text:title";
 	/** The Constant HEADER_PUNTUACIÓN_MEDIA_DE_LOS_PORTALES. */
@@ -278,14 +330,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 		replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
 		// Global sections
-		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, null);
+		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, null, null);
 		// Generate categories document and merge with parent
-		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, null);
+		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, null, null);
 		// Generate complexities
-		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null);
+		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, null, null);
 		// Evolution
-		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null);
-		finishDocumentConfiguration(odt, odfFileContent);
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, null, null, null);
+		finishDocumentConfiguration(odt, odfFileContent, "");
 		return odt;
 	}
 
@@ -304,13 +356,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param idBaseTemplate       the id base template
 	 * @param idSegmentTemplate    the id segment template
 	 * @param idComplexityTemplate the id complexity template
+	 * @param reportTitle          the report title
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */
 	@Override
 	public OdfTextDocument buildDocumentFiltered(final HttpServletRequest request, final String graphicPath, final String date, final boolean evolution,
 			final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, String[] tagsToFilter, Map<String, Boolean> grpahicConditional, String[] exObsIds,
-			Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate) throws Exception {
+			Long idBaseTemplate, Long idSegmentTemplate, Long idComplexityTemplate, String reportTitle) throws Exception {
 		this.idBaseTemplate = idBaseTemplate;
 		this.idComplexityTemplate = idComplexityTemplate;
 		this.idSegmentTemplate = idSegmentTemplate;
@@ -324,11 +377,11 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, FECHA_BOOKMARK, date);
 		replaceText(odt, odfStyles, FECHA_BOOKMARK, date, TEXT_SPAN_NODE);
 		// Global sections
-		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter);
-		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter);
-		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter);
-		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds);
-		finishDocumentConfiguration(odt, odfFileContent);
+		replaceGlobalSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, complexitivities, tagsToFilter, grpahicConditional);
+		replaceSegmentSection(graphicPath, pageExecutionList, categories, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
+		replaceComplexitivySection(graphicPath, pageExecutionList, messageResources, odt, odfFileContent, tagsToFilter, grpahicConditional);
+		replaceEvolutionSection(graphicPath, evolution, messageResources, odt, odfFileContent, tagsToFilter, exObsIds, categories);
+		finishDocumentConfiguration(odt, odfFileContent, reportTitle);
 		return odt;
 	}
 
@@ -337,9 +390,10 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 *
 	 * @param odt            the odt
 	 * @param odfFileContent the odf file content
+	 * @param reportTitle    the report title
 	 * @throws Exception the exception
 	 */
-	private void finishDocumentConfiguration(final OdfTextDocument odt, final OdfFileDom odfFileContent) throws Exception {
+	private void finishDocumentConfiguration(final OdfTextDocument odt, final OdfFileDom odfFileContent, String reportTitle) throws Exception {
 		// Fix crop images (fo:clip attribute) after merge several documents
 		NodeList nodeList = odt.getContentDom().getElementsByTagName(STYLE_GRAPHIC_PROPERTIES);
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -347,9 +401,10 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			node.removeAttribute(FO_CLIP);
 		}
 		// Update title
-		replaceDocumentTitle(odt, odfFileContent, "");
+		replaceDocumentTitle(odt, odfFileContent, reportTitle);
 		// Add generated tables styles
 		addTableStyles(odt);
+		addHeaderStyles(odt);
 	}
 
 	/**
@@ -362,11 +417,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	 * @param odfFileContent   the odf file content
 	 * @param tagsFilter       the tags filter
 	 * @param exObsIds         the ex obs ids
+	 * @param categories       the categories
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 * @throws Exception   the exception
 	 */
 	private void replaceEvolutionSection(final String graphicPath, final boolean evolution, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
-			String[] tagsFilter, String[] exObsIds) throws IOException, Exception {
+			String[] tagsFilter, String[] exObsIds, final List<CategoriaForm> categories) throws IOException, Exception {
 		if (evolution) {
 			/**
 			 * General results
@@ -374,17 +430,282 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			// TODO Apply id exc obs
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId), tagsFilter, exObsIds);
-			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMap, "eg");
+			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMap, GLOBAL_RESULTS_PREFIX);
 			/**
 			 * Results fixed
 			 */
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapFixed = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionData(Long.valueOf(observatoryId),
 					Long.valueOf(executionId), new String[] { "1" }, exObsIds);
-			evolutionSections(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, "ef");
+			evolutionSectionsFixed(graphicPath, messageResources, odt, odfFileContent, exObsIds, pageObservatoryMapFixed, FIXED_RESULTS_PREFIX);
 			/**
 			 * Results by segment
 			 */
+			// TODO Evolutivo por segmentos
+			for (CategoriaForm categoria : categories) {
+				final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMapCat = ResultadosAnonimosObservatorioUNEEN2019Utils.resultEvolutionCategoryData(Long.valueOf(observatoryId),
+						Long.valueOf(executionId), Long.valueOf(categoria.getId()), tagsFilter, exObsIds);
+				evolutionSegmentSection(messageResources, odt, odfFileContent, pageObservatoryMapCat, graphicPath, exObsIds, categoria);
+			}
 		}
+	}
+
+	/**
+	 * Evolution segment section.
+	 *
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param pageObservatoryMap the page observatory map
+	 * @param graphicPath        the graphic path
+	 * @param exObsIds           the ex obs ids
+	 * @param category           the category
+	 * @throws Exception the exception
+	 */
+	private void evolutionSegmentSection(final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String graphicPath, String[] exObsIds, CategoriaForm category) throws Exception {
+		String graphicSuffix = "_".concat(category.getName().replaceAll("\\s+", ""));
+		// H2
+		StringBuilder sb = new StringBuilder("");
+		sb.append("<text:list text:continue-numbering=\"true\" text:style-name=\"LFO3\">");
+		sb.append("<text:list-item>");
+		sb.append("<text:list>");
+		sb.append("<text:list-item>");
+		sb.append("<text:h text:style-name=\"H2\" text:outline-level=\"2\">Evolución del segmento " + category.getName() + "</text:h>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		Element sectionheader = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, sectionheader, SEGMENT_EVOLUTION_BOOKMARK);
+		replaceEvolutionSuitabilitySegmentSection(odt, odfFileContent, pageObservatoryMap, graphicPath, exObsIds, category, graphicSuffix);
+		replaceEvolutionComplianceSegmentSection(odt, odfFileContent, pageObservatoryMap, graphicPath, exObsIds, category, graphicSuffix);
+	}
+
+	/**
+	 * Replace evolution compliance segment section.
+	 *
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param pageObservatoryMap the page observatory map
+	 * @param graphicPath        the graphic path
+	 * @param exObsIds           the ex obs ids
+	 * @param category           the category
+	 * @param graphicSuffix      the graphic suffix
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws Exception                    the exception
+	 */
+	private void replaceEvolutionComplianceSegmentSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
+			String graphicPath, String[] exObsIds, CategoriaForm category, String graphicSuffix) throws SAXException, IOException, ParserConfigurationException, Exception {
+		StringBuilder sb;
+		sb = new StringBuilder("");
+		sb.append("<text:list text:continue-numbering=\"true\" text:style-name=\"LFO3\">");
+		sb.append("<text:list-item>");
+		sb.append("<text:list>");
+		sb.append("<text:list-item>");
+		sb.append("<text:h text:style-name=\"H3\" text:outline-level=\"3\">");
+		sb.append("Evolución de la situación de cumplimientos estimada: segmento " + category.getName());
+		sb.append("</text:h>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		Element sectionSubheader2 = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, sectionSubheader2, SEGMENT_EVOLUTION_BOOKMARK);
+		sb = new StringBuilder("");
+		sb.append("<text:p text:style-name=\"P\">");
+		sb.append("A continuación se muestra la evolución de la situación de cumplimiento estimada de los sitios web analizados pertenecientes al segmento " + category.getName());
+		sb.append("</text:p>");
+		Element paragrphaCompliance = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, paragrphaCompliance, SEGMENT_EVOLUTION_BOOKMARK);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId,
+				graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg", pageObservatoryMap, exObsIds);
+		final File fC = new File(graphicPath + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix + ".jpg");
+		String imageComplianceDom = "<text:p text:style-name=\"P33\"><draw:frame draw:style-name='fr4' draw:name='" + "EvolucionSituacionCumplimientoCombinadaSegmento" + graphicSuffix
+				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
+				+ "<draw:image xlink:href='Pictures/" + fC.getName() + "' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/>" + "<svg:desc> </svg:desc>" + "</draw:frame></text:p>";
+		Element newImageCompliance = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(imageComplianceDom.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, newImageCompliance, SEGMENT_EVOLUTION_BOOKMARK);
+		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + fC.getName(), fC, MIME_TYPE_JPG);
+		// TODO Table
+		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByCompliance(observatoryId, executionId,
+				pageObservatoryMap, exObsIds);
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+		// Date-PercentajeMap
+		final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_PARTIAL, df);
+		final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_FULL, df);
+		final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteCompliance(evolutionResult, Constants.OBS_COMPILANCE_NONE, df);
+		int evolutionColumns = resultDataA.size();
+		sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Evolution_Compliance_Segment").append(graphicSuffix).append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		for (int i = 0; i < evolutionColumns; i++) {
+			sb.append("<table:table-column table:style-name='TableGraphicColumn" + i + "'/>");
+		}
+		// Header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'></text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(entry.getKey()).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// AA row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>Totalmente conforme</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataAA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// A row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>Parcialmente conforme</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// NV row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>No conforme</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		sb.append("</table:table>");
+		Element table = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, table, SEGMENT_EVOLUTION_BOOKMARK);
+	}
+
+	/**
+	 * Replace evolution suitability segment section.
+	 *
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param pageObservatoryMap the page observatory map
+	 * @param graphicPath        the graphic path
+	 * @param exObsIds           the ex obs ids
+	 * @param category           the category
+	 * @param graphicSuffix      the graphic suffix
+	 * @throws SAXException                 the SAX exception
+	 * @throws IOException                  Signals that an I/O exception has occurred.
+	 * @throws ParserConfigurationException the parser configuration exception
+	 * @throws Exception                    the exception
+	 */
+	private void replaceEvolutionSuitabilitySegmentSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap,
+			String graphicPath, String[] exObsIds, CategoriaForm category, String graphicSuffix) throws SAXException, IOException, ParserConfigurationException, Exception {
+		StringBuilder sb;
+		// H3 Suitability
+		sb = new StringBuilder("");
+		sb.append("<text:list text:continue-numbering=\"true\" text:style-name=\"LFO3\">");
+		sb.append("<text:list-item>");
+		sb.append("<text:list>");
+		sb.append("<text:list-item>");
+		sb.append("<text:h text:style-name=\"H3\" text:outline-level=\"3\">");
+		sb.append("Evolución del nivel de adecuación estimado: segmento " + category.getName());
+		sb.append("</text:h>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		sb.append("</text:list-item>");
+		sb.append("</text:list>");
+		Element sectionSubheader1 = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, sectionSubheader1, SEGMENT_EVOLUTION_BOOKMARK);
+		// Paragraph suitability
+		sb = new StringBuilder("");
+		sb.append("<text:p text:style-name=\"P\">");
+		sb.append("A continuación se muestra la evolución del nivel de adecuación estimado de los sitios web analizados pertenecientes al segmento " + category.getName());
+		sb.append("</text:p>");
+		Element paragrhphSuitability = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, paragrhphSuitability, SEGMENT_EVOLUTION_BOOKMARK);
+		// Graphic suitability
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix + ".jpg",
+				pageObservatoryMap, exObsIds);
+		final File f = new File(graphicPath + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix + ".jpg");
+		String newImageDOm = "<text:p text:style-name=\"P\"><draw:frame draw:style-name='fr4' draw:name='" + "EvolucionNivelConformidadCombinadaSegmento" + graphicSuffix
+				+ "' text:anchor-type='as-char' svg:y='0mm' svg:width='149.45mm' style:rel-width='scale' svg:height='120.21mm' style:rel-height='scale' draw:z-index='118'>"
+				+ "<draw:image xlink:href='Pictures/" + f.getName() + "' xlink:type='simple' xlink:show='embed' xlink:actuate='onLoad'/>" + "<svg:desc> </svg:desc>" + "</draw:frame></text:p>";
+		Element newIMage = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(newImageDOm.getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, newIMage, SEGMENT_EVOLUTION_BOOKMARK);
+		insertFileInsideODTFile(odt, PICTURES_ODT_PATH + f.getName(), f, MIME_TYPE_JPG);
+		// TODO Table
+		final Map<Date, Map<Long, Map<String, Integer>>> evolutionResult = ResultadosAnonimosObservatorioUNEEN2019Utils.getEvolutionObservatoriesSitesByType(observatoryId, executionId,
+				pageObservatoryMap, exObsIds);
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.evolution"));
+		// Date-PercentajeMap
+		final Map<String, BigDecimal> resultDataA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_A, df);
+		final Map<String, BigDecimal> resultDataAA = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_AA, df);
+		final Map<String, BigDecimal> resultDataNV = ResultadosAnonimosObservatorioUNEEN2019Utils.calculatePercentageApprovalSiteLevel(evolutionResult, Constants.OBS_NV, df);
+		int evolutionColumns = resultDataA.size();
+		sb = new StringBuilder();
+		sb.append("<table:table table:name='Table_Evolution_Suitability_Segment").append(graphicSuffix).append("' table:style-name='TableGraphic'>");
+		sb.append("<table:table-column table:style-name='TableGraphicColumn1'/>");
+		for (int i = 0; i < evolutionColumns; i++) {
+			sb.append("<table:table-column table:style-name='TableGraphicColumn" + i + "'/>");
+		}
+		// header row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'></text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+			sb.append("<text:p text:style-name='GraphicTableHeader'>").append(entry.getKey()).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// AA row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>AA</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataAA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// A row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>A</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataA.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		// NV row
+		sb.append("<table:table-row>");
+		sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgGreen'>");
+		sb.append("<text:p text:style-name='GraphicTableHeader'>No válido</text:p>");
+		sb.append("</table:table-cell>");
+		for (Map.Entry<String, BigDecimal> entry : resultDataNV.entrySet()) {
+			sb.append("<table:table-cell office:value-type='string' table:style-name='TableGraphicCellBgWhite'>");
+			sb.append("<text:p text:style-name='GraphicTableCenter'>").append(getCellValue(entry.getValue(), true)).append("</text:p>");
+			sb.append("</table:table-cell>");
+		}
+		sb.append("</table:table-row>");
+		sb.append("</table:table>");
+		Element table = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
+		appendNodeAtMarkerPosition(odt, odfFileContent, table, SEGMENT_EVOLUTION_BOOKMARK);
 	}
 
 	/**
@@ -406,61 +727,130 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
 			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
 		}
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + "EvolucionNivelConformidadCombinada.jpg", pageObservatoryMap,
-				exObsIds);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
 		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionNivelConformidadCombinada" + JPG_EXTENSION, "EvolucionNivelConformidadCombinada", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA, MIME_TYPE_JPG);
 		// Section compliance
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + "EvolucionNivelCumplimientoCombinada.jpg", pageObservatoryMap,
-				exObsIds);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
 		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionNivelCumplimientoCombinada" + JPG_EXTENSION, "EvolucionNivelCumplimientoCombinada", MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA, MIME_TYPE_JPG);
 		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO,
+				MIME_TYPE_JPG);
 		// Mid by verification
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
-				new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
+				new String[] { graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION,
+						graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION },
 				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg",
-				pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources,
+				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
 		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
-		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg", "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionPuntuacionMediaVerificacionNAIICombinada.jpg", "EvolucionPuntuacionMediaVerificacionNAIICombinada", MIME_TYPE_JPG);
-		// TODO Compliance by verification
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
-				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg" }, pageObservatoryMap,
-				LEVEL_I_VERIFICATIONS);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA, MIME_TYPE_JPG);
+		// Compliance by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources, new String[] {
+				graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
 		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
-				new String[] { graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg" }, pageObservatoryMap,
-				LEVEL_II_VERIFICATIONS);
-		
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
 		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
-
-		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit1.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit1", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAICombinadaSplit2.jpg", "EvolucionCumplimientiVerificacionNAICombinadaSplit2", MIME_TYPE_JPG);
-		replaceImageGeneric(odt, graphicPath + "EvolucionCumplimientiVerificacionNAIICombinada.jpg", "EvolucionCumplimientiVerificacionNAIICombinada", MIME_TYPE_JPG);
-
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1 + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1, MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2 + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2, MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA, MIME_TYPE_JPG);
 		// By aspects
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", pageObservatoryMap);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION,
+				pageObservatoryMap);
 		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
-		replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", MIME_TYPE_JPG);
+		replaceImg(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA + JPG_EXTENSION, MIME_TYPE_JPG);
+	}
+
+	/**
+	 * Evolution sectionsf IXED.
+	 *
+	 * @param graphicPath        the graphic path
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param exObsIds           the ex obs ids
+	 * @param pageObservatoryMap the page observatory map
+	 * @param prefix             the prefix
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws Exception   the exception
+	 */
+	private void evolutionSectionsFixed(final String graphicPath, final MessageResources messageResources, final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] exObsIds,
+			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, String prefix) throws IOException, Exception {
+		final Map<Date, Map<String, BigDecimal>> resultsByAspect = new HashMap<>();
+		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
+			resultsByAspect.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils.aspectMidsPuntuationGraphicData(messageResources, entry.getValue()));
+		}
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionSuitabilityChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
+		replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CONFORMIDAD_COMBINADA_FIXED, MIME_TYPE_JPG);
+		// Section compliance
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceChart(observatoryId, executionId, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION,
+				pageObservatoryMap, exObsIds);
+		replaceSectionEvolutionComplianceLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, exObsIds, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_NIVEL_CUMPLIMIENTO_COMBINADA_FIXED, MIME_TYPE_JPG);
+		// Puntuation
+		replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_OBSERVATORIO_FIJOS,
+				MIME_TYPE_JPG);
+		// Mid by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
+				new String[] { graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
+						graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources,
+				graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		replaceSectionEvolutionScoreByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_PUNTUACION_MEDIA_VERIFICACION_NAII_COMBINADA_FIXED,
+				MIME_TYPE_JPG);
+		// Compliance by verification
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChartSplit(messageResources,
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION,
+						graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION },
+				pageObservatoryMap, LEVEL_I_VERIFICATIONS);
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionComplianceByVerificationChart(messageResources,
+				new String[] { graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION }, pageObservatoryMap, LEVEL_II_VERIFICATIONS);
+		replaceSectionComplianceByVerification(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap, prefix);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT1_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAI_COMBINADA_SPLIT2_FIXED,
+				MIME_TYPE_JPG);
+		replaceImageGeneric(odt, graphicPath + EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED + JPG_EXTENSION, EVOLUCION_CUMPLIMIENTI_VERIFICACION_NAII_COMBINADA_FIXED, MIME_TYPE_JPG);
+		// By aspects
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByAspectChart(messageResources, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION,
+				pageObservatoryMap);
+		replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
+		replaceImg(odt, graphicPath + EVOLUCION_PUNTUACION_MEDIA_ASPECTO_COMBINADA_FIXED + JPG_EXTENSION, MIME_TYPE_JPG);
 	}
 
 	/**
 	 * Replace complexitivy section.
 	 *
-	 * @param graphicPath       the graphic path
-	 * @param pageExecutionList the page execution list
-	 * @param messageResources  the message resources
-	 * @param odt               the odt
-	 * @param odfFileContent    the odf file content
-	 * @param tagsFilter        the tags filter
+	 * @param graphicPath        the graphic path
+	 * @param pageExecutionList  the page execution list
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param tagsFilter         the tags filter
+	 * @param grpahicConditional the grpahic conditional
 	 * @throws SQLException             the SQL exception
 	 * @throws Exception                the exception
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void replaceComplexitivySection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final MessageResources messageResources, final OdfTextDocument odt,
-			final OdfFileDom odfFileContent, String[] tagsFilter) throws SQLException, Exception, XPathExpressionException {
+			final OdfFileDom odfFileContent, String[] tagsFilter, Map<String, Boolean> grpahicConditional) throws SQLException, Exception, XPathExpressionException {
 		for (ComplejidadForm complejidad : ComplejidadDAO.getComplejidades(DataBaseManager.getConnection(), null, -1)) {
 			OdfTextDocument odtComplexity = getOdfTemplateComplexities();
 			OdfFileDom odfFileContentComplejidad = odtComplexity.getContentDom();
@@ -499,18 +889,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/**
 	 * Replace segment section.
 	 *
-	 * @param graphicPath       the graphic path
-	 * @param pageExecutionList the page execution list
-	 * @param categories        the categories
-	 * @param messageResources  the message resources
-	 * @param odt               the odt
-	 * @param odfFileContent    the odf file content
-	 * @param tagsFilter        the tags filter
+	 * @param graphicPath        the graphic path
+	 * @param pageExecutionList  the page execution list
+	 * @param categories         the categories
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param tagsFilter         the tags filter
+	 * @param grpahicConditional the grpahic conditional
 	 * @throws Exception                the exception
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void replaceSegmentSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
-			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsFilter) throws Exception, XPathExpressionException {
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, String[] tagsFilter, Map<String, Boolean> grpahicConditional) throws Exception, XPathExpressionException {
 		for (CategoriaForm category : categories) {
 			OdfTextDocument odtCategory = getOdfTemplateCategories();
 			OdfFileDom odfFileContentCategory = odtCategory.getContentDom();
@@ -522,13 +913,28 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				replaceSectionAllocationDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionCompilandeDistributionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionAllocationPuntuactionGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionMidAllocationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_PMV_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_PMV_GRPAHICS))) {
+					replaceSectionMidAllocationLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+					replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				} else {
+					// remove pmasection
+					removeSection(odt, odfFileContent, PMV_SECTION_NAME);
+				}
+				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS))) {
+					replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+					replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				} else {
+					// remove pmasection
+					removeSection(odt, odfFileContent, CMV_SECTION_NAME);
+				}
 				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
-				replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_ASPECTS_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_ASPECTS_GRPAHICS))) {
+					replaceSectionAspectsGrouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
+				} else {
+					// remove pmasection
+					removeSection(odtCategory, odfFileContentCategory, PMASECTION_NAME);
+				}
 				// Replace titles with group name
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_SPAN_NODE);
 				replaceText(odtCategory, odfFileContentCategory, NOMBRESEGMENTO_BOOKMARK, category.getName(), TEXT_P_NODE);
@@ -548,18 +954,19 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	/**
 	 * Replace global section.
 	 *
-	 * @param graphicPath       the graphic path
-	 * @param pageExecutionList the page execution list
-	 * @param categories        the categories
-	 * @param messageResources  the message resources
-	 * @param odt               the odt
-	 * @param odfFileContent    the odf file content
-	 * @param complexitivities  the complexitivities
-	 * @param tagsFilter        the tags filter
+	 * @param graphicPath        the graphic path
+	 * @param pageExecutionList  the page execution list
+	 * @param categories         the categories
+	 * @param messageResources   the message resources
+	 * @param odt                the odt
+	 * @param odfFileContent     the odf file content
+	 * @param complexitivities   the complexitivities
+	 * @param tagsFilter         the tags filter
+	 * @param grpahicConditional the grpahic conditional
 	 * @throws Exception the exception
 	 */
 	private void replaceGlobalSection(final String graphicPath, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final MessageResources messageResources,
-			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, String[] tagsFilter) throws Exception {
+			final OdfTextDocument odt, final OdfFileDom odfFileContent, List<ComplejidadForm> complexitivities, String[] tagsFilter, Map<String, Boolean> grpahicConditional) throws Exception {
 		replaceSectionGlobalAccesibilityDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionGlobalCompilanceDistribution(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionComparisionPuntuactionAllocationSegment(messageResources, odt, odfFileContent, graphicPath, categories, pageExecutionList, tagsFilter);
@@ -570,11 +977,21 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceSectionComparisionPuntuactionByComplexity(messageResources, odt, odfFileContent, graphicPath, complexitivities, pageExecutionList, tagsFilter);
 		replaceSectionPuntuacionByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionPuntuacionByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionModalityByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		if (grpahicConditional.containsKey(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_GLOBAL_MODALITY_GRPAHICS))) {
+			replaceSectionModalityByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+			replaceSectionModalityByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		} else {
+			// remove pmasection
+			removeSection(odt, odfFileContent, PMASECTION_NAME);
+		}
 		replaceSectionCompilanceByVerificationLevel1(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
 		replaceSectionCompilanceByVerificationLevel2(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
-		replaceSectionComparisionAspects(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		if (grpahicConditional.containsKey(Constants.CHECK_GLOBAL_ASPECTS_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_GLOBAL_ASPECTS_GRPAHICS))) {
+			replaceSectionComparisionAspects(messageResources, odt, odfFileContent, graphicPath, pageExecutionList);
+		} else {
+			// remove pmasection
+			removeSection(odt, odfFileContent, CMV_SECTION_NAME);
+		}
 	}
 
 	/**
@@ -594,6 +1011,40 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				node.setTextContent(newTitle);
 			}
 			odt.getOfficeMetadata().setTitle(newTitle);
+		}
+	}
+
+	/**
+	 * Removes the by bookmark.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param bookmark       the bookmark
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void removeBookmark(final OdfTextDocument odt, final OdfFileDom odfFileContent, String bookmark) throws XPathExpressionException {
+		XPath xpath = odt.getXPath();
+		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_BOOKMARK_START_TEXT_NAME_S, bookmark), odfFileContent, XPathConstants.NODESET);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			OdfElement node = (OdfElement) nodeList.item(i);
+			node.getParentNode().removeChild(node);
+		}
+	}
+
+	/**
+	 * Removes the section.
+	 *
+	 * @param odt            the odt
+	 * @param odfFileContent the odf file content
+	 * @param sectionName    the section name
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void removeSection(final OdfTextDocument odt, final OdfFileDom odfFileContent, String sectionName) throws XPathExpressionException {
+		XPath xpath = odt.getXPath();
+		NodeList nodeList = (NodeList) xpath.evaluate(String.format(TEXT_SECTION_NAME_S, sectionName), odfFileContent, XPathConstants.NODESET);
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			OdfElement node = (OdfElement) nodeList.item(i);
+			node.getParentNode().removeChild(node);
 		}
 	}
 
@@ -830,6 +1281,22 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		sb.append("</table:table-row>");
 		sb.append("</table:table>");
 		return sb;
+	}
+
+	/**
+	 * Generate table evolution.
+	 *
+	 * @param header1  the header 1
+	 * @param header2  the header 2
+	 * @param columna1 the columna 1
+	 * @param columna2 the columna 2
+	 * @param columna3 the columna 3
+	 * @param name     the name
+	 * @param results  the results
+	 * @return the string builder
+	 */
+	private StringBuilder generateTableEvolution(String header1, String header2, String columna1, String columna2, String columna3, String name, List<LabelValueBean> results) {
+		return null;
 	}
 
 	/**
@@ -1089,6 +1556,30 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 	}
 
 	/**
+	 * Adds the header styles.
+	 *
+	 * @param odt the odt
+	 * @throws Exception the exception
+	 */
+	private void addHeaderStyles(final OdfTextDocument odt) throws Exception {
+		OdfOfficeAutomaticStyles styles = odt.getContentDom().getOrCreateAutomaticStyles();
+		OdfStyle paragraphStyleH2 = styles.newStyle(OdfStyleFamily.Paragraph);
+		// <style:style style:name="P161" style:family="paragraph" style:parent-style-name="H2" style:list-style-name="LFO3"/>
+		paragraphStyleH2.setAttribute("style:name", "HeaderStyle2");
+		paragraphStyleH2.setAttribute("style:parent-style-name", "H2");
+		paragraphStyleH2.setAttribute("style:list-style-name", "LFO3");
+		OdfStyle paragraphStyleH3 = styles.newStyle(OdfStyleFamily.Paragraph);
+		// <style:style style:name="P184" style:family="paragraph" style:parent-style-name="H3" style:list-style-name="LFO3"/>
+		paragraphStyleH3.setAttribute("style:name", "HeaderStyle3");
+		paragraphStyleH3.setAttribute("style:parent-style-name", "H3");
+		paragraphStyleH3.setAttribute("style:list-style-name", "LFO3");
+	}
+//	<style:style style:family="paragraph" style:list-style-name="" style:name="P164" style:parent-style-name="Text_20_body">
+//	<style:paragraph-properties fo:hyphenation-ladder-count="no-limit" fo:line-height="130%" fo:text-align="justify" style:justify-single-word="false"/>
+//	<style:text-properties fo:hyphenate="false" officeooo:paragraph-rsid="01764396"/>
+//	</style:style>
+
+	/**
 	 * Append paragraph to marker.
 	 *
 	 * @param odt            the odt
@@ -1145,7 +1636,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			Element title = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(stringTitle.getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, title, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
 			List<LabelValueBean> results = ResultadosAnonimosObservatorioUNEEN2019Utils.infoComparisionAllocation(messageResources, res.get(category));
-
 			StringBuilder sb = generateTablePercentajeAndPortals(header1, header2, columna1, columna2, columna3, name, results);
 			Element node = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(sb.toString().getBytes())).getDocumentElement();
 			appendNodeAtMarkerPosition(odt, odfFileContent, node, TABLASPUNTUACIONSEGMENTO_BOOKMARK);
@@ -1369,47 +1859,30 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c2-", labels.get(0).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d2-", labels.get(0).getGrayPercentage());
-			
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b3-", labels.get(1).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c3-", labels.get(1).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d3-", labels.get(1).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b4-", labels.get(2).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c4-", labels.get(2).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d4-", labels.get(2).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b5-", labels.get(3).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c5-", labels.get(3).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d5-", labels.get(3).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b6-", labels.get(4).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c6-", labels.get(4).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d6-", labels.get(4).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c7-", labels.get(5).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d7-", labels.get(5).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b8-", labels.get(6).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c8-", labels.get(6).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d8-", labels.get(6).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b9-", labels.get(7).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c9-", labels.get(7).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d9-", labels.get(7).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b10-", labels.get(8).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c10-", labels.get(8).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d10-", labels.get(8).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b11-", labels.get(9).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c11-", labels.get(9).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d11-", labels.get(9).getGrayPercentage());
@@ -1417,17 +1890,12 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b12-", labels.get(10).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c12-", labels.get(10).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d12-", labels.get(10).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b13-", labels.get(11).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c13-", labels.get(11).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d13-", labels.get(11).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b14-", labels.get(12).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c14-", labels.get(12).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d14-", labels.get(12).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b15-", labels.get(13).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c15-", labels.get(13).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d15-", labels.get(13).getGrayPercentage());
@@ -1460,25 +1928,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c2-", labels.get(0).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d2-", labels.get(0).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b3-", labels.get(1).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c3-", labels.get(1).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d3-", labels.get(1).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b4-", labels.get(2).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c4-", labels.get(2).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d4-", labels.get(2).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b5-", labels.get(3).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c5-", labels.get(3).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d5-", labels.get(3).getGrayPercentage());
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b6-", labels.get(4).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c6-", labels.get(4).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d6-", labels.get(4).getGrayPercentage());
-			
-			
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.b7-", labels.get(5).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.c7-", labels.get(5).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "52.t1.d7-", labels.get(5).getGrayPercentage());
@@ -1540,72 +2001,45 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, "-451c.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c2-", res.get(0).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d2-", res.get(0).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b3-", res.get(1).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c3-", res.get(1).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d3-", res.get(1).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b4-", res.get(2).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c4-", res.get(2).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d4-", res.get(2).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b5-", res.get(3).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c5-", res.get(3).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d5-", res.get(3).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b6-", res.get(4).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c6-", res.get(4).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d6-", res.get(4).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c7-", res.get(5).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d7-", res.get(5).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b8-", res.get(6).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c8-", res.get(6).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d8-", res.get(6).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b9-", res.get(7).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c9-", res.get(7).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d9-", res.get(7).getGrayPercentage());
-		
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b10-", res.get(8).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c10-", res.get(8).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d10-", res.get(8).getGrayPercentage());
-		
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b11-", res.get(9).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c11-", res.get(9).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d11-", res.get(9).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b12-", res.get(10).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c12-", res.get(10).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d12-", res.get(10).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b13-", res.get(11).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c13-", res.get(11).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d13-", res.get(11).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b14-", res.get(12).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c14-", res.get(12).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d14-", res.get(12).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-451c.t1.b15-", res.get(13).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.c15-", res.get(13).getRedPercentage());
 		replaceText(odt, odfFileContent, "-451c.t1.d15-", res.get(13).getRedPercentage());
-		
 	}
 
 	/**
@@ -1629,25 +2063,18 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		replaceText(odt, odfFileContent, "-452c.t1.b2-", res.get(0).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c2-", res.get(0).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d2-", res.get(0).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b3-", res.get(1).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c3-", res.get(1).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d3-", res.get(1).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b4-", res.get(2).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c4-", res.get(2).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d4-", res.get(2).getGrayPercentage());
-		
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b5-", res.get(3).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c5-", res.get(3).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d5-", res.get(3).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b6-", res.get(4).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c6-", res.get(4).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d6-", res.get(4).getGrayPercentage());
-		
 		replaceText(odt, odfFileContent, "-452c.t1.b7-", res.get(5).getGreenPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.c7-", res.get(5).getRedPercentage());
 		replaceText(odt, odfFileContent, "-452c.t1.d7-", res.get(5).getGrayPercentage());
@@ -2173,7 +2600,6 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		return numImg;
 	}
 
-	
 	/**
 	 * Replace section compliance by verification.
 	 *
@@ -2283,6 +2709,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 		}
 		return numImg;
 	}
+
 	/**
 	 * Replace section evolution score by aspect.
 	 *

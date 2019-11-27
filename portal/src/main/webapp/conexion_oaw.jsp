@@ -44,6 +44,7 @@
         String analysisToDelete = "";
         String type = "url";
         String confirm = "false";
+        String complexity ="";
 
         private final List<String> errores;
 
@@ -115,7 +116,11 @@
                 this.type = item.getString();
             } else if (paramName.equalsIgnoreCase("confirm")) {
                 this.confirm = item.getString();
+            }else if (paramName.equalsIgnoreCase("complexity")) {
+                this.complexity = item.getString();
             }
+            
+            
         }
 
         public boolean isValidRequest() {
@@ -156,12 +161,11 @@
             try {
                 final String encodedCodigo = codec.encode(codigo);
                                                
-                final String postRequest = String.format("content=%s&url=%s&correo=%s&profundidad=%s&amplitud=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
+                final String postRequest = String.format("content=%s&url=%s&correo=%s&complexity=%s&informe=%s&usuario=%s&inDirectory=%s&registerAnalysis=%s&analysisToDelete=%s&informe-nobroken=%s&urls=%s&type=%s",
                         encodedCodigo != null ? encodedCodigo : "",
                         url != null ? url : "",
                         correo,
-                        profundidad,
-                        amplitud,
+                        complexity,
                         informe,
                         username,
                         directorio,
@@ -259,7 +263,7 @@
                         }
                     }
                 }
-                final int depth = Integer.parseInt(profundidad);
+              /* final int depth = Integer.parseInt(profundidad);
                 final int width = Integer.parseInt(amplitud);
                 // TODO 2017
                 if (depth < 0 || depth > 4) {
@@ -267,7 +271,7 @@
                 }
                 if (width < 0 || width > 8) {
                     errores.add("La amplitud de rastreo es incorrecta");
-                }
+                }*/
             } else if (isListaUrlsRequest()) {
                 if (urls.isEmpty()) {
                   errores.add("Indique al menos una url para análisis de tipo 'Conjunto de URLs'");

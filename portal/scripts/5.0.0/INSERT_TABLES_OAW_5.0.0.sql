@@ -92,4 +92,6 @@ CREATE TABLE observatorio_plantillas (
   PRIMARY KEY (id_plantilla)
 );
 
+ALTER TABLE basic_service ADD complexity VARCHAR(128);
+
 

@@ -101,10 +101,15 @@ public final class PlantillaDAO {
 	 */
 	public static boolean existsPlantilla(Connection c, PlantillaForm plantilla) throws SQLException {
 		boolean exists = false;
-		final String query = "SELECT * FROM observatorio_plantillas WHERE UPPER(nombre) = UPPER(?) AND id_plantilla <> ?";
+		String query = "SELECT * FROM observatorio_plantillas WHERE UPPER(nombre) = UPPER(?) ";
+		if (plantilla.getId() != null) {
+			query = query + " AND id_plantilla <> ?";
+		}
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setString(1, plantilla.getNombre());
-			ps.setLong(2, plantilla.getId());
+			if (plantilla.getId() != null) {
+				ps.setLong(2, plantilla.getId());
+			}
 			ResultSet result = ps.executeQuery();
 			if (result.next()) {
 				exists = true;

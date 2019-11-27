@@ -40,8 +40,6 @@ function complejidadFormatter(cellvalue, options, rowObject) {
 	}
 }
 
-
-
 function nombreAntiguoFormatter(cellvalue, options, rowObject) {
 	return rowObject.nombre;
 }
@@ -69,16 +67,26 @@ function titleEtiquetasFormatter(cellvalue, options, rowObject) {
 	return cellFormatted;
 }
 
-
 function etiquetasFormatter(cellvalue, options, rowObject) {
-	var cellFormatted = "<ul style='list-style: none; padding-left: 0; margin-top: 10px;' >";
+
+	var data = "";
 
 	$.each(rowObject.etiquetas, function(index, value) {
-		cellFormatted = cellFormatted + "<li class='listado-grid'>"
-				+ value.name + "</li>";
+		data = data + value.id + ",";
 	});
 
-	cellFormatted = cellFormatted + "</ul>";
+	if (data) {
+		data = data.slice(0, -1);
+	}
+
+	var cellFormatted = "<div class='tagbox-wrapper'>";
+
+	$.each(rowObject.etiquetas, function(index, value) {
+		cellFormatted = cellFormatted + "<div class='tagbox-token'><span>"
+				+ value.name + "</span></div>";
+	});
+
+	cellFormatted = cellFormatted + "</div>";
 
 	return cellFormatted;
 }
@@ -103,92 +111,6 @@ function irDependenciaFormatter(cellvalue, options, rowObject) {
 			+ rowObject.listaUrls[0]
 			+ "><span class='glyphicon glyphicon-new-window'></span><span class='sr-only'>Ir a la p&aacute;gina web de esta semilla</span></a>";
 }
-/*
-function eliminarDependenciaFormater(cellvalue, options, rowObject) {
-
-	return "<span style='cursor:pointer' onclick='eliminarSemilla("
-			+ options.rowId
-			+ ")'class='glyphicon glyphicon-remove'></span><span class='sr-only'>Eliminar</span></span>";
-}
-
-function eliminarSemilla(rowId) {
-
-	var semilla = $('#grid').jqGrid('getRowData', rowId);
-
-	var idSemilla = semilla.id;
-	var dialogoEliminar = $('<div id="dialogoEliminarContent"></div>');
-
-	dialogoEliminar.append('<p>&#191;Desea eliminar la semilla "'
-			+ semilla.nombre + '"?</p>');
-	
-	$
-			.ajax(
-					{
-						url : '/oaw/secure/JsonSemillasObservatorio.do?action=listObservatoriosSemillaDelete&semilla='
-								+ idSemilla,
-						method : 'POST',
-						cache : false
-					})
-			.success(
-					function(data) {
-
-						if (data != null) {
-
-							if (JSON.parse(data).length > 0) {
-
-								dialogoEliminar
-										.append('<p>La semilla est&#225; o ha estado asociada a los siguientes observatorios: </p></ul>');
-
-								$.each(JSON.parse(data),
-										function(index, value) {
-											dialogoEliminar.append('<li>'
-													+ value.nombre + '</li>')
-										});
-
-								dialogoEliminar.append("</ul>");
-							}
-
-						}
-
-					});
-
-	dialogoEliminar
-			.dialog({
-				autoOpen : false,
-				minHeight : $(window).height() * 0.25,
-				minWidth : $(window).width() * 0.25,
-				modal : true,
-				title : 'RASTREADOR WEB - Eliminar semilla',
-				buttons : {
-					"Aceptar" : {
-						click: function() {
-							$
-							.ajax(
-									{
-										url : '/oaw/secure/JsonSemillasObservatorio.do?action=delete&idSemilla='
-												+ idSemilla,
-										method : 'POST',
-										cache : false
-									}).success(function(response) {
-								reloadGrid(lastUrl);
-								dialogoEliminar.dialog("close");
-							});
-						},
-						text: 'Aceptar',
-						class: 'jdialog-btn-save'
-					},
-					"Cancelar" : {
-						click: function() {
-							dialogoEliminar.dialog("close");
-						},
-						text: 'Cancelar',
-						class: 'jdialog-btn-cancel'
-					}
-				}
-			});
-
-	dialogoEliminar.dialog("open");
-}*/
 
 // Edicion de las urls en linea formatea el texto para colocar una por línea
 
@@ -209,6 +131,67 @@ function textareaEditValue(elem, operation, value) {
 	}
 }
 
+function complexityEdit(value, options, rowObject) {
+
+	var element = document.createElement('input');
+
+	element.setAttribute("name", "tags");
+	element.setAttribute("id", "tagsFilter");
+	element.setAttribute("type", "text");
+	element.setAttribute("autocapitalize", "off");
+	element.setAttribute("placeholder", "Escriba para buscar...");
+
+	var seed = $('#grid').jqGrid('getRowData', options.rowId);
+
+	var data = $("#grid").jqGrid('getGridParam', 'data');
+	$.each(data, function(index, item) {
+		if (item.id == options.rowId) {
+
+			var data = "";
+
+			$.each(item.etiquetas, function(index, value) {
+				data = data + value.id + ",";
+			});
+
+			if (data) {
+				data = data.slice(0, -1);
+			}
+
+			element.setAttribute('value', data);
+
+		}
+	});
+
+	$.ajax({
+		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+		method : 'POST',
+		cache : false
+	}).success(function(response) {
+
+		$(element).tagbox({
+			items : response.etiquetas,
+			searchIn : [ 'name' ],
+			rowFormat : '<span class="name">{{name}}</span>',
+			tokenFormat : '{{name}}',
+			valueField : 'id',
+			itemClass : 'user'
+		});
+
+	});
+
+	return element;
+
+}
+
+function complexityEditValue(elem, operation, value) {
+
+	if (operation === 'get') {
+		return $(elem).val();
+	} else if (operation === 'set') {
+		$('input', elem).val(value);
+	}
+}
+
 function dialogoErrorEdit(mensaje) {
 
 	var errorDialog = $('<div>' + mensaje + '</div>');
@@ -225,75 +208,6 @@ function dialogoErrorEdit(mensaje) {
 
 }
 
-function myelem(value,options, rowObject){
-	
-	//var el = $('<input name="etiquetasSeleccionadas" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />');
-	
-	
-	/*$.ajax({
-		url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-		method : 'POST',
-		cache : false
-	}).success(function(response) {
-
-		$('#tagsFilter').tagbox({
-			items : response.etiquetas,
-			searchIn : [ 'name' ],
-			rowFormat : '<span class="name">{{name}}</span>',
-			tokenFormat : '{{name}}',
-			valueField : 'id',
-			itemClass : 'user'
-		});
-
-	})*/
-
-	return '<input type="text" />';
-	
-	//return '<input onClick = "loadEtiquetas(this)" name="etiquetasSeleccionadas" autocapitalize="off" placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" />';
-	//return el[0];
-}
-
-function loadEtiquetas(e){
-	
-	console.Log(e);
-}
-
-
-function myval(elem, operation, value){
-    //return elem.val();
-	
-
-	if (operation === 'get') {
-		return $(elem).val();
-	} else if (operation === 'set') {
-		$('input', elem).val(value);
-	}
-}
-	
-/*
-
-	$(window).on('load', function() {
-		$jq(document).ready(function() {
-			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-				method : 'POST',
-				cache : false
-			}).success(function(response) {
-
-				$('#tagsFilter').tagbox({
-					items : response.etiquetas,
-					searchIn : [ 'name' ],
-					rowFormat : '<span class="name">{{name}}</span>',
-					tokenFormat : '{{name}}',
-					valueField : 'id',
-					itemClass : 'user'
-				});
-
-			})
-
-		});
-	});*/
-	
 // Recarga el grid. Recibe como parámetro la url de la acción con la información
 // de paginación. Si no le llega nada usa la url por defecto
 function reloadGrid(path) {
@@ -329,10 +243,11 @@ function reloadGrid(path) {
 											editUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=update',
 											colNames : [ "Id", "NombreAntiguo",
 													"Nombre", "Acr\u00F3nimo",
-													"Segmento", "\u00C1mbito", "Complejidad", "Etiquetas", "Dependencia",
-													"URLs", "Activa",
-													"Directorio", "Ir",
-													"Eliminar" ],
+													"Segmento", "\u00C1mbito",
+													"Complejidad", "Etiquetas",
+													"Dependencia", "URLs",
+													"Activa", "Directorio",
+													"Ir", "Eliminar" ],
 											colModel : [
 													{
 														name : "id",
@@ -475,7 +390,7 @@ function reloadGrid(path) {
 														formatter : complejidadFormatter,
 														sortable : false
 
-													},/*
+													},
 													{
 														name : "etiquetasSeleccionadas",
 														cellattr : function(
@@ -491,105 +406,19 @@ function reloadGrid(path) {
 														},
 														align : "left",
 														width : 25,
-														// editrules : {
-														// required : true
-														// },
-														edittype : "select",
+														edittype : 'custom',
+														sortable : false,
+														formatter : urlsFormatter,
 														editoptions : {
-
-															style : "height:100px; width:100%; text-align:left; overflow-x: scroll;",
-															multiple : true,
-															dataUrl : '/oaw/secure/JsonSemillasObservatorio.do?action=listEtiquetas',
-															buildSelect : function(
-																	data) {
-
-																// Seleccionar
-																// las que ya
-																// asociadas
-
-																var idsEtiquetas = [];
-
-																$
-																		.each(
-																				$(
-																						'#grid')
-																						.getLocalRow(
-																								$(
-																										'#grid')
-																										.jqGrid(
-																												'getGridParam',
-																												'selrow')).etiquetas,
-																				function(
-																						index,
-																						value) {
-																					idsEtiquetas
-																							.push(value.id);
-																				});
-
-																var response = jQuery
-																		.parseJSON(data);
-																var s = '<select><option disabled style="display: none;"></option>';
-
-																if (response
-																		&& response.length) {
-																	for (var i = 0; i < response.length; i++) {
-																		var ri = response[i];
-
-																		if ($
-																				.inArray(
-																						ri.id,
-																						idsEtiquetas) >= 0) {
-
-																			s += '<option onmouseover="cambiaTitulo()" selected="selected" value="'
-																					+ ri.id
-																					+ '">'
-																					+ ri.name
-																					+ '</option>';
-
-																		} else {
-																			s += '<option onmouseover="cambiaTitulo()" value="'
-																					+ ri.id
-																					+ '">'
-																					+ ri.name
-																					+ '</option>';
-																		}
-
-																	}
-																}
-
-																return s
-																		+ "</select>";
-															}
+															custom_element : complexityEdit,
+															custom_value : complexityEditValue
+														},
+														editrules : {
+															required : false
 														},
 														formatter : etiquetasFormatter,
 														sortable : false
-													},*/
-													{
-														name : "etiquetasSeleccionadas",
-														cellattr : function(
-																rowId, val,
-																rawObject, cm,
-																rdata) {
-															return 'title="'
-																	+ titleEtiquetasFormatter(
-																			val,
-																			null,
-																			rawObject)
-																	+ '"';
-														},
-														align : "left",
-														width : 25,
-														// editrules : {
-														// required : true
-														// },
-														edittype : "custom",
-														editoptions : {
-														custom_element: myelem, 
-														custom_value:myval,
-														},
-														formatter : etiquetasFormatter,
-														sortable : false
-													},	
+													},
 													{
 														name : "dependenciasSeleccionadas",
 														// Prueba para devolver

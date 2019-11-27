@@ -296,6 +296,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</fieldset>
 			</html:form>
 
+		</div>
+
+	</div>
+	<!-- fin cajaformularios -->
+
+	<div id="fullwidthgrid">
+
+		<div id="fullwidthgridheader">
 			<p class="alert alert-info pull-left">
 				<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
 				</em>:
@@ -342,17 +350,18 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			</p>
 
 
-			<!-- Grid -->
-			<table id="grid"></table>
-			<p id="paginador"></p>
-
 		</div>
+
+		<!-- Grid -->
+		<table id="grid"></table>
+		<p id="paginador"></p>
+
 		<p id="pCenter">
 			<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
 				<bean:message key="boton.volver" />
 			</html:link>
 		</p>
 	</div>
-	<!-- fin cajaformularios -->
+
 
 </div>

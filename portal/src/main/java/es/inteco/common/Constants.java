@@ -784,6 +784,7 @@ public interface Constants {
 	String PARAM_REPORT = "informe";
 	String PARAM_USER = "usuario";
 	String PARAM_CONTENT = "content";
+	String PARAM_COMPLEXITY = "complexity";
 	String PARAM_IN_DIRECTORY = "inDirectory";
 	String EXECUTE = "execute";
 	String REPORT_OBSERVATORY = "observatorio-1";
@@ -975,6 +976,9 @@ public interface Constants {
 	String ID_BASE_TEMPLATE = "idPlantillaBase";
 	String ID_SEGMENT_TEMPLATE = "idPlantillaSegmento";
 	String ID_COMPLEXITY_TEMPLATE = "idPlantillaComplejidad";
+	String ID_REPORT_TITLE = "reportTitle";
+	
+	
 	
 	
 }

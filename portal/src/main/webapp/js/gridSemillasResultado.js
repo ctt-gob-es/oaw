@@ -228,7 +228,7 @@ function reloadGrid(path) {
 													"URLs", "Activa",
 													"Directorio","Complejidad",
 													"Puntuac\u00F3n", 
-													"Nivel Accesibilidad",
+													"Nivel Accesibilidad","URLs analizadas",
 													"Resultados", "Informe",
 													"Relanzar", "Eliminar" ],
 											colModel : [
@@ -488,7 +488,8 @@ function reloadGrid(path) {
 															required : true,
 															edithidden : true
 														},
-														//formatter : complejidadFormatter,
+														// formatter :
+														// complejidadFormatter,
 														sortable : false
 													},
 													{
@@ -722,6 +723,12 @@ function reloadGrid(path) {
 													},
 													{
 														name : 'nivel',
+														align : "center",
+														width : 10,
+														editable : false,
+													},
+													{
+														name : "numCrawls",
 														align : "center",
 														width : 10,
 														editable : false,
