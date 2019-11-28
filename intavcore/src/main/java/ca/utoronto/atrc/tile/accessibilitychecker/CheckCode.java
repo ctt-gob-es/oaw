@@ -38,7 +38,6 @@ Adaptive Technology Resource Centre, University of Toronto
 130 St. George St., Toronto, Ontario, Canada
 Telephone: (416) 978-4360
 */
-
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import es.inteco.common.CheckFunctionConstants;
@@ -54,40 +53,28 @@ import java.util.List;
  * The Class CheckCode.
  */
 public class CheckCode {
-
 	/** The type. */
 	private int type;
-
 	/** The condition type. */
 	private int conditionType;
-
 	/** The function id. */
 	private int functionId;
-
 	/** The string node relation. */
 	private String stringNodeRelation;
-
 	/** The string language. */
 	private String stringLanguage;
-
 	/** The string function value. */
 	private String stringFunctionValue;
-
 	/** The string function element. */
 	private String stringFunctionElement;
-
 	/** The string function number. */
 	private String stringFunctionNumber;
-
 	/** The string function attribute 1. */
 	private String stringFunctionAttribute1;
-
 	/** The string function attribute 2. */
 	private String stringFunctionAttribute2;
-
 	/** The string function position. */
 	private String stringFunctionPosition;
-
 	/** The vector code. */
 	private List<CheckCode> vectorCode;
 
@@ -334,29 +321,23 @@ public class CheckCode {
 	public boolean create(Element elementCode) {
 		if ("function".equalsIgnoreCase(elementCode.getNodeName())) {
 			type = CheckFunctionConstants.CODE_TYPE_FUNCTION;
-
 			String stringNodeAttribute = elementCode.getAttribute("node").trim();
 			if (stringNodeAttribute.length() == 0) {
-				Logger.putLog("Warning: empty 'node' attribute in function.", CheckCode.class,
-						Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: empty 'node' attribute in function.", CheckCode.class, Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
 			stringNodeRelation = stringNodeAttribute;
-
 			stringFunctionValue = elementCode.getAttribute("value").trim();
 			stringFunctionElement = elementCode.getAttribute("element").trim();
 			stringFunctionNumber = elementCode.getAttribute("number").trim();
 			stringFunctionAttribute1 = elementCode.getAttribute("attribute1").trim();
 			stringFunctionAttribute2 = elementCode.getAttribute("attribute2").trim();
 			stringFunctionPosition = elementCode.getAttribute("position").trim();
-
 			String stringCall = elementCode.getAttribute("call").toLowerCase();
 			if (stringCall.length() == 0) {
-				Logger.putLog("Warning: empty 'call' attribute in function.", CheckCode.class,
-						Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: empty 'call' attribute in function.", CheckCode.class, Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
-
 			if ("not-valid-doctype".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_NOT_VALID_DOCTYPE;
 			} else if ("text-equals".equals(stringCall)) {
@@ -691,27 +672,36 @@ public class CheckCode {
 				functionId = CheckFunctionConstants.FUNCTION_FORCE_TRANSFORM;
 			} else if ("autocomplete-valid".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_AUTOCOMPLETE_VALID;
-			}
-
-			else {
+			} else if ("has-section".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_HAS_SECTION;
+			} else if ("section-has-text".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_TEXT;
+			} else if ("section-has-mailto".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_MAILTO;
+			} else if ("section-has-element".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_ELEMENT;
+			} else if ("accesibility-date-year".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_ACCESIBILITY_YEAR;
+			} else if ("section-has-date".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_DATE;
+			} else if ("section-has-phone".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_PHONE;
+			} else {
 				Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
 			return true;
 		} else if ("condition".equalsIgnoreCase(elementCode.getNodeName())) {
 			type = CheckFunctionConstants.CODE_TYPE_CONDITION;
-
 			String stringType = elementCode.getAttribute("type");
 			if ("and".equalsIgnoreCase(stringType)) {
 				conditionType = CheckFunctionConstants.CONDITION_AND;
 			} else if ("or".equalsIgnoreCase(stringType)) {
 				conditionType = CheckFunctionConstants.CONDITION_OR;
 			} else {
-				Logger.putLog("Warning: invalid condition type: " + stringType, CheckCode.class,
-						Logger.LOG_LEVEL_WARNING);
+				Logger.putLog("Warning: invalid condition type: " + stringType, CheckCode.class, Logger.LOG_LEVEL_WARNING);
 				return false;
 			}
-
 			// get all the functions contained by the condition
 			NodeList listFunctions = elementCode.getChildNodes();
 			for (int x = 0; x < listFunctions.getLength(); x++) {
@@ -726,7 +716,6 @@ public class CheckCode {
 		} else if ("language".equalsIgnoreCase(elementCode.getNodeName())) {
 			type = CheckFunctionConstants.CODE_TYPE_LANGUAGE;
 			stringLanguage = elementCode.getAttribute("value");
-
 			// get all the functions contained by the language
 			NodeList listFunctions = elementCode.getChildNodes();
 			for (int x = 0; x < listFunctions.getLength(); x++) {

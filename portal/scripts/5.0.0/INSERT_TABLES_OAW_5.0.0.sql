@@ -64,7 +64,6 @@ CREATE TABLE clasificacion_etiqueta (
 
 INSERT INTO clasificacion_etiqueta (id_clasificacion, nombre) VALUES ('1', 'Temática'), ('2', 'Distribución'), ('3', 'Recurrencia');
 
-ALTER TABLE lista ADD id_etiquetas VARCHAR(50) NOT NULL;
 
 CREATE TABLE etiquetas_lista (
 	id_etiqueta_lista INT(20) NOT NULL AUTO_INCREMENT , 

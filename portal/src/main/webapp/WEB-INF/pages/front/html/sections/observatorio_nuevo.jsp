@@ -26,6 +26,33 @@ Email: observ.accesibilidad@correo.gob.es
 	<bean:message key="boton.aceptar" />
 </bean:define>
 
+<script>
+	$(window).on('load', function() {
+
+		var $jq = $.noConflict();
+		$jq(document).ready(function() {
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
+
+				$('#tagsFilter').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user'
+				});
+
+			})
+
+		});
+
+	});
+</script>
+
 <script type="text/javascript">
 	function chooseValidation(this){
 		if (this.buttonAction == okButtonValue){
@@ -73,22 +100,21 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="nombre" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.nombre" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nuevo.observatorio.nombre" />:
+						</strong></label>
 						<html:text styleClass="texto form-control" name="NuevoObservatorioForm" property="nombre" styleId="nombre"
 							maxlength="100" />
 					</div>
 
 					<div class="formItem">
 						<label for="type" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.tipo" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nuevo.observatorio.tipo" /></strong></label>
 						<html:select name="NuevoObservatorioForm" styleClass="textoSelect form-control" styleId="type" property="tipo.id">
-							<logic:iterate name="<%=Constants.TIPOS_VECTOR %>" id="type">
+							<logic:iterate name="<%=Constants.TIPOS_VECTOR%>" id="type">
 								<bean:define id="idType">
 									<bean:write name="type" property="id" />
 								</bean:define>
-								<html:option value="<%=idType %>">
+								<html:option value="<%=idType%>">
 									<bean:write name="type" property="name" />
 								</html:option>
 							</logic:iterate>
@@ -96,8 +122,8 @@ Email: observ.accesibilidad@correo.gob.es
 					</div>
 
 					<div class="formItem">
-						<label for="type" class="control-label"><strong class="labelVisu">
-							<bean:message key="nuevo.observatorio.ambito" /></strong></label>
+						<label for="type" class="control-label"><strong class="labelVisu"> <bean:message
+									key="nuevo.observatorio.ambito" /></strong></label>
 						<html:select name="NuevoObservatorioForm" styleClass="textoSelect form-control" styleId="ambitoForm"
 							property="ambitoForm.id">
 							<html:option value="0">-</html:option>
@@ -105,7 +131,7 @@ Email: observ.accesibilidad@correo.gob.es
 								<bean:define id="idAmbito">
 									<bean:write name="ambitoForm" property="id" />
 								</bean:define>
-								<html:option value="<%=idAmbito %>">
+								<html:option value="<%=idAmbito%>">
 									<bean:write name="ambitoForm" property="name" />
 								</html:option>
 							</logic:iterate>
@@ -114,8 +140,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="activo" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.activo" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nuevo.observatorio.activo" /></strong></label>
 						<html:select styleClass="textoSelect form-control" styleId="activo" property="activo">
 							<html:option value="true">
 								<bean:message key="select.yes" />
@@ -128,15 +153,14 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="cartucho" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.cartucho" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nuevo.observatorio.cartucho" /></strong></label>
 						<html:select name="NuevoObservatorioForm" styleClass="textoSelect form-control" styleId="cartucho"
 							property="cartucho.id">
 							<logic:iterate name="<%=Constants.CARTUCHOS_VECTOR %>" id="cartucho">
 								<bean:define id="idCartucho">
 									<bean:write name="cartucho" property="id" />
 								</bean:define>
-								<html:option value="<%=idCartucho %>">
+								<html:option value="<%=idCartucho%>">
 									<bean:write name="cartucho" property="name" />
 								</html:option>
 							</logic:iterate>
@@ -152,11 +176,18 @@ Email: observ.accesibilidad@correo.gob.es
 								<bean:define id="idCategory">
 									<bean:write name="category" property="id" />
 								</bean:define>
-								<html:option value="<%=idCategory %>">
+								<html:option value="<%=idCategory%>">
 									<bean:write name="category" property="name" />
 								</html:option>
 							</logic:iterate>
 						</html:select>
+					</div>
+
+
+					<div class="formItem">
+						<label for="tags" class="control-label"><strong class="labelVisu"><bean:message
+									key="menu.config.etiquetas" />: </strong></label> <input name="tags" autocapitalize="off" placeholder="Escriba para buscar..."
+							autofocus id="tagsFilter" type="text" value="" />
 					</div>
 
 					<div class="formItem">
@@ -167,7 +198,7 @@ Email: observ.accesibilidad@correo.gob.es
 								<bean:define id="idLang">
 									<bean:write name="lenguaje" property="id" />
 								</bean:define>
-								<html:option value="<%=idLang %>">
+								<html:option value="<%=idLang%>">
 									<bean:write name="lenguaje" property="name" />
 								</html:option>
 							</logic:iterate>
@@ -176,8 +207,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="periodicidad" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.periodicidad" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="nuevo.observatorio.periodicidad" />: </strong></label>
 						<html:select styleClass="textoSelect form-control" styleId="periodicidad" property="periodicidad">
 							<logic:notEmpty name="NuevoObservatorioForm" property="periodicidadVector">
 								<logic:iterate name="NuevoObservatorioForm" property="periodicidadVector" id="periodicidads">
@@ -196,8 +227,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="profundidad" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.profundidad" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="nuevo.observatorio.profundidad" />: </strong></label>
 						<bean:define id="maxProfundidad">
 							<inteco:properties key="profundidadMax.rastreo" file="crawler.properties" />
 						</bean:define>
@@ -217,8 +248,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="amplitud" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.amplitud" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="nuevo.observatorio.amplitud" />:
+						</strong></label>
 						<bean:define id="maxAmplitud">
 							<inteco:properties key="pagPorNivelMax.rastreo" file="crawler.properties" />
 						</bean:define>
@@ -240,8 +271,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="pseudoAleatorio" class="control-label"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="nuevo.observatorio.pseudoaleatorio" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="nuevo.observatorio.pseudoaleatorio" /></strong></label>
 						<html:select styleClass="textoSelect form-control" styleId="pseudoAleatorio" property="pseudoAleatorio">
 							<html:option value="true">
 								<bean:message key="select.yes" />
@@ -258,8 +289,8 @@ Email: observ.accesibilidad@correo.gob.es
 						</legend>
 						<div class="formItem">
 							<label for="fechaInicio" class="labelCorto"><strong class="labelVisu"><acronym
-									title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="nuevo.observatorio.fecha.inicio" />: </strong></label>
+									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+										key="nuevo.observatorio.fecha.inicio" />: </strong></label>
 							<html:text styleClass="textoCorto form-control" name="NuevoObservatorioForm" property="fechaInicio"
 								styleId="fechaInicio"
 								onkeyup="escBarra(event, document.forms['NuevoObservatorioForm'].elements['fechaInicio'], 1)" maxlength="10" />
@@ -272,18 +303,18 @@ Email: observ.accesibilidad@correo.gob.es
 
 						<div class="formItem">
 							<label for="horaInicio" class="labelCorto"><strong class="labelVisu"><acronym
-									title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="nuevo.observatorio.hora.inicio" />: </strong></label>
+									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+										key="nuevo.observatorio.hora.inicio" />: </strong></label>
 							<html:select styleClass="textoSelectCorto form-control" styleId="horaInicio" name="NuevoObservatorioForm"
 								property="horaInicio">
-								<html:options name="<%=Constants.HOURS %>" />
+								<html:options name="<%=Constants.HOURS%>" />
 							</html:select>
 							<label for="minutoInicio" class="labelCorto"><strong class="labelVisu"><acronym
-									title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="nuevo.observatorio.minuto.inicio" />: </strong></label>
+									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+										key="nuevo.observatorio.minuto.inicio" />: </strong></label>
 							<html:select styleClass="textoSelectCorto form-control" styleId="minutoInicio" name="NuevoObservatorioForm"
 								property="minutoInicio">
-								<html:options name="<%=Constants.MINUTES %>" />
+								<html:options name="<%=Constants.MINUTES%>" />
 							</html:select>
 						</div>
 					</fieldset>
@@ -291,7 +322,7 @@ Email: observ.accesibilidad@correo.gob.es
 					<fieldset>
 						<!-- SEMILLAS ASOCIADAS AL RASTREO QUE ES POSIBLE DESVINCULAR DEL MISMO -->
 						<div class="detail">
-							<logic:notPresent name="<%= Constants.ADD_OBSERVATORY_SEED_LIST %>">
+							<logic:notPresent name="<%=Constants.ADD_OBSERVATORY_SEED_LIST%>">
 								<div class="notaInformativaExito">
 									<p>
 										<bean:message key="modificar.observatorio.semillas.anadidas.vacio" />
@@ -299,24 +330,24 @@ Email: observ.accesibilidad@correo.gob.es
 								</div>
 							</logic:notPresent>
 
-							<logic:present name="<%= Constants.ADD_OBSERVATORY_SEED_LIST %>">
-								<logic:empty name="<%= Constants.ADD_OBSERVATORY_SEED_LIST %>">
+							<logic:present name="<%=Constants.ADD_OBSERVATORY_SEED_LIST%>">
+								<logic:empty name="<%=Constants.ADD_OBSERVATORY_SEED_LIST%>">
 									<div class="notaInformativaExito">
 										<p>
 											<bean:message key="modificar.observatorio.semillas.anadidas.vacio" />
 										</p>
 									</div>
 								</logic:empty>
-								<logic:notEmpty name="<%= Constants.ADD_OBSERVATORY_SEED_LIST %>">
+								<logic:notEmpty name="<%=Constants.ADD_OBSERVATORY_SEED_LIST%>">
 									<div class="pag">
 										<table>
 											<tr>
 												<th><bean:message key="nuevo.observatorio.semillas.asociadas.nombre" /></th>
 											</tr>
-											<bean:define id="resultFrom" name="<%= Constants.OBS_PAGINATION_RESULT_FROM %>" type="java.lang.Integer" />
-											<bean:define id="pagination" name="<%= Constants.OBS_PAGINATION %>" type="java.lang.Integer" />
+											<bean:define id="resultFrom" name="<%=Constants.OBS_PAGINATION_RESULT_FROM%>" type="java.lang.Integer" />
+											<bean:define id="pagination" name="<%=Constants.OBS_PAGINATION%>" type="java.lang.Integer" />
 											<logic:iterate name="<%= Constants.ADD_OBSERVATORY_SEED_LIST %>" id="elemento"
-												length="<%= pagination.toString() %>" offset="<%= resultFrom.toString() %>">
+												length="<%=pagination.toString()%>" offset="<%=resultFrom.toString()%>">
 												<tr>
 													<td><bean:write name="elemento" property="nombre" /></td>
 												</tr>

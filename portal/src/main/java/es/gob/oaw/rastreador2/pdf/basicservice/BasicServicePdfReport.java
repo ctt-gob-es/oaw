@@ -165,7 +165,12 @@ public class BasicServicePdfReport {
 				// Resumen de las puntuaciones del Observatorio
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 						currentEvaluationPageList);
-				observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryWithCompliance(messageResources, document, pdfTocManager,
+							pdfBuilder.generateScores(messageResources, currentEvaluationPageList));
+				} else {
+					observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources, document, pdfTocManager);
+				}
 				// Evolución resultados servicio diagnóstico
 				final Map<Date, List<ObservatoryEvaluationForm>> evolutionObservatoryEvaluation = new TreeMap<>(historicoEvaluationPageList);
 				evolutionObservatoryEvaluation.put(pdfBuilder.getBasicServiceForm().getDate(), currentEvaluationPageList);
@@ -174,8 +179,14 @@ public class BasicServicePdfReport {
 				observatoryEvolutionResultsSectionBuilder.addEvolutionResults(pdfBuilder, messageResources, document, pdfTocManager, file);
 				// Desdoblamiento para la nueva versión de la metodología
 				// UNE-2012 ya que cambian los niveles
+				MessageResources messageResources2019 = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019);
+				MessageResources messageResourcesAccesibility = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
 				final BasicServicePageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new BasicServicePageResultsPdfSectionBuilder(currentEvaluationPageList);
-				if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+					observatoryPageResultsSectionBuilder.addPageResults(messageResources2019, document, pdfTocManager, true);
+				} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
+					observatoryPageResultsSectionBuilder.addPageResults(messageResourcesAccesibility, document, pdfTocManager, true);
+				} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, true);
 				} else {
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources, document, pdfTocManager, false);

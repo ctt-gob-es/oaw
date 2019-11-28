@@ -83,6 +83,25 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		document.add(chapter);
 		pdfTocManager.addChapterCount();
 	}
+	
+	/**
+	 * Adds the observatory results summary accesibility.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @throws DocumentException the document exception
+	 */
+	public void addObservatoryResultsSummaryAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws DocumentException {
+		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
+		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
+		addResultsByVerificationAccesibility(messageResources, chapter, currentEvaluationPageList, pdfTocManager);
+		document.add(chapter);
+		pdfTocManager.addChapterCount();
+	}
+	
+	
 
 	/**
 	 * Adds the observatory results summary with compliance.
@@ -139,6 +158,22 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		chapter.newPage();
 		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager);
 	}
+	
+	/**
+	 * Adds the results by verification accesibility.
+	 *
+	 * @param messageResources the message resources
+	 * @param chapter          the chapter
+	 * @param evaList          the eva list
+	 * @param pdfTocManager    the pdf toc manager
+	 */
+	private void addResultsByVerificationAccesibility(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager) {
+		chapter.newPage();
+		createTablaResumenResultadosPorNivelAccesibilidad(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
+
+	}
+	
+	
 
 	/**
 	 * Adds the results by verification and compliance.
@@ -177,6 +212,42 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			final ObservatoryLevelForm observatoryLevelForm = groups.get(groupIndex);
 			final Section section = PDFUtils.createSection(
 					messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title") + getPriorityName(messageResources, observatoryLevelForm.getName()), pdfTocManager.getIndex(),
+					ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
+			final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
+			int contadorPagina = 1;
+			for (ObservatoryEvaluationForm evaluationForm : evaList) {
+				table.addCell(PDFUtils.createTableCell(
+						messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
+						ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + contadorPagina));
+				for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(groupIndex).getSuitabilityGroups()) {
+					for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+						table.addCell(createTablaResumenResultadosPorNivelCeldaValorModalidad(subgroupForm.getValue(), messageResources));
+					}
+				}
+				contadorPagina++;
+			}
+			section.add(table);
+			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
+		}
+	}
+	
+	/**
+	 * Creates the tabla resumen resultados por nivel accesibilidad.
+	 *
+	 * @param messageResources the message resources
+	 * @param chapter          the chapter
+	 * @param evaList          the eva list
+	 * @param groupIndex       the group index
+	 * @param pdfTocManager    the pdf toc manager
+	 */
+	private void createTablaResumenResultadosPorNivelAccesibilidad(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final int groupIndex,
+			final PdfTocManager pdfTocManager) {
+		ObservatoryEvaluationForm observatoryEvaluationForm = evaList.get(0);
+		List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
+		if (groups != null && !groups.isEmpty() && groups.size() > groupIndex) {
+			final ObservatoryLevelForm observatoryLevelForm = groups.get(groupIndex);
+			final Section section = PDFUtils.createSection(
+					messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title"), pdfTocManager.getIndex(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
 			final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
 			int contadorPagina = 1;
@@ -243,7 +314,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 				}
 			}
 			section.add(table);
-			section.add(createTablaResumenResultadosPorNivelLeyenda(messageResources, observatoryLevelForm));
+			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
 		}
 	}
 
@@ -385,7 +456,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @param evaList          the eva list
 	 * @return the pdf P table
 	 */
-	private PdfPTable createTablaResumenResultadosPorNivelLeyenda(final MessageResources messageResources, final ObservatoryLevelForm evaList) {
+	private PdfPTable createTablaResumenResultadosPorNivelLeyendaWithCompliance(final MessageResources messageResources, final ObservatoryLevelForm evaList) {
 		final PdfPTable table = new PdfPTable(new float[] { 0.33f, 0.33f, 0.33f });
 		table.setSpacingBefore(1);
 		table.setWidthPercentage(90);
@@ -408,6 +479,53 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
 		leyendaValoresConformidadTableCell.setBorder(0);
 		table.addCell(leyendaValoresConformidadTableCell);
+		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
+		leyenda.add(PDFUtils.buildLeyendaListItemBold("Verificaciones", ""));
+		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {
+			for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+				final String checkId = messageResources.getMessage(subgroupForm.getDescription()).substring(0, 6);
+				final String checkDescription = messageResources.getMessage(subgroupForm.getDescription()).substring(6);
+				final ListItem listItem = new ListItem(checkDescription, ConstantsFont.MORE_INFO_FONT);
+				listItem.setListSymbol(new Chunk(checkId));
+				leyenda.add(listItem);
+			}
+			final PdfPCell listTableCell = PDFUtils.createListTableCell(leyenda, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
+			listTableCell.setBorder(0);
+			table.addCell(listTableCell);
+		}
+		return table;
+	}
+	
+	/**
+	 * Creates the tabla resumen resultados por nivel leyenda.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the pdf P table
+	 */
+	private PdfPTable createTablaResumenResultadosPorNivelLeyenda(final MessageResources messageResources, final ObservatoryLevelForm evaList) {
+		final PdfPTable table = new PdfPTable(new float[] { 0.33f, 0.33f });
+		table.setSpacingBefore(1);
+		table.setWidthPercentage(90);
+		table.setKeepTogether(true);
+		final com.lowagie.text.List leyendaValoresResultados = new com.lowagie.text.List(false, false);
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItemBold("Modalidad de Verificación en una página", ""));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor No Puntua", "-:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor 1", "1:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Valor 0", "0:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Modalidad PASA", "P:"));
+		leyendaValoresResultados.add(PDFUtils.buildLeyendaListItem("Modalidad FALLA", "F:"));
+		final PdfPCell leyendaValoresResultadosTableCell = PDFUtils.createListTableCell(leyendaValoresResultados, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
+		leyendaValoresResultadosTableCell.setBorder(0);
+		table.addCell(leyendaValoresResultadosTableCell);
+//		final com.lowagie.text.List leyendaValoresConformidad = new com.lowagie.text.List(false, false);
+//		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItemBold("Conformidad de verificación en el sitio web", ""));
+//		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("Conforme", "C"));
+//		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No conforme", "NC:"));
+//		leyendaValoresConformidad.add(PDFUtils.buildLeyendaListItem("No puntúa", "N:"));
+//		final PdfPCell leyendaValoresConformidadTableCell = PDFUtils.createListTableCell(leyendaValoresConformidad, Color.WHITE, Element.ALIGN_LEFT, Element.ALIGN_TOP, 0);
+//		leyendaValoresConformidadTableCell.setBorder(0);
+//		table.addCell(leyendaValoresConformidadTableCell);
 		final com.lowagie.text.List leyenda = new com.lowagie.text.List(false, false);
 		leyenda.add(PDFUtils.buildLeyendaListItemBold("Verificaciones", ""));
 		for (ObservatorySuitabilityForm suitabilityForm : evaList.getSuitabilityGroups()) {

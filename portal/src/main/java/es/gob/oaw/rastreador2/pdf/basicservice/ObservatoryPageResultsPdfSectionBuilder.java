@@ -123,6 +123,47 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			counter++;
 		}
 	}
+	
+	
+	/**
+	 * Adds the page results accesibility.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param withOutLevels    the with out levels
+	 * @throws Exception the exception
+	 */
+	public void addPageResultsAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, boolean withOutLevels) throws Exception {
+		int counter = 1;
+		for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
+			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
+			final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(),
+					ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
+			chapter.add(createPaginaTableInfoAccesibility(messageResources, evaluationForm));
+			// Creación de las tablas resumen de resultado por verificación de
+			// cada página
+			for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+				Section section = PDFUtils.createSection("Verificaciones", pdfTocManager.getIndex(),
+						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
+				section.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm));
+			}
+			if (withOutLevels) {
+				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
+			} else {
+				addCheckCodes(messageResources, evaluationForm, chapter);
+			}
+			final SpecialChunk externalLink = new SpecialChunk(messageResources.getMessage("observatory.servicio.diagnostico.url"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
+			final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
+			specialChunkMap.put(1, externalLink);
+			chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			document.add(chapter);
+			pdfTocManager.addChapterCount();
+			counter++;
+		}
+	}
 
 	/**
 	 * Creates the pagina table info.
@@ -163,11 +204,71 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		// Puntuaciones Medias Nivel Accesibilidad
 		int contador = 1;
 		for (BigDecimal puntuacionMediaNivel : puntuacionesMediasNivel) {
-			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { String.valueOf(contador) }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
-					Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+			
+			if(Constants.MESSAGE_RESOURCES_UNE_EN2019.equals(messageResources.getConfig())) {
+			
+				
+				
+				table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { (contador ==1)?"A":"AA" }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
+						Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+			}
+			else {
+				table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { String.valueOf(contador) }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
+						Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+			}
+			
+			
 			table.addCell(PDFUtils.createTableCell(puntuacionMediaNivel.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 			contador++;
 		}
+		return table;
+	}
+	
+	
+	/**
+	 * Creates the pagina table info accesibility.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaluationForm   the evaluation form
+	 * @return the pdf P table
+	 */
+	protected PdfPTable createPaginaTableInfoAccesibility(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm) {
+		final String title = BasicServiceUtils.getTitleDocFromContent(evaluationForm.getSource(), false);
+		final String url = evaluationForm.getUrl();
+		final BigDecimal puntuacionMedia = evaluationForm.getScore();
+		final String nivelAdecuacion = ObservatoryUtils.getValidationLevel(messageResources, ObservatoryUtils.pageSuitabilityLevel(evaluationForm));
+		final List<BigDecimal> puntuacionesMediasNivel = new ArrayList<>();
+		for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+			puntuacionesMediasNivel.add(observatoryLevelForm.getScore());
+		}
+		final float[] widths = { 0.22f, 0.78f };
+		final PdfPTable table = new PdfPTable(widths);
+		table.setWidthPercentage(100);
+		table.setSpacingBefore(10);
+		table.setSpacingAfter(0);
+		// Titulo
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.title"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
+				DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell(title, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+		// URL
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.url"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT,
+				DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createLinkedTableCell(url, url, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
+		// Puntuación Media Página
+		table.addCell(PDFUtils.createTableCell("Puntuación", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell(puntuacionMedia.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+		// Nivel de Adecuación (a.k.a. Modalidad)
+		table.addCell(
+				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.adecuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+		table.addCell(PDFUtils.createTableCell(nivelAdecuacion, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+		// Puntuaciones Medias Nivel Accesibilidad
+//		int contador = 1;
+//		for (BigDecimal puntuacionMediaNivel : puntuacionesMediasNivel) {
+//			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { String.valueOf(contador) }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
+//					Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+//			table.addCell(PDFUtils.createTableCell(puntuacionMediaNivel.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
+//			contador++;
+//		}
 		return table;
 	}
 
