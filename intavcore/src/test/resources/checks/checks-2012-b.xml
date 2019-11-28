@@ -1,33 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
-	This program is licensed and may be used, modified and redistributed under 
-	the terms of the European Public License (EUPL), either version 1.2 or (at 
-	your option) any later version as soon as they are approved by the European 
-	Commission. Unless required by applicable law or agreed to in writing, software 
-	distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-	WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the 
-	License for the specific language governing permissions and more details. 
-	You should have received a copy of the EUPL1.2 license along with this program; 
-	if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
-<!-- Copyright 2004-2006, University of Toronto. All rights reserved. Permission 
-	is hereby granted, free of charge, to any person obtaining a copy of this 
-	software and associated contentation files (the "Software"), to deal in the 
-	Software without restriction, including without limitation the rights to 
-	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
-	of the Software, and to permit persons to whom the Software is furnished 
-	to do so, subject to the following conditions: The above copyright notice 
-	and this permission notice shall be included in all copies or substantial 
-	portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY 
-	OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
-	OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
-	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
-	DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
-	ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-	DEALINGS IN THE SOFTWARE. Adaptive Technology Resource Centre, University 
-	of Toronto 130 St. George St., Toronto, Ontario, Canada Telephone: (416) 
-	978-4360 -->
-<checks xml:lang="en"
-	xmlns="http://checker.atrc.utoronto.ca/2004/12/Checks">
+<!-- Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, This program is licensed and may be used, modified 
+	and redistributed under the terms of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+	version as soon as they are approved by the European Commission. Unless required by applicable law or agreed to in writing, 
+	software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+	either express or implied. See the License for the specific language governing permissions and more details. You should have 
+	received a copy of the EUPL1.2 license along with this program; if not, you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863 -->
+<!-- Copyright 2004-2006, University of Toronto. All rights reserved. Permission is hereby granted, free of charge, to any 
+	person obtaining a copy of this software and associated contentation files (the "Software"), to deal in the Software without 
+	restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
+	sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: 
+	The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. 
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES 
+	OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS 
+	BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT 
+	OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. Adaptive Technology Resource Centre, 
+	University of Toronto 130 St. George St., Toronto, Ontario, Canada Telephone: (416) 978-4360 -->
+<checks xml:lang="en" xmlns="http://checker.atrc.utoronto.ca/2004/12/Checks">
 	<header>
 		<title>Lista completa de comprobaciones de accesibilidad</title>
 		<date>2017-09-27</date>
@@ -57,33 +45,28 @@
 					<condition type="and">
 						<function call="attribute-missing" node="." value="alt" />
 						<function call="attribute-exists" node="." value="role" />
-						<function call="text-not-match" node="@role"
-							value="\s*presentation\s*" />
+						<function call="text-not-match" node="@role" value="\s*presentation\s*" />
 					</condition>
 				</condition>
 				<condition type="and">
 					<function call="attribute-exists" node="." value="alt" />
 					<function call="text-match" node="@alt" value="\w+" />
-					<function call="text-match" node="@role"
-						value="^\s*presentation\s*$" />
+					<function call="text-match" node="@role" value="^\s*presentation\s*$" />
 				</condition>
 				<condition type="and">
 					<function call="attribute-exists" node="." value="alt" />
 					<condition type="or">
-						<function call="characters-less-than" node="@alt"
-							value="1" />
+						<function call="characters-less-than" node="@alt" value="1" />
 						<function call="is-only-blanks" node="@alt" />
 					</condition>
 					<function call="attribute-exists" node="." value="role" />
-					<function call="text-not-match" node="@role"
-						value="\s*presentation\s*" />
+					<function call="text-not-match" node="@role" value="\s*presentation\s*" />
 				</condition>
 			</condition>
 		</machine>
 	</check>
 
-	<check id="4" key="img" confidence="cannottell" status="6"
-		note="covered by test 178">
+	<check id="4" key="img" confidence="cannottell" status="6" note="covered by test 178">
 		<prerequisite id="1" />
 		<name>Las imágenes no decorativas deben tener un texto alternativo.
 		</name>
@@ -120,9 +103,8 @@
 		<rationale>check.8.rationale</rationale>
 		<machine>
 			<trigger element="img" />
-			<!-- <condition type="and"> <function call="number-greater-than" node="@width" 
-				value="50" /> <function call="number-greater-than" node="@height" value="50" 
-				/> </condition> -->
+			<!-- <condition type="and"> <function call="number-greater-than" node="@width" value="50" /> <function call="number-greater-than" 
+				node="@height" value="50" /> </condition> -->
 		</machine>
 	</check>
 
@@ -150,8 +132,7 @@
 		<machine>
 			<trigger element="img" />
 			<condition type="and">
-				<function call="text-equals" node="@src" value=".gif"
-					position="end" />
+				<function call="text-equals" node="@src" value=".gif" position="end" />
 				<function call="is-animated-gif" node="." />
 			</condition>
 		</machine>
@@ -164,15 +145,16 @@
 			<code>img</code>
 			contiene todo el texto que aparece en la imagen a no ser que el texto
 			de la imagen sea decorativo o aparezca
-			en otro punto del documento.
+			en otro
+			punto del documento.
 		</name>
 		<error>check.11.error</error>
 		<!-- <rationale>check.11.rationale</rationale> -->
 		<machine>
 			<trigger element="img" />
 			<condition type="and">
-				<!-- (*) <function call="number-greater-than" node="@width" value="10" 
-					/> <function call="number-greater-than" node="@height" value="10" /> -->
+				<!-- (*) <function call="number-greater-than" node="@width" value="10" /> <function call="number-greater-than" node="@height" 
+					value="10" /> -->
 			</condition>
 		</machine>
 	</check>
@@ -204,8 +186,8 @@
 		<machine>
 			<trigger element="img" />
 			<condition type="and">
-				<!-- (*) <function call="number-greater-than" node="@width" value="100" 
-					/> <function call="number-greater-than" node="@height" value="100" /> -->
+				<!-- (*) <function call="number-greater-than" node="@width" value="100" /> <function call="number-greater-than" node="@height" 
+					value="100" /> -->
 			</condition>
 		</machine>
 	</check>
@@ -216,10 +198,8 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="br" number="3" />
-				<function call="element-count-greater-than" node="."
-					value="hr" number="3" />
+				<function call="element-count-greater-than" node="." value="br" number="3" />
+				<function call="element-count-greater-than" node="." value="hr" number="3" />
 			</condition>
 		</machine>
 	</check>
@@ -237,10 +217,8 @@
 		<machine>
 			<trigger element="p" />
 			<condition type="and">
-				<function call="internal-element-count-greater-than"
-					node="." value="br" number="2" />
-				<function call="characters-greater-than" node="."
-					value="150" attribute1="true" />
+				<function call="internal-element-count-greater-than" node="." value="br" number="2" />
+				<function call="characters-greater-than" node="." value="150" attribute1="true" />
 			</condition>
 		</machine>
 	</check>
@@ -252,28 +230,17 @@
 		<machine>
 			<trigger element="a" />
 			<condition type="or">
-				<function call="text-equals" node="@href" value=".wav"
-					position="end" />
-				<function call="text-equals" node="@href" value=".snd"
-					position="end" />
-				<function call="text-equals" node="@href" value=".mp3"
-					position="end" />
-				<function call="text-equals" node="@href" value=".iff"
-					position="end" />
-				<function call="text-equals" node="@href" value=".svx"
-					position="end" />
-				<function call="text-equals" node="@href" value=".sam"
-					position="end" />
-				<function call="text-equals" node="@href" value=".vce"
-					position="end" />
-				<function call="text-equals" node="@href" value=".vox"
-					position="end" />
-				<function call="text-equals" node="@href" value=".pcm"
-					position="end" />
-				<function call="text-equals" node="@href" value=".aif"
-					position="end" />
-				<function call="text-equals" node="@href" value=".smp"
-					position="end" />
+				<function call="text-equals" node="@href" value=".wav" position="end" />
+				<function call="text-equals" node="@href" value=".snd" position="end" />
+				<function call="text-equals" node="@href" value=".mp3" position="end" />
+				<function call="text-equals" node="@href" value=".iff" position="end" />
+				<function call="text-equals" node="@href" value=".svx" position="end" />
+				<function call="text-equals" node="@href" value=".sam" position="end" />
+				<function call="text-equals" node="@href" value=".vce" position="end" />
+				<function call="text-equals" node="@href" value=".vox" position="end" />
+				<function call="text-equals" node="@href" value=".pcm" position="end" />
+				<function call="text-equals" node="@href" value=".aif" position="end" />
+				<function call="text-equals" node="@href" value=".smp" position="end" />
 			</condition>
 		</machine>
 	</check>
@@ -298,16 +265,11 @@
 		<machine>
 			<trigger element="a" />
 			<condition type="or">
-				<function call="text-equals" node="@href" value=".wmv"
-					position="end" />
-				<function call="text-equals" node="@href" value=".mpg"
-					position="end" />
-				<function call="text-equals" node="@href" value=".mov"
-					position="end" />
-				<function call="text-equals" node="@href" value=".ram"
-					position="end" />
-				<function call="text-equals" node="@href" value=".aif"
-					position="end" />
+				<function call="text-equals" node="@href" value=".wmv" position="end" />
+				<function call="text-equals" node="@href" value=".mpg" position="end" />
+				<function call="text-equals" node="@href" value=".mov" position="end" />
+				<function call="text-equals" node="@href" value=".ram" position="end" />
+				<function call="text-equals" node="@href" value=".aif" position="end" />
 			</condition>
 		</machine>
 	</check>
@@ -333,10 +295,8 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="language-not-equals" node="." value="es"
-					attribute1="noSevere" />
-				<function call="language-not-equals" node="." value="en"
-					attribute1="noSevere" />
+				<function call="language-not-equals" node="." value="es" attribute1="noSevere" />
+				<function call="language-not-equals" node="." value="en" attribute1="noSevere" />
 			</condition>
 		</machine>
 	</check>
@@ -379,13 +339,10 @@
 			<trigger element="head" />
 			<condition type="or">
 				<condition type="and">
-					<function call="element-count-equals" node="."
-						value="style" number="0" />
-					<function call="element-count-equals" node="."
-						value="link" number="0" />
+					<function call="element-count-equals" node="." value="style" number="0" />
+					<function call="element-count-equals" node="." value="link" number="0" />
 				</condition>
-				<function call="not-exist-attribute-value" node="."
-					element="link" attribute1="rel" value="stylesheet" />
+				<function call="not-exist-attribute-value" node="." element="link" attribute1="rel" value="stylesheet" />
 			</condition>
 		</machine>
 	</check>
@@ -430,7 +387,8 @@
 	<check id="28" key="html" confidence="cannottell" status="1">
 		<name>Un vínculo de "pasar al contenido" aparece en todas las páginas
 			con bloques de material precediendo al
-			documento principal.
+			documento
+			principal.
 		</name>
 		<error>check.28.error</error>
 		<machine>
@@ -444,8 +402,7 @@
 		<error>check.29.error</error>
 		<machine>
 			<trigger element="html" />
-			<function call="element-percentage" node="." number="60"
-				attribute1="img" attribute2="alt" />
+			<function call="element-percentage" node="." number="60" attribute1="img" attribute2="alt" />
 		</machine>
 	</check>
 
@@ -477,10 +434,8 @@
 			<condition type="or">
 				<function call="attribute-missing" node="." value="title" />
 				<function call="is-only-blanks" node="@title" />
-				<function call="characters-less-than" node="@title"
-					value="1" />
-				<function call="text-match" node="@title"
-					value="^t[íi]tulo$|^untitled$|^title$" />
+				<function call="characters-less-than" node="@title" value="1" />
+				<function call="text-match" node="@title" value="^t[íi]tulo$|^untitled$|^title$" />
 			</condition>
 		</machine>
 	</check>
@@ -512,13 +467,11 @@
 		<rationale>check.33.rationale</rationale>
 		<machine>
 			<trigger element="div" />
-			<function call="characters-greater-than" node="."
-				value="150" attribute1="true" />
+			<function call="characters-greater-than" node="." value="150" attribute1="true" />
 		</machine>
 	</check>
 
-	<check id="34" key="frameset" confidence="medium" status="6"
-		note="not needed due to other tests">
+	<check id="34" key="frameset" confidence="medium" status="6" note="not needed due to other tests">
 		<name>
 			La relacción entre
 			<code>frames</code>
@@ -529,14 +482,11 @@
 			<trigger element="frameset" />
 			<condition type="and">
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="longdesc" />
+					<function call="attribute-missing" node="." value="longdesc" />
 					<function call="is-only-blanks" node="@longdesc" />
-					<function call="characters-less-than" node="@longdesc"
-						value="1" />
+					<function call="characters-less-than" node="@longdesc" value="1" />
 				</condition>
-				<function call="element-count-greater-than" node="."
-					value="frame" number="3" />
+				<function call="element-count-greater-than" node="." value="frame" number="3" />
 			</condition>
 		</machine>
 	</check>
@@ -593,14 +543,10 @@
 		<machine>
 			<trigger element="ol" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="li"
-					number="1" attribute1="0" />
-				<function call="element-count-equals" node="." value="ol"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="ul"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dl"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="li" number="1" attribute1="0" />
+				<function call="element-count-equals" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dl" number="0" attribute1="0" />
 				<function call="same-following-list-not" node="." />
 			</condition>
 		</machine>
@@ -614,14 +560,10 @@
 		<machine>
 			<trigger element="ul" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="li"
-					number="1" attribute1="0" />
-				<function call="element-count-equals" node="." value="ol"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="ul"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dl"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="li" number="1" attribute1="0" />
+				<function call="element-count-equals" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dl" number="0" attribute1="0" />
 				<function call="same-following-list-not" node="." />
 			</condition>
 		</machine>
@@ -635,14 +577,10 @@
 		<machine>
 			<trigger element="dl" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="dt"
-					number="1" attribute1="0" />
-				<function call="element-count-equals" node="." value="ol"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="ul"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dl"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dt" number="1" attribute1="0" />
+				<function call="element-count-equals" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dl" number="0" attribute1="0" />
 				<function call="same-following-list-not" node="." />
 			</condition>
 		</machine>
@@ -670,16 +608,11 @@
 			<condition type="and">
 				<function call="layout-table" node="." element="table" />
 				<condition type="or">
-					<function call="element-count-greater-than" node="."
-						value="th" number="0" attribute2="table" />
-					<function call="element-count-equals" node="."
-						value="thead" number="1" attribute2="table" />
-					<!--<function call="element-count-equals" node="." value="tbody" number="1" 
-						attribute2="table"/> -->
-					<function call="element-count-equals" node="."
-						value="tfoot" number="1" attribute2="table" />
-					<function call="element-count-equals" node="."
-						value="caption" number="1" attribute2="table" />
+					<function call="element-count-greater-than" node="." value="th" number="0" attribute2="table" />
+					<function call="element-count-equals" node="." value="thead" number="1" attribute2="table" />
+					<!--<function call="element-count-equals" node="." value="tbody" number="1" attribute2="table"/> -->
+					<function call="element-count-equals" node="." value="tfoot" number="1" attribute2="table" />
+					<function call="element-count-equals" node="." value="caption" number="1" attribute2="table" />
 				</condition>
 			</condition>
 		</machine>
@@ -743,8 +676,7 @@
 		<rationale>check.50.rationale</rationale>
 		<machine>
 			<trigger element="head" />
-			<function call="element-count-less-than" node="."
-				value="title" number="1" />
+			<function call="element-count-less-than" node="." value="title" number="1" />
 		</machine>
 	</check>
 
@@ -771,15 +703,11 @@
 		<error>check.52.error</error>
 		<machine>
 			<trigger element="title" />
-			<language value="eng" default="true"
-				name="Longitud Maxima del titulo">
-				<function call="characters-greater-than" node="."
-					value="150" />
+			<language value="eng" default="true" name="Longitud Maxima del titulo">
+				<function call="characters-greater-than" node="." value="150" />
 			</language>
-			<language value="spa" default="true"
-				name="Longitud Maxima del titulo">
-				<function call="characters-greater-than" node="."
-					value="150" />
+			<language value="spa" default="true" name="Longitud Maxima del titulo">
+				<function call="characters-greater-than" node="." value="150" />
 			</language>
 		</machine>
 	</check>
@@ -796,8 +724,7 @@
 		<machine>
 			<trigger element="title" />
 			<condition type="or">
-				<function call="text-match" node="."
-					value="^t[íi]tulo$|^untitled$|^untitled document$|^title$" />
+				<function call="text-match" node="." value="^t[íi]tulo$|^untitled$|^untitled document$|^title$" />
 			</condition>
 		</machine>
 	</check>
@@ -822,10 +749,8 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="br" number="6" />
-				<function call="element-count-greater-than" node="."
-					value="hr" number="6" />
+				<function call="element-count-greater-than" node="." value="br" number="6" />
+				<function call="element-count-greater-than" node="." value="hr" number="6" />
 			</condition>
 		</machine>
 	</check>
@@ -868,8 +793,7 @@
 					<function call="text-equals" node="@type" value="week" />
 					<function call="text-equals" node="@type" value="time" />
 					<function call="text-equals" node="@type" value="datetime" />
-					<function call="text-equals" node="@type"
-						value="datetime-local" />
+					<function call="text-equals" node="@type" value="datetime-local" />
 					<function call="text-equals" node="@type" value="color" />
 				</condition>
 				<function call="label-not-associated" node="." />
@@ -877,8 +801,7 @@
 		</machine>
 	</check>
 
-	<check id="58" key="input" confidence="high" status="5"
-		htmlgroup="images">
+	<check id="58" key="input" confidence="high" status="5" htmlgroup="images">
 		<name>
 			Todos los elementos
 			<code>input</code>
@@ -898,8 +821,7 @@
 		</machine>
 	</check>
 
-	<check id="59" key="input" confidence="cannottell" status="5"
-		htmlgroup="images">
+	<check id="59" key="input" confidence="cannottell" status="5" htmlgroup="images">
 		<prerequisite id="58" />
 		<name>
 			Texto alternativo para todos los elementos
@@ -918,13 +840,13 @@
 	<check id="61" key="html" confidence="high" status="1">
 		<name>Enlaces con el mismo texto y distinto destino llevan al mismo
 			destino que el enlace inmediatamente
-			anterior en el HTML
+			anterior en el
+			HTML
 		</name>
 		<error>check.61.error</error>
 		<machine>
 			<trigger element="html" />
-			<function call="correct-links" node="."
-				attribute1="^benvinguts*" />
+			<function call="correct-links" node="." attribute1="^benvinguts*" />
 		</machine>
 	</check>
 
@@ -935,18 +857,12 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="h1"
-					number="1" />
-				<function call="element-count-equals" node="." value="h2"
-					number="0" />
-				<function call="element-count-equals" node="." value="h3"
-					number="0" />
-				<function call="element-count-equals" node="." value="h4"
-					number="0" />
-				<function call="element-count-equals" node="." value="h5"
-					number="0" />
-				<function call="element-count-equals" node="." value="h6"
-					number="0" />
+				<function call="element-count-equals" node="." value="h1" number="1" />
+				<function call="element-count-equals" node="." value="h2" number="0" />
+				<function call="element-count-equals" node="." value="h3" number="0" />
+				<function call="element-count-equals" node="." value="h4" number="0" />
+				<function call="element-count-equals" node="." value="h5" number="0" />
+				<function call="element-count-equals" node="." value="h6" number="0" />
 				<function call="has-complex-structure" node="." number="15" />
 			</condition>
 		</machine>
@@ -976,13 +892,11 @@
 			<function call="attribute-missing" node="." value="alt" />
 			<!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65 -->
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="aria-labelledby" />
+				<function call="attribute-exists" node="." value="aria-labelledby" />
 				<function call="aria-labelledby-ids-missing" node="." />
 			</condition>
 			<condition type="and">
-				<function call="attribute-missing" node="."
-					value="aria-label" />
+				<function call="attribute-missing" node="." value="aria-label" />
 			</condition>
 			<condition type="and">
 				<function call="attribute-missing" node="." value="title" />
@@ -1012,28 +926,17 @@
 		<machine>
 			<trigger element="area" />
 			<condition type="or">
-				<function call="text-equals" node="@href" value=".wav"
-					position="end" />
-				<function call="text-equals" node="@href" value=".snd"
-					position="end" />
-				<function call="text-equals" node="@href" value=".mp3"
-					position="end" />
-				<function call="text-equals" node="@href" value=".iff"
-					position="end" />
-				<function call="text-equals" node="@href" value=".svx"
-					position="end" />
-				<function call="text-equals" node="@href" value=".sam"
-					position="end" />
-				<function call="text-equals" node="@href" value=".vce"
-					position="end" />
-				<function call="text-equals" node="@href" value=".vox"
-					position="end" />
-				<function call="text-equals" node="@href" value=".pcm"
-					position="end" />
-				<function call="text-equals" node="@href" value=".aif"
-					position="end" />
-				<function call="text-equals" node="@href" value=".smp"
-					position="end" />
+				<function call="text-equals" node="@href" value=".wav" position="end" />
+				<function call="text-equals" node="@href" value=".snd" position="end" />
+				<function call="text-equals" node="@href" value=".mp3" position="end" />
+				<function call="text-equals" node="@href" value=".iff" position="end" />
+				<function call="text-equals" node="@href" value=".svx" position="end" />
+				<function call="text-equals" node="@href" value=".sam" position="end" />
+				<function call="text-equals" node="@href" value=".vce" position="end" />
+				<function call="text-equals" node="@href" value=".vox" position="end" />
+				<function call="text-equals" node="@href" value=".pcm" position="end" />
+				<function call="text-equals" node="@href" value=".aif" position="end" />
+				<function call="text-equals" node="@href" value=".smp" position="end" />
 			</condition>
 		</machine>
 	</check>
@@ -1060,12 +963,9 @@
 		<machine>
 			<trigger element="area" />
 			<condition type="and">
-				<function call="text-not-equals" node="@target"
-					value="_self" />
-				<function call="text-not-equals" node="@target"
-					value="_top" />
-				<function call="text-not-equals" node="@target"
-					value="_parent" />
+				<function call="text-not-equals" node="@target" value="_self" />
+				<function call="text-not-equals" node="@target" value="_top" />
+				<function call="text-not-equals" node="@target" value="_parent" />
 			</condition>
 		</machine>
 	</check>
@@ -1081,12 +981,9 @@
 					<function call="is-only-blanks" node="." />
 					<function call="characters-less-than" node="." value="1" />
 				</condition>
-				<function call="element-count-equals" node="." value="img"
-					number="1" />
-				<function call="element-count-equals" node="." value="*"
-					number="1" />
-				<function call="not-children-have-attribute" node="."
-					element="img" attribute1="alt" attribute2="noSevere" />
+				<function call="element-count-equals" node="." value="img" number="1" />
+				<function call="element-count-equals" node="." value="*" number="1" />
+				<function call="not-children-have-attribute" node="." element="img" attribute1="alt" attribute2="noSevere" />
 			</condition>
 		</machine>
 	</check>
@@ -1098,11 +995,9 @@
 		<machine>
 			<trigger element="meta" />
 			<condition type="and">
-				<function call="text-equals" node="@http-equiv"
-					value="refresh" />
+				<function call="text-equals" node="@http-equiv" value="refresh" />
 				<!--<function call="text-equals" node="@content" value="url=" position="anywhere"/> -->
-				<function call="text-match" node="@content"
-					value="^0*[1-9]\d*;.+" />
+				<function call="text-match" node="@content" value="^0*[1-9]\d*;.+" />
 			</condition>
 		</machine>
 	</check>
@@ -1114,10 +1009,8 @@
 		<machine>
 			<trigger element="meta" />
 			<condition type="and">
-				<function call="text-equals" node="@http-equiv"
-					value="refresh" />
-				<function call="text-match" node="@content"
-					value="^[0-9]+;?$" />
+				<function call="text-equals" node="@http-equiv" value="refresh" />
+				<function call="text-match" node="@content" value="^[0-9]+;?$" />
 				<!--<function call="number-greater-than" node="@content" value="0"/> -->
 			</condition>
 		</machine>
@@ -1147,10 +1040,8 @@
 		<machine>
 			<trigger element="object" />
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="machinebase" />
-				<function call="characters-greater-than"
-					node="@machinebase" value="0" />
+				<function call="attribute-exists" node="." value="machinebase" />
+				<function call="characters-greater-than" node="@machinebase" value="0" />
 			</condition>
 		</machine>
 	</check>
@@ -1165,10 +1056,8 @@
 		<machine>
 			<trigger element="object" />
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="machinebase" />
-				<function call="characters-greater-than"
-					node="@machinebase" value="0" />
+				<function call="attribute-exists" node="." value="machinebase" />
+				<function call="characters-greater-than" node="@machinebase" value="0" />
 			</condition>
 		</machine>
 	</check>
@@ -1218,11 +1107,9 @@
 			<trigger element="a" />
 			<condition type="or">
 				<function call="text-equals" node="." value="aquí" />
-				<function call="text-match" node="."
-					value="^.{0,10}((puls(e|a|ar)|pinch(a|e|ar)|click*) aqu[íi]).{0,10}$" />
+				<function call="text-match" node="." value="^.{0,10}((puls(e|a|ar)|pinch(a|e|ar)|click*) aqu[íi]).{0,10}$" />
 				<function call="text-equals" node="." value="here" />
-				<function call="text-match" node="."
-					value="^.{0,10}((press.|click*) here).{0,10}$" />
+				<function call="text-match" node="." value="^.{0,10}((press.|click*) here).{0,10}$" />
 			</condition>
 		</machine>
 	</check>
@@ -1263,26 +1150,17 @@
 				<condition type="or">
 					<condition type="and">
 						<function call="attribute-exists" node="." value="target" />
-						<function call="text-equals" node="@target"
-							value="_blank" />
+						<function call="text-equals" node="@target" value="_blank" />
 					</condition>
-					<function call="text-equals" node="@href"
-						value="javascript:window.open" position="start" />
+					<function call="text-equals" node="@href" value="javascript:window.open" position="start" />
 				</condition>
-				<function call="text-not-equals" node="@href" value=".pdf"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".doc"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".xls"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".jpeg"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".jpg"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".bmp"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".png"
-					position="end" />
+				<function call="text-not-equals" node="@href" value=".pdf" position="end" />
+				<function call="text-not-equals" node="@href" value=".doc" position="end" />
+				<function call="text-not-equals" node="@href" value=".xls" position="end" />
+				<function call="text-not-equals" node="@href" value=".jpeg" position="end" />
+				<function call="text-not-equals" node="@href" value=".jpg" position="end" />
+				<function call="text-not-equals" node="@href" value=".bmp" position="end" />
+				<function call="text-not-equals" node="@href" value=".png" position="end" />
 				<function call="not-external-url" node="@href" />
 			</condition>
 		</machine>
@@ -1310,17 +1188,12 @@
 			<condition type="and">
 				<function call="text-equals" node="@rel" value="stylesheet" />
 				<function call="text-equals" node="@type" value="text/css" />
-				<function call="text-not-equals" node="@media"
-					value="print" />
+				<function call="text-not-equals" node="@media" value="print" />
 				<condition type="or">
-					<function call="user-data-matchs" node="." element="css"
-						value="font-size:[^;\\}]*px" />
-					<function call="user-data-matchs" node="." element="css"
-						value="font:[^;\\}]*px" />
-					<function call="user-data-matchs" node="." element="css"
-						value="font-size:[^;\\}]*pt" />
-					<function call="user-data-matchs" node="." element="css"
-						value="font:[^;\\}]*pt" />
+					<function call="user-data-matchs" node="." element="css" value="font-size:[^;\\}]*px" />
+					<function call="user-data-matchs" node="." element="css" value="font:[^;\\}]*px" />
+					<function call="user-data-matchs" node="." element="css" value="font-size:[^;\\}]*pt" />
+					<function call="user-data-matchs" node="." element="css" value="font:[^;\\}]*pt" />
 				</condition>
 			</condition>
 		</machine>
@@ -1333,8 +1206,7 @@
 		<rationale>check.86.rationale</rationale>
 		<machine>
 			<trigger element="table" />
-			<function call="element-count-equals" node="." value="th"
-				number="0" attribute2="table" />
+			<function call="element-count-equals" node="." value="th" number="0" attribute2="table" />
 		</machine>
 	</check>
 
@@ -1357,8 +1229,7 @@
 		<rationale>check.88.rationale</rationale>
 		<machine>
 			<trigger element="table" />
-			<function call="element-count-greater-than" node="."
-				value="th" number="0" attribute2="table" />
+			<function call="element-count-greater-than" node="." value="th" number="0" attribute2="table" />
 		</machine>
 	</check>
 
@@ -1424,43 +1295,35 @@
 			<trigger element="a" />
 			<condition type="or">
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.en" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.en" />
 					<function call="current-language" node="." value="en" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.ca.1" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.ca.1" />
 					<function call="current-language" node="." value="ca" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.ca.2" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.ca.2" />
 					<function call="current-language" node="." value="ca" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.en.3" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.en.3" />
 					<function call="current-language" node="." value="ca" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.gl" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.gl" />
 					<function call="current-language" node="." value="gl" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.eu" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.eu" />
 					<function call="current-language" node="." value="eu" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.fr" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.fr" />
 					<function call="current-language" node="." value="fr" />
 				</condition>
 				<condition type="and">
-					<function call="text-match-properties" node="."
-						value="check.100.regex.pattern.ast" />
+					<function call="text-match-properties" node="." value="check.100.regex.pattern.ast" />
 					<function call="current-language" node="." value="ast" />
 				</condition>
 			</condition>
@@ -1518,31 +1381,20 @@
 		<machine>
 			<trigger element="img" />
 			<condition type="or">
-				<function call="text-equals" node="@alt" value=".jpg"
-					position="end" />
-				<function call="text-equals" node="@alt" value=".jpeg"
-					position="end" />
-				<function call="text-equals" node="@alt" value=".gif"
-					position="end" />
-				<function call="text-equals" node="@alt" value=".png"
-					position="end" />
-				<function call="text-equals" node="@alt" value=".bmp"
-					position="end" />
+				<function call="text-equals" node="@alt" value=".jpg" position="end" />
+				<function call="text-equals" node="@alt" value=".jpeg" position="end" />
+				<function call="text-equals" node="@alt" value=".gif" position="end" />
+				<function call="text-equals" node="@alt" value=".png" position="end" />
+				<function call="text-equals" node="@alt" value=".bmp" position="end" />
 				<function call="text-match" node="@alt" value="^pic0*\d+" />
 				<function call="text-match" node="@alt" value="^\d+$" />
 				<function call="text-match" node="@alt" value="^img_?\d+.*" />
-				<function call="text-match-properties" node="@alt"
-					value="check.100.regex.pattern.1" />
-				<function call="text-match-properties" node="@alt"
-					value="check.100.regex.pattern.2" />
-				<function call="text-match-properties" node="@alt"
-					value="check.100.regex.pattern.3" />
-				<function call="text-match-properties" node="@alt"
-					value="check.100.regex.pattern.4" />
-				<function call="text-match-properties" node="@alt"
-					value="check.100.regex.pattern.5" />
-				<function call="text-match-properties" node="@alt"
-					value="check.100.regex.pattern.6" />
+				<function call="text-match-properties" node="@alt" value="check.100.regex.pattern.1" />
+				<function call="text-match-properties" node="@alt" value="check.100.regex.pattern.2" />
+				<function call="text-match-properties" node="@alt" value="check.100.regex.pattern.3" />
+				<function call="text-match-properties" node="@alt" value="check.100.regex.pattern.4" />
+				<function call="text-match-properties" node="@alt" value="check.100.regex.pattern.5" />
+				<function call="text-match-properties" node="@alt" value="check.100.regex.pattern.6" />
 			</condition>
 		</machine>
 	</check>
@@ -1557,14 +1409,11 @@
 		<machine>
 			<trigger element="p" />
 			<condition type="or">
-				<function call="false-paragraph-list" node="." element="p"
-					number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"
-					attribute2="integer" />
-				<function call="false-paragraph-list" node="." element="p"
-					number="3" value="^([a-z])[ \.ºª)-]+" attribute1="sorted"
-					attribute2="char" />
-				<function call="false-paragraph-list" node="." element="p"
-					number="3" value="^(i){1,3}[ \.ºª)-]+" />
+				<function call="false-paragraph-list" node="." element="p" number="3" value="^(\d+)[ \.ºª)-]+"
+					attribute1="sorted" attribute2="integer" />
+				<function call="false-paragraph-list" node="." element="p" number="3" value="^([a-z])[ \.ºª)-]+"
+					attribute1="sorted" attribute2="char" />
+				<function call="false-paragraph-list" node="." element="p" number="3" value="^(i){1,3}[ \.ºª)-]+" />
 			</condition>
 		</machine>
 	</check>
@@ -1578,11 +1427,9 @@
 			<condition type="and">
 				<function call="attribute-exists" node="." value="onblur" />
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onmouseout" />
+					<function call="attribute-missing" node="." value="onmouseout" />
 					<function call="is-only-blanks" node="@onmouseout" />
-					<function call="characters-less-than" node="@onmouseout"
-						value="1" />
+					<function call="characters-less-than" node="@onmouseout" value="1" />
 				</condition>
 			</condition>
 		</machine>
@@ -1597,8 +1444,7 @@
 		<error>check.103.error</error>
 		<machine>
 			<trigger element="*" />
-			<function call="attribute-exists" node="."
-				value="ondblclick" />
+			<function call="attribute-exists" node="." value="ondblclick" />
 		</machine>
 	</check>
 
@@ -1614,14 +1460,11 @@
 		<machine>
 			<trigger element="*" />
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="onmousedown" />
+				<function call="attribute-exists" node="." value="onmousedown" />
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onkeydown" />
+					<function call="attribute-missing" node="." value="onkeydown" />
 					<function call="is-only-blanks" node="@onkeydown" />
-					<function call="characters-less-than" node="@onkeydown"
-						value="1" />
+					<function call="characters-less-than" node="@onkeydown" value="1" />
 				</condition>
 			</condition>
 		</machine>
@@ -1636,8 +1479,7 @@
 		<error>check.105.error</error>
 		<machine>
 			<trigger element="*" />
-			<function call="attribute-exists" node="."
-				value="onmousemove" />
+			<function call="attribute-exists" node="." value="onmousemove" />
 		</machine>
 	</check>
 
@@ -1655,14 +1497,11 @@
 			<trigger element="*" />
 			<condition type="and">
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onmousedown" />
+					<function call="attribute-missing" node="." value="onmousedown" />
 					<function call="is-only-blanks" node="@onmousedown" />
-					<function call="characters-less-than" node="@onmousedown"
-						value="1" />
+					<function call="characters-less-than" node="@onmousedown" value="1" />
 				</condition>
-				<function call="attribute-exists" node="."
-					value="onkeydown" />
+				<function call="attribute-exists" node="." value="onkeydown" />
 			</condition>
 		</machine>
 	</check>
@@ -1681,11 +1520,9 @@
 			<trigger element="*" />
 			<condition type="and">
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onmouseover" />
+					<function call="attribute-missing" node="." value="onmouseover" />
 					<function call="is-only-blanks" node="@onmouseover" />
-					<function call="characters-less-than" node="@onmouseover"
-						value="1" />
+					<function call="characters-less-than" node="@onmouseover" value="1" />
 				</condition>
 				<function call="attribute-exists" node="." value="onfocus" />
 			</condition>
@@ -1702,17 +1539,14 @@
 				<condition type="or">
 					<function call="attribute-missing" node="." value="onblur" />
 					<function call="is-only-blanks" node="@onblur" />
-					<function call="characters-less-than" node="@onblur"
-						value="1" />
+					<function call="characters-less-than" node="@onblur" value="1" />
 				</condition>
-				<function call="attribute-exists" node="."
-					value="onmouseout" />
+				<function call="attribute-exists" node="." value="onmouseout" />
 			</condition>
 		</machine>
 	</check>
 
-	<check id="109" key="all elements" confidence="high" status="6"
-		note="move to CSS test suite" htmlgroup="css">
+	<check id="109" key="all elements" confidence="high" status="6" note="move to CSS test suite" htmlgroup="css">
 		<name>El contenido debe ser legible aunque no se apliquen hojas de
 			estilo.
 		</name>
@@ -1724,8 +1558,7 @@
 		</machine>
 	</check>
 
-	<check id="110" key="html" confidence="cannottell" status="1"
-		occurrence="first">
+	<check id="110" key="html" confidence="cannottell" status="1" occurrence="first">
 		<name>Se marcan las palabras y frases que no pertenezcan al lenguaje
 			primario del documento.
 		</name>
@@ -1745,8 +1578,7 @@
 			<condition type="or">
 				<function call="attribute-missing" node="." value="summary" />
 				<function call="is-only-blanks" node="@summary" />
-				<function call="characters-less-than" node="@summary"
-					value="1" />
+				<function call="characters-less-than" node="@summary" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -1762,8 +1594,7 @@
 		<machine>
 			<trigger element="table" />
 			<condition type="and">
-				<function call="characters-less-than" node="@summary"
-					value="11" />
+				<function call="characters-less-than" node="@summary" value="11" />
 			</condition>
 		</machine>
 	</check>
@@ -1779,8 +1610,7 @@
 			<trigger element="table" />
 			<condition type="and">
 				<function call="layout-table" node="." element="table" />
-				<function call="characters-greater-than" node="@summary"
-					value="0" />
+				<function call="characters-greater-than" node="@summary" value="0" />
 			</condition>
 		</machine>
 	</check>
@@ -1809,42 +1639,29 @@
 					<condition type="and">
 						<function call="attribute-exists" node="." value="target" />
 						<condition type="or">
-							<function call="text-equals" node="@target"
-								value="_blank" />
-							<function call="text-equals" node="@target"
-								value="blank" />
+							<function call="text-equals" node="@target" value="_blank" />
+							<function call="text-equals" node="@target" value="blank" />
 						</condition>
 					</condition>
-					<function call="text-equals" node="@href"
-						value="javascript:window.open" position="start" />
+					<function call="text-equals" node="@href" value="javascript:window.open" position="start" />
 				</condition>
-				<function call="text-not-match-properties" node="."
-					value="check.117.regex.pattern.1" />
+				<function call="text-not-match-properties" node="." value="check.117.regex.pattern.1" />
 				<condition type="or">
 					<function call="attribute-missing" node="." value="title" />
-					<function call="text-not-match-properties" node="@title"
-						value="check.117.regex.pattern.1" />
+					<function call="text-not-match-properties" node="@title" value="check.117.regex.pattern.1" />
 				</condition>
 				<condition type="or">
-					<function call="element-count-equals" node="." value="img"
-						number="0" />
-					<function call="attribute-element-text-not-match" node="."
-						element="img" attribute1="alt" value="check.117.regex.pattern.1" />
+					<function call="element-count-equals" node="." value="img" number="0" />
+					<function call="attribute-element-text-not-match" node="." element="img" attribute1="alt"
+						value="check.117.regex.pattern.1" />
 				</condition>
-				<function call="text-not-equals" node="@href" value=".pdf"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".doc"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".xls"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".jpeg"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".jpg"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".bmp"
-					position="end" />
-				<function call="text-not-equals" node="@href" value=".png"
-					position="end" />
+				<function call="text-not-equals" node="@href" value=".pdf" position="end" />
+				<function call="text-not-equals" node="@href" value=".doc" position="end" />
+				<function call="text-not-equals" node="@href" value=".xls" position="end" />
+				<function call="text-not-equals" node="@href" value=".jpeg" position="end" />
+				<function call="text-not-equals" node="@href" value=".jpg" position="end" />
+				<function call="text-not-equals" node="@href" value=".bmp" position="end" />
+				<function call="text-not-equals" node="@href" value=".png" position="end" />
 				<function call="not-external-url" node="@href" />
 			</condition>
 		</machine>
@@ -1856,8 +1673,7 @@
 		<rationale>check.118.rationale</rationale>
 		<machine>
 			<trigger element="a" />
-			<function call="text-equals" node="@href" value=".pdf"
-				position="end" />
+			<function call="text-equals" node="@href" value=".pdf" position="end" />
 		</machine>
 	</check>
 
@@ -1880,8 +1696,7 @@
 		<rationale>check.120.rationale</rationale>
 		<machine>
 			<trigger element="p" />
-			<function call="false-paragraph-list" node="." number="3"
-				value="^\*|^-" />
+			<function call="false-paragraph-list" node="." number="3" value="^\*|^-" />
 		</machine>
 	</check>
 
@@ -1894,8 +1709,7 @@
 		<rationale>check.121.rationale</rationale>
 		<machine>
 			<trigger element="br" />
-			<function call="false-br-list" node="." number="3"
-				value="^\*|^-" />
+			<function call="false-br-list" node="." number="3" value="^\*|^-" />
 		</machine>
 	</check>
 
@@ -1908,10 +1722,8 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="title-not-contains" node="."
-					value="check.126.regex.pattern.1" />
-				<function call="has-not-section-link" node="."
-					value="check.126.regex.pattern.2" />
+				<function call="title-not-contains" node="." value="check.126.regex.pattern.1" />
+				<function call="has-not-section-link" node="." value="check.126.regex.pattern.2" />
 			</condition>
 		</machine>
 	</check>
@@ -1991,8 +1803,7 @@
 		</machine>
 	</check>
 
-	<check id="132" key="img" confidence="cannottell" status="6"
-		note="ismap precludes text links">
+	<check id="132" key="img" confidence="cannottell" status="6" note="ismap precludes text links">
 		<name>Todas las areas activas del lado de los mapas de imágenes del
 			lado del servidor tienen enlaces de texto
 			duplicados en el documento.
@@ -2024,8 +1835,7 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="has-not-section-link" node="."
-					value="check.135.regex.pattern" />
+				<function call="has-not-section-link" node="." value="check.135.regex.pattern" />
 			</condition>
 		</machine>
 	</check>
@@ -2033,7 +1843,8 @@
 	<check id="136" key="html" confidence="cannottell">
 		<name>Comprobar si los mapas de imagen generados mediante el elemento
 			OBJECT incluyen los enlaces redundantes en
-			el cuerpo del OBJECT.
+			el
+			cuerpo del OBJECT.
 		</name>
 		<error>check.136.error</error>
 		<machine>
@@ -2062,8 +1873,7 @@
 		<rationale>check.138.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="has-incorrect-tabindex" node="."
-				value="none" />
+			<function call="has-incorrect-tabindex" node="." value="none" />
 		</machine>
 	</check>
 
@@ -2075,8 +1885,7 @@
 		<rationale>check.139.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="has-incorrect-tabindex" node="."
-				value="many" />
+			<function call="has-incorrect-tabindex" node="." value="many" />
 		</machine>
 	</check>
 
@@ -2123,8 +1932,7 @@
 					<function call="characters-less-than" node="." value="1" />
 					<function call="is-only-blanks" node="." />
 				</condition>
-				<function call="not-children-have-attribute" node="."
-					element="img" attribute1="alt" />
+				<function call="not-children-have-attribute" node="." element="img" attribute1="alt" />
 			</condition>
 		</machine>
 	</check>
@@ -2153,8 +1961,7 @@
 		<rationale>check.144.rationale</rationale>
 		<machine>
 			<trigger element="head" />
-			<function call="metadata-missing" node="."
-				value="Description" />
+			<function call="metadata-missing" node="." value="Description" />
 		</machine>
 	</check>
 
@@ -2166,16 +1973,11 @@
 		<machine>
 			<trigger element="a" />
 			<condition type="or">
-				<function call="text-equals" node="@href" value=".wmv"
-					position="end" />
-				<function call="text-equals" node="@href" value=".mpg"
-					position="end" />
-				<function call="text-equals" node="@href" value=".mov"
-					position="end" />
-				<function call="text-equals" node="@href" value=".ram"
-					position="end" />
-				<function call="text-equals" node="@href" value=".aif"
-					position="end" />
+				<function call="text-equals" node="@href" value=".wmv" position="end" />
+				<function call="text-equals" node="@href" value=".mpg" position="end" />
+				<function call="text-equals" node="@href" value=".mov" position="end" />
+				<function call="text-equals" node="@href" value=".ram" position="end" />
+				<function call="text-equals" node="@href" value=".aif" position="end" />
 			</condition>
 		</machine>
 	</check>
@@ -2186,7 +1988,8 @@
 			<code>object</code>
 			considerados contenido multimedia requieren una alternativa
 			equivalente (p.e., leyendas o descripciones
-			visuales de la pista de
+			visuales de la
+			pista de
 			vídeo).
 		</name>
 		<error>check.146.error</error>
@@ -2204,13 +2007,10 @@
 		<rationale>check.148.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="accessibility-declaration-not-contact"
-				node="." value="check.148.regex.pattern.1"
-				attribute1="check.148.regex.pattern.2"
-				attribute2="check.148.regex.pattern.3" />
+			<function call="accessibility-declaration-not-contact" node="." value="check.148.regex.pattern.1"
+				attribute1="check.148.regex.pattern.2" attribute2="check.148.regex.pattern.3" />
 			<!-- Formulario de contacto en la propia página de accesibilidad -->
-			<function call="accessibility-contact-form" node="."
-				value="check.148.regex.pattern.1"
+			<function call="accessibility-contact-form" node="." value="check.148.regex.pattern.1"
 				attribute1="check.148.regex.pattern.2" />
 		</machine>
 	</check>
@@ -2225,29 +2025,17 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function
-					call="accessibility-declaration-not-revision-date" node="."
-					value="check.149.regex.pattern.value"
+				<function call="accessibility-declaration-not-revision-date" node="." value="check.149.regex.pattern.value"
 					attribute1="check.149.regex.pattern.date.1" />
-				<function
-					call="accessibility-declaration-not-revision-date" node="."
-					value="check.149.regex.pattern.value"
+				<function call="accessibility-declaration-not-revision-date" node="." value="check.149.regex.pattern.value"
 					attribute1="check.149.regex.pattern.date.2" />
-				<function
-					call="accessibility-declaration-not-revision-date" node="."
-					value="check.149.regex.pattern.value"
+				<function call="accessibility-declaration-not-revision-date" node="." value="check.149.regex.pattern.value"
 					attribute1="check.149.regex.pattern.date.3" />
-				<function
-					call="accessibility-declaration-not-revision-date" node="."
-					value="check.149.regex.pattern.value"
+				<function call="accessibility-declaration-not-revision-date" node="." value="check.149.regex.pattern.value"
 					attribute1="check.149.regex.pattern.date.4" position="end" />
-				<function
-					call="accessibility-declaration-not-revision-date" node="."
-					value="check.149.regex.pattern.value"
+				<function call="accessibility-declaration-not-revision-date" node="." value="check.149.regex.pattern.value"
 					attribute1="check.149.regex.pattern.date.5" position="end" />
-				<function
-					call="accessibility-declaration-not-revision-date" node="."
-					value="check.149.regex.pattern.value"
+				<function call="accessibility-declaration-not-revision-date" node="." value="check.149.regex.pattern.value"
 					attribute1="check.149.regex.pattern.date.6" position="end" />
 			</condition>
 		</machine>
@@ -2262,8 +2050,7 @@
 		<rationale>check.150.rationale</rationale>
 		<machine>
 			<trigger element="br" />
-			<function call="false-br-list" node="." number="3"
-				value="^(\d+)[ \.ºª)-]+" attribute1="sorted" />
+			<function call="false-br-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" />
 		</machine>
 	</check>
 
@@ -2279,16 +2066,12 @@
 			<trigger element="table" />
 			<condition type="and">
 				<condition type="or">
-					<function call="element-count-equals" node="."
-						value="caption" number="0" attribute2="table" />
-					<function call="is-empty-element" node="."
-						element="caption" value="all" />
+					<function call="element-count-equals" node="." value="caption" number="0" attribute2="table" />
+					<function call="is-empty-element" node="." element="caption" value="all" />
 				</condition>
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="summary" />
-					<function call="characters-less-than" node="@summary"
-						value="1" />
+					<function call="attribute-missing" node="." value="summary" />
+					<function call="characters-less-than" node="@summary" value="1" />
 					<function call="is-only-blanks" node="@summary" />
 				</condition>
 			</condition>
@@ -2360,8 +2143,7 @@
 			<condition type="and">
 				<function call="attribute-exists" node="." value="alt" />
 				<condition type="or">
-					<function call="characters-less-than" node="@alt"
-						value="1" />
+					<function call="characters-less-than" node="@alt" value="1" />
 					<function call="is-only-blanks" node="@alt" />
 				</condition>
 				<function call="attribute-exists" node="." value="href" />
@@ -2380,8 +2162,7 @@
 		<machine>
 			<trigger element="iframe" />
 			<condition type="or">
-				<function call="characters-less-than" node="@title"
-					value="1" />
+				<function call="characters-less-than" node="@title" value="1" />
 				<function call="is-only-blanks" node="@title" />
 			</condition>
 		</machine>
@@ -2411,96 +2192,73 @@
 				<!-- <condition type="and"> -->
 				<!-- <condition type="and"> -->
 				<!-- <function call="attribute-exists" node="." value="onkeypress" /> -->
-				<!-- <function call="characters-greater-than" node="@onkeypress" value="0" 
-					/> -->
+				<!-- <function call="characters-greater-than" node="@onkeypress" value="0" /> -->
 				<!-- <function call="is-not-only-blanks" node="@onkeypress" /> -->
 				<!-- </condition> -->
 				<!-- <condition type="or"> -->
 				<!-- <function call="attribute-missing" node="." value="onclick" /> -->
-				<!-- <function call="characters-less-than" node="@onclick" value="1" 
-					/> -->
+				<!-- <function call="characters-less-than" node="@onclick" value="1" /> -->
 				<!-- <function call="is-only-blanks" node="@onclick" /> -->
 				<!-- </condition> -->
 				<!-- </condition> -->
 				<condition type="and">
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="onmousedown" />
-						<function call="characters-greater-than"
-							node="@onmousedown" value="0" />
+						<function call="attribute-exists" node="." value="onmousedown" />
+						<function call="characters-greater-than" node="@onmousedown" value="0" />
 						<function call="is-not-only-blanks" node="@onmousedown" />
 					</condition>
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="onkeydown" />
-						<function call="characters-less-than" node="@onkeydown"
-							value="1" />
+						<function call="attribute-missing" node="." value="onkeydown" />
+						<function call="characters-less-than" node="@onkeydown" value="1" />
 						<function call="is-only-blanks" node="@onkeydown" />
 					</condition>
 				</condition>
 				<condition type="and">
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="onkeydown" />
-						<function call="characters-greater-than"
-							node="@onkeydown" value="0" />
+						<function call="attribute-exists" node="." value="onkeydown" />
+						<function call="characters-greater-than" node="@onkeydown" value="0" />
 						<function call="is-not-only-blanks" node="@onkeydown" />
 					</condition>
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="onmousedown" />
-						<function call="characters-less-than" node="@onmousedown"
-							value="1" />
+						<function call="attribute-missing" node="." value="onmousedown" />
+						<function call="characters-less-than" node="@onmousedown" value="1" />
 						<function call="is-only-blanks" node="@onmousedown" />
 					</condition>
 				</condition>
 				<condition type="and">
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="onmouseup" />
-						<function call="characters-greater-than"
-							node="@onmouseup" value="0" />
+						<function call="attribute-exists" node="." value="onmouseup" />
+						<function call="characters-greater-than" node="@onmouseup" value="0" />
 						<function call="is-not-only-blanks" node="@onmouseup" />
 					</condition>
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="onkeyup" />
-						<function call="characters-less-than" node="@onkeyup"
-							value="1" />
+						<function call="attribute-missing" node="." value="onkeyup" />
+						<function call="characters-less-than" node="@onkeyup" value="1" />
 						<function call="is-only-blanks" node="@onkeyup" />
 					</condition>
 				</condition>
 				<condition type="and">
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="onkeyup" />
-						<function call="characters-greater-than" node="@onkeyup"
-							value="0" />
+						<function call="attribute-exists" node="." value="onkeyup" />
+						<function call="characters-greater-than" node="@onkeyup" value="0" />
 						<function call="is-not-only-blanks" node="@onkeyup" />
 					</condition>
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="onmouseup" />
-						<function call="characters-less-than" node="@onmouseup"
-							value="1" />
+						<function call="attribute-missing" node="." value="onmouseup" />
+						<function call="characters-less-than" node="@onmouseup" value="1" />
 						<function call="is-only-blanks" node="@onmouseup" />
 					</condition>
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="onmouseover" />
-					<function call="attribute-missing" node="."
-						value="onfocus" />
-					<function call="characters-greater-than"
-						node="@onmouseover" value="0" />
+					<function call="attribute-exists" node="." value="onmouseover" />
+					<function call="attribute-missing" node="." value="onfocus" />
+					<function call="characters-greater-than" node="@onmouseover" value="0" />
 					<function call="is-not-only-blanks" node="@onmouseover" />
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="onmouseout" />
+					<function call="attribute-exists" node="." value="onmouseout" />
 					<function call="attribute-missing" node="." value="onblur" />
-					<function call="characters-greater-than"
-						node="@onmouseout" value="0" />
+					<function call="characters-greater-than" node="@onmouseout" value="0" />
 					<function call="is-not-only-blanks" node="@onmouseout" />
 				</condition>
 			</condition>
@@ -2538,21 +2296,18 @@
 				<condition type="and">
 					<function call="grammar-lang" node="." value="html" />
 					<function call="attribute-exists" node="." value="lang" />
-					<function call="attribute-exists" node="."
-						value="xml:lang" />
+					<function call="attribute-exists" node="." value="xml:lang" />
 				</condition>
 				<condition type="and">
 					<function call="grammar-lang" node="." value="xhtml" />
 					<condition type="or">
 						<condition type="and">
-							<function call="attribute-exists" node="."
-								value="xml:lang" />
+							<function call="attribute-exists" node="." value="xml:lang" />
 							<function call="attribute-missing" node="." value="lang" />
 						</condition>
 						<condition type="and">
 							<function call="attribute-exists" node="." value="lang" />
-							<function call="attribute-missing" node="."
-								value="xml:lang" />
+							<function call="attribute-missing" node="." value="xml:lang" />
 						</condition>
 					</condition>
 				</condition>
@@ -2579,8 +2334,7 @@
 		<rationale>check.165.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="empty-elements" node="." element="p"
-				number="3" />
+			<function call="empty-elements" node="." element="p" number="3" />
 		</machine>
 	</check>
 
@@ -2610,19 +2364,16 @@
 		</machine>
 	</check>
 
-	<!-- <check id="168" key="form" confidence="high" status="4"> <name>Todos 
-		los grupos de botones de radio están marcados usando <code>fieldset</code> 
-		y elementos <code>legend</code>.</name> <error>check.168.error</error> <machine> 
-		<trigger element="form" /> <function call="multi-radio-no-fieldset" node="." 
-		/> </machine> </check> -->
+	<!-- <check id="168" key="form" confidence="high" status="4"> <name>Todos los grupos de botones de radio están marcados 
+		usando <code>fieldset</code> y elementos <code>legend</code>.</name> <error>check.168.error</error> <machine> <trigger element="form" 
+		/> <function call="multi-radio-no-fieldset" node="." /> </machine> </check> -->
 
 	<check id="169" key="select" confidence="cannottell">
 		<name></name>
 		<error>check.169.error</error>
 		<machine>
 			<trigger element="select" />
-			<function call="element-count-greater-than" node="."
-				value="optgroup" number="0" />
+			<function call="element-count-greater-than" node="." value="optgroup" number="0" />
 		</machine>
 	</check>
 
@@ -2636,8 +2387,7 @@
 			<condition type="and">
 				<function call="text-equals" node="@name" value="keywords" />
 				<condition type="and">
-					<function call="characters-greater-than" node="@content"
-						value="0" />
+					<function call="characters-greater-than" node="@content" value="0" />
 					<function call="is-not-only-blanks" node="@content" />
 				</condition>
 			</condition>
@@ -2653,11 +2403,9 @@
 		<machine>
 			<trigger element="meta" />
 			<condition type="and">
-				<function call="text-equals" node="@name"
-					value="description" />
+				<function call="text-equals" node="@name" value="description" />
 				<condition type="and">
-					<function call="characters-greater-than" node="@content"
-						value="0" />
+					<function call="characters-greater-than" node="@content" value="0" />
 					<function call="is-not-only-blanks" node="@content" />
 				</condition>
 			</condition>
@@ -2670,8 +2418,7 @@
 		<rationale>check.172.rationale</rationale>
 		<machine>
 			<trigger element="head" />
-			<function call="metadata-missing" node="."
-				value="Content-Type" />
+			<function call="metadata-missing" node="." value="Content-Type" />
 		</machine>
 	</check>
 
@@ -2683,10 +2430,8 @@
 			<condition type="and">
 				<function call="attribute-exists" node="." value="href" />
 				<function call="characters-less-than" node="." value="1" />
-				<function call="characters-less-than" node="@title"
-					value="1" />
-				<function call="characters-less-than" node=".//img/@alt"
-					value="1" />
+				<function call="characters-less-than" node="@title" value="1" />
+				<function call="characters-less-than" node=".//img/@alt" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -2737,8 +2482,7 @@
 			<condition type="and">
 				<function call="link-greater-than" node="." value="250" />
 				<condition type="and">
-					<function call="text-not-equals-properties" node="."
-						value="check.181.regex.pattern" position="start" />
+					<function call="text-not-equals-properties" node="." value="check.181.regex.pattern" position="start" />
 				</condition>
 			</condition>
 		</machine>
@@ -2754,14 +2498,11 @@
 				<condition type="or">
 					<condition type="and">
 						<function call="attribute-exists" node="." value="lang" />
-						<function call="characters-less-than" node="@lang"
-							value="1" />
+						<function call="characters-less-than" node="@lang" value="1" />
 					</condition>
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="xml:lang" />
-						<function call="characters-less-than" node="@xml:lang"
-							value="1" />
+						<function call="attribute-exists" node="." value="xml:lang" />
+						<function call="characters-less-than" node="@xml:lang" value="1" />
 					</condition>
 				</condition>
 			</condition>
@@ -2779,13 +2520,10 @@
 			<condition type="and">
 				<function call="text-equals" node="@rel" value="stylesheet" />
 				<function call="text-equals" node="@type" value="text/css" />
-				<function call="text-not-equals" node="@media"
-					value="print" />
+				<function call="text-not-equals" node="@media" value="print" />
 				<condition type="or">
-					<function call="user-data-matchs" node="." element="css"
-						value="display:none" />
-					<function call="user-data-matchs" node="." element="css"
-						value="visibility:hidden" />
+					<function call="user-data-matchs" node="." element="css" value="display:none" />
+					<function call="user-data-matchs" node="." element="css" value="visibility:hidden" />
 				</condition>
 			</condition>
 		</machine>
@@ -2919,8 +2657,7 @@
 		</machine>
 	</check>
 
-	<check id="232" key="html" confidence="high" status="1"
-		occurrence="first">
+	<check id="232" key="html" confidence="high" status="1" occurrence="first">
 		<name>El documento valida la especificación.</name>
 		<error>check.232.error</error>
 		<rationale>check.232.rationale</rationale>
@@ -2939,8 +2676,7 @@
 		</machine>
 	</check>
 
-	<check id="234" key="css" confidence="cannottell"
-		occurrence="first">
+	<check id="234" key="css" confidence="cannottell" occurrence="first">
 		<name>Podría haber parpadeos en el texto</name>
 		<error>check.234.error</error>
 		<machine>
@@ -2956,18 +2692,12 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="h1" number="1" />
-				<function call="element-count-greater-than" node="."
-					value="h2" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="h3" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="h4" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="h5" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="h6" number="0" />
+				<function call="element-count-greater-than" node="." value="h1" number="1" />
+				<function call="element-count-greater-than" node="." value="h2" number="0" />
+				<function call="element-count-greater-than" node="." value="h3" number="0" />
+				<function call="element-count-greater-than" node="." value="h4" number="0" />
+				<function call="element-count-greater-than" node="." value="h5" number="0" />
+				<function call="element-count-greater-than" node="." value="h6" number="0" />
 			</condition>
 		</machine>
 	</check>
@@ -2987,8 +2717,7 @@
 			<trigger element="input" />
 			<condition type="and">
 				<function call="attribute-exists" node="." value="alt" />
-				<function call="text-not-equals" node="@type" value="image"
-					position="anywhere" />
+				<function call="text-not-equals" node="@type" value="image" position="anywhere" />
 			</condition>
 		</machine>
 	</check>
@@ -3007,8 +2736,7 @@
 		<error>check.243.error</error>
 		<machine>
 			<trigger element="table" />
-			<function call="caption-summary-same" node="."
-				value="summary" />
+			<function call="caption-summary-same" node="." value="summary" />
 		</machine>
 	</check>
 
@@ -3097,8 +2825,7 @@
 				<!-- TODO: Rodeada potencialmente por espacios -->
 				<function call="attribute-exists" node="." value="longdesc" />
 				<condition type="or">
-					<function call="characters-less-than" node="@longdesc"
-						value="1" />
+					<function call="characters-less-than" node="@longdesc" value="1" />
 					<function call="is-only-blanks" node="@longdesc" />
 					<!--<function call="text-not-match" node="@longdesc" value="^\s*http|^\s*[#\\./].*"/> -->
 					<!--TODO: Comprobar si se valida contra 404 o 200 -->
@@ -3127,8 +2854,7 @@
 			<condition type="or">
 				<function call="attribute-missing" node="." value="action" />
 				<function call="is-only-blanks" node="@action" />
-				<function call="characters-less-than" node="@action"
-					value="1" />
+				<function call="characters-less-than" node="@action" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -3159,8 +2885,7 @@
 		<error>check.283.error</error>
 		<machine>
 			<trigger element="img" />
-			<function call="characters-greater-than" node="@alt"
-				value="150" />
+			<function call="characters-greater-than" node="@alt" value="150" />
 		</machine>
 	</check>
 
@@ -3188,11 +2913,9 @@
 		<machine>
 			<trigger element="frame" />
 			<condition type="or">
-				<function call="attribute-missing" node="."
-					value="longdesc" />
+				<function call="attribute-missing" node="." value="longdesc" />
 				<function call="is-only-blanks" node="@longdesc" />
-				<function call="characters-less-than" node="@longdesc"
-					value="1" />
+				<function call="characters-less-than" node="@longdesc" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -3203,11 +2926,9 @@
 		<machine>
 			<trigger element="iframe" />
 			<condition type="or">
-				<function call="attribute-missing" node="."
-					value="longdesc" />
+				<function call="attribute-missing" node="." value="longdesc" />
 				<function call="is-only-blanks" node="@longdesc" />
-				<function call="characters-less-than" node="@longdesc"
-					value="1" />
+				<function call="characters-less-than" node="@longdesc" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -3222,8 +2943,7 @@
 				<function call="container" node="." element="html" />
 				<condition type="or">
 					<function call="attribute-exists" node="." value="lang" />
-					<function call="attribute-exists" node="."
-						value="xml:lang" />
+					<function call="attribute-exists" node="." value="xml:lang" />
 				</condition>
 			</condition>
 		</machine>
@@ -3239,21 +2959,18 @@
 				<condition type="and">
 					<function call="grammar-lang" node="." value="html" />
 					<function call="attribute-missing" node="." value="lang" />
-					<function call="attribute-exists" node="."
-						value="xml:lang" />
+					<function call="attribute-exists" node="." value="xml:lang" />
 				</condition>
 				<condition type="and">
 					<function call="grammar-lang" node="." value="xhtml" />
 					<condition type="or">
 						<condition type="and">
 							<function call="attribute-exists" node="." value="lang" />
-							<function call="attribute-missing" node="."
-								value="xml:lang" />
+							<function call="attribute-missing" node="." value="xml:lang" />
 						</condition>
 						<condition type="and">
 							<function call="attribute-missing" node="." value="lang" />
-							<function call="attribute-exists" node="."
-								value="xml:lang" />
+							<function call="attribute-exists" node="." value="xml:lang" />
 						</condition>
 					</condition>
 				</condition>
@@ -3287,8 +3004,7 @@
 		<rationale>check.292.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="text-equals" node="@style" value=":after"
-				position="anywhere" />
+			<function call="text-equals" node="@style" value=":after" position="anywhere" />
 		</machine>
 	</check>
 
@@ -3300,8 +3016,7 @@
 		<rationale>check.293.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="text-equals" node="@style" value="content"
-				position="anywhere" />
+			<function call="text-equals" node="@style" value="content" position="anywhere" />
 		</machine>
 	</check>
 
@@ -3313,8 +3028,7 @@
 		<rationale>check.294.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="text-equals" node="@style" value=":before"
-				position="anywhere" />
+			<function call="text-equals" node="@style" value=":before" position="anywhere" />
 		</machine>
 	</check>
 
@@ -3333,10 +3047,8 @@
 			<condition type="or">
 				<function call="attribute-missing" node="." value="title" />
 				<function call="is-only-blanks" node="@title" />
-				<function call="characters-less-than" node="@title"
-					value="1" />
-				<function call="text-match" node="@title"
-					value="^t[íi]tulo$|^untitled$|^title$" />
+				<function call="characters-less-than" node="@title" value="1" />
+				<function call="text-match" node="@title" value="^t[íi]tulo$|^untitled$|^title$" />
 			</condition>
 		</machine>
 	</check>
@@ -3356,10 +3068,8 @@
 			<condition type="or">
 				<function call="attribute-missing" node="." value="title" />
 				<function call="is-only-blanks" node="@title" />
-				<function call="characters-less-than" node="@title"
-					value="1" />
-				<function call="text-match" node="@title"
-					value="^t[íi]tulo$|^untitled$|^title$" />
+				<function call="characters-less-than" node="@title" value="1" />
+				<function call="text-match" node="@title" value="^t[íi]tulo$|^untitled$|^title$" />
 			</condition>
 		</machine>
 	</check>
@@ -3397,8 +3107,7 @@
 		<error>check.299.error</error>
 		<machine>
 			<trigger element="html" />
-			<function call="element-count-less-than" node="." value="p"
-				number="1" />
+			<function call="element-count-less-than" node="." value="p" number="1" />
 		</machine>
 	</check>
 
@@ -3420,8 +3129,7 @@
 		</machine>
 	</check>
 
-	<check id="302" key="html" confidence="cannottell"
-		occurrence="first">
+	<check id="302" key="html" confidence="cannottell" occurrence="first">
 		<name>Lenguaje apropiado, mas claro y simple.</name>
 		<error>check.302.error</error>
 		<rationale>check.302.rationale</rationale>
@@ -3461,8 +3169,7 @@
 		<error>check.305.error</error>
 		<machine>
 			<trigger element="html" />
-			<function call="element-count-greater-than" node="."
-				value="p" number="0" />
+			<function call="element-count-greater-than" node="." value="p" number="0" />
 		</machine>
 	</check>
 
@@ -3477,19 +3184,16 @@
 				<condition type="and">
 					<condition type="or">
 						<function call="attribute-missing" node="." value="alt" />
-						<function call="characters-less-than" node="@alt"
-							value="1" />
+						<function call="characters-less-than" node="@alt" value="1" />
 						<function call="is-only-blanks" node="@alt" />
 					</condition>
 					<!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65 -->
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="aria-labelledby" />
+						<function call="attribute-exists" node="." value="aria-labelledby" />
 						<function call="aria-labelledby-ids-missing" node="." />
 					</condition>
 					<condition type="and">
-						<function call="attribute-missing" node="."
-							value="aria-label" />
+						<function call="attribute-missing" node="." value="aria-label" />
 					</condition>
 				</condition>
 
@@ -3532,8 +3236,7 @@
 		<machine>
 			<trigger element="html" />
 			<function call="elements-excessive-usage" node="."
-				element="b;basefont;big;blink;center;font;frameset;i;marquee;pre;s;small;strike;sub;sup;tt;u"
-				number="3" />
+				element="b;basefont;big;blink;center;font;frameset;i;marquee;pre;s;small;strike;sub;sup;tt;u" number="3" />
 		</machine>
 	</check>
 
@@ -3544,8 +3247,7 @@
 		<machine>
 			<trigger element="html" />
 			<function call="elements-excessive-usage" node="."
-				element="b;basefont;big;blink;center;font;frameset;i;marquee;pre;s;small;strike;sub;sup;tt;u"
-				number="6" />
+				element="b;basefont;big;blink;center;font;frameset;i;marquee;pre;s;small;strike;sub;sup;tt;u" number="6" />
 		</machine>
 	</check>
 
@@ -3556,10 +3258,8 @@
 		<machine>
 			<trigger element="li" />
 			<condition type="and">
-				<function call="container-not" node="." element="ol"
-					value="1" />
-				<function call="container-not" node="." element="ul"
-					value="1" />
+				<function call="container-not" node="." element="ol" value="1" />
+				<function call="container-not" node="." element="ul" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -3570,8 +3270,7 @@
 		<rationale>check.312.rationale</rationale>
 		<machine>
 			<trigger element="dl" />
-			<function call="definition-list-construction" node="."
-				value="ul;ol;dl" />
+			<function call="definition-list-construction" node="." value="ul;ol;dl" />
 		</machine>
 	</check>
 
@@ -3595,30 +3294,23 @@
 		</machine>
 	</check>
 
-	<check id="315" key="color" confidence="cannottell"
-		occurrence="first">
+	<check id="315" key="color" confidence="cannottell" occurrence="first">
 		<name>Que no haya información transmitida en base al color</name>
 		<error>check.315.error</error>
 		<rationale>check.315.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<!-- <condition type="or"> <function call="check-colors" node="." value="amarill.*"/> 
-				<function call="check-colors" node="." value="azul.*"/> <function call="check-colors" 
-				node="." value="blanc.*"/> <function call="check-colors" node="." value="gris.*"/> 
-				<function call="check-colors" node="." value="magenta"/> <function call="check-colors" 
-				node="." value="marrón"/> <function call="check-colors" node="." value="morad.*"/> 
-				<function call="check-colors" node="." value="naranj.*"/> <function call="check-colors" 
-				node="." value="negr.*"/> <function call="check-colors" node="." value="roj.*"/> 
-				<function call="check-colors" node="." value="rosa.*"/> <function call="check-colors" 
-				node="." value="verd.*"/> <function call="check-colors" node="." value="violeta"/> 
-				<function call="check-colors" node="." value="blanq.*"/> <function call="check-colors" 
-				node="." value="yellow"/> <function call="check-colors" node="." value="blue"/> 
-				<function call="check-colors" node="." value="white"/> <function call="check-colors" 
-				node="." value="grey"/> <function call="check-colors" node="." value="brown"/> 
-				<function call="check-colors" node="." value="violet"/> <function call="check-colors" 
-				node="." value="orange"/> <function call="check-colors" node="." value="black"/> 
-				<function call="check-colors" node="." value="red"/> <function call="check-colors" 
-				node="." value="pink"/> <function call="check-colors" node="." value="green"/> 
+			<!-- <condition type="or"> <function call="check-colors" node="." value="amarill.*"/> <function call="check-colors" node="." 
+				value="azul.*"/> <function call="check-colors" node="." value="blanc.*"/> <function call="check-colors" node="." value="gris.*"/> 
+				<function call="check-colors" node="." value="magenta"/> <function call="check-colors" node="." value="marrón"/> <function 
+				call="check-colors" node="." value="morad.*"/> <function call="check-colors" node="." value="naranj.*"/> <function call="check-colors" 
+				node="." value="negr.*"/> <function call="check-colors" node="." value="roj.*"/> <function call="check-colors" node="." value="rosa.*"/> 
+				<function call="check-colors" node="." value="verd.*"/> <function call="check-colors" node="." value="violeta"/> <function 
+				call="check-colors" node="." value="blanq.*"/> <function call="check-colors" node="." value="yellow"/> <function call="check-colors" 
+				node="." value="blue"/> <function call="check-colors" node="." value="white"/> <function call="check-colors" node="." value="grey"/> 
+				<function call="check-colors" node="." value="brown"/> <function call="check-colors" node="." value="violet"/> <function 
+				call="check-colors" node="." value="orange"/> <function call="check-colors" node="." value="black"/> <function call="check-colors" 
+				node="." value="red"/> <function call="check-colors" node="." value="pink"/> <function call="check-colors" node="." value="green"/> 
 				</condition> -->
 		</machine>
 	</check>
@@ -3639,12 +3331,9 @@
 		<machine>
 			<trigger element="ol" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="ol" number="0" attribute1="0" />
-				<function call="element-count-greater-than" node="."
-					value="ul" number="0" attribute1="0" />
-				<function call="element-count-greater-than" node="."
-					value="dl" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="dl" number="0" attribute1="0" />
 			</condition>
 		</machine>
 	</check>
@@ -3656,12 +3345,9 @@
 		<machine>
 			<trigger element="ul" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="ol" number="0" attribute1="0" />
-				<function call="element-count-greater-than" node="."
-					value="ul" number="0" attribute1="0" />
-				<function call="element-count-greater-than" node="."
-					value="dl" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="dl" number="0" attribute1="0" />
 			</condition>
 		</machine>
 	</check>
@@ -3672,8 +3358,7 @@
 		<rationale>check.319.rationale</rationale>
 		<machine>
 			<trigger element="ol" />
-			<function call="all-elements-not-like-this" node="."
-				element="li" value="script;template" />
+			<function call="all-elements-not-like-this" node="." element="li" value="script;template" />
 		</machine>
 	</check>
 
@@ -3683,8 +3368,7 @@
 		<rationale>check.320.rationale</rationale>
 		<machine>
 			<trigger element="ul" />
-			<function call="all-elements-not-like-this" node="."
-				element="li" value="script;template" />
+			<function call="all-elements-not-like-this" node="." element="li" value="script;template" />
 		</machine>
 	</check>
 
@@ -3695,18 +3379,12 @@
 		<machine>
 			<trigger element="dl" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="ol" number="0" attribute1="0" />
-				<function call="element-count-greater-than" node="."
-					value="ul" number="0" attribute1="0" />
-				<function call="element-count-greater-than" node="."
-					value="dl" number="0" attribute1="0" />
-				<function call="has-element-into" node="." attribute1="dt"
-					attribute2="ol" />
-				<function call="has-element-into" node="." attribute1="dt"
-					attribute2="ul" />
-				<function call="has-element-into" node="." attribute1="dt"
-					attribute2="dl" />
+				<function call="element-count-greater-than" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-greater-than" node="." value="dl" number="0" attribute1="0" />
+				<function call="has-element-into" node="." attribute1="dt" attribute2="ol" />
+				<function call="has-element-into" node="." attribute1="dt" attribute2="ul" />
+				<function call="has-element-into" node="." attribute1="dt" attribute2="dl" />
 			</condition>
 		</machine>
 	</check>
@@ -3739,14 +3417,10 @@
 		<machine>
 			<trigger element="dl" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="dt"
-					number="1" attribute1="0" />
-				<function call="element-count-equals" node="." value="ol"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="ul"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dl"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dt" number="1" attribute1="0" />
+				<function call="element-count-equals" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dl" number="0" attribute1="0" />
 				<function call="same-following-list" node="." />
 			</condition>
 		</machine>
@@ -3761,14 +3435,10 @@
 		<machine>
 			<trigger element="ol" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="li"
-					number="1" attribute1="0" />
-				<function call="element-count-equals" node="." value="ol"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="ul"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dl"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="li" number="1" attribute1="0" />
+				<function call="element-count-equals" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dl" number="0" attribute1="0" />
 				<function call="same-following-list" node="." />
 			</condition>
 		</machine>
@@ -3783,14 +3453,10 @@
 		<machine>
 			<trigger element="ul" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="li"
-					number="1" attribute1="0" />
-				<function call="element-count-equals" node="." value="ol"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="ul"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dl"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="li" number="1" attribute1="0" />
+				<function call="element-count-equals" node="." value="ol" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="ul" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dl" number="0" attribute1="0" />
 				<function call="same-following-list" node="." />
 			</condition>
 		</machine>
@@ -3841,8 +3507,7 @@
 		</machine>
 	</check>
 
-	<check id="331" key="html" confidence="cannottell"
-		occurrence="first">
+	<check id="331" key="html" confidence="cannottell" occurrence="first">
 		<name>Observacion general para citas</name>
 		<error>check.331.error</error>
 		<machine>
@@ -3856,12 +3521,9 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="ol" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="ul" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="dl" number="0" />
+				<function call="element-count-greater-than" node="." value="ol" number="0" />
+				<function call="element-count-greater-than" node="." value="ul" number="0" />
+				<function call="element-count-greater-than" node="." value="dl" number="0" />
 			</condition>
 		</machine>
 	</check>
@@ -3908,14 +3570,11 @@
 				<function call="attribute-exists" node="." value="charoff" />
 				<function call="attribute-exists" node="." value="hspace" />
 				<function call="attribute-exists" node="." value="vspace" />
-				<function call="attribute-exists" node="."
-					value="cellpadding" />
-				<function call="attribute-exists" node="."
-					value="cellspacing" />
+				<function call="attribute-exists" node="." value="cellpadding" />
+				<function call="attribute-exists" node="." value="cellspacing" />
 				<function call="attribute-exists" node="." value="compact" />
 				<function call="attribute-exists" node="." value="face" />
-				<function call="attribute-exists" node="."
-					value="background" />
+				<function call="attribute-exists" node="." value="background" />
 				<function call="attribute-exists" node="." value="bgcolor" />
 				<function call="attribute-exists" node="." value="color" />
 				<function call="attribute-exists" node="." value="text" />
@@ -3928,35 +3587,26 @@
 				<condition type="and">
 					<function call="attribute-exists" node="." value="size" />
 					<condition type="or">
-						<function call="same-element-not" node="."
-							element="input" />
+						<function call="same-element-not" node="." element="input" />
 						<condition type="and">
 							<function call="same-element" node="." element="input" />
-							<function call="text-not-equals" node="@type"
-								value="text" />
-							<function call="text-not-equals" node="@type"
-								value="password" />
-							<function call="text-not-equals" node="@type"
-								value="file" />
+							<function call="text-not-equals" node="@type" value="text" />
+							<function call="text-not-equals" node="@type" value="password" />
+							<function call="text-not-equals" node="@type" value="file" />
 						</condition>
 					</condition>
 				</condition>
-				<function call="attribute-exists" node="."
-					value="marginheight" />
-				<function call="attribute-exists" node="."
-					value="marginwidth" />
+				<function call="attribute-exists" node="." value="marginheight" />
+				<function call="attribute-exists" node="." value="marginwidth" />
 				<function call="attribute-exists" node="." value="frame" />
-				<function call="attribute-exists" node="."
-					value="frameborder" />
+				<function call="attribute-exists" node="." value="frameborder" />
 				<condition type="and">
 					<function call="attribute-exists" node="." value="rows" />
-					<function call="same-element-not" node="."
-						element="textarea" />
+					<function call="same-element-not" node="." element="textarea" />
 				</condition>
 				<condition type="and">
 					<function call="attribute-exists" node="." value="cols" />
-					<function call="same-element-not" node="."
-						element="textarea" />
+					<function call="same-element-not" node="." element="textarea" />
 				</condition>
 			</condition>
 		</machine>
@@ -4000,8 +3650,7 @@
 		<rationale>check.340.rationale</rationale>
 		<machine>
 			<trigger element="script" />
-			<function call="text-equals" node="." value="location.href"
-				position="anywhere" />
+			<function call="text-equals" node="." value="location.href" position="anywhere" />
 		</machine>
 	</check>
 
@@ -4025,7 +3674,8 @@
 	<check id="342" key="css" confidence="high">
 		<name>Uso de entidades nbsp para maquetar. Si en un párrafo solamente
 			hay entidades nbsp (sin nada más de texto)
-			el error no aparecerá aquí
+			el
+			error no aparecerá aquí
 		</name>
 		<error>check.342.error</error>
 		<rationale>check.342.rationale</rationale>
@@ -4044,8 +3694,7 @@
 			<condition type="or">
 				<condition type="and">
 					<function call="same-element" node="." element="a" />
-					<function call="text-equals" node="@href"
-						value="javaScript:" position="start" />
+					<function call="text-equals" node="@href" value="javaScript:" position="start" />
 				</condition>
 				<function call="attribute-exists" node="." value="onclick" />
 			</condition>
@@ -4146,15 +3795,13 @@
 				<condition type="and">
 					<condition type="or">
 						<function call="attribute-exists" node="." value="size" />
-						<function call="attribute-exists" node="."
-							value="noshade" />
+						<function call="attribute-exists" node="." value="noshade" />
 					</condition>
 					<function call="same-element" node="." element="hr" />
 				</condition>
 				<condition type="and">
 					<condition type="or">
-						<function call="attribute-exists" node="."
-							value="background" />
+						<function call="attribute-exists" node="." value="background" />
 						<function call="attribute-exists" node="." value="text" />
 						<function call="attribute-exists" node="." value="link" />
 						<function call="attribute-exists" node="." value="alink" />
@@ -4218,11 +3865,9 @@
 				<condition type="and">
 					<condition type="or">
 						<function call="attribute-exists" node="." value="alt" />
-						<function call="attribute-exists" node="."
-							value="archive" />
+						<function call="attribute-exists" node="." value="archive" />
 						<function call="attribute-exists" node="." value="code" />
-						<function call="attribute-exists" node="."
-							value="codebase" />
+						<function call="attribute-exists" node="." value="codebase" />
 						<function call="attribute-exists" node="." value="name" />
 						<function call="attribute-exists" node="." value="object" />
 					</condition>
@@ -4237,8 +3882,7 @@
 					</condition>
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="language" />
+					<function call="attribute-exists" node="." value="language" />
 					<function call="same-element" node="." element="script" />
 				</condition>
 				<condition type="and">
@@ -4290,13 +3934,12 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="doctype-attribute-not-equal" node="."
-					value="-//W3C//DTD XHTML 1.0 Strict//EN" element="doctypePublicId" />
-				<function call="doctype-attribute-not-equal" node="."
-					value="-//W3C//DTD XHTML 1.0 Frameset//EN"
+				<function call="doctype-attribute-not-equal" node="." value="-//W3C//DTD XHTML 1.0 Strict//EN"
 					element="doctypePublicId" />
-				<function call="doctype-attribute-not-equal" node="."
-					value="-//W3C//DTD XHTML 1.1//EN" element="doctypePublicId" />
+				<function call="doctype-attribute-not-equal" node="." value="-//W3C//DTD XHTML 1.0 Frameset//EN"
+					element="doctypePublicId" />
+				<function call="doctype-attribute-not-equal" node="." value="-//W3C//DTD XHTML 1.1//EN"
+					element="doctypePublicId" />
 			</condition>
 		</machine>
 	</check>
@@ -4321,16 +3964,13 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
-				<function call="element-count-greater-than" node="."
-					value="fieldset" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="legend" number="0" />
+				<function call="element-count-greater-than" node="." value="fieldset" number="0" />
+				<function call="element-count-greater-than" node="." value="legend" number="0" />
 			</condition>
 		</machine>
 	</check>
 
-	<check id="352" key="p" confidence="cannottell"
-		occurrence="first">
+	<check id="352" key="p" confidence="cannottell" occurrence="first">
 		<name>Organizar la información en párrafos correctamente</name>
 		<error>check.352.error</error>
 		<rationale>check.352.rationale</rationale>
@@ -4340,8 +3980,7 @@
 		</machine>
 	</check>
 
-	<check id="353" key="html" confidence="cannottell"
-		occurrence="first">
+	<check id="353" key="html" confidence="cannottell" occurrence="first">
 		<name>Podría necesitarse un mecanismo de salto de navegación.</name>
 		<error>check.353.error</error>
 		<rationale>check.353.rationale</rationale>
@@ -4381,11 +4020,9 @@
 		<machine>
 			<trigger element="frame" />
 			<condition type="or">
-				<function call="attribute-missing" node="."
-					value="longdesc" />
+				<function call="attribute-missing" node="." value="longdesc" />
 				<function call="is-only-blanks" node="@longdesc" />
-				<function call="characters-less-than" node="@longdesc"
-					value="1" />
+				<function call="characters-less-than" node="@longdesc" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -4397,11 +4034,9 @@
 		<machine>
 			<trigger element="iframe" />
 			<condition type="or">
-				<function call="attribute-missing" node="."
-					value="longdesc" />
+				<function call="attribute-missing" node="." value="longdesc" />
 				<function call="is-only-blanks" node="@longdesc" />
-				<function call="characters-less-than" node="@longdesc"
-					value="1" />
+				<function call="characters-less-than" node="@longdesc" value="1" />
 			</condition>
 		</machine>
 	</check>
@@ -4464,11 +4099,9 @@
 			<condition type="and">
 				<function call="attribute-exists" node="." value="onkeyup" />
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onmouseup" />
+					<function call="attribute-missing" node="." value="onmouseup" />
 					<function call="is-only-blanks" node="@onmouseup" />
-					<function call="characters-less-than" node="@onmouseup"
-						value="1" />
+					<function call="characters-less-than" node="@onmouseup" value="1" />
 				</condition>
 			</condition>
 		</machine>
@@ -4489,14 +4122,11 @@
 			<trigger element="*" />
 			<condition type="and">
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onkeyup" />
+					<function call="attribute-missing" node="." value="onkeyup" />
 					<function call="is-only-blanks" node="@onkeyup" />
-					<function call="characters-less-than" node="@onkeyup"
-						value="1" />
+					<function call="characters-less-than" node="@onkeyup" value="1" />
 				</condition>
-				<function call="attribute-exists" node="."
-					value="onmouseup" />
+				<function call="attribute-exists" node="." value="onmouseup" />
 			</condition>
 		</machine>
 	</check>
@@ -4515,14 +4145,11 @@
 		<machine>
 			<trigger element="*" />
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="onmouseover" />
+				<function call="attribute-exists" node="." value="onmouseover" />
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="onfocus" />
+					<function call="attribute-missing" node="." value="onfocus" />
 					<function call="is-only-blanks" node="@onfocus" />
-					<function call="characters-less-than" node="@onfocus"
-						value="1" />
+					<function call="characters-less-than" node="@onfocus" value="1" />
 				</condition>
 			</condition>
 		</machine>
@@ -4540,11 +4167,9 @@
 			<trigger element="*" />
 			<condition type="and">
 				<function call="attribute-exists" node="." value="onclick" />
-				<function call="attribute-exists" node="."
-					value="onkeypress" />
+				<function call="attribute-exists" node="." value="onkeypress" />
 				<function call="is-not-only-blanks" node="@onkeypress" />
-				<function call="characters-greater-than" node="@onkeypress"
-					value="0" />
+				<function call="characters-greater-than" node="@onkeypress" value="0" />
 			</condition>
 		</machine>
 	</check>
@@ -4557,8 +4182,7 @@
 		<rationale>check.367.rationale</rationale>
 		<machine>
 			<trigger element="script" />
-			<function call="text-equals" node="@src" value=".js"
-				position="end" />
+			<function call="text-equals" node="@src" value=".js" position="end" />
 		</machine>
 	</check>
 
@@ -4569,8 +4193,7 @@
 		<machine>
 			<trigger element="img" />
 			<condition type="and">
-				<function call="text-equals" node="@src" value=".gif"
-					position="end" />
+				<function call="text-equals" node="@src" value=".gif" position="end" />
 				<function call="is-animated-gif" node="." />
 			</condition>
 		</machine>
@@ -4611,8 +4234,7 @@
 		<rationale>check.372.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="attribute-exists" node="."
-				value="onmouseover" />
+			<function call="attribute-exists" node="." value="onmouseover" />
 		</machine>
 	</check>
 
@@ -4622,8 +4244,7 @@
 		<rationale>check.373.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="attribute-exists" node="."
-				value="onmouseout" />
+			<function call="attribute-exists" node="." value="onmouseout" />
 		</machine>
 	</check>
 
@@ -4633,8 +4254,7 @@
 		<rationale>check.374.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="attribute-exists" node="."
-				value="onmousedown" />
+			<function call="attribute-exists" node="." value="onmousedown" />
 		</machine>
 	</check>
 
@@ -4654,8 +4274,7 @@
 		<rationale>check.376.rationale</rationale>
 		<machine>
 			<trigger element="*" />
-			<function call="attribute-exists" node="."
-				value="onkeypress" />
+			<function call="attribute-exists" node="." value="onkeypress" />
 		</machine>
 	</check>
 
@@ -4685,8 +4304,7 @@
 		<rationale>check.379.rationale</rationale>
 		<machine>
 			<trigger element="script" />
-			<function call="text-equals" node="@src" value=".js"
-				position="end" />
+			<function call="text-equals" node="@src" value=".js" position="end" />
 		</machine>
 	</check>
 
@@ -4697,8 +4315,7 @@
 		<machine>
 			<trigger element="img" />
 			<condition type="and">
-				<function call="text-equals" node="@src" value=".gif"
-					position="end" />
+				<function call="text-equals" node="@src" value=".gif" position="end" />
 				<function call="is-animated-gif" node="." />
 			</condition>
 		</machine>
@@ -4740,10 +4357,8 @@
 		<machine>
 			<trigger element="*" />
 			<condition type="or">
-				<function call="text-equals" node="@style"
-					value="display:none" position="anywhere" />
-				<function call="text-equals" node="@style"
-					value="visibility:hidden" position="anywhere" />
+				<function call="text-equals" node="@style" value="display:none" position="anywhere" />
+				<function call="text-equals" node="@style" value="visibility:hidden" position="anywhere" />
 			</condition>
 		</machine>
 	</check>
@@ -4755,10 +4370,8 @@
 		<machine>
 			<trigger element="style" />
 			<condition type="or">
-				<function call="text-equals" node="." value="display:none"
-					position="anywhere" />
-				<function call="text-equals" node="."
-					value="visibility:hidden" position="anywhere" />
+				<function call="text-equals" node="." value="display:none" position="anywhere" />
+				<function call="text-equals" node="." value="visibility:hidden" position="anywhere" />
 			</condition>
 		</machine>
 	</check>
@@ -4772,14 +4385,10 @@
 			<condition type="and">
 				<function call="attribute-exists" node="." value="style" />
 				<condition type="or">
-					<function call="text-match" node="@style"
-						value="font-size:[^;\\}]*px" />
-					<function call="text-match" node="@style"
-						value="font:[^;\\}]*px" />
-					<function call="text-match" node="@style"
-						value="font-size:[^;\\}]*pt" />
-					<function call="text-match" node="@style"
-						value="font:[^;\\}]*pt" />
+					<function call="text-match" node="@style" value="font-size:[^;\\}]*px" />
+					<function call="text-match" node="@style" value="font:[^;\\}]*px" />
+					<function call="text-match" node="@style" value="font-size:[^;\\}]*pt" />
+					<function call="text-match" node="@style" value="font:[^;\\}]*pt" />
 				</condition>
 			</condition>
 		</machine>
@@ -4792,23 +4401,19 @@
 		<machine>
 			<trigger element="style" />
 			<condition type="or">
-				<function call="text-match" node="."
-					value="font-size:[^;\\}]*px" />
-				<function call="text-match" node="."
-					value="font:[^;\\}]*px" />
-				<function call="text-match" node="."
-					value="font-size:[^;\\}]*pt" />
-				<function call="text-match" node="."
-					value="font:[^;\\}]*pt" />
+				<function call="text-match" node="." value="font-size:[^;\\}]*px" />
+				<function call="text-match" node="." value="font:[^;\\}]*px" />
+				<function call="text-match" node="." value="font-size:[^;\\}]*pt" />
+				<function call="text-match" node="." value="font:[^;\\}]*pt" />
 			</condition>
 		</machine>
 	</check>
 
-	<check id="388" key="html" confidence="cannottell"
-		occurrence="first">
+	<check id="388" key="html" confidence="cannottell" occurrence="first">
 		<name>La definición de los tamaños de los bloques podría ocasionar
 			problemas al redimensionar el tamaño de las
-			ventanas o fuente.
+			ventanas
+			o fuente.
 		</name>
 		<error>check.388.error</error>
 		<rationale>check.388.rationale</rationale>
@@ -4825,10 +4430,8 @@
 			<trigger element="form" />
 			<condition type="and">
 				<function call="num-more-controls" node="." number="2" />
-				<function call="element-count-less-than" node="."
-					value="fieldset" number="1" />
-				<function call="element-count-less-than" node="."
-					value="legend" number="1" />
+				<function call="element-count-less-than" node="." value="fieldset" number="1" />
+				<function call="element-count-less-than" node="." value="legend" number="1" />
 			</condition>
 		</machine>
 	</check>
@@ -4840,10 +4443,8 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
-				<function call="element-count-less-than" node="."
-					value="fieldset" number="1" />
-				<function call="element-count-greater-than" node="."
-					value="legend" number="0" />
+				<function call="element-count-less-than" node="." value="fieldset" number="1" />
+				<function call="element-count-greater-than" node="." value="legend" number="0" />
 			</condition>
 		</machine>
 	</check>
@@ -4854,8 +4455,7 @@
 		<rationale>check.391.rationale</rationale>
 		<machine>
 			<trigger element="form" />
-			<function call="is-even" node="." attribute1="legend"
-				attribute2="fieldset" value="twoElements" />
+			<function call="is-even" node="." attribute1="legend" attribute2="fieldset" value="twoElements" />
 		</machine>
 	</check>
 
@@ -4868,94 +4468,54 @@
 			<condition type="or">
 				<condition type="and">
 					<function call="attribute-exists" node="." value="href" />
-					<function call="text-equals" node="@href"
-						value="javaScript:" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:window.print" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:print()" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:imprimir" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:history.back" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:setFontSize" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:zoomText" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:onclick=window.print" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:cambioLetra" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:aumentarTamanyo" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:reestablecerTamanyo" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:disminuirTamanyo" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:guardarFavoritos" position="start" />
-					<function call="text-not-equals" node="@href"
-						value="javascript:volver()" position="start" />
+					<function call="text-equals" node="@href" value="javaScript:" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:window.print" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:print()" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:imprimir" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:history.back" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:setFontSize" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:zoomText" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:onclick=window.print" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:cambioLetra" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:aumentarTamanyo" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:reestablecerTamanyo" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:disminuirTamanyo" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:guardarFavoritos" position="start" />
+					<function call="text-not-equals" node="@href" value="javascript:volver()" position="start" />
 				</condition>
 				<condition type="and">
 					<function call="attribute-exists" node="." value="onclick" />
 					<condition type="or">
 						<function call="attribute-missing" node="." value="href" />
-						<function call="characters-less-than" node="@href"
-							value="1" />
+						<function call="characters-less-than" node="@href" value="1" />
 						<function call="is-only-blanks" node="@href" />
 						<function call="text-equals" node="@href" value="#" />
 					</condition>
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:window.print" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:print()" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:imprimir" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:history.back" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:setFontSize" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:zoomText" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:onclick=window.print" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:cambioLetra" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:aumentarTamanyo" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:reestablecerTamanyo" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:disminuirTamanyo" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:guardarFavoritos" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="javascript:volver()" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="window.print" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="imprimir" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="history.back" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="setFontSize" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="zoomText" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="onclick=window.print" position="start" />
-					<function call="text-not-equals" node="@onclick"
-						value="cambioLetra" position="anywhere" />
-					<function call="text-not-equals" node="@onclick"
-						value="aumentarTamanyo" position="anywhere" />
-					<function call="text-not-equals" node="@onclick"
-						value="reestablecerTamanyo" position="anywhere" />
-					<function call="text-not-equals" node="@onclick"
-						value="disminuirTamanyo" position="anywhere" />
-					<function call="text-not-equals" node="@onclick"
-						value="guardarFavoritos" position="anywhere" />
-					<function call="text-not-equals" node="@onclick"
-						value="volver()" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:window.print" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:print()" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:imprimir" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:history.back" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:setFontSize" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:zoomText" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:onclick=window.print" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:cambioLetra" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:aumentarTamanyo" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:reestablecerTamanyo" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:disminuirTamanyo" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:guardarFavoritos" position="start" />
+					<function call="text-not-equals" node="@onclick" value="javascript:volver()" position="start" />
+					<function call="text-not-equals" node="@onclick" value="window.print" position="start" />
+					<function call="text-not-equals" node="@onclick" value="imprimir" position="start" />
+					<function call="text-not-equals" node="@onclick" value="history.back" position="start" />
+					<function call="text-not-equals" node="@onclick" value="setFontSize" position="start" />
+					<function call="text-not-equals" node="@onclick" value="zoomText" position="start" />
+					<function call="text-not-equals" node="@onclick" value="onclick=window.print" position="start" />
+					<function call="text-not-equals" node="@onclick" value="cambioLetra" position="anywhere" />
+					<function call="text-not-equals" node="@onclick" value="aumentarTamanyo" position="anywhere" />
+					<function call="text-not-equals" node="@onclick" value="reestablecerTamanyo" position="anywhere" />
+					<function call="text-not-equals" node="@onclick" value="disminuirTamanyo" position="anywhere" />
+					<function call="text-not-equals" node="@onclick" value="guardarFavoritos" position="anywhere" />
+					<function call="text-not-equals" node="@onclick" value="volver()" position="start" />
 				</condition>
 			</condition>
 		</machine>
@@ -4968,8 +4528,7 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
-				<function call="text-equals" node="@action"
-					value="javaScript:" position="start" />
+				<function call="text-equals" node="@action" value="javaScript:" position="start" />
 			</condition>
 		</machine>
 	</check>
@@ -4995,8 +4554,7 @@
 						<function call="is-only-blanks" node="." />
 					</condition>
 					<condition type="or">
-						<function call="characters-less-than" node=".//img/@alt"
-							value="1" />
+						<function call="characters-less-than" node=".//img/@alt" value="1" />
 						<function call="is-only-blanks" node=".//img/@alt" />
 					</condition>
 				</condition>
@@ -5016,34 +4574,23 @@
 				<condition type="or">
 					<function call="text-equals" node="@media" value="screen" />
 					<function call="attribute-missing" node="." value="media" />
-					<function call="characters-less-than" node="@media"
-						value="1" />
+					<function call="characters-less-than" node="@media" value="1" />
 					<function call="is-only-blanks" node="@media" />
 				</condition>
 				<condition type="and">
 					<condition type="or">
-						<function call="user-data-matchs" node="." element="css"
-							value="font-size:[^;\\}]*px" />
-						<function call="user-data-matchs" node="." element="css"
-							value="font:[^;\\}]*px" />
-						<function call="user-data-matchs" node="." element="css"
-							value="font-size:[^;\\}]*pt" />
-						<function call="user-data-matchs" node="." element="css"
-							value="font:[^;\\}]*pt" />
+						<function call="user-data-matchs" node="." element="css" value="font-size:[^;\\}]*px" />
+						<function call="user-data-matchs" node="." element="css" value="font:[^;\\}]*px" />
+						<function call="user-data-matchs" node="." element="css" value="font-size:[^;\\}]*pt" />
+						<function call="user-data-matchs" node="." element="css" value="font:[^;\\}]*pt" />
 					</condition>
 					<condition type="and">
-						<function call="not-user-data-matchs" node="."
-							element="css" value="font-size:[^;\\}]*em" />
-						<function call="not-user-data-matchs" node="."
-							element="css" value="font:[^;\\}]*em" />
-						<function call="not-user-data-matchs" node="."
-							element="css" value="font-size:[^;\\}]*ex" />
-						<function call="not-user-data-matchs" node="."
-							element="css" value="font:[^;\\}]*ex" />
-						<function call="not-user-data-matchs" node="."
-							element="css" value="font-size:[^;\\}]*%" />
-						<function call="not-user-data-matchs" node="."
-							element="css" value="font:[^;\\}]*%" />
+						<function call="not-user-data-matchs" node="." element="css" value="font-size:[^;\\}]*em" />
+						<function call="not-user-data-matchs" node="." element="css" value="font:[^;\\}]*em" />
+						<function call="not-user-data-matchs" node="." element="css" value="font-size:[^;\\}]*ex" />
+						<function call="not-user-data-matchs" node="." element="css" value="font:[^;\\}]*ex" />
+						<function call="not-user-data-matchs" node="." element="css" value="font-size:[^;\\}]*%" />
+						<function call="not-user-data-matchs" node="." element="css" value="font:[^;\\}]*%" />
 					</condition>
 				</condition>
 			</condition>
@@ -5071,8 +4618,7 @@
 		<error>check.399.error</error>
 		<machine>
 			<trigger element="script" />
-			<function call="text-equals" node="." value="document.write"
-				position="anywhere" />
+			<function call="text-equals" node="." value="document.write" position="anywhere" />
 		</machine>
 	</check>
 	<check id="400" key="body" confidence="medium">
@@ -5083,13 +4629,11 @@
 			<trigger element="body" />
 			<condition type="and">
 				<function call="attribute-exists" node="." value="onload" />
-				<function call="text-equals" node="@onload"
-					value="parent.location" position="start" />
+				<function call="text-equals" node="@onload" value="parent.location" position="start" />
 			</condition>
 		</machine>
 	</check>
-	<check id="401" key="html" confidence="cannottell"
-		occurrence="first">
+	<check id="401" key="html" confidence="cannottell" occurrence="first">
 		<name>Apertura de ventanas emergentes</name>
 		<error>check.401.error</error>
 		<machine>
@@ -5103,13 +4647,10 @@
 		<machine>
 			<trigger element="head" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="style" number="0" />
+				<function call="element-count-greater-than" node="." value="style" number="0" />
 				<condition type="and">
-					<function call="element-count-greater-than" node="."
-						value="link" number="0" />
-					<function call="exist-attribute-value" node="."
-						element="link" attribute1="rel" value="stylesheet" />
+					<function call="element-count-greater-than" node="." value="link" number="0" />
+					<function call="exist-attribute-value" node="." element="link" attribute1="rel" value="stylesheet" />
 				</condition>
 			</condition>
 		</machine>
@@ -5141,12 +4682,9 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="or">
-				<function call="element-count-greater-than" node="."
-					value="embed" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="applet" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="object" number="0" />
+				<function call="element-count-greater-than" node="." value="embed" number="0" />
+				<function call="element-count-greater-than" node="." value="applet" number="0" />
+				<function call="element-count-greater-than" node="." value="object" number="0" />
 			</condition>
 		</machine>
 	</check>
@@ -5156,8 +4694,8 @@
 		<error>check.405.error</error>
 		<machine>
 			<trigger element="form" />
-			<function call="count-attribute-value-greater-than" node="."
-				attribute1="input" attribute2="type" value="submit" number="1" />
+			<function call="count-attribute-value-greater-than" node="." attribute1="input" attribute2="type"
+				value="submit" number="1" />
 		</machine>
 	</check>
 
@@ -5167,10 +4705,8 @@
 		<machine>
 			<trigger element="select" />
 			<condition type="and">
-				<function call="element-count-equals" node="."
-					value="optgroup" number="0" />
-				<function call="element-count-greater-than" node="."
-					value="option" attribute1="1" number="100" />
+				<function call="element-count-equals" node="." value="optgroup" number="0" />
+				<function call="element-count-greater-than" node="." value="option" attribute1="1" number="100" />
 			</condition>
 		</machine>
 	</check>
@@ -5182,8 +4718,7 @@
 			<trigger element="optgroup" />
 			<condition type="or">
 				<function call="attribute-missing" node="." value="label" />
-				<function call="characters-less-than" node="@label"
-					value="1" />
+				<function call="characters-less-than" node="@label" value="1" />
 				<function call="is-only-blanks" node="@label" />
 			</condition>
 		</machine>
@@ -5198,8 +4733,7 @@
 		<rationale>check.408.rationale</rationale>
 		<machine>
 			<trigger element="br" />
-			<function call="false-br-list" node="." number="3"
-				value="^\*|^-" />
+			<function call="false-br-list" node="." number="3" value="^\*|^-" />
 		</machine>
 	</check>
 
@@ -5212,8 +4746,7 @@
 		<rationale>check.409.rationale</rationale>
 		<machine>
 			<trigger element="p" />
-			<function call="false-paragraph-list" node="." number="3"
-				value="^\*|^-" />
+			<function call="false-paragraph-list" node="." number="3" value="^\*|^-" />
 		</machine>
 	</check>
 
@@ -5227,18 +4760,13 @@
 		<machine>
 			<trigger element="br" />
 			<condition type="or">
-				<!-- <function call="false-br-list" node="." number="3" value="^(\d+)[ 
-					\.ºª)-]+" attribute1="sorted"/> -->
-				<function call="false-br-list" node="." number="3"
-					value="^([1-3])[ \.ºª)-]+" attribute1="sorted" />
+				<!-- <function call="false-br-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"/> -->
+				<function call="false-br-list" node="." number="3" value="^([1-3])[ \.ºª)-]+" attribute1="sorted" />
 
-				<!-- <function call="false-br-list" node="." number="3" value="^(\w)[ 
-					\.)-]+"/> -->
-				<function call="false-br-list" node="." number="3"
-					value="^(a|b|c)[ \.)-]+" />
+				<!-- <function call="false-br-list" node="." number="3" value="^(\w)[ \.)-]+"/> -->
+				<function call="false-br-list" node="." number="3" value="^(a|b|c)[ \.)-]+" />
 
-				<function call="false-br-list" node="." number="3"
-					value="^(i{1,3})[ \.)-]+" />
+				<function call="false-br-list" node="." number="3" value="^(i{1,3})[ \.)-]+" />
 			</condition>
 		</machine>
 	</check>
@@ -5252,8 +4780,8 @@
 		<rationale>check.411.rationale</rationale>
 		<machine>
 			<trigger element="p" />
-			<function call="false-paragraph-list" node="." number="3"
-				value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer" />
+			<function call="false-paragraph-list" node="." number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted"
+				attribute2="integer" />
 		</machine>
 	</check>
 
@@ -5265,8 +4793,7 @@
 		<rationale>check.412.rationale</rationale>
 		<machine>
 			<trigger element="a" />
-			<function call="characters-greater-than" node="."
-				value="250" />
+			<function call="characters-greater-than" node="." value="250" />
 		</machine>
 	</check>
 
@@ -5289,8 +4816,7 @@
 		<rationale>check.413.rationale</rationale>
 		<machine>
 			<trigger element="img" />
-			<function call="characters-greater-than" node="@title"
-				value="0" />
+			<function call="characters-greater-than" node="@title" value="0" />
 
 			<condition type="or">
 				<condition type="and">
@@ -5300,8 +4826,7 @@
 				<function call="characters-less-than" node="@alt" value="1" />
 				<function call="is-only-blanks" node="@alt" />
 			</condition>
-			<function call="not-exist-attribute-value" node="."
-				element="." attribute1="@role" value="presentation" />
+			<function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation" />
 		</machine>
 	</check>
 
@@ -5318,20 +4843,17 @@
 			<condition type="and">
 				<condition type="or">
 					<function call="attribute-missing" node="." value="alt" />
-					<function call="characters-less-than" node="@alt"
-						value="1" />
+					<function call="characters-less-than" node="@alt" value="1" />
 					<function call="is-only-blanks" node="@alt" />
 				</condition>
 
 				<!-- https://www.w3.org/TR/2016/NOTE-WCAG20-TECHS-20161007/F65 -->
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-labelledby" />
+					<function call="attribute-exists" node="." value="aria-labelledby" />
 					<function call="aria-labelledby-ids-missing" node="." />
 				</condition>
 				<condition type="and">
-					<function call="attribute-missing" node="."
-						value="aria-label" />
+					<function call="attribute-missing" node="." value="aria-label" />
 				</condition>
 
 
@@ -5370,25 +4892,21 @@
 		<machine>
 			<trigger element="li" />
 			<condition type="or">
-				<!-- <function call="false-paragraph-list" node="." element="li" number="3" 
-					value="^(\d+)[ \.ºª)-]+" attribute1="sorted" attribute2="integer"/> -->
-				<function call="false-paragraph-list" node="." element="li"
-					number="3" value="^([1-3])[ \.ºª)-]+" attribute1="sorted"
-					attribute2="integer" />
+				<!-- <function call="false-paragraph-list" node="." element="li" number="3" value="^(\d+)[ \.ºª)-]+" attribute1="sorted" 
+					attribute2="integer"/> -->
+				<function call="false-paragraph-list" node="." element="li" number="3" value="^([1-3])[ \.ºª)-]+"
+					attribute1="sorted" attribute2="integer" />
 
-				<!-- <function call="false-paragraph-list" node="." element="li" number="3" 
-					value="^([a-z])[ \.ºª)-]+" attribute1="sorted" attribute2="char"/> -->
-				<function call="false-paragraph-list" node="." element="li"
-					number="3" value="^(a|b|c)[ \.)-]+" attribute1="sorted"
-					attribute2="char" />
+				<!-- <function call="false-paragraph-list" node="." element="li" number="3" value="^([a-z])[ \.ºª)-]+" attribute1="sorted" 
+					attribute2="char"/> -->
+				<function call="false-paragraph-list" node="." element="li" number="3" value="^(a|b|c)[ \.)-]+"
+					attribute1="sorted" attribute2="char" />
 
 
-				<!-- <function call="false-paragraph-list" node="." element="li" number="3" 
-					value="^(i){1,3}[ \.ºª)-]+" /> -->
+				<!-- <function call="false-paragraph-list" node="." element="li" number="3" value="^(i){1,3}[ \.ºª)-]+" /> -->
 
-				<function call="false-paragraph-list" node="." element="li"
-					attribute1="sorted" number="3" value="^(i){1,3}[ \.ºª)-]+"
-					attribute2="roman" />
+				<function call="false-paragraph-list" node="." element="li" attribute1="sorted" number="3"
+					value="^(i){1,3}[ \.ºª)-]+" attribute2="roman" />
 			</condition>
 		</machine>
 	</check>
@@ -5415,10 +4933,8 @@
 			<function call="table-heading-complex" node="." />
 			<condition type="and">
 				<condition type="or">
-					<function call="attribute-missing" node="."
-						value="summary" />
-					<function call="characters-less-than" node="@summary"
-						value="1" />
+					<function call="attribute-missing" node="." value="summary" />
+					<function call="characters-less-than" node="@summary" value="1" />
 					<function call="is-only-blanks" node="@summary" />
 				</condition>
 			</condition>
@@ -5434,16 +4950,13 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="title-not-contains" node="."
-					value="check.419.regex.pattern.1" />
-				<function call="has-not-section-link" node="."
-					value="check.419.regex.pattern.2" />
-				<function call="attribute-element-text-not-match" node="."
-					element="form" attribute1="role" value="check.419.regex.pattern.3" />
-				<function call="attribute-element-text-not-match" node="."
-					element="div" attribute1="role" value="check.419.regex.pattern.3" />
-				<function call="attribute-element-text-not-match" node="."
-					element="input" attribute1="value"
+				<function call="title-not-contains" node="." value="check.419.regex.pattern.1" />
+				<function call="has-not-section-link" node="." value="check.419.regex.pattern.2" />
+				<function call="attribute-element-text-not-match" node="." element="form" attribute1="role"
+					value="check.419.regex.pattern.3" />
+				<function call="attribute-element-text-not-match" node="." element="div" attribute1="role"
+					value="check.419.regex.pattern.3" />
+				<function call="attribute-element-text-not-match" node="." element="input" attribute1="value"
 					value="check.419.regex.pattern.4" />
 			</condition>
 		</machine>
@@ -5456,8 +4969,7 @@
 		<machine>
 			<trigger element="html" />
 			<function call="elements-excessive-usage" node="."
-				element="b;basefont;big;blink;center;font;i;marquee;pre;s;small;strike;sub;sup;tt;u"
-				number="0" />
+				element="b;basefont;big;blink;center;font;i;marquee;pre;s;small;strike;sub;sup;tt;u" number="0" />
 		</machine>
 	</check>
 
@@ -5467,8 +4979,7 @@
 		<rationale>check.421.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="element-count-equals" node="." value="h1"
-				number="0" />
+			<function call="element-count-equals" node="." value="h1" number="0" />
 			<function call="headers-wai-level-1-missing" node="." />
 		</machine>
 	</check>
@@ -5500,8 +5011,7 @@
 		<rationale>check.423.rationale</rationale>
 		<machine>
 			<trigger element="ol" />
-			<function call="element-count-equals" node="." value="li"
-				number="0" attribute1="0" />
+			<function call="element-count-equals" node="." value="li" number="0" attribute1="0" />
 		</machine>
 	</check>
 
@@ -5511,8 +5021,7 @@
 		<rationale>check.424.rationale</rationale>
 		<machine>
 			<trigger element="ul" />
-			<function call="element-count-equals" node="." value="li"
-				number="0" attribute1="0" />
+			<function call="element-count-equals" node="." value="li" number="0" attribute1="0" />
 		</machine>
 	</check>
 
@@ -5523,20 +5032,20 @@
 		<machine>
 			<trigger element="dl" />
 			<condition type="and">
-				<function call="element-count-equals" node="." value="dt"
-					number="0" attribute1="0" />
-				<function call="element-count-equals" node="." value="dd"
-					number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dt" number="0" attribute1="0" />
+				<function call="element-count-equals" node="." value="dd" number="0" attribute1="0" />
 			</condition>
 		</machine>
 	</check>
 
 	<check id="426" key="img" confidence="high">
 		<name>Se verifica que las imágenes con un alto y/o ancho igual o
-			inferior a X no tienen atributo “role” o bien su valor es
+			inferior a X no tienen atributo “role” o bien su valor
+			es
 			“presentation”; y además tienen un
 			atributo “alt” vacío y carecen de
-			atributo “title” o éste está vacío. (Heurístico X=2)
+			atributo “title” o éste está vacío. (Heurístico
+			X=2)
 		</name>
 		<error>check.426.error</error>
 		<rationale>check.426.rationale</rationale>
@@ -5545,20 +5054,16 @@
 			<condition type="or">
 				<condition type="and">
 					<!-- attribute1 = width & attribute2 = height -->
-					<function call="img-dimensions-less-than" node="."
-						attribute1="3" attribute2="3" />
-					<function call="characters-greater-than" node="@alt"
-						value="0" />
+					<function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3" />
+					<function call="characters-greater-than" node="@alt" value="0" />
 					<function call="is-not-only-blanks" node="@alt" />
 				</condition>
 
 				<condition type="and">
 					<!-- attribute1 = width & attribute2 = height -->
-					<function call="img-dimensions-less-than" node="."
-						attribute1="3" attribute2="3" />
+					<function call="img-dimensions-less-than" node="." attribute1="3" attribute2="3" />
 					<function call="attribute-exists" node="@role" />
-					<function call="not-exist-attribute-value" node="."
-						element="." attribute1="@role" value="presentation" />
+					<function call="not-exist-attribute-value" node="." element="." attribute1="@role" value="presentation" />
 				</condition>
 			</condition>
 		</machine>
@@ -5570,10 +5075,8 @@
 		<rationale>check.312.rationale</rationale>
 		<machine>
 			<trigger element="dl" />
-			<!-- Se diferencia de la 312 que no permitimos ningún elemento distinto 
-				de dt,dd como hijo de dl (312 permite ul,ol) -->
-			<function call="definition-list-construction" node="."
-				value="" />
+			<!-- Se diferencia de la 312 que no permitimos ningún elemento distinto de dt,dd como hijo de dl (312 permite ul,ol) -->
+			<function call="definition-list-construction" node="." value="" />
 		</machine>
 	</check>
 
@@ -5596,13 +5099,10 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
-				<function call="elements-excessive-usage" node="."
-					element="h1;h2;h3;h4;h5;h6" number="1" />
+				<function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1" />
 				<condition type="and">
-					<function call="text-not-match" node="@id"
-						value="aspnetForm" />
-					<function call="text-not-match" node="@name"
-						value="aspnetForm" />
+					<function call="text-not-match" node="@id" value="aspnetForm" />
+					<function call="text-not-match" node="@name" value="aspnetForm" />
 				</condition>
 			</condition>
 		</machine>
@@ -5616,15 +5116,12 @@
 			<trigger element="form" />
 			<condition type="and">
 				<function call="num-more-controls" node="." number="12" />
-				<function call="element-count-less-than" node="."
-					value="fieldset" number="1" />
-				<function call="element-count-less-than" node="."
-					value="legend" number="1" />
-				<function call="element-count-attribute-value" node="."
-					attribute1="role" attribute2="group" number="1" position="less" />
-				<function call="element-count-attribute-value" node="."
-					attribute1="role" attribute2="radiogroup" number="1"
+				<function call="element-count-less-than" node="." value="fieldset" number="1" />
+				<function call="element-count-less-than" node="." value="legend" number="1" />
+				<function call="element-count-attribute-value" node="." attribute1="role" attribute2="group" number="1"
 					position="less" />
+				<function call="element-count-attribute-value" node="." attribute1="role" attribute2="radiogroup"
+					number="1" position="less" />
 			</condition>
 		</machine>
 	</check>
@@ -5636,19 +5133,17 @@
 		<machine>
 			<trigger element="table" />
 			<condition type="and">
-				<function call="child-element-characters-lesser-than"
-					node="." element="td" value="150" />
-				<function call="column-count" node="." number="1"
-					position="equals" />
-				<function call="row-count" node="." number="2"
-					position="greater" />
+				<function call="child-element-characters-lesser-than" node="." element="td" value="150" />
+				<function call="column-count" node="." number="1" position="equals" />
+				<function call="row-count" node="." number="2" position="greater" />
 			</condition>
 		</machine>
 	</check>
 
 	<check id="432" key="form" confidence="high">
 		<name>Elementos con “onclick” u “onkeypress” son de interacción de
-			forma nativa (enlaces o botones estándar) o bien tienen asignado un
+			forma nativa (enlaces o botones estándar) o bien
+			tienen asignado un
 			atributo “tabindex” y un
 			“role” de WAI-ARIA adecuado
 		</name>
@@ -5659,34 +5154,25 @@
 			<condition type="and">
 				<condition type="or">
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="onkeypress" />
-						<function call="characters-greater-than"
-							node="@onkeypress" value="0" />
+						<function call="attribute-exists" node="." value="onkeypress" />
+						<function call="characters-greater-than" node="@onkeypress" value="0" />
 						<function call="is-not-only-blanks" node="@onkeypress" />
 					</condition>
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="onclick" />
-						<function call="characters-greater-than" node="@onclick"
-							value="0" />
+						<function call="attribute-exists" node="." value="onclick" />
+						<function call="characters-greater-than" node="@onclick" value="0" />
 						<function call="is-not-only-blanks" node="@onclick" />
 					</condition>
 				</condition>
 				<condition type="and">
 					<condition type="and">
 						<function call="same-element-not" node="." element="a" />
-						<function call="same-element-not" node="."
-							element="input" />
-						<function call="same-element-not" node="."
-							element="button" />
-						<function call="same-element-not" node="."
-							element="select" />
-						<function call="same-element-not" node="."
-							element="textarea" />
+						<function call="same-element-not" node="." element="input" />
+						<function call="same-element-not" node="." element="button" />
+						<function call="same-element-not" node="." element="select" />
+						<function call="same-element-not" node="." element="textarea" />
 						<condition type="or">
-							<function call="attribute-missing" node="."
-								value="tabindex" />
+							<function call="attribute-missing" node="." value="tabindex" />
 							<!-- TODO: Comprobar el valor del atributo role -->
 							<function call="attribute-missing" node="." value="role" />
 						</condition>
@@ -5703,8 +5189,7 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="elements-excessive-usage" node="."
-					element="h1;h2;h3;h4;h5;h6" number="2" position="less" />
+				<function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="2" position="less" />
 				<function call="has-complex-structure" node="." number="15" />
 			</condition>
 		</machine>
@@ -5716,15 +5201,11 @@
 		<error>check.434.error</error>
 		<rationale>check.434.rationale</rationale>
 		<machine>
-			<!-- Como esta función se referencia sobre la etiqueta html no funciona 
-				para fragmentos de código (no se ejecuta) -->
-			<!-- Una solución es usar element="*" y añadir ocurrence="first" al nodo 
-				<check> -->
+			<!-- Como esta función se referencia sobre la etiqueta html no funciona para fragmentos de código (no se ejecuta) -->
+			<!-- Una solución es usar element="*" y añadir ocurrence="first" al nodo <check> -->
 			<trigger element="html" />
-			<!-- Se contabilizan únicamente valores positivos de tabindex (1,2,3...) 
-				valores 0 y -1 no cuentan -->
-			<function call="tabindex-excessive-usage" node="."
-				number="3" />
+			<!-- Se contabilizan únicamente valores positivos de tabindex (1,2,3...) valores 0 y -1 no cuentan -->
+			<function call="tabindex-excessive-usage" node="." number="3" />
 		</machine>
 	</check>
 
@@ -5734,15 +5215,11 @@
 		<error>check.435.error</error>
 		<rationale>check.435.rationale</rationale>
 		<machine>
-			<!-- Como esta función se referencia sobre la etiqueta html no funciona 
-				para fragmentos de código (no se ejecuta) -->
-			<!-- Una solución es usar element="*" y añadir ocurrence="first" al nodo 
-				<check> -->
+			<!-- Como esta función se referencia sobre la etiqueta html no funciona para fragmentos de código (no se ejecuta) -->
+			<!-- Una solución es usar element="*" y añadir ocurrence="first" al nodo <check> -->
 			<trigger element="html" />
-			<!-- Se contabilizan únicamente valores positivos de tabindex (1,2,3...) 
-				valores 0 y -1 no cuentan -->
-			<function call="tabindex-excessive-usage" node="."
-				number="10" />
+			<!-- Se contabilizan únicamente valores positivos de tabindex (1,2,3...) valores 0 y -1 no cuentan -->
+			<function call="tabindex-excessive-usage" node="." number="10" />
 		</machine>
 	</check>
 
@@ -5752,10 +5229,9 @@
 		<rationale>check.436.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<!-- En attribute1 indicamos las etiquetas que se ignorarán (separadas 
-				por punto y coma ;) -->
-			<function call="elements-excessive-usage" node="."
-				element="br" number="10" position="greater" attribute1="address" />
+			<!-- En attribute1 indicamos las etiquetas que se ignorarán (separadas por punto y coma ;) -->
+			<function call="elements-excessive-usage" node="." element="br" number="10" position="greater"
+				attribute1="address" />
 		</machine>
 	</check>
 
@@ -5787,8 +5263,8 @@
 			<trigger element="html" />
 			<condition type="or">
 				<function call="has-validation-errors" node="." value="82" />
-				<!-- Si son varias palabras sin entrecomillar notifica este otro error 
-					(atributo simple inexistente) puede dar falsos positivos con atributos simples -->
+				<!-- Si son varias palabras sin entrecomillar notifica este otro error (atributo simple inexistente) puede dar falsos 
+					positivos con atributos simples -->
 				<function call="has-validation-errors" node="." value="106" />
 			</condition>
 		</machine>
@@ -5829,7 +5305,8 @@
 
 	<check id="443" key="form" confidence="high">
 		<name>Grupos de tres o más de botones de radio y/o casillas de
-			verificación (con el mismo “name”) se agrupan bajo su correspondiente
+			verificación (con el mismo “name”) se agrupan bajo su
+			correspondiente
 			fieldset.
 		</name>
 		<error>check.443.error</error>
@@ -5837,12 +5314,9 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="or">
-				<!-- value el tipo de boton a buscar y number el número de botones que 
-					permitimos antes de requirir fieldset -->
-				<function call="grouped-selection-buttons" node="."
-					value="radio" number="5" />
-				<function call="grouped-selection-buttons" node="."
-					value="checkbox" number="5" />
+				<!-- value el tipo de boton a buscar y number el número de botones que permitimos antes de requirir fieldset -->
+				<function call="grouped-selection-buttons" node="." value="radio" number="5" />
+				<function call="grouped-selection-buttons" node="." value="checkbox" number="5" />
 			</condition>
 		</machine>
 	</check>
@@ -5855,16 +5329,15 @@
 		<rationale>check.444.rationale</rationale>
 		<machine>
 			<trigger element="fieldset" />
-			<!-- value - etiqueta que debe ser el primer hijo, attribute1 - etiquetas 
-				hijas que ignoramos -->
-			<function call="not-first-child" node="." value="legend"
-				attribute1="div" />
+			<!-- value - etiqueta que debe ser el primer hijo, attribute1 - etiquetas hijas que ignoramos -->
+			<function call="not-first-child" node="." value="legend" attribute1="div" />
 		</machine>
 	</check>
 
 	<check id="445" key="p" confidence="high" occurrence="first">
 		<name>Listas mal creadas con 3 o más párrafos seguidos que empiecen
-			por una imagen cuyas dimensiones sean iguales o inferiores a X*Y
+			por una imagen cuyas dimensiones sean iguales o
+			inferiores a X*Y
 			(Heurístico X=10, Y=10).
 		</name>
 		<error>check.445.error</error>
@@ -5872,10 +5345,8 @@
 		<machine>
 			<trigger element="p" />
 			<condition type="and">
-				<function call="img-dimensions-less-than" node="./img[1]"
-					attribute1="11" attribute2="11" />
-				<function call="false-paragraph-list" node="." number="3"
-					value="\w+" />
+				<function call="img-dimensions-less-than" node="./img[1]" attribute1="11" attribute2="11" />
+				<function call="false-paragraph-list" node="." number="3" value="\w+" />
 			</condition>
 		</machine>
 	</check>
@@ -5888,24 +5359,19 @@
 		<rationale>check.446.rationale</rationale>
 		<machine>
 			<trigger element="form" />
-			<function call="required-controls" node="." number="5"
-				value="check.446.regex.pattern.es" />
-			<function call="required-controls" node="." number="5"
-				value="check.446.regex.pattern.en" />
-			<function call="required-controls" node="." number="5"
-				value="check.446.regex.pattern.fr" />
-			<function call="required-controls" node="." number="5"
-				value="check.446.regex.pattern.ca" />
-			<function call="required-controls" node="." number="5"
-				value="check.446.regex.pattern.gl" />
-			<function call="required-controls" node="." number="5"
-				value="check.446.regex.pattern.eu" />
+			<function call="required-controls" node="." number="5" value="check.446.regex.pattern.es" />
+			<function call="required-controls" node="." number="5" value="check.446.regex.pattern.en" />
+			<function call="required-controls" node="." number="5" value="check.446.regex.pattern.fr" />
+			<function call="required-controls" node="." number="5" value="check.446.regex.pattern.ca" />
+			<function call="required-controls" node="." number="5" value="check.446.regex.pattern.gl" />
+			<function call="required-controls" node="." number="5" value="check.446.regex.pattern.eu" />
 		</machine>
 	</check>
 
 	<check id="447" key="css" confidence="high">
 		<name>Generación de contenido desde CSS mediante :before o :after y la
-			propiedad “content” con texto igual o superior a X caracteres
+			propiedad “content” con texto igual o superior a
+			X caracteres
 			alfanuméricos (X=2)
 		</name>
 		<error>check.447.error</error>
@@ -5959,7 +5425,8 @@
 
 	<check id="452" key="html" confidence="high">
 		<name>No se produce ningún cambio de contexto en los eventos “onfocus”
-			u “onblur” (window.location, window.history, window.open,
+			u “onblur” (window.location, window.history,
+			window.open,
 			window.focus)
 		</name>
 		<error>check.452.error</error>
@@ -5969,13 +5436,11 @@
 			<condition type="or">
 				<condition type="and">
 					<function call="attribute-exists" node="." value="onfocus" />
-					<function call="text-match" node="@onfocus"
-						value="window\.(location|history|open|focus)" />
+					<function call="text-match" node="@onfocus" value="window\.(location|history|open|focus)" />
 				</condition>
 				<condition type="and">
 					<function call="attribute-exists" node="." value="onblur" />
-					<function call="text-match" node="@onblur"
-						value="window\.(location|history|open|focus)" />
+					<function call="text-match" node="@onblur" value="window\.(location|history|open|focus)" />
 				</condition>
 			</condition>
 		</machine>
@@ -5983,7 +5448,8 @@
 
 	<check id="453" key="html" confidence="high">
 		<name>No se produce ningún cambio de contexto nada más cargarse la
-			página (onload) (window.location, window.history, window.open,
+			página (onload) (window.location, window.history,
+			window.open,
 			window.focus)
 		</name>
 		<error>check.453.error</error>
@@ -5992,15 +5458,15 @@
 			<trigger element="body" />
 			<condition type="and">
 				<function call="attribute-exists" node="." value="onload" />
-				<function call="text-match" node="@onload"
-					value="window\.(location|history|open|focus)" />
+				<function call="text-match" node="@onload" value="window\.(location|history|open|focus)" />
 			</condition>
 		</machine>
 	</check>
 
 	<check id="454" key="html" confidence="high">
 		<name>No se produce ningún cambio de contexto en el evento “onchange”
-			de los elementos “select” (window.location, window.history,
+			de los elementos “select” (window.location,
+			window.history,
 			window.open, window.focus)
 		</name>
 		<error>check.454.error</error>
@@ -6009,8 +5475,7 @@
 			<trigger element="select" />
 			<condition type="and">
 				<function call="attribute-exists" node="." value="onchange" />
-				<function call="text-match" node="@onchange"
-					value="window\.(location|history|open|focus)" />
+				<function call="text-match" node="@onchange" value="window\.(location|history|open|focus)" />
 			</condition>
 		</machine>
 	</check>
@@ -6021,8 +5486,7 @@
 		<rationale>check.455.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="too-many-broken-links" node="." number="0"
-				attribute1="domain" />
+			<function call="too-many-broken-links" node="." number="0" attribute1="domain" />
 		</machine>
 	</check>
 
@@ -6032,8 +5496,7 @@
 		<rationale>check.456.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="too-many-broken-links" node="." number="1"
-				attribute1="domain" />
+			<function call="too-many-broken-links" node="." number="1" attribute1="domain" />
 		</machine>
 	</check>
 
@@ -6043,8 +5506,7 @@
 		<rationale>check.457.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="too-many-broken-links" node="." number="0"
-				attribute1="external" />
+			<function call="too-many-broken-links" node="." number="0" attribute1="external" />
 		</machine>
 	</check>
 
@@ -6054,8 +5516,7 @@
 		<rationale>check.458.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="too-many-broken-links" node="." number="2"
-				attribute1="external" />
+			<function call="too-many-broken-links" node="." number="2" attribute1="external" />
 		</machine>
 	</check>
 
@@ -6068,8 +5529,7 @@
 		<rationale>check.459.rationale</rationale>
 		<machine>
 			<trigger element="br" />
-			<function call="false-br-image-list" node="." number="3"
-				value="^\w+" attribute1="11" attribute2="11" />
+			<function call="false-br-image-list" node="." number="3" value="^\w+" attribute1="11" attribute2="11" />
 		</machine>
 	</check>
 
@@ -6113,9 +5573,7 @@
 		<rationale>check.463.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function
-				call="accessibility-declaration-not-conformance-level" node="."
-				value="check.446.regex.pattern" />
+			<function call="accessibility-declaration-not-conformance-level" node="." value="check.446.regex.pattern" />
 		</machine>
 	</check>
 
@@ -6127,10 +5585,8 @@
 			<trigger element="table" />
 			<condition type="and">
 				<condition type="or">
-					<function call="element-count-equals" node="."
-						value="caption" number="0" attribute2="table" />
-					<function call="is-empty-element" node="."
-						element="caption" value="all" />
+					<function call="element-count-equals" node="." value="caption" number="0" attribute2="table" />
+					<function call="is-empty-element" node="." element="caption" value="all" />
 				</condition>
 				<function call="table-type" node="." value="data" />
 				<condition type="or">
@@ -6145,8 +5601,7 @@
 		</machine>
 	</check>
 
-	<check id="465" key="form" confidence="medium"
-		note="Puntuación 0-Pasa de 430">
+	<check id="465" key="form" confidence="medium" note="Puntuación 0-Pasa de 430">
 		<name>Uso de formularios extensos sin fieldset ni legend</name>
 		<error>check.430.error</error>
 		<rationale>check.430.rationale</rationale>
@@ -6154,10 +5609,8 @@
 			<trigger element="form" />
 			<condition type="and">
 				<function call="num-more-controls" node="." number="8" />
-				<function call="element-count-less-than" node="."
-					value="fieldset" number="1" />
-				<function call="element-count-less-than" node="."
-					value="legend" number="1" />
+				<function call="element-count-less-than" node="." value="fieldset" number="1" />
+				<function call="element-count-less-than" node="." value="legend" number="1" />
 			</condition>
 		</machine>
 	</check>
@@ -6169,12 +5622,10 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
-				<function call="elements-excessive-usage" node="."
-					element="h1;h2;h3;h4;h5;h6" number="1" />
+				<function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1" />
 				<condition type="or">
 					<function call="text-match" node="@id" value="aspnetForm" />
-					<function call="text-match" node="@name"
-						value="aspnetForm" />
+					<function call="text-match" node="@name" value="aspnetForm" />
 				</condition>
 			</condition>
 		</machine>
@@ -6198,13 +5649,11 @@
 			<condition type="and">
 				<function call="attribute-missing" node="." value="alt" />
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-labelledby" />
+					<function call="attribute-exists" node="." value="aria-labelledby" />
 					<function call="aria-labelledby-ids-missing" node="." />
 				</condition>
 				<condition type="and">
-					<function call="attribute-missing" node="."
-						value="aria-label" />
+					<function call="attribute-missing" node="." value="aria-label" />
 				</condition>
 				<condition type="and">
 					<function call="attribute-missing" node="." value="title" />
@@ -6231,16 +5680,12 @@
 					<function call="attribute-length" node="@alt" value="150" />
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-labelledby" />
-					<function call="attribute-labelledby-length"
-						node="@aria-labelledby" value="150" />
+					<function call="attribute-exists" node="." value="aria-labelledby" />
+					<function call="attribute-labelledby-length" node="@aria-labelledby" value="150" />
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-label" />
-					<function call="attribute-length" node="@aria-label"
-						value="150" />
+					<function call="attribute-exists" node="." value="aria-label" />
+					<function call="attribute-length" node="@aria-label" value="150" />
 				</condition>
 			</condition>
 
@@ -6265,8 +5710,7 @@
 						<function call="is-only-blanks" node="." />
 					</condition>
 					<condition type="or">
-						<function call="characters-less-than" node=".//img/@alt"
-							value="1" />
+						<function call="characters-less-than" node=".//img/@alt" value="1" />
 						<function call="is-only-blanks" node=".//img/@alt" />
 					</condition>
 				</condition>
@@ -6289,12 +5733,10 @@
 					<function call="text-equals" node="@role" value="heading" />
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-level" />
+					<function call="attribute-exists" node="." value="aria-level" />
 				</condition>
 				<condition type="and">
-					<function call="following-wai-headers-without-content"
-						node="." />
+					<function call="following-wai-headers-without-content" node="." />
 				</condition>
 			</condition>
 		</machine>
@@ -6312,8 +5754,7 @@
 					<function call="text-equals" node="@role" value="heading" />
 				</condition>
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-level" />
+					<function call="attribute-exists" node="." value="aria-level" />
 				</condition>
 				<condition type="and">
 					<function call="skip-wai-headers-level" node="." />
@@ -6329,10 +5770,9 @@
 		<machine>
 			<trigger element="html" />
 			<condition type="and">
-				<function call="element-count-attribute-value" node="."
-					attribute1="aria-level" number="0" position="greater" />
-				<function call="element-count-attribute-value" node="."
-					attribute1="aria-level" number="2" position="less" />
+				<function call="element-count-attribute-value" node="." attribute1="aria-level" number="0"
+					position="greater" />
+				<function call="element-count-attribute-value" node="." attribute1="aria-level" number="2" position="less" />
 				<function call="has-complex-structure" node="." number="15" />
 			</condition>
 		</machine>
@@ -6353,16 +5793,12 @@
 				<!-- role group -->
 				<condition type="and">
 					<function call="attribute-exists" node="." value="role" />
-					<function call="text-match" node="@role"
-						value="\s*group\s*" />
-					<function call="attribute-missing" node="."
-						value="aria-label" />
+					<function call="text-match" node="@role" value="\s*group\s*" />
+					<function call="attribute-missing" node="." value="aria-label" />
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="aria-labelledby" />
+						<function call="attribute-missing" node="." value="aria-labelledby" />
 						<condition type="and">
-							<function call="attribute-exists" node="."
-								value="aria-labelledby" />
+							<function call="attribute-exists" node="." value="aria-labelledby" />
 							<function call="aria-labelledby-ids-missing" node="." />
 						</condition>
 					</condition>
@@ -6371,16 +5807,12 @@
 				<!-- role radiogroup -->
 				<condition type="and">
 					<function call="attribute-exists" node="." value="role" />
-					<function call="text-match" node="@role"
-						value="\s*radiogroup\s*" />
-					<function call="attribute-missing" node="."
-						value="aria-label" />
+					<function call="text-match" node="@role" value="\s*radiogroup\s*" />
+					<function call="attribute-missing" node="." value="aria-label" />
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="aria-labelledby" />
+						<function call="attribute-missing" node="." value="aria-labelledby" />
 						<condition type="and">
-							<function call="attribute-exists" node="."
-								value="aria-labelledby" />
+							<function call="attribute-exists" node="." value="aria-labelledby" />
 							<function call="aria-labelledby-ids-missing" node="." />
 						</condition>
 					</condition>
@@ -6394,7 +5826,8 @@
 
 	<check id="474" key="html" confidence="medium" status="1">
 		<name>Elemento con role=”link” o role="button" tenga un contenido
-			textual, un atributo aria-label o un atributo aria-labelledby.
+			textual, un atributo aria-label o un atributo
+			aria-labelledby.
 		</name>
 		<error>check.474.error</error>
 		<rationale>check.474.rationale</rationale>
@@ -6406,17 +5839,13 @@
 				<!-- role group -->
 				<condition type="and">
 					<function call="attribute-exists" node="." value="role" />
-					<function call="text-match" node="@role"
-						value="\s*link\s*" />
+					<function call="text-match" node="@role" value="\s*link\s*" />
 					<function call="object-has-not-alternative" node="." />
-					<function call="attribute-missing" node="."
-						value="aria-label" />
+					<function call="attribute-missing" node="." value="aria-label" />
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="aria-labelledby" />
+						<function call="attribute-missing" node="." value="aria-labelledby" />
 						<condition type="and">
-							<function call="attribute-exists" node="."
-								value="aria-labelledby" />
+							<function call="attribute-exists" node="." value="aria-labelledby" />
 							<function call="aria-labelledby-ids-missing" node="." />
 						</condition>
 					</condition>
@@ -6425,17 +5854,13 @@
 				<!-- role radiogroup -->
 				<condition type="and">
 					<function call="attribute-exists" node="." value="role" />
-					<function call="text-match" node="@role"
-						value="\s*button\s*" />
+					<function call="text-match" node="@role" value="\s*button\s*" />
 					<function call="object-has-not-alternative" node="." />
-					<function call="attribute-missing" node="."
-						value="aria-label" />
+					<function call="attribute-missing" node="." value="aria-label" />
 					<condition type="or">
-						<function call="attribute-missing" node="."
-							value="aria-labelledby" />
+						<function call="attribute-missing" node="." value="aria-labelledby" />
 						<condition type="and">
-							<function call="attribute-exists" node="."
-								value="aria-labelledby" />
+							<function call="attribute-exists" node="." value="aria-labelledby" />
 							<function call="aria-labelledby-ids-missing" node="." />
 						</condition>
 					</condition>
@@ -6450,7 +5875,8 @@
 	<check id="475" key="img" confidence="high" status="5">
 		<name>
 			Se verifica que los atributos aria-describedby hacen referencia
-			a elementos (id) existentes en la página y con contenido textual.
+			a elementos (id) existentes en la página y con
+			contenido textual.
 		</name>
 		<error>check.475.error</error>
 		<rationale>check.475.rationale</rationale>
@@ -6459,8 +5885,7 @@
 			<condition type="and">
 				<function call="attribute-missing" node="." value="alt" />
 				<condition type="and">
-					<function call="attribute-exists" node="."
-						value="aria-describedby" />
+					<function call="attribute-exists" node="." value="aria-describedby" />
 					<function call="aria-describedby-ids-missing" node="." />
 				</condition>
 			</condition>
@@ -6469,43 +5894,46 @@
 
 	<!-- UNE-EN2019 -->
 
-	<check id="476" key="html" confidence="medium" status="1">
+	<check id="476" key="html" confidence="high">
 		<name>Se comprueba que todos los elementos de la página que
 			tienen un
-			nombre accesible a través de los atributos aria-label y
+			nombre accesible a través de los atributos
+			aria-label y
 			aria-labeledby
 			coinciden o contienen la etiqueta visible del campo. La
 			comprobación no es
 			aplicable
-			cuando el contenido accesible o el
+			cuando el
+			contenido accesible o el
 			contenido visible sólo contenga
 			caracteres
 			Unicode, o sólo contenga
-			caracteres de puntuación (:, ;, ., /, \, |,...) , o
+			caracteres de puntuación (:,
+			;, ., /, \, |,...) , o
 			sólo
 			contenga
 			emojis.
 		</name>
-		<error>check.474.error</error>
-		<rationale>check.474.rationale</rationale>
+		<error>check.476.error</error>
+		<rationale>check.476.rationale</rationale>
 		<machine>
 			<trigger element="input" />
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="aria-label" />
+				<function call="attribute-exists" node="." value="aria-label" />
 				<function call="label-match-arial-value" node="." />
 			</condition>
 		</machine>
 	</check>
 
 
-	<check id="477" key="css" confidence="medium">
+	<check id="477" key="css" confidence="high">
 		<name>Se comprueba en el modelo CCS de la página la no aplicación de
-			una o varias de las propiedades 'line-height', 'letter-spacing',
+			una o varias de las propiedades 'line-height',
+			'letter-spacing',
 			'word- spacing' fijadas mediante la clave !important.
 		</name>
-		<error>check.85.error</error>
-		<rationale>check.85.rationale</rationale>
+		<error>check.477.error</error>
+		<rationale>check.477.rationale</rationale>
 		<machine>
 			<trigger element="css" />
 			<function call="force-spacing-css" node="." />
@@ -6513,10 +5941,11 @@
 	</check>
 
 
-	<check id="478" key="html" confidence="high" status="4">
+	<check id="478" key="html" confidence="high">
 		<name>Se comprueba que no se están empleando elementos META
 			de tipo
-			viewport cuyo content defina la propiedad user-scalable=no o
+			viewport cuyo content defina la propiedad
+			user-scalable=no o
 			user-
 			scalable=0 y/o los valores de initial-scale y maximum-scale coincidan
 			entre sí
@@ -6530,22 +5959,16 @@
 				<function call="text-equals" node="@name" value="viewport" />
 				<condition type="or">
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="content" />
-						<function call="text-match" node="@content"
-							value="^user-scalable\s*=\s*no$" />
+						<function call="attribute-exists" node="." value="content" />
+						<function call="text-match" node="@content" value="^user-scalable\s*=\s*no$" />
 					</condition>
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="content" />
-						<function call="text-match" node="@content"
-							value="^scalable\s*=\s*0$" />
+						<function call="attribute-exists" node="." value="content" />
+						<function call="text-match" node="@content" value="^scalable\s*=\s*0$" />
 					</condition>
 					<condition type="and">
-						<function call="attribute-exists" node="."
-							value="content" />
-						<function call="attributes-are-equals" node="."
-							attribute1="initial-scale" attribute2="maximum-scale" />
+						<function call="attribute-exists" node="." value="content" />
+						<function call="attributes-are-equals" node="." attribute1="initial-scale" attribute2="maximum-scale" />
 					</condition>
 				</condition>
 			</condition>
@@ -6553,38 +5976,41 @@
 	</check>
 
 
-	<check id="479" key="css" confidence="medium">
+	<check id="479" key="css" confidence="high">
 		<name>Se analizan las hojas de estilo en busca de la presencia
-			media-queries para diferentes anchos de pantalla (tipo @media
+			media-queries para diferentes anchos de pantalla (tipo
+			@media
 			(max-width: XXX) ,
 			@media (min-width: XXX) ), o de alguna propiedad
 			específica de CSS Grid o
 			de
 			Flexbox.
 		</name>
-		<error>check.85.error</error>
-		<rationale>check.85.rationale</rationale>
+		<error>check.479.error</error>
+		<rationale>check.479.rationale</rationale>
 		<machine>
 			<trigger element="css" />
 			<function call="has-responsive-tags" node="." />
 		</machine>
 	</check>
 
-	<check id="480" key="css" confidence="medium">
+	<check id="480" key="css" confidence="high">
 		<name>Se comprueba en el modelo CCS de la página la no
 			existencia de
-			sentencias que fijen la posición del contenido. Para ello se
+			sentencias que fijen la posición del contenido.
+			Para ello se
 			verifica
 			que
 			no existan reglas CSS tipo @media que defina la propiedad
 			orientation
 			que a su vez
-			incluyan sentencias Transform con valores
+			incluyan
+			sentencias Transform con valores
 			90degr o 270deg.
 
 		</name>
-		<error>check.85.error</error>
-		<rationale>check.85.rationale</rationale>
+		<error>check.480.error</error>
+		<rationale>check.480.rationale</rationale>
 		<machine>
 			<trigger element="css" />
 			<function call="force-trnasform" node="." />
@@ -6595,12 +6021,13 @@
 	<check id="481" key="form" confidence="high">
 		<name>Se buscan aquellos campos de formulario compatibles con
 			atributo
-			autocomplete y se verifica que los valores sean correctos según los
+			autocomplete y se verifica que los valores sean
+			correctos según los
 			tipos
 			descritos en HTML 5.2.
 		</name>
-		<error>check.27.error</error>
-		<rationale>check.27.rationale</rationale>
+		<error>check.481.error</error>
+		<rationale>check.481.rationale</rationale>
 		<machine>
 			<trigger element="*" />
 
@@ -6613,13 +6040,11 @@
 							<function call="text-match" node="@type" value="text" />
 							<function call="text-match" node="@type" value="hidden" />
 							<function call="text-match" node="@type" value="search" />
-							<function call="text-match" node="@type"
-								value="password" />
+							<function call="text-match" node="@type" value="password" />
 							<function call="text-match" node="@type" value="url" />
 							<function call="text-match" node="@type" value="email" />
 							<function call="text-match" node="@type" value="email" />
-							<function call="text-match" node="@type"
-								value="telephone" />
+							<function call="text-match" node="@type" value="telephone" />
 							<function call="text-match" node="@type" value="number" />
 							<function call="text-match" node="@type" value="month" />
 							<function call="text-match" node="@type" value="date" />
@@ -6630,12 +6055,184 @@
 				<function call="same-element" node="." element="textarea" />
 			</condition>
 			<condition type="and">
-				<function call="attribute-exists" node="."
-					value="autocomplete" />
-				<function call="autocomplete-valid" node="."
-					element="legend" />
+				<function call="attribute-exists" node="." value="autocomplete" />
+				<function call="autocomplete-valid" node="." element="legend" />
 			</condition>
 		</machine>
 	</check>
+
+	<!-- Cartuchon de accesibilidad -->
+
+
+
+	<check id="482" key="html" confidence="medium">
+		<name>Se verifica que en la declaración de accesibilidad exista la sección “Situación de cumplimiento”
+		</name>
+		<error>check.482.error</error>
+		<rationale>check.482.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="has-section" node="." value="check.126.regex.pattern.2" attribute1="check.482.regex.pattern" />
+		</machine>
+	</check>
+
+
+	<check id="483" key="html" confidence="medium">
+		<prerequisite id="482" />
+		<name>Se verifica que la situación de cumplimiento indicada se corresponde con alguna de las especificadas por ley
+			(“plenamente conforme”, “parcialmente conforme” o “no conforme”).
+		</name>
+		<error>check.483.error</error>
+		<rationale>check.483.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.482.regex.pattern"
+				attribute2="check.483.regex.pattern" />
+		</machine>
+	</check>
+
+
+	<check id="484" key="html" confidence="medium">
+		<prerequisite id="482" />
+		<name>Se verifica que en la declaración de accesibilidad exista la sección “Contenido no accesible” (sólo cuando la
+			situación de cumplimiento no sea plenamente conforme)
+		</name>
+		<error>check.484.error</error>
+		<rationale>check.484.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.482.regex.pattern"
+				attribute2="check.484.regex.pattern2" />
+			<function call="has-section" node="." value="check.484.regex.pattern" />
+		</machine>
+	</check>
+
+
+	<check id="485" key="html" confidence="medium">
+		<name>Se verifica que en la declaración de accesibilidad exista la sección “Observaciones y datos de
+			contacto”
+		</name>
+		<error>check.485.error</error>
+		<rationale>check.485.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="has-section" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" />
+		</machine>
+	</check>
+
+	<check id="486" key="html" confidence="medium">
+		<prerequisite id="485" />
+		<name>Se verifica que se proporciona una forma de contacto para las comunicaciones sobre requisitos de accesibilidad
+			mediante un canal electrónico (correo electrónico, formulario o enlace a una página de contacto).
+		</name>
+		<error>check.486.error</error>
+		<rationale>check.486.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
+				attribute2="check.486.regex.pattern.mail" />
+			<function call="section-has-mailto" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" />
+			<function call="section-has-element" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" attribute2="form" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
+				attribute2="check.486.regex.pattern.contact" />
+		</machine>
+	</check>
+
+	<check id="487" key="html" confidence="medium">
+		<prerequisite id="485" />
+		<name>Se verifica que se proporciona una forma de contacto para las comunicaciones sobre requisitos de accesibilidad
+			mediante un canal complementario al electrónico (teléfono u oficina física de atención)
+		</name>
+		<error>check.487.error</error>
+		<rationale>check.487.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
+				attribute2="check.487.regex.pattern.phone" />
+			<function call="section-has-element" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" attribute2="address" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
+				attribute2="check.487.regex.pattern.phone.text" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
+				attribute2="check.487.regex.pattern.addres.text" />
+
+		</machine>
+	</check>
+
+	<check id="488" key="html" confidence="medium">
+		<name>Se verifica que en la declaración de accesibilidad exista la sección “Preparación de la presente declaración de
+			accesibilidad”.
+		</name>
+		<error>check.488.error</error>
+		<rationale>check.488.rationale</rationale>
+		<machine>
+			<trigger element="html" /> 
+			<function call="has-section" node="." value="check.126.regex.pattern.2"  attribute1="check.488.regex.pattern" />
+		</machine>
+	</check>
+
+
+	<check id="489" key="html" confidence="medium">
+		<prerequisite id="488" />
+		<name>Se verifica que en la declaración de accesibilidad se indica la fecha de su preparación.
+		</name>
+		<error>check.489.error</error>
+		<rationale>check.489.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
+				attribute2="check.149.regex.pattern.date.1" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
+				attribute2="check.149.regex.pattern.date.2" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
+				attribute2="check.149.regex.pattern.date.3" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
+				attribute2="check.149.regex.pattern.date.4" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
+				attribute2="check.149.regex.pattern.date.5" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
+				attribute2="check.149.regex.pattern.date.6" />
+		</machine>
+	</check>
+
+
+	<check id="490" key="html" confidence="medium">
+		<prerequisite id="489" />
+		<name>Si la fecha de preparación tiene más de un año de antigüedad, se verifica que en la declaración de
+			accesibilidad
+			se indica también la fecha de la última revisión y ésta tiene menos de un año de antigüedad respecto a la
+			fecha
+			actual.
+		</name>
+		<error>check.489.error</error>
+		<rationale>check.489.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
+				attribute1="check.149.regex.pattern.date.p.1" attribute2="check.149.regex.pattern.date.r.1" />
+			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
+				attribute1="check.149.regex.pattern.date.p.2" attribute2="check.149.regex.pattern.date.r.2" />
+			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
+				attribute1="check.149.regex.pattern.date.p.3" attribute2="check.149.regex.pattern.date.r.3" />
+			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
+				attribute1="check.149.regex.pattern.date.p.4" attribute2="check.149.regex.pattern.date.r.4" />
+			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
+				attribute1="check.149.regex.pattern.date.p.5" attribute2="check.149.regex.pattern.date.r.5" />
+			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
+				attribute1="check.149.regex.pattern.date.p.6" attribute2="check.149.regex.pattern.date.r.6" />
+		</machine>
+	</check>
+
+	<check id="488" key="html" confidence="medium">
+		<name>Se verifica que en la declaración de accesibilidad exista la sección “Preparación de la presente declaración de
+			accesibilidad”.
+		</name>
+		<error>check.488.error</error>
+		<rationale>check.488.rationale</rationale>
+		<machine>
+			<trigger element="html" />
+			<function call="has-section" node="." value="check.126.regex.pattern.2" attribute1="check.491.regex.pattern" />
+		</machine>
+	</check>
+
 
 </checks>
