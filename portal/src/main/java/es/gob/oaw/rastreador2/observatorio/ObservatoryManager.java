@@ -35,7 +35,6 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
  * @author miguel.garcia@fundacionctic.org
  */
 public class ObservatoryManager {
-	
 	/**
 	 * Instantiates a new observatory manager.
 	 */
@@ -95,8 +94,7 @@ public class ObservatoryManager {
 			return null;
 		}
 	}
-	
-	
+
 	/**
 	 * Calculate previous ranking with compliance.
 	 *
@@ -123,8 +121,7 @@ public class ObservatoryManager {
 	 */
 	public RankingInfo calculateRanking(final Long idObservatoryExecution, final SemillaForm currentSeed) {
 		try (Connection c = DataBaseManager.getConnection()) {
-			List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c,
-					new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
+			List<ResultadoSemillaForm> seedsResults = ObservatorioDAO.getResultSeedsFromObservatory(c, new SemillaForm(), idObservatoryExecution, (long) 0, Constants.NO_PAGINACION);
 			if (seedsResults.isEmpty()) {
 				return null;
 			}
@@ -134,14 +131,11 @@ public class ObservatoryManager {
 			rankingInfo.setGlobalRank(1);
 			rankingInfo.setCategoryRank(1);
 			rankingInfo.setCategoria(currentSeed.getCategoria());
-			final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c,
-					ObservatorioDAO.getObservatoryFormFromExecution(c, idObservatoryExecution).getId(),
+			final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, ObservatorioDAO.getObservatoryFormFromExecution(c, idObservatoryExecution).getId(),
 					idObservatoryExecution);
-
 			final PropertiesManager pmgr = new PropertiesManager();
 			final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
 			rankingInfo.setDate(df.format(observatoryRealizadoForm.getFecha()));
-
 			seedsResults = ObservatoryUtils.setAvgScore(c, seedsResults, idObservatoryExecution);
 			// Buscamos la puntuación concreta de la semilla
 			for (ResultadoSemillaForm seedForm : seedsResults) {
@@ -149,7 +143,6 @@ public class ObservatoryManager {
 					rankingInfo.setScore(new BigDecimal(seedForm.getScore()));
 				}
 			}
-
 			// Miramos el ranking comparando con el resto de semillas
 			for (ResultadoSemillaForm seedForm : seedsResults) {
 				if (seedForm.getScore() != null) {
@@ -169,10 +162,9 @@ public class ObservatoryManager {
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return null;
 	}
-	
+
 	/**
 	 * Calculate ranking with compliance.
 	 *
@@ -194,7 +186,6 @@ public class ObservatoryManager {
 			rankingInfo.setComplexityRank(1);
 			rankingInfo.setCategoria(currentSeed.getCategoria());
 			rankingInfo.setComplejidad(currentSeed.getComplejidad());
-			
 			final ObservatorioRealizadoForm observatoryRealizadoForm = ObservatorioDAO.getFulfilledObservatory(c, ObservatorioDAO.getObservatoryFormFromExecution(c, idObservatoryExecution).getId(),
 					idObservatoryExecution);
 			final PropertiesManager pmgr = new PropertiesManager();
@@ -217,14 +208,15 @@ public class ObservatoryManager {
 						rankingInfo.incrementGlobalRank();
 					}
 					// Category rank
-					if (currentSeed.getCategoria().getId().equals(String.valueOf(seedForm.getIdCategory()))) {
+					if (currentSeed.getCategoria() != null && currentSeed.getCategoria().getId().equals(String.valueOf(seedForm.getIdCategory()))) {
 						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
 						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 							rankingInfo.incrementCategoryRank();
 						}
 					}
 					// TODO Complexity rank
-					if (currentSeed.getComplejidad().getId().equals(String.valueOf(seedForm.getIdComplexity()))) {
+					if (currentSeed.getComplejidad() != null && currentSeed.getComplejidad().getId() != null
+							&& currentSeed.getComplejidad().getId().equals(String.valueOf(seedForm.getIdComplexity()))) {
 						rankingInfo.setCategorySeedsNumber(rankingInfo.getCategorySeedsNumber() + 1);
 						if (seedFormScore.compareTo(rankingInfo.getScore()) > 0) {
 							rankingInfo.incrementCategoryRank();

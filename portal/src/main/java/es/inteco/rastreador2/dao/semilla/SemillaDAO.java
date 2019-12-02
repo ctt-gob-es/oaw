@@ -160,7 +160,7 @@ public final class SemillaDAO {
 	public static Long insertList(Connection c, long tipoLista, String nombreSemilla, String listaUrls, String categoria, String ambito, String complejidad, String etiquetas, String acronimo,
 			String dependencia, boolean activa, boolean inDirectory) throws SQLException {
 		try (PreparedStatement ps = c.prepareStatement(
-				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, id_etiquetas, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+				"INSERT INTO lista (id_tipo_lista, nombre, lista, id_categoria, id_ambito, id_complejidad, acronimo, dependencia, activa, in_directory) VALUES (?,?,?,?,?,?,?,?,?,?)",
 				Statement.RETURN_GENERATED_KEYS)) {
 			ps.setLong(1, tipoLista);
 			ps.setString(2, nombreSemilla);
@@ -180,23 +180,18 @@ public final class SemillaDAO {
 			} else {
 				ps.setString(6, null);
 			}
-			if (StringUtils.isNotEmpty(etiquetas)) {
-				ps.setString(7, etiquetas);
+			if (StringUtils.isNotEmpty(acronimo)) {
+				ps.setString(7, acronimo);
 			} else {
 				ps.setString(7, null);
 			}
-			if (StringUtils.isNotEmpty(acronimo)) {
-				ps.setString(8, acronimo);
+			if (StringUtils.isNotEmpty(dependencia)) {
+				ps.setString(8, dependencia);
 			} else {
 				ps.setString(8, null);
 			}
-			if (StringUtils.isNotEmpty(dependencia)) {
-				ps.setString(9, dependencia);
-			} else {
-				ps.setString(9, null);
-			}
-			ps.setBoolean(10, activa);
-			ps.setBoolean(11, inDirectory);
+			ps.setBoolean(9, activa);
+			ps.setBoolean(10, inDirectory);
 			ps.executeUpdate();
 			try (ResultSet rs = ps.getGeneratedKeys()) {
 				if (rs.next()) {
