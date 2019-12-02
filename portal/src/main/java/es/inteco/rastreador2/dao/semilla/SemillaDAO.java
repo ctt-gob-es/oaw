@@ -42,7 +42,9 @@ import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import es.inteco.rastreador2.actionform.semillas.UpdateListDataForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.cuentausuario.CuentaUsuarioDAO;
+import es.inteco.rastreador2.dao.etiqueta.EtiquetaDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
@@ -2929,6 +2931,8 @@ public final class SemillaDAO {
 					throw new SQLException("Creating user failed, no rows affected.");
 				}
 				ResultSet generatedKeys = ps.getGeneratedKeys();
+				
+				try {
 				// Multidependencia
 				if (generatedKeys.next()) {
 					semillaForm.setId(generatedKeys.getLong(1));
@@ -2976,15 +2980,7 @@ public final class SemillaDAO {
 						PreparedStatement psInsertarSemillaDependencia = c.prepareStatement(slqInsertSemillaDependencia.toString());
 						psInsertarSemillaDependencia.executeUpdate();
 					}
-				} else {
-					throw new SQLException("Creating dependencias failed, no ID obtained.");
-				}
-				
-				// Etiquetas
-				if (generatedKeys.next()) {
-					semillaForm.setId(generatedKeys.getLong(1));
-					// Borrar las relaciones (no se pueden crear FK a lista por MyISAM no
-					// lo permite
+					
 					try {
 						PreparedStatement deleteSemillaEtiqueta = c
 								.prepareStatement("DELETE FROM semilla_etiqueta WHERE id_lista = ?");
@@ -2999,28 +2995,31 @@ public final class SemillaDAO {
 						StringBuilder slqInsertSemillaEtiqueta = new StringBuilder("INSERT INTO semilla_etiqueta(id_lista, id_etiqueta) VALUES ");
 						for (int i = 0; i < semillaForm.getEtiquetas().size(); i++) {
 							EtiquetaForm currentEtiqueta = semillaForm.getEtiquetas().get(i);
-							// Si viene informado el nombre de la
-							// Etiqueta
-							// es
-							// para que se cree nueva. Si el nombre ya existe,
-							// se devuelve el id de la Etiqueta existente
-							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
-								PreparedStatement psCreateEtiqueta = c.prepareStatement(
-										"INSERT INTO etiqueta(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?", Statement.RETURN_GENERATED_KEYS);
-								psCreateEtiqueta.setString(1, currentEtiqueta.getName());
-								psCreateEtiqueta.setString(2, currentEtiqueta.getName());
-								int affectedRowsD = psCreateEtiqueta.executeUpdate();
-								if (affectedRowsD == 0) {
-									throw new SQLException("Creating user failed, no rows affected.");
-								}
-								ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
-								if (generatedKeysD.next()) {
-									currentEtiqueta.setId(generatedKeysD.getLong(1));
-								} else {
-									throw new SQLException("Creating etiquetas failed, no ID obtained.");
-								}
-							}
-							slqInsertSemillaEtiqueta.append("(").append(semillaForm.getId()).append(",").append(currentEtiqueta.getId()).append(")");
+//							psCreateEtiqueta.setLong(3, EtiquetaDAO.getClasificacionByName(c,currentEtiqueta.getName()));
+
+//							// Si viene informado el nombre de la
+//							// Etiqueta
+//							// es
+//							// para que se cree nueva. Si el nombre ya existe,
+//							// se devuelve el id de la Etiqueta existente
+//							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
+//								PreparedStatement psCreateEtiqueta = c.prepareStatement(
+//										"INSERT INTO etiqueta(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?, id_clasificacion = ?", Statement.RETURN_GENERATED_KEYS);
+//								psCreateEtiqueta.setString(1, currentEtiqueta.getName());
+//								psCreateEtiqueta.setString(2, currentEtiqueta.getName());
+//								psCreateEtiqueta.setLong(3, EtiquetaDAO.getClasificacionByName(c,currentEtiqueta.getName()));
+//								int affectedRowsD = psCreateEtiqueta.executeUpdate();
+//								if (affectedRowsD == 0) {
+//									throw new SQLException("Creating user failed, no rows affected.");
+//								}
+//								ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
+//								if (generatedKeysD.next()) {
+//									currentEtiqueta.setId(generatedKeysD.getLong(1));
+//								} else {
+//									throw new SQLException("Creating etiquetas failed, no ID obtained.");
+//								}
+//							}
+							slqInsertSemillaEtiqueta.append("(").append(semillaForm.getId()).append(",").append(EtiquetaDAO.getIdByName(c,currentEtiqueta.getName())).append(")");
 							if (i < semillaForm.getEtiquetas().size() - 1) {
 								slqInsertSemillaEtiqueta.append(",");
 							}
@@ -3029,10 +3028,12 @@ public final class SemillaDAO {
 						psInsertarSemillaEtiqueta.executeUpdate();
 					}
 				} else {
-					throw new SQLException("Creating etiquetas failed, no ID obtained.");
+					throw new SQLException("Creating dependencias or tags failed, no ID obtained.");
 				}
-			}
+				}catch(Exception e) {
+					Logger.putLog("Error", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);}
 			// ps.executeBatch();
+			}
 			c.commit();
 		} catch (SQLException e) {
 			c.rollback();
@@ -3042,4 +3043,4 @@ public final class SemillaDAO {
 			DAOUtils.closeQueries(ps, null);
 		}
 	}
-}
+	}

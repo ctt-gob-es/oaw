@@ -680,8 +680,8 @@ public class SemillaForm extends ValidatorForm implements Serializable {
 				+ listaUrls + ", listaUrlsString=" + listaUrlsString
 				+ /* ", dependencia=" + dependencia + */ ", acronimo=" + acronimo + ", asociada=" + asociada
 				+ ", activa=" + activa + ", activaStr=" + activaStr + ", rastreoAsociado=" + rastreoAsociado
-				+ ", categoria=" + categoria + ", ambito=" + ambito + ",inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
-				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr +", dependencias=" + dependencias + "]";
+				+ ", categoria=" + categoria + ", ambito=" + ambito + ",complejidad=" + complejidad + ",inDirectory=" + inDirectory + ", inDirectoryStr=" + inDirectoryStr
+				+ ", eliminar=" + eliminar + ", eliminarStr=" + eliminarStr +", dependencias=" + dependencias + ", etiquetas=" + etiquetas + "]";
 	}
 
 }

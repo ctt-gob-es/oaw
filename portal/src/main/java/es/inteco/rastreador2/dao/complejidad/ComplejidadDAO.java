@@ -25,7 +25,9 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
+import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 
 /**
  * The Class ComplejidadDAO.
@@ -224,4 +226,42 @@ public final class ComplejidadDAO {
 			throw e;
 		}
 	}
+	
+	/**
+	 * Gets the complexity by name.
+	 *
+	 * @param c            the c
+	 * @param complexityName the complexity name
+	 * @return the complexity by name
+	 * @throws Exception the exception
+	 */
+	public static ComplejidadForm getComplexityByName(Connection c, String complexityName) throws Exception {
+
+		ComplejidadForm complexity = null;
+
+		String query = "SELECT c.id_complejidad, c.nombre FROM complejidades_lista c WHERE c.nombre = ?";
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+
+			ps.setString(1, complexityName);
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				if (rs.next()) {
+					complexity = new ComplejidadForm();
+					complexity.setId(rs.getString("c.id_complejidad"));
+					complexity.setName(rs.getString("c.nombre"));
+
+				}
+			}
+
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+
+		return complexity;
+
+	}
+
 }
