@@ -146,7 +146,7 @@ public class EtiquetaForm extends ValidatorForm implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "EtiquetaForm [id=" + id + ", name" + name + ",nombreAntiguo" + nombreAntiguo + ",clasificacion=" + clasificacion + "]";
+		return "EtiquetaForm [id=" + id + ", name=" + name + ",nombreAntiguo=" + nombreAntiguo + ",clasificacion=" + clasificacion + "]";
 	}
 	
 	/**
