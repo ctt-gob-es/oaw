@@ -75,6 +75,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ibm.icu.text.DateFormat;
+import com.ibm.icu.text.SimpleDateFormat;
+
 import es.gob.oaw.language.Diccionario;
 import es.gob.oaw.language.ExtractTextHandler;
 import es.gob.oaw.language.LanguageChecker;
@@ -935,6 +938,20 @@ public class Check {
 			return functionLabelMatchArialValue(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_AUTOCOMPLETE_VALID:
 			return !functionAutocompleteValid(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_HAS_SECTION:
+			return functionAccessibilityHasSection(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_SECTION_HAS_TEXT:
+			return !functionSectionHasText(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_SECTION_HAS_MAILTO:
+			return functionSectionMailto(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_SECTION_HAS_ELEMENT:
+			return functionSectionHasElement(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_ACCESIBILITY_YEAR:
+			return functionAccesibilityYear(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_SECTION_HAS_DATE:
+			return functionSectionHasRegex(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_SECTION_HAS_PHONE:
+			return functionSectionHasRegex(checkCode, nodeNode, elementGiven);
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
@@ -5865,5 +5882,459 @@ public class Check {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Function accessibility has section.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionAccessibilityHasSection(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		PropertiesManager pm = new PropertiesManager();
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				return !AccesibilityDeclarationCheckUtils.hasSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasSection = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						hasSection |= AccesibilityDeclarationCheckUtils.hasSection(document, pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return !hasSection;
+		}
+	}
+
+	/**
+	 * Function section has text.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionSectionHasText(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		PropertiesManager pm = new PropertiesManager();
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+				String textSection = "";
+				for (int i = 0; i < elements.size(); i++) {
+					textSection += getText(elements.get(i));
+				}
+				// TODO
+				String[] regexAutocomplete = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()).split(",");
+				for (String stringPattern : regexAutocomplete) {
+					try {
+						Pattern patterAutocomplete = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+						if (patterAutocomplete.matcher(textSection).find()) {
+							return true;
+						}
+					} catch (Exception e) {
+						Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+					}
+				}
+				return !false;
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasContact = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(),
+								pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						String textSection = "";
+						for (int i = 0; i < elements.size(); i++) {
+							textSection += getText(elements.get(i));
+						}
+						// TODO
+						String[] regexAutocomplete = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()).split(",");
+						for (String stringPattern : regexAutocomplete) {
+							try {
+								Pattern patterAutocomplete = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+								if (patterAutocomplete.matcher(textSection).find()) {
+									return true;
+								}
+							} catch (Exception e) {
+								Logger.putLog("Error al procesar el patrón" + stringPattern, AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+							}
+						}
+						return !false;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return !hasContact;
+		}
+	}
+
+	/**
+	 * Function section has date.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionSectionHasRegex(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		PropertiesManager pm = new PropertiesManager();
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+				String textSection = "";
+				for (int i = 0; i < elements.size(); i++) {
+					textSection += getText(elements.get(i));
+				}
+				// TODO
+				try {
+					Pattern patterAutocomplete = Pattern.compile(pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					if (patterAutocomplete.matcher(textSection).find()) {
+						return true;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Error al procesar el patrón" + pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), AccesibilityDeclarationCheckUtils.class,
+							Logger.LOG_LEVEL_ERROR, e);
+				}
+				return !false;
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasContact = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(),
+								pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						String textSection = "";
+						for (int i = 0; i < elements.size(); i++) {
+							textSection += getText(elements.get(i));
+						}
+						// TODO
+						try {
+							Pattern patterAutocomplete = Pattern.compile(pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+							if (patterAutocomplete.matcher(textSection).find()) {
+								return true;
+							}
+						} catch (Exception e) {
+							Logger.putLog("Error al procesar el patrón" + pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2()), AccesibilityDeclarationCheckUtils.class,
+									Logger.LOG_LEVEL_ERROR, e);
+						}
+						return !false;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return !hasContact;
+		}
+	}
+
+	/**
+	 * Function section mailto.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionSectionMailto(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		PropertiesManager pm = new PropertiesManager();
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+				for (int j = 0; j < elements.size(); j++) {
+					Element section = (Element) elements.get(j);
+					// Get links ins section
+					final NodeList linksC = section.getElementsByTagName("a");
+					for (int i = 0; i < linksC.getLength(); i++) {
+						try {
+							Element link = (Element) linksC.item(i);
+							if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
+								return true;
+							}
+						} catch (Exception e) {
+							Logger.putLog("Error al procesar el patrón" + "mailto", AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+						}
+					}
+				}
+				return false;
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasContact = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(),
+								pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						for (int j = 0; j < elements.size(); j++) {
+							Element section = (Element) elements.get(j);
+							// Get links ins section
+							final NodeList linksC = section.getElementsByTagName("a");
+							for (int i = 0; i < linksC.getLength(); i++) {
+								try {
+									Element link = (Element) linksC.item(i);
+									if (link.hasAttribute("href") && !link.getAttribute("href").toLowerCase().startsWith("mailto")) {
+										return true;
+									}
+								} catch (Exception e) {
+									Logger.putLog("Error al procesar el patrón" + "mailto", AccesibilityDeclarationCheckUtils.class, Logger.LOG_LEVEL_ERROR, e);
+								}
+							}
+						}
+						return false;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return !hasContact;
+		}
+	}
+
+	/**
+	 * Function section has form.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionSectionHasElement(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		PropertiesManager pm = new PropertiesManager();
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+				for (int j = 0; j < elements.size(); j++) {
+					Element section = (Element) elements.get(j);
+					// Get links ins section
+					final NodeList linksC = section.getElementsByTagName(checkCode.getFunctionAttribute2());
+					if (linksC.getLength() > 0) {
+						return true;
+					}
+				}
+				return false;
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasContact = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(),
+								pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						for (int j = 0; j < elements.size(); j++) {
+							Element section = (Element) elements.get(j); // Get links ins section
+							final NodeList linksC = section.getElementsByTagName(checkCode.getFunctionAttribute2());
+							if (linksC.getLength() > 0) {
+								return true;
+							}
+						}
+						return false;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return !hasContact;
+		}
+	}
+
+	/**
+	 * Function accesibility year.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionAccesibilityYear(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		final NodeList links = elementGiven.getOwnerDocument().getElementsByTagName("a");
+		PropertiesManager pm = new PropertiesManager();
+		String regex = pm.getValue("check.patterns.properties", checkCode.getFunctionValue());
+		final List<Element> accessibilityLinks = AccesibilityDeclarationCheckUtils.getSectionLink(links, regex);
+		final Element elementRoot = elementGiven.getOwnerDocument().getDocumentElement();
+		if (elementRoot.getUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT) == null) {
+			elementRoot.setUserData(IntavConstants.ACCESSIBILITY_DECLARATION_DOCUMENT, new HashMap<String, Document>(), null);
+		}
+		if (accessibilityLinks.isEmpty()) {
+			// Si no hay enlaces es porque estamos en la página de accesibilidad
+			// (en caso contrario falla la comprobacion 126 y no se ejecuta
+			// esta)
+			try {
+				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+				for (int j = 0; j < elements.size(); j++) {
+					Element section = (Element) elements.get(j); // Get dates
+					String sectionText = getText(section);
+					String regexDatePrepared = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1());
+					String regexDateReview = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2());
+					Pattern patternPrepared = Pattern.compile(regexDatePrepared, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					Pattern patternReview = Pattern.compile(regexDateReview, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					if (patternPrepared.matcher(sectionText).find() && patternReview.matcher(sectionText).find()) {
+						// TODO Sacar los años
+						String preparedDate = printMatches(sectionText, regexDatePrepared);
+						String reviewDate = printMatches(sectionText, regexDatePrepared);
+						String preparedYear = printMatches(preparedDate, "\\d{4}");
+						String reviewYear = printMatches(reviewDate, "\\d{4}");
+						SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
+						return sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 2;
+					}
+				}
+				return false;
+			} catch (Exception e) {
+				Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			return false;
+		} else {
+			boolean hasContact = false;
+			for (Element accessibilityLink : accessibilityLinks) {
+				try {
+					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
+					if (document != null) {
+						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(),
+								pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						for (int j = 0; j < elements.size(); j++) {
+							Element section = (Element) elements.get(j); // Get dates
+							String sectionText = getText(section);
+							String regexDatePrepared = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1());
+							String regexDateReview = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2());
+							Pattern patternPrepared = Pattern.compile(regexDatePrepared, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+							Pattern patternReview = Pattern.compile(regexDateReview, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+							if (patternPrepared.matcher(sectionText).find() && patternReview.matcher(sectionText).find()) {
+								// TODO Sacar los años
+								String preparedDate = printMatches(sectionText, regexDatePrepared);
+								String reviewDate = printMatches(sectionText, regexDatePrepared);
+								String preparedYear = printMatches(preparedDate, "\\d{4}");
+								String reviewYear = printMatches(reviewDate, "\\d{4}");
+								SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
+								return sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 2;
+							}
+						}
+						return false;
+					}
+				} catch (Exception e) {
+					Logger.putLog("Excepción: ", Check.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
+			return !hasContact;
+		}
+	}
+
+	/**
+	 * Prints the matches.
+	 *
+	 * @param text  the text
+	 * @param regex the regex
+	 * @return the string
+	 */
+	public static String printMatches(String text, String regex) {
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(text);
+		// Check all occurrences
+		if (matcher.find()) {
+			System.out.print("Start index: " + matcher.start());
+			System.out.print(" End index: " + matcher.end());
+			System.out.println(" Found: " + matcher.group());
+			return matcher.group();
+		}
+		return "";
+	}
+
+	/**
+	 * Iterate nodes.
+	 *
+	 * @param node the node
+	 * @return the text
+	 */
+	private String getText(Node node) {
+		// System.out.println("Node: " + node.getNodeName());
+		String nodeText = "";
+		if (node.hasChildNodes()) {
+			NodeList nodeList = node.getChildNodes();
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				Node currentode = nodeList.item(i);
+				// System.out.println(currentode.getNodeName());
+				nodeText += getText(currentode);
+			}
+		} else {
+			nodeText = node.getNodeValue();
+		}
+		return nodeText;
 	}
 }

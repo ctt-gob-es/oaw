@@ -195,9 +195,10 @@ public final class ObservatoryUtils {
 	public static String pageSuitabilityLevel(ObservatoryEvaluationForm observatoryEvaluationForm) {
 		PropertiesManager pmgr = new PropertiesManager();
 		int maxFails = 0;
+		String aplicacion = "";
 		// Recuperamos el cartucho asociado al analsis
 		try (Connection c = DataBaseManager.getConnection()) {
-			String aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationForm.getIdAnalysis());
+			aplicacion = CartuchoDAO.getApplicationFromAnalisisId(c, observatoryEvaluationForm.getIdAnalysis());
 			if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
@@ -211,44 +212,79 @@ public final class ObservatoryUtils {
 		} catch (Exception e) {
 			maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number"));
 		}
-		boolean isA = true;
-		boolean isAA = true;
-		// Se recorren los niveles de análisis
-		for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
-			// Se recorren los niveles de adecuación
-			for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
-				int numZeroRed = 0;
-				if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
-					if (observatoryLevel.getName().equals(Constants.OBS_N1) || isA) {
+		if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
+			final MessageResources messageResources = MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD);
+			// minhap.observatory.5_0.subgroup.3.4
+			boolean declaracion = true;
+			boolean situacionCumplimiento = true;
+			int numZeroRed = 0;
+			for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
+				// Se recorren los niveles de adecuación
+				for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
+					if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
 						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
 							if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-								numZeroRed = numZeroRed + 1;
+								if ("minhap.observatory.5_0.subgroup.3.1".equals(observatorySubgroupForm.getDescription())) {
+									declaracion = false;
+								}
+								if ("minhap.observatory.5_0.subgroup.3.4".equals(observatorySubgroupForm.getDescription())) {
+									situacionCumplimiento = false;
+								}
+								numZeroRed++;
 							}
-						}
-						if (numZeroRed > maxFails) {
-							isA = false;
-						}
-					}
-				} else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
-					if (observatoryLevel.getName().equals(Constants.OBS_N1) || isAA) {
-						for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
-							if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
-								numZeroRed = numZeroRed + 1;
-							}
-						}
-						if (numZeroRed > maxFails) {
-							isAA = false;
 						}
 					}
 				}
 			}
-		}
-		if (isA && isAA) {
-			return Constants.OBS_AA;
-		} else if (isA) {
-			return Constants.OBS_A;
+			if (numZeroRed == 0) {
+				return Constants.OBS_ACCESIBILITY_FULL;
+			} else if (declaracion && situacionCumplimiento) {
+				return Constants.OBS_ACCESIBILITY_PARTIAL;
+			} else if (!situacionCumplimiento) {
+				return Constants.OBS_ACCESIBILITY_NONE;
+			} else {
+				return Constants.OBS_ACCESIBILITY_NA;
+			}
 		} else {
-			return Constants.OBS_NV;
+			boolean isA = true;
+			boolean isAA = true;
+			// Se recorren los niveles de análisis
+			for (ObservatoryLevelForm observatoryLevel : observatoryEvaluationForm.getGroups()) {
+				// Se recorren los niveles de adecuación
+				for (ObservatorySuitabilityForm observatorySuitabilityForm : observatoryLevel.getSuitabilityGroups()) {
+					int numZeroRed = 0;
+					if (observatorySuitabilityForm.getName().equals(Constants.OBS_A)) {
+						if (observatoryLevel.getName().equals(Constants.OBS_N1) || isA) {
+							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
+									numZeroRed = numZeroRed + 1;
+								}
+							}
+							if (numZeroRed > maxFails) {
+								isA = false;
+							}
+						}
+					} else if (observatorySuitabilityForm.getName().equals(Constants.OBS_AA) && isA) {
+						if (observatoryLevel.getName().equals(Constants.OBS_N1) || isAA) {
+							for (ObservatorySubgroupForm observatorySubgroupForm : observatorySuitabilityForm.getSubgroups()) {
+								if (observatorySubgroupForm.getValue() == Constants.OBS_VALUE_RED_ZERO) {
+									numZeroRed = numZeroRed + 1;
+								}
+							}
+							if (numZeroRed > maxFails) {
+								isAA = false;
+							}
+						}
+					}
+				}
+			}
+			if (isA && isAA) {
+				return Constants.OBS_AA;
+			} else if (isA) {
+				return Constants.OBS_A;
+			} else {
+				return Constants.OBS_NV;
+			}
 		}
 	}
 
@@ -266,6 +302,14 @@ public final class ObservatoryUtils {
 			return messageResources.getMessage("resultados.anonimos.num.portales.a");
 		} else if (Constants.OBS_NV.equals(level)) {
 			return messageResources.getMessage("resultados.anonimos.num.portales.nv");
+		} else if (Constants.OBS_ACCESIBILITY_FULL.equals(level)) {
+			return "Completo";
+		} else if (Constants.OBS_ACCESIBILITY_PARTIAL.equals(level)) {
+			return "Parcial";
+		} else if (Constants.OBS_ACCESIBILITY_NONE.equals(level)) {
+			return "No válido";
+		} else if (Constants.OBS_ACCESIBILITY_NA.equals(level)) {
+			return "Sin declaracón";
 		} else {
 			return "";
 		}
@@ -359,8 +403,9 @@ public final class ObservatoryUtils {
 					} else {
 						seedResult.setNivel(IntavUtils.generateScores(PropertyMessageResources.getMessageResources("ApplicationResources"), paginas).getLevel());
 					}
-					//Save scrore and level on database
-					RastreoDAO.setScoreAndLevelCrawling(c, Long.valueOf(seedResult.getIdFulfilledCrawling()), seedResult.getScore(), seedResult.getNivel());				}
+					// Save scrore and level on database
+					RastreoDAO.setScoreAndLevelCrawling(c, Long.valueOf(seedResult.getIdFulfilledCrawling()), seedResult.getScore(), seedResult.getNivel());
+				}
 			}
 		}
 		return seedsResults;

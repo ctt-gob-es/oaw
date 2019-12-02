@@ -178,6 +178,11 @@ Email: observ.accesibilidad@correo.gob.es
 													<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
 														<td><bean:message key="resultados.observatorio.vista.primaria.valor.cero.pasa" bundle="resources2019" /></td>
 													</logic:equal>
+
+													<logic:equal value="<%=String.valueOf(Constants.NORMATIVA_ACCESIBILIDAD)%>" name="aplicacion">
+														<td><bean:message key="resultados.observatorio.vista.primaria.valor.cero.pasa" bundle="resources2019" /></td>
+													</logic:equal>
+
 													<logic:notEqual value="<%=String.valueOf(Constants.NORMATIVA_UNE_EN2019)%>" name="aplicacion">
 														<td><bean:message key="resultados.observatorio.vista.primaria.valor.cero.pasa"
 																bundle="resources2012b" /></td>
