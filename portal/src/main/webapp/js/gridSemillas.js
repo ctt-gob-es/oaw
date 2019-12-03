@@ -365,7 +365,7 @@ function reloadGrid(path) {
 
 																var response = jQuery
 																		.parseJSON(data);
-																var s = '<select><option value=""></option>';
+																var s = '<select>';
 
 																if (response
 																		&& response.length) {

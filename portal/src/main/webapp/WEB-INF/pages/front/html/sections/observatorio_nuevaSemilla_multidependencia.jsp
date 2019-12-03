@@ -147,17 +147,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 							var response = $jn.parseJSON(data);
 
-							$jn('#selectComplejidadesNuevaSemilla').append(
-									"<option value=''></option>");
+							//$jn('#selectComplejidadesNuevaSemilla').append(
+							//		"<option value=''></option>");
 							if (response && response.length) {
 								for (var i = 0, l = response.length; i < l; i++) {
 									var ri = response[i];
+									if(ri.name == "Media"){
 									$jn('#selectComplejidadesNuevaSemilla')
 											.append(
-													'<option value="'+ri.id+'">'
-															+ ri.name
-															+ '</option>');
+														'<option selected value="'+ri.id+'">'
+														+ ri.name
+														+ '</option>');
+								}else{
+									$jn('#selectComplejidadesNuevaSemilla')
+									.append(
+												'<option  value="'+ri.id+'">'
+												+ ri.name
+												+ '</option>');
 								}
+							}
 							}
 
 							if (rowObject != null) {
