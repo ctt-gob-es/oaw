@@ -54,6 +54,9 @@ public class ComplejidadForm extends ValidatorForm implements Serializable {
     /** The seeds. */
     private List<SemillaForm> seeds;
     
+    /** The orden. */
+    private int orden;
+    
 
     /**
      * Gets the id.
@@ -200,6 +203,24 @@ public class ComplejidadForm extends ValidatorForm implements Serializable {
         }
     }
 
+    /**
+     * Gets the orden.
+     *
+     * @return the orden
+     */
+    public int getOrden() {
+        return orden;
+    }
+
+    /**
+     * Sets the orden.
+     *
+     * @param orden the new orden
+     */
+    public void setOrden(int orden) {
+        this.orden = orden;
+    }
+    
 	/**
 	 * Hash code.
 	 *

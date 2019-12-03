@@ -154,6 +154,9 @@ public interface Constants {
 	String XML_ACTIVA = "activa";
 	String XML_IN_DIRECTORY = "en_directorio";
 	String XML_SEGMENTO = "segmento";
+	String XML_AMBITO = "ambito";
+	String XML_COMPLEJIDAD = "complejidad";
+	String XML_ETIQUETAS = "etiquetas";
 
 	String ERROR = "error";
 	String ERROR1 = "error1";
