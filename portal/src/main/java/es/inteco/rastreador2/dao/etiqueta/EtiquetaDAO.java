@@ -29,11 +29,13 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
 import es.inteco.rastreador2.actionform.etiquetas.ClasificacionForm;
 import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
+import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.DAOUtils;
 
@@ -337,6 +339,58 @@ public static Integer countTagClassifications (Connection c) throws Exception {
 		throw e;
 	}
 	return 0;
+}
+
+
+
+public static long getClasificacionByName(Connection c, String tagName) throws Exception {
+	long clasificacion = 0;
+	String query = "SELECT c.id_clasificacion FROM etiqueta c WHERE c.nombre = ?";
+
+	try (PreparedStatement ps = c.prepareStatement(query)) {
+
+		ps.setString(1, tagName);
+
+		try (ResultSet rs = ps.executeQuery()) {
+
+			if (rs.next()) {
+				clasificacion = Long. parseLong(rs.getString("c.id_clasificacion"));
+
+			}
+		}
+
+	} catch (SQLException e) {
+		Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		throw e;
+	}
+
+	return clasificacion;
+
+}
+
+public static long getIdByName(Connection c, String tagName) throws Exception {
+	long id = 0;
+	String query = "SELECT c.id_etiqueta FROM etiqueta c WHERE c.nombre = ?";
+
+	try (PreparedStatement ps = c.prepareStatement(query)) {
+
+		ps.setString(1, tagName);
+
+		try (ResultSet rs = ps.executeQuery()) {
+
+			if (rs.next()) {
+				id = Long. parseLong(rs.getString("c.id_etiqueta"));
+
+			}
+		}
+
+	} catch (SQLException e) {
+		Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		throw e;
+	}
+
+	return id;
+
 }
 
 }

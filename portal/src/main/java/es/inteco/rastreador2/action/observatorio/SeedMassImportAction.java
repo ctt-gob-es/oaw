@@ -39,11 +39,15 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.semillas.SeedCategoriesAction;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
+import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
+import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
 import es.inteco.rastreador2.dao.categoria.CategoriaDAO;
+import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 
@@ -166,7 +170,41 @@ public class SeedMassImportAction extends Action {
 											}
 
 										}
+										
+										// Ambits retrieve from database
+										if (seed.getAmbito() != null && !org.apache.commons.lang3.StringUtils
+												.isEmpty(seed.getAmbito().getName())) {
 
+											AmbitoForm ambit = AmbitoDAO.getAmbitByName(c,
+													seed.getAmbito().getName());
+
+											if (ambit != null) {
+												seed.setAmbito(ambit);
+											} else {
+												seed.getAmbito().setOrden(1);
+												Long idAmbito = SemillaDAO.createSeedAmbit(c,
+														seed.getAmbito());
+												seed.getAmbito().setId(idAmbito.toString());
+											}
+										}
+										
+										// Complexities retrieve from database
+										if (seed.getComplejidad() != null && !org.apache.commons.lang3.StringUtils
+												.isEmpty(seed.getComplejidad().getName())) {
+
+											ComplejidadForm complexity = ComplejidadDAO.getComplexityByName(c,
+													seed.getComplejidad().getName());
+
+											if (complexity != null) {
+												seed.setComplejidad(complexity);
+											} else {
+												seed.getComplejidad().setOrden(1);
+												Long idComplejidad = SemillaDAO.createSeedComplexity(c,
+														seed.getComplejidad());
+												seed.getComplejidad().setId(idComplejidad.toString());
+											}
+										}
+										
 										if (seed.getId() != null) {
 
 											SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
