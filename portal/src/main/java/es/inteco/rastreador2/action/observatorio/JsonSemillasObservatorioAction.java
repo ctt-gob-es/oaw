@@ -14,6 +14,8 @@ package es.inteco.rastreador2.action.observatorio;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,6 +48,7 @@ import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
+import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.json.JsonMessage;
@@ -241,8 +244,13 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				// Comprobar que sólo se introduzcen el max.url
 
-				PropertiesManager pmgr = new PropertiesManager();
-				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				String idComplejidad = request.getParameter("complejidadaux");
+				ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(DataBaseManager.getConnection(), idComplejidad);
+				int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1; 
+				
+//				PropertiesManager pmgr = new PropertiesManager();
+//				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				
 				if (semilla.getListaUrls() != null && semilla.getListaUrls().size() > maxUrls) {
 
 					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) })));
@@ -397,8 +405,13 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 
 				// Comprobar que sólo se introduzcen el max.url
 
-				PropertiesManager pmgr = new PropertiesManager();
-				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				String idComplejidad = request.getParameter("complejidadaux");
+				ComplejidadForm complexAux = ComplejidadDAO.getComplexityById(DataBaseManager.getConnection(), idComplejidad);
+				int maxUrls = complexAux.getAmplitud() * complexAux.getProfundidad() + 1; 
+				
+//				PropertiesManager pmgr = new PropertiesManager();
+//				int maxUrls = Integer.parseInt(pmgr.getValue("intav.properties", "max.url"));
+				
 				if (semilla.getListaUrls() != null && semilla.getListaUrls().size() > maxUrls) {
 
 					errores.add(new JsonMessage(messageResources.getMessage("semilla.nueva.url.max.superado", new String[] { String.valueOf(maxUrls) })));
