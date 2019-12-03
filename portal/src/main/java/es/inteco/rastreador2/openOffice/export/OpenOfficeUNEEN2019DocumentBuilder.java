@@ -866,8 +866,8 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 				replaceSectionMidAllocationLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
 				replaceSectionModalityLevel1Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
 				replaceSectionModalityLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, executionListComplejidad);
-				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
+				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
 				replaceSectionAspectsGrouped(messageResources, odtComplexity, odfFileContentComplejidad, graphicPath, graphicSuffix, executionListComplejidad);
 				// Replace titles with group name
 				replaceText(odtComplexity, odfFileContentComplejidad, NOMBRECOMPLEJIDAD_BOOKMARK, complejidad.getName(), TEXT_SPAN_NODE);
@@ -918,14 +918,14 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					replaceSectionMidAllocationLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				} else {
 					// remove pmasection
-					removeSection(odt, odfFileContent, PMV_SECTION_NAME);
+					removeSection(odtCategory, odfFileContentCategory, PMV_SECTION_NAME);
 				}
 				if (grpahicConditional.containsKey(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS) && Boolean.TRUE.equals(grpahicConditional.get(Constants.CHECK_SEGMENT_MODALITY_GRPAHICS))) {
 					replaceSectionModalityLevel1Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 					replaceSectionModalityLevel2Grouped(messageResources, odtCategory, odfFileContentCategory, graphicPath, graphicSuffix, pageExecutionListCat);
 				} else {
 					// remove pmasection
-					removeSection(odt, odfFileContent, CMV_SECTION_NAME);
+					removeSection(odtCategory, odfFileContentCategory, CMV_SECTION_NAME);
 				}
 				replaceSectionCompilanceByVerificationLevel1Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
 				replaceSectionCompilanceByVerificationLevel2Grouped(messageResources, odt, odfFileContent, graphicPath, graphicSuffix, pageExecutionListCat);
@@ -1856,6 +1856,7 @@ public class OpenOfficeUNEEN2019DocumentBuilder extends OpenOfficeDocumentBuilde
 					.infoLevelVerificationCompilanceComparison(ResultadosAnonimosObservatorioUNEEN2019Utils.generatePercentajesCompilanceVerification(results));
 			String graphicName = messageResources.getMessage(OBSERVATORY_GRAPHIC_COMPILANCE_BY_VERIFICATION_LEVEL_1_NAME);
 			replaceImageGeneric(odt, graphicPath + graphicName + graphicSuffix + JPG_EXTENSION, graphicName, IMAGE_JPEG);
+			numSection = 5;
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.b2-", labels.get(0).getGreenPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.c2-", labels.get(0).getRedPercentage());
 			replaceText(odt, odfFileContent, "-" + numSection + "51.t1.d2-", labels.get(0).getGrayPercentage());
