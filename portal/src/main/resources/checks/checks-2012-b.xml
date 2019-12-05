@@ -1932,6 +1932,8 @@
 					<function call="characters-less-than" node="." value="1" />
 					<function call="is-only-blanks" node="." />
 				</condition>
+				<function call="attribute-missing" node="." value="aria-label" />
+				<function call="attribute-missing" node="." value="aria-labeledby" />
 				<function call="not-children-have-attribute" node="." element="img" attribute1="alt" />
 			</condition>
 		</machine>
@@ -4936,6 +4938,7 @@
 					<function call="attribute-missing" node="." value="summary" />
 					<function call="characters-less-than" node="@summary" value="1" />
 					<function call="is-only-blanks" node="@summary" />
+					<function call="attribute-missing" node="@aria-describedby" />
 				</condition>
 			</condition>
 		</machine>
@@ -5099,6 +5102,7 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
+				<function call="more-header-than-fieldset" node="." />
 				<function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1" />
 				<condition type="and">
 					<function call="text-not-match" node="@id" value="aspnetForm" />
@@ -5622,6 +5626,7 @@
 		<machine>
 			<trigger element="form" />
 			<condition type="and">
+				<function call="more-header-than-fieldset" node="." />
 				<function call="elements-excessive-usage" node="." element="h1;h2;h3;h4;h5;h6" number="1" />
 				<condition type="or">
 					<function call="text-match" node="@id" value="aspnetForm" />

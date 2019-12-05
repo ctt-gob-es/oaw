@@ -689,7 +689,9 @@ public class CheckCode {
 			} else if ("empty-table".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_EMPTY_TABLE_70;
 			} 
-			
+			else if ("more-header-than-fieldset".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_MORE_HEADERS_THAN_FIELDSETS;
+			} 			
 			
 			
 			else {

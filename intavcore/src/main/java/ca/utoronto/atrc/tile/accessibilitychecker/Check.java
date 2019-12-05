@@ -952,9 +952,10 @@ public class Check {
 			return !functionSectionHasRegex(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_PHONE:
 			return !functionSectionHasRegex(checkCode, nodeNode, elementGiven);
-		case CheckFunctionConstants.FUNCTION_EMPTY_TABLE_70:	
+		case CheckFunctionConstants.FUNCTION_EMPTY_TABLE_70:
 			return functionEmptyTable(checkCode, nodeNode, elementGiven);
-			
+		case CheckFunctionConstants.FUNCTION_MORE_HEADERS_THAN_FIELDSETS:
+			return functionCompareHeaderAndFieldset(checkCode, nodeNode, elementGiven);
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
@@ -1506,7 +1507,7 @@ public class Check {
 		}
 		return cellsWithText.divide(totalCells, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).compareTo(new BigDecimal(checkCode.getFunctionNumber())) >= 0;
 	}
-	
+
 	/**
 	 * Function empty table.
 	 *
@@ -6314,6 +6315,27 @@ public class Check {
 			}
 			return !hasContact;
 		}
+	}
+
+	/**
+	 * Function compare header and fieldset.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	private boolean functionCompareHeaderAndFieldset(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		// h1,h2,h3,h4,h5,h5
+		//
+		final List<String> headers = Arrays.asList(new String[] { "h1", "h2", "h3", "h4", "h5", "h6" });
+		int numHeaders = 0;
+		int numFieldset = 0;
+		for (String element : headers) {
+			numHeaders += elementGiven.getElementsByTagName(element).getLength();
+		}
+		numFieldset += elementGiven.getElementsByTagName("fieldset").getLength();
+		return numHeaders > numFieldset;
 	}
 
 	/**

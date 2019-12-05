@@ -211,6 +211,8 @@ public interface CheckFunctionConstants {
 	int FUNCTION_SECTION_HAS_PHONE = 190;
 	
 	int FUNCTION_EMPTY_TABLE_70 = 191;
+	
+	int FUNCTION_MORE_HEADERS_THAN_FIELDSETS = 192;
 
 	// check codes
 	int CHECK_STATUS_OK = 1;
