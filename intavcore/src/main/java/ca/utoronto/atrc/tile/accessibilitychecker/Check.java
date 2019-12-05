@@ -949,9 +949,12 @@ public class Check {
 		case CheckFunctionConstants.FUNCTION_ACCESIBILITY_YEAR:
 			return functionAccesibilityYear(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_DATE:
-			return functionSectionHasRegex(checkCode, nodeNode, elementGiven);
+			return !functionSectionHasRegex(checkCode, nodeNode, elementGiven);
 		case CheckFunctionConstants.FUNCTION_SECTION_HAS_PHONE:
-			return functionSectionHasRegex(checkCode, nodeNode, elementGiven);
+			return !functionSectionHasRegex(checkCode, nodeNode, elementGiven);
+		case CheckFunctionConstants.FUNCTION_EMPTY_TABLE_70:	
+			return functionEmptyTable(checkCode, nodeNode, elementGiven);
+			
 		default:
 			Logger.putLog("Warning: unknown function ID:" + checkCode.getFunctionId(), Check.class, Logger.LOG_LEVEL_WARNING);
 			break;
@@ -1501,7 +1504,25 @@ public class Check {
 			totalCells = totalCells.add(new BigDecimal(nodeList.getLength()));
 			cellsWithText = cellsWithText.add(new BigDecimal(countNodesWithText(nodeList)));
 		}
-		return cellsWithText.divide(totalCells, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).compareTo(new BigDecimal(checkCode.getFunctionNumber())) > 0;
+		return cellsWithText.divide(totalCells, 2, BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100)).compareTo(new BigDecimal(checkCode.getFunctionNumber())) >= 0;
+	}
+	
+	/**
+	 * Function empty table.
+	 *
+	 * @param checkCode    the check code
+	 * @param nodeNode     the node node
+	 * @param elementGiven the element given
+	 * @return true, if successful
+	 */
+	protected boolean functionEmptyTable(CheckCode checkCode, Node nodeNode, Element elementGiven) {
+		checkCode.setFunctionNumber("30");
+		checkCode.setFunctionAttribute1("td");
+		checkCode.setFunctionAttribute2("th");
+		if (!functionTextCellsPercentageGreaterThan(checkCode, nodeNode, elementGiven)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -6238,23 +6259,23 @@ public class Check {
 			// (en caso contrario falla la comprobacion 126 y no se ejecuta
 			// esta)
 			try {
-				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
-				for (int j = 0; j < elements.size(); j++) {
-					Element section = (Element) elements.get(j); // Get dates
-					String sectionText = getText(section);
-					String regexDatePrepared = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1());
-					String regexDateReview = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2());
-					Pattern patternPrepared = Pattern.compile(regexDatePrepared, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-					Pattern patternReview = Pattern.compile(regexDateReview, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-					if (patternPrepared.matcher(sectionText).find() && patternReview.matcher(sectionText).find()) {
-						// TODO Sacar los años
-						String preparedDate = printMatches(sectionText, regexDatePrepared);
-						String reviewDate = printMatches(sectionText, regexDatePrepared);
-						String preparedYear = printMatches(preparedDate, "\\d{4}");
-						String reviewYear = printMatches(reviewDate, "\\d{4}");
-						SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
-						return sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 2;
-					}
+				List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionValue()));
+				String textSection = "";
+				for (int i = 0; i < elements.size(); i++) {
+					textSection += getText(elements.get(i));
+				}
+				String regexDatePrepared = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1());
+				String regexDateReview = pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute2());
+				Pattern patternPrepared = Pattern.compile(regexDatePrepared, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+				Pattern patternReview = Pattern.compile(regexDateReview, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+				if (patternPrepared.matcher(textSection).find() && patternReview.matcher(textSection).find()) {
+					// TODO Sacar los años
+					String preparedDate = printMatches(textSection, regexDatePrepared);
+					String reviewDate = printMatches(textSection, regexDateReview);
+					String preparedYear = printMatches(preparedDate, "\\d{4}");
+					String reviewYear = printMatches(reviewDate, "\\d{4}");
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
+					return sdf.parse(reviewYear).compareTo(sdf.parse(preparedYear)) > 1;
 				}
 				return false;
 			} catch (Exception e) {
@@ -6267,8 +6288,7 @@ public class Check {
 				try {
 					final Document document = getAccesibilityDocument(elementRoot, accessibilityLink.getAttribute("href"));
 					if (document != null) {
-						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(),
-								pm.getValue("check.patterns.properties", checkCode.getFunctionAttribute1()));
+						List<Element> elements = AccesibilityDeclarationCheckUtils.getSection(elementGiven.getOwnerDocument(), pm.getValue("check.patterns.properties", checkCode.getFunctionValue()));
 						for (int j = 0; j < elements.size(); j++) {
 							Element section = (Element) elements.get(j); // Get dates
 							String sectionText = getText(section);

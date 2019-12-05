@@ -400,6 +400,36 @@ public final class DiagnosisDAO {
 		}
 		return 0;
 	}
+	
+	
+	/**
+	 * Gets the average time.
+	 *
+	 * @param conn   the conn
+	 * @param search the search
+	 * @return the average time
+	 */
+	public static Float getAverageTime(Connection conn, final ServicioDiagnosticoForm search) {
+		StringBuilder query = new StringBuilder("SELECT AVG(TIME_TO_SEC(TIMEDIFF(send_date,date))) AS timediff FROM  basic_service WHERE 1=1 ");
+		addSearchParameters(search, query);
+		try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
+			int nextParameterCount = 1;
+			setSearchParameters(search, ps, nextParameterCount);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return rs.getFloat(1);
+				} else {
+					return 0f;
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error al exportar en CSV los datos del servicio básico", DiagnosisDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return 0f;
+	}
+	
+	
+	
 
 	/**
 	 * Gets the basic service request CSV.

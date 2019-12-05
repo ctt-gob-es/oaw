@@ -201,7 +201,7 @@ td {
 							class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="observatorio-5">Accesibilidad</option>
-							<option value="observatorio-4">UNE-EN2019</option>
+							<option value="observatorio-4">UNE-EN301549:2019</option>
 							<option value="observatorio-3">UNE-2012 (versi&#243;n 2)</option>
 							<option value="observatorio-2">UNE-2012</option>
 							<option value="observatorio-1">UNE-2004</option>
@@ -210,8 +210,7 @@ td {
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"><bean:message
-									key="servicio.diagnostirco.estadisticas.tipo" /></strong></label> <select id="tipo" name="tipo"
-							class="texto form-control">
+									key="servicio.diagnostirco.estadisticas.tipo" /></strong></label> <select id="tipo" name="tipo" class="texto form-control">
 							<option selected="selected" value=""></option>
 							<option value="url">URL</option>
 							<option value="lista_urls">Lista de URLs</option>
@@ -290,24 +289,42 @@ td {
 
 				<p class="alert alert-info pull-left">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
-					</em>: <bean:message key="servicio.diagnostirco.estadisticas.encurso.info" />
+					</em>:
+					<bean:message key="servicio.diagnostirco.estadisticas.encurso.info" />
 				</p>
 
 				<p id="paginadorActuales"></p>
 			</div>
+
 			<div class="col-md-12">
 
 				<!-- Grid -->
-				<h2><bean:message key="servicio.diagnostirco.estadisticas.resultados.title" /></h2>
+				<h2>
+					<bean:message key="servicio.diagnostirco.estadisticas.resultados.title" />
+				</h2>
 				<table id="grid"></table>
 				<p id="paginador"></p>
 
+
+
 				<p class="alert alert-info pull-left">
 					<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
-					</em>: <bean:message key="servicio.diagnostirco.estadisticas.resultados.info" />
+					</em>:
+					<bean:message key="servicio.diagnostirco.estadisticas.resultados.info" />
 				</p>
 
 			</div>
+			
+			
+			
+			<div class="col-md-12">
+
+				<p class="pull-left">
+					<strong><bean:message key="servicio.diagnostirco.estadisticas.avg" /> </strong> <span id="avg" >0</span>
+				</p>
+
+			</div>
+			
 			<p id="pCenter">
 				<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
 					<bean:message key="boton.volver" />

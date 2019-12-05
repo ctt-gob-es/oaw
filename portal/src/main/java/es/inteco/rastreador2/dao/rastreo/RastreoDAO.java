@@ -84,7 +84,7 @@ public final class RastreoDAO {
 	 */
 	public static List<Long> getExecutionObservatoryCrawlerIdsMatchTags(Connection c, Long idObservatoryExecution, String[] tagsToFiler) throws Exception {
 		final List<Long> executionObservatoryCrawlersIds = new ArrayList<>();
-		String query = "SELECT id FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN etiquetas_lista el ON l.id_lista=el.id_lista WHERE id_obs_realizado = ? ";
+		String query = "SELECT id FROM rastreos_realizados rr JOIN rastreo r ON (r.id_rastreo = rr.id_rastreo) JOIN lista l ON (l.id_lista = r.semillas) JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE id_obs_realizado = ? ";
 		if (tagsToFiler != null && tagsToFiler.length > 0) {
 			query = query + " AND ( 1=1 ";
 			for (int i = 0; i < tagsToFiler.length; i++) {

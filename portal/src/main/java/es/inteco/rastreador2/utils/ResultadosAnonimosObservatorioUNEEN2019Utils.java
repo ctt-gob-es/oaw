@@ -3261,7 +3261,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 										numZeroRed = numZeroRed + 1;
 									}
 								}
-								if (numZeroRed > maxFails) {
+								// TODO Reduce 1 fail max on AA
+								if (numZeroRed > (maxFails - 1)) {
 									isAA = false;
 								}
 							}

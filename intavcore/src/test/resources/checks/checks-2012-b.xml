@@ -6065,7 +6065,7 @@
 
 
 
-	<check id="482" key="html" confidence="medium">
+	<check id="482" key="html" confidence="high">
 		<name>Se verifica que en la declaración de accesibilidad exista la sección “Situación de cumplimiento”
 		</name>
 		<error>check.482.error</error>
@@ -6077,7 +6077,7 @@
 	</check>
 
 
-	<check id="483" key="html" confidence="medium">
+	<check id="483" key="html" confidence="high">
 		<prerequisite id="482" />
 		<name>Se verifica que la situación de cumplimiento indicada se corresponde con alguna de las especificadas por ley
 			(“plenamente conforme”, “parcialmente conforme” o “no conforme”).
@@ -6086,13 +6086,13 @@
 		<rationale>check.483.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.482.regex.pattern"
-				attribute2="check.483.regex.pattern" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.482.regex.pattern" attribute2="check.483.regex.pattern" />
 		</machine>
 	</check>
 
 
-	<check id="484" key="html" confidence="medium">
+	<check id="484" key="html" confidence="high">
 		<prerequisite id="482" />
 		<name>Se verifica que en la declaración de accesibilidad exista la sección “Contenido no accesible” (sólo cuando la
 			situación de cumplimiento no sea plenamente conforme)
@@ -6101,14 +6101,14 @@
 		<rationale>check.484.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.482.regex.pattern"
-				attribute2="check.484.regex.pattern2" />
-			<function call="has-section" node="." value="check.484.regex.pattern" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.482.regex.pattern" attribute2="check.484.regex.pattern2" />
+			<function call="has-section" node="." value="check.126.regex.pattern.2" attribute1="check.484.regex.pattern" />
 		</machine>
 	</check>
 
 
-	<check id="485" key="html" confidence="medium">
+	<check id="485" key="html" confidence="high">
 		<name>Se verifica que en la declaración de accesibilidad exista la sección “Observaciones y datos de
 			contacto”
 		</name>
@@ -6120,7 +6120,7 @@
 		</machine>
 	</check>
 
-	<check id="486" key="html" confidence="medium">
+	<check id="486" key="html" confidence="high">
 		<prerequisite id="485" />
 		<name>Se verifica que se proporciona una forma de contacto para las comunicaciones sobre requisitos de accesibilidad
 			mediante un canal electrónico (correo electrónico, formulario o enlace a una página de contacto).
@@ -6129,16 +6129,18 @@
 		<rationale>check.486.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
-				attribute2="check.486.regex.pattern.mail" />
-			<function call="section-has-mailto" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" />
-			<function call="section-has-element" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" attribute2="form" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
-				attribute2="check.486.regex.pattern.contact" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="check.486.regex.pattern.mail" />
+			<function call="section-has-mailto" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" />
+			<function call="section-has-element" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="form" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="check.486.regex.pattern.contact" />
 		</machine>
 	</check>
 
-	<check id="487" key="html" confidence="medium">
+	<check id="487" key="html" confidence="high">
 		<prerequisite id="485" />
 		<name>Se verifica que se proporciona una forma de contacto para las comunicaciones sobre requisitos de accesibilidad
 			mediante un canal complementario al electrónico (teléfono u oficina física de atención)
@@ -6147,31 +6149,32 @@
 		<rationale>check.487.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
-				attribute2="check.487.regex.pattern.phone" />
-			<function call="section-has-element" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern" attribute2="address" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
-				attribute2="check.487.regex.pattern.phone.text" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.485.regex.pattern"
-				attribute2="check.487.regex.pattern.addres.text" />
+			<function call="section-has-phone" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="check.487.regex.pattern.phone" />
+			<function call="section-has-element" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="address" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="check.487.regex.pattern.phone.text" />
+			<function call="section-has-text" node="." value="check.126.regex.pattern.2"
+				attribute1="check.485.regex.pattern" attribute2="check.487.regex.pattern.addres.text" />
 
 		</machine>
 	</check>
 
-	<check id="488" key="html" confidence="medium">
+	<check id="488" key="html" confidence="high">
 		<name>Se verifica que en la declaración de accesibilidad exista la sección “Preparación de la presente declaración de
 			accesibilidad”.
 		</name>
 		<error>check.488.error</error>
 		<rationale>check.488.rationale</rationale>
 		<machine>
-			<trigger element="html" /> 
-			<function call="has-section" node="." value="check.126.regex.pattern.2"  attribute1="check.488.regex.pattern" />
+			<trigger element="html" />
+			<function call="has-section" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern" />
 		</machine>
 	</check>
 
 
-	<check id="489" key="html" confidence="medium">
+	<check id="489" key="html" confidence="high">
 		<prerequisite id="488" />
 		<name>Se verifica que en la declaración de accesibilidad se indica la fecha de su preparación.
 		</name>
@@ -6179,23 +6182,23 @@
 		<rationale>check.489.rationale</rationale>
 		<machine>
 			<trigger element="html" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
-				attribute2="check.149.regex.pattern.date.1" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
-				attribute2="check.149.regex.pattern.date.2" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
-				attribute2="check.149.regex.pattern.date.3" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
-				attribute2="check.149.regex.pattern.date.4" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
-				attribute2="check.149.regex.pattern.date.5" />
-			<function call="section-has-text" node="." value="check.126.regex.pattern.2" attribute1="check.488.regex.pattern"
-				attribute2="check.149.regex.pattern.date.6" />
+			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.1" />
+			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.2" />
+			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.3" />
+			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.4" />
+			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.5" />
+			<function call="section-has-date" node="." value="check.126.regex.pattern.2"
+				attribute1="check.488.regex.pattern" attribute2="check.489.regex.pattern.date.6" />
 		</machine>
 	</check>
 
 
-	<check id="490" key="html" confidence="medium">
+	<check id="490" key="html" confidence="high">
 		<prerequisite id="489" />
 		<name>Si la fecha de preparación tiene más de un año de antigüedad, se verifica que en la declaración de
 			accesibilidad
@@ -6203,36 +6206,46 @@
 			fecha
 			actual.
 		</name>
-		<error>check.489.error</error>
-		<rationale>check.489.rationale</rationale>
+		<error>check.490.error</error>
+		<rationale>check.490.rationale</rationale>
 		<machine>
 			<trigger element="html" />
 			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
-				attribute1="check.149.regex.pattern.date.p.1" attribute2="check.149.regex.pattern.date.r.1" />
+				attribute1="check.490.regex.pattern.date.p.1" attribute2="check.490.regex.pattern.date.r.1" />
 			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
-				attribute1="check.149.regex.pattern.date.p.2" attribute2="check.149.regex.pattern.date.r.2" />
+				attribute1="check.490.regex.pattern.date.p.2" attribute2="check.490.regex.pattern.date.r.2" />
 			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
-				attribute1="check.149.regex.pattern.date.p.3" attribute2="check.149.regex.pattern.date.r.3" />
+				attribute1="check.490.regex.pattern.date.p.3" attribute2="check.490.regex.pattern.date.r.3" />
 			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
-				attribute1="check.149.regex.pattern.date.p.4" attribute2="check.149.regex.pattern.date.r.4" />
+				attribute1="check.490.regex.pattern.date.p.4" attribute2="check.490.regex.pattern.date.r.4" />
 			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
-				attribute1="check.149.regex.pattern.date.p.5" attribute2="check.149.regex.pattern.date.r.5" />
+				attribute1="check.490.regex.pattern.date.p.5" attribute2="check.490.regex.pattern.date.r.5" />
 			<function call="accesibility-date-year" node="." value="check.488.regex.pattern"
-				attribute1="check.149.regex.pattern.date.p.6" attribute2="check.149.regex.pattern.date.r.6" />
+				attribute1="check.490.regex.pattern.date.p.6" attribute2="check.490.regex.pattern.date.r.6" />
 		</machine>
 	</check>
 
-	<check id="488" key="html" confidence="medium">
-		<name>Se verifica que en la declaración de accesibilidad exista la sección “Preparación de la presente declaración de
-			accesibilidad”.
+	<check id="491" key="html" confidence="high">
+		<name>Se verifica que en la declaración de accesibilidad exista la sección “Procedimiento de aplicación”.
 		</name>
-		<error>check.488.error</error>
-		<rationale>check.488.rationale</rationale>
+		<error>check.491.error</error>
+		<rationale>check.491.rationale</rationale>
 		<machine>
 			<trigger element="html" />
 			<function call="has-section" node="." value="check.126.regex.pattern.2" attribute1="check.491.regex.pattern" />
 		</machine>
 	</check>
 
+
+
+	<check id="492" key="table" confidence="high">
+		<name>Detección de tabla mayoritariamente vacías</name>
+		<error>check.492.error</error>
+		<rationale>check.492.rationale</rationale>
+		<machine>
+			<trigger element="table" />
+			<function call="empty-table" node="." element="table" />
+		</machine>
+	</check>
 
 </checks>

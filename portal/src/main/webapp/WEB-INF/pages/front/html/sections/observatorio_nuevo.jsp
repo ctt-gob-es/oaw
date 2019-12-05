@@ -26,6 +26,35 @@ Email: observ.accesibilidad@correo.gob.es
 	<bean:message key="boton.aceptar" />
 </bean:define>
 
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css"> 
+<style>
+.tagbox-wrapper input {
+
+display: block;
+    width: 100% !important;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    border:none !important;
+}
+
+
+}
+</style>
+
 <script>
 	$(window).on('load', function() {
 
@@ -186,8 +215,17 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="tags" class="control-label"><strong class="labelVisu"><bean:message
-									key="menu.config.etiquetas" />: </strong></label> <input name="tags" autocapitalize="off" placeholder="Escriba para buscar..."
-							autofocus id="tagsFilter" type="text" value="" />
+									key="menu.config.etiquetas" />: </strong></label> 
+									
+									
+									
+<!-- 									<input class="textoSelect form-control" name="tags" autocapitalize="off" -->
+<!-- 							placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" /> -->
+							
+							
+							
+							<html:text styleClass="texto form-control" name="NuevoObservatorioForm" property="tagsString" styleId="tagsFilter"
+							maxlength="100" />
 					</div>
 
 					<div class="formItem">

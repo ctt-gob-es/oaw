@@ -47,6 +47,7 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final int numResult = DiagnosisDAO.count(c, search);
 			List<ServicioDiagnosticoForm> listSD = DiagnosisDAO.find(c, (pagina - 1), search);
+			Float avg = DiagnosisDAO.getAverageTime(c, search);
 			
 			
 			Gson gson = new GsonBuilder()
@@ -62,7 +63,7 @@ public class JsonServicioDiagnosticoAction extends DispatchAction {
 			String jsonPagination = gson.toJson(paginas);
 			PrintWriter pw = response.getWriter();
 			// pw.write(json);
-			pw.write("{\"diagnosticos\": " + jsonSeeds.toString() + ",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
+			pw.write("{\"diagnosticos\": " + jsonSeeds.toString() + ",\"avg\":"+ avg +",\"paginador\": {\"total\":" + numResult + "}, \"paginas\": " + jsonPagination.toString() + "}");
 			pw.flush();
 			pw.close();
 		} catch (Exception e) {

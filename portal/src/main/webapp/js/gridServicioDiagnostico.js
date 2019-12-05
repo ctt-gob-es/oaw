@@ -35,7 +35,7 @@ function observatorioFormatter(cellvalue, options, rowObject) {
 	if (cellvalue.startsWith("observatorio-5")) {
 		value = "Accesibilidad";
 	} else if (cellvalue.startsWith("observatorio-4")) {
-		value = "UNE-EN2019";
+		value = "UNE-EN301549:2019 (beta)";
 	} else if (cellvalue.startsWith("observatorio-3")) {
 		value = "UNE-2012 (versi&#243; 2)";
 	} else if (cellvalue.startsWith("observatorio-2")) {
@@ -92,7 +92,6 @@ function usuarioFormatter(cellvalue, options, rowObject) {
 
 function complexityFormatter(cellvalue, options, rowObject) {
 
-
 	if (cellvalue) {
 		return cellvalue;
 	}
@@ -126,6 +125,9 @@ function reloadGrid(path, gridId, paginadorId) {
 					function(data) {
 
 						ajaxJson = JSON.stringify(data.diagnosticos);
+
+						$('#avg').text(data.avg.toFixed(2) + " segundos ("+(data.avg/60).toFixed(2)+" minutos)");
+					
 
 						total = data.paginador.total;
 
@@ -250,7 +252,7 @@ function reloadGrid(path, gridId, paginadorId) {
 									$('#' + paginadorId).append(
 											'<a href="javascript:reloadGrid(\''
 													+ value.path
-													+ '\')" class="'
+													+ '\',\'grid\',\'paginador\')" class="'
 													+ value.styleClass
 													+ ' btn btn-default">'
 													+ value.title + '</a>');

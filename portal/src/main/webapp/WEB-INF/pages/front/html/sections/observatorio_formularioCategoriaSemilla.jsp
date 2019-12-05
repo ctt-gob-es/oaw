@@ -33,6 +33,31 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
 
 
+<script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
+<style>
+/* Make sure you reset e'erything beforehand. */
+* {
+	margin: 0;
+	padding: 0;
+}
+
+/* Although you can't see the box here, so add some padding. */
+.tagbox-item .name, .tagbox-item .email { /* The name and email within the dropdown */
+	display: block;
+	float: left;
+	width: 35%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.tagbox-item .email {
+	float: right;
+	width: 65%;
+}
+</style>
+
+
 
 <script type="text/javascript">
 	var dialog;

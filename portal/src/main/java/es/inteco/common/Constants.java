@@ -969,7 +969,7 @@ public interface Constants {
 
 	String NORMATIVA_UNE_2012 = "UNE-2012";
 	String NORMATIVA_UNE_2012_B = "UNE-2012-B";
-	String NORMATIVA_UNE_EN2019 = "UNE-EN2019";
+	String NORMATIVA_UNE_EN2019 = "UNE-EN301549:2019 (beta)";
 	String NORMATIVA_ACCESIBILIDAD = "Accesibilidad";
 
 	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";

@@ -56,7 +56,7 @@
 				<name>minhap.observatory.5_0.subgroup.3.4</name>
 				<checks>
 					<check id="488" relatedWith="126" />
-					<check id="489" relatedWith="489" />
+					<check id="489" relatedWith="488" />
 					<check id="490" relatedWith="489" />
 				</checks>
 			</subgroup>
