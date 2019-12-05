@@ -109,6 +109,9 @@ public class BasicServiceCrawlingManager {
 		if (comp != null) {
 			crawlerData.setTopN(comp.getAmplitud());
 			crawlerData.setProfundidad(comp.getProfundidad());
+		} else {
+			crawlerData.setTopN(0);
+			crawlerData.setProfundidad(0);
 		}
 		return crawlerData;
 	}
