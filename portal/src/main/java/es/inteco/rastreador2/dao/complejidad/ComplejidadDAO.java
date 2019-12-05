@@ -263,5 +263,45 @@ public final class ComplejidadDAO {
 		return complexity;
 
 	}
+	
+	/**
+	 * Gets the complexity by id.
+	 *
+	 * @param c            the c
+	 * @param complexityName the complexity name
+	 * @return the complexity by id
+	 * @throws Exception the exception
+	 */
+	public static ComplejidadForm getComplexityById(Connection c, String complexityId) throws Exception {
+
+		ComplejidadForm complexity = null;
+
+		String query = "SELECT * FROM complejidades_lista WHERE id_complejidad = ?";
+
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+
+			ps.setString(1, complexityId);
+
+			try (ResultSet rs = ps.executeQuery()) {
+
+				if (rs.next()) {
+					complexity = new ComplejidadForm();
+					complexity.setId(rs.getString("id_complejidad"));
+					complexity.setName(rs.getString("nombre"));
+					complexity.setProfundidad(Integer.parseInt(rs.getString("profundidad")));
+					complexity.setAmplitud(Integer.parseInt(rs.getString("amplitud")));
+				}
+			}
+
+		} catch (SQLException e) {
+			Logger.putLog("SQL Exception: ", ProxyDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+
+		return complexity;
+
+	}
+	
+	
 
 }
