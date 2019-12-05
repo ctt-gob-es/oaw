@@ -22,7 +22,9 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
+import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.ProxyForm;
+import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.proxy.ProxyDAO;
 import es.inteco.utils.CrawlerUtils;
 
@@ -41,9 +43,11 @@ public class BasicServiceMailService {
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
 	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
-	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019 (beta)";
+//	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019 (beta)";
+	private static final String OBSERVATORIO_UNE_EN2019 = "Seguimiento simplificado Directiva";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (beta sin comprobar enlaces rotos)";
+//	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (beta sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Seguimiento simplificado Directiva (beta sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
 	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
@@ -122,6 +126,18 @@ public class BasicServiceMailService {
 			text = MessageFormat.format(pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.mail.text.observatory.content"), basicServiceForm.getUser(),
 					reportToString(basicServiceForm.getReport()));
 		} else {
+			if ("0".equals(basicServiceForm.getComplexity())) {
+				basicServiceForm.setAmplitud("1");
+				basicServiceForm.setProfundidad("1");
+			} else {
+				try (Connection c = DataBaseManager.getConnection()) {
+					ComplejidadForm comp = ComplejidadDAO.getById(c, basicServiceForm.getComplexity());
+					basicServiceForm.setAmplitud(String.valueOf(comp.getAmplitud()));
+					basicServiceForm.setProfundidad(String.valueOf(comp.getProfundidad()));
+				} catch (Exception e) {
+					Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+				}
+			}
 			final String inDirectory = basicServiceForm.isInDirectory() ? pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.yes")
 					: pmgr.getValue(Constants.BASIC_SERVICE_PROPERTIES, "basic.service.indomain.no");
 			String proxyActive = "No";
