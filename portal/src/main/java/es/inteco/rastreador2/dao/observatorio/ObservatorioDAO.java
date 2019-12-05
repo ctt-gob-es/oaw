@@ -739,8 +739,8 @@ public final class ObservatorioDAO {
 		try {
 			c.setAutoCommit(false);
 			ps = c.prepareStatement(
-					"INSERT INTO observatorio (nombre, id_periodicidad, profundidad, amplitud, fecha_inicio, id_guideline, pseudoaleatorio, id_language, id_cartucho, activo, id_tipo, id_ambito) "
-							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?, ?)");
+					"INSERT INTO observatorio (nombre, id_periodicidad, profundidad, amplitud, fecha_inicio, id_guideline, pseudoaleatorio, id_language, id_cartucho, activo, id_tipo, id_ambito,tags) "
+							+ "VALUES (?,?,?,?,?,?,?,?,?,?,?, ?, ?)");
 			ps.setString(1, nuevoObservatorioForm.getNombre());
 			ps.setLong(2, Long.parseLong(nuevoObservatorioForm.getPeriodicidad()));
 			ps.setInt(3, Integer.parseInt(nuevoObservatorioForm.getProfundidad()));
@@ -753,6 +753,7 @@ public final class ObservatorioDAO {
 			ps.setBoolean(10, nuevoObservatorioForm.isActivo());
 			ps.setLong(11, nuevoObservatorioForm.getTipo().getId());
 			ps.setString(12, nuevoObservatorioForm.getAmbitoForm().getId());
+			ps.setString(13, nuevoObservatorioForm.getTagsString());
 			ps.executeUpdate();
 			long idObservatory = 0;
 			ps = c.prepareStatement("SELECT id_observatorio FROM observatorio WHERE Nombre = ?");
@@ -797,19 +798,29 @@ public final class ObservatorioDAO {
 				}
 			}
 			List<SemillaForm> totalSeedsAdded = nuevoObservatorioForm.getAddSeeds() == null ? new ArrayList<SemillaForm>() : nuevoObservatorioForm.getAddSeeds();
+			// TODO ADD SEEDLS
 			if (nuevoObservatorioForm.getCategoria() != null) {
 				for (String categoria : nuevoObservatorioForm.getCategoria()) {
-					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, new SemillaForm()));
+					String[] tags = {};
+					if (!org.apache.commons.lang3.StringUtils.isEmpty(nuevoObservatorioForm.getTagsString())) {
+						tags = nuevoObservatorioForm.getTagsString().split(",");
+					}
+					totalSeedsAdded.addAll(SemillaDAO.getSeedsObservatory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, tags));
 				}
 			}
-			if (nuevoObservatorioForm.getAmbitoForm() != null && !StringUtils.isEmpty(nuevoObservatorioForm.getAmbitoForm().getId())) {
-				totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(nuevoObservatorioForm.getAmbitoForm().getId()), Constants.NO_PAGINACION, new SemillaForm()));
-			}
-			if (nuevoObservatorioForm.getComplejidad() != null) {
-				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
-					totalSeedsAdded.addAll(SemillaDAO.getSeedsByComplexity(c, Long.parseLong(complejidad), Constants.NO_PAGINACION, new SemillaForm()));
-				}
-			}
+//			if (nuevoObservatorioForm.getCategoria() != null) {
+//				for (String categoria : nuevoObservatorioForm.getCategoria()) {
+//					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, new SemillaForm()));
+//				}
+//			}
+//			if (nuevoObservatorioForm.getAmbitoForm() != null && !StringUtils.isEmpty(nuevoObservatorioForm.getAmbitoForm().getId())) {
+//				totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(nuevoObservatorioForm.getAmbitoForm().getId()), Constants.NO_PAGINACION, new SemillaForm()));
+//			}
+//			if (nuevoObservatorioForm.getComplejidad() != null) {
+//				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
+//					totalSeedsAdded.addAll(SemillaDAO.getSeedsByComplexity(c, Long.parseLong(complejidad), Constants.NO_PAGINACION, new SemillaForm()));
+//				}
+//			}
 			insertNewCrawlers(c, idObservatory, totalSeedsAdded);
 			c.commit();
 			return idObservatory;
@@ -1014,6 +1025,7 @@ public final class ObservatorioDAO {
 		modificarObservatorioForm.setPseudoAleatorio(rs.getBoolean("pseudoaleatorio"));
 		modificarObservatorioForm.setNormaAnalisis(rs.getString("id_guideline"));
 		modificarObservatorioForm.setActivo(rs.getBoolean("activo"));
+		modificarObservatorioForm.setTagsString(rs.getString("tags"));
 		final CartuchoForm cartuchoForm = new CartuchoForm();
 		cartuchoForm.setId(rs.getLong("id_cartucho"));
 		modificarObservatorioForm.setCartucho(cartuchoForm);
@@ -1223,30 +1235,25 @@ public final class ObservatorioDAO {
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
-					//TODO Count URL craled
-					
-					
+					// TODO Count URL craled
 					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
 							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
-							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?"; 
+							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?";
 					PreparedStatement psCrawls = c.prepareStatement(numCrawlQuery);
 					psCrawls.setLong(1, idObservatorio);
 					psCrawls.setString(2, resultadoSemillaForm.getIdFulfilledCrawling());
-				
 					ResultSet rsCrawls = null;
 					try {
 						rsCrawls = psCrawls.executeQuery();
-						if(rsCrawls.next()) {
-							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));	
+						if (rsCrawls.next()) {
+							resultadoSemillaForm.setNumCrawls(rsCrawls.getInt("numCrawls"));
 						}
-						
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
-					
 					semillasFormList.add(resultadoSemillaForm);
 				}
 			}
@@ -1257,7 +1264,6 @@ public final class ObservatorioDAO {
 		return semillasFormList;
 	}
 
-	
 	/**
 	 * Gets the finish crawler ids from seed and observatory without analisis.
 	 *
@@ -1284,17 +1290,15 @@ public final class ObservatorioDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					crawlerIds.add(rs.getLong("id_rastreo"));
-				}				
+				}
 			}
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", EstadoObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		}
-		
-		return  crawlerIds;
+		return crawlerIds;
 	}
-	
-	
+
 	/**
 	 * Gets the result seeds full from observatory by ids.
 	 *
@@ -1413,18 +1417,14 @@ public final class ObservatorioDAO {
 							listDependencias.add(dependencia);
 						}
 						resultadoSemillaForm.setDependencias(listDependencias);
-						
 					} catch (SQLException e) {
 						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
 						throw e;
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
-					
-					
 					// Cargar las etiquetas de la semilla
-					PreparedStatement psEtiquetas = c
-							.prepareStatement("SELECT id_etiqueta, nombre FROM etiqueta WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?)");
+					PreparedStatement psEtiquetas = c.prepareStatement("SELECT id_etiqueta, nombre FROM etiqueta WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?)");
 					psEtiquetas.setString(1, resultadoSemillaForm.getId());
 					List<EtiquetaForm> listEtiquetas = new ArrayList<>();
 					ResultSet rsEtiquetas = null;
@@ -1437,15 +1437,13 @@ public final class ObservatorioDAO {
 							listEtiquetas.add(etiqueta);
 						}
 						resultadoSemillaForm.setEtiquetas(listEtiquetas);
-					semillasFormList.add(resultadoSemillaForm);
-					
-				} catch (SQLException e) {
-					Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
-					throw e;
-				} finally {
-					DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
-				}
-				
+						semillasFormList.add(resultadoSemillaForm);
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					} finally {
+						DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -1619,7 +1617,7 @@ public final class ObservatorioDAO {
 			ObservatorioForm oldObservatory = getObservatoryForm(c, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			updateObservatoryCrawlings(c, modificarObservatorioForm, oldObservatory);
 			ps = c.prepareStatement(
-					"UPDATE observatorio SET Nombre = ?, Id_Periodicidad = ?, Profundidad = ?, Amplitud = ?, Fecha_Inicio = ?, id_guideline = ?, pseudoaleatorio = ?, id_language = ?, id_cartucho = ?, activo = ?, id_tipo = ?, id_ambito = ? WHERE id_observatorio = ?");
+					"UPDATE observatorio SET Nombre = ?, Id_Periodicidad = ?, Profundidad = ?, Amplitud = ?, Fecha_Inicio = ?, id_guideline = ?, pseudoaleatorio = ?, id_language = ?, id_cartucho = ?, activo = ?, id_tipo = ?, id_ambito = ?, tags = ? WHERE id_observatorio = ?");
 			ps.setString(1, modificarObservatorioForm.getNombre());
 			ps.setInt(2, Integer.parseInt(modificarObservatorioForm.getPeriodicidad()));
 			ps.setInt(3, Integer.parseInt(modificarObservatorioForm.getProfundidad()));
@@ -1634,7 +1632,8 @@ public final class ObservatorioDAO {
 			ps.setBoolean(10, modificarObservatorioForm.isActivo());
 			ps.setLong(11, modificarObservatorioForm.getTipo().getId());
 			ps.setString(12, modificarObservatorioForm.getAmbitoForm().getId());
-			ps.setLong(13, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
+			ps.setString(13, modificarObservatorioForm.getTagsString());
+			ps.setLong(14, Long.parseLong(modificarObservatorioForm.getId_observatorio()));
 			ps.executeUpdate();
 			DAOUtils.closeQueries(ps, null);
 			// Rehacemos las asociaciones con las categorías

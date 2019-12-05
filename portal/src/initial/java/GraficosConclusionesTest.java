@@ -104,17 +104,17 @@ public class GraficosConclusionesTest {
 	@Test
 	public void gennerarGraficos() {
 		try {
-			// stringDate = df.format(new Date()) + "/" + OBSERVATORIO_AGE;
-			// graficoEvolucionIteracion("age-anterior", 102, 35, 237);
-			// graficoEvolucionIteracion("age-primera", 142, 38, 164);
+			 stringDate = df.format(new Date()) + "/" + OBSERVATORIO_AGE;
+			 graficoEvolucionIteracion("age-anterior", 58, 35, 362);
+			 graficoEvolucionIteracion("age-primera", 197, 50, 208);
 
-//			 stringDate = df.format(new Date()) + "/" + OBSERVATORIO_CCAA;
-//			 graficoEvolucionIteracion("ccaa-anterior", 45, 11, 95);
-//			 graficoEvolucionIteracion("ccaa-primera", 46, 11, 94);
+			 stringDate = df.format(new Date()) + "/" + OBSERVATORIO_CCAA;
+			 graficoEvolucionIteracion("ccaa-anterior", 25, 11, 116);
+			 graficoEvolucionIteracion("ccaa-primera", 10, 57, 85);
 
-			stringDate = df.format(new Date()) + "/" + OBSERVATORIO_EELL;
-			graficoEvolucionIteracion("eell-anterior", 47, 16, 133);
-			graficoEvolucionIteracion("eell-primera", 57, 24, 115);
+//			stringDate = df.format(new Date()) + "/" + OBSERVATORIO_EELL;
+//			graficoEvolucionIteracion("eell-anterior", 47, 16, 133);
+//			graficoEvolucionIteracion("eell-primera", 57, 24, 115);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,22 +131,29 @@ public class GraficosConclusionesTest {
 	public void generarEvolSegmentos() throws IOException {
 
 //		// CCAA
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 21, 26, 53),
-//				new Datos("Noviembre 2018", 32, 26, 42), new Datos("Junio 2019", 25, 30, 45) }, "Principales", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 39, 22, 39),
-//				new Datos("Noviembre 2018", 31, 32, 37), new Datos("Junio 2019", 42, 32, 26) }, "Boletines", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 84, 16, 0), new Datos("Noviembre 2018", 79, 16, 5),
-//				new Datos("Junio 2019", 57, 32, 11) }, "Parlamentos", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 52, 32, 16),
-//				new Datos("Noviembre 2018", 45, 35, 20), new Datos("Junio 2019", 37, 26, 37) }, "Sedes", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 42, 26, 32),
-//				new Datos("Noviembre 2018", 42, 16, 42), new Datos("Junio 2019", 26, 26, 47) }, "Educación", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 32, 21, 47),
-//				new Datos("Noviembre 2018", 31, 11, 58), new Datos("Junio 2019", 26, 37, 37) }, "Empleo", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 58, 42, 0),
-//				new Datos("Noviembre 2018", 63, 26, 11), new Datos("Junio 2019", 57, 32, 11) }, "Salud", "CCAA");
-//		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 31, 32, 37),
-//				new Datos("Noviembre 2018", 29, 41, 29), new Datos("Junio 2019", 33, 22, 44) }, "Tributos", "CCAA");
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 21, 26, 53),
+				new Datos("Noviembre 2018", 32, 26, 42), new Datos("Junio 2019", 25, 30, 45),new Datos("Noviembre 2019", 16,28,56)  }, "Principales", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 39, 22, 39),
+				new Datos("Noviembre 2018", 31, 32, 37), new Datos("Junio 2019", 42, 32, 26),new Datos("Noviembre 2019", 32,21,47)  }, "Boletines", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 84, 16, 0), new Datos("Noviembre 2018", 79, 16, 5),
+				new Datos("Junio 2019", 57, 32, 11),new Datos("Noviembre 2019", 70,20,10)  }, "Parlamentos", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 52, 32, 16),
+				new Datos("Noviembre 2018", 45, 35, 20), new Datos("Junio 2019", 37, 26, 37),new Datos("Noviembre 2019", 36,11,53)  }, "Sedes", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 42, 26, 32),
+				new Datos("Noviembre 2018", 42, 16, 42), new Datos("Junio 2019", 26, 26, 47),new Datos("Noviembre 2019", 21,37,42)  }, "Educación", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 32, 21, 47),
+				new Datos("Noviembre 2018", 31, 11, 58), new Datos("Junio 2019", 26, 37, 37),new Datos("Noviembre 2019", 41,11,47)  }, "Empleo", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 58, 42, 0),
+				new Datos("Noviembre 2018", 63, 26, 11), new Datos("Junio 2019", 57, 32, 11),new Datos("Noviembre 2019", 53,21,25)  }, "Salud", "CCAA");
+		
+		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 31, 32, 37),
+				new Datos("Noviembre 2018", 29, 41, 29), new Datos("Junio 2019", 33, 22, 44),new Datos("Noviembre 2019", 26,26,47)  }, "Tributos", "CCAA");
 //
 //		// EELL
 //		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 49, 14, 37),
@@ -160,15 +167,20 @@ public class GraficosConclusionesTest {
 
 		// AGE
 		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 0,22,78),
-				new Datos("Noviembre 2018", 14,9,77), new Datos("Junio 2019", 9,5,86) }, "Principales", "AGE");
+				new Datos("Noviembre 2018", 14,9,77), new Datos("Junio 2019", 9,5,86), new Datos("Noviembre 2019", 0,14,86)  }, "Principales", "AGE");
+		
 		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 32,18,49),
-				new Datos("Noviembre 2018", 33,15,52), new Datos("Junio 2019", 26,16,58) }, "Organismos", "AGE");
+				new Datos("Noviembre 2018", 33,15,52), new Datos("Junio 2019", 26,16,58),new Datos("Noviembre 2019", 28,13,59) }, "Organismos", "AGE");
+		
 		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 26,8,66), new Datos("Noviembre 2018", 20,15,64),
-				new Datos("Junio 2019", 23,9,68) }, "Temáticos", "AGE");
+				new Datos("Junio 2019", 23,9,68),new Datos("Noviembre 2019", 23,6,71) }, "Temáticos", "AGE");
+		
 		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 41,18,41), new Datos("Noviembre 2018", 44,12,44),
-				new Datos("Junio 2019", 44,6,50) }, "Otros", "AGE");
+				new Datos("Junio 2019", 44,6,50),new Datos("Noviembre 2019", 40,13,47) }, "Otros", "AGE");
+		
 		generarEvolSegmentoCCAA(new Datos[] { new Datos("Mayo 2018", 24,11,65), new Datos("Noviembre 2018", 23,11,66),
-				new Datos("Junio 2019", 24,9,67) }, "Sedes", "AGE");
+				new Datos("Junio 2019", 24,9,67),new Datos("Noviembre 2019", 26,13,61) }, "Sedes", "AGE");
+
 
 	}
 
@@ -192,7 +204,7 @@ public class GraficosConclusionesTest {
 				pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
 		// chartForm.setTitle(segmento);
 
-		createStackedBarChart(chartForm, noDataMess, "/home/alvaro/Documents/minhafp/2018_2019/observatorios mayo 2019/"
+		createStackedBarChart(chartForm, noDataMess, "/home/alvaro/Documents/oaw/2019_2020/observatorios mayo 2019/"
 				+ observatorio + "_" + segmento + "_evol.jpg");
 	}
 
@@ -218,7 +230,7 @@ public class GraficosConclusionesTest {
 
 		final PropertiesManager pmgr = new PropertiesManager();
 		GraphicsUtils.createPieChart(dataSet, "", sectionLabel, total,
-				"/home/alvaro/Documents/minhafp/2018_2019/observatorios mayo 2019/eell/oaw-graficas-" + stringDate
+				"/home/alvaro/Documents/oaw/2019_2020/observatorios mayo 2019/oaw-graficas-" + stringDate
 						+ "/evol_" + iteracion + ".jpg",
 				"", pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"), 565, 464);
 	}

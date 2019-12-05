@@ -686,7 +686,13 @@ public class CheckCode {
 				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_DATE;
 			} else if ("section-has-phone".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_PHONE;
-			} else {
+			} else if ("empty-table".equals(stringCall)) {
+				functionId = CheckFunctionConstants.FUNCTION_EMPTY_TABLE_70;
+			} 
+			
+			
+			
+			else {
 				Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
 				return false;
 			}

@@ -1,7 +1,7 @@
 -- Nuevas metodologías
 INSERT INTO tguidelines (cod_guideline, des_guideline) VALUES (9, 'observatorio-une-en2019.xml');
 INSERT INTO tguidelines (cod_guideline, des_guideline) VALUES (10, 'observatorio-accesibilidad.xml');
-INSERT INTO cartucho (id_cartucho, nombre, instalado, aplicacion, numrastreos, numhilos, id_guideline) VALUES (9, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-EN2019', 15, 50, 9);
+INSERT INTO cartucho (id_cartucho, nombre, instalado, aplicacion, numrastreos, numhilos, id_guideline) VALUES (9, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'UNE-EN301549:2019 (beta)', 15, 50, 9);
 INSERT INTO cartucho (id_cartucho, nombre, instalado, aplicacion, numrastreos, numhilos, id_guideline) VALUES (10, 'es.inteco.accesibilidad.CartuchoAccesibilidad', 1, 'Accesibilidad', 15, 50, 10);
 INSERT INTO usuario_cartucho (id_usuario, id_cartucho) VALUES(1, 9);
 INSERT INTO usuario_cartucho (id_usuario, id_cartucho) VALUES(1, 10);
@@ -65,13 +65,6 @@ CREATE TABLE clasificacion_etiqueta (
 INSERT INTO clasificacion_etiqueta (id_clasificacion, nombre) VALUES ('1', 'Temática'), ('2', 'Distribución'), ('3', 'Recurrencia');
 
 
-CREATE TABLE etiquetas_lista (
-	id_etiqueta_lista INT(20) NOT NULL AUTO_INCREMENT , 
-	id_etiqueta INT(20) NOT NULL , 
-	id_lista INT(20) NOT NULL , 
-	PRIMARY KEY (id_etiqueta_lista)
-);
-
 CREATE TABLE semilla_etiqueta (
   id_lista bigint(20) NOT NULL DEFAULT 0,
   id_etiqueta bigint(20) NOT NULL DEFAULT 0
@@ -91,6 +84,8 @@ CREATE TABLE observatorio_plantillas (
   PRIMARY KEY (id_plantilla)
 );
 
-ALTER TABLE basic_service ADD complexity VARCHAR(128);
+ALTER TABLE basic_service ADD complexity VARCHAR(128) NULL;
+
+ALTER TABLE observatorio ADD tags VARCHAR(1024) NULL;
 
 

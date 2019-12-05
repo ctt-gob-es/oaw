@@ -210,6 +210,7 @@ public interface CheckFunctionConstants {
 	int FUNCTION_SECTION_HAS_DATE = 189;
 	int FUNCTION_SECTION_HAS_PHONE = 190;
 	
+	int FUNCTION_EMPTY_TABLE_70 = 191;
 
 	// check codes
 	int CHECK_STATUS_OK = 1;

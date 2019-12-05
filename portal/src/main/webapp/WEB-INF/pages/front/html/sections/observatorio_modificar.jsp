@@ -19,6 +19,63 @@ Email: observ.accesibilidad@correo.gob.es
 <html:javascript formName="ModificarObservatorioForm" />
 
 
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css"> 
+<style>
+.tagbox-wrapper input {
+
+display: block;
+    width: 100% !important;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    border:none !important;
+}
+
+
+}
+</style>
+
+<script>
+	$(window).on('load', function() {
+
+		var $jq = $.noConflict();
+		$jq(document).ready(function() {
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
+
+				$('#tagsFilter').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user'
+				});
+
+			})
+
+		});
+
+	});
+</script>
+
+
 <div id="main">
 
 	<div id="container_menu_izq">
@@ -63,15 +120,14 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="nombre"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.nombre" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.observatorio.nombre" />:
+						</strong></label>
 						<html:text styleClass="texto" name="ModificarObservatorioForm" property="nombre" styleId="nombre" maxlength="100" />
 					</div>
 
 					<div class="formItem">
 						<label for="tipo"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.tipo" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.observatorio.tipo" /></strong></label>
 						<html:select name="ModificarObservatorioForm" styleClass="textoSelect" styleId="cartucho" property="tipo.id">
 							<logic:iterate name="<%=Constants.TIPOS_VECTOR%>" id="tipo">
 								<bean:define id="idType">
@@ -85,8 +141,8 @@ Email: observ.accesibilidad@correo.gob.es
 					</div>
 
 					<div class="formItem">
-						<label for="type" class="control-label"><strong class="labelVisu">
-							<bean:message key="nuevo.observatorio.ambito" /></strong></label>
+						<label for="type" class="control-label"><strong class="labelVisu"> <bean:message
+									key="nuevo.observatorio.ambito" /></strong></label>
 						<html:select name="ModificarObservatorioForm" styleClass="textoSelect" styleId="ambitoForm"
 							property="ambitoForm.id">
 							<html:option value="0">-</html:option>
@@ -103,8 +159,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="activo"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.activo" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="modificar.observatorio.activo" /></strong></label>
 						<html:select styleClass="textoSelect" styleId="activo" property="activo">
 							<html:option value="true">
 								<bean:message key="select.yes" />
@@ -117,8 +172,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="cartucho"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.cartucho" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="modificar.observatorio.cartucho" /></strong></label>
 						<html:select name="ModificarObservatorioForm" styleClass="textoSelect" styleId="cartucho" property="cartucho.id">
 							<logic:iterate name="<%=Constants.CARTUCHOS_VECTOR %>" id="cartucho">
 								<bean:define id="idCartucho">
@@ -148,6 +203,18 @@ Email: observ.accesibilidad@correo.gob.es
 					</div>
 
 					<div class="formItem">
+						<label for="tags" class="control-label"><strong class="labelVisu"><bean:message
+									key="menu.config.etiquetas" />: </strong></label> 
+									
+<!-- 									<input class="textoSelect form-control" name="tags" autocapitalize="off" -->
+<!-- 							placeholder="Escriba para buscar..." autofocus id="tagsFilter" type="text" value="" /> -->
+
+			
+							<html:text styleClass="texto form-control" name="ModificarObservatorioForm" property="tagsString" styleId="tagsFilter"
+							maxlength="100" />
+					</div>
+
+					<div class="formItem">
 						<label for="lenguaje"><strong class="labelVisu"><bean:message
 									key="modificar.observatorio.lenguaje" /></strong></label>
 						<html:select styleClass="textoSelect" styleId="lenguaje" property="lenguaje">
@@ -164,8 +231,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="periodicidad"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.periodicidad" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="modificar.observatorio.periodicidad" />: </strong></label>
 						<html:select styleClass="textoSelect" styleId="periodicidad" property="periodicidad">
 							<logic:iterate name="ModificarObservatorioForm" property="periodicidadVector" id="periodicidads">
 								<c:if test="${ModificarObservatorioForm.periodicidad==periodicidads.id}">
@@ -182,8 +249,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="profundidad"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.profundidad" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="modificar.observatorio.profundidad" />: </strong></label>
 						<bean:define id="maxProfundidad">
 							<inteco:properties key="profundidadMax.rastreo" file="crawler.properties" />
 						</bean:define>
@@ -203,8 +270,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="amplitud"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.amplitud" />: </strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="modificar.observatorio.amplitud" />: </strong></label>
 						<bean:define id="maxAmplitud">
 							<inteco:properties key="pagPorNivelMax.rastreo" file="crawler.properties" />
 						</bean:define>
@@ -226,8 +293,8 @@ Email: observ.accesibilidad@correo.gob.es
 
 					<div class="formItem">
 						<label for="pseudoAleatorio"><strong class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym>
-							<bean:message key="modificar.observatorio.pseudoaleatorio" /></strong></label>
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+									key="modificar.observatorio.pseudoaleatorio" /></strong></label>
 						<html:select name="ModificarObservatorioForm" styleClass="textoSelect" styleId="pseudoAleatorio"
 							property="pseudoAleatorio">
 							<html:option value="true">
@@ -245,8 +312,8 @@ Email: observ.accesibilidad@correo.gob.es
 						</legend>
 						<div class="formItem">
 							<label for="fechaInicio" class="labelCorto"><strong class="labelVisu"><acronym
-									title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="modificar.observatorio.fechaInicio" />: </strong></label>
+									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+										key="modificar.observatorio.fechaInicio" />: </strong></label>
 							<html:text styleClass="textoCorto" name="ModificarObservatorioForm" property="fechaInicio" styleId="fechaInicio"
 								onkeyup="escBarra(event, document.forms['ModificarCuentaUsuarioForm'].elements['fechaInicio'], 1)"
 								maxlength="10" />
@@ -259,16 +326,16 @@ Email: observ.accesibilidad@correo.gob.es
 
 						<div class="formItem">
 							<label for="horaInicio" class="labelCorto"><strong class="labelVisu"><acronym
-									title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="modificar.observatorio.horaInicio" />: </strong></label>
+									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+										key="modificar.observatorio.horaInicio" />: </strong></label>
 							<html:select styleClass="textoSelectCorto" styleId="horaInicio" name="ModificarObservatorioForm"
 								property="horaInicio">
 								<html:options name="<%=Constants.HOURS%>" />
 							</html:select>
 
 							<label for="minutoInicio" class="labelCorto"><strong class="labelVisu"><acronym
-									title="<bean:message key="campo.obligatorio" />"> * </acronym>
-								<bean:message key="modificar.observatorio.minutoInicio" />: </strong></label>
+									title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
+										key="modificar.observatorio.minutoInicio" />: </strong></label>
 							<html:select styleClass="textoSelectCorto" styleId="minutoInicio" name="ModificarObservatorioForm"
 								property="minutoInicio">
 								<html:options name="<%=Constants.MINUTES%>" />

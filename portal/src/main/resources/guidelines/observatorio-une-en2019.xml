@@ -168,6 +168,8 @@
 					<check id="415" />
 					<!-- Uso de encabezados como caption de una tabla -->
 					<check id="464" />
+					<!-- Tablas con más del 70% de td vacíos -->
+					<check id="492" />
 				</checks>
 			</subgroup>
 
