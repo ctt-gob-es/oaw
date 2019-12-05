@@ -24,7 +24,43 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	<script src="/oaw/js/jquery-3.1.1.min.js"></script>
 </head>
+<script type="text/javascript">
+ 	var $jn = jQuery.noConflict();
 
+		$jn('#complexity').empty();
+		$jn
+				.ajax(
+						{
+							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listComplejidades',
+						})
+				.done(
+						function(data) {
+
+							var response = $jn.parseJSON(data);
+
+							//$jn('#selectComplejidadesNuevaSemilla').append(
+							//		"<option value=''></option>");
+							if (response && response.length) {
+								for (var i = 0, l = response.length; i < l; i++) {
+									var ri = response[i];
+									if(ri.name == "Media"){
+									$jn('#complexity')
+											.append(
+														'<option selected value="'+ri.id+'">'
+														+ ri.name
+														+ '</option>');
+								}else{
+									$jn('#complexity')
+									.append(
+												'<option  value="'+ri.id+'">'
+												+ ri.name
+												+ '</option>');
+								}
+							}
+							}
+
+						});
+</script>		
 <body>
 	<div id="cabeza">
 		<h1>
@@ -193,7 +229,7 @@ fieldset p {
 							<fieldset>
 								<legend>Opciones de rastreo</legend>
 
-								<p>La complejidad, determinan la profundidad y la amplitud y cu&aacute;ntas
+								<p>La complejidad determina la profundidad y la amplitud y cu&aacute;ntas
 									p&aacute;ginas se analizar&aacute;n en el informe
 									(profundidad*amplitud) y c&oacute;mo se hace la
 									selecci&oacute;n aleatoria de &eacute;stas. Si se desea
@@ -203,11 +239,13 @@ fieldset p {
 								<p class="form-inline">
 									<label for="complexity">Complejidad:</label> <select
 										id="complexity" name="complexity" class="form-control">
-										<option value="1">Baja</option>
+										<!-- <option value="1">Baja</option>
 										<option selected="selected" value="2">Media</option>
-										<option value="3">Alta</option>
+										<option value="3">Alta</option> -->
 									</select>
 								</p>
+
+
 
 <!-- 								<p class="form-inline"> -->
 <!-- 									<label for="profundidad">Profundidad:</label> <select -->
@@ -511,14 +549,7 @@ fieldset p {
         $("#radio-1").click();
      -->
     
-	
-	
-	
-	
-	
-	
-	
-	
+
 	</script>
 	<!-- Bootstrap core JavaScript -->
 	<!-- Placed at the end of the document so the pages load faster -->
