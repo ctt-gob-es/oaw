@@ -181,8 +181,6 @@ public final class PrimaryExportPdfUtils {
 			final HttpServletRequest request, final String generalExpPath, final String seed, final String content, final long idObservatoryExecution, final long observatoryType) throws Exception {
 		// Nuevos textos UNE-2012-B
 		try (Connection c = DataBaseManager.getConnection()) {
-			final FulfilledCrawlingForm crawling = RastreoDAO.getFullfilledCrawlingExecution(c, idRastreoRealizado);
-			final String application = CartuchoDAO.getApplication(c, Long.valueOf(crawling.getIdCartridge()));
 			if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 				exportToPdf(pdfBuilder, idRastreoRealizado, evaluationIds, previousEvaluationIds, MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019), generalExpPath, seed,
 						content, idObservatoryExecution, observatoryType);
@@ -225,7 +223,6 @@ public final class PrimaryExportPdfUtils {
 			Logger.putLog("No se ha podido crear los directorios para exportar a PDF", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 		Logger.putLog("Exportando a PDF BasicServicePdfReport.exportToPdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_DEBUG);
-		// TODO: Add document metadata (author, creator, subject, title...)
 		final Document document = new Document(PageSize.A4, 50, 50, 110, 72);
 		try (FileOutputStream outputFileStream = new FileOutputStream(file)) {
 			try (Connection connection = DataBaseManager.getConnection()) {
@@ -267,15 +264,15 @@ public final class PrimaryExportPdfUtils {
 					pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 					pdfTocManager.addChapterCount();
 					if (!pdfBuilder.isBasicService()) {
-						// TODO Seed detail chapter
+						// Seed detail chapter
 						((AnonymousResultExportPdfAccesibilidad) pdfBuilder).createSeedDetailsChapter(messageResourcesAccesibility, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT,
 								crawling.getSeed());
 					}
 					pdfTocManager.addChapterCount();
-					// TODO Muestra de páginas
+					// Muestra de páginas
 					pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
 					pdfTocManager.addChapterCount();
-					// TODO Resumen de resultados
+					// Resumen de resultados
 					final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
 					final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
 					AnonymousResultExportPdfAccesibilidad.addObservatoryScoreSummary(pdfBuilder, messageResourcesAccesibility, document, pdfTocManager, currentEvaluationPageList,
@@ -288,7 +285,7 @@ public final class PrimaryExportPdfUtils {
 					// Detalles por página
 					final ObservatoryPageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new ObservatoryPageResultsPdfSectionBuilder(currentEvaluationPageList);
 					observatoryPageResultsSectionBuilder.addPageResultsAccesibility(messageResourcesAccesibility, document, pdfTocManager, true);
-//Anexo
+					// Annex
 					pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType,
 							pdfBuilder.isBasicService());
 				} else
@@ -306,13 +303,13 @@ public final class PrimaryExportPdfUtils {
 					// Introduction chapter
 					pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 					pdfTocManager.addChapterCount();
-					// TODO Seed detail chapter
+					// Seed detail chapter
 					((AnonymousResultExportPdfUNEEN2019) pdfBuilder).createSeedDetailsChapter(messageResources2019, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, crawling.getSeed());
 					pdfTocManager.addChapterCount();
-					// TODO Muestra de páginas
+					// Muestra de páginas
 					pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
 					pdfTocManager.addChapterCount();
-					// TODO Resumen de resultados
+					// Resumen de resultados
 					final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
 					final RankingInfo rankingPrevio = crawling != null ? observatoryManager.calculatePreviousRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
 					AnonymousResultExportPdfUNEEN2019.addObservatoryScoreSummary(pdfBuilder, messageResources2019, document, pdfTocManager, currentEvaluationPageList, previousEvaluationPageList, file,
@@ -326,7 +323,7 @@ public final class PrimaryExportPdfUtils {
 					// Detalles por página
 					final ObservatoryPageResultsPdfSectionBuilder observatoryPageResultsSectionBuilder = new ObservatoryPageResultsPdfSectionBuilder(currentEvaluationPageList);
 					observatoryPageResultsSectionBuilder.addPageResults(messageResources2019, document, pdfTocManager, true);
-//Anexo
+					// Annex
 					pdfBuilder.createMethodologyChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType,
 							pdfBuilder.isBasicService());
 				} else {
