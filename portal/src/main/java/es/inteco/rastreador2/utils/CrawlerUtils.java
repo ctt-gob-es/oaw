@@ -66,7 +66,6 @@ import es.inteco.rastreador2.pdf.ExportAction;
  * The Class CrawlerUtils.
  */
 public final class CrawlerUtils {
-
 	/**
 	 * Instantiates a new crawler utils.
 	 */
@@ -82,8 +81,7 @@ public final class CrawlerUtils {
 	 * @param mailTo              the mail to
 	 * @return the crawler data
 	 */
-	public static CrawlerData getCrawlerData(DatosCartuchoRastreoForm dcrForm, Long idFulfilledCrawling, String user,
-			List<String> mailTo) {
+	public static CrawlerData getCrawlerData(DatosCartuchoRastreoForm dcrForm, Long idFulfilledCrawling, String user, List<String> mailTo) {
 		return getCrawlerData(dcrForm, idFulfilledCrawling, user, mailTo, null);
 	}
 
@@ -97,8 +95,7 @@ public final class CrawlerUtils {
 	 * @param responsiblesTo      the responsibles to
 	 * @return the crawler data
 	 */
-	public static CrawlerData getCrawlerData(DatosCartuchoRastreoForm dcrForm, Long idFulfilledCrawling, String user,
-			List<String> mailTo, List<String> responsiblesTo) {
+	public static CrawlerData getCrawlerData(DatosCartuchoRastreoForm dcrForm, Long idFulfilledCrawling, String user, List<String> mailTo, List<String> responsiblesTo) {
 		CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setNombreRastreo(dcrForm.getNombre_rastreo());
 		crawlerData.setIdCrawling(dcrForm.getId_rastreo());
@@ -174,7 +171,6 @@ public final class CrawlerUtils {
 	private static List<String> getList(final String[] array) {
 		final List<String> list = new ArrayList<>();
 		Collections.addAll(list, array);
-
 		return list;
 	}
 
@@ -185,20 +181,16 @@ public final class CrawlerUtils {
 	 * @return the crawlings form
 	 * @throws Exception the exception
 	 */
-	public static List<FulfilledCrawlingForm> getCrawlingsForm(final List<FulFilledCrawling> crawlings)
-			throws Exception {
+	public static List<FulfilledCrawlingForm> getCrawlingsForm(final List<FulFilledCrawling> crawlings) throws Exception {
 		final List<FulfilledCrawlingForm> crawlingsForm = new ArrayList<>();
-
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
-
 		for (FulFilledCrawling crawling : crawlings) {
 			final FulfilledCrawlingForm crawlingForm = new FulfilledCrawlingForm();
 			BeanUtils.copyProperties(crawlingForm, crawling);
 			crawlingForm.setDate(df.format(crawling.getDate()));
 			crawlingsForm.add(crawlingForm);
 		}
-
 		return crawlingsForm;
 	}
 
@@ -211,11 +203,9 @@ public final class CrawlerUtils {
 	 * @return the fecha inicio
 	 * @throws ParseException the parse exception
 	 */
-	public static Date getFechaInicio(final String fecha, final String hora, final String minutos)
-			throws ParseException {
+	public static Date getFechaInicio(final String fecha, final String hora, final String minutos) throws ParseException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.form.format"));
-
 		return df.parse(fecha + " " + hora + ":" + minutos);
 	}
 
@@ -241,7 +231,6 @@ public final class CrawlerUtils {
 	public static boolean hasAccess(final HttpServletRequest request, final String accessRol) {
 		final List<String> roleList = CrawlerUtils.getRoles(accessRol);
 		final List<String> rolesesion = (ArrayList<String>) request.getSession().getAttribute(Constants.ROLE);
-
 		if (rolesesion != null) {
 			for (String role : roleList) {
 				if (rolesesion.contains(role)) {
@@ -249,8 +238,7 @@ public final class CrawlerUtils {
 				}
 			}
 		} else {
-			Logger.putLog("Error: el usuario no tiene sus roles en session", CrawlerUtils.class,
-					Logger.LOG_LEVEL_ERROR);
+			Logger.putLog("Error: el usuario no tiene sus roles en session", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 		return false;
 	}
@@ -263,8 +251,7 @@ public final class CrawlerUtils {
 	 * @param cartucho               the cartucho
 	 * @return the insertar rastreo form
 	 */
-	public static InsertarRastreoForm insertarDatosAutomaticosCU(InsertarRastreoForm insertarRastreoForm,
-			es.inteco.rastreador2.actionform.cuentausuario.NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm,
+	public static InsertarRastreoForm insertarDatosAutomaticosCU(InsertarRastreoForm insertarRastreoForm, es.inteco.rastreador2.actionform.cuentausuario.NuevaCuentaUsuarioForm nuevaCuentaUsuarioForm,
 			String cartucho) {
 		if (!cartucho.equals("")) {
 			insertarRastreoForm.setCodigo(nuevaCuentaUsuarioForm.getNombre() + "-" + cartucho);
@@ -278,7 +265,6 @@ public final class CrawlerUtils {
 		insertarRastreoForm.setPseudoAleatorio(nuevaCuentaUsuarioForm.isPseudoAleatorio());
 		insertarRastreoForm.setLenguaje(nuevaCuentaUsuarioForm.getLenguaje());
 		insertarRastreoForm.setInDirectory(nuevaCuentaUsuarioForm.isInDirectory());
-
 		return insertarRastreoForm;
 	}
 
@@ -290,8 +276,7 @@ public final class CrawlerUtils {
 	 * @param cartucho                   the cartucho
 	 * @return the insertar rastreo form
 	 */
-	public static InsertarRastreoForm insertarDatosAutomaticos(InsertarRastreoForm insertarRastreoForm,
-			ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String cartucho) {
+	public static InsertarRastreoForm insertarDatosAutomaticos(InsertarRastreoForm insertarRastreoForm, ModificarCuentaUsuarioForm modificarCuentaUsuarioForm, String cartucho) {
 		if (!cartucho.equals("")) {
 			insertarRastreoForm.setCodigo(modificarCuentaUsuarioForm.getNombre() + "-" + cartucho);
 		} else {
@@ -323,32 +308,27 @@ public final class CrawlerUtils {
 	 * @param delete   the delete
 	 * @throws Exception the exception
 	 */
-	public static void returnFile(final HttpServletResponse response, final String filename, final String mimeType,
-			final boolean delete) throws Exception {
+	public static void returnFile(final HttpServletResponse response, final String filename, final String mimeType, final boolean delete) throws Exception {
 		final File file = new File(filename);
-
 		try (FileInputStream fileIn = new FileInputStream(file); final OutputStream out = response.getOutputStream()) {
-
 			response.setContentType(mimeType);
-			response.setContentLength((int) file.length());
 			response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-
-			final byte[] buffer = new byte[2048];
-			int bytesRead = fileIn.read(buffer);
-			while (bytesRead >= 0) {
-				if (bytesRead > 0) {
-					out.write(buffer, 0, bytesRead);
-					bytesRead = fileIn.read(buffer);
+			byte[] buf = new byte[8192];
+			int bytesread = 0, bytesBuffered = 0;
+			while ((bytesread = fileIn.read(buf)) > -1) {
+				out.write(buf, 0, bytesread);
+				bytesBuffered += bytesread;
+				if (bytesBuffered > 1024 * 1024) { // flush after 1MB
+					bytesBuffered = 0;
+					out.flush();
 				}
 			}
-			out.flush();
 		} catch (Exception e) {
 			Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw e;
 		} finally {
 			if (delete && !file.delete()) {
-				Logger.putLog("No se ha podido borrar el fichero: " + file.getAbsolutePath(), ExportAction.class,
-						Logger.LOG_LEVEL_ERROR);
+				Logger.putLog("No se ha podido borrar el fichero: " + file.getAbsolutePath(), ExportAction.class, Logger.LOG_LEVEL_ERROR);
 			}
 		}
 	}
@@ -362,15 +342,11 @@ public final class CrawlerUtils {
 	 * @param mimeType the mime type
 	 * @throws Exception the exception
 	 */
-	public static void returnData(final HttpServletResponse response, final byte[] data, final String filename,
-			final String mimeType) throws Exception {
-		try (ByteArrayInputStream fileIn = new ByteArrayInputStream(data);
-				final OutputStream out = response.getOutputStream()) {
-
+	public static void returnData(final HttpServletResponse response, final byte[] data, final String filename, final String mimeType) throws Exception {
+		try (ByteArrayInputStream fileIn = new ByteArrayInputStream(data); final OutputStream out = response.getOutputStream()) {
 			response.setContentType(mimeType);
 			response.setContentLength(data.length);
 			response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", filename));
-
 			final byte[] buffer = new byte[2048];
 			int bytesRead = fileIn.read(buffer);
 			while (bytesRead >= 0) {
@@ -395,13 +371,11 @@ public final class CrawlerUtils {
 	 * @param mimeType the mime type
 	 * @throws Exception the exception
 	 */
-	public static void returnStringAsFile(final HttpServletResponse response, final String content,
-			final String filename, final String mimeType) throws Exception {
+	public static void returnStringAsFile(final HttpServletResponse response, final String content, final String filename, final String mimeType) throws Exception {
 		try (PrintWriter out = response.getWriter()) {
 			response.setContentType(mimeType);
 			response.setContentLength(content.length());
 			response.setHeader("Content-disposition", String.format("attachment; filename=\"%s\"", filename));
-
 			out.print(content);
 			out.flush();
 		} catch (Exception e) {
@@ -418,15 +392,13 @@ public final class CrawlerUtils {
 	 * @param isHtml   the is html
 	 * @throws Exception the exception
 	 */
-	public static void returnText(final HttpServletResponse response, final String text, final boolean isHtml)
-			throws Exception {
+	public static void returnText(final HttpServletResponse response, final String text, final boolean isHtml) throws Exception {
 		try (OutputStream out = response.getOutputStream()) {
 			if (isHtml) {
 				response.setContentType("text/html");
 			} else {
 				response.setContentType("text/plain");
 			}
-
 			out.write(text.getBytes());
 			out.flush();
 		} catch (Exception e) {
@@ -443,20 +415,15 @@ public final class CrawlerUtils {
 	 */
 	public static void warnAdministrators(final Exception exception, final Class clazz) {
 		Logger.putLog("Excepción: ", clazz, Logger.LOG_LEVEL_ERROR, exception);
-
 		try {
 			final PropertiesManager pmgr = new PropertiesManager();
-			final List<String> adminMails = DAOUtils
-					.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));
+			final List<String> adminMails = DAOUtils.getMailsByRol(Long.parseLong(pmgr.getValue(CRAWLER_PROPERTIES, "role.administrator.id")));
 			final String alertSubject = pmgr.getValue(MAIL_PROPERTIES, "alert.from.subject");
-			final String alertText = pmgr.getValue(MAIL_PROPERTIES, "warning.administrator.message")
-					+ exception.getMessage();
-
+			final String alertText = pmgr.getValue(MAIL_PROPERTIES, "warning.administrator.message") + exception.getMessage();
 			MailService mailService = new MailService();
 			mailService.sendMail(adminMails, alertSubject, alertText);
 		} catch (Exception e) {
-			Logger.putLog("No ha sido posible avisar a los administradores: ", NuevoUsuarioSistemaAction.class,
-					Logger.LOG_LEVEL_ERROR, e);
+			Logger.putLog("No ha sido posible avisar a los administradores: ", NuevoUsuarioSistemaAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 	}
 
@@ -504,11 +471,8 @@ public final class CrawlerUtils {
 	public static String getCronExpression(Date date, String cronExpressionPattern) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(date);
-
-		return cronExpressionPattern.replaceAll("min", String.valueOf(calendar.get(Calendar.MINUTE)))
-				.replaceAll("hour", String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)))
-				.replaceAll("daymonth", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)))
-				.replaceAll("month", String.valueOf(getMonthForCronExpression(calendar, cronExpressionPattern)))
+		return cronExpressionPattern.replaceAll("min", String.valueOf(calendar.get(Calendar.MINUTE))).replaceAll("hour", String.valueOf(calendar.get(Calendar.HOUR_OF_DAY)))
+				.replaceAll("daymonth", String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))).replaceAll("month", String.valueOf(getMonthForCronExpression(calendar, cronExpressionPattern)))
 				.replaceAll("year", String.valueOf(calendar.get(Calendar.YEAR)));
 	}
 
@@ -522,19 +486,15 @@ public final class CrawlerUtils {
 	private static int getMonthForCronExpression(Calendar calendar, String cronExpressionPattern) {
 		String regexp = "month/([\\d]*)";
 		Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		int monthPeriod = 0;
 		int firstMonth = calendar.get(Calendar.MONTH) + 1;
-
 		Matcher matcher = pattern.matcher(cronExpressionPattern);
 		if (matcher.find()) {
 			monthPeriod = Integer.parseInt(matcher.group(1));
 		}
-
 		while ((monthPeriod != 0) && (firstMonth - monthPeriod > 0)) {
 			firstMonth = firstMonth - monthPeriod;
 		}
-
 		return firstMonth;
 	}
 
@@ -574,14 +534,12 @@ public final class CrawlerUtils {
 		final String charset;
 		final String regexp = "<meta.*charset=(.*?)\"";
 		final Pattern pattern = Pattern.compile(regexp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-
 		final Matcher matcher = pattern.matcher(source);
 		if (matcher.find()) {
 			charset = matcher.group(1);
 		} else {
 			charset = Constants.DEFAULT_ENCODING;
 		}
-
 		if (isValidCharset(charset)) {
 			return charset;
 		} else {

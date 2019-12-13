@@ -18,24 +18,18 @@ package es.inteco.common;
 import java.awt.*;
 
 public interface Constants {
-
 	// ARCHIVOS DE PROPIEDADES
-
 	String CRAWLER_PROPERTIES = "crawler.properties";
 	String CRAWLER_CORE_PROPERTIES = "crawler.core.properties";
 	String INTAV_PROPERTIES = "intav.properties";
 	String PDF_PROPERTIES = "pdf.properties";
 	String BASIC_SERVICE_PROPERTIES = "basic.service.properties";
 	String MAIL_PROPERTIES = "mail.properties";
-
 	String TRUE = "true";
 	String FALSE = "false";
-
 	String LOCALE = "lang";
 	String LOGIN_PARAM = "log";
-
 	String LANGUAGE_LIST = "languageList";
-
 	// FORWARD
 	String LOAD_SEEDS_FORWARD = "observatorySeed";
 	String UPLOAD_CONCLUSION_FORM = "uploadConclusionForm";
@@ -60,6 +54,7 @@ public interface Constants {
 	String INDEX_ADMIN = "indexAdmin";
 	String GET_SEEDS = "getSeeds";
 	String REGENERATE_RESULTS = "regenerateResults";
+	String STOP_CRAWL = "stop";
 	String GET_SEED_AMBITS = "getSeedAmbits";
 	String SEED_AMBITS = "seedAmbits";
 	String DELETE_AMBIT = "deleteAmbit";
@@ -117,7 +112,8 @@ public interface Constants {
 	String ADD_CATEGORY_SEED = "addCategorySeed";
 	String UPDATE_CATEGORY_SEED = "updateCategorySeed";
 	String CATEGORY_SEED_FORM = "categorySeedForm";
-	String GET_CATEGORY_SEEDS_FILE = "getCategorySeedsFile";	String LOAD_FORM = "loadForm";
+	String GET_CATEGORY_SEEDS_FILE = "getCategorySeedsFile";
+	String LOAD_FORM = "loadForm";
 	String RASTREO_TEST = "rastreoTest";
 	String LAUNCH_TEST = "launchTest";
 	String RASTREO_TEST_RESULTS = "rastreoTestResults";
@@ -141,7 +137,6 @@ public interface Constants {
 	String ETIQUETA_FORM = "EtiquetaForm";
 	String ADD_TAG_SEED = "addTagSeed";
 	String UPDATE_TAG_SEED = "updateTagSeed";
-
 	// XML semillas
 	String XML_LISTA = "lista";
 	String XML_ID = "id";
@@ -157,11 +152,9 @@ public interface Constants {
 	String XML_AMBITO = "ambito";
 	String XML_COMPLEJIDAD = "complejidad";
 	String XML_ETIQUETAS = "etiquetas";
-
 	String ERROR = "error";
 	String ERROR1 = "error1";
 	String ERROR_TIMEOUT = "errorTimeout";
-
 	String SHOW_CATEGORY_LIST = "categoryList";
 	String NO_PERMISSION = "no_permission";
 	String ERROR_PAGE = "errorPage";
@@ -180,13 +173,11 @@ public interface Constants {
 	String GET_FULFILLED_OBSERVATORIES = "getFulfilledObservatories";
 	String FULFILLED_OBSERVATORIES = "fulfilledObservatories";
 	String GET_ANNEXES = "getAnnexes";
-
 	String CRAWLER_GRAPHIC_TOTAL_RESULTS = "totalResults";
 	String CRAWLER_GRAPHIC_GLOBAL_RESULTS = "globalResults";
 	String CRAWLER_GRAPHIC_GLOBAL_RESULTS_LIST_N1 = "gResultsList1";
 	String CRAWLER_GRAPHIC_GLOBAL_RESULTS_LIST_N2 = "gResultsList2";
 	String CRAWLER_GRAPHIC_TOTAL_RESULTS_LIST = "tResultsList";
-
 	String TYPE_OBSERVATORY = "Otype";
 	String OBSERVATORY_GRAPHIC = "getObservatoryGraphic";
 	int OBSERVATORY_HAVE_RESULTS = 1;
@@ -240,7 +231,6 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_CATEGORIES = "cat";
 	String OBSERVATORY_NUM_CAS_GRAPH = "numGraphCAS";
 	String OBSERVATORY_NUM_CASC_GRAPH = "numGraphCASC";
-	
 	String OBSERVATORY_NUM_CPS_GRAPH = "numGraphCPS";
 	String OBSERVATORY_NUM_CMPS_GRAPH = "numGraphCMPS";
 	String OBSERVATORY_NUM_CMPC_GRAPH = "numGraphCMPC";
@@ -271,7 +261,6 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_EVOLUTION_224_VERIFICATION = "2.2.4";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_225_VERIFICATION = "2.2.5";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_226_VERIFICATION = "2.2.6";
-
 	String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_A = "evolutionDataListA";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AA = "evolutionDataListAA";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_NV = "evolutionDataListNV";
@@ -307,23 +296,19 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AP = "evolutionDataListAP";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AE = "evolutionDataListAE";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_DATA_LIST_AN = "evolutionDataListAN";
-
 	String OBSERVATORY_GRAPHIC_GLOBAL_FORWARD = "getGlobalGraphics";
 	String OBSERVATORY_GRAPHIC_SEGMENT_FORWARD = "getSegmentGraphics";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_FORWARD = "getEvolutionGraphics";
-
 	String OBSERVATORY_GRAPHIC_ASPECT_GENERAL_ID = "1";
 	String OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE_ID = "2";
 	String OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION_ID = "3";
 	String OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE_ID = "4";
 	String OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION_ID = "5";
-
 	String OBSERVATORY_GRAPHIC_ASPECT_GENERAL = "General";
 	String OBSERVATORY_GRAPHIC_ASPECT_ALTERNATIVE = "Alternativas";
 	String OBSERVATORY_GRAPHIC_ASPECT_PRESENTATION = "Presentación";
 	String OBSERVATORY_GRAPHIC_ASPECT_STRUCTURE = "Estructura";
 	String OBSERVATORY_GRAPHIC_ASPECT_NAVIGATION = "Navegación";
-
 	String OBS_PAGINATION_RESULT_FROM = "resultFrom";
 	String OBS_PAGINATION_RESULTNA_FROM = "resultFromNA";
 	String OBS_PAGINATION = "pagination";
@@ -333,36 +318,27 @@ public interface Constants {
 	String SEMILLA_EDITADA = "semillaEditada";
 	String USUARIO_DUPLICADO = "usuarioDuplicado";
 	String FORMATO_FECHA_INCORRECTO = "formatoFechaIncorrecto";
-
 	String NUEVO_RASTREO_CLIENTE = "nuevoRastreoCliente";
-
 	String EXPORT_PDF_TYPE = "exportType";
 	String EXPORT_PDF_INTAV = "intavPDF";
 	String EXPORT_PDF_INTAV_SIMPLE = "intavSimplePDF";
 	String EXPORT_PDF_LENOX = "lenoxPDF";
 	String EXPORT_PDF_REGENERATE = "regeneratePDF";
 	String EXPORT_ALL_PDFS = "exportAllPdfs";
-
 	String PDF_ERROR_FORWARD = "verRastreosRealizados";
-
 	Color ROJO_INTECO = new Color(225, 18, 13);
 	Color ROSA_INTECO = new Color(255, 225, 225);
 	Color NARANJA_MP = new Color(245, 164, 55);
 	Color VERDE_O_MP = new Color(106, 130, 54);
 	Color VERDE_C_MP = new Color(126, 154, 64);
-	
 	Color MARRRON_C_NC = new Color(196, 89, 17);
-
 	Color COLOR_RESULTADO_0_FALLA = new Color(225, 18, 13);
 	// public static final Color COLOR_RESULTADO_0_PASA = new Color(247, 150,
 	// 70);
 	Color COLOR_RESULTADO_0_PASA = NARANJA_MP;// ConstantsFont.WARNING_COLOR;
 	Color COLOR_RESULTADO_1_PASA = Color.WHITE;
-
 	Color GRIS_MUY_CLARO = new Color(245, 245, 245);
-
 	// ATRIBUTES
-
 	String NO_DEPENDENCE = "no_dependence";
 	String UPLOAD_PAGE = "upLoadPage";
 	String UPLOAD_FILE = "upLoadFile";
@@ -614,24 +590,19 @@ public interface Constants {
 	String LIST_ACCOUNTS = "listAccounts";
 	String GET_DETAIL = "getDetail";
 	String RETURN_OBSERVATORY_RESULTS = "observatoryResults";
-
 	String LOAD_CERTIFICATE_FORM = "loadCertificateForm";
 	String UPLOAD_CERTIFICATE = "uploadCertificate";
 	String DELETE_CERTIFICATE = "deleteCertificate";
 	String CERTIFICATE_ALIAS = "certificateAlias";
 	String NUM_CERTIFICATES = "numCertificates";
 	String DELETE_CONFIRMATION = "deleteConfirmation";
-
 	int STATUS_NOT_LAUNCHED = 1;
 	int STATUS_LAUNCHED = 2;
 	int STATUS_STOPPED = 3;
 	int STATUS_FINALIZED = 4;
-
 	long ALL_DATA = 0;
-
 	int CLIENT_ACCOUNT_TYPE = 0;
 	int OBSERVATORY_TYPE = 1;
-
 	String LIST_PAGE_LINKS = "listPageLinks";
 	String LIST_PAGE_LINKS2 = "listPageLinks2";
 	String PAG_PARAM = "p";
@@ -639,11 +610,9 @@ public interface Constants {
 	int NO_PAGINACION = -1;
 	String BEGIN = "begin";
 	String PAGE_NUMBER = "numPag";
-
 	String PAGINATION_CURRENT_STYLE = "current";
 	String PAGINATION_STYLE = "pagination";
 	String PAGINATION_PF_STYLE = "paginationPF";
-
 	String ES_CLIENTE = "esCliente";
 	String IS_CLIENT = "isCliente";
 	String IS_PRIMARY = "isPrimary";
@@ -652,21 +621,16 @@ public interface Constants {
 	String ID_OBSERVATORIO = "id_observatorio";
 	String ID_EX_OBS = "idExObs";
 	String CUENTA_ELIMINAR = "eliminarCuenta";
-
 	String ANCLA_PDF = "anclaPdf";
-
 	String BOTON_SEMILLA_GOOGLE = "botonSemillaGoogle";
 	String BOTON_SEMILLA_IP = "botonSemillaIp";
 	String BOTON_SEMILLA_WEB = "botonSemillaWeb";
-
 	String INICIAL = "inicial";
-
 	int ID_LISTA_ALL = -1;
 	int ID_LISTA_SEMILLA = 1;
 	int ID_LISTA_RASTREABLE = 2;
 	int ID_LISTA_NO_RASTREABLE = 3;
 	int ID_LISTA_SEMILLA_OBSERVATORIO = 4;
-
 	String ID_OBSERVATORY_GUIDELINE = "4";
 	String OBSERVATORY_GRAPHIC_INTAV = "getObservatoryGraphicIntav";
 	String GET_SEED_RESULTS_FORWARD = "resultadosObservatorioSemillas";
@@ -682,7 +646,6 @@ public interface Constants {
 	String SEMILLA_SEARCH_FORM = "SemillaSearchForm";
 	String ID_SEMILLA = "idSemilla";
 	String IS_NEW = "isNew";
-
 	String CONFIG = "config";
 	String EDIT = "edit";
 	String CONFIG_FORM = "configForm";
@@ -700,7 +663,7 @@ public interface Constants {
 	String CONFIRMACION_DELETE = "confirmacionDelete";
 	String CONFIRMACION_RELANZAR = "confirmacionRelanzar";
 	String CONFIRMACION_IMPORTAR = "confirmacionImportar";
-	String CONFIGURAR_FILTROS_AGREGADOS= "configurarFiltrosAgregados";
+	String CONFIGURAR_FILTROS_AGREGADOS = "configurarFiltrosAgregados";
 	String TERM = "term";
 	String MALWARE_TERM_FORM = "MalwareTermForm";
 	String SAVE_TERM = "saveTerm";
@@ -716,22 +679,17 @@ public interface Constants {
 	String FILE_CONTENT_LIST = "fileContentList";
 	String SHOW_FILE = "showFile";
 	String FILE = "file";
-
 	int COMPLEXITY_SEGMENT_NONE = 0;
 	String SCORE = "score";
-
 	int OBS_VALUE_NOT_SCORE = 0;
 	int OBS_VALUE_RED_ZERO = 1;
 	int OBS_VALUE_GREEN_ZERO = 2;
 	int OBS_VALUE_GREEN_ONE = 3;
-
 	String OBS_VALUE_GREEN_SUFFIX = "_green";
 	String OBS_VALUE_RED_SUFFIX = "_red";
-	
 	String OBS_VALUE_NO_COMPILANCE_SUFFIX = "_compilanceN";
 	String OBS_VALUE_NO_APPLY_COMPLIANCE_SUFFIX = "_compilanceA";
 	String OBS_VALUE_COMPILANCE_SUFFIX = "_compilanceS";
-
 	String OBS_A = "A";
 	String OBS_AA = "AA";
 	String OBS_NV = "NV";
@@ -745,42 +703,30 @@ public interface Constants {
 	String OBS_PRIORITY_1 = "Priority 1";
 	String OBS_PRIORITY_2 = "Priority 2";
 	String OBS_PRIORITY_NONE = "none";
-	
 	String OBS_COMPILANCE_NONE = "No conforme";
-	String OBS_COMPILANCE_PARTIAL= "Parcialmente conforme";
-	String OBS_COMPILANCE_FULL= "Totalmente conforme";
-	
+	String OBS_COMPILANCE_PARTIAL = "Parcialmente conforme";
+	String OBS_COMPILANCE_FULL = "Totalmente conforme";
 	String OBS_ACCESIBILITY_FULL = "Completo";
 	String OBS_ACCESIBILITY_PARTIAL = "PArcial";
 	String OBS_ACCESIBILITY_NONE = "No válido";
 	String OBS_ACCESIBILITY_NA = "Sin declaración";
-	
-	
-
 	String ADD_OBSERVATORY_SEED_LIST = "addSeedList";
 	String OTHER_OBSERVATORY_SEED_LIST = "otherSeedList";
-
 	String RESULTS_PAGINATION_INITIAL_VALUE = "resultsPaginationInitialValue";
 	String CHECK_RESULTS_DETAIL = "checkResultsDetail";
 	String PROBLEMA = "problem";
-
 	int STATUS_ERROR = 0;
 	int STATUS_SUCCESS = 1;
 	int STATUS_EXECUTING = 2;
-
 	String GLOBAL_SCORE = "globalScore";
 	String LEVEL_SCORE = "levelScore";
 	String SUITABILITY_SCORE = "suitabilityScore";
-
 	String OBSERVATORY_KEY_CACHE = "observatoryKeyCache";
-
 	String MINISTERIO_P = "MP";
-
 	int OBSERVATORY_TYPE_AGE = 1;
 	int OBSERVATORY_TYPE_CCAA = 2;
 	int OBSERVATORY_TYPE_EELL = 3;
 	int OBSERVATORY_TYPE_PRENSA = 4;
-
 	// Servicio básico de validación
 	String PARAM_URL = "url";
 	String PARAM_EMAIL = "correo";
@@ -817,7 +763,6 @@ public interface Constants {
 	String BASIC_SERVICE_STATUS_NOT_CRAWLED = "not_crawled";
 	String BASIC_SERVICE_STATUS_ERROR_SENDING_EMAIL = "error_sending_email";
 	String BASIC_SERVICE_STATUS_HTTP_REQUEST_ERROR = "http_request_error";
-
 	// HTML
 	String REQUEST_TYPE = "type";
 	String INTRODUCTION = "intr";
@@ -927,18 +872,13 @@ public interface Constants {
 	String HTML_SUBMENU_GLOBAL_CONCLUSION = "7.1";
 	String HTML_SUBMENU_SEGMENT_CONCLUSION = "7.2";
 	String HTML_SUBMENU_EVOLUTION_CONCLUSION = "7.3";
-
 	String DEFAULT_ENCODING = "UTF-8";
-
 	String EXPORT = "export";
 	String CONFIRM = "confirm";
-
 	String OBJECT_TYPE_PARAGRAPH = "paragraph";
 	String OBJECT_TYPE_SECTION = "section";
-
 	String WCAG_2 = "WCAG 2.0";
 	String WCAG_1 = "WCAG 1.0";
-
 	String OBSERVATORY_GRAPHIC_EVOLUTION_1_1_VERIFICATION = "1.1";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_1_2_VERIFICATION = "1.2";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_1_3_VERIFICATION = "1.3";
@@ -953,43 +893,33 @@ public interface Constants {
 	String OBSERVATORY_GRAPHIC_EVOLUTION_1_12_VERIFICATION = "1.12";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_1_13_VERIFICATION = "1.13";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_1_14_VERIFICATION = "1.14";
-
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_1_VERIFICATION = "2.1";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_2_VERIFICATION = "2.2";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_3_VERIFICATION = "2.3";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_4_VERIFICATION = "2.4";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_5_VERIFICATION = "2.5";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_2_6_VERIFICATION = "2.6";
-	
 	String OBSERVATORY_GRAPHIC_EVOLUTION_3_1_VERIFICATION = "3.1";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_3_2_VERIFICATION = "3.2";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_3_3_VERIFICATION = "3.3";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_3_4_VERIFICATION = "3.4";
 	String OBSERVATORY_GRAPHIC_EVOLUTION_3_5_VERIFICATION = "3.5";
-
 	String NORMATIVA_UNE_2012 = "UNE-2012";
 	String NORMATIVA_UNE_2012_B = "UNE-2012-B";
 	String NORMATIVA_UNE_EN2019 = "UNE-EN301549:2019 (beta)";
 	String NORMATIVA_ACCESIBILIDAD = "Accesibilidad";
-
 	String MESSAGE_RESOURCES_2012_B = "ApplicationResources-2012-b";
 	String MESSAGE_RESOURCES_UNE_EN2019 = "ApplicationResources-UNEEN2019";
 	String MESSAGE_RESOURCES_ACCESIBILIDAD = "ApplicationResources-Accesibilidad";
-	
 	String CHECK_GLOBAL_MODALITY_GRPAHICS = "checkGlobalModalityGrpahics";
 	String CHECK_GLOBAL_ASPECTS_GRPAHICS = "checkGlobalAspectsGrpahics";
 	String CHECK_SEGMENT_MODALITY_GRPAHICS = "checkSegmentModalityGrpahics";
 	String CHECK_SEGMENT_PMV_GRPAHICS = "checkSegmentPMVGrpahics";
 	String CHECK_SEGMENT_ASPECTS_GRPAHICS = "checkSegmentAspectsGrpahics";
-	
 	String CHECK_EVO_COMPLIANCE_VERIFICATION_GRPAHICS = "checkEvoComplianceVerificationGrpahics";
 	String CHECK_EVO_ASPECTS_GRPAHICS = "checkEvoAspectsGrpahics";
 	String ID_BASE_TEMPLATE = "idPlantillaBase";
 	String ID_SEGMENT_TEMPLATE = "idPlantillaSegmento";
 	String ID_COMPLEXITY_TEMPLATE = "idPlantillaComplejidad";
 	String ID_REPORT_TITLE = "reportTitle";
-	
-	
-	
-	
 }

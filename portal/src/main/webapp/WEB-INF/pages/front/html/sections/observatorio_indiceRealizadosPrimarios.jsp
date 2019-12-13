@@ -113,6 +113,13 @@ Email: observ.accesibilidad@correo.gob.es
 												<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
 											</html:link>
 
+
+
+											<html:link forward="stopObservatorio" name="params">
+												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
+												<span class="sr-only">Parar</span>
+											</html:link>
+
 										</logic:equal> <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="1">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.lanzado" />
 
@@ -127,6 +134,13 @@ Email: observ.accesibilidad@correo.gob.es
 													title="Relanzar esta iteraci&oacute;n del observatorio" />
 												<span class="sr-only">Relanzar esta iteraci&oacute;n del observatorio</span>
 											</html:link>
+
+
+											<html:link forward="stopObservatorio" name="params">
+												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
+												<span class="sr-only">Parar</span>
+											</html:link>
+
 
 										</logic:equal> <logic:equal name="fulfilledObservatory" property="observatorio.estado" value="0">
 											<bean:message key="resultado.observatorio.rastreo.realizado.estado.terminado" />
@@ -144,6 +158,11 @@ Email: observ.accesibilidad@correo.gob.es
 												<span class="sr-only">Estado esta iteraci&oacute;n del observatorio</span>
 											</html:link>
 
+											<html:link forward="stopObservatorio" name="params">
+												<span class="glyphicon glyphicon-stop" aria-hidden="true" data-toggle="tooltip" title="Parar ejecución" />
+												<span class="sr-only">Parar</span>
+											</html:link>
+
 
 											<html:link forward="relanzarObservatorio" name="paramsRelanzar">
 												<span class="glyphicon glyphicon-repeat" aria-hidden="true" data-toggle="tooltip"
@@ -157,7 +176,7 @@ Email: observ.accesibilidad@correo.gob.es
 											<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="tooltip"
 												title="Ver resultados de este observatorio" />
 											<span class="sr-only">Resultados</span>
-										</html:link> </td>
+										</html:link></td>
 									<td><jsp:useBean id="paramsInformeAgregado" class="java.util.HashMap" /> <c:set
 											target="${paramsInformeAgregado}" property="idCartucho" value="${fulfilledObservatory.cartucho.id}" /> <c:set
 											target="${paramsInformeAgregado}" property="id_observatorio" value="${id_observatorio}" /> <c:set
