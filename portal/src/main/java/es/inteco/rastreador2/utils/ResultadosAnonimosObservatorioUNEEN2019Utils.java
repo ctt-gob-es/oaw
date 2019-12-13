@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+* Copyright (C) 2019 MPTFP, Ministerio de Política Territorial y Función Pública, 
 * This program is licensed and may be used, modified and redistributed under the terms
 * of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 * version as soon as they are approved by the European Commission.
@@ -99,7 +99,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	/** The Constant BIG_DECIMAL_HUNDRED. */
 	public static final BigDecimal BIG_DECIMAL_HUNDRED = BigDecimal.valueOf(100);
 	/** The x. */
-	// GENERATE GRAPHIC METHODS
 	private static int x = 0;
 	/** The y. */
 	private static int y = 0;
@@ -193,7 +192,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			getGloballAllocationByComplexity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
 			// Comparación cumplimiento por segmento
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.segments.mark.name") + ".jpg";
-			getGlobalCompilanceBySgment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
+			getGlobalCompilanceBySegment(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, categories, regenerate, tagsFilter);
 			// Comparación complimiento por complejidad
 			file = filePath + messageResources.getMessage("observatory.graphic.global.puntuation.compilance.complexitiviy.mark.name") + ".jpg";
 			getGlobalCompilanceByComplexitivity(messageResources, executionId, globalGraphics, file, noDataMess, pageExecutionList, complejidades, regenerate, tagsFilter);
@@ -279,7 +278,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
-	 * TODO Generate complexity graphics.
+	 * Generate complexity graphics.
 	 *
 	 * @param messageResources the message resources
 	 * @param idExecution      the id execution
@@ -974,7 +973,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
-	 * Gets the global compilance by sgment.
+	 * Gets the global compilance by segment.
 	 *
 	 * @param messageResources  the message resources
 	 * @param executionId       the execution id
@@ -985,11 +984,10 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categories        the categories
 	 * @param regenerate        the regenerate
 	 * @param tagsFilter        the tags filter
-	 * @return the global compilance by sgment
+	 * @return the global compilance by segment
 	 * @throws Exception the exception
 	 */
-	// TODO Situación de cumplimiento por segmento
-	public static void getGlobalCompilanceBySgment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
+	public static void getGlobalCompilanceBySegment(final MessageResources messageResources, final String executionId, Map<String, Object> globalGraphics, final String filePath,
 			final String noDataMess, final List<ObservatoryEvaluationForm> pageExecutionList, final List<CategoriaForm> categories, final boolean regenerate, String[] tagsFilter) throws Exception {
 		final Map<Integer, List<CategoriaForm>> resultLists = createGraphicsMap(categories);
 		final List<CategoryViewListForm> categoriesLabels = new ArrayList<>();
@@ -1645,7 +1643,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param categoryId         the category id
 	 * @param pageExecutionList  the page execution list
 	 * @param isComplexityFilter the is complexity filter
-	 * @param tagsFilter         TODO
+	 * @param tagsFilter         the tags filter
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
@@ -1662,17 +1660,13 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param pageExecutionList  the page execution list
 	 * @param idCrawler          the id crawler
 	 * @param isComplexityFilter the is complexity filter
-	 * @param tagsFilter         TODO
+	 * @param tagsFilter         the tags filter
 	 * @return the global result data
 	 * @throws Exception the exception
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<ObservatoryEvaluationForm> getGlobalResultData(final String executionId, final long categoryId, final List<ObservatoryEvaluationForm> pageExecutionList, final Long idCrawler,
 			boolean isComplexityFilter, String[] tagsFilter) throws Exception {
 		List<ObservatoryEvaluationForm> observatoryEvaluationList;
-//		try {
-//			observatoryEvaluationList = (List<ObservatoryEvaluationForm>) CacheUtils.getFromCache(Constants.OBSERVATORY_KEY_CACHE + executionId);
-//		} catch (NeedsRefreshException nre) {
 		Logger.putLog("La cache con id " + Constants.OBSERVATORY_KEY_CACHE + executionId + " no está disponible, se va a regenerar", ResultadosAnonimosObservatorioUNEEN2019Utils.class,
 				Logger.LOG_LEVEL_INFO);
 		try (Connection c = DataBaseManager.getConnection()) {
@@ -1680,7 +1674,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			final List<Long> listAnalysis = new ArrayList<>();
 			List<Long> listExecutionsIds = new ArrayList<>();
 			if (idCrawler == null) {
-				// TODO Filter by tags
+				// Filter by tags
 				if (tagsFilter != null && tagsFilter.length > 0) {
 					listExecutionsIds = RastreoDAO.getExecutionObservatoryCrawlerIdsMatchTags(c, Long.parseLong(executionId), tagsFilter);
 				} else {
@@ -1727,8 +1721,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			throw e;
 		}
 		CacheUtils.putInCacheForever(observatoryEvaluationList, Constants.OBSERVATORY_KEY_CACHE + executionId);
-//		}
-		// TODO Filteer by category or complexity
+		// Filteer by category or complexity
 		if (!isComplexityFilter) {
 			return filterObservatoriesByCategory(observatoryEvaluationList, Long.parseLong(executionId), categoryId);
 		} else {
@@ -2899,7 +2892,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				} else if (value == Constants.OBS_VALUE_RED_ZERO) {
 					partialResultsMap.get(lvb.getLabel()).add(BigDecimal.ZERO);
 				} else if (value == Constants.OBS_VALUE_GREEN_ZERO) {
-					// TODO NEW 0.5PASA
+					// 0.5PASA specific for this cartidge
 					partialResultsMap.get(lvb.getLabel()).add(new BigDecimal(0.5d));
 				}
 			}
@@ -3261,7 +3254,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 										numZeroRed = numZeroRed + 1;
 									}
 								}
-								// TODO Reduce 1 fail max on AA
+								// Reduce 1 fail max on AA
 								if (numZeroRed > (maxFails - 1)) {
 									isAA = false;
 								}
@@ -3397,7 +3390,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param level      the level
 	 * @return the verification results by point and crawl
 	 */
-	// TODO 2019 GEt PMV groupe by crawl
 	public static Map<Long, Map<String, BigDecimal>> getVerificationResultsByPointAndCrawl(final List<ObservatoryEvaluationForm> resultData, final String level) {
 		final Map<Long, Map<String, Integer>> results = new TreeMap<>();
 		final Map<Long, Map<String, Integer>> numPointG = new LinkedHashMap<>();
@@ -3723,7 +3715,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
-	 * TODO Generate evolution suitability chart.
+	 * Generate evolution compliance chart.
 	 *
 	 * @param observatoryId      the observatory id
 	 * @param executionId        the execution id
@@ -3752,7 +3744,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
-	 * TODO Evolution chart by segment.
+	 * Generate evolution by segment suitability chart.
 	 *
 	 * @param observatoryId      the observatory id
 	 * @param executionId        the execution id
@@ -3764,9 +3756,8 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 */
 	public static void generateEvolutionBySegmentSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<CategoriaForm> categories, String[] exObsIds) throws IOException {
-		// TODO Filtrar por segmento
+		// Filtrar por segmento
 		Map<String, Map<Date, List<ObservatoryEvaluationForm>>> pageObservatoryMapBySegment = new LinkedHashMap<>();
-		Map<String, List<ObservatoryEvaluationForm>> pagesSegment = new LinkedHashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DateFormat df = new SimpleDateFormat(pmgr.getValue(CRAWLER_PROPERTIES, "date.format.simple"));
 		String defaultGroup = null;
@@ -3798,7 +3789,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 				}
 			}
 		}
-		// TODO Calcular porcentajes por segmento
+		// Calcular porcentajes por segmento
 		final Map<String, Map<String, Map<String, BigDecimal>>> evolutionSuitabilityDatePercentMapBySegment = new LinkedHashMap<>();
 		for (CategoriaForm category : categories) {
 			final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMapBySegment.get(category.getName()), exObsIds);
@@ -3819,20 +3810,12 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		for (CategoriaForm category : categories) {
 			for (Map.Entry<String, Map<String, BigDecimal>> entryBySegment : evolutionSuitabilityDatePercentMapBySegment.get(category.getName()).entrySet()) {
 				for (Map.Entry<String, BigDecimal> entryByDate : entryBySegment.getValue().entrySet()) {
-					// Ejemplo
-//			        result.addValue(35, "06/03/2017 Parcial", "Segmento 1");
-//			        result.addValue(40, "06/03/2017 Prioridad 1", "Segmento 1");
-//			        result.addValue(25, "06/03/2017 Prioridad 1 y 2", "Segmento 1");
 					BigDecimal value = entryByDate.getValue();
 					String rowKey = entryByDate.getKey() + " " + entryBySegment.getKey();
 					String columnKey = category.getName();
 					/******************* Grouped **/
 					dataSet.addValue(value, rowKey, columnKey);
 					/******************* Unrouped **/
-//					dataSet.addValue(value, entryBySegment.getKey(), columnKey + " " + entryByDate.getKey());
-//					map.mapKeyToGroup("06/03/2017 Parcial", "G1");
-//			        map.mapKeyToGroup("06/03/2017 Prioridad 1", "G1");
-//			        map.mapKeyToGroup("06/03/2017 Prioridad 1 y 2", "G1");
 					// Key group
 					String key = entryByDate.getKey() + " " + entryBySegment.getKey();
 					String group = entryByDate.getKey();
@@ -3841,9 +3824,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 					if (!axis.contains(group)) {
 						axis.add(group);
 					}
-//					if (!axis.contains(columnKey + " " + rowKey)) {
-//						axis.add(columnKey + " " + rowKey);
-//					}
 				}
 			}
 		}
@@ -3854,7 +3834,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 		}
 		final String noDataMess = "noData";
 		final ChartForm chartForm = new ChartForm(dataSet, true, false, false, true, true, false, false, x, y, pmgr.getValue(CRAWLER_PROPERTIES, "chart.observatory.graphic.intav.colors"));
-		// GraphicsUtils.createGroupedStackerBarChart(chartForm, noDataMess, filePath, map, domainAxis);
 		GraphicsUtils.createGroupedStackerBarChart(chartForm, noDataMess, filePath, map, domainAxis);
 		GraphicsUtils.createStackedBarChart(chartForm, noDataMess, filePath);
 	}
@@ -3869,7 +3848,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param verifications      list of verifications to include on the chart
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// TODO Mejorar la compresión de estos gráficos
 	public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources, final String filePath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -3884,7 +3862,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			}
 		}
 		final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
-		// TODO Colores variables??
 		chartForm.setFixedColorBars(true);
 		chartForm.setShowColumsLabels(false);
 		GraphicsUtils.createStandardBarChart(chartForm, filePath, "", messageResources, true);
@@ -3899,7 +3876,6 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	 * @param verifications      the verifications
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// TODO Mejorar la compresión de estos gráficos
 	public static void generateEvolutionAverageScoreByVerificationChartSplit(final MessageResources messageResources, final String[] filePaths,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -3931,7 +3907,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
-	 * TODO Generate evolution compliance by verification chart split.
+	 * Generate evolution compliance by verification chart split.
 	 *
 	 * @param messageResources   the message resources
 	 * @param filePaths          the file paths
@@ -3983,17 +3959,14 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final DefaultCategoryDataset dataSet1 = new DefaultCategoryDataset();
-		final DefaultCategoryDataset dataSet2 = new DefaultCategoryDataset();
 		for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
 			final Map<Long, Map<String, BigDecimal>> results = getVerificationResultsByPointAndCrawl(entry.getValue(), Constants.OBS_PRIORITY_NONE);
 			Map<String, BigDecimal> percentajes = generatePercentajesCompilanceVerification(results);
-			int v = 0;
 			for (String verification : verifications) {
 				// Para un observatorio en concreto recuperamos la puntuación de
 				// una verificación
 				final BigDecimal value = percentajes.get(verification.concat(Constants.OBS_VALUE_COMPILANCE_SUFFIX));
 				dataSet1.addValue(value, entry.getKey().getTime(), verification);
-				v++;
 			}
 		}
 		final ChartForm chartForm1 = new ChartForm(dataSet1, true, true, false, true, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, CHART_EVOLUTION_MP_GREEN_COLOR));
@@ -4038,7 +4011,7 @@ public final class ResultadosAnonimosObservatorioUNEEN2019Utils {
 	}
 
 	/**
-	 * TODO Segment comparision grpah.
+	 * Generate evolution average score by segment chart.
 	 *
 	 * @param messageResources   the message resources
 	 * @param filePath           the file path

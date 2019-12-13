@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (C) 2017 MINHAFP, Ministerio de Hacienda y Función Pública, 
+* Copyright (C) 2019 MPTFP, Ministerio de Política Territorial y Función Pública, 
 * This program is licensed and may be used, modified and redistributed under the terms
 * of the European Public License (EUPL), either version 1.2 or (at your option) any later 
 * version as soon as they are approved by the European Commission.
@@ -70,12 +70,14 @@ public class AnonymousResultPdfUNEEN2019Builder extends AnonymousResultPdfBuilde
 	 * @param observatoryId          the observatory id
 	 * @param filePath               the file path
 	 * @param tagsFilter             the tags filter
+	 * @param exObsIds               the ex obs ids
 	 * @throws Exception the exception
 	 */
 	@Override
-	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath, String[] tagsFilter, String[] exObsIds)
-			throws Exception {
-		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, tagsFilter, exObsIds);
+	public void generateGraphics(MessageResources messageResources, String executionId, Long idExecutionObservatory, final String observatoryId, String filePath, String[] tagsFilter,
+			String[] exObsIds) throws Exception {
+		ResultadosAnonimosObservatorioUNEEN2019Utils.generateGraphics(messageResources, executionId, idExecutionObservatory, observatoryId, filePath, Constants.MINISTERIO_P, true, tagsFilter,
+				exObsIds);
 	}
 
 	/**
