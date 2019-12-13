@@ -33,13 +33,28 @@ import es.inteco.common.logging.Logger;
 import es.inteco.rastreador2.pdf.ExportAction;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.IntecoFileFilter;
-import es.inteco.utils.FileUtils;
 
+/**
+ * The Class ZipUtils.
+ */
 public final class ZipUtils {
 
+    /**
+	 * Instantiates a new zip utils.
+	 */
     private ZipUtils() {
     }
 
+    /**
+	 * Pdfs zip.
+	 *
+	 * @param mapping       the mapping
+	 * @param response      the response
+	 * @param idObservatory the id observatory
+	 * @param idExecutionOb the id execution ob
+	 * @param basePath      the base path
+	 * @return the action forward
+	 */
     public static ActionForward pdfsZip(final ActionMapping mapping, final HttpServletResponse response, final Long idObservatory, final Long idExecutionOb, final String basePath) {
         final String executionPath = basePath + idObservatory + File.separator + idExecutionOb + File.separator;
         final String finalPath = executionPath + "temp" + File.separator;
@@ -56,7 +71,8 @@ public final class ZipUtils {
                 }
             }
             generateZipFile(finalPath, finalZipPath, false);
-            FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
+            //TODO No eliminamos los temporales
+            //FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
             CrawlerUtils.returnFile(response, finalZipPath, "application/zip", true);
         } catch (Exception e) {
             Logger.putLog("Exception: ", ExportAction.class, Logger.LOG_LEVEL_ERROR, e);
@@ -66,6 +82,13 @@ public final class ZipUtils {
         return null;
     }
 
+    /**
+	 * Generate zip file.
+	 *
+	 * @param directoryPath   the directory path
+	 * @param zipPath         the zip path
+	 * @param excludeZipFiles the exclude zip files
+	 */
     public static void generateZipFile(final String directoryPath, final String zipPath, boolean excludeZipFiles) {
         final File file = new File(zipPath);
         if (!file.getParentFile().exists()) {
@@ -82,6 +105,13 @@ public final class ZipUtils {
         }
     }
 
+    /**
+	 * Generate zip file.
+	 *
+	 * @param directoryPath   the directory path
+	 * @param outputStream    the output stream
+	 * @param excludeZipFiles the exclude zip files
+	 */
     public static void generateZipFile(final String directoryPath, final OutputStream outputStream, boolean excludeZipFiles) {
         try (ZipOutputStream zos = new ZipOutputStream(outputStream)) {
         	zos.setLevel(Deflater.BEST_COMPRESSION);
@@ -93,6 +123,15 @@ public final class ZipUtils {
         }
     }
 
+    /**
+	 * Generate zip entries.
+	 *
+	 * @param filePath        the file path
+	 * @param zipDirectory    the zip directory
+	 * @param zos             the zos
+	 * @param excludeZipFiles the exclude zip files
+	 * @throws Exception the exception
+	 */
     private static void generateZipEntries(final String filePath, final String zipDirectory, final ZipOutputStream zos, final boolean excludeZipFiles) throws Exception {
         final File directory = new File(filePath);
         //Recuperamos la lista de archivos del directorio
@@ -122,6 +161,13 @@ public final class ZipUtils {
         }
     }
 
+    /**
+	 * Put zip entry.
+	 *
+	 * @param file         the file
+	 * @param zipDirectory the zip directory
+	 * @param zos          the zos
+	 */
     private static void putZipEntry(final File file, final String zipDirectory, final ZipOutputStream zos) {
         final byte[] readBuffer = new byte[1024];
 

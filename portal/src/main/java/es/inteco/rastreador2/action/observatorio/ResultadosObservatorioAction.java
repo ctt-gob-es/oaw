@@ -19,6 +19,7 @@ import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.job.CrawlerJob;
+import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
@@ -87,6 +88,9 @@ public class ResultadosObservatorioAction extends Action {
 					} else if (action.equalsIgnoreCase(Constants.REGENERATE_RESULTS)) {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return regenerateResults(mapping, form, request);
+					} else if (action.equalsIgnoreCase(Constants.STOP_CRAWL)) {
+						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
+						return stop(mapping, form, request);
 					}
 				}
 			} else {
@@ -376,6 +380,15 @@ public class ResultadosObservatorioAction extends Action {
 		}
 	}
 
+	/**
+	 * Regenerate results.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward regenerateResults(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
 		final SemillaForm semillaForm = (SemillaForm) form;
 		final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
@@ -396,6 +409,20 @@ public class ResultadosObservatorioAction extends Action {
 			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw new Exception(e);
 		}
+		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
+	}
+
+	/**
+	 * Stop.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+		CrawlerJobManager.endObservatory(Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
 		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
 	}
 }

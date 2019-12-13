@@ -35,8 +35,20 @@ import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.util.ArrayList;
 
+/**
+ * The Class LanzarComandoAction.
+ */
 public class LanzarComandoAction extends Action {
 
+    /**
+	 * Execute.
+	 *
+	 * @param mapping  the mapping
+	 * @param form     the form
+	 * @param request  the request
+	 * @param response the response
+	 * @return the action forward
+	 */
     public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (CrawlerUtils.hasAccess(request, "throw.crawler")) {
@@ -119,6 +131,13 @@ public class LanzarComandoAction extends Action {
 
     }
 
+    /**
+	 * Control.
+	 *
+	 * @param lanzarComandoForm the lanzar comando form
+	 * @param user              the user
+	 * @return true, if successful
+	 */
     public boolean control(LanzarComandoForm lanzarComandoForm, String user) {
         boolean control = false;
 
