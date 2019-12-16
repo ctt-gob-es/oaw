@@ -80,19 +80,4 @@ public final class CrawlerJobManager {
         scheduler.deleteJob(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
     }
     
-    
-    /**
-	 * End observatory.
-	 *
-	 * @param idJob the id job
-	 * @throws Exception the exception
-	 */
-    public static boolean endObservatory(long idJob) throws Exception {
-    	
-        init();
-        boolean isInterrupted =  scheduler.interrupt("executeScheduledObservatory_" + idJob,"ExecuteScheduledObservatory");
-        scheduler.deleteJob("executeScheduledObservatory_" + idJob,"ExecuteScheduledObservatory");
-        
-        return isInterrupted;
-    }
 }
