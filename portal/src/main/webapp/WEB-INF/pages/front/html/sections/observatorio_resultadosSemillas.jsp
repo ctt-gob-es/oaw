@@ -135,6 +135,11 @@ Email: observ.accesibilidad@correo.gob.es
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
 				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
+				$('.tagbox-token a').click();
+				$('.tagbox-wrapper').remove();
+				$('#tagsFilter').removeData();
+				$('#tagsFilter').show();
+				
 			}
 		});
 
@@ -160,6 +165,29 @@ Email: observ.accesibilidad@correo.gob.es
 						+ $('#grid').getLocalRow(rowid).inDirectory + ']')
 				.attr('selected', 'selected');
 		
+		$('#nuevaSemillaMultidependencia #tagsFilter').val(
+				$('#grid').getLocalRow(rowid).tagsString);
+		
+		
+		
+			$.ajax({
+				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+				method : 'POST',
+				cache : false
+			}).success(function(response) {
+
+				$('#tagsFilter').tagbox({
+					items : response.etiquetas,
+					searchIn : [ 'name' ],
+					rowFormat : '<span class="name">{{name}}</span>',
+					tokenFormat : '{{name}}',
+					valueField : 'id',
+					itemClass : 'user',
+				});
+
+			})
+
+
 
 	}
 
