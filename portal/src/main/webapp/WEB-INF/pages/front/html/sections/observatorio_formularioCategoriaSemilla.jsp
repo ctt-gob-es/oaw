@@ -89,10 +89,36 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			},
 			open : function() {
 				cargarSelect();
+				
+				
+// 					$.ajax({
+// 						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+// 						method : 'POST',
+// 						cache : false
+// 					}).success(function(response) {
+
+// 						$('#tagsFilter').tagbox({
+// 							items : response.etiquetas,
+// 							searchIn : [ 'name' ],
+// 							rowFormat : '<span class="name">{{name}}</span>',
+// 							tokenFormat : '{{name}}',
+// 							valueField : 'id',
+// 							itemClass : 'user',
+// 						});
+
+// 					});
+
+				
+				
 			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
 				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
+				//Clear tagbox
+				$('.tagbox-token a').click();
+				$('.tagbox-wrapper').remove();
+				$('#tagsFilter').show();
+				
 			}
 		});
 
@@ -278,6 +304,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	<div id="fullwidthgrid">
 
 		<div id="fullwidthgridheader">
+
+			<p class="alert alert-info pull-left">
+				<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+				</em>:
+				<bean:message key="nueva.semilla.webs.info" />
+			</p>
+
 
 			<logic:present name="<%=Constants.ID_CATEGORIA%>">
 

@@ -1235,6 +1235,27 @@ public final class ObservatorioDAO {
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
+					// TODO Cargar las etiquetas de la semilla
+					PreparedStatement psEtiquetas = c.prepareStatement(
+							"SELECT e.id_etiqueta, e.nombre FROM etiqueta e WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?) ORDER BY UPPER(e.nombre)");
+					psEtiquetas.setString(1, resultadoSemillaForm.getId());
+					List<EtiquetaForm> listEtiquetas = new ArrayList<>();
+					ResultSet rsEtiquetas = null;
+					try {
+						rsEtiquetas = psEtiquetas.executeQuery();
+						while (rsEtiquetas.next()) {
+							EtiquetaForm etiqueta = new EtiquetaForm();
+							etiqueta.setId(rsEtiquetas.getLong("id_etiqueta"));
+							etiqueta.setName(rsEtiquetas.getString("nombre"));
+							listEtiquetas.add(etiqueta);
+						}
+						resultadoSemillaForm.setEtiquetas(listEtiquetas);
+					} catch (SQLException e) {
+						Logger.putLog("SQL Exception: ", SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+						throw e;
+					} finally {
+						DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
+					}
 					// TODO Count URL craled
 					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
 							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "

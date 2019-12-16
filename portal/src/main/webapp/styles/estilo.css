@@ -36,8 +36,7 @@ th.accion {
 	color: #e1120d;
 }
 
-.dropdown-menu.nav.nav-stacked.nav-pills a:hover, .dropdown-menu.nav.nav-stacked.nav-pills a:focus
-	{
+.dropdown-menu.nav.nav-stacked.nav-pills a:hover, .dropdown-menu.nav.nav-stacked.nav-pills a:focus {
 	color: #000;
 }
 
@@ -849,25 +848,23 @@ div.detail p {
 	text-align: left;
 }
 /* Cuerpo de la página */
-#main  {
+#main {
 	float: left;
 	margin-top: 30px;
 	width: 100%
 }
 
-
-
-#fullwidthgrid{
-    clear: both;
-    width: 98%;
-    margin-left: 50px;
-    margin-right: 50px;
+#fullwidthgrid {
+	clear: both;
+	width: 98%;
+	margin-left: 50px;
+	margin-right: 50px;
 }
 
 #fullwidthgridheader {
 	margin-top: 15px;
-    float: left;
-    width: 100%;
+	float: left;
+	width: 100%;
 }
 
 #normaDiv {
@@ -941,29 +938,23 @@ div.detail p {
 	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
 	background: -webkit-linear-gradient(top, #e1120d 0%, #ff8e8e 100%);
 	background: linear-gradient(to bottom, #e1120d 0%, #ff8e8e 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e1120d',
-		endColorstr='#ff8e8e', GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e1120d', endColorstr='#ff8e8e', GradientType=0);
 	color: #FFF;
 	border: 1px solid #CCC;
 	font-variant: petite-caps;
 }
 
-#container_der table tr.suitability th,
-#fullwidthgrid table tr.suitability th {
+#container_der table tr.suitability th, #fullwidthgrid table tr.suitability th {
 	background: silver
 }
 
-#container_der table td,
-#fullwidthgrid   table td{
+#container_der table td, #fullwidthgrid   table td {
 	text-align: center;
 	background: white;
 	border: 1px solid #CCC
 }
 
-#container_der table td.alignLeft,
-#fullwidthgrid table td.alignLeft{
-	
-	
+#container_der table td.alignLeft, #fullwidthgrid table td.alignLeft {
 	text-align: left
 }
 
@@ -1216,12 +1207,9 @@ to {
 
 .ui-dialog-titlebar {
 	background: #e1120d !important;;
-	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%)
-		!important;;
-	background: -webkit-linear-gradient(top, #e1120d 0%, #ff8e8e 100%)
-		!important;;
-	background: linear-gradient(to bottom, #e1120d 0%, #ff8e8e 100%)
-		!important;;
+	background: -moz-linear-gradient(top, #e1120d 0%, #ff8e8e 100%) !important;;
+	background: -webkit-linear-gradient(top, #e1120d 0%, #ff8e8e 100%) !important;;
+	background: linear-gradient(to bottom, #e1120d 0%, #ff8e8e 100%) !important;;
 	color: #FFF !important;
 }
 
@@ -1249,30 +1237,61 @@ to {
 	background-color: #ffc107 !important;
 }
 
-.label100{
+.label100 {
 	width: 100% !important;
-    text-align: left !important;
+	text-align: left !important;
 }
 
-#fullwidthgrid .tagbox-token{
-	float:left;
-	clear:both;
-	    margin-bottom: 3px;
+#fullwidthgrid .tagbox-token {
+	float: left;
+	clear: both;
+	margin-bottom: 3px;
 }
-#fullwidthgrid .tagbox-wrapper{
-	    border: none;
-    box-shadow: none;
-    width: 90%;
+
+#fullwidthgrid .tagbox-wrapper, #nuevaSemillaMultidependencia .tagbox-wrapper {
+	border: none;
+	box-shadow: none;
+	width: 90%;
+	padding:0 !important;
 }
-#fullwidthgrid .tagbox-wrapper.focus {
-	background-color:#fff !important;
+
+#fullwidthgrid .tagbox-wrapper.focus, #nuevaSemillaMultidependencia  .focus {
+	background-color: #fff !important;
 }
-#fullwidthgrid .tagbox-wrapper input{
-    
-    float: left;
-    clear: both;
-    border-width: 2px;
-    border-style: inset;
-    border-color: initial;
-    border-image: initial;
+
+#fullwidthgrid .tagbox-wrapper input {
+	float: left;
+	clear: both;
+	border-width: 2px;
+	border-style: inset;
+	border-color: initial;
+	border-image: initial;
+}
+
+#nuevaSemillaMultidependencia .tagbox-token {
+	float:left !important;
+	clear:none !important;
+	margin-bottom: 3px;
+	margin-left: 1px !important;
+}
+
+#nuevaSemillaMultidependencia .tagbox-wrapper input {
+	float:left !important;
+	clear:both !important;
+	min-width: 30% !important;
+	width: 45% !important;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }

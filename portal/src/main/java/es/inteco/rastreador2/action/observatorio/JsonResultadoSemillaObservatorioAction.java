@@ -34,6 +34,7 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.PageForm;
 import es.inteco.plugin.dao.DataBaseManager;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.observatorio.ObservatorioDAO;
@@ -91,6 +92,23 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 			// sesion
 			//TODO Viene de sesión
 			//ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution);
+			
+			for(ResultadoSemillaFullForm result: seedsResults2) {
+				
+				String tagsString = "";
+				if (result.getEtiquetas() != null && !result.getEtiquetas().isEmpty()) {
+					StringBuilder sb = new StringBuilder();
+					for (EtiquetaForm tag : result.getEtiquetas()) {
+						sb.append(tag.getId()).append(",");
+					}
+					tagsString = sb.deleteCharAt(sb.length() - 1).toString();
+				}
+				
+				result.setTagsString(tagsString); 
+				
+			}
+			
+			
 
 			String jsonResultados = new Gson().toJson(seedsResults2);
 
