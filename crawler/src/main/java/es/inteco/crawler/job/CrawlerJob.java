@@ -431,7 +431,7 @@ public class CrawlerJob implements InterruptableJob {
 						if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE && !contains(crawlingDomains, url) && !CrawlerUtils.isOpenDNSResponse(connection)) {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
-							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
 							// TODO Sólo se pasa al renderizador para recuperar el contenido
 							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
@@ -734,7 +734,7 @@ public class CrawlerJob implements InterruptableJob {
 				connection.connect();
 				int responseCode = connection.getResponseCode();
 				if (responseCode == HttpURLConnection.HTTP_OK) {
-					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
+					final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
 					// final String textContent = CrawlerUtils.getTextContent(connection, markableInputStream);
 					final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 					markableInputStream.close();
