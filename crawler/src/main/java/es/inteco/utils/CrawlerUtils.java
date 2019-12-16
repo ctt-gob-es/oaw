@@ -62,10 +62,24 @@ import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 
+/**
+ * The Class CrawlerUtils.
+ */
 public final class CrawlerUtils {
+	
+	/**
+	 * Instantiates a new crawler utils.
+	 */
 	private CrawlerUtils() {
 	}
 
+	/**
+	 * Domain matchs.
+	 *
+	 * @param domainList the domain list
+	 * @param domain     the domain
+	 * @return true, if successful
+	 */
 	public static boolean domainMatchs(List<String> domainList, String domain) {
 		boolean hasMatched = false;
 		for (String domainRegExp : domainList) {
@@ -79,6 +93,13 @@ public final class CrawlerUtils {
 		return hasMatched;
 	}
 
+	/**
+	 * Checks if is switch language link.
+	 *
+	 * @param link         the link
+	 * @param ignoredLinks the ignored links
+	 * @return true, if is switch language link
+	 */
 	public static boolean isSwitchLanguageLink(Element link, List<IgnoredLink> ignoredLinks) {
 		if (ignoredLinks != null && hasAttribute(link, "href") && StringUtils.isNotEmpty(getAttribute(link, "href"))) {
 			for (IgnoredLink ignoredLink : ignoredLinks) {
@@ -90,14 +111,34 @@ public final class CrawlerUtils {
 		return false;
 	}
 
+	/**
+	 * Matchs text.
+	 *
+	 * @param link        the link
+	 * @param ignoredLink the ignored link
+	 * @return true, if successful
+	 */
 	private static boolean matchsText(Element link, IgnoredLink ignoredLink) {
 		return matchs(removeInlineTags(link.getTextContent()).trim(), ignoredLink.getText()) || (hasAttribute(link, "title") && matchs(getAttribute(link, "title").trim(), ignoredLink.getTitle()));
 	}
 
+	/**
+	 * Matchs alt.
+	 *
+	 * @param link        the link
+	 * @param ignoredLink the ignored link
+	 * @return true, if successful
+	 */
 	private static boolean matchsAlt(Element link, IgnoredLink ignoredLink) {
 		return hasAttribute(link, "alt") && matchs(getAttribute(link, "alt").trim(), ignoredLink.getText());
 	}
 
+	/**
+	 * Removes the inline tags.
+	 *
+	 * @param content the content
+	 * @return the string
+	 */
 	private static String removeInlineTags(String content) {
 		PropertiesManager pmgr = new PropertiesManager();
 		List<String> inlineTags = Arrays.asList(pmgr.getValue("crawler.core.properties", "inline.tags").split(";"));
@@ -107,6 +148,13 @@ public final class CrawlerUtils {
 		return content;
 	}
 
+	/**
+	 * Matchs image.
+	 *
+	 * @param link        the link
+	 * @param ignoredLink the ignored link
+	 * @return true, if successful
+	 */
 	private static boolean matchsImage(Element link, IgnoredLink ignoredLink) {
 		List<Element> images = CrawlerDOMUtils.getElementsByTagName(link, "frame");
 		if (images.size() == 1) {
@@ -119,16 +167,38 @@ public final class CrawlerUtils {
 		return false;
 	}
 
+	/**
+	 * Matchs.
+	 *
+	 * @param text   the text
+	 * @param regExp the reg exp
+	 * @return true, if successful
+	 */
 	public static boolean matchs(String text, String regExp) {
 		Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 		Matcher matcher = pattern.matcher(text);
 		return matcher.find();
 	}
 
+	/**
+	 * Removes the html comments.
+	 *
+	 * @param textContent the text content
+	 * @return the string
+	 */
 	public static String removeHtmlComments(String textContent) {
 		return textContent.replaceAll("(?s)<!--.*?-->", "");
 	}
 
+	/**
+	 * Gets the absolute url.
+	 *
+	 * @param document the document
+	 * @param rootUrl  the root url
+	 * @param urlLink  the url link
+	 * @return the absolute url
+	 * @throws MalformedURLException the malformed URL exception
+	 */
 	public static URL getAbsoluteUrl(Document document, String rootUrl, String urlLink) throws MalformedURLException {
 		String base = CrawlerDOMUtils.getBaseUrl(document);
 		//
@@ -140,6 +210,14 @@ public final class CrawlerUtils {
 		return StringUtils.isEmpty(base) ? new URL(new URL(rootUrl), urlLink) : new URL(new URL(base), urlLink);
 	}
 
+	/**
+	 * Adds the domains to list.
+	 *
+	 * @param seedsList     the seeds list
+	 * @param getOnlyDomain the get only domain
+	 * @param type          the type
+	 * @return the list
+	 */
 	public static List<String> addDomainsToList(String seedsList, boolean getOnlyDomain, int type) {
 		if (StringUtils.isNotEmpty(seedsList)) {
 			final String[] seeds = seedsList.split(";");
@@ -161,7 +239,7 @@ public final class CrawlerUtils {
 	}
 
 	/**
-	 * Obtiene el host de una dirección url
+	 * Obtiene el host de una dirección url.
 	 *
 	 * @param domain cadena que representa una url
 	 * @return el host de la url o vacío si no la cadena no representa una url válida
@@ -176,6 +254,12 @@ public final class CrawlerUtils {
 		return "";
 	}
 
+	/**
+	 * Gets the hash.
+	 *
+	 * @param string the string
+	 * @return the hash
+	 */
 	public static String getHash(String string) {
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
@@ -187,6 +271,12 @@ public final class CrawlerUtils {
 		}
 	}
 
+	/**
+	 * Checks for to be filtered uri.
+	 *
+	 * @param request the request
+	 * @return true, if successful
+	 */
 	public static boolean hasToBeFilteredUri(HttpServletRequest request) {
 		PropertiesManager pmgr = new PropertiesManager();
 		List<String> notFilteredUris = Arrays.asList(pmgr.getValue("crawler.properties", "not.filtered.uris").split(";"));
@@ -198,6 +288,13 @@ public final class CrawlerUtils {
 		}
 	}
 
+	/**
+	 * Contains uri fragment.
+	 *
+	 * @param uriFragments the uri fragments
+	 * @param uri          the uri
+	 * @return true, if successful
+	 */
 	private static boolean containsUriFragment(List<String> uriFragments, String uri) {
 		for (String uriFragment : uriFragments) {
 			if (uri.contains(uriFragment)) {
@@ -207,6 +304,12 @@ public final class CrawlerUtils {
 		return false;
 	}
 
+	/**
+	 * Encode url.
+	 *
+	 * @param url the url
+	 * @return the string
+	 */
 	public static String encodeUrl(String url) {
 		String replaceAll = url.replaceAll("Ã¡", "á").replaceAll("Ã©", "é").replaceAll("Ã­", "í").replaceAll("Ã³", "ó").replaceAll("Ãº", "ú").replaceAll("Ã±", "ñ").replaceAll("Ã‘", "Ñ")
 				.replaceAll(" ", "%20").replaceAll("Á", "%E1").replaceAll("É", "%C9").replaceAll("Í", "%CD").replaceAll("Ó", "%D3").replaceAll("Ú", "%DA").replaceAll("á", "%E1").replaceAll("é", "%E9")
@@ -215,6 +318,14 @@ public final class CrawlerUtils {
 		return replaceAll;
 	}
 
+	/**
+	 * Gets the domains list.
+	 *
+	 * @param idCrawling    the id crawling
+	 * @param type          the type
+	 * @param getOnlyDomain the get only domain
+	 * @return the domains list
+	 */
 	public static List<String> getDomainsList(final Long idCrawling, final int type, final boolean getOnlyDomain) {
 		try (Connection conn = DataBaseManager.getConnection()) {
 			return CrawlerUtils.addDomainsToList(RastreoDAO.getList(conn, idCrawling, type), getOnlyDomain, type);
@@ -223,6 +334,14 @@ public final class CrawlerUtils {
 		}
 	}
 
+	/**
+	 * Gets the charset.
+	 *
+	 * @param connection          the connection
+	 * @param markableInputStream the markable input stream
+	 * @return the charset
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String getCharset(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
 		String charset = Constants.DEFAULT_CHARSET;
 		boolean found = false;
@@ -248,6 +367,12 @@ public final class CrawlerUtils {
 		return charset;
 	}
 
+	/**
+	 * Gets the charset with universal detector.
+	 *
+	 * @param markableInputStream the markable input stream
+	 * @return the charset with universal detector
+	 */
 	private static String getCharsetWithUniversalDetector(final InputStream markableInputStream) {
 		try {
 			final UniversalDetector detector = new UniversalDetector(null);
@@ -265,6 +390,12 @@ public final class CrawlerUtils {
 		}
 	}
 
+	/**
+	 * Checks if is valid charset.
+	 *
+	 * @param charset the charset
+	 * @return true, if is valid charset
+	 */
 	private static boolean isValidCharset(String charset) {
 		try {
 			byte[] test = new byte[10];
@@ -275,12 +406,27 @@ public final class CrawlerUtils {
 		}
 	}
 
+	/**
+	 * Gets the text content.
+	 *
+	 * @param connection          the connection
+	 * @param markableInputStream the markable input stream
+	 * @return the text content
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static String getTextContent(HttpURLConnection connection, InputStream markableInputStream) throws IOException {
 		String textContent = StringUtils.getContentAsString(markableInputStream, getCharset(connection, markableInputStream));
 		textContent = removeHtmlComments(textContent);
 		return textContent;
 	}
 
+	/**
+	 * Gets the markable input stream.
+	 *
+	 * @param connection the connection
+	 * @return the markable input stream
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static InputStream getMarkableInputStream(final HttpURLConnection connection) throws IOException {
 		final InputStream content = connection.getInputStream();
 		final BufferedInputStream stream = new BufferedInputStream(content);
@@ -291,6 +437,15 @@ public final class CrawlerUtils {
 		return stream;
 	}
 
+	/**
+	 * Gets the connection.
+	 *
+	 * @param url             the url
+	 * @param refererUrl      the referer url
+	 * @param followRedirects the follow redirects
+	 * @return the connection
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static HttpURLConnection getConnection(String url, String refererUrl, boolean followRedirects) throws IOException {
 		final HttpURLConnection connection = generateConnection(url, refererUrl);
 		// Omitimos la redirección y si detectamos una, actualizamos el
@@ -314,13 +469,13 @@ public final class CrawlerUtils {
 	}
 
 	/**
-	 * Generar una conexión que pasa por el renderizador de páginas HTML
-	 * 
-	 * @param url
-	 * @param refererUrl
-	 * @return
-	 * @throws IOException
-	 * @throws MalformedURLException
+	 * Generar una conexión que pasa por el renderizador de páginas HTML.
+	 *
+	 * @param url        the url
+	 * @param refererUrl the referer url
+	 * @return the http URL connection
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException the malformed URL exception
 	 */
 	public static HttpURLConnection generateRendererConnection(String url, String refererUrl) throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -373,6 +528,16 @@ public final class CrawlerUtils {
 		return connection;
 	}
 
+	/**
+	 * Apply proxy.
+	 *
+	 * @param url           the url
+	 * @param refererUrl    the referer url
+	 * @param proxyActive   the proxy active
+	 * @param proxyHttpHost the proxy http host
+	 * @param proxyHttpPort the proxy http port
+	 * @return true, if successful
+	 */
 	private static boolean applyProxy(String url, String refererUrl, String proxyActive, String proxyHttpHost, String proxyHttpPort) {
 		final PropertiesManager pmgr = new PropertiesManager();
 		return "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null && !"BASIC_SERVICE_URL".equals(refererUrl) && url != null && !url.isEmpty()
@@ -384,6 +549,15 @@ public final class CrawlerUtils {
 				&& !url.toLowerCase().contains(".scss") && !url.toLowerCase().contains(".pdf") && !url.toLowerCase().contains(".xml") && !url.toLowerCase().contains(".wsdl");
 	}
 
+	/**
+	 * Generate connection.
+	 *
+	 * @param url        the url
+	 * @param refererUrl the referer url
+	 * @return the http URL connection
+	 * @throws IOException           Signals that an I/O exception has occurred.
+	 * @throws MalformedURLException the malformed URL exception
+	 */
 	private static HttpURLConnection generateConnection(String url, String refererUrl) throws IOException, MalformedURLException {
 		final PropertiesManager pmgr = new PropertiesManager();
 		HttpURLConnection connection = null;
@@ -412,6 +586,11 @@ public final class CrawlerUtils {
 //		return generateRendererConnection(url, refererUrl);
 	}
 
+	/**
+	 * Gets the naive SSL socket factory.
+	 *
+	 * @return the naive SSL socket factory
+	 */
 	private static SSLSocketFactory getNaiveSSLSocketFactory() {
 		// Create a trust manager that does not validate certificate chains
 		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
@@ -446,6 +625,15 @@ public final class CrawlerUtils {
 		return null;
 	}
 
+	/**
+	 * Follow redirection.
+	 *
+	 * @param cookie     the cookie
+	 * @param url        the url
+	 * @param redirectTo the redirect to
+	 * @return the http URL connection
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static HttpURLConnection followRedirection(final String cookie, final URL url, final String redirectTo) throws IOException {
 		final URL metaRedirection = new URL(url, redirectTo);
 		final HttpURLConnection connection = getConnection(metaRedirection.toString(), url.toString(), false);
@@ -456,6 +644,12 @@ public final class CrawlerUtils {
 		return connection;
 	}
 
+	/**
+	 * Gets the cookie.
+	 *
+	 * @param connection the connection
+	 * @return the cookie
+	 */
 	public static String getCookie(final HttpURLConnection connection) {
 		// Cogemos la lista de cookies, teniendo en cuenta que el parametro
 		// set-cookie no es sensible a mayusculas o minusculas
@@ -482,7 +676,7 @@ public final class CrawlerUtils {
 	}
 
 	/**
-	 * Comprueba si la conexión se ha realizado a la página de OpenDNS
+	 * Comprueba si la conexión se ha realizado a la página de OpenDNS.
 	 *
 	 * @param connection la conexión que se quiere comprobar
 	 * @return true si la conexión se ha realizado a la página de OpenDNS o false en caso contrario.
@@ -492,7 +686,7 @@ public final class CrawlerUtils {
 	}
 
 	/**
-	 * Comprueba si un contenido es un RSS
+	 * Comprueba si un contenido es un RSS.
 	 *
 	 * @param content una cadena con un contenido textual
 	 * @return true si corresponde a un RSS o false en caso contrario
