@@ -17,6 +17,7 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -32,6 +33,8 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
+import es.gob.oaw.rastreador2.action.diagnostico.ServicioDiagnosticoAction;
+import es.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -46,10 +49,12 @@ import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
+import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.dao.categoria.CategoriaDAO;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.utils.Pagination;
 
 /**
  * The Class SeedMassImportAction.
@@ -90,7 +95,8 @@ public class SeedMassImportAction extends Action {
 						return mapping.findForward(Constants.VOLVER);
 					}
 				} else if (Constants.ACCION_EXPORT_ALL.equals(request.getParameter(Constants.ACTION))) {
-					return getAllSeedsFile(request, response);
+					//return getAllSeedsFile(request, response);
+					return getSeedsFile(request, response, form);
 				} else {
 					return mapping.findForward(Constants.VOLVER);
 				}
@@ -297,7 +303,74 @@ public class SeedMassImportAction extends Action {
 			return null;
 		}
 	}
+	/**
+	 * Gets the all seeds file.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 * @return the all seeds file
+	 * @throws Exception the exception
+	 */
+	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form) throws Exception {
 
+//		try (Connection c = DataBaseManager.getConnection()) {
+//			SemillaSearchForm search = composeFilterFromRequest(request);
+//						
+//			SeedUtils.writeFileToResponse(response, seeds, true);
+//		} catch (Exception e) {
+//			Logger.putLog("ERROR al intentar exportar datos del servicio de diagnóstico", ServicioDiagnosticoAction.class, Logger.LOG_LEVEL_ERROR, e);
+//		}
+		
+		try (Connection c = DataBaseManager.getConnection()) {
+			SemillaSearchForm searchForm = (SemillaSearchForm) form;
+
+			if (searchForm != null) {
+				searchForm = new SemillaSearchForm();
+				searchForm.setNombre(request.getParameter("nombre"));
+
+				if (!StringUtils.isEmpty(searchForm.getNombre())) {
+
+					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
+				}
+
+				searchForm.setCategoria(request.getParameter("categoria"));
+				searchForm.setAmbito(request.getParameter("ambito"));
+				searchForm.setUrl(request.getParameter("url"));
+
+			}
+			response.setContentType("text/json");
+
+			List<SemillaForm> seeds = SemillaDAO.getObservatorySeedsToExport(c, searchForm);
+			SeedUtils.writeFileToResponse(response, seeds, true);
+			
+		} catch (Exception e) {
+			Logger.putLog("ERROR al intentar exportar semillas: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Compose filter from request.
+	 *
+	 * @param request the request
+	 * @return the servicio diagnostico form
+	 */
+	private SemillaSearchForm composeFilterFromRequest(HttpServletRequest request) {
+		SemillaSearchForm search = new SemillaSearchForm();
+		if (!StringUtils.isEmpty(request.getParameter("nombre"))) {
+			search.setNombre(request.getParameter("nombre"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
+			search.setCategoria(request.getParameter("categoria"));
+		}
+		if (!StringUtils.isEmpty(request.getParameter("url"))) {
+			search.setUrl(request.getParameter("url"));
+		}
+		return search;
+	}
+	
+	
 	/**
 	 * Save all seeds file.
 	 *
