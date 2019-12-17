@@ -21,12 +21,25 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Date;
 
+/**
+ * The Class CrawlerJobManager.
+ */
 public final class CrawlerJobManager {
+    
+    /** The scheduler. */
     private static Scheduler scheduler;
 
+    /**
+	 * Instantiates a new crawler job manager.
+	 */
     private CrawlerJobManager() {
     }
 
+    /**
+	 * Inits the.
+	 *
+	 * @throws Exception the exception
+	 */
     private static void init() throws Exception {
         if (scheduler == null) {
             final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
@@ -35,6 +48,12 @@ public final class CrawlerJobManager {
         }
     }
 
+    /**
+	 * Start job.
+	 *
+	 * @param crawlerData the crawler data
+	 * @throws Exception the exception
+	 */
     public static void startJob(CrawlerData crawlerData) throws Exception {
         init();
         final JobDetail jobDetail = new JobDetail(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP, CrawlerJob.class);
@@ -49,9 +68,16 @@ public final class CrawlerJobManager {
         scheduler.scheduleJob(jobDetail, trigger);
     }
 
+    /**
+	 * End job.
+	 *
+	 * @param idJob the id job
+	 * @throws Exception the exception
+	 */
     public static void endJob(long idJob) throws Exception {
         init();
         scheduler.interrupt(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
         scheduler.deleteJob(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
     }
+    
 }

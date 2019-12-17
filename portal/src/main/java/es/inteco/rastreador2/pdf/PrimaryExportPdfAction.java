@@ -282,16 +282,33 @@ public class PrimaryExportPdfAction extends Action {
 			if (dependenciasSemilla != null && !dependenciasSemilla.isEmpty()) {
 				for (DependenciaForm dependenciaSemilla : dependenciasSemilla) {
 					String dependOn = PDFUtils.formatSeedName(dependenciaSemilla.getName());
-					if (dependOn == null || dependOn.isEmpty()) {
-						dependOn = Constants.NO_DEPENDENCE;
-					}
-					final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn
-							+ File.separator + PDFUtils.formatSeedName(seed.getNombre());
-					pdfFiles.add(new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf"));
+					configReport(idObservatory, idExecutionOb, seed, pdfFiles, pmgr, dependOn);
 				}
+			} else {
+				
+				configReport(idObservatory, idExecutionOb, seed, pdfFiles, pmgr, "sin_dependencia");
 			}
 		} catch (Exception e) {
 		}
 		return pdfFiles;
+	}
+
+	/**
+	 * Config report.
+	 *
+	 * @param idObservatory the id observatory
+	 * @param idExecutionOb the id execution ob
+	 * @param seed          the seed
+	 * @param pdfFiles      the pdf files
+	 * @param pmgr          the pmgr
+	 * @param dependOn      the depend on
+	 */
+	private void configReport(final long idObservatory, final long idExecutionOb, final SemillaForm seed, List<File> pdfFiles, final PropertiesManager pmgr, String dependOn) {
+		if (dependOn == null || dependOn.isEmpty()) {
+			dependOn = Constants.NO_DEPENDENCE;
+		}
+		final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn
+				+ File.separator + PDFUtils.formatSeedName(seed.getNombre());
+		pdfFiles.add(new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf"));
 	}
 }

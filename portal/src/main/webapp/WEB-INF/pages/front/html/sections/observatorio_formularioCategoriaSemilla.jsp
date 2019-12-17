@@ -18,8 +18,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 <!--  JQ GRID   -->
 <link rel="stylesheet" href="/oaw/js/jqgrid/css/ui.jqgrid.css">
-<link rel="stylesheet"
-	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
 
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -27,8 +26,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="/oaw/js/jqgrid/jquery.jqgrid.src.js"></script>
-<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js"
-	type="text/javascript"></script>
+<script src="/oaw/js/jqgrid/i18n/grid.locale-es.js" type="text/javascript"></script>
 
 <script src="/oaw/js/gridSemillas.js" type="text/javascript"></script>
 
@@ -54,6 +52,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 .tagbox-item .email {
 	float: right;
 	width: 65%;
+}
+
+.tagbox-wrapper {
+	border: none !important;
+	box-shadow: none !important;
 }
 </style>
 
@@ -86,10 +89,36 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			},
 			open : function() {
 				cargarSelect();
+				
+				
+// 					$.ajax({
+// 						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+// 						method : 'POST',
+// 						cache : false
+// 					}).success(function(response) {
+
+// 						$('#tagsFilter').tagbox({
+// 							items : response.etiquetas,
+// 							searchIn : [ 'name' ],
+// 							rowFormat : '<span class="name">{{name}}</span>',
+// 							tokenFormat : '{{name}}',
+// 							valueField : 'id',
+// 							itemClass : 'user',
+// 						});
+
+// 					});
+
+				
+				
 			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
 				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
+				//Clear tagbox
+				$('.tagbox-token a').click();
+				$('.tagbox-wrapper').remove();
+				$('#tagsFilter').show();
+				
 			}
 		});
 
@@ -197,12 +226,9 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<li><html:link forward="getSeedCategories">
 						<bean:message key="migas.categoria" />
 					</html:link></li>
-				<li class="active"><logic:equal
-						parameter="<%=Constants.ACTION%>"
-						value="<%=Constants.NEW_SEED_CATEGORY%>">
+				<li class="active"><logic:equal parameter="<%=Constants.ACTION%>" value="<%=Constants.NEW_SEED_CATEGORY%>">
 						<bean:message key="migas.nueva.categoria" />
-					</logic:equal> <logic:equal parameter="<%=Constants.ACTION%>"
-						value="<%=Constants.EDIT_SEED_CATEGORY%>">
+					</logic:equal> <logic:equal parameter="<%=Constants.ACTION%>" value="<%=Constants.EDIT_SEED_CATEGORY%>">
 						<bean:message key="migas.modificar.categoria" />
 					</logic:equal></li>
 			</ol>
@@ -228,56 +254,37 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<bean:message key="leyenda.campo.obligatorio" />
 			</p>
 
-			<html:form styleClass="formulario form-horizontal" method="post"
-				action="/secure/SeedCategoriesAction" enctype="multipart/form-data"
-				onsubmit="return validateCategoriaForm(this)">
+			<html:form styleClass="formulario form-horizontal" method="post" action="/secure/SeedCategoriesAction"
+				enctype="multipart/form-data" onsubmit="return validateCategoriaForm(this)">
 				<html:hidden property="id" />
-				<input type="hidden" name="<%=Constants.ACTION%>"
-					value="<bean:write name="<%=Constants.ACTION%>"/>" />
+				<input type="hidden" name="<%=Constants.ACTION%>" value="<bean:write name="<%=Constants.ACTION%>"/>" />
 				<fieldset>
 					<jsp:include page="/common/crawler_messages.jsp" />
 					<div class="formItem">
-						<label for="name" class="control-label"><strong
-							class="labelVisu"><acronym
-								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message
-									key="migas.categoria" />: </strong></label>
-						<html:text styleClass="texto form-control" property="name"
-							styleId="name" maxlength="30" />
+						<label for="name" class="control-label"><strong class="labelVisu"><acronym
+								title="<bean:message key="campo.obligatorio" />"> * </acronym> <bean:message key="migas.categoria" />: </strong></label>
+						<html:text styleClass="texto form-control" property="name" styleId="name" maxlength="30" />
 					</div>
 					<div class="formItem">
-						<label for="orden" class="control-label"><strong
-							class="labelVisu"><bean:message
+						<label for="orden" class="control-label"><strong class="labelVisu"><bean:message
 									key="categoria.semillas.orden" />: </strong></label>
-						<html:select styleClass="textoSelect form-control" styleId="orden"
-							property="orden">
-							<option value="1"
-								<c:if test="${CategoriaForm.orden==1}">selected="selected"</c:if>>1</option>
-							<option value="2"
-								<c:if test="${CategoriaForm.orden==2}">selected="selected"</c:if>>2</option>
-							<option value="3"
-								<c:if test="${CategoriaForm.orden==3}">selected="selected"</c:if>>3</option>
-							<option value="4"
-								<c:if test="${CategoriaForm.orden==4}">selected="selected"</c:if>>4</option>
-							<option value="5"
-								<c:if test="${CategoriaForm.orden==5}">selected="selected"</c:if>>5</option>
-							<option value="6"
-								<c:if test="${CategoriaForm.orden==6}">selected="selected"</c:if>>6</option>
-							<option value="7"
-								<c:if test="${CategoriaForm.orden==7}">selected="selected"</c:if>>7</option>
-							<option value="8"
-								<c:if test="${CategoriaForm.orden==8}">selected="selected"</c:if>>8</option>
-							<option value="9"
-								<c:if test="${CategoriaForm.orden==9}">selected="selected"</c:if>>9</option>
-							<option value="10"
-								<c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
+						<html:select styleClass="textoSelect form-control" styleId="orden" property="orden">
+							<option value="1" <c:if test="${CategoriaForm.orden==1}">selected="selected"</c:if>>1</option>
+							<option value="2" <c:if test="${CategoriaForm.orden==2}">selected="selected"</c:if>>2</option>
+							<option value="3" <c:if test="${CategoriaForm.orden==3}">selected="selected"</c:if>>3</option>
+							<option value="4" <c:if test="${CategoriaForm.orden==4}">selected="selected"</c:if>>4</option>
+							<option value="5" <c:if test="${CategoriaForm.orden==5}">selected="selected"</c:if>>5</option>
+							<option value="6" <c:if test="${CategoriaForm.orden==6}">selected="selected"</c:if>>6</option>
+							<option value="7" <c:if test="${CategoriaForm.orden==7}">selected="selected"</c:if>>7</option>
+							<option value="8" <c:if test="${CategoriaForm.orden==8}">selected="selected"</c:if>>8</option>
+							<option value="9" <c:if test="${CategoriaForm.orden==9}">selected="selected"</c:if>>9</option>
+							<option value="10" <c:if test="${CategoriaForm.orden==10}">selected="selected"</c:if>>10</option>
 						</html:select>
 					</div>
 					<div class="formItem">
-						<label for="fileSeeds" class="control-label"><strong
-							class="labelVisu"><bean:message
+						<label for="fileSeeds" class="control-label"><strong class="labelVisu"><bean:message
 									key="categoria.semillas.fichero" />: </strong></label>
-						<html:file styleClass="texto" property="fileSeeds"
-							styleId="fileSeeds" />
+						<html:file styleClass="texto" property="fileSeeds" styleId="fileSeeds" />
 					</div>
 					<div class="formButton">
 						<html:submit styleClass="btn btn-primary btn-lg">
@@ -287,33 +294,55 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				</fieldset>
 			</html:form>
 
+
+
+
+		</div>
+	</div>
+
+
+	<div id="fullwidthgrid">
+
+		<div id="fullwidthgridheader">
+
+			<p class="alert alert-info pull-left">
+				<span class="glyphicon glyphicon-info-sign"></span> <em><bean:message key="nueva.semilla.webs.informacion" />
+				</em>:
+				<bean:message key="nueva.semilla.webs.info" />
+			</p>
+
+
 			<logic:present name="<%=Constants.ID_CATEGORIA%>">
 
 
 				<p class="pull-right">
-					<a href="#" class="btn btn-default btn-lg"
-						onclick="dialogoNuevaSemilla()"> <span
-						class="glyphicon glyphicon-plus" aria-hidden="true"
-						data-toggle="tooltip" title=""
-						data-original-title="Crear una semilla"></span> <bean:message
-							key="cargar.semilla.observatorio.nueva.semilla" />
+					<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaSemilla()"> <span
+						class="glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip" title=""
+						data-original-title="Crear una semilla"></span> <bean:message key="cargar.semilla.observatorio.nueva.semilla" />
 					</a>
 				</p>
 
 			</logic:present>
-
-
-			<!-- Grid -->
-			<table id="grid">
-			</table>
-
-
-
-			<p id="paginador"></p>
-
 		</div>
 
-<p id="pCenter"><html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg"><bean:message key="boton.volver" /></html:link></p>
+
+		<!-- Grid -->
+		<table id="grid">
+		</table>
+
+
+
+		<p id="paginador"></p>
+		<p id="pCenter">
+			<html:link forward="observatoryMenu" styleClass="btn btn-default btn-lg">
+				<bean:message key="boton.volver" />
+			</html:link>
+		</p>
+
 	</div>
+
+
+
+
 </div>
 

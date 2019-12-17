@@ -46,17 +46,27 @@ import es.inteco.rastreador2.pdf.utils.PrimaryExportPdfUtils;
 import es.inteco.utils.FileUtils;
 
 /**
- * Hilo para generar los pdfs de un observatorio de forma asíncrona
+ * Hilo para generar los pdfs de un observatorio de forma asíncrona.
  */
 public class PdfGeneratorThread extends Thread {
-
+	/** The id observatory. */
 	private final long idObservatory;
+	/** The id observatory execution. */
 	private final long idObservatoryExecution;
+	/** The fulfilled crawlings. */
 	private final List<FulFilledCrawling> fulfilledCrawlings;
+	/** The email. */
 	private final String email;
 
-	public PdfGeneratorThread(final long idObservatory, final long idObservatoryExecution,
-			final List<FulFilledCrawling> fulfilledCrawlings, final String email) {
+	/**
+	 * Instantiates a new pdf generator thread.
+	 *
+	 * @param idObservatory          the id observatory
+	 * @param idObservatoryExecution the id observatory execution
+	 * @param fulfilledCrawlings     the fulfilled crawlings
+	 * @param email                  the email
+	 */
+	public PdfGeneratorThread(final long idObservatory, final long idObservatoryExecution, final List<FulFilledCrawling> fulfilledCrawlings, final String email) {
 		super("PdfGeneratorThread");
 		this.idObservatory = idObservatory;
 		this.fulfilledCrawlings = fulfilledCrawlings;
@@ -64,20 +74,26 @@ public class PdfGeneratorThread extends Thread {
 		this.email = email;
 	}
 
+	/**
+	 * Run.
+	 */
 	@Override
 	public final void run() {
 		final String observatoryName = getObservatoryName();
-
 		for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
 			buildPdf(fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
 		}
-
+		// TODO Generate zips to pass each folder??
 		final MailService mailService = new MailService();
-		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado", String.format(
-				"El proceso de generación de informes ha finalizado para el observatorio %s. Para descargar los informes vuelva a ejecutar la acción",
-				observatoryName));
+		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado",
+				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Para descargar los informes vuelva a ejecutar la acción", observatoryName));
 	}
 
+	/**
+	 * Gets the observatory name.
+	 *
+	 * @return the observatory name
+	 */
 	private String getObservatoryName() {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final ObservatorioForm observatoryForm = ObservatorioDAO.getObservatoryForm(c, idObservatory);
@@ -87,82 +103,52 @@ public class PdfGeneratorThread extends Thread {
 		}
 	}
 
+	/**
+	 * Builds the pdf.
+	 *
+	 * @param idRastreoRealizado the id rastreo realizado
+	 * @param idRastreo          the id rastreo
+	 */
 	private void buildPdf(final long idRastreoRealizado, final long idRastreo) {
 		try (Connection c = DataBaseManager.getConnection()) {
 			final SemillaForm seed = SemillaDAO.getSeedById(c, RastreoDAO.getIdSeedByIdRastreo(c, idRastreo));
 			// final File pdfFile = getReportFile(seed);
 			List<File> pdfFiles = getReportFiles(seed);
-
 			if (pdfFiles != null && !pdfFiles.isEmpty()) {
-
 				for (File pdfFile : pdfFiles) {
-
 					final File sources = new File(pdfFile.getParentFile(), "sources.zip");
 					// Si el pdf no ha sido creado lo creamos
 					if (!pdfFile.exists() || !sources.exists()) {
-						final List<Long> evaluationIds = AnalisisDatos
-								.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
+						final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreoRealizado);
 						final List<Long> previousEvaluationIds;
 						if (evaluationIds != null && !evaluationIds.isEmpty()) {
 							if (!pdfFile.exists()) {
 								final es.gob.oaw.rastreador2.observatorio.ObservatoryManager observatoryManager = new es.gob.oaw.rastreador2.observatorio.ObservatoryManager();
-								previousEvaluationIds = AnalisisDatos
-										.getEvaluationIdsFromRastreoRealizado(observatoryManager
-												.getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(
-														idRastreo, ObservatorioDAO.getPreviousObservatoryExecution(c,
-																idObservatoryExecution)));
-								final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory)
-										.getTipo();
-
-								String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c,
-										idRastreoRealizado, idRastreo);
-
+								previousEvaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(observatoryManager
+										.getPreviousIdRastreoRealizadoFromIdRastreoAndIdObservatoryExecution(idRastreo, ObservatorioDAO.getPreviousObservatoryExecution(c, idObservatoryExecution)));
+								final long observatoryType = ObservatorioDAO.getObservatoryForm(c, idObservatory).getTipo();
+								String aplicacion = CartuchoDAO.getApplicationFromExecutedObservatoryId(c, idRastreoRealizado, idRastreo);
 								// Desdoblamiento nueva metodologia Nuevo fichero con los textos para las
 								// exportaciones
-
 								// Añadada UNE-EN2019 y accesibilidad
-
 								if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
-
-									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfAccesibilidad(),
-											idRastreoRealizado, evaluationIds, previousEvaluationIds,
-											PropertyMessageResources.getMessageResources(
-													Constants.MESSAGE_RESOURCES_ACCESIBILIDAD),
-											pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
+									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfAccesibilidad(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
+											PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
 											observatoryType);
-								}
-
-								else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
-
-									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNEEN2019(),
-											idRastreoRealizado, evaluationIds, previousEvaluationIds,
-											PropertyMessageResources.getMessageResources(
-													Constants.MESSAGE_RESOURCES_UNE_EN2019),
-											pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
+								} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
+									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNEEN2019(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
+											PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_UNE_EN2019), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
 											observatoryType);
-								}
-
-								else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
-
-									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012b(),
-											idRastreoRealizado, evaluationIds, previousEvaluationIds,
-											PropertyMessageResources.getMessageResources(
-													Constants.MESSAGE_RESOURCES_2012_B),
-											pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
+								} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
+									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012b(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
+											PropertyMessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_2012_B), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
 											observatoryType);
 								} else {
-
-									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(),
-											idRastreoRealizado, evaluationIds, previousEvaluationIds,
-											PropertyMessageResources.getMessageResources("ApplicationResources"),
-											pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution,
-											observatoryType);
-
+									PrimaryExportPdfUtils.exportToPdf(new AnonymousResultExportPdfUNE2012(), idRastreoRealizado, evaluationIds, previousEvaluationIds,
+											PropertyMessageResources.getMessageResources("ApplicationResources"), pdfFile.getPath(), seed.getNombre(), "", idObservatoryExecution, observatoryType);
 								}
 							}
-
-							final SourceFilesManager sourceFilesManager = new SourceFilesManager(
-									pdfFile.getParentFile());
+							final SourceFilesManager sourceFilesManager = new SourceFilesManager(pdfFile.getParentFile());
 							if (!sourceFilesManager.existsSourcesZip()) {
 								sourceFilesManager.writeSourceFiles(c, evaluationIds);
 								sourceFilesManager.zipSources(true);
@@ -177,33 +163,30 @@ public class PdfGeneratorThread extends Thread {
 		}
 	}
 
+	/**
+	 * Gets the report files.
+	 *
+	 * @param seed the seed
+	 * @return the report files
+	 */
 	private List<File> getReportFiles(final SemillaForm seed) {
-
 		List<File> pdfFiles = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
-
 		try (Connection c = DataBaseManager.getConnection()) {
 			List<DependenciaForm> dependenciasSemilla = SemillaDAO.getSeedDependenciasById(c, seed.getId());
-
 			if (dependenciasSemilla != null && !dependenciasSemilla.isEmpty()) {
 				for (DependenciaForm dependenciaSemilla : dependenciasSemilla) {
 					String dependOn = PDFUtils.formatSeedName(dependenciaSemilla.getName());
 					if (dependOn == null || dependOn.isEmpty()) {
 						dependOn = Constants.NO_DEPENDENCE;
 					}
-					final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav")
-							+ idObservatory + File.separator + idObservatoryExecution + File.separator + dependOn
+					final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idObservatoryExecution + File.separator + dependOn
 							+ File.separator + PDFUtils.formatSeedName(seed.getNombre());
 					pdfFiles.add(new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf"));
 				}
 			}
-
 		} catch (Exception e) {
-
 		}
-
 		return pdfFiles;
-
 	}
-
 }

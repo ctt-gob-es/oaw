@@ -54,6 +54,8 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 	private List<DependenciaForm> dependencias;
 	/** The etiquetas. */
 	private List<EtiquetaForm> etiquetas;
+	/** The tags string. */
+	private String tagsString;
 
 	/**
 	 * Gets the nombre.
@@ -323,5 +325,23 @@ public class ResultadoSemillaFullForm extends ResultadoSemillaForm {
 	 */
 	public void setNumCrawls(int numCrawls) {
 		this.numCrawls = numCrawls;
+	}
+
+	/**
+	 * Gets the tags string.
+	 *
+	 * @return the tags string
+	 */
+	public String getTagsString() {
+		return tagsString;
+	}
+
+	/**
+	 * Sets the tags string.
+	 *
+	 * @param tagsString the new tags string
+	 */
+	public void setTagsString(String tagsString) {
+		this.tagsString = tagsString;
 	}
 }

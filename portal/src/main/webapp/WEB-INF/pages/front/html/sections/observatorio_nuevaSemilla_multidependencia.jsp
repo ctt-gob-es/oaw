@@ -47,25 +47,25 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 	$(window).on('load', function() {
 
-		$jn(document).ready(function() {
-			$.ajax({
-				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
-				method : 'POST',
-				cache : false
-			}).success(function(response) {
+// 		$jn(document).ready(function() {
+// 			$.ajax({
+// 				url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+// 				method : 'POST',
+// 				cache : false
+// 			}).success(function(response) {
 
-				$('#tagsFilter').tagbox({
-					items : response.etiquetas,
-					searchIn : [ 'name' ],
-					rowFormat : '<span class="name">{{name}}</span>',
-					tokenFormat : '{{name}}',
-					valueField : 'id',
-					itemClass : 'user'
-				});
+// 				$('#tagsFilter').tagbox({
+// 					items : response.etiquetas,
+// 					searchIn : [ 'name' ],
+// 					rowFormat : '<span class="name">{{name}}</span>',
+// 					tokenFormat : '{{name}}',
+// 					valueField : 'id',
+// 					itemClass : 'user',
+// 				});
 
-			})
+// 			})
 
-		});
+// 		});
 
 	});
 
@@ -236,63 +236,6 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							}
 						});
 
-		//Cargar las etiquetas
-		$jn('#selectEtiquetasNuevaSemilla').empty();
-		$('#selectEtiquetasNuevaSemillaSeleccionadas').empty();
-		$jn
-				.ajax(
-						{
-							url : '/oaw/secure/JsonSemillasObservatorio.do?action=listEtiquetas',
-						})
-				.done(
-						function(data) {
-
-							var response = $jn.parseJSON(data);
-
-							if (response && response.length) {
-								for (var i = 0, l = response.length; i < l; i++) {
-									var ri = response[i];
-									$jn('#selectEtiquetasNuevaSemilla').append(
-											'<option value="'+ri.id+'">'
-													+ ri.name + '</option>');
-								}
-
-								$('#selectEtiquetasNuevaSemillaSeleccionadas')
-										.css(
-												'width',
-												$(
-														'#selectEtiquetasNuevaSemilla')
-														.width()
-														+ 'px');
-
-								//Marcar seleccionadas si exiten
-
-								if (rowObject != null) {
-
-									$
-											.each(
-													rowObject.etiquetas,
-													function(index, value) {
-
-														$(
-																'#selectEtiquetasNuevaSemilla option[value='
-																		+ value.id
-																		+ ']')
-																.attr(
-																		'selected',
-																		'selected');
-														$(
-																'#selectEtiquetasNuevaSemilla')
-																.find(
-																		'option:selected')
-																.remove()
-																.appendTo(
-																		'#selectEtiquetasNuevaSemillaSeleccionadas');
-													});
-								}
-							}
-						});
-
 	}
 </script>
 
@@ -432,7 +375,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					class="labelVisu"> <bean:message
 							key="nueva.semilla.observatorio.etiqueta" /></strong></label>
 				<div class="col-xs-6">
-					<input name="etiquetasSeleccionadas" autocapitalize="off"
+					<input name="etiquetasSeleccionadas" autocapitalize="off" 
 						placeholder="Escriba para buscar..." autofocus id="tagsFilter"
 						type="text" value="" />
 				</div>

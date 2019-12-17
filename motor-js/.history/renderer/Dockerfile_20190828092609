@@ -10,8 +10,8 @@ RUN apk add --no-cache nodejs-current nodejs-npm
 #     chromium
 
 # Installs latest Chromium package.
-RUN echo @edge http://nl.alpinelinux.org/alpine/v3.10/community >> /etc/apk/repositories \
-    && echo @edge http://nl.alpinelinux.org/alpine/v3.10/main >> /etc/apk/repositories \
+RUN echo @edge http://nl.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories \
+    && echo @edge http://nl.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories \
     && apk add --no-cache \
     chromium@edge \
     harfbuzz@edge \

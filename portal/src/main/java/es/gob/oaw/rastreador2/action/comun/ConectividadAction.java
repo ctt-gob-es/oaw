@@ -66,13 +66,10 @@ import es.inteco.utils.CrawlerUtils;
  * @author alvaro.pelaez
  */
 public class ConectividadAction extends Action {
-
 	/** Fichero de propiedades MAIL_PROPERTIES. */
 	private static final String MAIL_PROPERTIES = "mail.properties";
-
 	/** Properties Manager. */
 	final PropertiesManager pmgr = new PropertiesManager();
-
 	/** The factory. */
 	private final ObjectFactory factory = new ObjectFactory();
 
@@ -89,20 +86,15 @@ public class ConectividadAction extends Action {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.
-	 * ActionMapping, org.apache.struts.action.ActionForm,
-	 * javax.servlet.http.HttpServletRequest,
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action. ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest,
 	 * javax.servlet.http.HttpServletResponse)
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
-
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// Marcamos el menú
 		request.getSession().setAttribute(Constants.MENU, Constants.MENU_OTHER_OPTIONS);
 		request.getSession().setAttribute(Constants.SUBMENU, Constants.SUBMENU_CONECTIVIDAD);
-
 		try (Connection c = DataBaseManager.getConnection()) {
 			ProxyForm proxy = ProxyDAO.getProxy(c);
 			request.setAttribute("proxyconfig", proxy);
@@ -110,10 +102,8 @@ public class ConectividadAction extends Action {
 		} catch (Exception e) {
 			Logger.putLog("Error: ", ConectividadAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		String action = request.getParameter(Constants.ACTION);
 		if (action != null) {
-
 			if ("checkurl".equals(action)) {
 				String url = request.getParameter("url");
 				if (StringUtils.isEmpty(url)) {
@@ -121,7 +111,6 @@ public class ConectividadAction extends Action {
 					errors.add("urlVacia", new ActionMessage("conectividad.url.vacia.error"));
 					saveErrors(request, errors);
 				} else {
-
 					return checkUrl(url, request, response);
 				}
 			} else if ("checksim".equals(action)) {
@@ -133,32 +122,24 @@ public class ConectividadAction extends Action {
 				} else {
 					return checkSIM(request, response, email);
 				}
-
 			} else if ("modifyproxy".equals(action)) {
 				String proxyUrl = request.getParameter("proxyUrl");
 				String proxyStatus = request.getParameter("proxyStatus");
 				String proxyPort = request.getParameter("proxyPort");
-
 				// TODO Save proxy config
-
 				try (Connection c = DataBaseManager.getConnection()) {
 					ProxyForm proxy = new ProxyForm();
 					proxy.setStatus("true".equals(proxyStatus) ? 1 : 0);
 					proxy.setUrl(proxyUrl);
 					proxy.setPort(proxyPort);
-
 					ProxyDAO.update(c, proxy);
 					DataBaseManager.closeConnection(c);
 				} catch (Exception e) {
 					Logger.putLog("Error: ", ConectividadAction.class, Logger.LOG_LEVEL_ERROR, e);
 				}
-
 			}
-
 		}
-
 		return mapping.findForward(Constants.EXITO);
-
 	}
 
 	/**
@@ -170,9 +151,7 @@ public class ConectividadAction extends Action {
 	 * @return the action forward
 	 */
 	private ActionForward changeProxyStatus(HttpServletRequest request, HttpServletResponse response, String email) {
-
 		return null;
-
 	}
 
 	/**
@@ -184,46 +163,34 @@ public class ConectividadAction extends Action {
 	 * @return the action forward
 	 */
 	private ActionForward checkSIM(HttpServletRequest request, HttpServletResponse response, String email) {
-
 		String url = "";
 		boolean simConnection = false;
 		String simError = "";
-
 		try {
 			url = pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url");
 			URL wsdlURL = new URL(url);
 			String charset = "UTF-8";
-
 			URLConnection connection = wsdlURL.openConnection();
 			connection.setRequestProperty("Accept-Charset", charset);
 			connection.getInputStream();
 			wsdlURL.openStream();
-
 			final Peticion peticion = factory.createPeticion();
-
 			peticion.setUsuario(pmgr.getValue(MAIL_PROPERTIES, "sim.user.username"));
 			peticion.setPassword(pmgr.getValue(MAIL_PROPERTIES, "sim.user.password"));
 			peticion.setServicio(pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.id"));
 			peticion.setNombreLote("OAW-" + System.currentTimeMillis());
 			peticion.setMensajes(createMensajes(email, url));
-
 			url = pmgr.getValue(MAIL_PROPERTIES, "sim.mailservice.wsdl.url");
-
 			final EnvioMensajesService service = new EnvioMensajesService(new URL(url));
-			final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service
-					.getEnvioMensajesServicePort();
-
+			final EnvioMensajesServiceWSBindingPortType envioMensajesServicePort = service.getEnvioMensajesServicePort();
 			final Respuesta respuesta = envioMensajesServicePort.enviarMensaje(peticion);
 			final ResponseStatusType respuestaStatus = respuesta.getStatus();
 			if (!"1000".equals(respuestaStatus.getStatusCode())) {
 				simConnection = false;
-				simError = respuestaStatus.getStatusCode() + " -  " + respuestaStatus.getStatusText() + " - "
-						+ respuestaStatus.getDetails();
-
+				simError = respuestaStatus.getStatusCode() + " -  " + respuestaStatus.getStatusText() + " - " + respuestaStatus.getDetails();
 			} else {
 				simConnection = true;
 			}
-
 		} catch (MalformedURLException e) {
 			simConnection = false;
 			simError = e.getMessage();
@@ -234,17 +201,12 @@ public class ConectividadAction extends Action {
 			simConnection = false;
 			simError = e.getMessage();
 		}
-
 		Check checkSim = new Check();
-
 		checkSim.setUrl(url);
 		checkSim.setConnection(simConnection);
 		checkSim.setError(simError);
-
 		String jsonCheck = new Gson().toJson(checkSim);
-
 		response.setContentType("text/json; charset=UTF-8");
-
 		PrintWriter pw;
 		try {
 			pw = response.getWriter();
@@ -254,9 +216,7 @@ public class ConectividadAction extends Action {
 		} catch (IOException e) {
 			Logger.putLog("Error: ", ConectividadAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return null;
-
 	}
 
 	/**
@@ -268,153 +228,94 @@ public class ConectividadAction extends Action {
 	 * @return the action forward
 	 */
 	private ActionForward checkUrl(String urlAdress, HttpServletRequest request, HttpServletResponse response) {
-
 		boolean urlConnection = false;
-
 		String urlError = "";
-
 		try {
-
 			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
-
 			HttpURLConnection connection = null;
-
 			connection = (HttpURLConnection) url.openConnection();
-
 			if (connection instanceof HttpsURLConnection) {
 				((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
 			}
-
 			connection.setInstanceFollowRedirects(false);
-
 			connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
 			connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-			connection.addRequestProperty("Accept-Language",
-					pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
-			connection.addRequestProperty("User-Agent",
-					pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
-
+			connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+			connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
 			int responseCode = connection.getResponseCode();
-
 			if (HttpURLConnection.HTTP_OK == responseCode) {
 				urlConnection = true;
-
-			} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP
-					|| responseCode == HttpURLConnection.HTTP_MOVED_PERM
-					|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
-
+			} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
 				String newUrl = connection.getHeaderField("Location");
-
 				this.checkUrl(newUrl, request, response);
-
 			} else {
-
 				urlError = "Error al conectar a la URL código: " + responseCode;
-
 			}
-
 		} catch (MalformedURLException e) {
 			urlError = "URL mal formada";
 		} catch (IOException e1) {
 			urlError = "Error de conexión" + e1.getMessage() != null ? e1.getMessage() : "";
 		}
-
 		boolean urlConnectionProxy = false;
-
 		String urlErrorProxy = "";
-
 		try {
-
 			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
-
 			String proxyActive = "";
 			String proxyHttpHost = "";
 			String proxyHttpPort = "";
-
 			try (Connection c = DataBaseManager.getConnection()) {
 				ProxyForm proxy = ProxyDAO.getProxy(c);
-
 				proxyActive = proxy.getStatus() > 0 ? "true" : "false";
 				proxyHttpHost = proxy.getUrl();
 				proxyHttpPort = proxy.getPort();
-
 				DataBaseManager.closeConnection(c);
 			} catch (Exception e) {
 				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
 			}
-
 			HttpURLConnection connection = null;
-
 			if ("true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
 				try {
-					Proxy proxy = new Proxy(Proxy.Type.HTTP,
-							new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
-					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-							Logger.LOG_LEVEL_ERROR);
+					Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
 					connection = (HttpURLConnection) url.openConnection(proxy);
 				} catch (NumberFormatException e) {
-					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class,
-							Logger.LOG_LEVEL_ERROR);
+					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
 				}
-
 				if (connection instanceof HttpsURLConnection) {
 					((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
 				}
-
 				connection.setInstanceFollowRedirects(false);
-
-				connection.setConnectTimeout(
-						Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-				connection
-						.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
-				connection.addRequestProperty("Accept-Language",
-						pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
-				connection.addRequestProperty("User-Agent",
-						pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
-
+				connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+				connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+				connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+				connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
 				int responseCode = connection.getResponseCode();
-
 				if (HttpURLConnection.HTTP_OK == responseCode) {
 					urlConnectionProxy = true;
-
-				} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP
-						|| responseCode == HttpURLConnection.HTTP_MOVED_PERM
-						|| responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
-
+				} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
 					String newUrl = connection.getHeaderField("Location");
-
 					this.checkUrl(newUrl, request, response);
-
 				} else {
 					urlErrorProxy = "Error al conectar a la URL código: " + responseCode;
 				}
-
 			} else {
-
 				urlConnectionProxy = false;
 				urlErrorProxy = "El proxy no está activo";
 			}
-
 		} catch (MalformedURLException e) {
 			urlErrorProxy = "URL mal formada";
 		} catch (IOException e1) {
 			urlErrorProxy = "Error de conexión" + e1.getMessage() != null ? e1.getMessage() : "";
 		}
-
 		response.setContentType("text/json");
-
 		CheckConectivity checkConectivity = new CheckConectivity();
-
 		checkConectivity.setUrl(urlAdress);
 		checkConectivity.setConnection(urlConnection);
 		checkConectivity.setError(urlError);
 		checkConectivity.setConnectionProxy(urlConnectionProxy);
 		checkConectivity.setErrorProxy(urlErrorProxy);
-
 		String jsonCheck = new Gson().toJson(checkConectivity);
-
 		response.setContentType("text/json; charset=UTF-8");
-
 		PrintWriter pw;
 		try {
 			pw = response.getWriter();
@@ -424,7 +325,6 @@ public class ConectividadAction extends Action {
 		} catch (IOException e) {
 			Logger.putLog("Error: ", ConectividadAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
-
 		return null;
 	}
 
@@ -446,7 +346,6 @@ public class ConectividadAction extends Action {
 			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
 			}
 		} };
-
 		// Install the all-trusting trust manager
 		try {
 			final SSLContext sc = SSLContext.getInstance("TLSv1.2");
@@ -462,27 +361,22 @@ public class ConectividadAction extends Action {
 	 * Crea los mensajes a enviar por SIM.
 	 *
 	 * @param email      Dirección de correo electrónico
-	 * @param urlWsdlSim URL del WSDL de SIM para incorporarlo en el mensaje de
-	 *                   correo
+	 * @param urlWsdlSim URL del WSDL de SIM para incorporarlo en el mensaje de correo
 	 * @return Mensajes generados.
 	 */
 	private Mensajes createMensajes(String email, String urlWsdlSim) {
 		final Mensajes mensajes = factory.createMensajes();
 		final MensajeEmail mensajeEmail = factory.createMensajeEmail();
 		mensajeEmail.setAsunto("Test de conectividad SIM");
-		mensajeEmail.setCuerpo(
-				"Mensaje de prueba de conectividad. \nEste mensaje se ha enviado a través de SIM en: " + urlWsdlSim);
-
+		mensajeEmail.setCuerpo("Mensaje de prueba de conectividad. \nEste mensaje se ha enviado a través de SIM en: " + urlWsdlSim);
 		final DestinatariosMail destinatariosMail = factory.createDestinatariosMail();
 		final DestinatarioMail destinatarioMail = factory.createDestinatarioMail();
 		final Destinatarios destinatarios = factory.createDestinatarios();
-
 		destinatarios.setTo(email);
 		destinatarioMail.setDestinatarios(destinatarios);
 		destinatariosMail.getDestinatarioMail().add(destinatarioMail);
 		mensajeEmail.setDestinatariosMail(destinatariosMail);
 		mensajes.getMensajeEmail().add(mensajeEmail);
-
 		return mensajes;
 	}
 
@@ -490,13 +384,10 @@ public class ConectividadAction extends Action {
 	 * Check. DTO para resultados de comprobaciones.
 	 */
 	public class Check {
-
 		/** The url. */
 		private String url;
-
 		/** The connection. */
 		private boolean connection;
-
 		/** The error. */
 		private String error;
 
@@ -553,7 +444,6 @@ public class ConectividadAction extends Action {
 		public void setError(String error) {
 			this.error = error;
 		}
-
 	}
 
 	/**
@@ -562,16 +452,12 @@ public class ConectividadAction extends Action {
 	public class CheckConectivity {
 		/** The url. */
 		private String url;
-
 		/** The connection. */
 		private boolean connection;
-
 		/** The connectionproxy. */
 		private boolean connectionProxy;
-
 		/** The error. */
 		private String error;
-
 		/** The errorproxy. */
 		private String errorProxy;
 
@@ -664,7 +550,5 @@ public class ConectividadAction extends Action {
 		public void setErrorProxy(String errorProxy) {
 			this.errorProxy = errorProxy;
 		}
-
 	}
-
 }
