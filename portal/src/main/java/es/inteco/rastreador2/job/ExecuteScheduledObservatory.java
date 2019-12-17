@@ -23,10 +23,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
+import org.quartz.UnableToInterruptJobException;
 
 import ca.utoronto.atrc.tile.accessibilitychecker.EvaluatorUtility;
 import es.gob.oaw.MailService;
@@ -53,7 +55,7 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 /**
  * The Class ExecuteScheduledObservatory.
  */
-public class ExecuteScheduledObservatory implements StatefulJob {
+public class ExecuteScheduledObservatory implements StatefulJob, InterruptableJob {
 
 	/**
 	 * Execute.
@@ -250,6 +252,11 @@ public class ExecuteScheduledObservatory implements StatefulJob {
 			Logger.putLog("Error al guardar la metodología en base de datos", ExecuteScheduledObservatory.class,
 					Logger.LOG_LEVEL_ERROR, e);
 		}
+	}
+
+	@Override
+	public void interrupt() throws UnableToInterruptJobException {
+		System.out.print("Interrupt");
 	}
 
 }

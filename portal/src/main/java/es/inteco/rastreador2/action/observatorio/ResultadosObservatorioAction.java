@@ -15,10 +15,28 @@
 ******************************************************************************/
 package es.inteco.rastreador2.action.observatorio;
 
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+
+import java.io.File;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.Action;
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionMessage;
+import org.apache.struts.action.ActionMessages;
+
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.crawler.job.CrawlerJob;
+import es.inteco.crawler.job.CrawlerJobManager;
 import es.inteco.intav.utils.CacheUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
@@ -32,18 +50,13 @@ import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.pdf.utils.ZipUtils;
-import es.inteco.rastreador2.utils.*;
+import es.inteco.rastreador2.utils.AnnexUtils;
+import es.inteco.rastreador2.utils.CrawlerUtils;
+import es.inteco.rastreador2.utils.ObservatoryUtils;
+import es.inteco.rastreador2.utils.Pagination;
+import es.inteco.rastreador2.utils.RastreoUtils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.utils.FileUtils;
-import org.apache.struts.action.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
 /**
  * The Class ResultadosObservatorioAction.
@@ -87,6 +100,9 @@ public class ResultadosObservatorioAction extends Action {
 					} else if (action.equalsIgnoreCase(Constants.REGENERATE_RESULTS)) {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return regenerateResults(mapping, form, request);
+					} else if (action.equalsIgnoreCase(Constants.STOP_CRAWL)) {
+						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
+						return stop(mapping, form, request);
 					}
 				}
 			} else {
@@ -277,6 +293,7 @@ public class ResultadosObservatorioAction extends Action {
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, Long.parseLong(idExObs), Long.valueOf(userData.getId()));
 		final CrawlerJob crawlerJob = new CrawlerJob();
 		crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
+		//CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
 		// Calculate scores
 		ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExObs), 0, null);
 		// Recuperar sólo el ejectado
@@ -376,6 +393,15 @@ public class ResultadosObservatorioAction extends Action {
 		}
 	}
 
+	/**
+	 * Regenerate results.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
 	private ActionForward regenerateResults(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
 		final SemillaForm semillaForm = (SemillaForm) form;
 		final Long idObservatoryExecution = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
@@ -396,6 +422,20 @@ public class ResultadosObservatorioAction extends Action {
 			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 			throw new Exception(e);
 		}
+		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
+	}
+
+	/**
+	 * Stop.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
 		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
 	}
 }

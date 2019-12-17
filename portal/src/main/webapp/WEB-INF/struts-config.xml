@@ -270,6 +270,8 @@
 		<forward name="resultadosPrimariosObservatorio"
 			path="/secure/ResultadosObservatorio.do?action=getFulfilledObservatories" />
 		<forward name="resultadosObservatorioSemillas" path="/secure/ResultadosObservatorio.do?action=getSeeds" />
+		
+		<forward name="stopObservatorio" path="/secure/ResultadosObservatorio.do?action=stop" />
 		<forward name="regenerarResultadosObservatorioSemillas"
 			path="/secure/ResultadosObservatorio.do?action=regenerateResults" />
 		<forward name="resultadosObservatorioSemillasLista"

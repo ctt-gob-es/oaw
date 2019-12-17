@@ -123,10 +123,35 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			},
 			open : function() {
 				cargarSelect();
+				
+				
+				$(document).ready(function() {
+					$.ajax({
+						url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+						method : 'POST',
+						cache : false
+					}).success(function(response) {
+
+						$('#tagsFilter').tagbox({
+							items : response.etiquetas,
+							searchIn : [ 'name' ],
+							rowFormat : '<span class="name">{{name}}</span>',
+							tokenFormat : '{{name}}',
+							valueField : 'id',
+							itemClass : 'user',
+						});
+
+					})
+
+				});
+				
+				
 			},
 			close : function() {
 				$('#nuevaSemillaMultidependencia')[0].reset();
 				$('#selectDependenciasNuevaSemillaSeleccionadas').html('');
+				$('.tagbox-token a').click();
+				
 			},
 		});
 
