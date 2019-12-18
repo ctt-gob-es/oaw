@@ -92,7 +92,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	var windowWidth = $(window).width() * 0.8;
 	var windowHeight = $(window).height() * 0.85;
 	
-
+	
 	function dialogoNuevaSemilla() {
 
 		window.scrollTo(0, 0);
@@ -220,6 +220,11 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						.serialize());
 	}
 
+	function exportar(){
+		window.location.href = '/oaw/secure/SeedMassImport.do?action=exportAllSeeds&'
+			+ $('#SemillaSearchForm').serialize();
+	}
+	
 	$(window)
 			.on(
 					'load',
@@ -357,15 +362,24 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 
 
 			<!-- Exportar todas las semillas -->
-			<p class="pull-right">
+			<!-- <p class="pull-right">
 				<a href="/oaw/secure/SeedMassImport.do?action=exportAllSeeds"> <span class="btn btn-default btn-lg"> <span
 						class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
 						data-original-title="Exportar todas las semillas a un fichero XML"></span> <bean:message
 							key="cargar.semilla.observatorio.exportar.todo" />
 				</span>
 				</a>
-			</p>
+			</p> -->
 
+				<p class="pull-right">
+				<a onclick="exportar()"> <span class="btn btn-default btn-lg"> <span
+						class="glyphicon glyphicon-cloud-download" aria-hidden="true" data-toggle="tooltip" title=""
+						data-original-title="Exportar las semillas a un fichero XML"></span> <bean:message
+							key="cargar.semilla.observatorio.exportar.todo" />
+				</span>
+				</a>
+				</p> 
+			
 			<!-- Nueva semilla -->
 			<p class="pull-right">
 				<a href="#" class="btn btn-default btn-lg" onclick="dialogoNuevaSemilla()"> <span
