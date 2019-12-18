@@ -1252,7 +1252,7 @@ to {
 	border: none;
 	box-shadow: none;
 	width: 90%;
-	padding:0 !important;
+	padding: 0 !important;
 }
 
 #fullwidthgrid .tagbox-wrapper.focus, #nuevaSemillaMultidependencia  .focus {
@@ -1269,15 +1269,15 @@ to {
 }
 
 #nuevaSemillaMultidependencia .tagbox-token {
-	float:left !important;
-	clear:none !important;
+	float: left !important;
+	clear: none !important;
 	margin-bottom: 3px;
 	margin-left: 1px !important;
 }
 
 #nuevaSemillaMultidependencia .tagbox-wrapper input {
-	float:left !important;
-	clear:both !important;
+	float: left !important;
+	clear: both !important;
 	min-width: 30% !important;
 	width: 45% !important;
 	height: 34px;
@@ -1295,3 +1295,15 @@ to {
 	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+
+.table-console {
+	table-layout: fixed;
+}
+
+.table-console td {
+	/*overflow-wrap: break-word;*/
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
