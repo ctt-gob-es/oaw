@@ -1,23 +1,22 @@
 /*******************************************************************************
-* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación,
 * This program is licensed and may be used, modified and redistributed under the terms
-* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later
 * version as soon as they are approved by the European Commission.
-* Unless required by applicable law or agreed to in writing, software distributed under the 
-* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
-* ANY KIND, either express or implied. See the License for the specific language governing 
+* Unless required by applicable law or agreed to in writing, software distributed under the
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+* ANY KIND, either express or implied. See the License for the specific language governing
 * permissions and more details.
-* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* You should have received a copy of the EUPL1.2 license along with this program; if not,
 * you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública)
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
 package es.inteco.rastreador2.dao.semilla;
 
 import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -434,7 +433,6 @@ public final class SemillaDAO {
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 				ps.setString(count++, "%" + searchForm.getUrl() + "%");
 			}
-
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
 					final SemillaForm semillaForm = new SemillaForm();
@@ -526,7 +524,7 @@ public final class SemillaDAO {
 		}
 		return seedList;
 	}
-	
+
 	/**
 	 * Count observatory seeds.
 	 *
@@ -1189,7 +1187,7 @@ public final class SemillaDAO {
 		} else {
 			if (updateListDataForm.getIdListaNoRastreable() != 0) {
 				updateListDataForm.setIdNoRastreableAntiguo(updateListDataForm.getIdListaNoRastreable());
-				updateListDataForm.setIdListaNoRastreable((long) 0);
+				updateListDataForm.setIdListaNoRastreable(0);
 			}
 		}
 		return updateListDataForm;
@@ -1815,18 +1813,18 @@ public final class SemillaDAO {
 	}
 
 	/**
-	 * 
-	 * @param c
-	 * @param idCategory
-	 * @param page
-	 * @param searchForm
-	 * @return
-	 * @throws SQLException
+	 * Gets the seeds observatory.
+	 *
+	 * @param c          the c
+	 * @param idCategory the id category
+	 * @param page       the page
+	 * @param tags       the tags
+	 * @return the seeds observatory
+	 * @throws SQLException the SQL exception
 	 */
 	public static List<SemillaForm> getSeedsObservatory(Connection c, long idCategory, int page, String[] tags) throws SQLException {
 		final List<SemillaForm> results = new ArrayList<>();
 		String query = "SELECT l.* FROM lista l LEFT JOIN semilla_etiqueta el ON l.id_lista=el.id_lista WHERE l.id_categoria=? ";
-		
 		if (tags != null && tags.length > 0) {
 			query = query + " AND ( 1=1 ";
 			for (int i = 0; i < tags.length; i++) {
@@ -2381,6 +2379,43 @@ public final class SemillaDAO {
 						throw e;
 					}
 					// semillaForm.setDependencia(rs.getString("dependencia"));
+					semillaForm.setActiva(rs.getBoolean("activa"));
+					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
+					semillaForm.setEliminar(rs.getBoolean("eliminar"));
+					results.add(semillaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return results;
+	}
+	// select * from lista where id_lista not in (select semillas from rastreo where id_observatorio = 43) or id_lista not in (select id_lista from rastreos_realizados where id_obs_realizado = 227)
+
+	/**
+	 * Gets the candidate seeds.
+	 *
+	 * @param c                       the c
+	 * @param idObservatorio          the id observatorio
+	 * @param idObservatorioRealizado the id observatorio realizado
+	 * @return the candidate seeds
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<SemillaForm> getCandidateSeeds(Connection c, Long idObservatorio, Long idObservatorioRealizado) throws SQLException {
+		final List<SemillaForm> results = new ArrayList<>();
+		String query = "select * from lista where id_lista not in (select semillas from rastreo where id_observatorio = ?) or id_lista not in (select id_lista from rastreos_realizados where id_obs_realizado = ?)  and eliminar = 0 and activa = 1";
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			ps.setLong(1, idObservatorio);
+			ps.setLong(2, idObservatorioRealizado);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					SemillaForm semillaForm = new SemillaForm();
+					semillaForm.setId(rs.getLong(ID_LISTA));
+					semillaForm.setNombre(rs.getString(NOMBRE));
+					semillaForm.setListaUrlsString(rs.getString(LISTA));
+					semillaForm.setListaUrls(convertStringToList(rs.getString(LISTA)));
+					semillaForm.setAcronimo(rs.getString("acronimo"));
 					semillaForm.setActiva(rs.getBoolean("activa"));
 					semillaForm.setInDirectory(rs.getBoolean("in_directory"));
 					semillaForm.setEliminar(rs.getBoolean("eliminar"));

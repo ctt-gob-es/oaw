@@ -100,6 +100,9 @@ Email: observ.accesibilidad@correo.gob.es
 	function dialogoEditarSemilla(rowid) {
 
 		window.scrollTo(0, 0);
+		
+		windowWidth = $(window).width() * 0.8;
+		windowHeight = $(window).height() * 0.8;
 
 		$('#exitosNuevaSemillaMD').hide();
 		$('#erroresNuevaSemillaMD').hide();
@@ -190,6 +193,78 @@ Email: observ.accesibilidad@correo.gob.es
 
 
 	}
+	
+	function dialogAddSeed(){
+		
+		windowWidth = $(window).width() * 0.3;
+		windowHeight = $(window).height() * 0.2;
+		
+		window.scrollTo(0, 0);
+
+		$('#erroresAddSeedObservatory').hide();
+
+		dialog = $("#dialogAddSeedObservatory").dialog({
+			height : windowHeight,
+			width : windowWidth,
+			modal : true,
+			title: 'RASTREADOR WEB - Añadir semilla al observatorio',
+			buttons : {
+				"Añadir" : {
+					click: function() {
+						addSeedObservatory($('#selectAddSeedObservatory').val());
+					},
+					text : "Guardar",
+					class: 'jdialog-btn-save'
+				},
+				"Cancelar" : {
+					click: function() {
+						dialog.dialog("close");
+					},
+					text: "Cancelar", 
+					class :'jdialog-btn-cancel'
+				} 
+			},
+			open : function() {
+
+				
+				
+				//Load candidate seed
+				$.ajax({
+					url : '/oaw/secure/JsonSemillasObservatorio.do?action=candidates&idObservatorio='
+					+ $('[name=id_observatorio]').val()
+					+ '&idExObs='
+					+ $('[name=idExObs]').val(),
+					method : 'POST',
+					cache : false
+				}).success(function(response) {
+					
+					$('#selectAddSeedObservatory').find('option').remove();
+					
+					
+					
+					if (response && response.length) {
+						for (var i = 0, l = response.length; i < l; i++) {
+							var ri = response[i];
+							$jn('#selectAddSeedObservatory')
+									.append(
+											'<option value="'+ri.id+'">'
+													+ ri.nombre
+													+ '</option>');
+						}
+					} else {
+
+						$('#selectAddSeedObservatory').append("<option value=''>---No hay semillas que se puedan añadir---</option>");
+					}
+
+				});
+				
+
+			},
+			close : function() {
+				$('#addSeedObservatoryForm')[0].reset();				
+			}
+		});
+	}
 
 	//Guardar la nueva semilla
 
@@ -239,6 +314,19 @@ Email: observ.accesibilidad@correo.gob.es
 
 		return guardado;
 	}
+	
+	function addSeedObservatory(idSeed){
+		
+		
+		window.location.href = '/oaw/secure/ResultadosObservatorio.do?action=addSeed&id_observatorio='
+			+ $('[name=id_observatorio]').val()
+			+ '&idExObs='
+			+ $('[name=idExObs]').val()
+			+ '&idSemilla=' + idSeed;
+		
+		
+		
+	}
 </script>
 
 <link rel="stylesheet" href="/oaw/css/jqgrid.semillas.css">
@@ -264,6 +352,24 @@ Email: observ.accesibilidad@correo.gob.es
 <div id="dialogoEditarSemilla" style="display: none">
 	<jsp:include page="./observatorio_nuevaSemilla_multidependencia.jsp"></jsp:include>
 
+</div>
+
+
+<div id="dialogAddSeedObservatory" style="display: none">
+	<div id="main" style="overflow: hidden">
+
+		<div id="erroresAddSeedObservatory" style="display: none"></div>
+
+		<form id="addSeedObservatoryForm">
+			<div class="row formItem">
+				<label for="categoria" class="control-label"><strong class="labelVisu"><bean:message
+							key="nuevo.observatorio.semillas.nombre" /></strong></label>
+				<div class="col-md-8">
+					<select name="segmento" id="selectAddSeedObservatory" class="form-control"></select>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>
 
 
@@ -332,6 +438,14 @@ Email: observ.accesibilidad@correo.gob.es
 			<c:set target="${params}" property="idExObs" value="${idExObs}" />
 
 			<p class="pull-right">
+
+				<!-- AÑADIR SEMILLAS -->
+
+				<a onclick="dialogAddSeed()"> <span class="btn btn-default btn-lg"><span
+						class="glyphicon glyphicon glyphicon-plus" aria-hidden="true" data-toggle="tooltip"
+						title="Regenerar las puntuaciones" /> </span> <span>Añadir semilla</span>
+				</a>
+
 				<html:link forward="regenerarResultadosObservatorioSemillas" name="params">
 					<span class="btn btn-default btn-lg"><span class="glyphicon glyphicon 	glyphicon glyphicon-repeat"
 						aria-hidden="true" data-toggle="tooltip" title="Regenerar las puntuaciones" /> </span>
