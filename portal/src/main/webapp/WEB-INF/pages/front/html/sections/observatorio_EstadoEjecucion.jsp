@@ -192,11 +192,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 				<table class="table table-stripped table-bordered table-hover table-console">
 					<caption>Información de portales sin analizar aún</caption>
 					<colgroup>
+						<col style="width: 5%">
 						<col style="width: 30%">
-						<col style="width: 70%">
+						<col style="width: 65%">
 					</colgroup>
 					<tbody>
 						<tr>
+							<th>#</th>
 							<th>Nombre</th>
 							<th>URL</th>
 						</tr>
@@ -207,9 +209,10 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</tr>
 						</logic:empty>
 
-						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet">
+						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
 
 							<tr>
+								<td class="col-md-1"><c:out value="${index + 1}"/></td>
 								<td style="text-align: left"><bean:write name="notCrawledSeedsYet" property="nombre" /></td>
 								<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />"><bean:write
 										name="notCrawledSeedsYet" property="listaUrlsString" /></td>
@@ -226,12 +229,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 			<table class="table table-stripped table-bordered table-hover table-console">
 				<caption>Información de análisis pendientes</caption>
 				<colgroup>
+					<col style="width: 5%">
 					<col style="width: 30%">
-					<col style="width: 60%">
+					<col style="width: 55%">
 					<col style="width: 10%">
 				</colgroup>
 				<tbody>
 					<tr>
+						<th>#</th>
 						<th>Nombre</th>
 						<th>URL</th>
 						<th>Relanzar</th>
@@ -243,11 +248,12 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</tr>
 					</logic:empty>
 
-					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis">
+					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
 
 						<tr>
+							<td class="col-md-1"><c:out value="${index + 1}"/></td>
 							<td style="text-align: left" class="col-md-4"><bean:write name="crawlWithoutAnalisis" property="nombre" /></td>
-							<td style="text-align: left" class="col-md-6"
+							<td style="text-align: left" class="col-md-5"
 								title="<logic:iterate
 									name="crawlWithoutAnalisis" property="listaUrls" id="url">
 									<bean:write name="url" />

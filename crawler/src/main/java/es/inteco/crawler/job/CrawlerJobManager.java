@@ -15,69 +15,92 @@
 ******************************************************************************/
 package es.inteco.crawler.job;
 
-import es.inteco.crawler.common.Constants;
-import org.quartz.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerFactory;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.util.Date;
+import es.inteco.crawler.common.Constants;
 
 /**
  * The Class CrawlerJobManager.
  */
 public final class CrawlerJobManager {
-    
-    /** The scheduler. */
-    private static Scheduler scheduler;
+	/** The scheduler. */
+	private static Scheduler scheduler;
 
-    /**
+	/**
 	 * Instantiates a new crawler job manager.
 	 */
-    private CrawlerJobManager() {
-    }
+	private CrawlerJobManager() {
+	}
 
-    /**
+	/**
 	 * Inits the.
 	 *
 	 * @throws Exception the exception
 	 */
-    private static void init() throws Exception {
-        if (scheduler == null) {
-            final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            scheduler = schedulerFactory.getScheduler();
-            scheduler.start();
-        }
-    }
+	private static void init() throws Exception {
+		if (scheduler == null) {
+			final SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+			scheduler = schedulerFactory.getScheduler();
+			scheduler.start();
+		}
+	}
 
-    /**
+	/**
 	 * Start job.
 	 *
 	 * @param crawlerData the crawler data
 	 * @throws Exception the exception
 	 */
-    public static void startJob(CrawlerData crawlerData) throws Exception {
-        init();
-        final JobDetail jobDetail = new JobDetail(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP, CrawlerJob.class);
+	public static void startJob(CrawlerData crawlerData) throws Exception {
+		init();
+		final JobDetail jobDetail = new JobDetail(Constants.CRAWLER_JOB_NAME + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_GROUP, CrawlerJob.class);
+		final JobDataMap jobDataMap = new JobDataMap();
+		jobDataMap.put(Constants.CRAWLER_DATA, crawlerData);
+		jobDetail.setJobDataMap(jobDataMap);
+		final Trigger trigger = new SimpleTrigger(Constants.CRAWLER_JOB_TRIGGER + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_TRIGGER_GROUP, new Date());
+		scheduler.scheduleJob(jobDetail, trigger);
+	}
 
-        final JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(Constants.CRAWLER_DATA, crawlerData);
-
-        jobDetail.setJobDataMap(jobDataMap);
-
-        final Trigger trigger = new SimpleTrigger(Constants.CRAWLER_JOB_TRIGGER + "_" + crawlerData.getIdCrawling(), Constants.CRAWLER_JOB_TRIGGER_GROUP, new Date());
-
-        scheduler.scheduleJob(jobDetail, trigger);
-    }
-
-    /**
+	/**
 	 * End job.
 	 *
 	 * @param idJob the id job
 	 * @throws Exception the exception
 	 */
-    public static void endJob(long idJob) throws Exception {
-        init();
-        scheduler.interrupt(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
-        scheduler.deleteJob(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
-    }
-    
+	public static void endJob(long idJob) throws Exception {
+		init();
+		scheduler.interrupt(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
+		scheduler.deleteJob(Constants.CRAWLER_JOB_NAME + "_" + idJob, Constants.CRAWLER_JOB_GROUP);
+		List<JobExecutionContext> currentlyExecuting = scheduler.getCurrentlyExecutingJobs();
+		// verifying if job is running
+		for (JobExecutionContext jobExecutionContext : currentlyExecuting) {
+			CrawlerData crawlerData = (CrawlerData) jobExecutionContext.getJobDetail().getJobDataMap().get(Constants.CRAWLER_DATA);
+			if (crawlerData.getIdObservatory() == idJob) {
+				scheduler.interrupt(jobExecutionContext.getJobDetail().getName(), jobExecutionContext.getJobDetail().getGroup());
+				scheduler.deleteJob(jobExecutionContext.getJobDetail().getName(), jobExecutionContext.getJobDetail().getGroup());
+			}
+		}
+		Set<Thread> threads = Thread.getAllStackTraces().keySet();
+		for (Thread t : threads) {
+			String name = t.getName();
+			Thread.State state = t.getState();
+			int priority = t.getPriority();
+			String type = t.isDaemon() ? "Daemon" : "Normal";
+			if ("RelanzarObservatorioThread".equals(t.getName())) {
+				t.interrupt();
+			}
+			System.out.printf("%-20s \t %s \t %d \t %s\n", name, state, priority, type);
+		}
+	}
 }
