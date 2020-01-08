@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +38,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.quartz.InterruptableJob;
 import org.quartz.JobDataMap;
@@ -53,9 +62,12 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.dao.EstadoObservatorioDAO;
+import es.inteco.crawler.dao.ProxyDAO;
+import es.inteco.crawler.dao.ProxyForm;
 import es.inteco.crawler.dao.Seed;
 import es.inteco.crawler.ignored.links.IgnoredLink;
 import es.inteco.crawler.ignored.links.Utils;
+import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.WebAnalayzer;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.ExtraInfo;
@@ -271,14 +283,7 @@ public class CrawlerJob implements InterruptableJob {
 			Logger.putLog("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			try {
 				RastreoDAO.actualizarEstadoRastreo(c, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
-				
 				// TODO Generar la puntuación al terminar el crawl y guardarlo en base de datos
-				
-				
-				
-				
-				
-				
 				final int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());
 				if (RastreoDAO.isCartuchoAccesibilidad(c, idCartucho)) {
 					if (crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) {
@@ -392,7 +397,7 @@ public class CrawlerJob implements InterruptableJob {
 		int depth = crawlerData.getProfundidad();
 		int width = crawlerData.getTopN();
 		// TODO Aplply seed complex only if is not basic service an only if is not manual selection
-		if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size()==1) {
+		if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size() == 1) {
 			try {
 				Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
 				if (s != null) {
@@ -571,8 +576,102 @@ public class CrawlerJob implements InterruptableJob {
 		final PropertiesManager pmgr = new PropertiesManager();
 		final List<String> mailTo = getAdministradoresMails();
 		final String subject = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.subject"), crawlerData.getNombreRastreo());
-		final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), crawlerData.getUrls().get(0), crawlingDomains.size());
+		final String url = crawlerData.getUrls().get(0);
+		final int crawled = crawlingDomains.size();
+		final int objective = (crawlerData.getTopN() * crawlerData.getProfundidad()) + 1;
+		final String inDirectory = crawlerData.isInDirectory() ? "Sí" : "No";
+		final String connectionOkOAW = checkConnection(url, false) ? "Sí" : "No";
+		final String connectionOkJS = checkConnection(url, true) ? "Sí" : "No";
+		final String text = MessageFormat.format(pmgr.getValue(Constants.MAIL_PROPERTIES, "incomplete.crawler.text"), url, crawled, objective, inDirectory, connectionOkOAW, connectionOkJS);
 		mailService.sendMail(mailTo, subject, text);
+	}
+
+	/**
+	 * Check connection.
+	 *
+	 * @param urlAdress  the url adress
+	 * @param applyProxy the apply proxy
+	 * @return true, if successful
+	 */
+	private boolean checkConnection(String urlAdress, boolean applyProxy) {
+		final PropertiesManager pmgr = new PropertiesManager();
+		boolean urlConnectionProxy = false;
+		try {
+			URL url = new URL(es.inteco.utils.CrawlerUtils.encodeUrl(urlAdress));
+			String proxyActive = "";
+			String proxyHttpHost = "";
+			String proxyHttpPort = "";
+			try (Connection c = DataBaseManager.getConnection()) {
+				ProxyForm proxy = ProxyDAO.getProxy(c);
+				proxyActive = proxy.getStatus() > 0 ? "true" : "false";
+				proxyHttpHost = proxy.getUrl();
+				proxyHttpPort = proxy.getPort();
+				DataBaseManager.closeConnection(c);
+			} catch (Exception e) {
+				Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+			}
+			HttpURLConnection connection = null;
+			if (applyProxy && "true".equals(proxyActive) && proxyHttpHost != null && proxyHttpPort != null) {
+				try {
+					Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHttpHost, Integer.parseInt(proxyHttpPort)));
+					Logger.putLog("Aplicando proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+					connection = (HttpURLConnection) url.openConnection(proxy);
+				} catch (NumberFormatException e) {
+					Logger.putLog("Error al crear el proxy: " + proxyHttpHost + ":" + proxyHttpPort, CrawlerUtils.class, Logger.LOG_LEVEL_ERROR);
+				}
+			} else {
+				connection = (HttpURLConnection) url.openConnection();
+			}
+			if (connection instanceof HttpsURLConnection) {
+				((HttpsURLConnection) connection).setSSLSocketFactory(getNaiveSSLSocketFactory());
+			}
+			connection.setInstanceFollowRedirects(false);
+			connection.setConnectTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+			connection.setReadTimeout(Integer.parseInt(pmgr.getValue("crawler.core.properties", "crawler.timeout")));
+			connection.addRequestProperty("Accept-Language", pmgr.getValue("crawler.core.properties", "method.accept.language.header"));
+			connection.addRequestProperty("User-Agent", pmgr.getValue("crawler.core.properties", "method.user.agent.header"));
+			int responseCode = connection.getResponseCode();
+			if (HttpURLConnection.HTTP_OK == responseCode) {
+				urlConnectionProxy = true;
+			} else if (responseCode == HttpURLConnection.HTTP_MOVED_TEMP || responseCode == HttpURLConnection.HTTP_MOVED_PERM || responseCode == HttpURLConnection.HTTP_SEE_OTHER) {
+				String newUrl = connection.getHeaderField("Location");
+				return this.checkConnection(newUrl, applyProxy);
+			}
+		} catch (MalformedURLException e) {
+			Logger.putLog("Error: " + e.getMessage(), CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		} catch (IOException e1) {
+			Logger.putLog("Error: " + e1.getMessage(), CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e1);
+		}
+		return urlConnectionProxy;
+	}
+
+	/**
+	 * Configuración del socket SSL.
+	 *
+	 * @return the naive SSL socket factory
+	 */
+	private static SSLSocketFactory getNaiveSSLSocketFactory() {
+		// Create a trust manager that does not validate certificate chains
+		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
+
+			public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+
+			public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+			}
+		} };
+		// Install the all-trusting trust manager
+		try {
+			final SSLContext sc = SSLContext.getInstance("TLSv1.2");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			return sc.getSocketFactory();
+		} catch (Exception e) {
+			Logger.putLog("Excepción: ", EvaluatorUtils.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+		return null;
 	}
 
 	/**
