@@ -94,9 +94,25 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
 
-				searchForm.setCategoria(request.getParameter("categoria"));
-				searchForm.setAmbito(request.getParameter("ambito"));
+				if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
+					//searchForm.setCategoria((request.getParameter("categoria")).split(","));
+					searchForm.setCategoria((request.getParameterValues("categoria")));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("ambito"))) {
+				searchForm.setAmbito((request.getParameterValues("ambito")));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("dependencia"))) {
+				searchForm.setDependencia((request.getParameterValues("dependencia")));
+				}
+				if (!StringUtils.isEmpty(request.getParameter("complejidad"))) {
+				searchForm.setComplejidad((request.getParameterValues("complejidad")));
+				}
 				searchForm.setUrl(request.getParameter("url"));
+				searchForm.setinDirectorio(request.getParameter("directorio"));
+				searchForm.setisActiva(request.getParameter("activa"));
+				searchForm.setEliminada(request.getParameter("eliminada"));
+				//searchForm.setEtiquetas((request.getParameter("etiquetas")).split(","));
+
 
 			}
 

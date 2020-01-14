@@ -333,8 +333,8 @@ public class SeedMassImportAction extends Action {
 					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
 
-				searchForm.setCategoria(request.getParameter("categoria"));
-				searchForm.setAmbito(request.getParameter("ambito"));
+				//searchForm.setCategoria(request.getParameter("categoria"));
+				//searchForm.setAmbito(request.getParameter("ambito"));
 				searchForm.setUrl(request.getParameter("url"));
 
 			}
@@ -362,7 +362,7 @@ public class SeedMassImportAction extends Action {
 			search.setNombre(request.getParameter("nombre"));
 		}
 		if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
-			search.setCategoria(request.getParameter("categoria"));
+			//search.setCategoria(request.getParameter("categoria"));
 		}
 		if (!StringUtils.isEmpty(request.getParameter("url"))) {
 			search.setUrl(request.getParameter("url"));

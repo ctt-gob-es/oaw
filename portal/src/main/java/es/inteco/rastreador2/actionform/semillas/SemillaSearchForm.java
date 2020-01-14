@@ -33,14 +33,32 @@ public class SemillaSearchForm extends ValidatorForm {
 	private String nombre;
 
 	/** The categoria. */
-	private String categoria;
+	private String[] categoria;
 
 	/** The ambito. */
-	private String ambito;
+	private String[] ambito;
+	
+	/** The dependencia. */
+	private String[] dependencia;
+	
+	/** The complejidad. */
+	private String[] complejidad;
 
 	/** The url. */
 	private String url;
 
+	/** The directorio. */
+	private String directorio;
+	
+	/** The activa. */
+	private String activa;
+	
+	/** The eliminada. */
+	private String eliminada;
+	
+	/** The etiquetas. */
+	//private String[] etiquetas;
+	
 	/** The file seeds. */
 	private FormFile fileSeeds;
 
@@ -121,7 +139,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	 *
 	 * @return the categoria
 	 */
-	public String getCategoria() {
+	public String[] getCategoria() {
 		return categoria;
 	}
 
@@ -130,7 +148,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	 *
 	 * @param categoria the new categoria
 	 */
-	public void setCategoria(String categoria) {
+	public void setCategoria(String[] categoria) {
 		this.categoria = categoria;
 	}
 
@@ -139,7 +157,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	 *
 	 * @return the ambito
 	 */
-	public String getAmbito() {
+	public String[] getAmbito() {
 		return ambito;
 	}
 
@@ -148,8 +166,116 @@ public class SemillaSearchForm extends ValidatorForm {
 	 *
 	 * @param ambito the new ambito
 	 */
-	public void setAmbito(String ambito) {
+	public void setAmbito(String[] ambito) {
 		this.ambito = ambito;
 	}
+	
+	/**
+	 * Gets the dependencia.
+	 *
+	 * @return the dependencia
+	 */
+	public String[] getDependencia() {
+		return dependencia;
+	}
+
+	/**
+	 * Sets the dependencia.
+	 *
+	 * @param ambito the new dependencia
+	 */
+	public void setDependencia(String[] dependencia) {
+		this.dependencia = dependencia;
+	}
+	
+	/**
+	 * Gets the complejidad.
+	 *
+	 * @return the complejidad
+	 */
+	public String[] getComplejidad() {
+		return complejidad;
+	}
+
+	/**
+	 * Sets the complejidad.
+	 *
+	 * @param ambito the new complejidad
+	 */
+	public void setComplejidad(String[] complejidad) {
+		this.complejidad = complejidad;
+	}
+	
+	/**
+	 * Checks if is in directorio.
+	 *
+	 * @return true, if is directorio
+	 */
+	public String getinDirectorio() {
+		return directorio;
+	}
+
+	/**
+	 * Sets the directorio.
+	 *
+	 * @param activo the new directorio
+	 */
+	public void setinDirectorio(String directorio) {
+		this.directorio = directorio;
+	}
+	
+	/**
+	 * Checks if is activa.
+	 *
+	 * @return true, if is activa
+	 */
+	public String getisActiva() {
+		return activa;
+	}
+
+	/**
+	 * Sets the activa.
+	 *
+	 * @param activa the new activa
+	 */
+	public void setisActiva(String activa) {
+		this.activa = activa;
+	}
+
+	/**
+	 * Checks if is eliminada.
+	 *
+	 * @return true, if is eliminada
+	 */
+	public String getEliminada() {
+		return eliminada;
+	}
+
+	/**
+	 * Sets the eliminada.
+	 *
+	 * @param eliminada the new eliminada
+	 */
+	public void setEliminada(String eliminada) {
+		this.eliminada = eliminada;
+	}
+	
+	/**
+	 * Gets the etiquetas.
+	 *
+	 * @return the etiquetas
+	 */
+	/*public String[] getEtiquetas() {
+		return etiquetas;
+	}*/
+
+	/**
+	 * Sets the etiquetas.
+	 *
+	 * @param etiquetas the new etiquetas
+	 */
+	/*public void setEtiquetas(String[] etiquetas) {
+		this.etiquetas = etiquetas;
+	}*/
 
 }
