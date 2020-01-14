@@ -184,14 +184,23 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 
+
+
+
+
 				<h2>Portales sin analizar aún</h2>
-				<table class="table table-stripped table-bordered table-hover">
-					<caption>Información del análisis en curso</caption>
+				<table class="table table-stripped table-bordered table-hover table-console">
+					<caption>Información de portales sin analizar aún</caption>
+					<colgroup>
+						<col style="width: 5%">
+						<col style="width: 30%">
+						<col style="width: 65%">
+					</colgroup>
 					<tbody>
 						<tr>
+							<th>#</th>
 							<th>Nombre</th>
 							<th>URL</th>
-							<!-- 						<th>Relanzar</th> -->
 						</tr>
 
 						<logic:empty name="notCrawledSeedsYet">
@@ -200,12 +209,13 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</tr>
 						</logic:empty>
 
-						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet">
+						<logic:iterate name="notCrawledSeedsYet" id="notCrawledSeedsYet" indexId="index">
 
 							<tr>
+								<td class="col-md-1"><c:out value="${index + 1}"/></td>
 								<td style="text-align: left"><bean:write name="notCrawledSeedsYet" property="nombre" /></td>
-								<td><bean:write name="notCrawledSeedsYet" property="listaUrlsString" /></td>
-								<!-- 							<td><span class="glyphicon glyphicon-refresh" style="color: #e21430"></span></td> -->
+								<td style="text-align: left" title="<bean:write name="notCrawledSeedsYet" property="listaUrlsString" />"><bean:write
+										name="notCrawledSeedsYet" property="listaUrlsString" /></td>
 							</tr>
 						</logic:iterate>
 
@@ -214,12 +224,19 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 					</tbody>
 				</table>
 			</logic:notEqual>
-			
+
 			<h2>Portales sin resultados</h2>
-			<table class="table table-stripped table-bordered table-hover">
-				<caption>Información del análisis en curso</caption>
+			<table class="table table-stripped table-bordered table-hover table-console">
+				<caption>Información de análisis pendientes</caption>
+				<colgroup>
+					<col style="width: 5%">
+					<col style="width: 30%">
+					<col style="width: 55%">
+					<col style="width: 10%">
+				</colgroup>
 				<tbody>
 					<tr>
+						<th>#</th>
 						<th>Nombre</th>
 						<th>URL</th>
 						<th>Relanzar</th>
@@ -231,18 +248,23 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 						</tr>
 					</logic:empty>
 
-					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis">
+					<logic:iterate name="finishWithoutResults" id="crawlWithoutAnalisis" indexId="index">
 
 						<tr>
-							<td style="text-align: left"><bean:write name="crawlWithoutAnalisis" property="nombre" /></td>
-							<td>
-								<%-- 							<bean:write name="crawlWithoutAnalisis" property="listaUrls" /> --%> <logic:iterate
+							<td class="col-md-1"><c:out value="${index + 1}"/></td>
+							<td style="text-align: left" class="col-md-4"><bean:write name="crawlWithoutAnalisis" property="nombre" /></td>
+							<td style="text-align: left" class="col-md-5"
+								title="<logic:iterate
 									name="crawlWithoutAnalisis" property="listaUrls" id="url">
+									<bean:write name="url" />
+								</logic:iterate>">
+								<logic:iterate name="crawlWithoutAnalisis" property="listaUrls" id="url">
 									<bean:write name="url" />
 								</logic:iterate>
 
 							</td>
-							<td><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" /> <%-- 							<c:set --%> <%-- 									target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
+							<td class="col-md-2"><jsp:useBean id="paramsRelanzarCrawl" class="java.util.HashMap" /> <%-- 							<c:set --%>
+								<%-- 									target="${paramsRelanzarCrawl}" property="action" value="confirmacionExSeed" /> <c:set
 									target="${paramsRelanzarCrawl}" property="id" value="${crawlWithoutAnalisis.idFulfilledCrawling}" />--%> <c:set
 									target="${paramsRelanzarCrawl}" property="id_observatorio" value="${idObservatory}" /> <c:set
 									target="${paramsRelanzarCrawl}" property="idExObs" value="${idExecutedObservatorio}" /> <c:set

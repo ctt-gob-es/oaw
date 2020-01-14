@@ -15,7 +15,7 @@
 ******************************************************************************/
 package es.inteco.common;
 
-import java.awt.*;
+import java.awt.Color;
 
 public interface Constants {
 	// ARCHIVOS DE PROPIEDADES
@@ -55,6 +55,7 @@ public interface Constants {
 	String GET_SEEDS = "getSeeds";
 	String REGENERATE_RESULTS = "regenerateResults";
 	String STOP_CRAWL = "stop";
+	String ADD_SEDD_OBS = "addSeed";
 	String GET_SEED_AMBITS = "getSeedAmbits";
 	String SEED_AMBITS = "seedAmbits";
 	String DELETE_AMBIT = "deleteAmbit";

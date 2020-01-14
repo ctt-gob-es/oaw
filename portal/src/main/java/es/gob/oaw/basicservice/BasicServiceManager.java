@@ -29,6 +29,7 @@ import org.apache.struts.util.MessageResources;
 
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
+import es.gob.oaw.rastreador2.pdf.SourceFilesManager;
 import es.gob.oaw.rastreador2.pdf.basicservice.BasicServicePdfReport;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -181,8 +182,12 @@ public class BasicServiceManager {
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfAccesibilidad(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				}
+				// TODO Generar código analizado
+				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
+				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
+				sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
 				// Comprimimos el fichero
-				pdfPath = BasicServiceExport.compressReport(pdfPath);
+				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath);
 				if (!basicServiceForm.isRegisterAnalysis()) {
 					// Si no es necesario registrar el análisis se borra
 					Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
