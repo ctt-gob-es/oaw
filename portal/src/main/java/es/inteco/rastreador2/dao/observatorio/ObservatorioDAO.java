@@ -1,19 +1,40 @@
 /*******************************************************************************
-* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación, 
+* Copyright (C) 2012 INTECO, Instituto Nacional de Tecnologías de la Comunicación,
 * This program is licensed and may be used, modified and redistributed under the terms
-* of the European Public License (EUPL), either version 1.2 or (at your option) any later 
+* of the European Public License (EUPL), either version 1.2 or (at your option) any later
 * version as soon as they are approved by the European Commission.
-* Unless required by applicable law or agreed to in writing, software distributed under the 
-* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
-* ANY KIND, either express or implied. See the License for the specific language governing 
+* Unless required by applicable law or agreed to in writing, software distributed under the
+* License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
+* ANY KIND, either express or implied. See the License for the specific language governing
 * permissions and more details.
-* You should have received a copy of the EUPL1.2 license along with this program; if not, 
+* You should have received a copy of the EUPL1.2 license along with this program; if not,
 * you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32017D0863
 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública) 
+* Modificaciones: MINHAFP (Ministerio de Hacienda y Función Pública)
 * Email: observ.accesibilidad@correo.gob.es
 ******************************************************************************/
 package es.inteco.rastreador2.dao.observatorio;
+
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static org.apache.commons.lang3.StringUtils.leftPad;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
@@ -21,32 +42,33 @@ import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
 import es.inteco.crawler.dao.EstadoObservatorioDAO;
 import es.inteco.rastreador2.actionform.cuentausuario.PeriodicidadForm;
-import es.inteco.rastreador2.actionform.observatorio.*;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
+import es.inteco.rastreador2.actionform.observatorio.CargarObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.ListadoObservatorio;
+import es.inteco.rastreador2.actionform.observatorio.ModificarObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.NuevoObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioForm;
+import es.inteco.rastreador2.actionform.observatorio.ObservatorioRealizadoForm;
+import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaForm;
+import es.inteco.rastreador2.actionform.observatorio.ResultadoSemillaFullForm;
+import es.inteco.rastreador2.actionform.observatorio.VerObservatorioForm;
 import es.inteco.rastreador2.actionform.rastreo.InsertarRastreoForm;
 import es.inteco.rastreador2.actionform.rastreo.ObservatoryTypeForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
 import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
-import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.dao.cartucho.CartuchoDAO;
 import es.inteco.rastreador2.dao.login.CartuchoForm;
+import es.inteco.rastreador2.dao.login.DatosForm;
 import es.inteco.rastreador2.dao.login.LoginDAO;
+import es.inteco.rastreador2.dao.rastreo.DatosCartuchoRastreoForm;
 import es.inteco.rastreador2.dao.rastreo.FulFilledCrawling;
 import es.inteco.rastreador2.dao.rastreo.RastreoDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
 import es.inteco.rastreador2.utils.DAOUtils;
-
-import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.Date;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static org.apache.commons.lang3.StringUtils.leftPad;
 
 /**
  * The Class ObservatorioDAO.
@@ -2209,5 +2231,95 @@ public final class ObservatorioDAO {
 			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return -1L;
+	}
+
+	/**
+	 * Adds the seed observatory.
+	 *
+	 * @param c             the c
+	 * @param idObservatory the id observatory
+	 * @param idExObs       the id ex obs
+	 * @param idSeed        the id seed
+	 * @throws SQLException the SQL exception
+	 */
+	public static void addSeedObservatory(final Connection c, final Long idObservatory, final Long idExObs, final Long idSeed) throws SQLException {
+		// Check if exists in rastreo table
+		// select count(*) from rastreo where id_observatorio = ? and semillas=?
+		SemillaForm seed = SemillaDAO.getSeedById(c, idSeed);
+		ObservatorioForm obs = ObservatorioDAO.getObservatoryForm(c, idObservatory);
+		try (PreparedStatement ps = c.prepareStatement("select id_rastreo from rastreo where id_observatorio = ? and semillas=?")) {
+			ps.setLong(1, idObservatory);
+			ps.setLong(2, idSeed);
+			try (ResultSet rs = ps.executeQuery()) {
+				// Exists
+				if (rs.next()) {
+					// TODO Insert into rastreos_realizados
+					Long id = rs.getLong(1);
+					addFullfilledCrawl(c, idExObs, id);
+				} else {
+					// TODO Insert into RASTREO
+					PreparedStatement psR = c.prepareStatement(
+							"INSERT INTO rastreo (nombre_rastreo, fecha, profundidad, topn, semillas, lista_no_rastreable, lista_rastreable, estado, id_cuenta, pseudoaleatorio, activo, id_language, id_observatorio, automatico, exhaustive, in_directory,id_guideline) "
+									+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+							Statement.RETURN_GENERATED_KEYS);
+					psR.setString(1, obs.getNombre() + "-" + seed.getNombre());
+					psR.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+					psR.setInt(3, obs.getProfundidad());
+					psR.setLong(4, obs.getAmplitud());
+					psR.setLong(5, seed.getId());
+					psR.setString(6, null);
+					psR.setString(7, null);
+					psR.setInt(8, Constants.STATUS_NOT_LAUNCHED);
+					psR.setNull(9, Types.BIGINT);
+					psR.setBoolean(10, obs.isPseudoAleatorio());
+					psR.setBoolean(11, seed.isActiva());
+					psR.setLong(12, obs.getLenguaje());
+					psR.setLong(13, obs.getId());
+					psR.setBoolean(14, true);
+					psR.setBoolean(15, false);
+					psR.setBoolean(16, seed.isInDirectory());
+					psR.setLong(17, obs.getId_guideline());
+					psR.executeUpdate();
+					try (ResultSet rsR = psR.getGeneratedKeys()) {
+						if (rs.next()) {
+							// Saved
+							Long id = rsR.getLong(1);
+							// TODO Insert into rastreos_realizados
+							addFullfilledCrawl(c, idExObs, id);
+						} else {
+							// error??
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			Logger.putLog("Excepcion: ", ObservatorioDAO.class, Logger.LOG_LEVEL_ERROR, e);
+		}
+	}
+
+	/**
+	 * Adds the fullfilled crawl.
+	 *
+	 * @param c       the c
+	 * @param idExObs the id ex obs
+	 * @param id      the id
+	 * @throws SQLException the SQL exception
+	 * @throws Exception    the exception
+	 */
+	private static void addFullfilledCrawl(final Connection c, final Long idExObs, Long id) throws SQLException, Exception {
+		final PropertiesManager pmgr = new PropertiesManager();
+		final DatosCartuchoRastreoForm dcrForm = RastreoDAO.cargarDatosCartuchoRastreo(c, String.valueOf(id));
+		dcrForm.setCartuchos(CartuchoDAO.getNombreCartucho(dcrForm.getId_rastreo()));
+		final int typeDomains = dcrForm.getIdObservatory() == 0 ? Constants.ID_LISTA_SEMILLA : Constants.ID_LISTA_SEMILLA_OBSERVATORIO;
+		dcrForm.setUrls(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, false));
+		dcrForm.setDomains(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), typeDomains, true));
+		dcrForm.setExceptions(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_NO_RASTREABLE, false));
+		dcrForm.setCrawlingList(es.inteco.utils.CrawlerUtils.getDomainsList((long) dcrForm.getId_rastreo(), Constants.ID_LISTA_RASTREABLE, false));
+		dcrForm.setId_guideline(es.inteco.plugin.dao.RastreoDAO.recuperarIdNorma(c, (long) dcrForm.getId_rastreo()));
+		if (CartuchoDAO.isCartuchoAccesibilidad(c, dcrForm.getId_cartucho())) {
+			dcrForm.setFicheroNorma(CrawlerUtils.getFicheroNorma(dcrForm.getId_guideline()));
+		}
+		final DatosForm userData = LoginDAO.getUserDataByName(c, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"));
+		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, idExObs, Long.valueOf(userData.getId()));
 	}
 }

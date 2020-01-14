@@ -103,6 +103,9 @@ public class ResultadosObservatorioAction extends Action {
 					} else if (action.equalsIgnoreCase(Constants.STOP_CRAWL)) {
 						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
 						return stop(mapping, form, request);
+					} else if (action.equalsIgnoreCase(Constants.ADD_SEDD_OBS)) {
+						request.setAttribute(Constants.ID_CARTUCHO, request.getParameter(Constants.ID_CARTUCHO));
+						return addSeed(mapping, form, request);
 					}
 				}
 			} else {
@@ -293,7 +296,7 @@ public class ResultadosObservatorioAction extends Action {
 		final Long idFulfilledCrawling = RastreoDAO.addFulfilledCrawling(c, dcrForm, Long.parseLong(idExObs), Long.valueOf(userData.getId()));
 		final CrawlerJob crawlerJob = new CrawlerJob();
 		crawlerJob.makeCrawl(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
-		//CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
+		// CrawlerJobManager.startJob(CrawlerUtils.getCrawlerData(dcrForm, idFulfilledCrawling, pmgr.getValue(CRAWLER_PROPERTIES, "scheduled.crawlings.user.name"), null));
 		// Calculate scores
 		ResultadosAnonimosObservatorioIntavUtils.getGlobalResultData(String.valueOf(idExObs), 0, null);
 		// Recuperar sólo el ejectado
@@ -436,6 +439,28 @@ public class ResultadosObservatorioAction extends Action {
 	 */
 	private ActionForward stop(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
 		CrawlerJobManager.endJob(Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO)));
+		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
+	}
+
+	/**
+	 * Adds the seed.
+	 *
+	 * @param mapping the mapping
+	 * @param form    the form
+	 * @param request the request
+	 * @return the action forward
+	 * @throws Exception the exception
+	 */
+	private ActionForward addSeed(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request) throws Exception {
+		final Long idObservatory = Long.parseLong(request.getParameter(Constants.ID_OBSERVATORIO));
+		final Long idExObs = Long.parseLong(request.getParameter(Constants.ID_EX_OBS));
+		final Long idSeed = Long.parseLong(request.getParameter(Constants.ID_SEMILLA));
+		try (Connection c = DataBaseManager.getConnection()) {
+			ObservatorioDAO.addSeedObservatory(c, idObservatory, idExObs, idSeed);
+		} catch (Exception e) {
+			Logger.putLog("Error al cargar el formulario para crear un nuevo rastreo de cliente", ResultadosObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
+			throw new Exception(e);
+		}
 		return mapping.findForward(Constants.OBSERVATORY_SEED_LIST);
 	}
 }
