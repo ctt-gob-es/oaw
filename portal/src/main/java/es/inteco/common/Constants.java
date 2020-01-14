@@ -585,6 +585,9 @@ public interface Constants {
 	String ALIAS = "alias";
 	String CERTIFICATES = "certificates";
 	String CATEGORIES_LIST = "categoriesList";
+	String DEPENDENCIES_LIST = "dependenciesList";
+	String AMBITS_LIST = "ambitsList";
+	String COMPLEXITIES_LIST = "complexitiesList";
 	String VER_CUENTA_USUARIO_FORM = "VerCuentaUsuarioForm";
 	String VER_OBSERVATORIO_FORM = "VerObservatorioForm";
 	String LIST_ACCOUNTS = "listAccounts";

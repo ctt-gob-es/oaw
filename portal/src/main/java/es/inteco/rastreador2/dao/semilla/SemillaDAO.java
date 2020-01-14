@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -271,19 +272,53 @@ public final class SemillaDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
 		int count = 1;
-		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) WHERE id_tipo_lista = ? ";
+		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
-		if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-			query += " AND l.id_categoria = ? ";
-		}
-		if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
-			query += " AND l.id_ambito = ? ";
-		}
+		if (searchForm.getCategoria() != null  && searchForm.getCategoria().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getCategoria().length; i++) {
+					query = query + " OR l.id_categoria = ?";
+				}
+				query = query + ")";
+			}
+		if (searchForm.getAmbito() != null  && searchForm.getAmbito().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getAmbito().length; i++) {
+					query = query + " OR l.id_ambito = ?";
+				}
+				query = query + ")";
+			}
 		if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 			query += " AND l.lista like ? ";
 		}
+		if (searchForm.getDependencia() != null  && searchForm.getDependencia().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getDependencia().length; i++) {
+					query = query + " OR sd.id_dependencia = ?";
+				}
+				query = query + ")";
+			}
+		if (searchForm.getComplejidad() != null  && searchForm.getComplejidad().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getComplejidad().length; i++) {
+					query = query + " OR l.id_complejidad = ?";
+				}
+				query = query + ")";
+			}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			query += " AND l.in_directory = ? ";
+		}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			query += " AND l.activa = ? ";
+		}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			query += " AND l.eliminar = ? ";
+		}
+		/*if (searchForm.getEtiquetas() != null  && searchForm.getEtiquetas().length > 0) {
+			query += " AND l.etiquetas IN ? ";  /////esto hay que mirarlo en otra tabla
+		}*/
 		query += " ORDER BY UPPER(l.nombre) ";
 		query += " LIMIT ? OFFSET ?";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
@@ -291,15 +326,43 @@ public final class SemillaDAO {
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(count++, "%" + searchForm.getNombre() + "%");
 			}
-			if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-				ps.setString(count++, searchForm.getCategoria());
+			if (searchForm.getCategoria() != null && searchForm.getCategoria().length > 0) {
+				for (int i = 0; i < searchForm.getCategoria().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getCategoria()[i]));
+				}
 			}
-			if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
-				ps.setString(count++, searchForm.getAmbito());
+			if (searchForm.getAmbito() != null && searchForm.getAmbito().length > 0) {
+				for (int i = 0; i < searchForm.getAmbito().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getAmbito()[i]));
+				}
 			}
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 				ps.setString(count++, "%" + searchForm.getUrl() + "%");
 			}
+			if (searchForm.getDependencia() != null && searchForm.getDependencia().length > 0) {
+				for (int i = 0; i < searchForm.getDependencia().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getDependencia()[i]));
+				}
+			}
+			if (searchForm.getComplejidad() != null && searchForm.getComplejidad().length > 0) {
+				for (int i = 0; i < searchForm.getComplejidad().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
+				}
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+				ps.setString(count++,String.valueOf(searchForm.getinDirectorio()));
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+				ps.setString(count++,String.valueOf(searchForm.getisActiva()));
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+				ps.setString(count++,String.valueOf(searchForm.getEliminada()));
+			}
+			/*if (searchForm.getEtiquetas() != null  && searchForm.getEtiquetas().length > 0) {
+			     String str = Arrays.toString(searchForm.getEtiquetas());
+			     str = '(' + str.substring(1, str.length()-1) + ')';
+				ps.setString(count++, str);
+			}*/
 			ps.setLong(count++, pagSize);
 			ps.setLong(count, resultFrom);
 			try (ResultSet rs = ps.executeQuery()) {
@@ -402,7 +465,7 @@ public final class SemillaDAO {
 	 * @return the observatory seeds
 	 * @throws SQLException the SQL exception
 	 */
-	public static List<SemillaForm> getObservatorySeedsToExport(Connection c, SemillaSearchForm searchForm) throws SQLException {
+	public static List<SemillaForm> getObservatorySeedsToExport(Connection c, SemillaSearchForm searchForm) throws SQLException { //hay que poner los filtros 
 		final List<SemillaForm> seedList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		int count = 1;
@@ -410,10 +473,10 @@ public final class SemillaDAO {
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
-		if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
+		if (searchForm.getCategoria().length > 0) {
 			query += " AND l.id_categoria = ? ";
 		}
-		if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
+		if (searchForm.getAmbito().length > 0) {
 			query += " AND l.id_ambito = ? ";
 		}
 		if (StringUtils.isNotEmpty(searchForm.getUrl())) {
@@ -425,11 +488,15 @@ public final class SemillaDAO {
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(count++, "%" + searchForm.getNombre() + "%");
 			}
-			if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-				ps.setString(count++, searchForm.getCategoria());
+			if (searchForm.getCategoria().length > 0) {
+			     String str = Arrays.toString(searchForm.getCategoria());
+			     str = '(' + str.substring(1, str.length()-1) + ')';
+				ps.setString(count++, str);
 			}
-			if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
-				ps.setString(count++, searchForm.getAmbito());
+			if (searchForm.getAmbito().length > 0) {
+			     String str = Arrays.toString(searchForm.getAmbito());
+			     str = '(' + str.substring(1, str.length()-1) + ')';
+				ps.setString(count++, str);
 			}
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 				ps.setString(count++, "%" + searchForm.getUrl() + "%");
@@ -535,35 +602,105 @@ public final class SemillaDAO {
 	 * @return the int
 	 * @throws SQLException the SQL exception
 	 */
-	public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws SQLException {
+	public static int countObservatorySeeds(Connection c, SemillaSearchForm searchForm) throws SQLException { 
 		int count = 1;
-		String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
+		//String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) WHERE id_tipo_lista = ? ";
+		String query = "SELECT COUNT(*) FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
-		if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-			query += " AND l.id_categoria = ? ";
-		}
-		if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
-			query += " AND l.id_ambito = ? ";
-		}
+		if (searchForm.getCategoria() != null  && searchForm.getCategoria().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getCategoria().length; i++) {
+					query = query + " OR l.id_categoria = ?";
+				}
+				query = query + ")";
+			}
+			//query += " AND l.id_categoria IN ? ";
+		if (searchForm.getAmbito() != null  && searchForm.getAmbito().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getAmbito().length; i++) {
+					query = query + " OR l.id_ambito = ?";
+				}
+				query = query + ")";
+			}
 		if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 			query += " AND l.lista like ? ";
 		}
+		if (searchForm.getDependencia() != null  && searchForm.getDependencia().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getDependencia().length; i++) {
+					query = query + " OR sd.id_dependencia = ?";
+				}
+				query = query + ")";
+			}
+		if (searchForm.getComplejidad() != null  && searchForm.getComplejidad().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getComplejidad().length; i++) {
+					query = query + " OR l.id_complejidad = ?";
+				}
+				query = query + ")";
+			}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			query += " AND l.in_directory = ? ";
+		}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			query += " AND l.activa = ? ";
+		}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			query += " AND l.eliminar = ? ";
+		}
+		/*if (searchForm.getEtiquetas() != null  && searchForm.getEtiquetas().length > 0) {
+			query += " AND l.etiquetas IN ? ";  //otra tabla
+		}*/
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(count++, "%" + searchForm.getNombre() + "%");
 			}
-			if (StringUtils.isNotEmpty(searchForm.getCategoria())) {
-				ps.setString(count++, searchForm.getCategoria());
+			if (searchForm.getCategoria() != null && searchForm.getCategoria().length > 0) {
+			     //String str = Arrays.toString(searchForm.getCategoria());
+			     //str = '(' + str.substring(1, str.length()-1) + ')';
+				//ps.setString(count++, str);
+				for (int i = 0; i < searchForm.getCategoria().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getCategoria()[i]));
+				}
 			}
-			if (StringUtils.isNotEmpty(searchForm.getAmbito())) {
-				ps.setString(count++, searchForm.getAmbito());
+			if (searchForm.getAmbito() != null && searchForm.getAmbito().length > 0) {
+				for (int i = 0; i < searchForm.getAmbito().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getAmbito()[i]));
+				}
 			}
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
-				ps.setString(count, "%" + searchForm.getUrl() + "%");
+				ps.setString(count++, "%" + searchForm.getUrl() + "%");
 			}
+			if (searchForm.getDependencia() != null && searchForm.getDependencia().length > 0) {
+				for (int i = 0; i < searchForm.getDependencia().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getDependencia()[i]));
+				}
+			}
+			if (searchForm.getComplejidad() != null && searchForm.getComplejidad().length > 0) {
+				for (int i = 0; i < searchForm.getComplejidad().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
+				}
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+				String str = String.valueOf(searchForm.getinDirectorio());
+				ps.setString(count++,str);
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+				String str = String.valueOf(searchForm.getisActiva());
+				ps.setString(count++, str);
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+				String str = String.valueOf(searchForm.getEliminada());
+				ps.setString(count++, str);
+			}
+			/*if (searchForm.getEtiquetas() != null  && searchForm.getEtiquetas().length > 0) {
+			     String str = Arrays.toString(searchForm.getEtiquetas());
+			     str = '(' + str.substring(1, str.length()-1) + ')';
+				ps.setString(count++, str);
+			}*/
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					return rs.getInt(1);
@@ -2235,7 +2372,45 @@ public final class SemillaDAO {
 		}
 	}
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	/**
+	 * Gets the seed dependendencies.
+	 *
+	 * @param c    the c
+	 * @param page the page
+	 * @return the seed dependencias
+	 * @throws SQLException the SQL exception
+	 */
+	public static List<DependenciaForm> getSeedDependencies(Connection c, int page) throws SQLException {
+		final List<DependenciaForm> dependencies = new ArrayList<>();
+		final String query;
+		if (page == Constants.NO_PAGINACION) {
+			query = "SELECT id_dependencia,nombre FROM dependencia ORDER BY nombre ASC";
+		} else {
+			query = "SELECT id_dependencia,nombre FROM dependencia ORDER BY nombre ASC LIMIT ? OFFSET ?";
+		}
+		try (PreparedStatement ps = c.prepareStatement(query)) {
+			if (page != Constants.NO_PAGINACION) {
+				final PropertiesManager pmgr = new PropertiesManager();
+				final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
+				final int resultFrom = pagSize * page;
+				ps.setInt(1, pagSize);
+				ps.setInt(2, resultFrom);
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					DependenciaForm dependenciaForm = new DependenciaForm();
+					dependenciaForm.setId(Long.parseLong(rs.getString("id_dependencia")));
+					dependenciaForm.setName(rs.getString("nombre"));
+					dependencies.add(dependenciaForm);
+				}
+			}
+		} catch (SQLException e) {
+			Logger.putLog(SQL_EXCEPTION, SemillaDAO.class, Logger.LOG_LEVEL_ERROR, e);
+			throw e;
+		}
+		return dependencies;
+	}
+	
 	/**
 	 * Gets the seed complejidades.
 	 *
