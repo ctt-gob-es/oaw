@@ -98,7 +98,10 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				searchForm.setinDirectorio(request.getParameter("directorio"));
 				searchForm.setisActiva(request.getParameter("activa"));
 				searchForm.setEliminada(request.getParameter("eliminada"));
-				//searchForm.setEtiquetas((request.getParameter("etiquetas")).split(","));
+				if (request.getParameter("etiquetas")!= "") {
+				String[] tagArr = request.getParameter("etiquetas").split(",");
+				searchForm.setEtiquetas(tagArr);
+				}
 
 			}
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);

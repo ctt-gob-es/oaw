@@ -57,7 +57,7 @@ public class SemillaSearchForm extends ValidatorForm {
 	private String eliminada;
 	
 	/** The etiquetas. */
-	//private String[] etiquetas;
+	private String[] etiquetas;
 	
 	/** The file seeds. */
 	private FormFile fileSeeds;
@@ -265,17 +265,17 @@ public class SemillaSearchForm extends ValidatorForm {
 	 *
 	 * @return the etiquetas
 	 */
-	/*public String[] getEtiquetas() {
+	public String[] getEtiquetas() {
 		return etiquetas;
-	}*/
+	}
 
 	/**
 	 * Sets the etiquetas.
 	 *
 	 * @param etiquetas the new etiquetas
 	 */
-	/*public void setEtiquetas(String[] etiquetas) {
+	public void setEtiquetas(String[] etiquetas) {
 		this.etiquetas = etiquetas;
-	}*/
+	}
 
 }
