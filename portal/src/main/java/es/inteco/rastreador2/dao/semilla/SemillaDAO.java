@@ -473,37 +473,100 @@ public final class SemillaDAO {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		int count = 1;
-		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) WHERE id_tipo_lista = ? ";
+		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
-		if (searchForm.getCategoria().length > 0) {
-			query += " AND l.id_categoria = ? ";
-		}
-		if (searchForm.getAmbito().length > 0) {
-			query += " AND l.id_ambito = ? ";
-		}
+		if (searchForm.getCategoria() != null  && searchForm.getCategoria().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getCategoria().length; i++) {
+					query = query + " OR l.id_categoria = ?";
+				}
+				query = query + ")";
+			}
+		if (searchForm.getAmbito() != null  && searchForm.getAmbito().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getAmbito().length; i++) {
+					query = query + " OR l.id_ambito = ?";
+				}
+				query = query + ")";
+			}
 		if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 			query += " AND l.lista like ? ";
 		}
+		if (searchForm.getDependencia() != null  && searchForm.getDependencia().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getDependencia().length; i++) {
+					query = query + " OR sd.id_dependencia = ?";
+				}
+				query = query + ")";
+			}
+		if (searchForm.getComplejidad() != null  && searchForm.getComplejidad().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getComplejidad().length; i++) {
+					query = query + " OR l.id_complejidad = ?";
+				}
+				query = query + ")";
+			}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+			query += " AND l.in_directory = ? ";
+		}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+			query += " AND l.activa = ? ";
+		}
+		if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+			query += " AND l.eliminar = ? ";
+		}
+
+		if (searchForm.getEtiquetas() != null  && searchForm.getEtiquetas().length > 0) {
+			query = query + " AND ( 1=0 ";
+				for (int i = 0; i < searchForm.getEtiquetas().length; i++) {
+					query = query + " OR se.id_etiqueta = ?";
+				}
+				query = query + ")";
+			}
 		query += " ORDER BY UPPER(l.nombre) ";
 		try (PreparedStatement ps = c.prepareStatement(query)) {
 			ps.setLong(count++, Constants.ID_LISTA_SEMILLA_OBSERVATORIO);
 			if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 				ps.setString(count++, "%" + searchForm.getNombre() + "%");
 			}
-			if (searchForm.getCategoria().length > 0) {
-			     String str = Arrays.toString(searchForm.getCategoria());
-			     str = '(' + str.substring(1, str.length()-1) + ')';
-				ps.setString(count++, str);
+			if (searchForm.getCategoria() != null && searchForm.getCategoria().length > 0) {
+				for (int i = 0; i < searchForm.getCategoria().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getCategoria()[i]));
+				}
 			}
-			if (searchForm.getAmbito().length > 0) {
-			     String str = Arrays.toString(searchForm.getAmbito());
-			     str = '(' + str.substring(1, str.length()-1) + ')';
-				ps.setString(count++, str);
+			if (searchForm.getAmbito() != null && searchForm.getAmbito().length > 0) {
+				for (int i = 0; i < searchForm.getAmbito().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getAmbito()[i]));
+				}
 			}
 			if (StringUtils.isNotEmpty(searchForm.getUrl())) {
 				ps.setString(count++, "%" + searchForm.getUrl() + "%");
+			}
+			if (searchForm.getDependencia() != null && searchForm.getDependencia().length > 0) {
+				for (int i = 0; i < searchForm.getDependencia().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getDependencia()[i]));
+				}
+			}
+			if (searchForm.getComplejidad() != null && searchForm.getComplejidad().length > 0) {
+				for (int i = 0; i < searchForm.getComplejidad().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getComplejidad()[i]));
+				}
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getinDirectorio()))) {
+				ps.setString(count++,String.valueOf(searchForm.getinDirectorio()));
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getisActiva()))) {
+				ps.setString(count++,String.valueOf(searchForm.getisActiva()));
+			}
+			if (StringUtils.isNotEmpty(String.valueOf(searchForm.getEliminada()))) {
+				ps.setString(count++,String.valueOf(searchForm.getEliminada()));
+			}
+			if (searchForm.getEtiquetas() != null && searchForm.getEtiquetas().length > 0) {
+				for (int i = 0; i < searchForm.getEtiquetas().length; i++) {
+					ps.setLong(count++, Long.parseLong(searchForm.getEtiquetas()[i]));
+				}
 			}
 			try (ResultSet rs = ps.executeQuery()) {
 				while (rs.next()) {
