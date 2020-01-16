@@ -130,6 +130,9 @@ public class SemillasObservatorioAction extends Action {
 
 			request.setAttribute(Constants.OBSERVATORY_SEED_LIST, observatorySeedsList);
 			request.setAttribute(Constants.CATEGORIES_LIST, SemillaDAO.getSeedCategories(c, Constants.NO_PAGINACION));
+			request.setAttribute(Constants.AMBITS_LIST, SemillaDAO.getSeedAmbits(c, Constants.NO_PAGINACION));
+			request.setAttribute(Constants.DEPENDENCIES_LIST, SemillaDAO.getSeedDependencies(c, Constants.NO_PAGINACION));
+			request.setAttribute(Constants.COMPLEXITIES_LIST, SemillaDAO.getSeedComplexities(c, Constants.NO_PAGINACION));
 			request.setAttribute(Constants.LIST_PAGE_LINKS, Pagination.createPagination(request, numResult, pagina));
 			return mapping.findForward(Constants.EXITO);
 		} catch (Exception e) {
