@@ -38,6 +38,7 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 <script src="/oaw/js/tagbox/tagbox.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/oaw/js/tagbox/tagbox.css">
 <style>
+
 /* Make sure you reset e'erything beforehand. */
 * {
 	margin: 0;
@@ -45,7 +46,8 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 }
 
 /* Although you can't see the box here, so add some padding. */
-.tagbox-item .name, .tagbox-item .email { /* The name and email within the dropdown */
+.tagbox-item .name, .tagbox-item .email {
+	/* The name and email within the dropdown */
 	display: block;
 	float: left;
 	width: 35%;
@@ -57,11 +59,33 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 	float: right;
 	width: 65%;
 }
+.tagbox-wrapper input {
+
+display: block;
+    width: 100% !important;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    border:none !important;
+}
+
+
+}
 </style>
 
 <!--  JQ GRID   -->
 <script>
-
 
 
 	$(function() {
@@ -244,8 +268,32 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 													+ $('#SemillaSearchForm')
 															.serialize());
 										});
+						
+						$jq(document).ready(function() {
+							$.ajax({
+								url : '/oaw/secure/ViewEtiquetasObservatorio.do?action=search',
+								method : 'POST',
+								cache : false
+							}).success(function(response) {
+
+								$('#tagsFilterForm').tagbox({
+									items : response.etiquetas,
+									searchIn : [ 'name' ],
+									rowFormat : '<span class="name">{{name}}</span>',
+									tokenFormat : '{{name}}',
+									valueField : 'id',
+									itemClass : 'user'
+								});
+
+							})
+
+						});
 
 					});
+	
+	
+
+
 </script>
 
 
@@ -294,14 +342,14 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 									key="nueva.semilla.observatorio.nombre" /></strong></label>
 						<html:text styleClass="texto form-control" styleId="nombre" property="nombre" />
 					</div>
+
+				<!-- Segmentos -->
 					<div class="formItem">
 						<label for="categoria" class="control-label"><strong class="labelVisu"><bean:message
-									key="nueva.semilla.observatorio.categoria" /></strong></label>
-						<html:select styleClass="textoSelect form-control" styleId="categoria" property="categoria">
-							<html:option value="">
-								<bean:message key="resultados.observatorio.cualquier.categoria" />
-							</html:option>
-							<logic:iterate name="<%=Constants.CATEGORIES_LIST%>" id="categoria">
+									key="nueva.semilla.observatorio.categoria" />: </strong></label>
+						<html:select size="3" multiple="true" property="categoria"
+							styleClass="textoSelect form-control" styleId="categoria">
+							<logic:iterate name="<%=Constants.CATEGORIES_LIST %>" id="categoria">
 								<bean:define id="idCategoria">
 									<bean:write name="categoria" property="id" />
 								</bean:define>
@@ -311,18 +359,116 @@ you may find it at http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:3201
 							</logic:iterate>
 						</html:select>
 					</div>
+					
+						<!-- Ambito -->
+						<div class="formItem">
+						<label for="ambito" class="control-label"><strong class="labelVisu"><bean:message
+									key="nueva.semilla.observatorio.ambito" />: </strong></label>
+						<html:select size="3" multiple="true" property="ambito"
+							styleClass="textoSelect form-control" styleId="ambito">
+							<logic:iterate name="<%=Constants.AMBITS_LIST %>" id="ambito">
+								<bean:define id="idAmbito">
+									<bean:write name="ambito" property="id" />
+								</bean:define>
+								<html:option value="<%=idAmbito%>">
+									<bean:write name="ambito" property="name" />
+								</html:option>
+							</logic:iterate>
+						</html:select>
+					</div>
+					
+					<!-- Dependencia -->
+						<div class="formItem">
+						<label for="dependencia" class="control-label"><strong class="labelVisu"><bean:message
+									key="nueva.semilla.observatorio.dependencia" />: </strong></label>
+						<html:select size="3" multiple="true" property="dependencia"
+							styleClass="textoSelect form-control" styleId="dependencia">
+							<logic:iterate name="<%=Constants.DEPENDENCIES_LIST %>" id="dependencia">
+								<bean:define id="idDependencia">
+									<bean:write name="dependencia" property="id" />
+								</bean:define>
+								<html:option value="<%=idDependencia%>">
+									<bean:write name="dependencia" property="name" />
+								</html:option>
+							</logic:iterate>
+						</html:select>
+					</div>
+					
+						<!-- Complejidades -->	
+						<div class="formItem">
+						<label for="complejidad" class="control-label"><strong class="labelVisu"><bean:message
+									key="nueva.semilla.observatorio.complejidad" />: </strong></label>
+						<html:select size="3" multiple="true" property="complejidad"
+							styleClass="textoSelect form-control" styleId="complejidad">
+							<logic:iterate name="<%=Constants.COMPLEXITIES_LIST %>" id="complejidad">
+								<bean:define id="idComplejidad">
+									<bean:write name="complejidad" property="id" />
+								</bean:define>
+								<html:option value="<%=idComplejidad%>">
+									<bean:write name="complejidad" property="name" />
+								</html:option>
+							</logic:iterate>
+						</html:select>
+					</div>
+					
+				<!--  URL -->
+				<div class="formItem">
+					<label for="url" class="control-label"><strong class="labelVisu"><bean:message
+								key="nueva.semilla.observatorio.url" /></strong></label>
+					<html:text styleClass="texto form-control" styleId="url" property="url" />
+				</div>
+					
+			<!-- Directorio -->
+			<div class="formItem">
+				<label for="directorio" class="control-label"><strong
+					class="labelVisu"> <bean:message
+							key="nueva.semilla.observatorio.directorio" /></strong></label>
+					<select name="directorio" class="textoSelect form-control">
+						<option selected="selected" value=""></option>
+						<option value="1"><bean:message key="select.yes" /></option>
+						<option value="0"><bean:message key="select.no" /></option>
+					</select>
+			</div>
+			
+			<!-- Activa -->
+			<div class="formItem">
+				<label for="activa" class="control-label"><strong
+					class="labelVisu"> <bean:message
+							key="nueva.semilla.observatorio.activa" /></strong></label>
+					<select name="activa" class="textoSelect form-control">
+						<option selected="selected" value=""></option>
+						<option value="1"><bean:message key="select.yes" /></option>
+						<option value="0"><bean:message key="select.no" /></option>
+					</select>
+			</div>
+			
+			<!-- Eliminada -->
+			<div class="formItem">
+				<label for="eliminada" class="control-label"><strong
+					class="labelVisu"> <bean:message
+							key="nueva.semilla.observatorio.eliminada" /></strong></label>
+					<select name="eliminada" class="textoSelect form-control">
+						<option selected="selected" value=""></option>
+						<option value="0"><bean:message key="select.no" /></option>
+						<option value="1"><bean:message key="select.yes" /></option>
+					</select>
+			</div>
+						
+			<!-- Etiquetas -->
 					<div class="formItem">
-						<label for="url" class="control-label"><strong class="labelVisu"><bean:message
-									key="nueva.semilla.observatorio.url" /></strong></label>
-						<html:text styleClass="texto form-control" styleId="url" property="url" />
+						<label for="tags" class="control-label"><strong class="labelVisu"><bean:message
+									key="menu.config.etiquetas" />: </strong></label> 	
+							<html:text styleClass="texto form-control" property="etiquetas" styleId="tagsFilterForm"
+							maxlength="100" />
 					</div>
-					<div class="formButton">
-						<span onclick="buscar()" class="btn btn-default btn-lg"> <span class="glyphicon glyphicon-search"
-							aria-hidden="true"></span> <bean:message key="boton.buscar" />
-						</span> <span onclick="limpiar()" class="btn btn-default btn-lg"> <span aria-hidden="true"></span> <bean:message
-								key="boton.limpiar" />
-						</span>
-					</div>
+				<!--  Buttons -->
+				<div class="formButton">
+					<span onclick="buscar()" class="btn btn-default btn-lg"> <span class="glyphicon glyphicon-search"
+						aria-hidden="true"></span> <bean:message key="boton.buscar" />
+					</span> <span onclick="limpiar()" class="btn btn-default btn-lg"> <span aria-hidden="true"></span> <bean:message
+							key="boton.limpiar" />
+					</span>
+				</div>
 				</fieldset>
 			</html:form>
 
