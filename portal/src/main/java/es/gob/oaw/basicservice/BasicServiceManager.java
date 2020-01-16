@@ -54,6 +54,7 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceQueingThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
+import es.oaw.wcagem.WcagEmUtils;
 
 /**
  * Created by mikunis on 1/10/17.
@@ -182,7 +183,26 @@ public class BasicServiceManager {
 					final BasicServicePdfReport basicServicePdfReport = new BasicServicePdfReport(messageResources, new AnonymousResultExportPdfAccesibilidad(basicServiceForm));
 					basicServicePdfReport.exportToPdf(currentEvaluationPageList, previousEvaluationsPageList, pdfPath);
 				}
-				// TODO Generar código analizado
+				/***
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 */
+				// TODO Generar JSON compatible con WCAG-EM
+				WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), idCrawling);
+				/*
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 * 
+				 */
+				// Generar código analizado
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
 				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
 				sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
