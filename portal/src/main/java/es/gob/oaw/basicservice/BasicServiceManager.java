@@ -27,6 +27,8 @@ import java.util.TreeMap;
 import org.apache.commons.mail.EmailException;
 import org.apache.struts.util.MessageResources;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import es.gob.oaw.basicservice.historico.CheckHistoricoService;
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
 import es.gob.oaw.rastreador2.pdf.SourceFilesManager;
@@ -54,6 +56,7 @@ import es.inteco.rastreador2.utils.basic.service.BasicServiceQueingThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceThread;
 import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.inteco.utils.FileUtils;
+import es.oaw.wcagem.WcagEmReport;
 import es.oaw.wcagem.WcagEmUtils;
 
 /**
@@ -191,7 +194,11 @@ public class BasicServiceManager {
 				 * 
 				 */
 				// TODO Generar JSON compatible con WCAG-EM
-				WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), idCrawling);
+				WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), idCrawling);
+				ObjectMapper mapper = new ObjectMapper();
+				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
+				;
 				/*
 				 * 
 				 * 

@@ -310,7 +310,25 @@ fieldset p {
 		
 		
 		
-		
+		$("#radio-1").click(function () {
+          $("#crawler").show();
+          $("#urlset").hide();
+          $("#source").hide();
+        });
+
+        $("#radio-2").click(function () {
+          $("#crawler").hide();
+          $("#urlset").show();
+          $("#source").hide();
+          $("#historico").show();
+        });
+
+        $("#radio-3").click(function () {
+          $("#crawler").hide();
+          $("#urlset").hide();
+          $("#source").show();
+          $("#historico").hide();
+        });
 		
 		
 		
