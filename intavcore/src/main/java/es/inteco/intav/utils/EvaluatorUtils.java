@@ -895,6 +895,8 @@ public final class EvaluatorUtils {
 								if (subgroup.getRelatedChecks().containsKey(check)) {
 									observatorySubgroupForm.getIgnoreRelatedChecks().add(subgroup.getRelatedChecks().get(check));
 								}
+							} else { // TODO Save passed checks to generate wcag.em report
+								observatorySubgroupForm.getSuccessChecks().add(check);
 							}
 						}
 					}
