@@ -13,6 +13,7 @@ import java.util.TreeMap;
 import org.apache.struts.util.MessageResources;
 
 import es.gob.oaw.rastreador2.observatorio.ObservatoryManager;
+import es.gob.oaw.rastreador2.pdf.utils.CheckDescriptionsManager;
 import es.inteco.common.Constants;
 import es.inteco.intav.datos.AnalisisDatos;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
@@ -21,7 +22,6 @@ import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.form.ProblemForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
-import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.oaw.wcagem.enums.WcagEmPointKey;
 import es.oaw.wcagem.util.ValidationDetails;
 import es.oaw.wcagem.util.ValidationResult;
@@ -93,97 +93,11 @@ public final class WcagEmUtils {
 		// Get scores
 		final ObservatoryManager observatoryManager = new ObservatoryManager();
 		final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), analisisId);
-		// This map store, the url and a map with everi wcag automatic validation an result
-		Map<String, Map<String, ValidationDetails>> wcagCompliance = new TreeMap<>();
 		// Pagaes
 		final List<ObservatoryEvaluationForm> currentEvaluationPageList = observatoryManager.getObservatoryEvaluationsFromObservatoryExecution(0, analysisIdsByTracking);
-		for (ObservatoryEvaluationForm observatoryEvaluationForm : currentEvaluationPageList) {
-			String url = observatoryEvaluationForm.getUrl();
-			Map<String, ObservatorySubgroupForm> tmp = new TreeMap<>();
-			// Process groups
-			for (ObservatorySuitabilityForm suitabilityForm : observatoryEvaluationForm.getGroups().get(0).getSuitabilityGroups()) {
-				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-					final String name = subgroupForm.getDescription()
-							.substring(subgroupForm.getDescription().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
-					tmp.put(name, subgroupForm);
-				}
-			}
-			for (ObservatorySuitabilityForm suitabilityForm : observatoryEvaluationForm.getGroups().get(1).getSuitabilityGroups()) {
-				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
-					final String name = subgroupForm.getDescription()
-							.substring(subgroupForm.getDescription().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
-					tmp.put(name, subgroupForm);
-				}
-			}
-			// TODO Modificar para que sean un objeto validation
-			Map<String, ValidationDetails> tmpWcag = new TreeMap<>();
-			// Match oaw validations with wcag (this url)
-			// Check 1.1.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_1), WcagEmPointKey.WCAG_1_1_1.getWcagEmId());
-			// Check 1.3.4
-			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_4.getWcagEmId());
-			// Check 1.3.5
-			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_5.getWcagEmId());
-			// Check 1.4.10
-			processSimpleVerification(tmpWcag, tmp.get(_2_3), WcagEmPointKey.WCAG_1_4_10.getWcagEmId());
-			// Check 1.4.12
-			processSimpleVerification(tmpWcag, tmp.get(_2_2), WcagEmPointKey.WCAG_1_4_12.getWcagEmId());
-			// Check 1.4.3
-			processSimpleVerification(tmpWcag, tmp.get(_2_2), WcagEmPointKey.WCAG_1_4_3.getWcagEmId());
-			// Check 2.1.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_1_1.getWcagEmId());
-			// Check 2.2.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_1.getWcagEmId());
-			// Check 2.3.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_3_1.getWcagEmId());
-			// Check 2.4.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_11), WcagEmPointKey.WCAG_2_4_1.getWcagEmId());
-			// Check 2.4.2
-			processSimpleVerification(tmpWcag, tmp.get(_1_11), WcagEmPointKey.WCAG_2_4_2.getWcagEmId());
-			// Check 2.4.3
-			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_3.getWcagEmId());
-			// Check 2.4.4
-			processSimpleVerification(tmpWcag, tmp.get(_1_12), WcagEmPointKey.WCAG_2_4_4.getWcagEmId());
-			// Check 2.4.5
-			processSimpleVerification(tmpWcag, tmp.get(_2_4), WcagEmPointKey.WCAG_2_4_5.getWcagEmId());
-			// Check 2.5.3
-			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_2_5_3.getWcagEmId());
-			// Check 3.1.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_7), WcagEmPointKey.WCAG_3_1_1.getWcagEmId());
-			// Check 3.1.2
-			processSimpleVerification(tmpWcag, tmp.get(_2_1), WcagEmPointKey.WCAG_3_1_2.getWcagEmId());
-			// Check 3.2.1
-			processSimpleVerification(tmpWcag, tmp.get(_1_13), WcagEmPointKey.WCAG_3_2_1.getWcagEmId());
-			// Check 3.2.2
-			processSimpleVerification(tmpWcag, tmp.get(_1_13), WcagEmPointKey.WCAG_3_2_2.getWcagEmId());
-			// Check 3.2.3
-			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId());
-			// Check 3.3.2
-			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_3_3_2.getWcagEmId());
-			/**
-			 * Multiple verifications involved
-			 */
-			// Check 1.1.1
-			List<ObservatorySubgroupForm> verifications = new ArrayList<ObservatorySubgroupForm>();
-			verifications.add(tmp.get(_1_2));
-			verifications.add(tmp.get(_1_3));
-			verifications.add(tmp.get(_1_4));
-			verifications.add(tmp.get(_1_5));
-			verifications.add(tmp.get(_1_6));
-			verifications.add(tmp.get(_1_9));
-			verifications.add(tmp.get(_1_10));
-			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId());
-			// Check 4.1.2
-			verifications = new ArrayList<ObservatorySubgroupForm>();
-			verifications.add(tmp.get(_1_8));
-			verifications.add(tmp.get(_1_9));
-			verifications.add(tmp.get(_1_10));
-			verifications.add(tmp.get(_1_11));
-			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_4_1_2.getWcagEmId());
-			// Add to globall
-			wcagCompliance.put(url, tmpWcag);
-		}
-		// TODO Generate analysis info
+		// This map store, the url and a map with everi wcag automatic validation an result
+		Map<String, Map<String, ValidationDetails>> wcagCompliance = generateEquivalenceMap(currentEvaluationPageList);
+		// Generate analysis info
 		Graph graph = new Graph();
 		{
 			Context context = new Context();
@@ -300,8 +214,7 @@ public final class WcagEmUtils {
 				Website website = new Website();
 				website.setType(Arrays.asList(new String[] { "TestSubject", "WebSite" }));
 				website.setId("_:website");
-				// TODO Seed name
-				website.setSiteName(BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false));
+				website.setSiteName(pdfBuilder.getBasicServiceForm().getName().toUpperCase());
 				website.setSiteScope("");
 				evaluationScope.setWebsite(website);
 			}
@@ -319,17 +232,16 @@ public final class WcagEmUtils {
 				{
 					Result result = new Result();
 					result.setDate(OffsetDateTime.now(ZoneId.of("Europe/Madrid")).toString());
-					result.setDescription(wcagEmPointKey.getWcagPoint());
+					result.setDescription("");
 					result.setType("TestResult");
-					// TODO calculate
+					// By default, we mark all as cannot tell because this an automatic analisys that not cover all WCAG verfification point
 					result.setOutcome("earl:cantTell");
 					auditResult.setResult(result);
 				}
-				// TODO Check valid mode
 				auditResult.setMode("earl:automatic");
 				{
 					List<HasPart> hasParts = new ArrayList<HasPart>();
-					// TODO Iterate WCAG Points
+					// Iterate WCAG Points
 					if (wcagCompliance != null && !wcagCompliance.isEmpty()) {
 						int pageCounter = 0;
 						for (Entry<String, Map<String, ValidationDetails>> result : wcagCompliance.entrySet()) {
@@ -343,14 +255,22 @@ public final class WcagEmUtils {
 									Result_ resultP = new Result_();
 									resultP.setType("TestResult");
 									resultP.setDate(OffsetDateTime.now(ZoneId.of("Europe/Madrid")).toString());
-									// TODO Result from Details
+									// Result from Details
 									final List<ValidationResult> results = result.getValue().get(wcagEmPointKey.getWcagEmId()).getResults();
-									resultP.setDescription(results != null ? results.toString() : "");
-									resultP.setOutcome(result.getValue().get(wcagEmPointKey.getWcagEmId()).getResult());
+									if (results != null && !results.isEmpty()) {
+										resultP.setDescription(printProblemsAsTable(results, messageResources));
+									} else {
+										resultP.setDescription("");
+									}
+									final String validationResult = result.getValue().get(wcagEmPointKey.getWcagEmId()).getResult();
+									resultP.setOutcome(validationResult);
 									hasPart.setResult(resultP);
+									// if one of this has earl:failed, all result marked as failed
+									if (EARL_FAILED.equals(validationResult)) {
+										auditResult.getResult().setOutcome(EARL_FAILED);
+									}
 								}
 								hasPart.setMultiPage(false);
-								// TODO Check valid mode
 								hasPart.setMode("earl:automatic");
 								hasPart.setTestcase(wcagEmPointKey.getWcagEmId());
 								hasParts.add(hasPart);
@@ -433,14 +353,111 @@ public final class WcagEmUtils {
 	}
 
 	/**
+	 * Generate equivalence map.
+	 *
+	 * @param currentEvaluationPageList the current evaluation page list
+	 * @return the map
+	 */
+	private static Map<String, Map<String, ValidationDetails>> generateEquivalenceMap(final List<ObservatoryEvaluationForm> currentEvaluationPageList) {
+		Map<String, Map<String, ValidationDetails>> wcagCompliance = new TreeMap<>();
+		for (ObservatoryEvaluationForm observatoryEvaluationForm : currentEvaluationPageList) {
+			String url = observatoryEvaluationForm.getUrl();
+			Map<String, ObservatorySubgroupForm> tmp = new TreeMap<>();
+			// Process groups
+			for (ObservatorySuitabilityForm suitabilityForm : observatoryEvaluationForm.getGroups().get(0).getSuitabilityGroups()) {
+				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+					final String name = subgroupForm.getDescription()
+							.substring(subgroupForm.getDescription().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
+					tmp.put(name, subgroupForm);
+				}
+			}
+			for (ObservatorySuitabilityForm suitabilityForm : observatoryEvaluationForm.getGroups().get(1).getSuitabilityGroups()) {
+				for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
+					final String name = subgroupForm.getDescription()
+							.substring(subgroupForm.getDescription().indexOf("minhap.observatory.5_0.subgroup.") + "minhap.observatory.5_0.subgroup.".length());
+					tmp.put(name, subgroupForm);
+				}
+			}
+			Map<String, ValidationDetails> tmpWcag = new TreeMap<>();
+			// Match oaw validations with wcag (this url)
+			// Check 1.1.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_1), WcagEmPointKey.WCAG_1_1_1.getWcagEmId());
+			// Check 1.3.4
+			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_4.getWcagEmId());
+			// Check 1.3.5
+			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_1_3_5.getWcagEmId());
+			// Check 1.4.10
+			processSimpleVerification(tmpWcag, tmp.get(_2_3), WcagEmPointKey.WCAG_1_4_10.getWcagEmId());
+			// Check 1.4.12
+			processSimpleVerification(tmpWcag, tmp.get(_2_2), WcagEmPointKey.WCAG_1_4_12.getWcagEmId());
+			// Check 1.4.3
+			processSimpleVerification(tmpWcag, tmp.get(_2_2), WcagEmPointKey.WCAG_1_4_3.getWcagEmId());
+			// Check 2.1.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_1_1.getWcagEmId());
+			// Check 2.2.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_2_1.getWcagEmId());
+			// Check 2.3.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_8), WcagEmPointKey.WCAG_2_3_1.getWcagEmId());
+			// Check 2.4.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_11), WcagEmPointKey.WCAG_2_4_1.getWcagEmId());
+			// Check 2.4.2
+			processSimpleVerification(tmpWcag, tmp.get(_1_11), WcagEmPointKey.WCAG_2_4_2.getWcagEmId());
+			// Check 2.4.3
+			processSimpleVerification(tmpWcag, tmp.get(_2_5), WcagEmPointKey.WCAG_2_4_3.getWcagEmId());
+			// Check 2.4.4
+			processSimpleVerification(tmpWcag, tmp.get(_1_12), WcagEmPointKey.WCAG_2_4_4.getWcagEmId());
+			// Check 2.4.5
+			processSimpleVerification(tmpWcag, tmp.get(_2_4), WcagEmPointKey.WCAG_2_4_5.getWcagEmId());
+			// Check 2.5.3
+			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_2_5_3.getWcagEmId());
+			// Check 3.1.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_7), WcagEmPointKey.WCAG_3_1_1.getWcagEmId());
+			// Check 3.1.2
+			processSimpleVerification(tmpWcag, tmp.get(_2_1), WcagEmPointKey.WCAG_3_1_2.getWcagEmId());
+			// Check 3.2.1
+			processSimpleVerification(tmpWcag, tmp.get(_1_13), WcagEmPointKey.WCAG_3_2_1.getWcagEmId());
+			// Check 3.2.2
+			processSimpleVerification(tmpWcag, tmp.get(_1_13), WcagEmPointKey.WCAG_3_2_2.getWcagEmId());
+			// Check 3.2.3
+			processSimpleVerification(tmpWcag, tmp.get(_2_6), WcagEmPointKey.WCAG_3_2_3.getWcagEmId());
+			// Check 3.3.2
+			processSimpleVerification(tmpWcag, tmp.get(_1_9), WcagEmPointKey.WCAG_3_3_2.getWcagEmId());
+			/**
+			 * Multiple verifications involved
+			 */
+			// Check 1.1.1
+			List<ObservatorySubgroupForm> verifications = new ArrayList<ObservatorySubgroupForm>();
+			verifications.add(tmp.get(_1_2));
+			verifications.add(tmp.get(_1_3));
+			verifications.add(tmp.get(_1_4));
+			verifications.add(tmp.get(_1_5));
+			verifications.add(tmp.get(_1_6));
+			verifications.add(tmp.get(_1_9));
+			verifications.add(tmp.get(_1_10));
+			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_1_3_1.getWcagEmId());
+			// Check 4.1.2
+			verifications = new ArrayList<ObservatorySubgroupForm>();
+			verifications.add(tmp.get(_1_8));
+			verifications.add(tmp.get(_1_9));
+			verifications.add(tmp.get(_1_10));
+			verifications.add(tmp.get(_1_11));
+			processMultipleVerification(tmpWcag, verifications, WcagEmPointKey.WCAG_4_1_2.getWcagEmId());
+			// Add to globall
+			wcagCompliance.put(url, tmpWcag);
+		}
+		return wcagCompliance;
+	}
+
+	/**
 	 * Process simple verification.
 	 *
-	 * @param tmpWcag  the tmp wcag
-	 * @param integer  the integer
-	 * @param wcagEmId the wcag em id
+	 * @param tmpWcag                 the tmp wcag
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param wcagEmId                the wcag em id
 	 */
 	private static void processSimpleVerification(Map<String, ValidationDetails> tmpWcag, final ObservatorySubgroupForm observatorySubgroupForm, final String wcagEmId) {
 		ValidationDetails validationDetailes = new ValidationDetails();
+		List<ValidationResult> results = new ArrayList<>();
 		switch (observatorySubgroupForm.getValue()) {
 		case Constants.OBS_VALUE_GREEN_ZERO:
 			// We can asegurte automatic PASS
@@ -449,37 +466,87 @@ public final class WcagEmUtils {
 			break;
 		case Constants.OBS_VALUE_RED_ZERO:
 			validationDetailes.setResult(EARL_FAILED);
-			// TODO Detail errors
-			if (observatorySubgroupForm.getProblems() != null && !observatorySubgroupForm.getProblems().isEmpty()) {
-				List<ValidationResult> results = new ArrayList<>();
-				for (ProblemForm problem : observatorySubgroupForm.getProblems()) {
-					ValidationResult validationResult = new ValidationResult();
-					validationResult.setOawVerification(problem.getCode());
-					validationResult.setOawDescription(problem.getRationale());
-					validationResult.setResult(EARL_FAILED);
-					results.add(validationResult);
-				}
-				validationDetailes.setResults(results);
-			}
+			processChecks(observatorySubgroupForm, validationDetailes, results);
 			tmpWcag.put(wcagEmId, validationDetailes);
 			break;
 		case Constants.OBS_VALUE_GREEN_ONE:
-			validationDetailes.setResult(EARL_FAILED);
+			validationDetailes.setResult(EARL_PASSED);
+			results = new ArrayList<>();
+			processChecks(observatorySubgroupForm, validationDetailes, results);
 			tmpWcag.put(wcagEmId, validationDetailes);
 			break;
 		case Constants.OBS_VALUE_NOT_SCORE:
 			validationDetailes.setResult(EARL_INAPPLICABLE);
+			processChecks(observatorySubgroupForm, validationDetailes, results);
 			tmpWcag.put(wcagEmId, validationDetailes);
 			break;
 		}
 	}
 
 	/**
+	 * Process checks.
+	 *
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param validationDetailes      the validation detailes
+	 * @param results                 the results
+	 */
+	private static void processChecks(final ObservatorySubgroupForm observatorySubgroupForm, ValidationDetails validationDetailes, List<ValidationResult> results) {
+		// Problems
+		if (observatorySubgroupForm.getProblems() != null && !observatorySubgroupForm.getProblems().isEmpty()) {
+			for (ProblemForm problem : observatorySubgroupForm.getProblems()) {
+				ValidationResult validationResult = processError(observatorySubgroupForm, problem);
+				results.add(validationResult);
+			}
+			validationDetailes.setResults(results);
+		}
+		// Success
+		if (observatorySubgroupForm.getSuccessChecks() != null && !observatorySubgroupForm.getSuccessChecks().isEmpty()) {
+			for (Integer successCheck : observatorySubgroupForm.getSuccessChecks()) {
+				if (successCheck != null) {
+					ValidationResult validationResult = processSuccess(observatorySubgroupForm, successCheck);
+					results.add(validationResult);
+				}
+			}
+			validationDetailes.setResults(results);
+		}
+	}
+
+	/**
+	 * Process error.
+	 *
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param problem                 the problem
+	 * @return the validation result
+	 */
+	private static ValidationResult processError(final ObservatorySubgroupForm observatorySubgroupForm, ProblemForm problem) {
+		ValidationResult validationResult = new ValidationResult();
+		validationResult.setOawVerification(observatorySubgroupForm.getDescription());
+		validationResult.setOawDescription(problem.getError());
+		validationResult.setResult(EARL_FAILED);
+		return validationResult;
+	}
+
+	/**
+	 * Process success.
+	 *
+	 * @param observatorySubgroupForm the observatory subgroup form
+	 * @param check                   the check
+	 * @return the validation result
+	 */
+	private static ValidationResult processSuccess(final ObservatorySubgroupForm observatorySubgroupForm, Integer check) {
+		ValidationResult validationResult = new ValidationResult();
+		validationResult.setOawVerification(observatorySubgroupForm.getDescription());
+		validationResult.setOawDescription("check." + check + ".error");
+		validationResult.setResult(EARL_PASSED);
+		return validationResult;
+	}
+
+	/**
 	 * Process multiple verification.
 	 *
-	 * @param tmpWcag     the tmp wcag
-	 * @param integerList the integer list
-	 * @param wcagEmId    the wcag em id
+	 * @param tmpWcag                  the tmp wcag
+	 * @param observatorySubgroupForms the observatory subgroup forms
+	 * @param wcagEmId                 the wcag em id
 	 */
 	private static void processMultipleVerification(Map<String, ValidationDetails> tmpWcag, final List<ObservatorySubgroupForm> observatorySubgroupForms, final String wcagEmId) {
 		// To simply comparation, only compare integet values
@@ -493,24 +560,60 @@ public final class WcagEmUtils {
 			processSimpleVerification(tmpWcag, observatorySubgroupForms.get(0), wcagEmId);
 		} else if (integerList.contains(Constants.OBS_VALUE_RED_ZERO)) {
 			validationDetailes.setResult(EARL_FAILED);
-			// TODO Detail errors
+			// Detail errors
 			List<ValidationResult> results = new ArrayList<>();
 			for (ObservatorySubgroupForm observatorySubgroupForm : observatorySubgroupForms) {
-				if (observatorySubgroupForm.getProblems() != null && !observatorySubgroupForm.getProblems().isEmpty()) {
-					for (ProblemForm problem : observatorySubgroupForm.getProblems()) {
-						ValidationResult validationResult = new ValidationResult();
-						validationResult.setOawVerification(problem.getCode());
-						validationResult.setOawDescription(problem.getRationale());
-						validationResult.setResult(EARL_FAILED);
-						results.add(validationResult);
-					}
-				}
+				processChecks(observatorySubgroupForm, validationDetailes, results);
 			}
 			validationDetailes.setResults(results);
 			tmpWcag.put(wcagEmId, validationDetailes);
 		} else {
 			validationDetailes.setResult(EARL_CANNOT_TELL);
+			List<ValidationResult> results = new ArrayList<>();
+			for (ObservatorySubgroupForm observatorySubgroupForm : observatorySubgroupForms) {
+				processChecks(observatorySubgroupForm, validationDetailes, results);
+			}
+			validationDetailes.setResults(results);
 			tmpWcag.put(wcagEmId, validationDetailes);
 		}
+	}
+
+	/**
+	 * Prints the problems as table.
+	 *
+	 * @param results          the results
+	 * @param messageResources the message resources
+	 * @return the string
+	 */
+	private static String printProblemsAsTable(List<ValidationResult> results, final MessageResources messageResources) {
+		final CheckDescriptionsManager checkDescriptionsManager = new CheckDescriptionsManager();
+		StringBuilder tableBuilder = new StringBuilder("<table class=\"w-table no-border border-solid\">");
+		tableBuilder.append("<thead>");
+		tableBuilder.append("<tr>");
+		tableBuilder.append("<th>Verificación OAW</th>");
+		tableBuilder.append("<th>Descripción</th>");
+		tableBuilder.append("<th>Resultado</th>");
+		tableBuilder.append("</tr>");
+		tableBuilder.append("</thead>");
+		tableBuilder.append("<tbody>");
+		for (ValidationResult result : results) {
+			tableBuilder.append("<tr>");
+			tableBuilder.append("<td>");
+			tableBuilder.append(messageResources.getMessage(result.getOawVerification()));
+			tableBuilder.append("</td>");
+			tableBuilder.append("<td>");
+			tableBuilder.append(checkDescriptionsManager.getString(result.getOawDescription()));
+			tableBuilder.append("</td>");
+			tableBuilder.append("<td>");
+//			tableBuilder.append(result.getResult());
+			final String spanClass = result.getResult().toLowerCase().replace(":", "_");
+			final String spanText = result.getResult().toUpperCase().replace("EARL:", "");
+			tableBuilder.append("<span class='" + spanClass + "'>{{ 'EARL." + spanText + "' | translate}}</span>");
+			tableBuilder.append("</td>");
+			tableBuilder.append("</tr>");
+		}
+		tableBuilder.append("</tbody>");
+		tableBuilder.append("</table>");
+		return tableBuilder.toString();
 	}
 }
