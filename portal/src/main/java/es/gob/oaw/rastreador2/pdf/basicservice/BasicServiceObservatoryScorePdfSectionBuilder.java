@@ -21,7 +21,6 @@ import java.awt.Color;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +46,6 @@ import es.inteco.common.Constants;
 import es.inteco.common.ConstantsFont;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
-import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.intav.form.ScoreForm;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfAccesibilidad;
@@ -126,10 +124,10 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
 			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
 					ConstantsFont.PARAGRAPH, true));
-			boldWords.clear();
-			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p5.bold"));
-			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p5"), boldWords, ConstantsFont.paragraphBoldFont,
-					ConstantsFont.PARAGRAPH, true));
+//			boldWords.clear();
+//			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p5.bold"));
+//			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p5"), boldWords, ConstantsFont.paragraphBoldFont,
+//					ConstantsFont.PARAGRAPH, true));
 			// Info
 			final PdfPTable notice = new PdfPTable(new float[] { 100f });
 			notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
@@ -206,6 +204,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			// Gráfica nivel de adecuación
 			final String noDataMess = messageResources.getMessage("grafica.sin.datos");
 			addLevelAllocationResultsSummary(messageResources, chapter, file, noDataMess);
+			chapter.add(Chunk.NEXTPAGE);
 			// TODO Puntuación media y nivel de adecuación por página
 			PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.pagina.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
 					chapter, pdfTocManager.addSection(), 1);
@@ -218,19 +217,18 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			section.add(Chunk.NEWLINE);
 			section.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p2"), ConstantsFont.PARAGRAPH));
 			section.add(Chunk.NEWLINE);
-			Section section1 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level1"), pdfTocManager.getIndex(),
-					ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
-			addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section1, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
-			section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_1));
+			section.add(Chunk.NEXTPAGE);
 			if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
-				section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuaciones.verificacion2"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
-						chapter, pdfTocManager.addSection(), 1);
+				Section section1 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level1"), pdfTocManager.getIndex(),
+						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
+				addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section1, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
+				section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_1));
 				Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level2"), pdfTocManager.getIndex(),
 						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
 				addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section2, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
 				section.add(createObservatoryVerificationScoreTable(messageResources, currentScore, previousScore, Constants.OBS_PRIORITY_2));
-				PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
-						pdfTocManager.addSection(), 1);
+//				PDFUtils.createSection(messageResources.getMessage("resultados.primarios.puntuacion.pagina"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+//						pdfTocManager.addSection(), 1);
 			}
 			document.add(chapter);
 			pdfTocManager.addChapterCount();
@@ -467,7 +465,6 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		final String filePath = file.getParentFile().getPath() + File.separator + TEMP_SUBDIR + File.separator + "test.jpg";
 		final String title = messageResources.getMessage("observatory.graphic.accessibility.level.allocation.by.page.title");
 		ResultadosPrimariosObservatorioIntavUtils.getGlobalAccessibilityLevelAllocationSegmentGraphic(messageResources, currentEvaluationPageList, title, filePath, noDataMess);
-	
 		final float[] columnsWidth = new float[] { 35f, 30f, 35f };
 		final PdfPTable table = new PdfPTable(columnsWidth);
 		table.setWidthPercentage(90);

@@ -42,9 +42,9 @@ public class BasicServiceForm extends ValidatorForm {
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
 	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
-	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE EN2019 (beta)";
+	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE-EN301549:2019 (beta)";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE EN2019 (beta sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE-EN301549:2019 (beta sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
 	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */

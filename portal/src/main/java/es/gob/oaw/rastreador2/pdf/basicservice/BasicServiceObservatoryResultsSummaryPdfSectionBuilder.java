@@ -83,7 +83,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		document.add(chapter);
 		pdfTocManager.addChapterCount();
 	}
-	
+
 	/**
 	 * Adds the observatory results summary accesibility.
 	 *
@@ -100,8 +100,6 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		document.add(chapter);
 		pdfTocManager.addChapterCount();
 	}
-	
-	
 
 	/**
 	 * Adds the observatory results summary with compliance.
@@ -158,7 +156,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		chapter.newPage();
 		createTablaResumenResultadosPorNivel(messageResources, chapter, evaList, LEVEL_II_GROUP_INDEX, pdfTocManager);
 	}
-	
+
 	/**
 	 * Adds the results by verification accesibility.
 	 *
@@ -167,13 +165,11 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @param evaList          the eva list
 	 * @param pdfTocManager    the pdf toc manager
 	 */
-	private void addResultsByVerificationAccesibility(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList, final PdfTocManager pdfTocManager) {
+	private void addResultsByVerificationAccesibility(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList,
+			final PdfTocManager pdfTocManager) {
 		chapter.newPage();
 		createTablaResumenResultadosPorNivelAccesibilidad(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
-
 	}
-	
-	
 
 	/**
 	 * Adds the results by verification and compliance.
@@ -230,7 +226,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			section.add(createTablaResumenResultadosPorNivelLeyendaWithCompliance(messageResources, observatoryLevelForm));
 		}
 	}
-	
+
 	/**
 	 * Creates the tabla resumen resultados por nivel accesibilidad.
 	 *
@@ -246,8 +242,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		List<ObservatoryLevelForm> groups = observatoryEvaluationForm.getGroups();
 		if (groups != null && !groups.isEmpty() && groups.size() > groupIndex) {
 			final ObservatoryLevelForm observatoryLevelForm = groups.get(groupIndex);
-			final Section section = PDFUtils.createSection(
-					messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title"), pdfTocManager.getIndex(),
+			final Section section = PDFUtils.createSection(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.title"), pdfTocManager.getIndex(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
 			final PdfPTable table = createTablaResumenResultadosPorNivelHeader(messageResources, observatoryLevelForm.getSuitabilityGroups());
 			int contadorPagina = 1;
@@ -380,7 +375,8 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			widths[i] = 0.10f;
 		}
 		final PdfPTable table = new PdfPTable(widths);
-		table.setKeepTogether(true);
+		table.setHeaderRows(1);
+		table.setKeepTogether(false);
 		table.setWidthPercentage(95);
 		table.setSpacingBefore(ConstantsFont.LINE_SPACE);
 		table.setSpacingAfter(ConstantsFont.THIRD_LINE_SPACE);
@@ -495,7 +491,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 		}
 		return table;
 	}
-	
+
 	/**
 	 * Creates the tabla resumen resultados por nivel leyenda.
 	 *
