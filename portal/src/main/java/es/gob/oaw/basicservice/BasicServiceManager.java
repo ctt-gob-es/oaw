@@ -189,23 +189,11 @@ public class BasicServiceManager {
 				 * 
 				 * 
 				 */
-				// TODO Generar JSON compatible con WCAG-EM
-				/*
-				 * WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), idCrawling); ObjectMapper mapper = new ObjectMapper();
-				 * String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report); org.apache.commons.io.FileUtils.writeStringToFile(new File(new
-				 * File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
-				 */
-				;
-				/*
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 */
+				// TODO (Disable) Generar JSON compatible con WCAG-EM
+//				WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), idCrawling);
+//				ObjectMapper mapper = new ObjectMapper();
+//				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+//				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(pdfPath).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 				// Generar código analizado
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
 				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
