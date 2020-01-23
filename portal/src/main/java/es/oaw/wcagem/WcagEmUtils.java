@@ -88,7 +88,7 @@ public final class WcagEmUtils {
 	 * @return the wcag em report
 	 * @throws Exception the exception
 	 */
-	public static WcagEmReport generateReport(final MessageResources messageResources, final AnonymousResultExportPdf pdfBuilder, Long analisisId) throws Exception {
+	public static WcagEmReport generateReport(final MessageResources messageResources, final AnonymousResultExportPdf pdfBuilder, final String siteUrl, Long analisisId) throws Exception {
 		WcagEmReport wcagEmReport = new WcagEmReport();
 		// Get scores
 		final ObservatoryManager observatoryManager = new ObservatoryManager();
@@ -214,7 +214,7 @@ public final class WcagEmUtils {
 				Website website = new Website();
 				website.setType(Arrays.asList(new String[] { "TestSubject", "WebSite" }));
 				website.setId("_:website");
-				website.setSiteName(pdfBuilder.getBasicServiceForm().getName().toUpperCase());
+				website.setSiteName(siteUrl);
 				website.setSiteScope("");
 				evaluationScope.setWebsite(website);
 			}
