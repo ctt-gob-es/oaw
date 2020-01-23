@@ -226,9 +226,9 @@ public final class BasicServiceExport {
 			zos.closeEntry();
 			try {
 				File parentFile = new File(reportFile).getParentFile();
-				zipFile(new File(parentFile + "/paginas/"), "paginas", zos);
+				zipFile(new File(parentFile + "/codigo_fuente.zip"), "codigo_fuente.zip", zos);
 				// TODO (disable) wcagem-report.json
-				// zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
+				zipFile(new File(parentFile + "/wcagem-report.json"), "wcagem-report.json", zos);
 			} catch (Exception e) {
 				Logger.putLog("Exception: ", BasicServiceExport.class, Logger.LOG_LEVEL_ERROR, e);
 			}

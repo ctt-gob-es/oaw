@@ -22,6 +22,7 @@ import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.form.ProblemForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
+import es.inteco.rastreador2.utils.basic.service.BasicServiceUtils;
 import es.oaw.wcagem.enums.WcagEmPointKey;
 import es.oaw.wcagem.util.ValidationDetails;
 import es.oaw.wcagem.util.ValidationResult;
@@ -303,17 +304,29 @@ public final class WcagEmUtils {
 			RandomSample randomSample = new RandomSample();
 			List<Webpage_> webpages = new ArrayList<>();
 			int randCounter = 0;
-			for (Entry<String, Map<String, ValidationDetails>> result : wcagCompliance.entrySet()) {
+			// TODO Iterate currentEvaluationPageList to preserve order??
+			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
 				Webpage_ webpage = new Webpage_();
 				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
 				webpage.setId("_:rand_" + randCounter);
-				webpage.setDescription(result.getKey());
-				webpage.setSource(result.getKey());
-				webpage.setTitle(result.getKey());
+				webpage.setDescription(eval.getUrl());
+				webpage.setSource(eval.getUrl());
+				webpage.setTitle(BasicServiceUtils.getTitleDocFromContent(eval.getSource(), false));
 				webpage.setTested(false);// false to mark as incomplete un report step
 				webpages.add(webpage);
 				randCounter++;
 			}
+//			for (Entry<String, Map<String, ValidationDetails>> result : wcagCompliance.entrySet()) {
+//				Webpage_ webpage = new Webpage_();
+//				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
+//				webpage.setId("_:rand_" + randCounter);
+//				webpage.setDescription(result.getKey());
+//				webpage.setSource(result.getKey());
+//				webpage.setTitle(result.getKey());
+//				webpage.setTested(false);// false to mark as incomplete un report step
+//				webpages.add(webpage);
+//				randCounter++;
+//			}
 			randomSample.setWebpage(webpages);
 			graph.setRandomSample(randomSample);
 		}
