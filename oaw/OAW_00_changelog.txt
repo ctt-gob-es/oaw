@@ -1,0 +1,24 @@
+5.0.1
+------------------------------------------------------------------------------------------------------------------------------------
+- Correciones en los informes individuales
+- Elimiadas las palabras en inglés "us" y "on" del listado para detectar idioma inglés en el texto
+- Adjuntado código analizado en el servicio de diagnóstico
+
+5.0.0
+------------------------------------------------------------------------------------------------------------------------------------
+
+- Implementación de cartuchos UNE-EN301549:2019 y Accesibilidad. 
+- Mejora en la clasificación de semillas. 
+- Informes agregados dinámicos. 
+- Consolas de control del observatorio y servicio diagnóstico.
+- Guardado de puntuaciones en base de datos.
+
+4.4.1
+------------------------------------------------------------------------------------------------------------------------------------
+- Mejoras en la redirección y control de redirecciones continuas en páginas de accesibilidad
+
+
+4.4.0
+------------------------------------------------------------------------------------------------------------------------------------
+- Mejorada la exportación/importación de semillas para incluir el id de las mismas y poder importar las existentes automáticamente
+
