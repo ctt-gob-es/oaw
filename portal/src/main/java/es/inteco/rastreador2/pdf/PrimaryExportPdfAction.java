@@ -161,7 +161,7 @@ public class PrimaryExportPdfAction extends Action {
 						// Si el pdf no ha sido creado lo creamos
 						if (regenerate || !pdfFile.exists() || !sourceFilesManager.existsSourcesZip()) {
 							generatePDF(idObservatory, idExecutionOb, idRastreoRealizado, idRastreo, request, c, seed, pdfFile, sourceFilesManager);
-							//If is corrupt, regenerate
+							// If is corrupt, regenerate
 							try {
 								PdfReader pdfReader = new PdfReader(pdfFile.getPath());
 							} catch (Exception e) {
@@ -285,7 +285,6 @@ public class PrimaryExportPdfAction extends Action {
 					configReport(idObservatory, idExecutionOb, seed, pdfFiles, pmgr, dependOn);
 				}
 			} else {
-				
 				configReport(idObservatory, idExecutionOb, seed, pdfFiles, pmgr, "sin_dependencia");
 			}
 		} catch (Exception e) {
@@ -307,8 +306,8 @@ public class PrimaryExportPdfAction extends Action {
 		if (dependOn == null || dependOn.isEmpty()) {
 			dependOn = Constants.NO_DEPENDENCE;
 		}
-		final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn
-				+ File.separator + PDFUtils.formatSeedName(seed.getNombre());
+		final String path = pmgr.getValue(CRAWLER_PROPERTIES, "path.inteco.exports.observatory.intav") + idObservatory + File.separator + idExecutionOb + File.separator + dependOn + File.separator
+				+ PDFUtils.formatSeedName(seed.getNombre());
 		pdfFiles.add(new File(path + File.separator + PDFUtils.formatSeedName(seed.getNombre()) + ".pdf"));
 	}
 }

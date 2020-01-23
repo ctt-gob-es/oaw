@@ -382,6 +382,11 @@ public final class PrimaryExportPdfUtils {
 				// en el índice
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
+				// TODO (Disable) Generar JSON compatible con WCAG-EM
+//				WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, currentEvaluationPageList.get(0).getUrl(), Long.parseLong(crawling.getId()));
+//				ObjectMapper mapper = new ObjectMapper();
+//				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);
+//				org.apache.commons.io.FileUtils.writeStringToFile(new File(new File(file.getPath()).getParentFile().getPath() + "/wcagem-report.json"), jsonInString2);
 			} catch (DocumentException e) {
 				Logger.putLog("Error al exportar a pdf", PrimaryExportPdfUtils.class, Logger.LOG_LEVEL_ERROR, e);
 				throw e;
