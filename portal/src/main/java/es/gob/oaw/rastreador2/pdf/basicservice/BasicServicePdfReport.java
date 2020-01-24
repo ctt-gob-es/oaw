@@ -154,7 +154,7 @@ public class BasicServicePdfReport {
 				PDFUtils.addCoverPage(document,
 						messageResources.getMessage("pdf.accessibility.title", new String[] { pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle() }),
 						pdfBuilder.getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL ? pdfBuilder.getBasicServiceForm().getDomain() : "", "Informe emitido bajo demanda.");
-				pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+				pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, true);
 				pdfTocManager.addChapterCount();
 				pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0);
 				pdfTocManager.addChapterCount();

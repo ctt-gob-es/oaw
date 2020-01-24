@@ -1,8 +1,13 @@
 5.0.1
 ------------------------------------------------------------------------------------------------------------------------------------
-- Correciones en los informes individuales
-- Elimiadas las palabras en inglés "us" y "on" del listado para detectar idioma inglés en el texto
+- Correcciones en los informes individuales
+- Eliminadas las palabras en inglés "us" y "on" del listado para detectar idioma inglés en el texto
 - Adjuntado código analizado en el servicio de diagnóstico
+- Modificado el contenido del mensaje de correo electrónico para incluir información adicional de la complejidad 
+- Corregidas las descripciones de los nuevos checks para el cartucho UNE-EN301549:2019
+- Añadida información adicional a los correos de inacabados
+- Mejorada el formulario de búsquedas de la sección de Semillas para incluir más campos de filtrado
+- La exportación de semillas ahora sólo exporta el resultado de la búsqueda realizada
 
 5.0.0
 ------------------------------------------------------------------------------------------------------------------------------------
