@@ -12,10 +12,42 @@
 ******************************************************************************/
 package es.inteco.rastreador2.pdf.builder;
 
-import com.lowagie.text.*;
+import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
+import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
+import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
+import static es.inteco.common.ConstantsFont.LINE_SPACE;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Connection;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.ListIterator;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Section;
+import com.lowagie.text.TextElementArray;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.events.IndexEvents;
@@ -45,29 +77,6 @@ import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioAccesibilidadUt
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 import es.inteco.rastreador2.utils.ResultadosPrimariosObservatorioIntavUtils;
-import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Connection;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.ListIterator;
-import java.util.Map;
-
-import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
-import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
-import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
-import static es.inteco.common.ConstantsFont.LINE_SPACE;
 
 /**
  * AnonymousResultExportPdfUNE2012b. Clase replicada de {@link AnonymousResultExportPdfUNE2012} para la nueva versión de la metodología basada en la misma norma que la mencionada y conservar ambas
@@ -1322,7 +1331,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			tablaRankings.addCell(createEvolutionLevelCell(messageResources, currentScore.getLevel(), previousScore.getLevel()));
 		}
 		tablaRankings.completeRow();
-
 		if (rankingActual != null) {
 			// Posición en categoría
 			tablaRankings.addCell(
@@ -1364,7 +1372,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		chapter.add(tablaRankings);
 		// TODO Gráficos
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");
-
 //		chapter.add(Chunk.NEWLINE);
 //		chapter.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
 //		// Gráfica nivel de adecuación
@@ -1748,7 +1755,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		table.setSpacingAfter(0);
 		return table;
 	}
-	
 
 	/**
 	 * Creates the evolution difference cell value.
@@ -1778,44 +1784,37 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 		return PDFUtils.createTableCell(getEvolutionImage(actualValue, previousValue), new DecimalFormat("+0.00;-0.00").format(actualValue.subtract(previousValue)), color, ConstantsFont.noteCellFont,
 				Element.ALIGN_CENTER, DEFAULT_PADDING, -1);
 	}
-	
+
 	@Override
 	public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
 		final ScoreForm scoreForm = new ScoreForm();
-
 		int suitabilityGroups = 0;
-
 		for (ObservatoryEvaluationForm evaluationForm : evaList) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
-
 			// Codigo duplicado en IntavUtils
-
 			final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
 			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
 				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
 			} else if (pageSuitabilityLevel.equals(Constants.OBS_A)) {
 				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(new BigDecimal(5)));
-			} else 
-
-			for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
-				suitabilityGroups = levelForm.getSuitabilityGroups().size();
-				if (levelForm.getName().equalsIgnoreCase("priority 1")) {
-					scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
-				} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
-					scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
-				}
-				for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
-					if (suitabilityForm.getName().equalsIgnoreCase("A")) {
-						scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
-					} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
-						scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+			} else
+				for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
+					suitabilityGroups = levelForm.getSuitabilityGroups().size();
+					if (levelForm.getName().equalsIgnoreCase("priority 1")) {
+						scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
+					} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
+						scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
+					}
+					for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
+						if (suitabilityForm.getName().equalsIgnoreCase("A")) {
+							scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
+						} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
+							scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+						}
 					}
 				}
-			}
 		}
-
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
-
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
@@ -1824,10 +1823,13 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 		}
-
 		// El nivel de validación del portal
 		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
-
 		return scoreForm;
+	}
+
+	@Override
+	public void createIntroductionChapter(MessageResources messageResources, Document document, PdfTocManager pdfTocManager, Font titleFont, boolean isBasicService) throws Exception {
+		this.createIntroductionChapter(messageResources, document, pdfTocManager, titleFont);
 	}
 }
