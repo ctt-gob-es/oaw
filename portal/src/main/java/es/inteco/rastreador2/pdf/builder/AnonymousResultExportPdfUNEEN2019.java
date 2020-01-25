@@ -213,14 +213,16 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		final com.lowagie.text.List list = new com.lowagie.text.List(); // L1
 		// L1
 		specialChunkMap = new HashMap<>();
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold1"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(1, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold2"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(2, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
-		externalLink.setExternalLink(true);
-		externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.url"));
-		specialChunkMap.put(3, externalLink);
+		SpecialChunk externalLinkL1_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold1"), ConstantsFont.paragraphBoldFont);
+		specialChunkMap.put(1, externalLinkL1_1);
+		SpecialChunk externalLinkL1_2 = new SpecialChunk("indicados en este informe, en el apartado 'Incidencias' de cada página. ", ConstantsFont.PARAGRAPH);
+		specialChunkMap.put(2, externalLinkL1_2);
+		SpecialChunk externalLinkL1_2_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold2"), ConstantsFont.paragraphBoldFont);
+		specialChunkMap.put(3, externalLinkL1_2_1);
+		SpecialChunk externalLinkL1_3 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+		externalLinkL1_3.setExternalLink(true);
+		externalLinkL1_3.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.url"));
+		specialChunkMap.put(4, externalLinkL1_3);
 		PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
 				ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
 		// L2
