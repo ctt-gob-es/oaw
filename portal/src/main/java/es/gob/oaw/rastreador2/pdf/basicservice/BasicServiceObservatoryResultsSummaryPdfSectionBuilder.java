@@ -93,7 +93,10 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @throws DocumentException the document exception
 	 */
 	public void addObservatoryResultsSummaryAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws DocumentException {
-		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		// Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		// TODO anchor_resultados_verificacion
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_verificacion");
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 		addResultsByVerificationAccesibility(messageResources, chapter, currentEvaluationPageList, pdfTocManager);
@@ -112,7 +115,9 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 */
 	public void addObservatoryResultsSummaryWithCompliance(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, ScoreForm currentScore)
 			throws DocumentException {
-		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+//		Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_verificacion");
 //		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 //		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p2"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
 		final ArrayList<String> boldWords = new ArrayList<>();
@@ -213,7 +218,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			int contadorPagina = 1;
 			for (ObservatoryEvaluationForm evaluationForm : evaList) {
 				table.addCell(PDFUtils.createTableCell(
-						messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
+						messageResources.getMessage("observatory.graphic.score.by.page.label.table", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
 						ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + contadorPagina));
 				for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(groupIndex).getSuitabilityGroups()) {
 					for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
@@ -296,8 +301,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			}
 			// Add final row with compliance
 			Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
-			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.sitioweb"), Color.WHITE, ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0,
-					"anchor_resultados_page_" + contadorPagina));
+			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.primarios.res.verificacion.tabla.sitioweb"), Color.WHITE, ConstantsFont.PARAGRAPH, Element.ALIGN_CENTER, 0));
 			if (LEVEL_I_GROUP_INDEX == groupIndex) {
 				for (LabelValueBean value : currentScore.getVerifications1()) {
 					evaluateCompliance(table, value);

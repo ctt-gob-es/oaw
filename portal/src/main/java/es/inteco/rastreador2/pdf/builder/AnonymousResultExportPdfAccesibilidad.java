@@ -1253,8 +1253,11 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	public static void addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, PdfTocManager pdfTocManager,
 			final java.util.List<ObservatoryEvaluationForm> currentEvaluationPageList, java.util.List<ObservatoryEvaluationForm> previousEvaluationPageList, final File file,
 			final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager,
-				ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		// TODO anchor_resumen_resultados
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
+//		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager,
+//				ConstantsFont.CHAPTER_TITLE_MP_FONT);
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
 		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,

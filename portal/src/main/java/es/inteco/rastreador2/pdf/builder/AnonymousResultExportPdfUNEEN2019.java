@@ -193,71 +193,161 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p2"), ConstantsFont.PARAGRAPH, section);
-		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p3"), ConstantsFont.PARAGRAPH, section);
-		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p4"), ConstantsFont.PARAGRAPH, section);
-		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p5"), ConstantsFont.PARAGRAPH, section);
-		boldWords = new ArrayList<>();
-		boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p6.bold1"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p6"), boldWords, ConstantsFont.paragraphBoldFont,
-				ConstantsFont.PARAGRAPH, true));
-		boldWords = new ArrayList<>();
-		boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p7.bold1"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p7"), boldWords, ConstantsFont.paragraphBoldFont,
-				ConstantsFont.PARAGRAPH, true));
-		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p8"), ConstantsFont.PARAGRAPH, section);
+		if (isBasicService) {
+			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p3.basic.service"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service"), ConstantsFont.PARAGRAPH, section);
+			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service"), ConstantsFont.PARAGRAPH, section);
+			boldWords = new ArrayList<>();
+			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service.bold1"));
+			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
+					ConstantsFont.PARAGRAPH, true));
+			boldWords = new ArrayList<>();
+			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service.bold1"));
+			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
+					ConstantsFont.PARAGRAPH, true));
+			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p8"), ConstantsFont.PARAGRAPH, section);
+		} else {
+			specialChunkMap = new HashMap<>();
+			SpecialChunk chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p3.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p4.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p4"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p5.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			SpecialChunk bold = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p5.bold"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(2, bold);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p6.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p6.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			bold = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p6.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(2, bold);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p6"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p7.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p7.anchor1.url"));
+			chunk.setExternalLink(true);
+			specialChunkMap.put(1, chunk);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p7"), specialChunkMap, ConstantsFont.PARAGRAPH));
+		}
 		// 1.2 Next steps
-		chapter.add(Chunk.NEXTPAGE);
+		// chapter.add(Chunk.NEXTPAGE);
 		section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.intro.next.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
 		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.next.p1"), ConstantsFont.PARAGRAPH, section);
-		final com.lowagie.text.List list = new com.lowagie.text.List(); // L1
-		// L1
-		specialChunkMap = new HashMap<>();
-		SpecialChunk externalLinkL1_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold1"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(1, externalLinkL1_1);
-		SpecialChunk externalLinkL1_2 = new SpecialChunk("indicados en este informe, en el apartado 'Incidencias' de cada página. ", ConstantsFont.PARAGRAPH);
-		specialChunkMap.put(2, externalLinkL1_2);
-		SpecialChunk externalLinkL1_2_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold2"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(3, externalLinkL1_2_1);
-		SpecialChunk externalLinkL1_3 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
-		externalLinkL1_3.setExternalLink(true);
-		externalLinkL1_3.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.url"));
-		specialChunkMap.put(4, externalLinkL1_3);
-		PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-				ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-		// L2
-		Paragraph p = new Paragraph();
-		p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.list.2.bold"), ConstantsFont.paragraphBoldFont));
-		p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.list.2"), ConstantsFont.PARAGRAPH));
-		PDFUtils.addListItem(p, list, ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_LEFT); // L3
-		// L3
-		specialChunkMap = new HashMap<>();
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold1"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(1, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.anchor1.text"), ConstantsFont.ANCHOR_FONT);
-		externalLink.setExternalLink(true);
-		externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.3.anchor1.url"));
-		specialChunkMap.put(2, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold2"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(3, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.anchor2.text"), ConstantsFont.ANCHOR_FONT); // externalLink.setExternalLink(true); //
-		externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.3.anchor2.url")); // specialChunkMap.put(10, externalLink);
-		PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-				ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-		// L4
-		specialChunkMap = new HashMap<>();
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.4.bold1"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(1, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.4.bold2"), ConstantsFont.paragraphBoldFont);
-		specialChunkMap.put(2, externalLink);
-		externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.4.anchor1.text"), ConstantsFont.ANCHOR_FONT);
-		externalLink.setExternalLink(true);
-		externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.4.anchor1.url"));
-		specialChunkMap.put(3, externalLink);
-		PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
-				ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
-		list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
-		section.add(list);
+		final com.lowagie.text.List list = new com.lowagie.text.List();
+		if (isBasicService) {
+			// L1
+			specialChunkMap = new HashMap<>();
+			SpecialChunk externalLinkL1_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLinkL1_1);
+			SpecialChunk externalLinkL1_2 = new SpecialChunk("indicados en este informe, en el apartado 'Incidencias' de cada página. ", ConstantsFont.PARAGRAPH);
+			specialChunkMap.put(2, externalLinkL1_2);
+			SpecialChunk externalLinkL1_2_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.bold2"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(3, externalLinkL1_2_1);
+			SpecialChunk externalLinkL1_3 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLinkL1_3.setExternalLink(true);
+			externalLinkL1_3.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.anchor1.url"));
+			specialChunkMap.put(4, externalLinkL1_3);
+			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			// L2
+			Paragraph p = new Paragraph();
+			p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.2.bold"), ConstantsFont.paragraphBoldFont));
+			p.add(new Phrase(this.messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.2"), ConstantsFont.PARAGRAPH));
+			PDFUtils.addListItem(p, list, ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_LEFT); // L3
+			// L3
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor1.url"));
+			specialChunkMap.put(2, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.bold2"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(3, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor2.text"), ConstantsFont.ANCHOR_FONT); // externalLink.setExternalLink(true);
+																																										// //
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3.anchor2.url")); // specialChunkMap.put(10, externalLink);
+			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			// L4
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.bold2"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(2, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4.anchor1.url"));
+			specialChunkMap.put(3, externalLink);
+			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+			section.add(list);
+			section.add(list);
+		} else {
+			// L1
+			specialChunkMap = new HashMap<>();
+			SpecialChunk specialChunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, specialChunk);
+			specialChunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			specialChunk.setExternalLink(true);
+			specialChunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1.anchor1.url"));
+			specialChunkMap.put(2, specialChunk);
+			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.1"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			// L2
+			specialChunkMap = new HashMap<>();
+			specialChunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.2.bold"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, specialChunk);
+			PDFUtils.addListItem(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.2"), specialChunkMap, ConstantsFont.PARAGRAPH), list,
+					ConstantsFont.paragraphBoldFont, true, true, Paragraph.ALIGN_JUSTIFIED);
+			list.setIndentationLeft(ConstantsFont.IDENTATION_LEFT_SPACE);
+			section.add(list);
+			// Ya no es lista
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(1, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.3.anchor1.url"));
+			specialChunkMap.put(2, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold2"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(3, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold3"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(4, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold4"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(5, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold5"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(6, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold6"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(7, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold7"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(8, externalLink);
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.3.bold8"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(9, externalLink);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.3"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			// L4
+			specialChunkMap = new HashMap<>();
+			externalLink = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.list.4.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			externalLink.setExternalLink(true);
+			externalLink.setAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.4.anchor1.url"));
+			specialChunkMap.put(1, externalLink);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.next.list.4"), specialChunkMap, ConstantsFont.PARAGRAPH));
+		}
 		document.add(chapter);
 	}
 
@@ -376,7 +466,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			final java.util.List<ObservatoryEvaluationForm> evaList) throws DocumentException {
 		assert evaList != null;
 		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.sample.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
-				pdfTocManager.getNumChapter(), titleFont, true);
+				pdfTocManager.getNumChapter(), titleFont, true, "anchor_muestra_paginas");
 		PDFUtils.addParagraph(messageResources.getMessage("pdf.accessibility.sample.p1"), ConstantsFont.PARAGRAPH, chapter);
 		chapter.add(addURLTable(this.messageResources, evaList));
 		if (isBasicService()) {
@@ -1233,7 +1323,9 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 	 * @throws Exception the exception
 	 */
 	public void createSeedDetailsChapter(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, final Font titleFont, SemillaForm seed) throws Exception {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.seed.detail.title"), pdfTocManager, titleFont);
+//		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.seed.detail.title"), pdfTocManager, titleFont, "anchor_detalle_sitio_web");
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.seed.detail.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+				pdfTocManager.getNumChapter(), titleFont, true, "anchor_detalle_sitio_web");
 		chapter.add(Chunk.NEWLINE);
 		chapter.add(new Paragraph(messageResources.getMessage("pdf.accessibility.seed.detail.p1"), ConstantsFont.PARAGRAPH));
 		SemillaForm fullSeed = SemillaDAO.getSeedById(DataBaseManager.getConnection(), seed.getId());
@@ -1316,23 +1408,25 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 	public static void addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, PdfTocManager pdfTocManager,
 			final java.util.List<ObservatoryEvaluationForm> currentEvaluationPageList, java.util.List<ObservatoryEvaluationForm> previousEvaluationPageList, final File file,
 			final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager,
-				ConstantsFont.CHAPTER_TITLE_MP_FONT);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
+				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
+		Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.global.summary.globals"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+				pdfTocManager.addSection(), 1);
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
-		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p2.bold"));
-		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p3.bold"));
-		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 		boldWords.clear();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
-		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
+		section.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
 				ConstantsFont.PARAGRAPH, true));
 //		boldWords.clear();
 //		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p5.bold"));
@@ -1343,7 +1437,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
 		notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.intro.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
 				ConstantsFont.DEFAULT_PADDING, 50));
-		chapter.add(notice);
+		section.add(notice);
 		final ScoreForm currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
 		ScoreForm previousScore = null;
 		if (previousEvaluationPageList != null && !previousEvaluationPageList.isEmpty()) {
@@ -1352,7 +1446,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
 			DataBaseManager.closeConnection(c);
 		}
-		chapter.add(Chunk.NEWLINE);
+		section.add(Chunk.NEWLINE);
 		//// TABLA PUNTUCAION OBSERVATORIO
 		final float[] columnWidths;
 		if (rankingPrevio != null) {
@@ -1441,13 +1535,13 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			}
 			tablaRankings.completeRow();
 		}
-		chapter.add(tablaRankings);
+		section.add(tablaRankings);
 		// TODO Gráficos
-		chapter.add(Chunk.NEWLINE);
-		chapter.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
+		section.add(Chunk.NEWLINE);
+		section.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
 		// Gráfica nivel de adecuación
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");
-		addLevelAllocationResultsSummary(messageResources, chapter, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
+		addLevelAllocationResultsSummary(messageResources, section, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
 		// TODO Puntuación media y nivel de adecuación por página
 		chapter.add(Chunk.NEXTPAGE);
 		PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.pagina.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
@@ -1455,21 +1549,21 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
 		// TODO Puntuación media por verificación
 		chapter.add(Chunk.NEXTPAGE);
-		Section section = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
+		Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
 				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
-		section.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p1"), ConstantsFont.PARAGRAPH));
-		section.add(Chunk.NEWLINE);
-		section.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p2"), ConstantsFont.PARAGRAPH));
-		section.add(Chunk.NEWLINE);
-		section.add(Chunk.NEXTPAGE);
-		Section section1 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level1"), pdfTocManager.getIndex(),
-				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
-		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section1, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
-		section1.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
-		Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level2"), pdfTocManager.getIndex(),
-				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
-		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section2, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
-		section2.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
+		section2.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p1"), ConstantsFont.PARAGRAPH));
+		section2.add(Chunk.NEWLINE);
+		section2.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p2"), ConstantsFont.PARAGRAPH));
+		section2.add(Chunk.NEWLINE);
+		section2.add(Chunk.NEXTPAGE);
+		Section section3 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level1"), pdfTocManager.getIndex(),
+				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section2, pdfTocManager.addSection(), 1);
+		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section3, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
+		section3.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
+		Section section4 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level2"), pdfTocManager.getIndex(),
+				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section2, pdfTocManager.addSection(), 1);
+		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section4, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
+		section4.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 		document.add(chapter);
 	}
 

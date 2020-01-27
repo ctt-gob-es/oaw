@@ -15,10 +15,27 @@
 ******************************************************************************/
 package es.inteco.rastreador2.pdf.utils;
 
-import com.lowagie.text.*;
+import java.awt.Color;
+import java.io.IOException;
+import java.util.Map;
+
+import org.apache.struts.util.LabelValueBean;
+import org.apache.struts.util.MessageResources;
+
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
 import com.lowagie.text.Font;
 import com.lowagie.text.Image;
 import com.lowagie.text.List;
+import com.lowagie.text.ListItem;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.Section;
+import com.lowagie.text.SplitCharacter;
 import com.lowagie.text.pdf.PdfChunk;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -33,18 +50,11 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.rastreador2.actionform.observatorio.ModalityComparisonForm;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSectionEv;
 import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSections;
-import org.apache.struts.util.LabelValueBean;
-import org.apache.struts.util.MessageResources;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.Map;
 
 /**
  * The Class PDFUtils.
  */
 public final class PDFUtils {
-	
 	/** The Constant ANY_CHARACTER_WORD_SPLITTER. */
 	// Clase que se usará con urls para permitir que se parta el texto y haga retorno de carro en cualquier caracter.
 	private static final SplitCharacter ANY_CHARACTER_WORD_SPLITTER = new SplitCharacter() {
@@ -405,25 +415,34 @@ public final class PDFUtils {
 		for (Map.Entry<Integer, SpecialChunk> specialChunkEntry : specialChunkMap.entrySet()) {
 			Chunk chunk;
 			int indexOf = 0;
-			if ((text.indexOf("[anchor" + iAnchor + "]") > 0) && (text.indexOf("[anchor" + iAnchor + "]") > init)) {
-				indexOf = text.indexOf("[anchor" + iAnchor + "]");
-			}
-			if ((text.indexOf("{" + iFormat + "}") > 0) && ((indexOf != 0 && text.indexOf("{" + iFormat + "}") < indexOf) || indexOf == 0) && (text.indexOf("{" + iFormat + "}") > init)) {
-				indexOf = text.indexOf("{" + iFormat + "}");
-			}
-			if (indexOf != 0) {
-				chunk = new Chunk(text.substring(init, indexOf), font);
-				p.add(chunk);
-			}
+			// Is anchor
 			if (specialChunkEntry.getValue().getAnchor() != null && !StringUtils.isEmpty(specialChunkEntry.getValue().getAnchor())) {
+				indexOf = text.indexOf("[anchor" + iAnchor + "]");
+				if (indexOf >= 0) {
+					chunk = new Chunk(text.substring(init, indexOf), font);
+					p.add(chunk);
+				}
 				p = createAnchor(specialChunkEntry.getKey(), specialChunkMap, p);
 				init = text.indexOf("[anchor" + iAnchor + "]") + 8 + String.valueOf(iAnchor).length();
 				iAnchor++;
-			} else {
+			} else {// Is bold
+				indexOf = text.indexOf("{" + iFormat + "}");
+				if (indexOf >= 0) {
+					chunk = new Chunk(text.substring(init, indexOf), font);
+					p.add(chunk);
+				}
 				p = createSpecialFormatText(specialChunkEntry.getKey(), specialChunkMap, p);
 				init = text.indexOf("{" + iFormat + "}") + 2 + String.valueOf(iFormat).length();
 				iFormat++;
 			}
+			/*
+			 * if ((text.indexOf("[anchor" + iAnchor + "]") > 0) && (text.indexOf("[anchor" + iAnchor + "]") > init)) { indexOf = text.indexOf("[anchor" + iAnchor + "]"); } if ((text.indexOf("{" +
+			 * iFormat + "}") > 0) && ((indexOf != 0 && text.indexOf("{" + iFormat + "}") < indexOf) || indexOf == 0) && (text.indexOf("{" + iFormat + "}") > init)) { indexOf = text.indexOf("{" +
+			 * iFormat + "}"); } if (indexOf != 0) { chunk = new Chunk(text.substring(init, indexOf), font); p.add(chunk); } if (specialChunkEntry.getValue().getAnchor() != null &&
+			 * !StringUtils.isEmpty(specialChunkEntry.getValue().getAnchor())) { p = createAnchor(specialChunkEntry.getKey(), specialChunkMap, p); init = text.indexOf("[anchor" + iAnchor + "]") + 8 +
+			 * String.valueOf(iAnchor).length(); iAnchor++; } else { p = createSpecialFormatText(specialChunkEntry.getKey(), specialChunkMap, p); init = text.indexOf("{" + iFormat + "}") + 2 +
+			 * String.valueOf(iFormat).length(); iFormat++; }
+			 */
 		}
 		if (text.length() > init) {
 			final Chunk finalChunk = new Chunk(text.substring(init, text.length()), font);
@@ -435,7 +454,17 @@ public final class PDFUtils {
 		p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
 		return p;
 	}
-	
+
+	/**
+	 * Creates the paragraph anchor.
+	 *
+	 * @param text            the text
+	 * @param specialChunkMap the special chunk map
+	 * @param font            the font
+	 * @param spaceBefore     the space before
+	 * @param alignment       the alignment
+	 * @return the paragraph
+	 */
 	public static Paragraph createParagraphAnchor(final String text, final Map<Integer, SpecialChunk> specialChunkMap, final Font font, boolean spaceBefore, int alignment) {
 		int init = 0;
 		int iAnchor = 1;
@@ -719,7 +748,14 @@ public final class PDFUtils {
 	public static ListItem buildLeyendaListItem(final String message, final String symbol) {
 		return createListItem(message, ConstantsFont.MORE_INFO_FONT, new Chunk(symbol + " "), false);
 	}
-	
+
+	/**
+	 * Builds the leyenda list item bold.
+	 *
+	 * @param message the message
+	 * @param symbol  the symbol
+	 * @return the list item
+	 */
 	public static ListItem buildLeyendaListItemBold(final String message, final String symbol) {
 		return createListItem(message, ConstantsFont.MORE_INFO_FONT_BOLD, new Chunk(symbol + " "), false);
 	}
