@@ -239,7 +239,12 @@ public final class PrimaryExportPdfUtils {
 				writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 				final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
-				final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { seed, crawlingDate });
+				String footerText = "";
+				if (!pdfBuilder.isBasicService()) {
+					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { seed, crawlingDate });
+				} else {
+					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot.simple");
+				}
 				writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate));
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 				final IndexEvents index = new IndexEvents();
@@ -292,7 +297,7 @@ public final class PrimaryExportPdfUtils {
 				// Nuevo informe 2019
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 					if (pdfBuilder.isBasicService()) {
-						PDFUtils.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
+						PDFUtils.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title.basic.service", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
 								pdfBuilder.getBasicServiceForm().getName(), "Informe emitido bajo demanda.");
 					} else {
 						AnonymousResultExportPdfUNEEN2019.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title"),
