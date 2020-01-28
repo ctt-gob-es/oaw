@@ -322,7 +322,9 @@ Email: observ.accesibilidad@correo.gob.es
 			+ $('[name=id_observatorio]').val()
 			+ '&idExObs='
 			+ $('[name=idExObs]').val()
-			+ '&idSemilla=' + idSeed;
+			+ '&idSemilla=' + idSeed
+			+ '&idCartucho='
+			+ $('[name=idCartucho]').val();
 		
 		
 		

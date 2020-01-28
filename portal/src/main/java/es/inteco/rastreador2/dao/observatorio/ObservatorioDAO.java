@@ -2242,7 +2242,7 @@ public final class ObservatorioDAO {
 	 * @param idSeed        the id seed
 	 * @throws SQLException the SQL exception
 	 */
-	public static void addSeedObservatory(final Connection c, final Long idObservatory, final Long idExObs, final Long idSeed) throws SQLException {
+	public static void addSeedObservatory(final Connection c, final Long idObservatory, final Long idExObs, final Long idSeed, final Long idCartucho) throws SQLException {
 		// Check if exists in rastreo table
 		// select count(*) from rastreo where id_observatorio = ? and semillas=?
 		SemillaForm seed = SemillaDAO.getSeedById(c, idSeed);
@@ -2255,12 +2255,18 @@ public final class ObservatorioDAO {
 				if (rs.next()) {
 					// TODO Insert into rastreos_realizados
 					Long id = rs.getLong(1);
-					addFullfilledCrawl(c, idExObs, id);
+					// TODO Insert into cartucho_rastreo id_cartucho
+					try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
+						psCR.setLong(1, idCartucho);
+						psCR.setLong(2, id);
+						psCR.executeUpdate();
+						addFullfilledCrawl(c, idExObs, id);
+					}
 				} else {
 					// TODO Insert into RASTREO
 					PreparedStatement psR = c.prepareStatement(
 							"INSERT INTO rastreo (nombre_rastreo, fecha, profundidad, topn, semillas, lista_no_rastreable, lista_rastreable, estado, id_cuenta, pseudoaleatorio, activo, id_language, id_observatorio, automatico, exhaustive, in_directory,id_guideline) "
-									+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+									+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
 							Statement.RETURN_GENERATED_KEYS);
 					psR.setString(1, obs.getNombre() + "-" + seed.getNombre());
 					psR.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
@@ -2285,7 +2291,13 @@ public final class ObservatorioDAO {
 							// Saved
 							Long id = rsR.getLong(1);
 							// TODO Insert into rastreos_realizados
-							addFullfilledCrawl(c, idExObs, id);
+							// TODO Insert into cartucho_rastreo id_cartucho
+							try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
+								psCR.setLong(1, idCartucho);
+								psCR.setLong(2, id);
+								psCR.executeUpdate();
+								addFullfilledCrawl(c, idExObs, id);
+							}
 						} else {
 							// error??
 						}

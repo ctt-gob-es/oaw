@@ -240,8 +240,12 @@ public final class PrimaryExportPdfUtils {
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 				final String crawlingDate = crawling != null ? crawling.getDate() : CrawlerUtils.formatDate(new Date());
 				String footerText = "";
+				String seedFooter = seed;
+				if (seed.length() > 50) {
+					seedFooter = seed.substring(0, 50).concat("...");
+				}
 				if (!pdfBuilder.isBasicService()) {
-					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { seed, crawlingDate });
+					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { seedFooter, crawlingDate });
 				} else {
 					footerText = messageResources.getMessage("ob.resAnon.intav.report.foot.simple");
 				}
