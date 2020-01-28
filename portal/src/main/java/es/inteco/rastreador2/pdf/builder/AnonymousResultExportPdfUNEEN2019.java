@@ -115,6 +115,16 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		this.createIntroductionChapter(messageResources, document, pdfTocManager, titleFont, false);
 	}
 
+	/**
+	 * Creates the introduction chapter.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param titleFont        the title font
+	 * @param isBasicService   the is basic service
+	 * @throws Exception the exception
+	 */
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -39,6 +39,7 @@ import com.lowagie.text.SplitCharacter;
 import com.lowagie.text.pdf.PdfChunk;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.draw.LineSeparator;
 import com.lowagie.text.pdf.events.IndexEvents;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
@@ -152,6 +153,9 @@ public final class PDFUtils {
 		chunk.setLocalDestination(Constants.ANCLA_PDF + (countSections));
 		final Paragraph paragraph = new Paragraph("", titleFont);
 		paragraph.add(chunk);
+		// TODO Line
+		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, Color.WHITE, Element.ALIGN_CENTER, -.5f));
+		paragraph.add(CONNECT);
 		final Chapter chapter = new Chapter(paragraph, numChapter);
 		if (index != null) {
 			paragraph.add(index.create(" ", countSections + "@&" + title.toUpperCase()));
@@ -182,6 +186,9 @@ public final class PDFUtils {
 		final Chunk aditionalAnchor = new Chunk("\u200B", titleFont);
 		aditionalAnchor.setLocalDestination(anchor);
 		paragraph.add(aditionalAnchor);
+		// TODO Line
+		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, Color.WHITE, Element.ALIGN_CENTER, -.5f));
+		paragraph.add(CONNECT);
 		final Chapter chapter = new Chapter(paragraph, numChapter);
 		if (index != null) {
 			paragraph.add(index.create(" ", countSections + "@&" + title.toUpperCase()));
