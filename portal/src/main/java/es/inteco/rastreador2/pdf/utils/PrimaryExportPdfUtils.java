@@ -264,22 +264,13 @@ public final class PrimaryExportPdfUtils {
 						PDFUtils.addCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title", new String[] { seed.toUpperCase(), pdfBuilder.getTitle() }),
 								pdfBuilder.getBasicServiceForm().getName(), "Informe emitido bajo demanda.");
 					} else {
-						AnonymousResultExportPdfAccesibilidad.addCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title"),
+						AnonymousResultExportPdfAccesibilidad.addCoverPage(document, messageResourcesAccesibility.getMessage("pdf.accessibility.title"),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.subtitle"),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.portal", new String[] { seed.toUpperCase(), currentEvaluationPageList.get(0).getUrl() }),
 								messageResourcesAccesibility.getMessage("pdf.accessibility.info.estimated"));
 					}
 					// Introduction chapter
 					pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
-					pdfTocManager.addChapterCount();
-					if (!pdfBuilder.isBasicService()) {
-						// Seed detail chapter
-						((AnonymousResultExportPdfAccesibilidad) pdfBuilder).createSeedDetailsChapter(messageResourcesAccesibility, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT,
-								crawling.getSeed());
-					}
-					pdfTocManager.addChapterCount();
-					// Muestra de páginas
-					pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, observatoryType);
 					pdfTocManager.addChapterCount();
 					// Resumen de resultados
 					final RankingInfo rankingActual = crawling != null ? observatoryManager.calculateRankingWithCompliance(idObservatoryExecution, crawling.getSeed()) : null;
@@ -364,7 +355,8 @@ public final class PrimaryExportPdfUtils {
 					final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 							currentEvaluationPageList);
 					if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
-						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document, pdfTocManager);
+						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummaryAccesibility(MessageResources.getMessageResources(Constants.MESSAGE_RESOURCES_ACCESIBILIDAD), document,
+								pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 						observatoryResultsSummarySectionBuilder.addObservatoryResultsSummary(messageResources2019, document, pdfTocManager);
 					} else if (pdfBuilder instanceof AnonymousResultExportPdfUNE2012b) {

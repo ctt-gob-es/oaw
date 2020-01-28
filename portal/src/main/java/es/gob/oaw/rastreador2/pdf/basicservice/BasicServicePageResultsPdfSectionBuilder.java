@@ -91,7 +91,32 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 			}
 			// Con o sin niveles
 			if (withOutLevels) {
-				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
+				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
+			} else {
+				addCheckCodes(messageResources, evaluationForm, chapter);
+			}
+			document.add(chapter);
+			pdfTocManager.addChapterCount();
+			counter++;
+		}
+	}
+
+	@Override
+	public void addPageResultsAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, boolean withOutLevels) throws Exception {
+		int counter = 1;
+		for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
+			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
+			final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(),
+					ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
+			chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
+			// Creación de las tablas resumen de resultado por verificación de
+			// cada página
+			for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
+				chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm, ""));
+			}
+			// Con o sin niveles
+			if (withOutLevels) {
+				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
 			} else {
 				addCheckCodes(messageResources, evaluationForm, chapter);
 			}
@@ -250,12 +275,15 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 	 * @param messageResources the message resources
 	 * @param evaluationForm   the evaluation form
 	 * @param chapter          the chapter
+	 * @param pdfTocManager    the pdf toc manager
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
+	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)
+			throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {
-				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, 1, 0);
+				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+						pdfTocManager.addSection(), 1);
 				for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
 					if (hasProblems(level)) {
 						for (ObservatorySubgroupForm verification : level.getSubgroups()) {

@@ -93,8 +93,6 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 * @throws DocumentException the document exception
 	 */
 	public void addObservatoryResultsSummaryAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager) throws DocumentException {
-		// Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("resultados.primarios.res.verificacion").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
-		// TODO anchor_resultados_verificacion
 		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
 				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_verificacion");
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.5.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
@@ -172,7 +170,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 	 */
 	private void addResultsByVerificationAccesibility(final MessageResources messageResources, final Chapter chapter, final List<ObservatoryEvaluationForm> evaList,
 			final PdfTocManager pdfTocManager) {
-		chapter.newPage();
+		// chapter.newPage();
 		createTablaResumenResultadosPorNivelAccesibilidad(messageResources, chapter, evaList, LEVEL_I_GROUP_INDEX, pdfTocManager);
 	}
 
@@ -218,7 +216,7 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			int contadorPagina = 1;
 			for (ObservatoryEvaluationForm evaluationForm : evaList) {
 				table.addCell(PDFUtils.createTableCell(
-						messageResources.getMessage("observatory.graphic.score.by.page.label.table", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
+						messageResources.getMessage("observatory.graphic.score.by.page.label", org.apache.commons.lang3.StringUtils.leftPad(String.valueOf(contadorPagina), 2, ' ')), Color.WHITE,
 						ConstantsFont.ANCHOR_FONT, Element.ALIGN_CENTER, 0, "anchor_resultados_page_" + contadorPagina));
 				for (ObservatorySuitabilityForm suitabilityForm : evaluationForm.getGroups().get(groupIndex).getSuitabilityGroups()) {
 					for (ObservatorySubgroupForm subgroupForm : suitabilityForm.getSubgroups()) {
