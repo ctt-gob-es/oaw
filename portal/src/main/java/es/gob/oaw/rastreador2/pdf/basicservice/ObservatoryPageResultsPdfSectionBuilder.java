@@ -118,7 +118,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			}
 			chapter.add(Chunk.NEXTPAGE);
 			if (withOutLevels) {
-				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
+				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
 			} else {
 				addCheckCodes(messageResources, evaluationForm, chapter);
 			}
@@ -132,6 +132,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			final PdfPTable notice = new PdfPTable(1);
 			notice.setSpacingBefore(25f);
 			PdfPCell cell = new PdfPCell();
+			cell.setBackgroundColor(Constants.GRIS_MUY_CLARO);
 			cell.addElement(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH));
 			cell.setPadding(10f);
 			notice.addCell(cell);
@@ -166,7 +167,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				section.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm, "Verificaciones"));
 			}
 			if (withOutLevels) {
-				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter);
+				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
 			} else {
 				addCheckCodes(messageResources, evaluationForm, chapter);
 			}
@@ -212,7 +213,8 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 				DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createLinkedTableCell(url, url, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
 		// Puntuación Media Página
-		table.addCell(PDFUtils.createTableCell("Puntuación Media", Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+		table.addCell(
+				PDFUtils.createTableCell(messageResources.getMessage("resultados.pagina.puntuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createTableCell(puntuacionMedia.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
 		// Nivel de Adecuación (a.k.a. Modalidad)
 		table.addCell(
@@ -307,14 +309,14 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	 * @param priorityName         the priority name
 	 * @return the pdf P table
 	 */
-	protected PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm, final String priorityName) {
+	protected PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm, final String tableHeader) {
 		final float[] widths = { 0.60f, 0.20f, 0.20f };
 		final PdfPTable table = new PdfPTable(widths);
 //TODO Table title
 		//
 		PdfPCell headerCell = new PdfPCell();
 		headerCell.setColspan(3);
-		headerCell.setPhrase(new Phrase("Verificaciones. Nivel de adecuación " + priorityName, ConstantsFont.paragraphBoldFont));
+		headerCell.setPhrase(new Phrase(tableHeader, ConstantsFont.paragraphBoldFont));
 		headerCell.setHorizontalAlignment(Element.ALIGN_CENTER);
 		headerCell.setBackgroundColor(Color.WHITE);
 		headerCell.setBorder(0);
@@ -529,10 +531,13 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	 * @param chapter          the chapter
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter) throws IOException {
+	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)
+			throws IOException {
 		for (ObservatoryLevelForm priority : evaluationForm.getGroups()) {
 			if (hasProblems(priority)) {
-				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), null, ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, 1, 0);
+				// pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter()
+				final Section prioritySection = PDFUtils.createSection(getPriorityName(messageResources, priority), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
+						pdfTocManager.addSection(), 1);
 				for (ObservatorySuitabilityForm level : priority.getSuitabilityGroups()) {
 					if (hasProblems(level)) {
 						for (ObservatorySubgroupForm verification : level.getSubgroups()) {
