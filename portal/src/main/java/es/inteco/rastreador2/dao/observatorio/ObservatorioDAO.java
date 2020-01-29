@@ -820,7 +820,7 @@ public final class ObservatorioDAO {
 				}
 			}
 			List<SemillaForm> totalSeedsAdded = nuevoObservatorioForm.getAddSeeds() == null ? new ArrayList<SemillaForm>() : nuevoObservatorioForm.getAddSeeds();
-			// TODO ADD SEEDLS
+			// add seeds to observatory
 			if (nuevoObservatorioForm.getCategoria() != null) {
 				for (String categoria : nuevoObservatorioForm.getCategoria()) {
 					String[] tags = {};
@@ -830,19 +830,6 @@ public final class ObservatorioDAO {
 					totalSeedsAdded.addAll(SemillaDAO.getSeedsObservatory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, tags));
 				}
 			}
-//			if (nuevoObservatorioForm.getCategoria() != null) {
-//				for (String categoria : nuevoObservatorioForm.getCategoria()) {
-//					totalSeedsAdded.addAll(SemillaDAO.getSeedsByCategory(c, Long.parseLong(categoria), Constants.NO_PAGINACION, new SemillaForm()));
-//				}
-//			}
-//			if (nuevoObservatorioForm.getAmbitoForm() != null && !StringUtils.isEmpty(nuevoObservatorioForm.getAmbitoForm().getId())) {
-//				totalSeedsAdded.addAll(SemillaDAO.getSeedsByAmbit(c, Long.parseLong(nuevoObservatorioForm.getAmbitoForm().getId()), Constants.NO_PAGINACION, new SemillaForm()));
-//			}
-//			if (nuevoObservatorioForm.getComplejidad() != null) {
-//				for (String complejidad : nuevoObservatorioForm.getComplejidad()) {
-//					totalSeedsAdded.addAll(SemillaDAO.getSeedsByComplexity(c, Long.parseLong(complejidad), Constants.NO_PAGINACION, new SemillaForm()));
-//				}
-//			}
 			insertNewCrawlers(c, idObservatory, totalSeedsAdded);
 			c.commit();
 			return idObservatory;
@@ -1135,7 +1122,6 @@ public final class ObservatorioDAO {
 					resultadoSemillaForm.setIdCrawling(rs.getString("r.id_rastreo"));
 					resultadoSemillaForm.setIdCategory(rs.getLong("l.id_categoria"));
 					resultadoSemillaForm.setIdFulfilledCrawling(rs.getString("rr.id"));
-					// TODO Get score and level
 					resultadoSemillaForm.setScore(rs.getString("rr.score"));
 					resultadoSemillaForm.setNivel(rs.getString("rr.level"));
 					semillasFormList.add(resultadoSemillaForm);
@@ -1257,7 +1243,7 @@ public final class ObservatorioDAO {
 					} finally {
 						DAOUtils.closeQueries(psDependencias, rsDependencias);
 					}
-					// TODO Cargar las etiquetas de la semilla
+					// Load tags
 					PreparedStatement psEtiquetas = c.prepareStatement(
 							"SELECT e.id_etiqueta, e.nombre FROM etiqueta e WHERE id_etiqueta in (SELECT id_etiqueta FROM semilla_etiqueta WHERE id_lista = ?) ORDER BY UPPER(e.nombre)");
 					psEtiquetas.setString(1, resultadoSemillaForm.getId());
@@ -1278,7 +1264,7 @@ public final class ObservatorioDAO {
 					} finally {
 						DAOUtils.closeQueries(psEtiquetas, rsEtiquetas);
 					}
-					// TODO Count URL craled
+					// Count URL crawled
 					String numCrawlQuery = "SELECT count(ta.cod_url) as numCrawls  "
 							+ "FROM tanalisis ta, rastreos_realizados rr, rastreo r, lista l WHERE ta.cod_rastreo = rr.id  and rr.id_rastreo = r.id_rastreo and r.semillas = l.id_lista  "
 							+ "and ta.cod_rastreo in (select rr2.id from rastreos_realizados rr2 where rr2.id_obs_realizado=?) and rr.id = ?";
@@ -1753,14 +1739,14 @@ public final class ObservatorioDAO {
 				if (idCrawler == -1) {
 					insertarRastreoForm.setActive(semillaForm.isActiva());
 					RastreoDAO.insertarRastreo(c, insertarRastreoForm, true);
-					// TODO Desactivamos si la semilla está desactivada o borrada
+					// Desactivamos si la semilla está desactivada o borrada
 					if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
 						RastreoDAO.enableDisableCrawler(c, idCrawler, false);
 					} else {
 						RastreoDAO.enableDisableCrawler(c, idCrawler, true);
 					}
 				} else {
-					// TODO Desactivamos si la semilla está desactivada o borrada
+					// Desactivamos si la semilla está desactivada o borrada
 					if (!semillaForm.isActiva() || semillaForm.isEliminar()) {
 						RastreoDAO.enableDisableCrawler(c, idCrawler, false);
 					} else {
@@ -2240,11 +2226,11 @@ public final class ObservatorioDAO {
 	 * @param idObservatory the id observatory
 	 * @param idExObs       the id ex obs
 	 * @param idSeed        the id seed
+	 * @param idCartucho    the id cartucho
 	 * @throws SQLException the SQL exception
 	 */
 	public static void addSeedObservatory(final Connection c, final Long idObservatory, final Long idExObs, final Long idSeed, final Long idCartucho) throws SQLException {
 		// Check if exists in rastreo table
-		// select count(*) from rastreo where id_observatorio = ? and semillas=?
 		SemillaForm seed = SemillaDAO.getSeedById(c, idSeed);
 		ObservatorioForm obs = ObservatorioDAO.getObservatoryForm(c, idObservatory);
 		try (PreparedStatement ps = c.prepareStatement("select id_rastreo from rastreo where id_observatorio = ? and semillas=?")) {
@@ -2253,9 +2239,9 @@ public final class ObservatorioDAO {
 			try (ResultSet rs = ps.executeQuery()) {
 				// Exists
 				if (rs.next()) {
-					// TODO Insert into rastreos_realizados
+					// Insert into rastreos_realizados
 					Long id = rs.getLong(1);
-					// TODO Insert into cartucho_rastreo id_cartucho
+					// Insert into cartucho_rastreo id_cartucho
 					try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
 						psCR.setLong(1, idCartucho);
 						psCR.setLong(2, id);
@@ -2263,7 +2249,7 @@ public final class ObservatorioDAO {
 						addFullfilledCrawl(c, idExObs, id);
 					}
 				} else {
-					// TODO Insert into RASTREO
+					// Insert into RASTREO
 					PreparedStatement psR = c.prepareStatement(
 							"INSERT INTO rastreo (nombre_rastreo, fecha, profundidad, topn, semillas, lista_no_rastreable, lista_rastreable, estado, id_cuenta, pseudoaleatorio, activo, id_language, id_observatorio, automatico, exhaustive, in_directory,id_guideline) "
 									+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
@@ -2290,8 +2276,7 @@ public final class ObservatorioDAO {
 						if (rs.next()) {
 							// Saved
 							Long id = rsR.getLong(1);
-							// TODO Insert into rastreos_realizados
-							// TODO Insert into cartucho_rastreo id_cartucho
+							// Insert into cartucho_rastreo id_cartucho
 							try (PreparedStatement psCR = c.prepareStatement("INSERT INTO cartucho_rastreo(id_cartucho, id_rastreo) VALUES(?,?)")) {
 								psCR.setLong(1, idCartucho);
 								psCR.setLong(2, id);

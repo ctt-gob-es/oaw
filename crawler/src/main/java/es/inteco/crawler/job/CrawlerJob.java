@@ -283,7 +283,6 @@ public class CrawlerJob implements InterruptableJob {
 			Logger.putLog("Cambiando el estado del rastreo " + crawlerData.getIdCrawling() + " a 'Finalizado' en la base de datos", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 			try {
 				RastreoDAO.actualizarEstadoRastreo(c, crawlerData.getIdCrawling(), es.inteco.crawler.common.Constants.STATUS_FINALIZED);
-				// TODO Generar la puntuación al terminar el crawl y guardarlo en base de datos
 				final int idCartucho = RastreoDAO.recuperarCartuchoPorRastreo(c, crawlerData.getIdCrawling());
 				if (RastreoDAO.isCartuchoAccesibilidad(c, idCartucho)) {
 					if (crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) {
@@ -295,23 +294,6 @@ public class CrawlerJob implements InterruptableJob {
 						mailService.sendMail((crawlerData.getUsersMail() != null && !crawlerData.getUsersMail().isEmpty()) ? crawlerData.getUsersMail() : getAdministradoresMails(),
 								pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message.subject"), buildMensajeCorreo(pmgr.getValue(Constants.MAIL_PROPERTIES, "mail.message"), crawlerData), attachPath,
 								"Informe.pdf");
-					}
-					if (crawlerData.getResponsiblesMail() != null && !crawlerData.getResponsiblesMail().isEmpty()) {
-						// final URL url = new
-						// URL(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES,
-						// "pdf.executive.url.export").replace("{0}",
-						// String.valueOf(crawlerData.getIdFulfilledCrawling()))
-						// .replace("{1}",
-						// String.valueOf(crawlerData.getIdCrawling()))
-						// .replace("{2}",
-						// pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES,
-						// NOT_FILTERED_URIS_SECURITY_KEY)));
-						//
-						// mailService.sendMail(crawlerData.getResponsiblesMail(),
-						// pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES,
-						// "mail.message.subject"),
-						// buildMensajeCorreo(pmgr.getValue(Constants.CRAWLER_CORE_PROPERTIES,
-						// "mail.message"), crawlerData), url, "Informe.pdf");
 					}
 				}
 			} catch (Exception e) {
@@ -400,7 +382,7 @@ public class CrawlerJob implements InterruptableJob {
 			crawlerData.setTopN(1);
 			crawlerData.setProfundidad(1);
 		} else {
-			// TODO Aplply seed complex only if is not basic service an only if is not manual selection
+			// Apply seed complex only if is not basic service an only if is not manual selection
 			if (crawlerData.getIdCrawling() > 0 && crawlerData.getUrls().size() == 1) {
 				try {
 					Seed s = RastreoDAO.getSeedFromCrawling(DataBaseManager.getConnection(), crawlerData.getIdCrawling());
@@ -442,10 +424,10 @@ public class CrawlerJob implements InterruptableJob {
 							// Si hay redirecciones, puede que el dominio cambie
 							domain = connection.getURL().getHost();
 							final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(CrawlerUtils.generateRendererConnection(url, domain));
-							// TODO Sólo se pasa al renderizador para recuperar el contenido
+							// PENDING Sólo se pasa al renderizador para recuperar el contenido
 							final String textContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(url, domain), markableInputStream);
 							markableInputStream.reset();
-							// TODO Recuerar el charset
+							// Recuerar el charset
 							final String charset = CrawlerUtils.getCharset(connection, markableInputStream);
 							markableInputStream.close();
 							final Document document = CrawlerDOMUtils.getDocument(textContent);
@@ -458,7 +440,7 @@ public class CrawlerJob implements InterruptableJob {
 								// Si no está ya incluida en el rastreo
 								if (!md5Content.contains(textContentHash)) {
 									final CrawledLink crawledLink = new CrawledLink(url, textContent, numRetries, numRedirections);
-									// TODO Propagar el charset
+									// Propagar el charset
 									crawledLink.setCharset(charset);
 									crawlingDomains.add(crawledLink);
 									md5Content.add(textContentHash);
@@ -539,9 +521,7 @@ public class CrawlerJob implements InterruptableJob {
 			warnIncompleteCrawl(crawlerData);
 		}
 		// Llamamos al analizador
-		// if (!crawlerData.isTest()) {
 		analyze(crawlingDomains, crawlerData, cookie);
-		// }
 	}
 
 	/**
@@ -695,16 +675,16 @@ public class CrawlerJob implements InterruptableJob {
 		String urlRastreo = (crawlerData.getUrls() != null && !crawlerData.getUrls().isEmpty()) ? crawlerData.getUrls().get(0) : "";
 		Logger.putLog("[A] Iniciando los análisis del rastreo id: " + crawlerData.getIdCrawling() + " (" + urlRastreo + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 		try (Connection connection = DataBaseManager.getConnection()) {
-			// TODO Si viene del sevicio de diganóstico el ID del rastreo es negativo
+			// Si viene del sevicio de diganóstico el ID del rastreo es negativo
 			ObservatoryStatus estado = null;
 			if (crawlerData.getIdCrawling() > 0) {
-				// TODO Recupera la información que falta
+				// Recupera la información que falta
 				ExtraInfo extra = RastreoDAO.getExtraInfo(DataBaseManager.getConnection(), crawlerData.getIdFulfilledCrawling());
-				// TODO Meter en base de datos la información del rastreo
+				// Meter en base de datos la información del rastreo
 				estado = EstadoObservatorioDAO.findEstadoObservatorio(connection, (int) crawlerData.getIdObservatory(), extra.getIdEjecucionObservatorio());
 				estado.setIdObservatorio((int) crawlerData.getIdObservatory());
-				estado.setIdEjecucionObservatorio(extra.getIdEjecucionObservatorio());// TODO Mal
-				estado.setNombre(extra.getNombreLista()); // TODO
+				estado.setIdEjecucionObservatorio(extra.getIdEjecucionObservatorio());
+				estado.setNombre(extra.getNombreLista());
 				estado.setUrl(crawlerData.getUrls().get(0));
 				estado.setUltimaUrl(crawlerData.getUrls().get(0));
 				estado.setActualUrl(crawlerData.getUrls().get(0));
@@ -717,16 +697,15 @@ public class CrawlerJob implements InterruptableJob {
 				// Registramos en base de datos el estado
 				estado.setId(EstadoObservatorioDAO.updateEstado(connection, estado));
 			}
-			// estado.setId(id);
 			DataBaseManager.closeConnection(connection);
 			for (CrawledLink crawledLink : analyzeDomains) {
-				// TODO Logs de inicio y fin de análisis
-				// TODO Puntos para guardar datos de fecha, resumen de estado del observatorio
+				// Logs de inicio y fin de análisis
+				// Puntos para guardar datos de fecha, resumen de estado del observatorio
 				Date initDate = new Date();
 				Logger.putLog("[I] Iniciando análisis del enlace número " + (cont + 1) + "/" + analyzeDomains.size() + " (" + crawledLink.getUrl() + ")", CrawlerJob.class, Logger.LOG_LEVEL_INFO);
-				// TODO Actualizamos el estado
+				// Actualizamos el estado
 				try (Connection connection2 = DataBaseManager.getConnection()) {
-					// TODO Si viene del sevicio de diganóstico el ID del rastreo es negativo
+					// Si viene del sevicio de diganóstico el ID del rastreo es negativo
 					if (crawlerData.getIdCrawling() > 0) {
 						estado.setActualUrl(crawledLink.getUrl());
 						EstadoObservatorioDAO.updateEstado(connection2, estado);
@@ -748,9 +727,9 @@ public class CrawlerJob implements InterruptableJob {
 						"Tiempo empleado:  " + (endDate.getTime() - initDate.getTime()) / 1000 + " segundos. Tiempo acumulado: " + (endDate.getTime() - initFullDate.getTime()) / 1000 + " segundos",
 						CrawlerJob.class, Logger.LOG_LEVEL_INFO);
 				cont++;
-				// TODO Actualizamos el estado
+				// Actualizamos el estado
 				try (Connection connection2 = DataBaseManager.getConnection()) {
-					// TODO Si viene del sevicio de diganóstico el ID del rastreo es negativo
+					// Si viene del sevicio de diganóstico el ID del rastreo es negativo
 					if (crawlerData.getIdCrawling() > 0) {
 						estado.setUltimaUrl(crawledLink.getUrl());
 						estado.setFechaUltimaUrl(endDate);
@@ -1117,7 +1096,7 @@ public class CrawlerJob implements InterruptableJob {
 				connection = CrawlerUtils.followRedirection(cookie, new URL(connectedURL), connection.getHeaderField("location"));
 			} else if (responseCode < HttpURLConnection.HTTP_MULT_CHOICE) {
 				final InputStream markableInputStream = CrawlerUtils.getMarkableInputStream(connection);
-				// TODO Sólo aqui es cuando se debería llamar al renderizador
+				// PENDING Sólo aqui es cuando se debería llamar al renderizador
 				final String remoteContent = CrawlerUtils.getTextContent(CrawlerUtils.generateRendererConnection(urlLink, domain), markableInputStream);
 				markableInputStream.close();
 				if (!CrawlerUtils.isRss(remoteContent)) {

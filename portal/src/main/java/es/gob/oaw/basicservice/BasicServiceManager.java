@@ -189,7 +189,7 @@ public class BasicServiceManager {
 				 * 
 				 * 
 				 */
-				// TODO (Disable) Generar JSON compatible con WCAG-EM
+				// PENDING (Disable) Generar JSON compatible con WCAG-EM
 //				WcagEmReport report = WcagEmUtils.generateReport(messageResources, new AnonymousResultExportPdfUNEEN2019(basicServiceForm), basicServiceForm.getName(), idCrawling);
 //				ObjectMapper mapper = new ObjectMapper();
 //				String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report);

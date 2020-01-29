@@ -38,7 +38,6 @@ Adaptive Technology Resource Centre, University of Toronto
 130 St. George St., Toronto, Ontario, Canada
 Telephone: (416) 978-4360
 */
-
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
 import java.io.ByteArrayInputStream;
@@ -86,10 +85,8 @@ import es.inteco.plugin.dao.DataBaseManager;
  * The Class Evaluator.
  */
 public class Evaluator {
-
 	/** The Constant ALL_HTML_VALIDATION_ERRORS. */
 	private static final String ALL_HTML_VALIDATION_ERRORS = "_ALL_ERRORS_";
-
 	/** The x path generator. */
 	private final XPathGenerator xPathGenerator = new XPathGenerator();
 
@@ -114,7 +111,6 @@ public class Evaluator {
 			Logger.putLog("Exception: ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
 			return null;
 		}
-
 		return evaluateWork(checkAccesibility, language);
 	}
 
@@ -142,14 +138,11 @@ public class Evaluator {
 	 */
 	private Evaluation evaluateWork(final CheckAccessibility checkAccessibility, final String language) {
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
-
 		// create a list of checks that fulfill the given guidelines
 		final Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
 		final List<Integer> checksSelected = createCheckList(checkAccessibility, guideline);
-
 		final boolean htmlValidationNeeded = EvaluatorUtils.isHtmlValidationNeeded(checksSelected);
 		final boolean cssValidationNeeded = EvaluatorUtils.isCssValidationNeeded(checksSelected);
-
 		final Document docHtml = EvaluatorUtility.loadHtmlFile(checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, false);
 		if (docHtml == null) {
 			return null;
@@ -165,11 +158,9 @@ public class Evaluator {
 			}
 			docHtml.getDocumentElement().setUserData("checkedLinks", checkedLinks, null);
 			final Evaluation evaluation = applyEvaluation(checkAccessibility, checksSelected, allChecks, docHtml, language);
-
 			if (checkAccessibility.getIdRastreo() > 0) {
 				CacheUtils.putInCache(docHtml.getDocumentElement().getUserData("checkedLinks"), cacheKey);
 			}
-
 			return evaluation;
 		}
 	}
@@ -185,42 +176,32 @@ public class Evaluator {
 	private Evaluation evaluateWorkFromContent(final CheckAccessibility checkAccessibility, final String language) throws UnsupportedEncodingException {
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
 		final Guideline guideline = EvaluatorUtility.loadGuideline(checkAccessibility.getGuidelineFile());
-
 		// create a list of checks that fulfill the given guidelines
 		final List<Integer> checksSelected = createCheckList(checkAccessibility, guideline);
-
 		final boolean htmlValidationNeeded = EvaluatorUtils.isHtmlValidationNeeded(checksSelected);
 		final boolean cssValidationNeeded = EvaluatorUtils.isCssValidationNeeded(checksSelected);
-
 		// Si se ha invocado desde el rastreador, llevará asociado un ID de
 		// rastreo
 		final boolean fromCrawler = checkAccessibility.getIdRastreo() != 0;
-
 		final InputStream inputStream;
 		if (!fromCrawler) {
 			inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes(IntavConstants.DEFAULT_ENCODING));
 		} else {
-
 			if (checkAccessibility.getCharset() != null && !"".equals(checkAccessibility.getCharset())) {
 				inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes(checkAccessibility.getCharset()));
 			} else {
 				inputStream = new ByteArrayInputStream(checkAccessibility.getContent().getBytes());
 			}
-
 		}
-
 		// final Document docHtml = EvaluatorUtility.loadHtmlFile(inputStream,
 		// checkAccessibility, htmlValidationNeeded, cssValidationNeeded,
 		// language, IntavConstants.DEFAULT_ENCODING);
-
 		Document docHtml;
-
 		if (checkAccessibility.getCharset() != null && !"".equals(checkAccessibility.getCharset())) {
 			docHtml = EvaluatorUtility.loadHtmlFile(inputStream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, checkAccessibility.getCharset());
 		} else {
 			docHtml = EvaluatorUtility.loadHtmlFile(inputStream, checkAccessibility, htmlValidationNeeded, cssValidationNeeded, language, IntavConstants.DEFAULT_ENCODING);
 		}
-
 		if (docHtml == null) {
 			return null;
 		} else {
@@ -233,9 +214,7 @@ public class Evaluator {
 				}
 			}
 			docHtml.getDocumentElement().setUserData("checkedLinks", checkedLinks, null);
-
 			final Evaluation evaluation = applyEvaluation(checkAccessibility, checksSelected, allChecks, docHtml, language);
-
 			if (checkAccessibility.getIdRastreo() > 0) {
 				CacheUtils.putInCache(docHtml.getDocumentElement().getUserData("checkedLinks"), "checkedLinks_" + checkAccessibility.getIdRastreo());
 			}
@@ -261,16 +240,12 @@ public class Evaluator {
 		} else {
 			try {
 				final Map<String, List<Check>> elementsMap = createElementChecksLinks(checksSelected, allChecks);
-
 				// find the HTML element and look for a 'lang' attribute
 				Node nodeHTML = EvaluatorUtils.getHtmlElement(docHtml);
 				nodeHTML = docHtml;
-
 				// set the appropriate language for selected checks
 				setAppropriateData(checksSelected, language);
-
 				return getEvaluation(checkAccessibility, nodeHTML, docHtml, elementsMap);
-
 			} catch (Exception e) {
 				Logger.putLog("Exception al evaluar " + checkAccessibility.getUrl() + ": ", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
 			}
@@ -287,7 +262,6 @@ public class Evaluator {
 	 */
 	private List<Integer> createCheckList(final CheckAccessibility checkAccessibility, final Guideline guideline) {
 		final List<Integer> checksSelected = new ArrayList<>();
-
 		// PropertiesManager pmgr = new PropertiesManager();
 		// if
 		// (guideline.getFilename().equalsIgnoreCase(pmgr.getValue("intav.properties",
@@ -297,7 +271,6 @@ public class Evaluator {
 		} else {
 			guideline.getAllChecks(checksSelected, checkAccessibility.getLevel());
 		}
-
 		if (checksSelected.isEmpty()) {
 			for (int x = 0; x < checksSelected.size(); x++) {
 				for (int y = x + 1; y < checksSelected.size(); y++) {
@@ -310,10 +283,8 @@ public class Evaluator {
 				}
 			}
 		}
-
 		return checksSelected;
 	}
-
 	// create an index that links each element to its required checks
 
 	/**
@@ -350,7 +321,6 @@ public class Evaluator {
 							if (tempCheck.isPrerequisite(check.getId())) {
 								listOfChecks.add(y, check);
 								checkAdded = true;
-
 								// check if this is a circular prerequisite
 								if (check.isPrerequisite(tempCheck.getId())) {
 									Logger.putLog("Warning: circular prerequisite, checks " + tempCheck.getId() + " and " + check.getId(), Evaluator.class, Logger.LOG_LEVEL_WARNING);
@@ -381,27 +351,22 @@ public class Evaluator {
 	 */
 	private Evaluation getEvaluation(final CheckAccessibility checkAccesibility, final Node nodeHTML, final Document docHtml, final Map<String, List<Check>> elementsMap) {
 		final boolean isCrawling = checkAccesibility.getIdRastreo() != 0;
-
 		final Evaluation evaluation = new Evaluation();
 		evaluation.setFilename(checkAccesibility.getUrl());
 		evaluation.setHtmlDoc(docHtml);
 		evaluation.setBase();
 		evaluation.setEntidad(checkAccesibility.getEntity());
-		evaluation.setRastreo(0);
+		// PENDING Set id Rastreo
+		evaluation.setRastreo(checkAccesibility.getIdRastreo());
 		evaluation.addGuideline(checkAccesibility.getGuidelineFile());
-
 		// perform the evaluation
 		final List<Incidencia> incidenceList = evaluateLoop(nodeHTML, evaluation, elementsMap, isCrawling);
-
 		// perform any special tests (doctype etc.)
 		evaluateSpecial(nodeHTML, evaluation, elementsMap);
-
 		// resolve any potential problems
 		evaluation.resolveProblems();
-
 		// give each problem an ID number
 		evaluation.setIdProblems();
-
 		if (isCrawling) {
 			try (Connection conn = DataBaseManager.getConnection()) {
 				// create a global analysis in database
@@ -414,7 +379,6 @@ public class Evaluator {
 				Logger.putLog("Error al guardar las incidencias en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
 			}
 		}
-
 		return evaluation;
 	}
 
@@ -434,13 +398,10 @@ public class Evaluator {
 		problem.setDate(format.format(new Date()));
 		problem.setCheck(check);
 		problem.setXpath(xPathGenerator.getXpath(node));
-
 		evaluation.addProblem(problem);
-
 		if (isCrawling) {
 			addIncidence(evaluation, problem, incidenceList);
 		}
-
 		// should this check be run only on first occurrence?
 		if (check.isFirstOccuranceOnly()) {
 			evaluation.addCheckRun(check.getId());
@@ -468,13 +429,11 @@ public class Evaluator {
 	 */
 	private void addIncidence(final Evaluation eval, final Problem prob, final List<Incidencia> incidenceList, final String text) {
 		final Incidencia incidencia = new Incidencia();
-
 		incidencia.setCodigoAnalisis(eval.getIdAnalisis());
 		incidencia.setCodigoComprobacion(prob.getCheck().getId());
 		incidencia.setCodigoLineaFuente(prob.getLineNumber());
 		incidencia.setCodigoColumnaFuente(prob.getColumnNumber());
 		incidencia.setCodigoFuente(text);
-
 		incidenceList.add(incidencia);
 	}
 
@@ -491,10 +450,8 @@ public class Evaluator {
 	private void performEvaluation(final Node node, final List<Check> vectorChecks, final Evaluation evaluation, final List<Incidencia> incidenceList, final boolean isCrawling) {
 		// keep track of the checks that have run (needed for prerequisites)
 		final List<Integer> vectorChecksRun = new ArrayList<>();
-
 		// Ejecutamos las comprobaciones de HTML
 		performEvaluationHTMLChecks(node, vectorChecks, evaluation, incidenceList, isCrawling, vectorChecksRun);
-
 		// Una vez acabadas las comprobaciones sobre HTML, ejecutamos las
 		// comprobaciones de CSS (que tienen estructura distinta)
 		performEvaluationCSSChecks(node, vectorChecks, evaluation, incidenceList, vectorChecksRun);
@@ -516,32 +473,27 @@ public class Evaluator {
 			if (check.getCheckOkCode() != CheckFunctionConstants.CHECK_STATUS_OK) {
 				continue;
 			}
-
 			// ¿Los checks prerequisitos se han ejecutado con éxito?
 			if (!check.prerequisitesOK(vectorChecksRun)) {
 				continue;
 			}
-
 			// should check be run on first occurance only?
 			if (evaluation.hasRun(check.getId())) {
 				continue;
 			}
-
 			if ("css".equalsIgnoreCase(check.getTriggerElement())) {
 				// Si es una comprobación de CSS se salta porque se comprueban
 				// posteriormente
 				continue;
 			}
-
 			// Añadimos el check a la lista de checks ejecutados (si no es un
 			// check prerrequisito que no se imprima)
 			if ((!check.getStatus().equals(String.valueOf(CheckFunctionConstants.CHECK_STATUS_PREREQUISITE_NOT_PRINT))) && (!evaluation.getChecksExecuted().contains(check.getId()))) {
 				evaluation.getChecksExecuted().add(check.getId());
 				evaluation.setChecksExecutedStr(evaluation.getChecksExecutedStr().concat("," + check.getId()));
 			}
-
 			try {
-				if (check.doEvaluation((Element) node)) {
+				if (check.doEvaluation((Element) node, evaluation.getRastreo())) {
 					// Ha pasado el check, lo metemos en la lista de checks
 					// pasados con éxito
 					vectorChecksRun.add(check.getId());
@@ -590,10 +542,8 @@ public class Evaluator {
 			final Element element = (Element) nodeList.item(i);
 			final String text = EvaluatorUtils.serializeXmlElement(element.getPreviousSibling()) + EvaluatorUtils.serializeXmlElement(element)
 					+ EvaluatorUtils.serializeXmlElement(element.getNextSibling());
-
 			final Problem problem = createSummaryProblem(evaluation, check, element, text);
 			evaluation.addProblem(problem);
-
 			addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
 		}
 	}
@@ -617,11 +567,9 @@ public class Evaluator {
 						if (tabindex > 0) {
 							final Problem problem = createSummaryProblem(evaluation, check, element, EvaluatorUtils.serializeXmlElement(element));
 							evaluation.addProblem(problem);
-
 							addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
 						}
 					} catch (NumberFormatException nfe) {
-
 					}
 				}
 			}
@@ -645,7 +593,6 @@ public class Evaluator {
 					if (CheckUtils.compareHeadingsLevel((Element) currentHeader.getUserData("prevheader"), currentHeader) > 1) {
 						final Problem problem = createSummaryProblem(evaluation, check, currentHeader, EvaluatorUtils.serializeXmlElement(currentHeader, true));
 						evaluation.addProblem(problem);
-
 						addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
 					}
 				}
@@ -719,17 +666,13 @@ public class Evaluator {
 			problem.setCheck(check);
 			final Element problemTextNode = createProblemTextElement(evaluation, "<A href=\"" + brokenLink.getAttribute("href") + "\">" + brokenLink.getTextContent() + "</A>");
 			problem.setNode(problemTextNode);
-
 			evaluation.addProblem(problem);
-
 			addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
 		}
-
 		// should this check be run only on first occurrence?
 		if (check.isFirstOccuranceOnly()) {
 			evaluation.addCheckRun(check.getId());
 		}
-
 		return incidenceList;
 	}
 
@@ -760,11 +703,8 @@ public class Evaluator {
 		final Element problemTextNode = createProblemTextElement(evaluation, textContent.toString());
 		problem.setNode(problemTextNode);
 		problem.setSummary(true);
-
 		evaluation.addProblem(problem);
-
 		addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
-
 		return incidenceList;
 	}
 
@@ -779,10 +719,8 @@ public class Evaluator {
 	 */
 	private List<Incidencia> addValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList, final String id) {
 		final List<Incidencia> validationProblems = new ArrayList<>();
-
 		final Element elementHtmlRoot = evaluation.getHtmlDoc().getDocumentElement();
 		final List<ValidationError> vectorValidationErrors = (List<ValidationError>) elementHtmlRoot.getUserData("validationErrors");
-
 		if (vectorValidationErrors != null) {
 			for (ValidationError validationError : vectorValidationErrors) {
 				if (ALL_HTML_VALIDATION_ERRORS.equalsIgnoreCase(id) || validationError.getMessageId().equalsIgnoreCase(id)) {
@@ -793,11 +731,8 @@ public class Evaluator {
 					final Element problemTextNode = createProblemTextElement(evaluation, validationError.getCode());
 					problem.setNode(problemTextNode);
 					problem.setSummary(validationError.isSummary());
-
 					evaluation.addProblem(problem);
-
 					addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
-
 					// should this check be run only on first occurrence?
 					if (check.isFirstOccuranceOnly()) {
 						evaluation.addCheckRun(check.getId());
@@ -805,7 +740,6 @@ public class Evaluator {
 				}
 			}
 		}
-
 		return validationProblems;
 	}
 
@@ -820,10 +754,8 @@ public class Evaluator {
 	// Añade los problemas de validación de CSS
 	private List<Incidencia> addCssValidationIncidences(final Evaluation evaluation, final Check check, final List<Incidencia> incidenceList) {
 		final List<Incidencia> validationProblems = new ArrayList<>();
-
 		final Element elementHtmlRoot = evaluation.getHtmlDoc().getDocumentElement();
 		final List<CssValidationError> vectorValidationErrors = (List<CssValidationError>) elementHtmlRoot.getUserData("cssValidationErrors");
-
 		if (vectorValidationErrors != null) {
 			for (CssValidationError cssValidationError : vectorValidationErrors) {
 				final Problem problem = new Problem();
@@ -833,18 +765,14 @@ public class Evaluator {
 				final Element problemTextNode = createProblemTextElement(evaluation, cssValidationError.getCode());
 				problem.setNode(problemTextNode);
 				problem.setSummary(cssValidationError.isSummary());
-
 				evaluation.addProblem(problem);
-
 				addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
-
 				// should this check be run only on first occurrence?
 				if (check.isFirstOccuranceOnly()) {
 					evaluation.addCheckRun(check.getId());
 				}
 			}
 		}
-
 		return validationProblems;
 	}
 
@@ -860,9 +788,7 @@ public class Evaluator {
 		if (cssProblems != null) {
 			for (CSSProblem cssProblem : cssProblems) {
 				final Problem problem = CSSUtils.getProblemFromCSS(cssProblem, check, evaluation);
-
 				addIncidence(evaluation, problem, incidenceList, problem.getNode().getTextContent());
-
 				// should this check be run only on first occurrence?
 				if (check.isFirstOccuranceOnly()) {
 					evaluation.addCheckRun(check.getId());
@@ -884,10 +810,8 @@ public class Evaluator {
 		final Problem problem = new Problem(element);
 		problem.setSummary(true);
 		problem.setCheck(check);
-
 		final Element problemTextNode = createProblemTextElement(evaluation, text);
 		problem.setNode(problemTextNode);
-
 		return problem;
 	}
 
@@ -974,7 +898,6 @@ public class Evaluator {
 		final List<Incidencia> incidenceList = new ArrayList<>();
 		if (rootNode != null) {
 			extractCSSResources(rootNode, evaluation);
-
 			final List<Node> nodeList = EvaluatorUtils.generateNodeList(rootNode, new ArrayList<Node>(), IntavConstants.ALL_ELEMENTS);
 			int counter = 0;
 			for (Node node : nodeList) {
@@ -991,13 +914,10 @@ public class Evaluator {
 					if (checks.size() > 0) {
 						performEvaluation(node, checks, evaluation, incidenceList, isCrawling);
 					}
-
 					counter++;
 				}
-
 			}
 		}
-
 		Logger.putLog("Tiempo de evaluación de '" + evaluation.getFilename() + "': " + (System.currentTimeMillis() - time) + " milisegundos", Evaluator.class, Logger.LOG_LEVEL_INFO);
 		return incidenceList;
 	}
@@ -1037,7 +957,6 @@ public class Evaluator {
 						final Problem problem = new Problem((Element) nodeGiven);
 						problem.setCheck(check);
 						problem.setXpath(xPathGenerator.getXpath(nodeGiven));
-
 						evaluation.addProblem(problem);
 					}
 				}
@@ -1054,7 +973,6 @@ public class Evaluator {
 	// sets the 'appropriate' flag for all data used in the given checks
 	private void setAppropriateData(final List<Integer> checksIds, final String language) {
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
-
 		for (Integer checkId : checksIds) {
 			Check check = allChecks.getCheck(checkId);
 			if (check != null) {
@@ -1075,7 +993,6 @@ public class Evaluator {
 	private int setAnalisisDB(final Evaluation evaluation, final CheckAccessibility checkAccessibility) {
 		try (Connection conn = DataBaseManager.getConnection()) {
 			final Analysis analysis = new Analysis();
-
 			analysis.setDate(new Date());
 			analysis.setFile("");
 			analysis.setUrl(evaluation.getFilename());
@@ -1083,9 +1000,7 @@ public class Evaluator {
 			analysis.setTracker(evaluation.getRastreo());
 			analysis.setGuideline(checkAccessibility.getGuidelineFile());
 			analysis.setTracker(checkAccessibility.getIdRastreo());
-
 			analysis.setSource(checkAccessibility.getContent());
-
 			return AnalisisDatos.setAnalisis(conn, analysis, evaluation.getCssResources());
 		} catch (Exception e) {
 			Logger.putLog("Error al guardar el análisis en base de datos", Evaluator.class, Logger.LOG_LEVEL_ERROR, e);
@@ -1106,11 +1021,9 @@ public class Evaluator {
 	// it
 	public Evaluation getAnalisisDB(final Connection conn, final long id, final Document doc, final boolean getOnlyChecks) {
 		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
-
 		if (analysis == null) {
 			return null;
 		}
-
 		Evaluation eval = new Evaluation();
 		eval.setIdAnalisis(id);
 		eval.setHtmlDoc(doc);
@@ -1122,7 +1035,6 @@ public class Evaluator {
 		eval = getIncidenciasFromAnalisisDB(conn, eval, getOnlyChecks);
 		eval.resolveProblems();
 		eval.setSource(analysis.getSource());
-
 		return eval;
 	}
 
@@ -1136,12 +1048,10 @@ public class Evaluator {
 	 */
 	public Evaluation getObservatoryAnalisisDB(final Connection conn, final long id, final Document doc) {
 		final Analysis analysis = AnalisisDatos.getAnalisisFromId(conn, id);
-
 		if (analysis == null) {
 			Logger.putLog("No ha sido posible recuperar los datos del análisis " + id, Evaluator.class, Logger.LOG_LEVEL_INFO);
 			return null;
 		}
-
 		Evaluation eval = new Evaluation();
 		eval.setIdAnalisis(id);
 		eval.setHtmlDoc(doc);
@@ -1156,7 +1066,6 @@ public class Evaluator {
 			eval = getIncidenciasFromAnalisisDB(conn, eval, false);
 		}
 		eval.resolveProblems();
-
 		return eval;
 	}
 
@@ -1189,7 +1098,6 @@ public class Evaluator {
 	private Evaluation getIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval, final boolean getOnlyCheck) {
 		final List<Incidencia> arrlist = IncidenciaDatos.getIncidenciasFromAnalisisId(conn, eval.getIdAnalisis(), getOnlyCheck);
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
-
 		for (Incidencia inc : arrlist) {
 			final Problem problem = new Problem();
 			final Check check = allChecks.getCheck(inc.getCodigoComprobacion());
@@ -1202,7 +1110,6 @@ public class Evaluator {
 			eval.addProblem(problem);
 			eval.setIdProblems();
 		}
-
 		return eval;
 	}
 
@@ -1216,7 +1123,6 @@ public class Evaluator {
 	private Evaluation getObservatoryIncidenciasFromAnalisisDB(final Connection conn, final Evaluation eval) {
 		final List<Incidencia> arrlist = IncidenciaDatos.getObservatoryIncidenciasFromAnalisisId(conn, eval.getIdAnalisis());
 		final AllChecks allChecks = EvaluatorUtility.getAllChecks();
-
 		for (Incidencia inc : arrlist) {
 			final Problem problem = new Problem();
 			final Check check = allChecks.getCheck(inc.getCodigoComprobacion());
@@ -1224,8 +1130,6 @@ public class Evaluator {
 			eval.addProblem(problem);
 			eval.setIdProblems();
 		}
-
 		return eval;
 	}
-
 }

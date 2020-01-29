@@ -304,7 +304,7 @@ public final class WcagEmUtils {
 			RandomSample randomSample = new RandomSample();
 			List<Webpage_> webpages = new ArrayList<>();
 			int randCounter = 0;
-			// TODO Iterate currentEvaluationPageList to preserve order??
+			// PENDING Iterate currentEvaluationPageList to preserve order
 			for (ObservatoryEvaluationForm eval : currentEvaluationPageList) {
 				Webpage_ webpage = new Webpage_();
 				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
@@ -316,17 +316,6 @@ public final class WcagEmUtils {
 				webpages.add(webpage);
 				randCounter++;
 			}
-//			for (Entry<String, Map<String, ValidationDetails>> result : wcagCompliance.entrySet()) {
-//				Webpage_ webpage = new Webpage_();
-//				webpage.setType(Arrays.asList(new String[] { "TestSubject", "WebPage" }));
-//				webpage.setId("_:rand_" + randCounter);
-//				webpage.setDescription(result.getKey());
-//				webpage.setSource(result.getKey());
-//				webpage.setTitle(result.getKey());
-//				webpage.setTested(false);// false to mark as incomplete un report step
-//				webpages.add(webpage);
-//				randCounter++;
-//			}
 			randomSample.setWebpage(webpages);
 			graph.setRandomSample(randomSample);
 		}

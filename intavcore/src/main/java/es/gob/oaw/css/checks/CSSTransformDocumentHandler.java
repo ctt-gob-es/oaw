@@ -36,11 +36,9 @@ import es.inteco.common.logging.Logger;
 import es.inteco.common.utils.StringUtils;
 
 /**
- * Clase para detectar si se aplican 'line-height', 'letter-spacing',
- * 'word-spacing' con important.
+ * Clase para detectar si se aplican 'line-height', 'letter-spacing', 'word-spacing' con important.
  */
 public class CSSTransformDocumentHandler extends OAWCSSVisitor {
-
 	/**
 	 * Evaluate.
 	 *
@@ -66,89 +64,51 @@ public class CSSTransformDocumentHandler extends OAWCSSVisitor {
 	 */
 	@Override
 	public List<CSSProblem> evaluate(final Document document, final CSSResource cssResource) {
-
 		final List<CSSProblem> cssProblems = new ArrayList<>();
-
-		Pattern transform90 = Pattern.compile("rotate\\s*\\(\\s*90deg\\s*\\)",
-				Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-		Pattern transform270 = Pattern.compile("rotate\\s*\\(\\s*270deg\\s*\\)",
-				Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-
+		Pattern transform90 = Pattern.compile("rotate\\s*\\(\\s*90deg\\s*\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+		Pattern transform270 = Pattern.compile("rotate\\s*\\(\\s*270deg\\s*\\)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 		if (!cssResource.getContent().isEmpty()) {
-
 			try {
 				resource = cssResource;
-				final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30,
-						new CollectingCSSParseErrorHandler());
+				final CascadingStyleSheet aCSS = CSSReader.readFromString(cssResource.getContent(), ECSSVersion.CSS30, new CollectingCSSParseErrorHandler());
 				if (aCSS != null) {
-
-					// TODO Si encontramos las media query o los tas añadimos un error (que luego
+					// Si encontramos las media query o los tas añadimos un error (que luego
 					// gestionaremos para devolver)
-
 					if (aCSS.hasMediaRules()) {
-
 						List<CSSMediaRule> mediaRules = aCSS.getAllMediaRules();
-
 						for (int i = 0; i < mediaRules.size(); i++) {
-
 							CSSMediaRule mediaRule = mediaRules.get(i);
-
 							// Has orientation media query
 							List<CSSMediaQuery> mediaQuerys = mediaRule.getAllMediaQueries();
-
 							if (mediaQuerys != null && !mediaQuerys.isEmpty()) {
-
 								for (CSSMediaQuery mediaQuery : mediaQuerys) {
-
 									List<CSSMediaExpression> expresions = mediaQuery.getAllMediaExpressions();
-
 									if (expresions != null && !expresions.isEmpty()) {
 										for (CSSMediaExpression expression : expresions) {
 											if ("orientation".equalsIgnoreCase(expression.getFeature())) {
-
 												List<CSSStyleRule> styleRules = mediaRule.getAllStyleRules();
-
 												if (styleRules != null && !styleRules.isEmpty()) {
 													for (CSSStyleRule styleRule : styleRules) {
-
-														List<CSSDeclaration> declarations = styleRule
-																.getAllDeclarations();
-
+														List<CSSDeclaration> declarations = styleRule.getAllDeclarations();
 														if (declarations != null && !declarations.isEmpty()) {
 															for (CSSDeclaration declaration : declarations) {
-
-																if ("transform"
-																		.equalsIgnoreCase(declaration.getProperty())) {
-																	String cssExpression = StringUtils
-																			.normalizeWhiteSpaces(declaration
-																					.getExpressionAsCSSString())
-																			.trim();
-																	if (!cssExpression.isEmpty() && (transform90
-																			.matcher(cssExpression).find()
-																			|| transform270.matcher(cssExpression)
-																					.find())) {
-																		cssProblems
-																				.add(createCSSProblem("", declaration));
+																if ("transform".equalsIgnoreCase(declaration.getProperty())) {
+																	String cssExpression = StringUtils.normalizeWhiteSpaces(declaration.getExpressionAsCSSString()).trim();
+																	if (!cssExpression.isEmpty() && (transform90.matcher(cssExpression).find() || transform270.matcher(cssExpression).find())) {
+																		cssProblems.add(createCSSProblem("", declaration));
 																	}
-
 																}
 															}
 														}
-
 													}
 												}
-
 											}
 										}
 									}
-
 								}
 							}
-
 						}
-
 					}
-
 					CSSVisitor.visitCSS(aCSS, this);
 				}
 			} catch (Exception e) {
@@ -157,5 +117,4 @@ public class CSSTransformDocumentHandler extends OAWCSSVisitor {
 		}
 		return cssProblems;
 	}
-
 }

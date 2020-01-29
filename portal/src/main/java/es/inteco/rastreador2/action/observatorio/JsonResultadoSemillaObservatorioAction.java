@@ -76,8 +76,7 @@ public class JsonResultadoSemillaObservatorioAction extends DispatchAction {
 					pagina - 1);
 			// Calculamos la puntuación media de cada semilla y la guardamos en
 			// sesion
-			// TODO Viene de sesión
-			// ObservatoryUtils.setAvgScore2(c, seedsResults2, idObservatoryExecution);
+			// Viene de sesión
 			for (ResultadoSemillaFullForm result : seedsResults2) {
 				String tagsString = "";
 				if (result.getEtiquetas() != null && !result.getEtiquetas().isEmpty()) {

@@ -132,9 +132,6 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
 			replaceImg(odt, graphicPath + "EvolucionNivelConformidadCombinada.jpg", "image/jpg");
 			replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
-			// TODO Partir en 2
-//			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinada.jpg",
-//					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
 			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
 					new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
 					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
@@ -148,23 +145,6 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", "image/jpg");
 			numSection++;
-			// TODO Evolutivo por segmentos
-//			final Map<Date, Map<String, BigDecimal>> resultsBySegment = new HashMap<>();
-//			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-//				resultsBySegment.put(entry.getKey(), ResultadosAnonimosObservatorioUNEEN2019Utils
-//						.segmentMidsPuntuationGraphicData(messageResources, entry.getValue()));
-//			}
-//
-//			for (CategoriaForm categoria : categories) {
-//				int i = 1;
-//				ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionBySegmentSuitabilityChart(observatoryId,
-//						executionId, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada" + i + ".jpg",
-//						pageObservatoryMap, categories);
-//				i++;
-//			}
-//			ResultadosAnonimosObservatorioUNEEN2019Utils.generateEvolutionAverageScoreBySegmentChart(messageResources, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", pageObservatoryMap, categories);
-//			replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsBySegment, categories);
-			// TODO FIN
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", "image/jpg");
 		}
 		return odt;
@@ -989,15 +969,19 @@ public class OpenOfficeAccesibilidadBuilder extends OpenOfficeDocumentBuilder {
 	/**
 	 * Builds the document filtered.
 	 *
-	 * @param request            the request
-	 * @param graphicPath        the graphic path
-	 * @param date               the date
-	 * @param evolution          the evolution
-	 * @param pageExecutionList  the page execution list
-	 * @param categories         the categories
-	 * @param tagsToFilter       the tags to filter
-	 * @param grpahicConditional the grpahic conditional
-	 * @param exObsIds           the ex obs ids
+	 * @param request              the request
+	 * @param graphicPath          the graphic path
+	 * @param date                 the date
+	 * @param evolution            the evolution
+	 * @param pageExecutionList    the page execution list
+	 * @param categories           the categories
+	 * @param tagsToFilter         the tags to filter
+	 * @param grpahicConditional   the grpahic conditional
+	 * @param exObsIds             the ex obs ids
+	 * @param idBaseTemplate       the id base template
+	 * @param idSegmentTemplate    the id segment template
+	 * @param idComplexityTemplate the id complexity template
+	 * @param reportTitle          the report title
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */

@@ -131,9 +131,6 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 			replaceSectionEvolutionSuitabilityLevel(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
 			replaceImg(odt, graphicPath + "EvolucionNivelConformidadCombinada.jpg", "image/jpg");
 			replaceSectionEvolutionAverageScore(messageResources, odt, odfFileContent, graphicPath, pageObservatoryMap);
-			// TODO Partir en 2
-//			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByVerificationChart(messageResources, graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinada.jpg",
-//					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
 			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreByVerificationChartSplit(messageResources,
 					new String[] { graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit1.jpg", graphicPath + "EvolucionPuntuacionMediaVerificacionNAICombinadaSplit2.jpg" },
 					pageObservatoryMap, LEVEL_I_VERIFICATIONS);
@@ -147,23 +144,6 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 			replaceSectionEvolutionScoreByAspect(messageResources, odt, odfFileContent, graphicPath, resultsByAspect);
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaAspectoCombinada.jpg", "image/jpg");
 			numSection++;
-			// TODO Evolutivo por segmentos
-//			final Map<Date, Map<String, BigDecimal>> resultsBySegment = new HashMap<>();
-//			for (Map.Entry<Date, List<ObservatoryEvaluationForm>> entry : pageObservatoryMap.entrySet()) {
-//				resultsBySegment.put(entry.getKey(), ResultadosAnonimosObservatorioUNE2012BUtils
-//						.segmentMidsPuntuationGraphicData(messageResources, entry.getValue()));
-//			}
-//
-//			for (CategoriaForm categoria : categories) {
-//				int i = 1;
-//				ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionBySegmentSuitabilityChart(observatoryId,
-//						executionId, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada" + i + ".jpg",
-//						pageObservatoryMap, categories);
-//				i++;
-//			}
-//			ResultadosAnonimosObservatorioUNE2012BUtils.generateEvolutionAverageScoreBySegmentChart(messageResources, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", pageObservatoryMap, categories);
-//			replaceSectionEvolutionScoreBySegment(messageResources, odt, odfFileContent, graphicPath, resultsBySegment, categories);
-			// TODO FIN
 			replaceImg(odt, graphicPath + "EvolucionPuntuacionMediaSegmentoCombinada.jpg", "image/jpg");
 		}
 		return odt;
@@ -1000,6 +980,7 @@ public class OpenOfficeUNE2012BDocumentBuilder extends OpenOfficeDocumentBuilder
 	 * @param idBaseTemplate       the id base template
 	 * @param idSegmentTemplate    the id segment template
 	 * @param idComplexityTemplate the id complexity template
+	 * @param reportTitle          the report title
 	 * @return the odf text document
 	 * @throws Exception the exception
 	 */

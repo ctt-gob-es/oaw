@@ -383,7 +383,7 @@ public final class PrimaryExportPdfUtils {
 				// en el índice
 				IndexUtils.createIndex(writer, document, messageResources.getMessage("pdf.accessibility.index.title"), index, ConstantsFont.CHAPTER_TITLE_MP_FONT);
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
-				// TODO (Disable) Generar JSON compatible con WCAG-EM
+				// PENDING (Disable) Generar JSON compatible con WCAG-EM
 //				WcagEmReport report = WcagEmUtils.generateReport(messageResources, pdfBuilder, BasicServiceUtils.getTitleDocFromContent(currentEvaluationPageList.get(0).getSource(), false),
 //						Long.parseLong(crawling.getId()));
 //				ObjectMapper mapper = new ObjectMapper();

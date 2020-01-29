@@ -320,7 +320,7 @@ public final class DiagnosisDAO {
 	 */
 	private static String getHistoricoResultadosQueryByType(final BasicServiceAnalysisType type) {
 		if (BasicServiceAnalysisType.URL == type) {
-			// TODO Revisar si esto no altera los informes anteriores
+			// PENDING Revisar si esto no altera los informes anteriores
 			return "SELECT id, date FROM basic_service WHERE domain LIKE ? AND status='finished' AND depth=? AND width=? AND analysis_type='url' AND register_result=TRUE AND report LIKE ? ORDER BY date DESC LIMIT ?";
 		} else if (BasicServiceAnalysisType.LISTA_URLS == type) {
 			return "SELECT id, date FROM basic_service WHERE domain REGEXP ? AND status='finished' AND analysis_type='lista_urls' AND register_result=TRUE AND report LIKE ? ORDER BY date DESC LIMIT ?";
@@ -400,8 +400,7 @@ public final class DiagnosisDAO {
 		}
 		return 0;
 	}
-	
-	
+
 	/**
 	 * Gets the average time.
 	 *
@@ -427,9 +426,6 @@ public final class DiagnosisDAO {
 		}
 		return 0f;
 	}
-	
-	
-	
 
 	/**
 	 * Gets the basic service request CSV.
@@ -439,31 +435,10 @@ public final class DiagnosisDAO {
 	 * @return the basic service request CSV
 	 */
 	public static String getCSV(final Connection conn, final ServicioDiagnosticoForm search) {
-		//StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
-		
-		
-
-		StringBuilder query = new StringBuilder("SELECT id,"
-				+ "usr,"
-				+ "language,"
-				+ "domain,"
-				+ "email,"
-				+ "depth,"
-				+ "width,"
-				+ "(select lower(nombre) from complejidades_lista where id_complejidad = complexity) as complexity,"
-				+ "report,"
-				+ "date,"
-				+ "status,"
-				+ "send_date,"
-				+ "scheduling_date,"
-				+ "analysis_type,"
-				+ "in_directory,"
-				+ "register_result"
-				+ " FROM basic_service WHERE 1=1");
-				
-		
-		
-		
+		// StringBuilder query = new StringBuilder("SELECT * FROM basic_service WHERE 1=1 ");
+		StringBuilder query = new StringBuilder(
+				"SELECT id," + "usr," + "language," + "domain," + "email," + "depth," + "width," + "(select lower(nombre) from complejidades_lista where id_complejidad = complexity) as complexity,"
+						+ "report," + "date," + "status," + "send_date," + "scheduling_date," + "analysis_type," + "in_directory," + "register_result" + " FROM basic_service WHERE 1=1");
 		addSearchParameters(search, query);
 		try (PreparedStatement ps = conn.prepareStatement(query.toString())) {
 			int nextParameterCount = 1;

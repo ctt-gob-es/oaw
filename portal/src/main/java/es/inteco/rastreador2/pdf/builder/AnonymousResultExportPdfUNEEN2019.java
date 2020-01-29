@@ -194,7 +194,6 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				ConstantsFont.DEFAULT_PADDING, 50));
 		chapter.add(notice);
 		// 11 How to use
-		// TODO Comentado de momento
 		chapter.add(Chunk.NEXTPAGE);
 		Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.intro.how.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
@@ -257,7 +256,6 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p7"), specialChunkMap, ConstantsFont.PARAGRAPH));
 		}
 		// 1.2 Next steps
-		// chapter.add(Chunk.NEXTPAGE);
 		section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.intro.next.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
 		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.next.p1"), ConstantsFont.PARAGRAPH, section);
@@ -267,8 +265,6 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			specialChunkMap = new HashMap<>();
 			SpecialChunk externalLinkL1_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.bold1"), ConstantsFont.paragraphBoldFont);
 			specialChunkMap.put(1, externalLinkL1_1);
-//			SpecialChunk externalLinkL1_2 = new SpecialChunk("indicados en este informe, en el apartado 'Incidencias' de cada página. ", ConstantsFont.PARAGRAPH);
-//			specialChunkMap.put(2, externalLinkL1_2);
 			SpecialChunk externalLinkL1_2_1 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.bold2"), ConstantsFont.paragraphBoldFont);
 			specialChunkMap.put(2, externalLinkL1_2_1);
 			SpecialChunk externalLinkL1_3 = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.next.basic.service.list.1.anchor1.text"), ConstantsFont.ANCHOR_FONT);
@@ -1550,18 +1546,18 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			tablaRankings.completeRow();
 		}
 		section.add(tablaRankings);
-		// TODO Gráficos
+		// Gráficos
 		section.add(Chunk.NEWLINE);
 		section.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
 		// Gráfica nivel de adecuación
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");
 		addLevelAllocationResultsSummary(messageResources, section, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
-		// TODO Puntuación media y nivel de adecuación por página
+		// Puntuación media y nivel de adecuación por página
 		chapter.add(Chunk.NEXTPAGE);
 		PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.pagina.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
 				chapter, pdfTocManager.addSection(), 1);
 		addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
-		// TODO Puntuación media por verificación
+		// Puntuación media por verificación
 		chapter.add(Chunk.NEXTPAGE);
 		Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
 				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);

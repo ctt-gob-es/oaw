@@ -138,7 +138,7 @@ public final class CheckUtils {
 	 */
 	public static Document getRemoteDocument(final String documentUrlStr, final String remoteUrlStr, int redirects) throws IOException, SAXException {
 		final int maxNumRedirections = 5;
-		// TODO Este remote debería pasar por el proxy
+		// PENDING Este remote debería pasar por el proxy
 		try {
 			final HttpURLConnection connection = EvaluatorUtils.getConnection(remoteUrlStr, "GET", true);
 			connection.setRequestProperty("referer", documentUrlStr);
@@ -155,7 +155,7 @@ public final class CheckUtils {
 					// Obtenemos la redirección
 					String newUrl = connection.getHeaderField("Location");
 					connection.disconnect();
-					int countRedirects = redirects +1;
+					int countRedirects = redirects + 1;
 					return getRemoteDocument(encodeUrl(newUrl), encodeUrl(newUrl), countRedirects);
 				} else {
 					return null;
@@ -177,7 +177,7 @@ public final class CheckUtils {
 	 * @throws SAXException the SAX exception
 	 */
 	public static Document getRemoteDocumentRenderer(final String documentUrlStr, final String remoteUrlStr) throws IOException, SAXException {
-		// TODO Este remote debería pasar por el proxy
+		// PENDING Este remote debería pasar por el proxy
 		try {
 			final HttpURLConnection connection = EvaluatorUtils.getRendererConnection(remoteUrlStr, "GET", true);
 			connection.setRequestProperty("referer", documentUrlStr);
@@ -356,7 +356,7 @@ public final class CheckUtils {
 	 * @throws UnsupportedEncodingException the unsupported encoding exception
 	 */
 	private static String encodeUrl(String path) throws UnsupportedEncodingException {
-		// TODO Remover tildes
+		// Remover tildes
 		path = path.replaceAll("[ \\+]", "%20");
 		String[] pathArray = path.split("[:\\./?&=#(%20)]");
 		for (String aPathArray : pathArray) {

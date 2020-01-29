@@ -58,7 +58,6 @@ import es.inteco.crawler.common.Constants;
 import es.inteco.crawler.dao.ProxyDAO;
 import es.inteco.crawler.dao.ProxyForm;
 import es.inteco.crawler.ignored.links.IgnoredLink;
-import es.inteco.intav.utils.EvaluatorUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.plugin.dao.RastreoDAO;
 
@@ -66,7 +65,6 @@ import es.inteco.plugin.dao.RastreoDAO;
  * The Class CrawlerUtils.
  */
 public final class CrawlerUtils {
-	
 	/**
 	 * Instantiates a new crawler utils.
 	 */
@@ -492,7 +490,7 @@ public final class CrawlerUtils {
 			Logger.putLog("Error: ", CrawlerUtils.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		HttpURLConnection connection = null;
-		// TODO Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
+		// Aplicar el proxy menos a la URL del servicio de diagnótico ya que este
 		// método también es usado por al JSP de conexión
 		if (applyProxy(url, refererUrl, proxyActive, proxyHttpHost, proxyHttpPort)) {
 			try {

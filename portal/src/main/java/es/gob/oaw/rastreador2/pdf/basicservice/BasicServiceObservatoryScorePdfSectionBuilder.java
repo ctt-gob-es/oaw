@@ -185,11 +185,11 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				final String noDataMess = messageResources.getMessage("grafica.sin.datos");
 				addLevelAllocationResultsSummary(messageResources, chapter, file, noDataMess);
 				chapter.add(Chunk.NEXTPAGE);
-				// TODO Puntuación media y nivel de adecuación por página
+				// Puntuación media y nivel de adecuación por página
 				PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.pagina.title"), pdfTocManager.getIndex(),
 						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
 				addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
-				// TODO Puntuación media por verificación
+				// Puntuación media por verificación
 				chapter.add(Chunk.NEXTPAGE);
 				Section section = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
 						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
