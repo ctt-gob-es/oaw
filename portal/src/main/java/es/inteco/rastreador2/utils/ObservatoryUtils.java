@@ -412,7 +412,7 @@ public final class ObservatoryUtils {
 	}
 
 	/**
-	 * TODO Set comoliance level.
+	 * Set compliance level.
 	 *
 	 * @param c                      the c
 	 * @param seedsResults           the seeds results

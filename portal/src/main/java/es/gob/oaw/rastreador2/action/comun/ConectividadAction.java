@@ -126,7 +126,7 @@ public class ConectividadAction extends Action {
 				String proxyUrl = request.getParameter("proxyUrl");
 				String proxyStatus = request.getParameter("proxyStatus");
 				String proxyPort = request.getParameter("proxyPort");
-				// TODO Save proxy config
+				// Save proxy config
 				try (Connection c = DataBaseManager.getConnection()) {
 					ProxyForm proxy = new ProxyForm();
 					proxy.setStatus("true".equals(proxyStatus) ? 1 : 0);

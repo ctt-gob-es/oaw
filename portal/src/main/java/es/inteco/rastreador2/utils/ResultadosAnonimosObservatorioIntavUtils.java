@@ -1302,9 +1302,7 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 							seedForm.setCategory(ffCrawling.getSeed().getCategoria().getName());
 							evaluationForm.setSeed(seedForm);
 						}
-					
 						observatoryEvaluationList.add(evaluationForm);
-						// TODO save into database score, level
 						evaluationForm.getScore();
 					}
 				} else {
@@ -2094,7 +2092,6 @@ public final class ResultadosAnonimosObservatorioIntavUtils {
 			if (Constants.NORMATIVA_ACCESIBILIDAD.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else if (Constants.NORMATIVA_UNE_EN2019.equalsIgnoreCase(aplicacion)) {
-				// TODO Fix max fails
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));
 			} else if (Constants.NORMATIVA_UNE_2012_B.equalsIgnoreCase(aplicacion)) {
 				maxFails = Integer.parseInt(pmgr.getValue("intav.properties", "observatory.zero.red.max.number.2017"));

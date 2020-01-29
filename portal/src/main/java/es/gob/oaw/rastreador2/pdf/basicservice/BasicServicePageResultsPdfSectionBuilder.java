@@ -108,7 +108,7 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
 			final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
-			chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
+			chapter.add(createPaginaTableInfoAccesibility(messageResources, evaluationForm));
 			// Creación de las tablas resumen de resultado por verificación de
 			// cada página
 			for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {

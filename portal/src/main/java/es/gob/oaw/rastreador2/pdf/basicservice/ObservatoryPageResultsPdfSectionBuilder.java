@@ -19,6 +19,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,12 +45,14 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.common.utils.StringUtils;
+import es.inteco.intav.dao.TAnalisisAccesibilidadDAO;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
 import es.inteco.intav.form.ObservatoryLevelForm;
 import es.inteco.intav.form.ObservatorySubgroupForm;
 import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.intav.form.ProblemForm;
 import es.inteco.intav.utils.EvaluatorUtils;
+import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
@@ -127,7 +130,6 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 			externalLink.setAnchor(messageResources.getMessage("observatory.servicio.diagnostico.url"));
 			final Map<Integer, SpecialChunk> specialChunkMap = new HashMap<>();
 			specialChunkMap.put(1, externalLink);
-			// TODO convert into info
 			PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.errores.mas.info"), specialChunkMap, ConstantsFont.PARAGRAPH);
 			final PdfPTable notice = new PdfPTable(1);
 			notice.setSpacingBefore(25f);
@@ -156,7 +158,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	public void addPageResultsAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, boolean withOutLevels) throws Exception {
 		int counter = 1;
 		for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
-			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label.extended", counter);
+			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
 			final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
 			chapter.add(createPaginaTableInfoAccesibility(messageResources, evaluationForm));
@@ -272,14 +274,23 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 		table.addCell(
 				PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.adecuacion"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
 		table.addCell(PDFUtils.createTableCell(nivelAdecuacion, Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
-		// Puntuaciones Medias Nivel Accesibilidad
-//		int contador = 1;
-//		for (BigDecimal puntuacionMediaNivel : puntuacionesMediasNivel) {
-//			table.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.resultpage.media", new String[] { String.valueOf(contador) }), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
-//					Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
-//			table.addCell(PDFUtils.createTableCell(puntuacionMediaNivel.toPlainString(), Color.WHITE, ConstantsFont.descriptionFont, Element.ALIGN_LEFT, DEFAULT_PADDING, -1));
-//			contador++;
-//		}
+		// PENDING Add detail of accesibility links
+		table.addCell(PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.urls.accesibilidad"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont,
+				Element.ALIGN_RIGHT, DEFAULT_PADDING, -1));
+		String urls = "";
+		try {
+			urls = TAnalisisAccesibilidadDAO.getUrls(DataBaseManager.getConnection(), evaluationForm.getIdAnalysis());
+			if (urls != null && !org.apache.commons.lang3.StringUtils.isEmpty(urls)) {
+				java.util.List<String> list = Arrays.asList(urls.split(","));
+				com.lowagie.text.List PDFlist = new com.lowagie.text.List();
+				for (String str : list) {
+					PDFUtils.addListItem(str, PDFlist, ConstantsFont.noteCellFont, false, true, Element.ALIGN_LEFT);
+				}
+				table.addCell(PDFUtils.createListTableCell(PDFlist, Color.WHITE, Element.ALIGN_LEFT, DEFAULT_PADDING));
+			}
+		} catch (Exception e) {
+			Logger.putLog("Error al obtener las urls de accesibilidad analizadas", ObservatoryPageResultsPdfSectionBuilder.class, Logger.LOG_LEVEL_ERROR);
+		}
 		return table;
 	}
 
@@ -306,14 +317,12 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	 *
 	 * @param messageResources     the message resources
 	 * @param observatoryLevelForm the observatory level form
-	 * @param priorityName         the priority name
+	 * @param tableHeader          the table header
 	 * @return the pdf P table
 	 */
 	protected PdfPTable createPaginaTableVerificationSummary(final MessageResources messageResources, final ObservatoryLevelForm observatoryLevelForm, final String tableHeader) {
 		final float[] widths = { 0.60f, 0.20f, 0.20f };
 		final PdfPTable table = new PdfPTable(widths);
-//TODO Table title
-		//
 		PdfPCell headerCell = new PdfPCell();
 		headerCell.setColspan(3);
 		headerCell.setPhrase(new Phrase(tableHeader, ConstantsFont.paragraphBoldFont));
@@ -529,6 +538,7 @@ public class ObservatoryPageResultsPdfSectionBuilder {
 	 * @param messageResources the message resources
 	 * @param evaluationForm   the evaluation form
 	 * @param chapter          the chapter
+	 * @param pdfTocManager    the pdf toc manager
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	private void addCheckCodesWithoutLevels(final MessageResources messageResources, final ObservatoryEvaluationForm evaluationForm, final Chapter chapter, final PdfTocManager pdfTocManager)

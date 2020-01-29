@@ -1284,11 +1284,8 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 	public static void addObservatoryScoreSummary(final AnonymousResultExportPdf pdfBuilder, final MessageResources messageResources, Document document, PdfTocManager pdfTocManager,
 			final java.util.List<ObservatoryEvaluationForm> currentEvaluationPageList, java.util.List<ObservatoryEvaluationForm> previousEvaluationPageList, final File file,
 			final RankingInfo rankingActual, final RankingInfo rankingPrevio) throws Exception {
-		// TODO anchor_resumen_resultados
 		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(),
 				pdfTocManager.addSection(), pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
-//		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager,
-//				ConstantsFont.CHAPTER_TITLE_MP_FONT);
 		final ArrayList<String> boldWords = new ArrayList<>();
 		boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
 		chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
@@ -1404,17 +1401,9 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 			tablaRankings.completeRow();
 		}
 		chapter.add(tablaRankings);
-		// TODO Gráficos
+		// Gráficos
 		final String noDataMess = messageResources.getMessage("grafica.sin.datos");
-//		chapter.add(Chunk.NEWLINE);
-//		chapter.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
-//		// Gráfica nivel de adecuación
-//		addLevelAllocationResultsSummary(messageResources, chapter, file, currentEvaluationPageList, previousEvaluationPageList, noDataMess, pdfBuilder.isBasicService());
-//		// TODO Puntuación media y nivel de adecuación por página
-//		PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.pagina.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
-//				chapter, pdfTocManager.addSection(), 1);
-//		addResultsByPage(messageResources, chapter, file, currentEvaluationPageList, noDataMess);
-		// TODO Puntuación media por verificación
+		// Puntuación media por verificación
 		chapter.add(Chunk.NEXTPAGE);
 		Section section = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
 				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
@@ -1426,10 +1415,6 @@ public class AnonymousResultExportPdfAccesibilidad extends AnonymousResultExport
 				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
 		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section1, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_1);
 		section1.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_1, pdfBuilder.isBasicService()));
-//		Section section2 = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title.level2"), pdfTocManager.getIndex(),
-//				ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, section, pdfTocManager.addSection(), 1);
-//		addMidsComparationByVerificationLevelGraphic(pdfBuilder, messageResources, section2, file, currentEvaluationPageList, noDataMess, Constants.OBS_PRIORITY_2);
-//		section2.add(createObservatoryVerificationScoreTable(messageResources, currentScore, rankingPrevio != null ? previousScore : null, Constants.OBS_PRIORITY_2, pdfBuilder.isBasicService()));
 		document.add(chapter);
 	}
 

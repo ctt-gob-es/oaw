@@ -450,8 +450,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 						result.get(Constants.OBSERVATORY_GRAPHIC_EVOLUTION_3_5_VERIFICATION)));
 			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.putLog("Error", ResultadosAnonimosObservatorioAccesibilidadUtils.class, Logger.LOG_LEVEL_ERROR);
 		}
 		return labelValueList;
 	}
@@ -1733,7 +1732,6 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 				} else if (value == Constants.OBS_VALUE_RED_ZERO) {
 					partialResultsMap.get(lvb.getLabel()).add(BigDecimal.ZERO);
 				} else if (value == Constants.OBS_VALUE_GREEN_ZERO) {
-					// TODO NEW 0.5PASA
 					partialResultsMap.get(lvb.getLabel()).add(new BigDecimal(0.5d));
 				}
 			}
@@ -2168,7 +2166,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	}
 
 	/**
-	 * TODO Evolution chart by segment.
+	 * Evolution chart by segment.
 	 *
 	 * @param observatoryId      the observatory id
 	 * @param executionId        the execution id
@@ -2179,7 +2177,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 */
 	public static void generateEvolutionBySegmentSuitabilityChart(final String observatoryId, final String executionId, final String filePath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<CategoriaForm> categories) throws IOException {
-		// TODO Filtrar por segmento
+		// Filter by segment
 		Map<String, Map<Date, List<ObservatoryEvaluationForm>>> pageObservatoryMapBySegment = new LinkedHashMap<>();
 		Map<String, List<ObservatoryEvaluationForm>> pagesSegment = new LinkedHashMap<>();
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -2213,7 +2211,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 				}
 			}
 		}
-		// TODO Calcular porcentajes por segmento
+		// Calcular porcentajes por segmento
 		final Map<String, Map<String, Map<String, BigDecimal>>> evolutionSuitabilityDatePercentMapBySegment = new LinkedHashMap<>();
 		for (CategoriaForm category : categories) {
 			final Map<Date, Map<Long, Map<String, Integer>>> result = getEvolutionObservatoriesSitesByType(observatoryId, executionId, pageObservatoryMapBySegment.get(category.getName()));
@@ -2234,20 +2232,12 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 		for (CategoriaForm category : categories) {
 			for (Map.Entry<String, Map<String, BigDecimal>> entryBySegment : evolutionSuitabilityDatePercentMapBySegment.get(category.getName()).entrySet()) {
 				for (Map.Entry<String, BigDecimal> entryByDate : entryBySegment.getValue().entrySet()) {
-					// Ejemplo
-//			        result.addValue(35, "06/03/2017 Parcial", "Segmento 1");
-//			        result.addValue(40, "06/03/2017 Prioridad 1", "Segmento 1");
-//			        result.addValue(25, "06/03/2017 Prioridad 1 y 2", "Segmento 1");
 					BigDecimal value = entryByDate.getValue();
 					String rowKey = entryByDate.getKey() + " " + entryBySegment.getKey();
 					String columnKey = category.getName();
 					/******************* Grouped **/
 					dataSet.addValue(value, rowKey, columnKey);
 					/******************* Unrouped **/
-//					dataSet.addValue(value, entryBySegment.getKey(), columnKey + " " + entryByDate.getKey());
-//					map.mapKeyToGroup("06/03/2017 Parcial", "G1");
-//			        map.mapKeyToGroup("06/03/2017 Prioridad 1", "G1");
-//			        map.mapKeyToGroup("06/03/2017 Prioridad 1 y 2", "G1");
 					// Key group
 					String key = entryByDate.getKey() + " " + entryBySegment.getKey();
 					String group = entryByDate.getKey();
@@ -2256,9 +2246,6 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 					if (!axis.contains(group)) {
 						axis.add(group);
 					}
-//					if (!axis.contains(columnKey + " " + rowKey)) {
-//						axis.add(columnKey + " " + rowKey);
-//					}
 				}
 			}
 		}
@@ -2284,7 +2271,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param verifications      list of verifications to include on the chart
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// TODO Mejorar la compresión de estos gráficos
+	// PENDING Mejorar la compresión de estos gráficos
 	public static void generateEvolutionAverageScoreByVerificationChart(final MessageResources messageResources, final String filePath,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -2299,7 +2286,6 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 			}
 		}
 		final ChartForm chartForm = new ChartForm(dataSet, true, true, false, false, false, false, false, 1465, 654, pmgr.getValue(CRAWLER_PROPERTIES, "chart.evolution.mp.green.color"));
-		// TODO Colores variables??
 		chartForm.setFixedColorBars(true);
 		chartForm.setShowColumsLabels(false);
 		GraphicsUtils.createStandardBarChart(chartForm, filePath, "", messageResources, true);
@@ -2314,7 +2300,6 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	 * @param verifications      the verifications
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	// TODO Mejorar la compresión de estos gráficos
 	public static void generateEvolutionAverageScoreByVerificationChartSplit(final MessageResources messageResources, final String[] filePaths,
 			final Map<Date, List<ObservatoryEvaluationForm>> pageObservatoryMap, final List<String> verifications) throws IOException {
 		final PropertiesManager pmgr = new PropertiesManager();
@@ -2381,7 +2366,7 @@ public final class ResultadosAnonimosObservatorioAccesibilidadUtils {
 	}
 
 	/**
-	 * TODO Segment comparision grpah.
+	 * Segment comparision grpah.
 	 *
 	 * @param messageResources   the message resources
 	 * @param filePath           the file path

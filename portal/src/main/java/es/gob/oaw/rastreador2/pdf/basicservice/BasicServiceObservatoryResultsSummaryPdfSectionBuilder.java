@@ -422,7 +422,6 @@ public class BasicServiceObservatoryResultsSummaryPdfSectionBuilder {
 			backgroundColor = Constants.COLOR_RESULTADO_0_FALLA;
 			break;
 		case Constants.OBS_VALUE_GREEN_ZERO:
-			// TODO CERO PASA FROM PROPERTIES
 			valor = messageResources.getMessage("resultados.observatorio.vista.primaria.valor.cero.pasa");
 			modalidad = "P";
 			fuente = ConstantsFont.labelHeaderCellFont;

@@ -153,7 +153,7 @@ public final class PDFUtils {
 		chunk.setLocalDestination(Constants.ANCLA_PDF + (countSections));
 		final Paragraph paragraph = new Paragraph("", titleFont);
 		paragraph.add(chunk);
-		// TODO Line
+		// Line
 		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, Color.WHITE, Element.ALIGN_CENTER, -.5f));
 		paragraph.add(CONNECT);
 		final Chapter chapter = new Chapter(paragraph, numChapter);
@@ -186,7 +186,7 @@ public final class PDFUtils {
 		final Chunk aditionalAnchor = new Chunk("\u200B", titleFont);
 		aditionalAnchor.setLocalDestination(anchor);
 		paragraph.add(aditionalAnchor);
-		// TODO Line
+		// Line
 		Chunk CONNECT = new Chunk(new LineSeparator(0.5f, 95, Color.WHITE, Element.ALIGN_CENTER, -.5f));
 		paragraph.add(CONNECT);
 		final Chapter chapter = new Chapter(paragraph, numChapter);

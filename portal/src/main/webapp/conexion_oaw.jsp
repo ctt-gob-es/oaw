@@ -81,7 +81,7 @@
             } catch (FileUploadException fue) {
             }
 
-            // TODO: Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
+            // Controlar el punto del flujo en el que estamos (request, select_historico, confirm_request,...)
             this.errores = new ArrayList<String>();
             validateRequest();
         }

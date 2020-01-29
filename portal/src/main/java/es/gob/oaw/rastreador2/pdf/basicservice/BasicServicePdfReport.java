@@ -135,7 +135,7 @@ public class BasicServicePdfReport {
 			Logger.putLog("No se ha podido crear los directorios para exportar a PDF", BasicServicePdfReport.class, Logger.LOG_LEVEL_ERROR);
 		}
 		Logger.putLog("Exportando a PDF BasicServicePdfReport.exportToPdf", BasicServicePdfReport.class, Logger.LOG_LEVEL_DEBUG);
-		// TODO: Add document metadata (author, creator, subject, title...)
+		// PENDING Add document metadata (author, creator, subject, title...)
 		final Document document = new Document(PageSize.A4, 50, 50, 110, 72);
 		// document.addAuthor("Ministerio de Hacienda y Función Pública");
 		// document.addCreationDate();

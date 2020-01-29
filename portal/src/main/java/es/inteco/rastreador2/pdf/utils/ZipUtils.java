@@ -69,7 +69,7 @@ public final class ZipUtils {
 				}
 			}
 			generateZipFile(finalPath, finalZipPath, false);
-			// TODO No eliminamos los temporales
+			// PENDING No eliminamos los temporales
 			// FileUtils.removeFile(basePath + idObservatory + File.separator + idExecutionOb + File.separator + "temp" + File.separator);
 			CrawlerUtils.returnFile(response, finalZipPath, "application/zip", true);
 		} catch (Exception e) {

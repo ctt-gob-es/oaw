@@ -40,14 +40,15 @@ Telephone: (416) 978-4360
 */
 package ca.utoronto.atrc.tile.accessibilitychecker;
 
-import es.inteco.common.CheckFunctionConstants;
-import es.inteco.common.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-import java.util.List;
+import es.inteco.common.CheckFunctionConstants;
+import es.inteco.common.logging.Logger;
 
 /**
  * The Class CheckCode.
@@ -77,6 +78,8 @@ public class CheckCode {
 	private String stringFunctionPosition;
 	/** The vector code. */
 	private List<CheckCode> vectorCode;
+	/** The id analysis. */
+	private Long idAnalysis;
 
 	/**
 	 * Instantiates a new check code.
@@ -310,6 +313,24 @@ public class CheckCode {
 	 */
 	public void setLanguage(String stringLanguage) {
 		this.stringLanguage = stringLanguage;
+	}
+
+	/**
+	 * Gets the id analysis.
+	 *
+	 * @return the id analysis
+	 */
+	public Long getIdAnalysis() {
+		return idAnalysis;
+	}
+
+	/**
+	 * Sets the id analysis.
+	 *
+	 * @param idAnalysis the new id analysis
+	 */
+	public void setIdAnalysis(Long idAnalysis) {
+		this.idAnalysis = idAnalysis;
 	}
 
 	/**
@@ -688,13 +709,9 @@ public class CheckCode {
 				functionId = CheckFunctionConstants.FUNCTION_SECTION_HAS_PHONE;
 			} else if ("empty-table".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_EMPTY_TABLE_70;
-			} 
-			else if ("more-header-than-fieldset".equals(stringCall)) {
+			} else if ("more-header-than-fieldset".equals(stringCall)) {
 				functionId = CheckFunctionConstants.FUNCTION_MORE_HEADERS_THAN_FIELDSETS;
-			} 			
-			
-			
-			else {
+			} else {
 				Logger.putLog("Warning: unknown function: " + stringCall, CheckCode.class, Logger.LOG_LEVEL_WARNING);
 				return false;
 			}

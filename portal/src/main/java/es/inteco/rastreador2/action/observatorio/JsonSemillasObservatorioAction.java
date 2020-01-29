@@ -79,30 +79,27 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 				if (!StringUtils.isEmpty(searchForm.getNombre())) {
 					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
-
-
 				if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
-					//searchForm.setCategoria((request.getParameter("categoria")).split(","));
+					// searchForm.setCategoria((request.getParameter("categoria")).split(","));
 					searchForm.setCategoria((request.getParameterValues("categoria")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("ambito"))) {
-				searchForm.setAmbito((request.getParameterValues("ambito")));
+					searchForm.setAmbito((request.getParameterValues("ambito")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("dependencia"))) {
-				searchForm.setDependencia((request.getParameterValues("dependencia")));
+					searchForm.setDependencia((request.getParameterValues("dependencia")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("complejidad"))) {
-				searchForm.setComplejidad((request.getParameterValues("complejidad")));
+					searchForm.setComplejidad((request.getParameterValues("complejidad")));
 				}
 				searchForm.setUrl(request.getParameter("url"));
 				searchForm.setinDirectorio(request.getParameter("directorio"));
 				searchForm.setisActiva(request.getParameter("activa"));
 				searchForm.setEliminada(request.getParameter("eliminada"));
-				if (request.getParameter("etiquetas")!= "") {
-				String[] tagArr = request.getParameter("etiquetas").split(",");
-				searchForm.setEtiquetas(tagArr);
+				if (request.getParameter("etiquetas") != "") {
+					String[] tagArr = request.getParameter("etiquetas").split(",");
+					searchForm.setEtiquetas(tagArr);
 				}
-
 			}
 			final int pagina = Pagination.getPage(request, Constants.PAG_PARAM);
 			final int numResult = SemillaDAO.countObservatorySeeds(c, searchForm);
@@ -581,8 +578,8 @@ public class JsonSemillasObservatorioAction extends DispatchAction {
 	 * @throws Exception the exception
 	 */
 	public ActionForward candidates(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// Search sedds that not included in observatory
 		try (Connection c = DataBaseManager.getConnection()) {
-//TODO Search sedds that not included in observatory
 			response.setContentType("text/json");
 			List<SemillaForm> observatorySeedsList = SemillaDAO.getCandidateSeeds(c, Long.parseLong(request.getParameter("idObservatorio")), Long.parseLong(request.getParameter("idExObs")));
 			String jsonSeeds = new Gson().toJson(observatorySeedsList);

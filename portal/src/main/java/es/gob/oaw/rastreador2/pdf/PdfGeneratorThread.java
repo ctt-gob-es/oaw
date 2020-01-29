@@ -83,7 +83,6 @@ public class PdfGeneratorThread extends Thread {
 		for (FulFilledCrawling fulfilledCrawling : fulfilledCrawlings) {
 			buildPdf(fulfilledCrawling.getId(), fulfilledCrawling.getIdCrawling());
 		}
-		// TODO Generate zips to pass each folder??
 		final MailService mailService = new MailService();
 		mailService.sendMail(Collections.singletonList(email), "Generación de informes completado",
 				String.format("El proceso de generación de informes ha finalizado para el observatorio %s. Para descargar los informes vuelva a ejecutar la acción", observatoryName));
