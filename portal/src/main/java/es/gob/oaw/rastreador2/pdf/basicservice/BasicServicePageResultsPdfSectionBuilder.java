@@ -13,7 +13,6 @@
 package es.gob.oaw.rastreador2.pdf.basicservice;
 
 import static es.inteco.common.ConstantsFont.DEFAULT_PADDING;
-import static es.inteco.common.ConstantsFont.HALF_LINE_SPACE;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -77,17 +76,18 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 	public void addPageResults(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, boolean withOutLevels) throws Exception {
 		int counter = 1;
 		for (ObservatoryEvaluationForm evaluationForm : currentEvaluationPageList) {
-			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label", counter);
+			final String chapterTitle = messageResources.getMessage("observatory.graphic.score.by.page.label.extended", counter);
 			final Chapter chapter = PDFUtils.createChapterWithTitle(chapterTitle, pdfTocManager.getIndex(), pdfTocManager.addSection(), pdfTocManager.getNumChapter(),
 					ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resultados_page_" + counter);
 			chapter.add(createPaginaTableInfo(messageResources, evaluationForm));
 			// Creación de las tablas resumen de resultado por verificación de
 			// cada página
 			for (ObservatoryLevelForm observatoryLevelForm : evaluationForm.getGroups()) {
-				final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L);
-				levelTitle.setSpacingBefore(HALF_LINE_SPACE);
-				chapter.add(levelTitle);
-				chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm, getPriorityName(messageResources, observatoryLevelForm.getName())));
+				// final Paragraph levelTitle = new Paragraph(getPriorityName(messageResources, observatoryLevelForm.getName()), ConstantsFont.CHAPTER_TITLE_MP_FONT_3_L);
+				// levelTitle.setSpacingBefore(HALF_LINE_SPACE);
+				// chapter.add(levelTitle);
+				chapter.add(createPaginaTableVerificationSummary(messageResources, observatoryLevelForm,
+						messageResources.getMessage("observatory.graphic.score.by.page.table.title", new String[] { getPriorityName(messageResources, observatoryLevelForm.getName()) })));
 			}
 			// Con o sin niveles
 			if (withOutLevels) {
@@ -101,6 +101,15 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 		}
 	}
 
+	/**
+	 * Adds the page results accesibility.
+	 *
+	 * @param messageResources the message resources
+	 * @param document         the document
+	 * @param pdfTocManager    the pdf toc manager
+	 * @param withOutLevels    the with out levels
+	 * @throws Exception the exception
+	 */
 	@Override
 	public void addPageResultsAccesibility(final MessageResources messageResources, final Document document, final PdfTocManager pdfTocManager, boolean withOutLevels) throws Exception {
 		int counter = 1;

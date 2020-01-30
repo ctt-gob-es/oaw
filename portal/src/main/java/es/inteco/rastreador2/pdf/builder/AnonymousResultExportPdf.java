@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.struts.util.MessageResources;
 
@@ -36,6 +37,7 @@ import es.inteco.rastreador2.pdf.AnonymousResultExportPdfSection4;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
 import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
+import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioUNEEN2019Utils;
 
 /**
  * The Class AnonymousResultExportPdf.
@@ -366,6 +368,11 @@ public abstract class AnonymousResultExportPdf {
 			}
 		}
 		generateScoresVerificacion(messageResources, scoreForm, evaList);
+		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
+		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
+		/**
+		 * for (ResultadoSemillaForm seedResult : seedsResults) { seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling()))); }
+		 */
 		if (!evaList.isEmpty()) {
 			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
@@ -373,10 +380,42 @@ public abstract class AnonymousResultExportPdf {
 			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
 			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// TODO Calculated compliance
+			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));
 		}
 		// El nivel de validación del portal
 		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
 		return scoreForm;
+	}
+
+	/**
+	 * Calculate crawling compliance.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	private static Map<Long, String> calculateCrawlingCompliance(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<Long, String> resultCompilance = new TreeMap<>();
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+					countNC++;
+				}
+			}
+			if (countC == result.getValue().size()) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
+			} else if (countC > countNC) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
+			} else {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
+			}
+		}
+		return resultCompilance;
 	}
 
 	/**

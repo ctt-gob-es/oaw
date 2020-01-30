@@ -1,3 +1,10 @@
+5.0.2
+------------------------------------------------------------------------------------------------------------------------------------
+- Correcciones informe oficial UNE-EN301549:2019
+- Correcciones informe servicio diagnótico cartucho accesibilidad
+- Registro en base de datos de las URLs de accesibilidad utilizadas en las validaciones
+- Implementada opción para añadir una semilla a un observatorio ya creado.
+
 5.0.1
 ------------------------------------------------------------------------------------------------------------------------------------
 - Correcciones en los informes individuales

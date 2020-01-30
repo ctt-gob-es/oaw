@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.struts.validator.ValidatorForm;
 
 import es.inteco.common.Constants;
@@ -32,19 +31,19 @@ public class BasicServiceForm extends ValidatorForm {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8309372668897071036L;
 	/** The Constant OBSERVATORIO_UNE_2012_VERSIÓN_2_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (versión 2 sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (versión 2)(sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (antigua sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (antigua) (sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS. */
 	private static final String OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS = "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD. */
 	private static final String OBSERVATORIO_ACCESIBILIDAD = "Observatorio Accesibilidad (beta)";
 	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta)(sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_EN2019. */
 	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE-EN301549:2019 (beta)";
 	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE-EN301549:2019 (beta sin comprobar enlaces rotos)";
+	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE-EN301549:2019 (beta)(sin comprobar enlaces rotos)";
 	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
 	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
 	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
@@ -86,6 +85,8 @@ public class BasicServiceForm extends ValidatorForm {
 	private BasicServiceAnalysisType analysisType = BasicServiceAnalysisType.URL;
 	/** The complexity. */
 	private String complexity;
+	/** The file name. */
+	private String fileName;
 
 	/**
 	 * Gets the language.
@@ -426,10 +427,39 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this).append("id", id).append("language", language).append("domain", domain).append("content", content).append("email", email).append("name", name)
-				.append("user", user).append("profundidad", profundidad).append("amplitud", amplitud).append("report", report).append("schedulingDate", schedulingDate)
-				.append("inDirectory", inDirectory).append("registerAnalysis", registerAnalysis).append("analysisToDelete", analysisToDelete).append("date", date).append("analysisType", analysisType)
-				.toString();
+		StringBuilder builder = new StringBuilder();
+		builder.append("BasicServiceForm [id=").append(id).append(", ");
+		if (language != null)
+			builder.append("language=").append(language).append(", ");
+		if (domain != null)
+			builder.append("domain=").append(domain).append(", ");
+		if (email != null)
+			builder.append("email=").append(email).append(", ");
+		if (name != null)
+			builder.append("name=").append(name).append(", ");
+		if (user != null)
+			builder.append("user=").append(user).append(", ");
+		if (profundidad != null)
+			builder.append("profundidad=").append(profundidad).append(", ");
+		if (amplitud != null)
+			builder.append("amplitud=").append(amplitud).append(", ");
+		if (report != null)
+			builder.append("report=").append(report).append(", ");
+		if (schedulingDate != null)
+			builder.append("schedulingDate=").append(schedulingDate).append(", ");
+		builder.append("inDirectory=").append(inDirectory).append(", registerAnalysis=").append(registerAnalysis).append(", ");
+		if (analysisToDelete != null)
+			builder.append("analysisToDelete=").append(analysisToDelete).append(", ");
+		if (date != null)
+			builder.append("date=").append(date).append(", ");
+		if (analysisType != null)
+			builder.append("analysisType=").append(analysisType).append(", ");
+		if (complexity != null)
+			builder.append("complexity=").append(complexity).append(", ");
+		if (fileName != null)
+			builder.append("fileName=").append(fileName);
+		builder.append("]");
+		return builder.toString();
 	}
 
 	/**
@@ -484,5 +514,23 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public void setComplexity(String complexity) {
 		this.complexity = complexity;
+	}
+
+	/**
+	 * Gets the file name.
+	 *
+	 * @return the file name
+	 */
+	public String getFileName() {
+		return fileName;
+	}
+
+	/**
+	 * Sets the file name.
+	 *
+	 * @param fileName the new file name
+	 */
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }

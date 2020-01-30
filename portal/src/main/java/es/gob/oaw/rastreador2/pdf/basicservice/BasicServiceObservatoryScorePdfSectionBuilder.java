@@ -107,43 +107,46 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 		ScoreForm previousScore = null;
 		final Chapter chapter;
 		if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad || pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
-			chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
+			chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("pdf.accessibility.global.summary.title").toUpperCase(), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+					pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_resumen_resultados");
+			Section section31 = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.global.summary.globals"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L,
+					chapter, pdfTocManager.addSection(), 1);
 			final ArrayList<String> boldWords = new ArrayList<>();
 			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p1.bold"));
-			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+			section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p1"), boldWords, ConstantsFont.paragraphBoldFont,
 					ConstantsFont.PARAGRAPH, true));
 			boldWords.clear();
 			boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p2.bold"));
-			chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
+			section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p2"), boldWords, ConstantsFont.paragraphBoldFont,
 					ConstantsFont.PARAGRAPH, true));
 			if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
 				boldWords.clear();
 				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p3.bold"));
-				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
+				section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p3"), boldWords, ConstantsFont.paragraphBoldFont,
 						ConstantsFont.PARAGRAPH, true));
 				boldWords.clear();
 				boldWords.add(messageResources.getMessage("pdf.accessibility.global.summary.p4.bold"));
-				chapter.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
+				section31.add(PDFUtils.createParagraphWithDiferentFormatWord(messageResources.getMessage("pdf.accessibility.global.summary.p4"), boldWords, ConstantsFont.paragraphBoldFont,
 						ConstantsFont.PARAGRAPH, true));
 			} else if (pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad) {
 				Paragraph p = new Paragraph(messageResources.getMessage("pdf.accessibility.global.summary.p3"), ConstantsFont.PARAGRAPH);
 				p.setSpacingBefore(ConstantsFont.LINE_SPACE);
 				p.setAlignment(Paragraph.ALIGN_JUSTIFIED);
-				chapter.add(p);
+				section31.add(p);
 			}
 			// Info
 			final PdfPTable notice = new PdfPTable(new float[] { 100f });
 			notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
 			notice.addCell(PDFUtils.createTableCell(messageResources.getMessage("pdf.accessibility.intro.info"), Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED,
 					ConstantsFont.DEFAULT_PADDING, 50));
-			chapter.add(notice);
+			section31.add(notice);
 			currentScore = pdfBuilder.generateScores(messageResources, currentEvaluationPageList);
 			if (evolution) {
 				previousScore = pdfBuilder.generateScores(messageResources, previousEvaluationPageList);
 			} else {
 				previousScore = null;
 			}
-			chapter.add(Chunk.NEWLINE);
+			section31.add(Chunk.NEWLINE);
 			//// TABLA PUNTUCAION OBSERVATORIO
 			final float[] columnWidths;
 			if (previousScore != null) {
@@ -178,6 +181,16 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 					tablaRankings.addCell(createEvolutionLevelCell(messageResources, currentScore.getLevel(), previousScore.getLevel()));
 				}
 				tablaRankings.completeRow();
+				// Cumplimiento
+				tablaRankings.addCell(PDFUtils.createTableCell(messageResources.getMessage("observatorio.nivel.cumplimiento"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_LEFT,
+						DEFAULT_PADDING, -1));
+				// TODO Cumplimiento
+				tablaRankings.addCell(PDFUtils.createTableCell(currentScore.getCompliance(), Color.WHITE, ConstantsFont.strongNoteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+				if (previousScore != null) {
+					tablaRankings.addCell(PDFUtils.createTableCell(previousScore.getCompliance(), Color.WHITE, ConstantsFont.noteCellFont, Element.ALIGN_CENTER, DEFAULT_PADDING, -1));
+					tablaRankings.addCell(createEvolutionLevelCell(messageResources, previousScore.getCompliance(), previousScore.getCompliance()));
+				}
+				tablaRankings.completeRow();
 				chapter.add(tablaRankings);
 				chapter.add(Chunk.NEWLINE);
 				chapter.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
@@ -193,7 +206,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				chapter.add(Chunk.NEXTPAGE);
 				Section section = PDFUtils.createSection(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.title"), pdfTocManager.getIndex(),
 						ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter, pdfTocManager.addSection(), 1);
-				section.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p1"), ConstantsFont.PARAGRAPH));
+				section.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p1.basic.service"), ConstantsFont.PARAGRAPH));
 				section.add(Chunk.NEWLINE);
 				section.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.media.verificacion.p2"), ConstantsFont.PARAGRAPH));
 				section.add(Chunk.NEWLINE);
@@ -743,9 +756,10 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 	private void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final List<ObservatoryEvaluationForm> evaList, final String noDataMess)
 			throws Exception {
 		final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
-		final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.ANCHOR_FONT);
-		anchorMap.put(1, anchor);
-		chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.PARAGRAPH));
+//		final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.ANCHOR_FONT);
+//		anchorMap.put(1, anchor);
+//		chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.PARAGRAPH));
+		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p1"), ConstantsFont.PARAGRAPH, chapter);
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p2"), ConstantsFont.PARAGRAPH, chapter);
 		chapter.add(Chunk.NEWLINE);
 		final String title = messageResources.getMessage("observatory.graphic.score.by.page.title");
@@ -757,7 +771,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			image.setAlignment(Element.ALIGN_CENTER);
 			chapter.add(image);
 		}
-		final float[] widths = { 33f, 33f, 33f };
+		final float[] widths = { 30f, 30f, 40f };
 		final PdfPTable table = new PdfPTable(widths);
 		table.addCell(
 				PDFUtils.createTableCell(messageResources.getMessage("resultados.observatorio.vista.primaria.pagina"), Constants.VERDE_C_MP, ConstantsFont.labelCellFont, Element.ALIGN_CENTER, 0));
