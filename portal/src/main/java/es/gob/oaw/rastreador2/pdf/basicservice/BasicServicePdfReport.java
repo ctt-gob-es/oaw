@@ -148,14 +148,34 @@ public class BasicServicePdfReport {
 				writer.setViewerPreferences(PdfWriter.PageModeUseOutlines);
 				writer.getExtraCatalog().put(new PdfName("Lang"), new PdfString("es"));
 				final String crawlingDate = CrawlerUtils.formatDate(pdfBuilder.getBasicServiceForm().getDate());
-				final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot", new String[] { pdfBuilder.getBasicServiceForm().getName(), crawlingDate });
+				final String footerText = messageResources.getMessage("ob.resAnon.intav.report.foot.basic.service", new String[] { crawlingDate });
 				writer.setPageEvent(new ExportPageEventsObservatoryMP(footerText, crawlingDate));
 				ExportPageEventsObservatoryMP.setPrintFooter(true);
 				final PdfTocManager pdfTocManager = createPdfTocManager(writer);
 				document.open();
-				PDFUtils.addCoverPage(document,
-						messageResources.getMessage("pdf.accessibility.title", new String[] { pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle() }),
-						pdfBuilder.getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL ? pdfBuilder.getBasicServiceForm().getDomain() : "", "Informe emitido bajo demanda.");
+				// Preserve "old" cover and add new cover for new cartidges
+				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {
+					String subtitle = "";
+					switch (pdfBuilder.getBasicServiceForm().getAnalysisType()) {
+					case URL:
+						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.url", new String[] { pdfBuilder.getBasicServiceForm().getDomain() });
+						break;
+					case CODIGO_FUENTE:
+						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.source", new String[] { pdfBuilder.getBasicServiceForm().getFileName() });
+						break;
+					case LISTA_URLS:
+						subtitle = messageResources2019.getMessage("pdf.accessibility.cover.type.url.list");
+						break;
+					default:
+						break;
+					}
+					PDFUtils.addNewCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title.basic.service"), subtitle,
+							messageResources2019.getMessage("pdf.accessibility.cover.notice.1"), messageResources2019.getMessage("pdf.accessibility.cover.notice.2"));
+				} else {
+					PDFUtils.addCoverPage(document,
+							messageResources.getMessage("pdf.accessibility.title", new String[] { pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle() }),
+							pdfBuilder.getBasicServiceForm().getAnalysisType() == BasicServiceAnalysisType.URL ? pdfBuilder.getBasicServiceForm().getDomain() : "", "Informe emitido bajo demanda.");
+				}
 				pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, true);
 				pdfTocManager.addChapterCount();
 				if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
@@ -172,7 +192,7 @@ public class BasicServicePdfReport {
 				} else {
 					observatoryScoreSectionBuilder.addObservatoryScoreSummary(pdfBuilder, messageResources, document, pdfTocManager, file);
 				}
-				// Resumen de las puntuaciones del Observatorio
+				// Resultados por verificación
 				final BasicServiceObservatoryResultsSummaryPdfSectionBuilder observatoryResultsSummarySectionBuilder = new BasicServiceObservatoryResultsSummaryPdfSectionBuilder(
 						currentEvaluationPageList);
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {

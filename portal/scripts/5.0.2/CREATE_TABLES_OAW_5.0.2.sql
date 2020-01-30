@@ -4,3 +4,5 @@ CREATE TABLE tanalisis_accesibilidad (
 	urls VARCHAR(2048) NOT NULL , 
 	PRIMARY KEY (id)
 );
+
+ALTER TABLE basic_service ADD filename VARCHAR(1024) NULL;

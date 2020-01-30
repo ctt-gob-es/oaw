@@ -51,7 +51,6 @@ import com.lowagie.text.TextElementArray;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.events.IndexEvents;
-import com.tecnick.htmlutils.htmlentities.HTMLEntities;
 
 import es.gob.oaw.rastreador2.pdf.utils.PdfTocManager;
 import es.inteco.common.Constants;
@@ -197,25 +196,62 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		chapter.add(Chunk.NEXTPAGE);
 		Section section = PDFUtils.createSection(messageResources.getMessage("pdf.accessibility.intro.how.title"), pdfTocManager.getIndex(), ConstantsFont.CHAPTER_TITLE_MP_FONT_2_L, chapter,
 				pdfTocManager.addSection(), 1);
-		boldWords = new ArrayList<>();
-		boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.bold"));
-		section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1"), boldWords, ConstantsFont.paragraphBoldFont,
-				ConstantsFont.PARAGRAPH, true));
-		PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p2"), ConstantsFont.PARAGRAPH, section);
 		if (isBasicService) {
+			/****** paragraph #1 *****/
+			boldWords = new ArrayList<>();
+			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service.bold"));
+			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
+					ConstantsFont.PARAGRAPH, true));
+			/****** paragraph #2 *****/
+			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p2"), ConstantsFont.PARAGRAPH, section);
+			/****** paragraph #3 *****/
+			specialChunkMap = new HashMap<>();
 			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p3.basic.service"), ConstantsFont.PARAGRAPH, section);
-			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service"), ConstantsFont.PARAGRAPH, section);
-			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service"), ConstantsFont.PARAGRAPH, section);
-			boldWords = new ArrayList<>();
-			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service.bold1"));
-			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
-					ConstantsFont.PARAGRAPH, true));
-			boldWords = new ArrayList<>();
-			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service.bold1"));
-			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service"), boldWords, ConstantsFont.paragraphBoldFont,
-					ConstantsFont.PARAGRAPH, true));
-			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p8"), ConstantsFont.PARAGRAPH, section);
+			/****** paragraph #4 *****/
+			specialChunkMap = new HashMap<>();
+			SpecialChunk chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p4.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			/****** paragraph #5 *****/
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p5.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			/****** paragraph #6 *****/
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			SpecialChunk bold = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(2, bold);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p6.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			/****** paragraph #7 *****/
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			bold = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service.bold1"), ConstantsFont.paragraphBoldFont);
+			specialChunkMap.put(2, bold);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p7.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
+			/****** paragraph #8 *****/
+			specialChunkMap = new HashMap<>();
+			chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p8.basic.service.anchor1.text"), ConstantsFont.ANCHOR_FONT);
+			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p8.basic.service.anchor1.url"));
+			chunk.setExternalLink(false);
+			specialChunkMap.put(1, chunk);
+			section.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p8.basic.service"), specialChunkMap, ConstantsFont.PARAGRAPH));
 		} else {
+			boldWords = new ArrayList<>();
+			boldWords.add(this.messageResources.getMessage("pdf.accessibility.intro.how.p1.bold"));
+			section.add(PDFUtils.createParagraphWithDiferentFormatWord(this.messageResources.getMessage("pdf.accessibility.intro.how.p1"), boldWords, ConstantsFont.paragraphBoldFont,
+					ConstantsFont.PARAGRAPH, true));
+			PDFUtils.addParagraph(this.messageResources.getMessage("pdf.accessibility.intro.how.p2"), ConstantsFont.PARAGRAPH, section);
 			specialChunkMap = new HashMap<>();
 			SpecialChunk chunk = new SpecialChunk(messageResources.getMessage("pdf.accessibility.intro.how.p3.anchor1.text"), ConstantsFont.ANCHOR_FONT);
 			chunk.setAnchor(messageResources.getMessage("pdf.accessibility.intro.how.p3.anchor1.url"));
@@ -427,7 +463,7 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			long observatoryType) throws DocumentException {
 		if (isBasicService() && getBasicServiceForm().isContentAnalysis()) {
 			// Añadir el código fuente analizado
-			createContentChapter(this.messageResources, document, getBasicServiceForm().getContent(), pdfTocManager);
+			createContentChapter(this.messageResources, document, getBasicServiceForm().getFileName(), pdfTocManager);
 		} else {
 			createMuestraPaginasChapter(this.messageResources, document, pdfTocManager, titleFont, evaList);
 		}
@@ -450,14 +486,20 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 	 */
 	@Override
 	public void createContentChapter(final MessageResources messageResources, final Document d, final String contents, final PdfTocManager pdfTocManager) throws DocumentException {
-		final Chapter chapter = PDFUtils.createChapterWithTitle(this.messageResources.getMessage("basic.service.content.title"), pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT);
-		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1"), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, true);
-		PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
+		final Chapter chapter = PDFUtils.createChapterWithTitle(messageResources.getMessage("basic.service.content.title"), pdfTocManager.getIndex(), pdfTocManager.addSection(),
+				pdfTocManager.getNumChapter(), ConstantsFont.CHAPTER_TITLE_MP_FONT, true, "anchor_cod_analizado");
+		PDFUtils.addParagraph(this.messageResources.getMessage("basic.service.content.p1", new String[] { contents }), ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_JUSTIFIED, true, false);
+//		PDFUtils.addCode(HTMLEntities.unhtmlAngleBrackets(contents), chapter);
 		PDFUtils.addParagraph("El análisis se ha ejecutado con la siguiente configuración:", ConstantsFont.PARAGRAPH, chapter, Element.ALIGN_LEFT, true, false);
 		final com.lowagie.text.List listaConfiguracionRastreo = new com.lowagie.text.List();
 		listaConfiguracionRastreo.setIndentationLeft(LINE_SPACE);
 		PDFUtils.addListItem("Tipo: Código fuente", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
-		PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		PDFUtils.addListItem("Normativa: Observatorio UNE-EN301549:2019 (beta)", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
+			PDFUtils.addListItem("Comprobación de enlaces rotos: Sí", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
+			PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+		}
 		chapter.add(listaConfiguracionRastreo);
 		d.add(chapter);
 	}
@@ -504,7 +546,12 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 				}
 				PDFUtils.addListItem("Selección restringida a directorio: " + (getBasicServiceForm().isInDirectory() ? "Sí" : "No"), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
 			}
-			PDFUtils.addListItem("Normativa: " + getBasicServiceForm().reportToString(), listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			PDFUtils.addListItem("Normativa: Observatorio UNE-EN301549:2019 (beta)", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			if (Constants.REPORT_OBSERVATORY_4.equals(getBasicServiceForm().getReport())) {
+				PDFUtils.addListItem("Comprobación de enlaces rotos: Sí", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(getBasicServiceForm().getReport())) {
+				PDFUtils.addListItem("Comprobación de enlaces rotos: No", listaConfiguracionRastreo, ConstantsFont.PARAGRAPH, false, true);
+			}
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);

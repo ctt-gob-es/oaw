@@ -208,7 +208,7 @@ public final class BasicServiceExport {
 	 * @param reportFile the report file
 	 * @return the string
 	 */
-	public static String compressReportWithCode(final String reportFile) {
+	public static String compressReportWithCode(final String reportFile, final boolean isContentAnalysis, final String filename) {
 		final String reportCompressFile;
 		if (reportFile.endsWith(".pdf")) {
 			reportCompressFile = reportFile.substring(0, reportFile.length() - 4) + ".zip";

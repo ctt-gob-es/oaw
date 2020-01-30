@@ -168,8 +168,7 @@ public final class BasicServiceUtils {
 		basicServiceForm.setRegisterAnalysis(Boolean.parseBoolean(request.getParameter("registerAnalysis")));
 		basicServiceForm.setAnalysisToDelete(request.getParameter("analysisToDelete"));
 		basicServiceForm.setDomain(BasicServiceUtils.checkIDN(basicServiceForm.getDomain()));
-		
-		
+		basicServiceForm.setFileName(request.getParameter("filename"));
 		basicServiceForm.setComplexity(request.getParameter(Constants.PARAM_COMPLEXITY));
 		return basicServiceForm;
 	}

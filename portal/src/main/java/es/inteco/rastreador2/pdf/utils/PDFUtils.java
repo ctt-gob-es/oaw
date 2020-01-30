@@ -112,6 +112,40 @@ public final class PDFUtils {
 	}
 
 	/**
+	 * Adds the new cover page.
+	 *
+	 * @param document     the document
+	 * @param titleText    the title text
+	 * @param subtitleText the subtitle text
+	 * @param noticeText   the notice text
+	 * @throws DocumentException the document exception
+	 */
+	public static void addNewCoverPage(final Document document, final String titleText, final String subtitleText, final String noticeText, final String noticeText2) throws DocumentException {
+		final Paragraph title = new Paragraph(titleText, ConstantsFont.DOCUMENT_TITLE_MP_FONT);
+		title.setSpacingBefore(ConstantsFont.TITLE_LINE_SPACE);
+		title.setAlignment(Paragraph.ALIGN_CENTER);
+		document.add(title);
+		if (subtitleText != null && !subtitleText.isEmpty()) {
+			final Paragraph subtitle = new Paragraph(subtitleText, ConstantsFont.DOCUMENT_SUBTITLE_MP_FONT);
+			subtitle.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
+			subtitle.setAlignment(Paragraph.ALIGN_CENTER);
+			document.add(subtitle);
+		}
+		if (noticeText != null && !noticeText.isEmpty()) {
+			final PdfPTable notice = new PdfPTable(1);
+			notice.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
+			notice.addCell(PDFUtils.createTableCell(noticeText, Constants.GRIS_MUY_CLARO, ConstantsFont.DOCUMENT_NOTICE_MP_FONT, Element.ALIGN_CENTER, ConstantsFont.DEFAULT_PADDING, 50));
+			document.add(notice);
+		}
+		if (noticeText2 != null && !noticeText2.isEmpty()) {
+			final PdfPTable notice2 = new PdfPTable(1);
+			notice2.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
+			notice2.addCell(PDFUtils.createTableCell(noticeText2, Constants.GRIS_MUY_CLARO, ConstantsFont.paragraphBoldFont, Element.ALIGN_JUSTIFIED, ConstantsFont.DEFAULT_PADDING, 80));
+			document.add(notice2);
+		}
+	}
+
+	/**
 	 * Creates the chapter with title.
 	 *
 	 * @param title         the title

@@ -197,10 +197,16 @@ public class BasicServiceManager {
 				// Generar código analizado
 				final SourceFilesManager sourceFilesManager = new SourceFilesManager(new File(pdfPath).getParentFile());
 				final List<Long> analysisIdsByTracking = AnalisisDatos.getAnalysisIdsByTracking(DataBaseManager.getConnection(), idCrawling);
-				sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
-				sourceFilesManager.zipSources(true);
+				// TODO Source code analysis
+				if (basicServiceForm.isContentAnalysis()) {
+					sourceFilesManager.writeSourceFilesContent(DataBaseManager.getConnection(), analysisIdsByTracking, basicServiceForm.getFileName());
+					sourceFilesManager.zipSources(true);
+				} else {
+					sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
+					sourceFilesManager.zipSources(true);
+				}
 				// Comprimimos el fichero
-				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath);
+				pdfPath = BasicServiceExport.compressReportWithCode(pdfPath, basicServiceForm.isContentAnalysis(), basicServiceForm.getFileName());
 				if (!basicServiceForm.isRegisterAnalysis()) {
 					// Si no es necesario registrar el análisis se borra
 					Logger.putLog("Borrando analisis " + idCrawling, BasicServiceManager.class, Logger.LOG_LEVEL_INFO);
