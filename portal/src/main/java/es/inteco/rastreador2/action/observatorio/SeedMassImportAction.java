@@ -17,7 +17,6 @@ import static es.inteco.common.Constants.CRAWLER_PROPERTIES;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -33,8 +32,6 @@ import org.apache.struts.action.ActionMapping;
 import org.apache.struts.action.ActionMessage;
 import org.apache.struts.action.ActionMessages;
 
-import es.gob.oaw.rastreador2.action.diagnostico.ServicioDiagnosticoAction;
-import es.gob.oaw.rastreador2.actionform.diagnostico.ServicioDiagnosticoForm;
 import es.inteco.common.Constants;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
@@ -42,6 +39,7 @@ import es.inteco.common.utils.StringUtils;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.action.semillas.SeedCategoriesAction;
 import es.inteco.rastreador2.action.semillas.SeedUtils;
+import es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm;
 import es.inteco.rastreador2.actionform.semillas.AmbitoForm;
 import es.inteco.rastreador2.actionform.semillas.CategoriaForm;
 import es.inteco.rastreador2.actionform.semillas.ComplejidadForm;
@@ -49,12 +47,10 @@ import es.inteco.rastreador2.actionform.semillas.DependenciaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaForm;
 import es.inteco.rastreador2.actionform.semillas.SemillaSearchForm;
 import es.inteco.rastreador2.dao.ambito.AmbitoDAO;
-import es.inteco.rastreador2.dao.basic.service.DiagnosisDAO;
 import es.inteco.rastreador2.dao.categoria.CategoriaDAO;
 import es.inteco.rastreador2.dao.complejidad.ComplejidadDAO;
 import es.inteco.rastreador2.dao.semilla.SemillaDAO;
 import es.inteco.rastreador2.utils.CrawlerUtils;
-import es.inteco.rastreador2.utils.Pagination;
 
 /**
  * The Class SeedMassImportAction.
@@ -63,7 +59,6 @@ import es.inteco.rastreador2.utils.Pagination;
  *
  */
 public class SeedMassImportAction extends Action {
-
 	/**
 	 * Execute.
 	 *
@@ -76,14 +71,10 @@ public class SeedMassImportAction extends Action {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action.
-	 * ActionMapping, org.apache.struts.action.ActionForm,
-	 * javax.servlet.http.HttpServletRequest,
+	 * @see org.apache.struts.action.Action#execute(org.apache.struts.action. ActionMapping, org.apache.struts.action.ActionForm, javax.servlet.http.HttpServletRequest,
 	 * javax.servlet.http.HttpServletResponse)
 	 */
-	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request,
-			HttpServletResponse response) {
-
+	public ActionForward execute(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			if (CrawlerUtils.hasAccess(request, "delete.observatory")) {
 				if ("confirm".equals(request.getParameter(Constants.ACTION))) {
@@ -95,12 +86,11 @@ public class SeedMassImportAction extends Action {
 						return mapping.findForward(Constants.VOLVER);
 					}
 				} else if (Constants.ACCION_EXPORT_ALL.equals(request.getParameter(Constants.ACTION))) {
-					//return getAllSeedsFile(request, response);
+					// return getAllSeedsFile(request, response);
 					return getSeedsFile(request, response, form);
 				} else {
 					return mapping.findForward(Constants.VOLVER);
 				}
-
 			} else {
 				return mapping.findForward(Constants.NO_PERMISSION);
 			}
@@ -108,7 +98,6 @@ public class SeedMassImportAction extends Action {
 			CrawlerUtils.warnAdministrators(e, this.getClass());
 			return mapping.findForward(Constants.ERROR_PAGE);
 		}
-
 	}
 
 	/**
@@ -121,158 +110,104 @@ public class SeedMassImportAction extends Action {
 	 * @throws Exception the exception
 	 */
 	private ActionForward confirm(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
-
 		if (!isCancelled(request)) {
 			final PropertiesManager pmgr = new PropertiesManager();
 			SemillaSearchForm semillaSearchForm = (SemillaSearchForm) form;
-
 			request.setAttribute(Constants.ACTION, Constants.ADD_SEED_CATEGORY);
 			ActionErrors errors = semillaSearchForm.validate(mapping, request);
-
 			if (errors.isEmpty()) {
-				if (semillaSearchForm.getFileSeeds() == null
-						|| StringUtils.isEmpty(semillaSearchForm.getFileSeeds().getFileName())
-						|| (semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")
-								&& semillaSearchForm.getFileSeeds().getFileSize() <= Integer
-										.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
-
+				if (semillaSearchForm.getFileSeeds() == null || StringUtils.isEmpty(semillaSearchForm.getFileSeeds().getFileName()) || (semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")
+						&& semillaSearchForm.getFileSeeds().getFileSize() <= Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size")))) {
 					try (Connection c = DataBaseManager.getConnection()) {
-
 						String mensaje = "";
 						String volver = pmgr.getValue("returnPaths.properties", "volver.listado.categorias.semilla");
-
 						if (semillaSearchForm.getFileSeeds().getFileData().length > 0) {
 							try {
-
 								List<SemillaForm> inalterableSeeds = new ArrayList<>();
 								List<SeedComparision> updatedSeeds = new ArrayList<>();
 								List<SemillaForm> newSeed = new ArrayList<>();
-
 								List<SemillaForm> updateAndNewSeeds = new ArrayList<>();
-
-								List<SemillaForm> seeds = SeedUtils
-										.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
-
+								List<SemillaForm> seeds = SeedUtils.getSeedsFromFile(semillaSearchForm.getFileSeeds().getInputStream(), true);
 								// List<>
-
 								if (seeds != null && !seeds.isEmpty()) {
-
 									for (SemillaForm seed : seeds) {
-
 										// Categories retrieve from database
-										if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils
-												.isEmpty(seed.getCategoria().getName())) {
-
-											CategoriaForm category = CategoriaDAO.getCategoryByName(c,
-													seed.getCategoria().getName());
-
+										if (seed.getCategoria() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getCategoria().getName())) {
+											CategoriaForm category = CategoriaDAO.getCategoryByName(c, seed.getCategoria().getName());
 											if (category != null) {
 												seed.setCategoria(category);
 											} else {
 												seed.getCategoria().setOrden(1);
-												Long idCategoria = SemillaDAO.createSeedCategory(c,
-														seed.getCategoria());
+												Long idCategoria = SemillaDAO.createSeedCategory(c, seed.getCategoria());
 												seed.getCategoria().setId(idCategoria.toString());
 											}
-
 										}
-										
 										// Ambits retrieve from database
-										if (seed.getAmbito() != null && !org.apache.commons.lang3.StringUtils
-												.isEmpty(seed.getAmbito().getName())) {
-
-											AmbitoForm ambit = AmbitoDAO.getAmbitByName(c,
-													seed.getAmbito().getName());
-
+										if (seed.getAmbito() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getAmbito().getName())) {
+											AmbitoForm ambit = AmbitoDAO.getAmbitByName(c, seed.getAmbito().getName());
 											if (ambit != null) {
 												seed.setAmbito(ambit);
 											} else {
 												seed.getAmbito().setOrden(1);
-												Long idAmbito = SemillaDAO.createSeedAmbit(c,
-														seed.getAmbito());
+												Long idAmbito = SemillaDAO.createSeedAmbit(c, seed.getAmbito());
 												seed.getAmbito().setId(idAmbito.toString());
 											}
 										}
-										
 										// Complexities retrieve from database
-										if (seed.getComplejidad() != null && !org.apache.commons.lang3.StringUtils
-												.isEmpty(seed.getComplejidad().getName())) {
-
-											ComplejidadForm complexity = ComplejidadDAO.getComplexityByName(c,
-													seed.getComplejidad().getName());
-
+										if (seed.getComplejidad() != null && !org.apache.commons.lang3.StringUtils.isEmpty(seed.getComplejidad().getName())) {
+											ComplejidadForm complexity = ComplejidadDAO.getComplexityByName(c, seed.getComplejidad().getName());
 											if (complexity != null) {
 												seed.setComplejidad(complexity);
 											} else {
 												seed.getComplejidad().setOrden(1);
-												Long idComplejidad = SemillaDAO.createSeedComplexity(c,
-														seed.getComplejidad());
+												Long idComplejidad = SemillaDAO.createSeedComplexity(c, seed.getComplejidad());
 												seed.getComplejidad().setId(idComplejidad.toString());
 											}
 										}
-										
 										if (seed.getId() != null) {
-
 											SemillaForm seedOld = SemillaDAO.getSeedById(c, seed.getId());
-
 											if (seedOld != null && seedOld.getId() != null) {
-												SeedComparision seedComparision = generateComparisionSeed(seedOld,
-														seed);
+												SeedComparision seedComparision = generateComparisionSeed(seedOld, seed);
 												if (!seedComparision.isSame()) {
 													updatedSeeds.add(seedComparision);
 													updateAndNewSeeds.add(seed);
 												} else {
 													inalterableSeeds.add(seed);
 												}
-
 											} else {
 												seed.setId(null);
 												newSeed.add(seed);
 												updateAndNewSeeds.add(seed);
 											}
-
 										} else {
 											newSeed.add(seed);
 											updateAndNewSeeds.add(seed);
 										}
-
 									}
-
 									request.setAttribute("inalterableSeeds", inalterableSeeds);
 									request.setAttribute("updatedSeeds", updatedSeeds);
 									request.setAttribute("newSeedList", newSeed);
-
 									// Store list in session
-
 									HttpSession session = request.getSession();
 									// session.setAttribute(Constants.OBSERVATORY_SEED_LIST, seeds);
-
 									session.setAttribute(Constants.OBSERVATORY_SEED_LIST, updateAndNewSeeds);
-
 								} else {
 									errors.add("xmlFile", new ActionMessage("xml.seed.not.valid"));
 									saveErrors(request, errors);
 									return mapping.findForward(Constants.VOLVER);
 								}
-
 							} catch (Exception e) {
-								Logger.putLog("Error en la creación de semillas asociadas al observatorio",
-										SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
-
-								mensaje = getResources(request).getMessage(getLocale(request),
-										"mensaje.exito.categoria.semilla.creada.error.fichero.semillas",
-										semillaSearchForm.getNombre());
+								Logger.putLog("Error en la creación de semillas asociadas al observatorio", SeedCategoriesAction.class, Logger.LOG_LEVEL_ERROR, e);
+								mensaje = getResources(request).getMessage(getLocale(request), "mensaje.exito.categoria.semilla.creada.error.fichero.semillas", semillaSearchForm.getNombre());
 							}
 						}
-
 						return mapping.findForward(Constants.CONFIRMACION_IMPORTAR);
 					}
 				} else if (!semillaSearchForm.getFileSeeds().getFileName().endsWith(".xml")) {
 					errors.add("xmlFile", new ActionMessage("no.xml.file"));
 					saveErrors(request, errors);
 					return mapping.findForward(Constants.VOLVER);
-				} else if (semillaSearchForm.getFileSeeds().getFileSize() > Integer
-						.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
+				} else if (semillaSearchForm.getFileSeeds().getFileSize() > Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "xml.file.max.size"))) {
 					errors.add("xmlFile", new ActionMessage("xml.size.error"));
 					saveErrors(request, errors);
 					return mapping.findForward(Constants.VOLVER);
@@ -285,7 +220,6 @@ public class SeedMassImportAction extends Action {
 			return mapping.findForward(Constants.VOLVER);
 		}
 		return null;
-
 	}
 
 	/**
@@ -303,16 +237,17 @@ public class SeedMassImportAction extends Action {
 			return null;
 		}
 	}
+
 	/**
 	 * Gets the all seeds file.
 	 *
 	 * @param request  the request
 	 * @param response the response
+	 * @param form     the form
 	 * @return the all seeds file
 	 * @throws Exception the exception
 	 */
 	private ActionForward getSeedsFile(HttpServletRequest request, HttpServletResponse response, ActionForm form) throws Exception {
-
 //		try (Connection c = DataBaseManager.getConnection()) {
 //			SemillaSearchForm search = composeFilterFromRequest(request);
 //						
@@ -320,54 +255,45 @@ public class SeedMassImportAction extends Action {
 //		} catch (Exception e) {
 //			Logger.putLog("ERROR al intentar exportar datos del servicio de diagnóstico", ServicioDiagnosticoAction.class, Logger.LOG_LEVEL_ERROR, e);
 //		}
-		
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaSearchForm searchForm = (SemillaSearchForm) form;
-
 			if (searchForm != null) {
 				searchForm = new SemillaSearchForm();
 				searchForm.setNombre(request.getParameter("nombre"));
-
 				if (!StringUtils.isEmpty(searchForm.getNombre())) {
-
 					searchForm.setNombre(es.inteco.common.utils.StringUtils.corregirEncoding(searchForm.getNombre()));
 				}
-
 				if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
-					//searchForm.setCategoria((request.getParameter("categoria")).split(","));
+					// searchForm.setCategoria((request.getParameter("categoria")).split(","));
 					searchForm.setCategoria((request.getParameterValues("categoria")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("ambito"))) {
-				searchForm.setAmbito((request.getParameterValues("ambito")));
+					searchForm.setAmbito((request.getParameterValues("ambito")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("dependencia"))) {
-				searchForm.setDependencia((request.getParameterValues("dependencia")));
+					searchForm.setDependencia((request.getParameterValues("dependencia")));
 				}
 				if (!StringUtils.isEmpty(request.getParameter("complejidad"))) {
-				searchForm.setComplejidad((request.getParameterValues("complejidad")));
+					searchForm.setComplejidad((request.getParameterValues("complejidad")));
 				}
 				searchForm.setUrl(request.getParameter("url"));
 				searchForm.setinDirectorio(request.getParameter("directorio"));
 				searchForm.setisActiva(request.getParameter("activa"));
 				searchForm.setEliminada(request.getParameter("eliminada"));
-				if (request.getParameter("etiquetas")!= "") {
-				String[] tagArr = request.getParameter("etiquetas").split(",");
-				searchForm.setEtiquetas(tagArr);
+				if (request.getParameter("etiquetas") != "") {
+					String[] tagArr = request.getParameter("etiquetas").split(",");
+					searchForm.setEtiquetas(tagArr);
 				}
-
 			}
 			response.setContentType("text/json");
-
 			List<SemillaForm> seeds = SemillaDAO.getObservatorySeedsToExport(c, searchForm);
 			SeedUtils.writeFileToResponse(response, seeds, true);
-			
 		} catch (Exception e) {
 			Logger.putLog("ERROR al intentar exportar semillas: ", JsonSemillasObservatorioAction.class, Logger.LOG_LEVEL_ERROR, e);
 		}
 		return null;
 	}
-	
-	
+
 	/**
 	 * Compose filter from request.
 	 *
@@ -380,15 +306,14 @@ public class SeedMassImportAction extends Action {
 			search.setNombre(request.getParameter("nombre"));
 		}
 		if (!StringUtils.isEmpty(request.getParameter("categoria"))) {
-			//search.setCategoria(request.getParameter("categoria"));
+			// search.setCategoria(request.getParameter("categoria"));
 		}
 		if (!StringUtils.isEmpty(request.getParameter("url"))) {
 			search.setUrl(request.getParameter("url"));
 		}
 		return search;
 	}
-	
-	
+
 	/**
 	 * Save all seeds file.
 	 *
@@ -398,13 +323,10 @@ public class SeedMassImportAction extends Action {
 	 * @return the action forward
 	 * @throws Exception the exception
 	 */
-	private ActionForward saveAllSeedsFile(ActionMapping mapping, ActionForm form, HttpServletRequest request)
-			throws Exception {
-
+	private ActionForward saveAllSeedsFile(ActionMapping mapping, ActionForm form, HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
 		List<SemillaForm> seeds = (List<SemillaForm>) session.getAttribute(Constants.OBSERVATORY_SEED_LIST);
 		ActionErrors errors = form.validate(mapping, request);
-
 		try (Connection c = DataBaseManager.getConnection()) {
 			SemillaDAO.saveOrUpdateSeed(c, seeds);
 			session.removeAttribute(Constants.OBSERVATORY_SEED_LIST);
@@ -413,13 +335,11 @@ public class SeedMassImportAction extends Action {
 			messages.add(ActionMessages.GLOBAL_MESSAGE, new ActionMessage("xml.import.success"));
 			saveMessages(session, messages);
 			return mapping.findForward("observatorySeed");
-
 		} catch (Exception e) {
 			errors.add("xmlFile", new ActionMessage("no.xml.file"));
 			saveErrors(request, errors);
 			return mapping.findForward("observatorySeed");
 		}
-
 	}
 
 	/**
@@ -432,32 +352,28 @@ public class SeedMassImportAction extends Action {
 	 * @throws IllegalArgumentException  the illegal argument exception
 	 * @throws InvocationTargetException the invocation target exception
 	 */
-	public SeedComparision generateComparisionSeed(SemillaForm seed1, SemillaForm seed2)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+	public SeedComparision generateComparisionSeed(SemillaForm seed1, SemillaForm seed2) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		SeedComparision seedComparision = new SeedComparision();
-
 		seedComparision.setNombre(seed1.getNombre());
 		seedComparision.setNombreNuevo(seed2.getNombre());
-
 		seedComparision.setUrls(seed1.getListaUrls());
 		seedComparision.setUrlsNuevo(seed2.getListaUrls());
-
 		seedComparision.setAcronimo(seed1.getAcronimo());
 		seedComparision.setAcronimoNuevo(seed2.getAcronimo());
-
 		seedComparision.setActiva(seed1.isActiva());
 		seedComparision.setActivaNuevo(seed2.isActiva());
-
 		seedComparision.setCategoria(seed1.getCategoria() != null ? seed1.getCategoria() : new CategoriaForm());
 		seedComparision.setCategoriaNuevo(seed2.getCategoria() != null ? seed2.getCategoria() : new CategoriaForm());
-
 		seedComparision.setInDirectory(seed1.isInDirectory());
 		seedComparision.setInDirectoryNuevo(seed2.isInDirectory());
-
 		seedComparision.setDependencias(seed1.getDependencias());
 		seedComparision.setDependenciasNuevo(seed2.getDependencias());
-
+		seedComparision.setAmbito(seed1.getAmbito());
+		seedComparision.setAmbitoNuevo(seed2.getAmbito());
+		seedComparision.setComplejidad(seed1.getComplejidad());
+		seedComparision.setComplejidadNuevo(seed2.getComplejidad());
+		seedComparision.setEtiquetas(seed1.getEtiquetas());
+		seedComparision.setEtiquetasNuevo(seed2.getEtiquetas());
 		return seedComparision;
 	}
 
@@ -465,48 +381,119 @@ public class SeedMassImportAction extends Action {
 	 * The Class ResultObject.
 	 */
 	public class SeedComparision {
-
 		/** The nombre. */
 		private String nombre;
-
 		/** The urls. */
 		private List<String> urls;
-
 		/** The acronimo. */
 		private String acronimo;
-
 		/** The activa. */
 		private boolean activa;
-
 		/** The categoria. */
 		private CategoriaForm categoria;
-
 		/** The in directory. */
 		private boolean inDirectory;
-
 		/** The dependencias. */
 		private List<DependenciaForm> dependencias;
-
 		/** The nombre N. */
 		private String nombreNuevo;
-
 		/** The urls N. */
 		private List<String> urlsNuevo;
-
 		/** The acronimo N. */
 		private String acronimoNuevo;
-
 		/** The activa N. */
 		private boolean activaNuevo;
-
 		/** The categoria N. */
 		private CategoriaForm categoriaNuevo;
-
 		/** The in directory N. */
 		private boolean inDirectoryNuevo;
-
 		/** The dependencias N. */
 		private List<DependenciaForm> dependenciasNuevo;
+		/** The categoria. */
+		private AmbitoForm ambito;
+		/** The ambito nuevo. */
+		private AmbitoForm ambitoNuevo;
+		/** The categoria. */
+		private ComplejidadForm complejidad;
+		/** The ambito nuevo. */
+		private ComplejidadForm complejidadNuevo;
+
+		/**
+		 * Gets the complejidad.
+		 *
+		 * @return the complejidad
+		 */
+		public ComplejidadForm getComplejidad() {
+			return complejidad;
+		}
+
+		/**
+		 * Sets the complejidad.
+		 *
+		 * @param complejidad the new complejidad
+		 */
+		public void setComplejidad(ComplejidadForm complejidad) {
+			this.complejidad = complejidad;
+		}
+
+		/**
+		 * Gets the complejidad nuevo.
+		 *
+		 * @return the complejidad nuevo
+		 */
+		public ComplejidadForm getComplejidadNuevo() {
+			return complejidadNuevo;
+		}
+
+		/**
+		 * Sets the complejidad nuevo.
+		 *
+		 * @param complejidadNuevo the new complejidad nuevo
+		 */
+		public void setComplejidadNuevo(ComplejidadForm complejidadNuevo) {
+			this.complejidadNuevo = complejidadNuevo;
+		}
+
+		/**
+		 * Gets the etiquetas.
+		 *
+		 * @return the etiquetas
+		 */
+		public List<EtiquetaForm> getEtiquetas() {
+			return etiquetas;
+		}
+
+		/**
+		 * Sets the etiquetas.
+		 *
+		 * @param etiquetas the new etiquetas
+		 */
+		public void setEtiquetas(List<EtiquetaForm> etiquetas) {
+			this.etiquetas = etiquetas;
+		}
+
+		/**
+		 * Gets the etiquetas nuevo.
+		 *
+		 * @return the etiquetas nuevo
+		 */
+		public List<EtiquetaForm> getEtiquetasNuevo() {
+			return etiquetasNuevo;
+		}
+
+		/**
+		 * Sets the etiquetas nuevo.
+		 *
+		 * @param etiquetasNuevo the new etiquetas nuevo
+		 */
+		public void setEtiquetasNuevo(List<EtiquetaForm> etiquetasNuevo) {
+			this.etiquetasNuevo = etiquetasNuevo;
+		}
+
+		/** The etiquetas. */
+		private List<EtiquetaForm> etiquetas;
+		/** The etiquetas nuevo. */
+		private List<EtiquetaForm> etiquetasNuevo;
 
 		/**
 		 * Gets the nombre.
@@ -762,24 +749,51 @@ public class SeedMassImportAction extends Action {
 
 		/** The same nombre. */
 		private boolean sameNombre;
-
 		/** The same acronimo. */
 		private boolean sameAcronimo;
-
 		/** The same categoria. */
 		private boolean sameCategoria;
-
 		/** The same activa. */
 		private boolean sameActiva;
-
 		/** The same in directory. */
 		private boolean sameInDirectory;
-
 		/** The same dependencias. */
 		private boolean sameDependencias;
-
 		/** The same lista UR ls. */
 		private boolean sameListaURLs;
+		/** The same ambito. */
+		private boolean sameAmbito;
+		/** The same etiquetas. */
+		private boolean sameEtiquetas;
+		/** The same complejidad. */
+		private boolean sameComplejidad;
+
+		/**
+		 * Sets the same complejidad.
+		 *
+		 * @param sameComplejidad the new same complejidad
+		 */
+		public void setSameComplejidad(boolean sameComplejidad) {
+			this.sameComplejidad = sameComplejidad;
+		}
+
+		/**
+		 * Sets the same ambito.
+		 *
+		 * @param sameAmbito the new same ambito
+		 */
+		public void setSameAmbito(boolean sameAmbito) {
+			this.sameAmbito = sameAmbito;
+		}
+
+		/**
+		 * Sets the same etiquetas.
+		 *
+		 * @param sameEtiquetas the new same etiquetas
+		 */
+		public void setSameEtiquetas(boolean sameEtiquetas) {
+			this.sameEtiquetas = sameEtiquetas;
+		}
 
 		/**
 		 * Sets the same lista UR ls.
@@ -850,12 +864,9 @@ public class SeedMassImportAction extends Action {
 		 * @return true, if is same nombre
 		 */
 		public boolean isSameNombre() {
-
-			if (org.apache.commons.lang3.StringUtils.isEmpty(nombre)
-					&& org.apache.commons.lang3.StringUtils.isEmpty(nombreNuevo)) {
+			if (org.apache.commons.lang3.StringUtils.isEmpty(nombre) && org.apache.commons.lang3.StringUtils.isEmpty(nombreNuevo)) {
 				return true;
 			}
-
 			return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(nombre, nombreNuevo);
 		}
 
@@ -865,9 +876,7 @@ public class SeedMassImportAction extends Action {
 		 * @return true, if is same acronimo
 		 */
 		public boolean isSameAcronimo() {
-
-			if (org.apache.commons.lang3.StringUtils.isEmpty(acronimo)
-					&& org.apache.commons.lang3.StringUtils.isEmpty(acronimoNuevo)) {
+			if (org.apache.commons.lang3.StringUtils.isEmpty(acronimo) && org.apache.commons.lang3.StringUtils.isEmpty(acronimoNuevo)) {
 				return true;
 			}
 			return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(acronimo, acronimoNuevo);
@@ -880,17 +889,84 @@ public class SeedMassImportAction extends Action {
 		 */
 		public boolean isSameCategoria() {
 			if (this.categoria != null && this.categoriaNuevo != null) {
-				if (org.apache.commons.lang3.StringUtils.isEmpty(categoria.getName())
-						&& org.apache.commons.lang3.StringUtils.isEmpty(categoriaNuevo.getName())) {
+				if (org.apache.commons.lang3.StringUtils.isEmpty(categoria.getName()) && org.apache.commons.lang3.StringUtils.isEmpty(categoriaNuevo.getName())) {
 					return true;
 				}
-				return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(categoria.getName(),
-						categoriaNuevo.getName());
+				return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(categoria.getName(), categoriaNuevo.getName());
 			} else if (this.categoria == null && this.categoriaNuevo == null) {
 				return true;
 			}
-
 			return false;
+		}
+
+		/**
+		 * Checks if is same ambito.
+		 *
+		 * @return true, if is same ambito
+		 */
+		public boolean isSameAmbito() {
+			if (this.ambito != null && this.ambitoNuevo != null) {
+				if (org.apache.commons.lang3.StringUtils.isEmpty(ambito.getName()) && org.apache.commons.lang3.StringUtils.isEmpty(ambitoNuevo.getName())) {
+					return true;
+				}
+				return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(ambito.getName(), ambitoNuevo.getName());
+			} else if (this.ambito == null && this.ambitoNuevo == null) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Checks if is same complejidad.
+		 *
+		 * @return true, if is same complejidad
+		 */
+		public boolean isSameComplejidad() {
+			if (this.complejidad != null && this.complejidadNuevo != null) {
+				if (org.apache.commons.lang3.StringUtils.isEmpty(complejidad.getName()) && org.apache.commons.lang3.StringUtils.isEmpty(complejidadNuevo.getName())) {
+					return true;
+				}
+				return org.apache.commons.lang3.StringUtils.equalsIgnoreCase(complejidad.getName(), complejidadNuevo.getName());
+			} else if (this.complejidad == null && this.complejidadNuevo == null) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Gets the ambito.
+		 *
+		 * @return the ambito
+		 */
+		public AmbitoForm getAmbito() {
+			return ambito;
+		}
+
+		/**
+		 * Sets the ambito.
+		 *
+		 * @param ambito the new ambito
+		 */
+		public void setAmbito(AmbitoForm ambito) {
+			this.ambito = ambito;
+		}
+
+		/**
+		 * Gets the ambito nuevo.
+		 *
+		 * @return the ambito nuevo
+		 */
+		public AmbitoForm getAmbitoNuevo() {
+			return ambitoNuevo;
+		}
+
+		/**
+		 * Sets the ambito nuevo.
+		 *
+		 * @param ambitoNuevo the new ambito nuevo
+		 */
+		public void setAmbitoNuevo(AmbitoForm ambitoNuevo) {
+			this.ambitoNuevo = ambitoNuevo;
 		}
 
 		/**
@@ -921,6 +997,15 @@ public class SeedMassImportAction extends Action {
 		}
 
 		/**
+		 * Checks if is same etiquetas.
+		 *
+		 * @return true, if is same etiquetas
+		 */
+		public boolean isSameEtiquetas() {
+			return new HashSet<>(etiquetas).equals(new HashSet<>(etiquetasNuevo));
+		}
+
+		/**
 		 * Checks if is same lista UR ls.
 		 *
 		 * @return true, if is same lista UR ls
@@ -935,10 +1020,8 @@ public class SeedMassImportAction extends Action {
 		 * @return true, if is same
 		 */
 		public boolean isSame() {
-			return this.isSameAcronimo() && this.isSameActiva() && this.isSameCategoria() && this.isSameDependencias()
-					&& this.isSameInDirectory() && this.isSameListaURLs() && this.isSameNombre();
+			return this.isSameAcronimo() && this.isSameActiva() && this.isSameCategoria() && this.isSameDependencias() && this.isSameInDirectory() && this.isSameListaURLs() && this.isSameNombre()
+					&& this.isSameAmbito() && this.isSameEtiquetas() && this.isSameComplejidad();
 		}
-
 	}
-
 }

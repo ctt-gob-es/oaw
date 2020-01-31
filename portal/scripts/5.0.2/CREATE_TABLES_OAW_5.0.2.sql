@@ -6,3 +6,4 @@ CREATE TABLE tanalisis_accesibilidad (
 );
 
 ALTER TABLE basic_service ADD filename VARCHAR(1024) NULL;
+ALTER TABLE etiqueta ADD UNIQUE(nombre);

@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -51,7 +50,6 @@ import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdf;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfAccesibilidad;
 import es.inteco.rastreador2.pdf.builder.AnonymousResultExportPdfUNEEN2019;
 import es.inteco.rastreador2.pdf.utils.PDFUtils;
-import es.inteco.rastreador2.pdf.utils.SpecialChunk;
 import es.inteco.rastreador2.utils.GraphicData;
 import es.inteco.rastreador2.utils.ObservatoryUtils;
 import es.inteco.rastreador2.utils.ResultadosAnonimosObservatorioIntavUtils;
@@ -192,8 +190,8 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 				}
 				tablaRankings.completeRow();
 				chapter.add(tablaRankings);
-				chapter.add(Chunk.NEWLINE);
-				chapter.add(new Paragraph("A continuación se muestra la distribución de páginas según el nivel de adecuación estimado (No válido, A o AA)", ConstantsFont.PARAGRAPH));
+				chapter.add(Chunk.NEXTPAGE);
+				chapter.add(new Paragraph(messageResources.getMessage("observatorio.nivel.cumplimiento.p1.grafica"), ConstantsFont.PARAGRAPH));
 				// Gráfica nivel de adecuación
 				final String noDataMess = messageResources.getMessage("grafica.sin.datos");
 				addLevelAllocationResultsSummary(messageResources, chapter, file, noDataMess);
@@ -489,8 +487,8 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			table.completeRow();
 		}
 		table.setSpacingBefore(ConstantsFont.HALF_LINE_SPACE);
-		section.add(table);
 		createImage(section, filePath);
+		section.add(table);
 	}
 
 	/**
@@ -755,10 +753,6 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 	 */
 	private void addResultsByPage(final MessageResources messageResources, final Chapter chapter, final File file, final List<ObservatoryEvaluationForm> evaList, final String noDataMess)
 			throws Exception {
-		final Map<Integer, SpecialChunk> anchorMap = new HashMap<>();
-//		final SpecialChunk anchor = new SpecialChunk(messageResources.getMessage("resultados.primarios.43.p1.anchor"), messageResources.getMessage("anchor.PMP"), false, ConstantsFont.ANCHOR_FONT);
-//		anchorMap.put(1, anchor);
-//		chapter.add(PDFUtils.createParagraphAnchor(messageResources.getMessage("resultados.primarios.43.p1"), anchorMap, ConstantsFont.PARAGRAPH));
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p1"), ConstantsFont.PARAGRAPH, chapter);
 		PDFUtils.addParagraph(messageResources.getMessage("resultados.primarios.43.p2"), ConstantsFont.PARAGRAPH, chapter);
 		chapter.add(Chunk.NEWLINE);
@@ -771,6 +765,7 @@ public class BasicServiceObservatoryScorePdfSectionBuilder {
 			image.setAlignment(Element.ALIGN_CENTER);
 			chapter.add(image);
 		}
+		chapter.add(Chunk.NEWLINE);
 		final float[] widths = { 30f, 30f, 40f };
 		final PdfPTable table = new PdfPTable(widths);
 		table.addCell(

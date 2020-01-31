@@ -120,11 +120,16 @@ public final class PDFUtils {
 	 * @param noticeText   the notice text
 	 * @throws DocumentException the document exception
 	 */
-	public static void addNewCoverPage(final Document document, final String titleText, final String subtitleText, final String noticeText, final String noticeText2) throws DocumentException {
-		final Paragraph title = new Paragraph(titleText, ConstantsFont.DOCUMENT_TITLE_MP_FONT);
+	public static void addNewCoverPage(final Document document, final String titleText1, final String titleText2, final String subtitleText, final String noticeText, final String noticeText2)
+			throws DocumentException {
+		final Paragraph title = new Paragraph(titleText1, ConstantsFont.DOCUMENT_TITLE_MP_FONT);
 		title.setSpacingBefore(ConstantsFont.TITLE_LINE_SPACE);
 		title.setAlignment(Paragraph.ALIGN_CENTER);
 		document.add(title);
+		final Paragraph title2 = new Paragraph(titleText2, ConstantsFont.DOCUMENT_TITLE_MP_FONT);
+		title2.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE / 2);
+		title2.setAlignment(Paragraph.ALIGN_CENTER);
+		document.add(title2);
 		if (subtitleText != null && !subtitleText.isEmpty()) {
 			final Paragraph subtitle = new Paragraph(subtitleText, ConstantsFont.DOCUMENT_SUBTITLE_MP_FONT);
 			subtitle.setSpacingBefore(ConstantsFont.SUBTITLE_LINE_SPACE);
