@@ -169,8 +169,9 @@ public class BasicServicePdfReport {
 					default:
 						break;
 					}
-					PDFUtils.addNewCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title.basic.service"), subtitle,
-							messageResources2019.getMessage("pdf.accessibility.cover.notice.1"), messageResources2019.getMessage("pdf.accessibility.cover.notice.2"));
+					PDFUtils.addNewCoverPage(document, messageResources2019.getMessage("pdf.accessibility.title.basic.service"),
+							messageResources2019.getMessage("pdf.accessibility.title.basic.service.2"), subtitle, messageResources2019.getMessage("pdf.accessibility.cover.notice.1"),
+							messageResources2019.getMessage("pdf.accessibility.cover.notice.2"));
 				} else {
 					PDFUtils.addCoverPage(document,
 							messageResources.getMessage("pdf.accessibility.title", new String[] { pdfBuilder.getBasicServiceForm().getName().toUpperCase(), pdfBuilder.getTitle() }),
@@ -178,11 +179,12 @@ public class BasicServicePdfReport {
 				}
 				pdfBuilder.createIntroductionChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, true);
 				pdfTocManager.addChapterCount();
+				// Muestra de páginas
 				if (!(pdfBuilder instanceof AnonymousResultExportPdfAccesibilidad)) {
 					pdfBuilder.createObjetiveChapter(messageResources, document, pdfTocManager, ConstantsFont.CHAPTER_TITLE_MP_FONT, currentEvaluationPageList, 0);
 					pdfTocManager.addChapterCount();
 				}
-				// Resumen de las puntuaciones del Observatorio
+				// Resumen de resultados
 				final List<ObservatoryEvaluationForm> previousEvaluation = getPreviousEvaluation(historicoEvaluationPageList);
 				final BasicServiceObservatoryScorePdfSectionBuilder observatoryScoreSectionBuilder = new BasicServiceObservatoryScorePdfSectionBuilder(currentEvaluationPageList, previousEvaluation);
 				if (pdfBuilder instanceof AnonymousResultExportPdfUNEEN2019) {

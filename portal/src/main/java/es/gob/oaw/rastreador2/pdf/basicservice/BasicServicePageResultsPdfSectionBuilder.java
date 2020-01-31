@@ -26,6 +26,7 @@ import org.apache.struts.util.MessageResources;
 
 import com.lowagie.text.Anchor;
 import com.lowagie.text.Chapter;
+import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Element;
 import com.lowagie.text.Paragraph;
@@ -90,6 +91,7 @@ public class BasicServicePageResultsPdfSectionBuilder extends ObservatoryPageRes
 						messageResources.getMessage("observatory.graphic.score.by.page.table.title", new String[] { getPriorityName(messageResources, observatoryLevelForm.getName()) })));
 			}
 			// Con o sin niveles
+			chapter.add(Chunk.NEXTPAGE);
 			if (withOutLevels) {
 				addCheckCodesWithoutLevels(messageResources, evaluationForm, chapter, pdfTocManager);
 			} else {

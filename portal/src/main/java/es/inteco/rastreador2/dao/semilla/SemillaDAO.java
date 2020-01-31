@@ -270,7 +270,7 @@ public final class SemillaDAO {
 		final int pagSize = Integer.parseInt(pmgr.getValue(CRAWLER_PROPERTIES, "pagination.size"));
 		final int resultFrom = pagSize * pagina;
 		int count = 1;
-		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
+		String query = "SELECT distinct l.*, cl.*, cxl.*, al.* FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
@@ -471,7 +471,7 @@ public final class SemillaDAO {
 		final List<SemillaForm> seedList = new ArrayList<>();
 		final PropertiesManager pmgr = new PropertiesManager();
 		int count = 1;
-		String query = "SELECT * FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
+		String query = "SELECT distinct l.*, cl.*, cxl.*, al.* FROM lista l LEFT JOIN categorias_lista cl ON(l.id_categoria = cl.id_categoria) LEFT JOIN ambitos_lista al ON (al.id_ambito = l.id_ambito) LEFT JOIN complejidades_lista cxl ON (cxl.id_complejidad = l.id_complejidad) LEFT JOIN semilla_dependencia sd ON(l.id_lista = sd.id_lista) LEFT JOIN semilla_etiqueta se ON(l.id_lista = se.id_lista) WHERE id_tipo_lista = ? ";
 		if (StringUtils.isNotEmpty(searchForm.getNombre())) {
 			query += " AND UPPER(l.nombre) like UPPER(?) ";
 		}
@@ -3493,28 +3493,28 @@ public final class SemillaDAO {
 							for (int i = 0; i < semillaForm.getEtiquetas().size(); i++) {
 								EtiquetaForm currentEtiqueta = semillaForm.getEtiquetas().get(i);
 //							psCreateEtiqueta.setLong(3, EtiquetaDAO.getClasificacionByName(c,currentEtiqueta.getName()));
-//							// Si viene informado el nombre de la
-//							// Etiqueta
-//							// es
-//							// para que se cree nueva. Si el nombre ya existe,
-//							// se devuelve el id de la Etiqueta existente
-//							if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
-//								PreparedStatement psCreateEtiqueta = c.prepareStatement(
-//										"INSERT INTO etiqueta(nombre) VALUES (?) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?, id_clasificacion = ?", Statement.RETURN_GENERATED_KEYS);
-//								psCreateEtiqueta.setString(1, currentEtiqueta.getName());
-//								psCreateEtiqueta.setString(2, currentEtiqueta.getName());
-//								psCreateEtiqueta.setLong(3, EtiquetaDAO.getClasificacionByName(c,currentEtiqueta.getName()));
-//								int affectedRowsD = psCreateEtiqueta.executeUpdate();
-//								if (affectedRowsD == 0) {
-//									throw new SQLException("Creating user failed, no rows affected.");
-//								}
-//								ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
-//								if (generatedKeysD.next()) {
-//									currentEtiqueta.setId(generatedKeysD.getLong(1));
-//								} else {
-//									throw new SQLException("Creating etiquetas failed, no ID obtained.");
-//								}
-//							}
+								// Si viene informado el nombre de la
+								// Etiqueta
+								// es
+								// para que se cree nueva. Si el nombre ya existe,
+								// se devuelve el id de la Etiqueta existente
+								if (org.apache.commons.lang3.StringUtils.isNotEmpty(currentEtiqueta.getName())) {
+									PreparedStatement psCreateEtiqueta = c.prepareStatement(
+											"INSERT INTO etiqueta(nombre,id_clasificacion) VALUES (?, 1) ON DUPLICATE KEY UPDATE id_etiqueta=LAST_INSERT_ID(id_etiqueta), nombre = ?, id_clasificacion = 1",
+											Statement.RETURN_GENERATED_KEYS);
+									psCreateEtiqueta.setString(1, currentEtiqueta.getName());
+									psCreateEtiqueta.setString(2, currentEtiqueta.getName());
+									int affectedRowsD = psCreateEtiqueta.executeUpdate();
+									if (affectedRowsD == 0) {
+										throw new SQLException("Creating user failed, no rows affected.");
+									}
+									ResultSet generatedKeysD = psCreateEtiqueta.getGeneratedKeys();
+									if (generatedKeysD.next()) {
+										currentEtiqueta.setId(generatedKeysD.getLong(1));
+									} else {
+										throw new SQLException("Creating etiquetas failed, no ID obtained.");
+									}
+								}
 								slqInsertSemillaEtiqueta.append("(").append(semillaForm.getId()).append(",").append(EtiquetaDAO.getIdByName(c, currentEtiqueta.getName())).append(")");
 								if (i < semillaForm.getEtiquetas().size() - 1) {
 									slqInsertSemillaEtiqueta.append(",");

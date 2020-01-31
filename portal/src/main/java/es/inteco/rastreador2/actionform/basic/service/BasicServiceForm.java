@@ -31,25 +31,6 @@ public class BasicServiceForm extends ValidatorForm {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8309372668897071036L;
 	/** The Constant OBSERVATORIO_UNE_2012_VERSIÓN_2_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (versión 2)(sin comprobar enlaces rotos)";
-	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS = "Observatorio UNE 2012 (antigua) (sin comprobar enlaces rotos)";
-	/** The Constant OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS = "Observatorio UNE 2004 (sin comprobar enlaces rotos)";
-	/** The Constant OBSERVATORIO_ACCESIBILIDAD. */
-	private static final String OBSERVATORIO_ACCESIBILIDAD = "Observatorio Accesibilidad (beta)";
-	/** The Constant OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS = "Observatorio Accesibilidad (beta)(sin comprobar enlaces rotos)";
-	/** The Constant OBSERVATORIO_UNE_EN2019. */
-	private static final String OBSERVATORIO_UNE_EN2019 = "Observatorio UNE-EN301549:2019 (beta)";
-	/** The Constant OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS. */
-	private static final String OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS = "Observatorio UNE-EN301549:2019 (beta)(sin comprobar enlaces rotos)";
-	/** The Constant OBSERVATORIO_UNE_2012_VERSION_2. */
-	private static final String OBSERVATORIO_UNE_2012_VERSION_2 = "Observatorio UNE 2012 (versión 2)";
-	/** The Constant OBSERVATORIO_UNE_2012_ANTIGUA. */
-	private static final String OBSERVATORIO_UNE_2012_ANTIGUA = "Observatorio UNE 2012 (antigua)";
-	/** The Constant OBSERVATORIO_UNE_2004. */
-	private static final String OBSERVATORIO_UNE_2004 = "Observatorio UNE 2004";
 	/** The id. */
 	private long id;
 	/** The language. */
@@ -340,25 +321,25 @@ public class BasicServiceForm extends ValidatorForm {
 	 */
 	public String reportToString() {
 		if (Constants.REPORT_OBSERVATORY.equals(report) || Constants.REPORT_OBSERVATORY_FILE.equals(report)) {
-			return OBSERVATORIO_UNE_2004;
+			return Constants.OBSERVATORIO_UNE_2004;
 		} else if (Constants.REPORT_OBSERVATORY_2.equals(report)) {
-			return OBSERVATORIO_UNE_2012_ANTIGUA;
+			return Constants.OBSERVATORIO_UNE_2012_ANTIGUA;
 		} else if (Constants.REPORT_OBSERVATORY_1_NOBROKEN.equals(report)) {
-			return OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS;
+			return Constants.OBSERVATORIO_UNE_2004_SIN_ENLACES_ROTOS;
 		} else if (Constants.REPORT_OBSERVATORY_2_NOBROKEN.equals(report)) {
-			return OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS;
+			return Constants.OBSERVATORIO_UNE_2012_ANTIGUA_SIN_ENLACES_ROTOS;
 		} else if (Constants.REPORT_OBSERVATORY_3.equals(report)) {
-			return OBSERVATORIO_UNE_2012_VERSION_2;
+			return Constants.OBSERVATORIO_UNE_2012_VERSION_2;
 		} else if (Constants.REPORT_OBSERVATORY_3_NOBROKEN.equals(report)) {
-			return OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS;
+			return Constants.OBSERVATORIO_UNE_2012_VERSION_2_SIN_ENLACES_ROTOS;
 		} else if (Constants.REPORT_OBSERVATORY_4.equals(report)) {
-			return OBSERVATORIO_UNE_EN2019;
+			return Constants.OBSERVATORIO_UNE_EN2019;
 		} else if (Constants.REPORT_OBSERVATORY_4_NOBROKEN.equals(report)) {
-			return OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS;
+			return Constants.OBSERVATORIO_UNE_UNE_EN2019_SIN_ENLACES_ROTOS;
 		} else if (Constants.REPORT_OBSERVATORY_5.equals(report)) {
-			return OBSERVATORIO_ACCESIBILIDAD;
+			return Constants.OBSERVATORIO_ACCESIBILIDAD;
 		} else if (Constants.REPORT_OBSERVATORY_5_NOBROKEN.equals(report)) {
-			return OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS;
+			return Constants.OBSERVATORIO_ACCESIBILIDAD_SIN_ENLACES_ROTOS;
 		} else {
 			return report;
 		}
