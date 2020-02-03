@@ -7,3 +7,4 @@ CREATE TABLE tanalisis_accesibilidad (
 
 ALTER TABLE basic_service ADD filename VARCHAR(1024) NULL;
 ALTER TABLE etiqueta ADD UNIQUE(nombre);
+ALTER TABLE categoria CHANGE categoria categoria VARCHAR(256);

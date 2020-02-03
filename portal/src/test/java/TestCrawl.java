@@ -104,25 +104,34 @@ public class TestCrawl {
 
 	@Test
 	public void crawlPrincipales() throws Exception {
-		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
-		this.test("http://www.comunidad.madrid", false);
-		this.test("https://web.gencat.cat/ca/inici/", false);
-		this.test("https://www.gva.es/va/inicio/presentacion", false);
-		this.test("https://www.aragon.es/", false);
-		this.test("https://www.gobiernodecanarias.org/principal/", false);
-		this.test("http://www.cantabria.es/", false);
-		this.test("https://www.larioja.org/es", false);
-		this.test("http://www.caib.es/govern/index.do?lang=ca", false);
-		this.test("http://www.navarra.es/home_es/", false);
-		this.test("https://www.asturias.es/", false);
-		this.test("http://www.euskadi.eus/hasiera/", false);
-		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
-		this.test("https://www.jcyl.es/", false);
-		this.test("http://www.juntaex.es/web/", false);
-		this.test("http://www.ceuta.es/", false);
-		this.test("https://www.castillalamancha.es/", true);
-		this.test("http://www.carm.es", false);
-		this.test("https://www.xunta.gal/portada", false);
+//		this.test("http://www.melilla.es/melillaPortal/index.jsp", false);
+//		this.test("http://www.comunidad.madrid", false);
+//		this.test("https://web.gencat.cat/ca/inici/", false);
+//		this.test("https://www.gva.es/va/inicio/presentacion", false);
+//		this.test("https://www.aragon.es/", false);
+//		this.test("https://www.gobiernodecanarias.org/principal/", false);
+//		this.test("http://www.cantabria.es/", false);
+//		this.test("https://www.larioja.org/es", false);
+//		this.test("http://www.caib.es/govern/index.do?lang=ca", false);
+//		this.test("http://www.navarra.es/home_es/", false);
+//		this.test("https://www.asturias.es/", false);
+//		this.test("http://www.euskadi.eus/hasiera/", false);
+//		this.test("https://www.juntadeandalucia.es/institucional/index.html", true);
+//		this.test("https://www.jcyl.es/", false);
+//		this.test("http://www.juntaex.es/web/", false);
+//		this.test("http://www.ceuta.es/", false);
+//		this.test("https://www.castillalamancha.es/", true);
+//		this.test("http://www.carm.es", false);
+//		this.test("https://www.xunta.gal/portada", false);
+		String[] urls = new String[] { "https://www.agenciatributaria.es", "https://www.boe.es", "https://www.mapa.gob.es", "http://www.exteriores.gob.es/Portal/es/Paginas/inicio.aspx",
+				"http://www.ciencia.gob.es", "http://www.culturaydeporte.gob.es", "http://www.defensa.gob.es", "http://www.mineco.gob.es/portal/site/mineco/",
+				"http://www.educacionyfp.gob.es/portada.html", "https://www.fomento.gob.es/", "https://www.hacienda.gob.es/es-ES/Paginas/Home.aspx", "https://www.mincotur.gob.es",
+				"https://www.mjusticia.gob.es", "https://www.mpr.gob.es/paginas/index.aspx", "https://www.mptfp.gob.es/portal/index.html", "https://www.mscbs.gob.es/home.htm",
+				"http://www.mitramiss.gob.es/es/index.htm", "http://www.interior.gob.es/", "https://www.miteco.gob.es/es/", "https://administracion.gob.es", "http://www.seg-social.es",
+				"https://www.lamoncloa.gob.es/serviciosdeprensa/Paginas/index.aspx", "http://www.guardiareal.org/" };
+		for (String url : urls) {
+			this.test(url, false);
+		}
 	}
 
 	public void test(String url, boolean enDirectorio) throws Exception {
@@ -130,8 +139,8 @@ public class TestCrawl {
 		System.out.println("-------------------------------------------------------------------------------------------\n\n");
 		final CrawlerData crawlerData = new CrawlerData();
 		crawlerData.setUrls(Collections.singletonList(url));
-		crawlerData.setProfundidad(4);
-		crawlerData.setTopN(8);
+		crawlerData.setProfundidad(5);
+		crawlerData.setTopN(10);
 		crawlerData.setPseudoaleatorio(true);
 		crawlerData.setTest(true);
 		crawlerData.setIdCrawling(-1);

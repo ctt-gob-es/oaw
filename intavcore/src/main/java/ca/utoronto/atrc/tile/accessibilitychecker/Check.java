@@ -5894,7 +5894,7 @@ public class Check {
 			// Grid properties
 			for (String stringPattern : regexAutocomplete) {
 				try {
-					Pattern patterAutocomplete = Pattern.compile(stringPattern, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+					Pattern patterAutocomplete = Pattern.compile(stringPattern.replaceAll("\\s+", ""), Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 					if (patterAutocomplete.matcher(autocompleteValue).find()) {
 						return true;
 					}
