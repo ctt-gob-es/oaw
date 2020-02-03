@@ -39,6 +39,11 @@ import es.inteco.plugin.dao.DataBaseManager;
  * Implementación de un cartucho que analiza las urls, así como el contenido de las páginas y clasificarlas como maliciosas o no.
  */
 public class CartuchoAccesibilidad extends Cartucho {
+	/**
+	 * Analyzer.
+	 *
+	 * @param datos the datos
+	 */
 	@Override
 	public void analyzer(final Map<String, Object> datos) {
 		Logger.putLog("Iniciando evaluación de accesibilidad desde el rastreador de la url: " + datos.get("url"), CartuchoAccesibilidad.class, Logger.LOG_LEVEL_INFO);
@@ -66,7 +71,8 @@ public class CartuchoAccesibilidad extends Cartucho {
 			// Calculamos el resultado de la comprobacion titulos diferentes ya
 			// que requiere haber realizado el rastreo completo
 			if (checkAccesibility.getGuidelineFile().startsWith(IntavConstants.GUIDELINE_FILENAME_START_2012)
-					|| checkAccesibility.getGuidelineFile().startsWith(IntavConstants.GUIDELINE_FILENAME_START_2012_B)) {
+					|| checkAccesibility.getGuidelineFile().startsWith(IntavConstants.GUIDELINE_FILENAME_START_2012_B)
+					|| checkAccesibility.getGuidelineFile().startsWith(IntavConstants.GUIDELINE_FILENAME_START_2019)) {
 				final long idRastreo = (Long) datos.get("idFulfilledCrawling");
 				final List<Long> evaluationIds = AnalisisDatos.getEvaluationIdsFromRastreoRealizado(idRastreo);
 				processDiferentTitlesCheck(idRastreo, evaluationIds);
@@ -74,6 +80,12 @@ public class CartuchoAccesibilidad extends Cartucho {
 		}
 	}
 
+	/**
+	 * Process diferent titles check.
+	 *
+	 * @param idRastreo     the id rastreo
+	 * @param evaluationIds the evaluation ids
+	 */
 	private void processDiferentTitlesCheck(final long idRastreo, final List<Long> evaluationIds) {
 		final Set<String> distribucionTitulos = new HashSet<>();
 		try (Connection connection = DataBaseManager.getConnection()) {
@@ -100,6 +112,11 @@ public class CartuchoAccesibilidad extends Cartucho {
 		}
 	}
 
+	/**
+	 * Sets the config.
+	 *
+	 * @param idRastreo the new config
+	 */
 	public void setConfig(final long idRastreo) {
 		if (!EvaluatorUtility.isInitialized()) {
 			try {

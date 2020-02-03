@@ -200,7 +200,7 @@ public class BasicServiceManager {
 				// TODO Source code analysis
 				if (basicServiceForm.isContentAnalysis()) {
 					sourceFilesManager.writeSourceFilesContent(DataBaseManager.getConnection(), analysisIdsByTracking, basicServiceForm.getFileName());
-					sourceFilesManager.zipSources(true);
+					sourceFilesManager.zipSourcesContent(true);
 				} else {
 					sourceFilesManager.writeSourceFiles(DataBaseManager.getConnection(), analysisIdsByTracking);
 					sourceFilesManager.zipSources(true);

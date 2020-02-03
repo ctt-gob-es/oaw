@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts.util.LabelValueBean;
@@ -58,6 +59,8 @@ import es.inteco.common.ConstantsFont;
 import es.inteco.common.logging.Logger;
 import es.inteco.common.properties.PropertiesManager;
 import es.inteco.intav.form.ObservatoryEvaluationForm;
+import es.inteco.intav.form.ObservatoryLevelForm;
+import es.inteco.intav.form.ObservatorySuitabilityForm;
 import es.inteco.plugin.dao.DataBaseManager;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceAnalysisType;
 import es.inteco.rastreador2.actionform.basic.service.BasicServiceForm;
@@ -585,6 +588,36 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 			chapter.add(listaConfiguracionRastreo);
 		}
 		document.add(chapter);
+	}
+
+	/**
+	 * Calculate crawling compliance.
+	 *
+	 * @param results the results
+	 * @return the map
+	 */
+	private static Map<Long, String> calculateCrawlingCompliance(Map<Long, Map<String, BigDecimal>> results) {
+		final Map<Long, String> resultCompilance = new TreeMap<>();
+		// Process results
+		for (Map.Entry<Long, Map<String, BigDecimal>> result : results.entrySet()) {
+			int countC = 0;
+			int countNC = 0;
+			for (Map.Entry<String, BigDecimal> verificationResult : result.getValue().entrySet()) {
+				if (verificationResult.getValue().compareTo(new BigDecimal(9)) >= 0) {
+					countC++;
+				} else if (verificationResult.getValue().compareTo(new BigDecimal(0)) >= 0) {
+					countNC++;
+				}
+			}
+			if (countC == result.getValue().size()) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_FULL);
+			} else if (countC > countNC) {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_PARTIAL);
+			} else {
+				resultCompilance.put(result.getKey(), Constants.OBS_COMPILANCE_NONE);
+			}
+		}
+		return resultCompilance;
 	}
 
 	/**
@@ -2038,5 +2071,62 @@ public class AnonymousResultExportPdfUNEEN2019 extends AnonymousResultExportPdf 
 		table.setSpacingBefore(ConstantsFont.HALF_LINE_SPACE);
 		table.setSpacingAfter(0);
 		chapter.add(table);
+	}
+
+	/**
+	 * Generate scores.
+	 *
+	 * @param messageResources the message resources
+	 * @param evaList          the eva list
+	 * @return the score form
+	 */
+	@Override
+	public ScoreForm generateScores(final MessageResources messageResources, final java.util.List<ObservatoryEvaluationForm> evaList) {
+		final ScoreForm scoreForm = new ScoreForm();
+		int suitabilityGroups = 0;
+		for (ObservatoryEvaluationForm evaluationForm : evaList) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().add(evaluationForm.getScore()));
+			// Codigo duplicado en IntavUtils
+			final String pageSuitabilityLevel = ObservatoryUtils.pageSuitabilityLevel(evaluationForm);
+			if (pageSuitabilityLevel.equals(Constants.OBS_AA)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(BigDecimal.TEN));
+			} else if (pageSuitabilityLevel.equals(Constants.OBS_A)) {
+				scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().add(new BigDecimal(5)));
+			}
+			for (ObservatoryLevelForm levelForm : evaluationForm.getGroups()) {
+				suitabilityGroups = levelForm.getSuitabilityGroups().size();
+				if (levelForm.getName().equalsIgnoreCase("priority 1")) {
+					scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().add(levelForm.getScore()));
+				} else if (levelForm.getName().equalsIgnoreCase("priority 2")) {
+					scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().add(levelForm.getScore()));
+				}
+				for (ObservatorySuitabilityForm suitabilityForm : levelForm.getSuitabilityGroups()) {
+					if (suitabilityForm.getName().equalsIgnoreCase("A")) {
+						scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().add(suitabilityForm.getScore()));
+					} else if (suitabilityForm.getName().equalsIgnoreCase("AA")) {
+						scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().add(suitabilityForm.getScore()));
+					}
+				}
+			}
+		}
+		generateScoresVerificacion(messageResources, scoreForm, evaList);
+		Map<Long, Map<String, BigDecimal>> results = ResultadosAnonimosObservatorioUNEEN2019Utils.getVerificationResultsByPointAndCrawl(evaList, Constants.OBS_PRIORITY_NONE);
+		Map<Long, String> calculatedCompliance = calculateCrawlingCompliance(results);
+		/**
+		 * for (ResultadoSemillaForm seedResult : seedsResults) { seedResult.setCompliance(calculatedCompliance.get(Long.parseLong(seedResult.getIdFulfilledCrawling()))); }
+		 */
+		if (!evaList.isEmpty()) {
+			scoreForm.setTotalScore(scoreForm.getTotalScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel1(scoreForm.getScoreLevel1().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevel2(scoreForm.getScoreLevel2().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelA(scoreForm.getScoreLevelA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setScoreLevelAA(scoreForm.getScoreLevelAA().divide(new BigDecimal(evaList.size()).multiply(new BigDecimal(suitabilityGroups)), 2, BigDecimal.ROUND_HALF_UP));
+			scoreForm.setSuitabilityScore(scoreForm.getSuitabilityScore().divide(new BigDecimal(evaList.size()), 2, BigDecimal.ROUND_HALF_UP));
+			// TODO Calculated compliance
+			scoreForm.setCompliance(calculatedCompliance.get(evaList.get(0).getCrawlerExecutionId()));
+		}
+		// El nivel de validación del portal
+		scoreForm.setLevel(getValidationLevel(scoreForm, messageResources));
+		return scoreForm;
 	}
 }
