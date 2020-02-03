@@ -305,6 +305,12 @@
 		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarEtiquetas.jsp" />
 	</definition>
 
+	<!-- Página cargar reduccion de tablas del observatorio -->
+	<definition name=".cargarReducirTablasObservatorio" extends="mainLayout">
+		<put name="title" value="application.title.observatorio" />
+		<put name="contents" value="/WEB-INF/pages/front/html/sections/observatorio_cargarReducirTablas.jsp" />
+	</definition>
+	
 	<!-- Página CARGAR RASTREOS REALIZADOS observatorio -->
 	<definition name=".cargarRastreosRealizadosObservatorio" extends="mainLayout">
 		<put name="title" value="application.title.observatorio" />
