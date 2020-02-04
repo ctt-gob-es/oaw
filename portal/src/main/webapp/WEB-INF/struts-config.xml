@@ -40,6 +40,8 @@
 
 		<form-bean name="EtiquetaForm" type="es.inteco.rastreador2.actionform.etiquetas.EtiquetaForm" />
 
+		<form-bean name="ReducirTablasForm" type="es.inteco.rastreador2.actionform.observatorio.ReducirTablasForm" />
+
 		<form-bean name="ClasificacionForm" type="es.inteco.rastreador2.actionform.etiquetas.ClasificacionForm" />
 
 
@@ -343,6 +345,8 @@
 
 
 		<forward name="observatoryPlantillas" path="/secure/Plantilla.do?action=load" />
+
+		<forward name="observatoryReducirTablas" path="/secure/ViewReducirTablasObservatorio.do?action=load" />
 
 
 
@@ -1013,6 +1017,14 @@
 
 		</action>
 
+		<!-- ReducirTablas -->
+		<action path="/secure/ViewReducirTablasObservatorio"
+			type="es.inteco.rastreador2.action.observatorio.ReducirTablasObservatorioAction" name="ReducirTablasForm" parameter="action"
+			scope="request" validate="false">
+			<forward name="exito" path=".cargarReducirTablasObservatorio" />
+
+		</action>
+		
 		<action path="/secure/ConfigExportOpenOfficeAction"
 			type="es.inteco.rastreador2.openOffice.export.ConfigExportOpenOfficeAction">
 		</action>
