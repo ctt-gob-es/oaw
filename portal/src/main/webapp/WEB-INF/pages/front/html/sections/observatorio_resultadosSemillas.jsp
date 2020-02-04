@@ -275,7 +275,7 @@ Email: observ.accesibilidad@correo.gob.es
 
 		var dialogoReducir = $('<div id="dialogoReducirContent"></div>');
 
-		dialogoReducir.append('<p>&#191;Desea eliminar el contenido de las tablas relacionadas con este rastreo?</p>');
+		dialogoReducir.append('<p>&#191;Desea eliminar el contenido de las tablas relacionadas con esta ejecuci&#243n?</p>');
 		
 		dialogoReducir
 			.dialog({
